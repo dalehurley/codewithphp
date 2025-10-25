@@ -1,0 +1,30 @@
+---
+alwaysApply: true
+---
+
+# PHP Version Requirement
+
+This project uses **PHP 8.4** exclusively.
+
+## Code Requirements
+
+- All PHP code examples, snippets, and tutorials must be compatible with PHP 8.4
+- Use PHP 8.4 syntax and features where appropriate
+- When showing version-specific features, specify PHP 8.4 compatibility
+- Include `php: "^8.4"` in any composer.json files or dependency requirements
+
+## Documentation
+
+- Reference PHP 8.4 documentation: https://www.php.net/releases/8.4/
+- When mentioning PHP versions in tutorials, default to 8.4 unless specifically comparing versions
+- Prerequisites sections should specify PHP 8.4 as the required version
+
+## Code Examples
+
+- Use modern PHP 8.4 features including:
+  - Property hooks
+  - Asymmetric visibility
+  - New array functions
+  - `#[\Override]` attribute
+  - Type system improvements
+  - And other PHP 8.4 capabilities where relevant
