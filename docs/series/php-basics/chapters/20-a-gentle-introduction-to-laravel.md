@@ -118,86 +118,54 @@ Here's how the components you built manually map to Laravel features:
 
 This isn't to say your from-scratch blog was bad—far from it! Understanding how to build these components manually gives you deep knowledge of _why_ frameworks work the way they do. You're now in a perfect position to appreciate Laravel's elegance.
 
-## Step 2: Installing Laravel (~5 min)
+## Step 1: Install Laravel (~5 min)
 
-**Goal** - Create a new Laravel project and verify it runs successfully.
+### Goal
 
-Laravel uses Composer for installation. You can create a new Laravel project with a single command.
+Install Laravel 11 via Composer and confirm the project boots.
 
-1.  **Navigate to Your Projects Directory**
+### Actions
 
-    In your terminal, navigate to the directory where you keep your code projects (the parent of your `simple-blog` project).
+1. **Create a new Laravel project**:
 
-    ```bash
-    # Example: navigate to your projects directory
-    cd ~/projects
-    ```
+```bash
+# Create project and navigate into it
+composer create-project laravel/laravel laravel-blog
+cd laravel-blog
+```
 
-2.  **Create a New Laravel Project**
+2. **Configure the `.env` file** for SQLite (or your preferred database):
 
-    Run the following Composer command:
+```bash
+echo "DB_CONNECTION=sqlite" >> .env
+touch database/database.sqlite
+```
 
-    ```bash
-    # Create a new Laravel project
-    composer create-project laravel/laravel laravel-blog
-    ```
+3. **Serve the application** to confirm everything runs:
 
-    This will download the Laravel starter project and install all of its dependencies. It might take 1–2 minutes.
+```bash
+php artisan serve
+```
 
-    **Expected output**: You should see Composer downloading packages and a success message at the end:
+Visit `http://127.0.0.1:8000` in your browser and ensure the default Laravel welcome page loads.
 
-    ```
-    ...
-    > @php artisan package:discover --ansi
-    ...
-    Application ready! Build something amazing.
-    ```
+### Expected Result
 
-3.  **Start the Development Server**
+The default Laravel homepage appears at `http://127.0.0.1:8000`, confirming the framework was installed successfully.
 
-    Navigate into the new directory and use Laravel's built-in command-line tool, **Artisan**, to start the development server.
+### Why It Works
 
-    ```bash
-    # Navigate into the project
-    cd laravel-blog
-
-    # Start the built-in development server
-    php artisan serve
-    ```
-
-    **Expected output**:
-
-    ```
-    INFO  Server running on [http://127.0.0.1:8000].
-
-    Press Ctrl+C to stop the server
-    ```
-
-4.  **Verify Installation**
-
-    Open your browser and visit `http://localhost:8000`. You should see the beautiful Laravel welcome page with the Laravel logo and links to documentation.
-
-**Why it works**: The `composer create-project` command clones the Laravel starter template and runs `composer install` to fetch all dependencies. Laravel includes a development server powered by PHP's built-in web server, which is perfect for local development.
+- `composer create-project` downloads Laravel and all dependencies.
+- The `.env` configuration tells Laravel to use SQLite and where the database lives.
+- `php artisan serve` launches the built-in PHP development server with Laravel’s routing.
 
 ### Troubleshooting
 
-**Problem**: "composer: command not found"
+- **`composer` command not found** — Ensure Composer is installed and available in your PATH.
+- **Permission errors creating the SQLite file** — Verify the `database/` directory exists and is writable.
+- **Blank page or 500 error** — Check `storage/logs/laravel.log` for detailed error messages.
 
-**Solution**: Composer is not installed or not in your PATH. Install it from [getcomposer.org](https://getcomposer.org) and ensure it's globally available.
-
-**Problem**: "php artisan serve" shows "Address already in use"
-
-**Solution**: Another process is using port 8000. Either stop that process or use a different port:
-
-```bash
-php artisan serve --port=8001
-```
-
-**Problem**: Browser shows "Connection refused" at localhost:8000
-
-**Solution**: Ensure the `php artisan serve` command is still running in your terminal. If it stopped, restart it.
-
-## Step 3: Configure the Database (~2 min)
+## Step 2: Configure the Database (~2 min)
 
 **Goal** - Set up SQLite as your database and verify Laravel can connect to it.
 

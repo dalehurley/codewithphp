@@ -117,16 +117,13 @@ This compact example shows JSON encoding, decoding, and making an actual API cal
 
 ## Step 1: JSON Basics (~5 min)
 
-**Goal**: Master JSON encoding and decoding with proper error handling.
+### Goal
 
-JSON is a text format for storing and transporting data. It looks similar to PHP arrays but is a string that can be sent over HTTP. PHP provides two essential functions: [`json_encode()`](https://www.php.net/manual/en/function.json-encode.php) and [`json_decode()`](https://www.php.net/manual/en/function.json-decode.php).
+Master JSON encoding and decoding with proper error handling.
 
 ### Actions
 
-1.  **Create a File**:
-    Create a new file named `json-basics.php` in your working directory.
-
-2.  **Encoding and Decoding JSON**:
+1. **Create a file** named `json-basics.php`:
 
 ```php
 # filename: json-basics.php
@@ -167,15 +164,46 @@ $decodedAsObject = json_decode($prettyJson);
 echo "First product name (object): " . $decodedAsObject[0]->name . PHP_EOL;
 ```
 
-3.  **Run the Script**:
+2. **Add error handling** for encoding/decoding failures:
+
+```php
+{# filename: json-error-handling.php #}
+<?php
+
+declare(strict_types=1);
+
+// Invalid UTF-8 sequences will cause encoding to fail
+$invalid = [
+    'name' => "Invalid \xB1\x31 data"
+];
+
+$json = json_encode($invalid);
+
+if ($json === false) {
+    echo "JSON encoding failed: " . json_last_error_msg() . PHP_EOL;
+} else {
+    echo "Success: " . $json . PHP_EOL;
+}
+
+// Decoding invalid JSON
+$badJson = '{"name": "Bob", "age": }'; // Missing value
+$decoded = json_decode($badJson, true);
+
+if (json_last_error() !== JSON_ERROR_NONE) {
+    echo "JSON decoding failed: " . json_last_error_msg() . PHP_EOL;
+}
+```
+
+3. **Run each script** to inspect the output:
 
 ```bash
 php json-basics.php
+php json-error-handling.php
 ```
 
-### Expected Output
+### Expected Result
 
-```text
+```
 Compact JSON:
 [{"id":1,"name":"Laptop","price":999.99,"in_stock":true},{"id":2,"name":"Mouse","price":29.99,"in_stock":false}]
 
@@ -197,14 +225,21 @@ Pretty JSON:
 
 First product name: Laptop
 First product name (object): Laptop
+JSON encoding failed: Malformed UTF-8 characters, possibly incorrectly encoded
+JSON decoding failed: Syntax error
 ```
 
 ### Why It Works
 
-- [`json_encode()`](https://www.php.net/manual/en/function.json-encode.php) converts PHP arrays and objects into a JSON string
-- [`json_decode($json, true)`](https://www.php.net/manual/en/function.json-decode.php) converts JSON back to PHP associative arrays
-- `json_decode($json)` (without `true`) returns PHP objects instead
-- `JSON_PRETTY_PRINT` adds formatting for human readability
+- `json_encode()` converts PHP arrays/objects into JSON strings.
+- `json_decode()` converts JSON strings back to PHP data structures; passing `true` returns associative arrays, while `false` returns objects.
+- `json_last_error_msg()` reveals the reason for encoding/decoding failures, which is critical for debugging malformed or non-UTF-8 data.
+
+### Troubleshooting
+
+- **`json_encode` returns false** — Verify input strings are valid UTF-8 or enable `JSON_PARTIAL_OUTPUT_ON_ERROR` for best-effort encoding.
+- **Decoded data is `null`** — Check `json_last_error()` for decoding issues; ensure the JSON string is valid.
+- **Large numbers lose precision** — Use `JSON_BIGINT_AS_STRING` when decoding to keep big integers as strings.
 
 ### JSON Error Handling
 
@@ -248,16 +283,13 @@ Common [`json_encode()`](https://www.php.net/manual/en/function.json-encode.php)
 
 ## Step 2: Making API Requests with cURL (~8 min)
 
-**Goal**: Use cURL to consume external REST APIs with proper error handling.
+### Goal
 
-cURL is a powerful library for making HTTP requests. It's included with most PHP installations and is the standard way to interact with APIs.
+Use cURL to consume external REST APIs with proper error handling.
 
 ### Actions
 
-1.  **Create a File**:
-    Create `api-client-curl.php`.
-
-2.  **Basic GET Request**:
+1. **Create a file** named `api-client-curl.php`:
 
 ```php
 # filename: api-client-curl.php
@@ -300,560 +332,257 @@ function fetchGitHubUser(string $username): ?array
         return null;
     }
 
-    // Decode JSON response
     $data = json_decode($response, true);
 
     if (json_last_error() !== JSON_ERROR_NONE) {
-        echo "JSON Error: " . json_last_error_msg() . PHP_EOL;
+        echo "JSON Decode Error: " . json_last_error_msg() . PHP_EOL;
         return null;
     }
 
     return $data;
 }
 
-// Test the function
 $user = fetchGitHubUser('github');
 
-if ($user !== null) {
+if ($user) {
     echo "Name: " . $user['name'] . PHP_EOL;
-    echo "Bio: " . $user['bio'] . PHP_EOL;
     echo "Public Repos: " . $user['public_repos'] . PHP_EOL;
-    echo "Followers: " . $user['followers'] . PHP_EOL;
-    echo "Created: " . $user['created_at'] . PHP_EOL;
 }
 ```
 
-3.  **Run the Script**:
+2. **Run the script**:
 
 ```bash
 php api-client-curl.php
 ```
 
-### Expected Output
+### Expected Result
 
-```text
+```
 Name: GitHub
-Bio: How people build software.
 Public Repos: 296
-Followers: 125000
-Created: 2008-05-10T21:37:00Z
 ```
 
 ### Why It Works
 
-- [`curl_init()`](https://www.php.net/manual/en/function.curl-init.php) creates a cURL session
-- [`curl_setopt()`](https://www.php.net/manual/en/function.curl-setopt.php) configures the request
-- [`curl_exec()`](https://www.php.net/manual/en/function.curl-exec.php) executes the request and returns the response
-- [`curl_getinfo()`](https://www.php.net/manual/en/function.curl-getinfo.php) retrieves information about the request (like HTTP status)
-- Always close the cURL handle with [`curl_close()`](https://www.php.net/manual/en/function.curl-close.php)
+- `curl_setopt` flags configure cURL to return data, follow redirects, and set timeouts.
+- Handling HTTP status codes ensures success responses before decoding JSON.
+- Decoding the JSON response yields an associative array for easy access to fields like `name` and `public_repos`.
 
-### POST Requests with JSON
+### Troubleshooting
 
-To send data to an API, use POST requests:
+- **`cURL Error: Could not resolve host`** — Check your internet connection or DNS settings.
+- **HTTP Error responses (401, 403)** — API may require authentication or a valid User-Agent.
+- **JSON decode errors** — Log the raw response to inspect API output before decoding.
 
-```php
-<?php
+## Step 3: Building a REST API Endpoint (~7 min)
 
-declare(strict_types=1);
+### Goal
 
-/**
- * Example: Send data to an API endpoint
- */
-function createUser(string $name, string $email): ?array
-{
-    $url = 'https://jsonplaceholder.typicode.com/users'; // Test API
-
-    $data = [
-        'name' => $name,
-        'email' => $email,
-        'username' => strtolower($name)
-    ];
-
-    $json = json_encode($data);
-
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true); // Make it a POST request
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $json); // Send JSON data
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Content-Type: application/json',
-        'Content-Length: ' . strlen($json)
-    ]);
-
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-
-    if ($httpCode === 201) { // 201 = Created
-        return json_decode($response, true);
-    }
-
-    echo "Error: HTTP " . $httpCode . PHP_EOL;
-    return null;
-}
-
-$newUser = createUser('Alice Johnson', 'alice@example.com');
-
-if ($newUser !== null) {
-    echo "User created with ID: " . $newUser['id'] . PHP_EOL;
-    echo "Name: " . $newUser['name'] . PHP_EOL;
-}
-```
-
-::: warning API Rate Limits
-Most APIs have rate limits (e.g., GitHub allows 60 requests/hour without authentication). Always:
-
-- Check the API documentation
-- Handle 429 (Too Many Requests) status codes
-- Consider implementing caching
-- Add authentication when available for higher limits
-  :::
-
-## Step 3: Building a Simple REST API (~7 min)
-
-**Goal**: Create your own REST API endpoint that returns JSON data.
+Create a simple REST endpoint that returns JSON using plain PHP.
 
 ### Actions
 
-1.  **Create a File**:
-    Create `simple-api.php`.
-
-2.  **Build a REST API Endpoint**:
+1. **Create an API endpoint** `public/api/posts.php`:
 
 ```php
-# filename: simple-api.php
+# filename: public/api/posts.php
 <?php
 
 declare(strict_types=1);
 
-// Set JSON response header
-header('Content-Type: application/json; charset=utf-8');
+header('Content-Type: application/json');
 
-// Simple in-memory database (in real apps, use a database)
-$products = [
-    ['id' => 1, 'name' => 'Laptop', 'price' => 999.99, 'stock' => 15],
-    ['id' => 2, 'name' => 'Mouse', 'price' => 29.99, 'stock' => 50],
-    ['id' => 3, 'name' => 'Keyboard', 'price' => 79.99, 'stock' => 30],
-    ['id' => 4, 'name' => 'Monitor', 'price' => 299.99, 'stock' => 8],
+$posts = [
+    ['id' => 1, 'title' => 'Hello JSON', 'content' => 'JSON is great for APIs'],
+    ['id' => 2, 'title' => 'Consuming APIs', 'content' => 'cURL makes it easy'],
 ];
 
-// Get request method and path
-$method = $_SERVER['REQUEST_METHOD'];
-$path = $_SERVER['REQUEST_URI'];
-
-// Parse URL to get product ID if present
-$urlParts = explode('/', trim($path, '/'));
-$productId = isset($urlParts[1]) && is_numeric($urlParts[1])
-    ? (int)$urlParts[1]
-    : null;
-
-/**
- * Send JSON response with status code
- */
-function sendResponse(int $statusCode, array $data): void
-{
-    http_response_code($statusCode);
-    echo json_encode($data, JSON_PRETTY_PRINT);
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    echo json_encode($posts, JSON_PRETTY_PRINT);
     exit;
 }
 
-/**
- * Find product by ID
- */
-function findProduct(int $id, array $products): ?array
-{
-    foreach ($products as $product) {
-        if ($product['id'] === $id) {
-            return $product;
-        }
-    }
-    return null;
-}
-
-// Route: GET /products - List all products
-if ($method === 'GET' && $productId === null) {
-    sendResponse(200, [
-        'success' => true,
-        'data' => $products,
-        'count' => count($products)
-    ]);
-}
-
-// Route: GET /products/{id} - Get single product
-if ($method === 'GET' && $productId !== null) {
-    $product = findProduct($productId, $products);
-
-    if ($product === null) {
-        sendResponse(404, [
-            'success' => false,
-            'error' => 'Product not found'
-        ]);
-    }
-
-    sendResponse(200, [
-        'success' => true,
-        'data' => $product
-    ]);
-}
-
-// Route: POST /products - Create product (example, not persisted)
-if ($method === 'POST') {
-    $input = file_get_contents('php://input');
-    $data = json_decode($input, true);
-
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        sendResponse(400, [
-            'success' => false,
-            'error' => 'Invalid JSON: ' . json_last_error_msg()
-        ]);
-    }
-
-    // Validate required fields
-    if (empty($data['name']) || empty($data['price'])) {
-        sendResponse(400, [
-            'success' => false,
-            'error' => 'Name and price are required'
-        ]);
-    }
-
-    // Create new product
-    $newProduct = [
-        'id' => count($products) + 1,
-        'name' => $data['name'],
-        'price' => (float)$data['price'],
-        'stock' => $data['stock'] ?? 0
-    ];
-
-    sendResponse(201, [
-        'success' => true,
-        'message' => 'Product created',
-        'data' => $newProduct
-    ]);
-}
-
-// Method not allowed
-sendResponse(405, [
-    'success' => false,
-    'error' => 'Method not allowed'
-]);
+echo json_encode(['error' => 'Method not allowed'], JSON_PRETTY_PRINT);
+http_response_code(405);
 ```
 
-3.  **Run the API Server**:
+2. **Serve the endpoint** and test it:
 
 ```bash
-# Start PHP's built-in web server
-php -S localhost:8000 simple-api.php
+php -S localhost:8000 -t public
+curl http://localhost:8000/api/posts.php
 ```
 
-4.  **Test the API** (open a new terminal):
+### Expected Result
 
-```bash
-# Get all products
-curl http://localhost:8000/products
-
-# Get single product
-curl http://localhost:8000/products/1
-
-# Create a product
-curl -X POST http://localhost:8000/products \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Webcam","price":89.99,"stock":20}'
 ```
-
-### Expected Output
-
-For `GET /products`:
-
-```json
-{
-    "success": true,
-    "data": [
-        {
-            "id": 1,
-            "name": "Laptop",
-            "price": 999.99,
-            "stock": 15
-        },
-        ...
-    ],
-    "count": 4
-}
-```
-
-For `POST /products`:
-
-```json
-{
-  "success": true,
-  "message": "Product created",
-  "data": {
-    "id": 5,
-    "name": "Webcam",
-    "price": 89.99,
-    "stock": 20
-  }
-}
+[
+    {
+        "id": 1,
+        "title": "Hello JSON",
+        "content": "JSON is great for APIs"
+    },
+    {
+        "id": 2,
+        "title": "Consuming APIs",
+        "content": "cURL makes it easy"
+    }
+]
 ```
 
 ### Why It Works
 
-- `header('Content-Type: application/json')` tells clients to expect JSON
-- [`http_response_code()`](https://www.php.net/manual/en/function.http-response-code.php) sets proper HTTP status codes
-- `$_SERVER['REQUEST_METHOD']` determines the HTTP method (GET, POST, etc.)
-- [`file_get_contents('php://input')`](https://www.php.net/manual/en/wrappers.php.php) reads the request body
-- Standard REST conventions: 200 (OK), 201 (Created), 404 (Not Found), 400 (Bad Request)
+- Setting the `Content-Type` header ensures clients treat the response as JSON.
+- `json_encode` converts the posts array into a properly formatted string.
+- Returning a 405 status code for unsupported methods follows REST best practices.
 
-::: tip REST Best Practices
+### Troubleshooting
 
-- Use appropriate HTTP methods: GET (read), POST (create), PUT/PATCH (update), DELETE (delete)
-- Return meaningful HTTP status codes
-- Include error messages in a consistent format
-- Version your API (e.g., `/api/v1/products`)
-- Add authentication for sensitive endpoints
-  :::
+- **Blank output** — Ensure `json_encode` is called and no syntax errors occurred before the response.
+- **`Cannot redeclare header()` warnings** — Make sure no output is sent before the `header()` call.
+- **`curl` shows HTML instead of JSON** — Confirm you’re hitting the correct endpoint and not the default router.
 
-## Step 4: Real-World API Integration Example (~5 min)
+## Step 4: Adding Authentication (~6 min)
 
-**Goal**: Build a reusable API client class with error handling.
+### Goal
+
+Demonstrate a simple token-based authentication check for API requests.
 
 ### Actions
 
-1.  **Create a File**:
-    Create `api-client-class.php`.
-
-2.  **Build a Reusable API Client**:
+1. **Update your endpoint** to require an API token:
 
 ```php
-# filename: api-client-class.php
+# filename: public/api/posts.php
 <?php
 
 declare(strict_types=1);
 
-/**
- * Simple HTTP client for API requests
- */
-class ApiClient
-{
-    public function __construct(
-        private string $baseUrl,
-        private int $timeout = 10,
-        private array $defaultHeaders = []
-    ) {}
+header('Content-Type: application/json');
 
-    /**
-     * Make a GET request
-     */
-    public function get(string $endpoint, array $params = []): array
-    {
-        $url = $this->buildUrl($endpoint, $params);
-        return $this->request('GET', $url);
-    }
+$token = $_GET['token'] ?? '';
 
-    /**
-     * Make a POST request
-     */
-    public function post(string $endpoint, array $data = []): array
-    {
-        $url = $this->buildUrl($endpoint);
-        return $this->request('POST', $url, $data);
-    }
-
-    /**
-     * Execute HTTP request
-     */
-    private function request(string $method, string $url, ?array $data = null): array
-    {
-        $ch = curl_init($url);
-
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-
-        // Set headers
-        $headers = $this->defaultHeaders;
-
-        if ($method === 'POST' && $data !== null) {
-            curl_setopt($ch, CURLOPT_POST, true);
-            $json = json_encode($data);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
-            $headers[] = 'Content-Type: application/json';
-        }
-
-        if (!empty($headers)) {
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        }
-
-        $response = curl_exec($ch);
-
-        if ($response === false) {
-            $error = curl_error($ch);
-            curl_close($ch);
-            throw new RuntimeException("cURL error: " . $error);
-        }
-
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-
-        $decoded = json_decode($response, true);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new RuntimeException("JSON decode error: " . json_last_error_msg());
-        }
-
-        return [
-            'status' => $httpCode,
-            'data' => $decoded
-        ];
-    }
-
-    /**
-     * Build full URL with query parameters
-     */
-    private function buildUrl(string $endpoint, array $params = []): string
-    {
-        $url = rtrim($this->baseUrl, '/') . '/' . ltrim($endpoint, '/');
-
-        if (!empty($params)) {
-            $url .= '?' . http_build_query($params);
-        }
-
-        return $url;
-    }
+if ($token !== 'secret123') {
+    http_response_code(401);
+    echo json_encode(['error' => 'Unauthorized']);
+    exit;
 }
 
-// Example usage: GitHub API client
-try {
-    $github = new ApiClient(
-        baseUrl: 'https://api.github.com',
-        defaultHeaders: ['User-Agent: PHP-Tutorial']
-    );
+$posts = [
+    ['id' => 1, 'title' => 'Hello JSON', 'content' => 'JSON is great for APIs'],
+    ['id' => 2, 'title' => 'Consuming APIs', 'content' => 'cURL makes it easy'],
+];
 
-    // Get user information
-    $result = $github->get('users/github');
-
-    if ($result['status'] === 200) {
-        $user = $result['data'];
-        echo "User: " . $user['name'] . PHP_EOL;
-        echo "Repos: " . $user['public_repos'] . PHP_EOL;
-    }
-
-    // Search repositories
-    $result = $github->get('search/repositories', [
-        'q' => 'language:php stars:>1000',
-        'sort' => 'stars',
-        'per_page' => 5
-    ]);
-
-    if ($result['status'] === 200) {
-        echo "\nTop PHP Repositories:\n";
-        foreach ($result['data']['items'] as $repo) {
-            echo "- {$repo['name']} ({$repo['stargazers_count']} stars)\n";
-        }
-    }
-
-} catch (RuntimeException $e) {
-    echo "Error: " . $e->getMessage() . PHP_EOL;
-}
+echo json_encode($posts, JSON_PRETTY_PRINT);
 ```
 
-3.  **Run the Script**:
+2. **Call the endpoint with the token**:
 
 ```bash
-php api-client-class.php
+curl "http://localhost:8000/api/posts.php?token=secret123"
 ```
 
-### Expected Output
+### Expected Result
 
-```text
-User: GitHub
-Repos: 296
+Requests without the token return a `401 Unauthorized` response with an error message. Requests with the correct token return the JSON payload.
 
-Top PHP Repositories:
-- laravel (76000 stars)
-- symfony (29000 stars)
-- composer (28000 stars)
-- ...
+### Why It Works
+
+- A simple token check enforces authentication before serving data.
+- Returning 401 status codes communicates auth errors clearly to clients.
+
+### Troubleshooting
+
+- **Always unauthorized** — Confirm the query string includes `token=secret123` and matches exactly, case-sensitive.
+- **Token visible in URL** — For sensitive data, use headers (`Authorization: Bearer`) instead of query parameters.
+
+## Step 5: Handling JSON Errors (~4 min)
+
+### Goal
+
+Gracefully handle encoding/decoding errors and provide actionable feedback.
+
+### Actions
+
+1. **Create a utility function** for safe decoding:
+
+```php
+# filename: json-safe-decode.php
+<?php
+
+declare(strict_types=1);
+
+function decodeJson(string $json): array
+{
+    $data = json_decode($json, true);
+
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        throw new RuntimeException('JSON decode failed: ' . json_last_error_msg());
+    }
+
+    return $data;
+}
+
+try {
+    $payload = decodeJson('{"foo": "bar"}');
+    print_r($payload);
+
+    $broken = decodeJson('{"foo": }');
+} catch (RuntimeException $e) {
+    echo $e->getMessage() . PHP_EOL;
+}
+```
+
+2. **Run the helper**:
+
+```bash
+php json-safe-decode.php
+```
+
+### Expected Result
+
+```
+Array
+(
+    [foo] => bar
+)
+JSON decode failed: Syntax error
 ```
 
 ### Why It Works
 
-- The class encapsulates all cURL logic in a reusable way
-- Error handling is consistent across all requests
-- The `buildUrl()` method handles query parameters automatically
-- Constructor injection allows configuring timeouts and default headers
-- The API returns both status code and data for flexible error handling
+- Wrapping `json_decode` in a helper centralizes error handling and keeps calling code clean.
+- Throwing exceptions clarifies which part of the pipeline failed, aiding debugging.
 
-## Code Files
+### Troubleshooting
 
-Explore comprehensive examples of JSON and API handling:
-
-- [`code/23-json-apis/json-basics.php`](../code/23-json-apis/json-basics.php) - JSON encoding/decoding with error handling
-- [`code/23-json-apis/api-client-curl.php`](../code/23-json-apis/api-client-curl.php) - cURL API client
-- [`code/23-json-apis/simple-rest-api.php`](../code/23-json-apis/simple-rest-api.php) - Complete REST API example
-
-## Troubleshooting
-
-### cURL Extension Not Found
-
-If you see "Call to undefined function curl_init()":
-
-```bash
-# On macOS
-brew install curl
-
-# On Ubuntu/Debian
-sudo apt-get install php-curl
-
-# On Windows
-# Enable extension=curl in php.ini
-```
-
-### JSON Encoding Fails
-
-If [`json_encode()`](https://www.php.net/manual/en/function.json-encode.php) returns `false`:
-
-- Check for invalid UTF-8: [`mb_detect_encoding()`](https://www.php.net/manual/en/function.mb-detect-encoding.php)
-- Use `JSON_INVALID_UTF8_SUBSTITUTE` or `JSON_INVALID_UTF8_IGNORE` flags
-- Check for circular references in objects
-
-### API Returns 403 Forbidden
-
-- Add a `User-Agent` header (many APIs require it)
-- Check if you need authentication (API key, OAuth token)
-- Verify you're not hitting rate limits
-
-## Exercises
-
-1.  **Weather API Integration**: Create a function that fetches current weather using OpenWeatherMap API (free tier available)
-
-2.  **API Response Cache**: Modify the `ApiClient` class to cache responses for 5 minutes to reduce API calls
-
-3.  **Full CRUD API**: Extend `simple-api.php` to handle PUT (update) and DELETE operations
-
-4.  **Error Response Handler**: Create a class that standardizes error responses with error codes and messages
+- **Helper throws exceptions on valid JSON** — Ensure the input is a UTF-8 string and `json_last_error()` is checked immediately after decoding.
+- **Need partial results** — Use `JSON_PARTIAL_OUTPUT_ON_ERROR` and handle truncated data carefully.
 
 ## Wrap-up
 
-You've learned how to work with JSON and integrate external APIs into your PHP applications. You can now:
+Great job! You've now combined JSON handling, API consumption, and simple REST design into a clean workflow. You can:
 
-- ✓ Encode and decode JSON with proper error handling
-- ✓ Make HTTP requests using cURL
-- ✓ Consume REST APIs with authentication
-- ✓ Build your own REST API endpoints
-- ✓ Handle errors gracefully at every step
-- ✓ Create reusable API client classes
+- ✅ Encode PHP arrays and objects into JSON with proper error handling
+- ✅ Decode JSON safely and detect malformed payloads
+- ✅ Fetch remote API data using cURL with timeouts and error checks
+- ✅ Build basic REST endpoints that serve JSON responses
+- ✅ Add authentication gates to protect API endpoints
+- ✅ Centralize JSON validation logic for reuse across projects
 
-### What's Next?
+These skills unlock third-party integrations, microservices, and modern front-end frameworks that expect JSON APIs.
 
-- [Chapter 20: A Gentle Introduction to Laravel](/series/php-basics/chapters/20-a-gentle-introduction-to-laravel) - Laravel has powerful HTTP client and API resource features
-- [Chapter 14: Interacting with Databases using PDO](/series/php-basics/chapters/14-interacting-with-databases-using-pdo) - Persist API data in a database
-- Explore [Guzzle](https://docs.guzzlephp.org/), a modern HTTP client library for PHP
-- Learn about API authentication (OAuth 2.0, JWT tokens)
-- Study [REST API design best practices](https://restfulapi.net/)
+## Further Reading
+
+- [PHP Manual: JSON Functions](https://www.php.net/manual/en/ref.json.php)
+- [cURL Manual](https://curl.se/docs/manpage.html) — Detailed cURL command reference
+- [HTTP Status Codes](https://developer.mozilla.org/docs/Web/HTTP/Status) — Official MDN guide
+- [REST API Design Guidelines](https://restfulapi.net/) — Best practices for designing RESTful services
 
 ## Knowledge Check
 
-Test your understanding of JSON and API integration:
+Test your understanding of JSON and APIs:
 
 <Quiz 
   title="Chapter 23 Quiz: JSON & APIs"

@@ -888,6 +888,10 @@ You can now:
 | **Abstract Class** | Related classes share code and must implement specific methods | `Circle extends Shape`          |
 | **Interface**      | Unrelated classes need common behavior                         | `BlogPost implements Shareable` |
 
+## Next Steps
+
+In the [next chapter](/series/php-basics/chapters/10-oop-traits-and-namespaces), we'll cover two more essential OOP tools: **traits** for reusing method implementations across unrelated classes, and **namespaces** for organizing your code in larger projects.
+
 ## Further Reading
 
 - [PHP Manual: Object Inheritance](https://www.php.net/manual/en/language.oop5.inheritance.php)
@@ -896,10 +900,6 @@ You can now:
 - [PHP Manual: The `final` Keyword](https://www.php.net/manual/en/language.oop5.final.php)
 - [SOLID Principles](https://en.wikipedia.org/wiki/SOLID) - Professional OOP design principles
 - [Polymorphism in OOP](<https://en.wikipedia.org/wiki/Polymorphism_(computer_science)>) - Deep dive into polymorphism concepts
-
-## Next Steps
-
-In the [next chapter](/series/php-basics/chapters/10-oop-traits-and-namespaces), we'll cover two more essential OOP tools: **traits** for reusing method implementations across unrelated classes, and **namespaces** for organizing your code in larger projects.
 
 ## Knowledge Check
 

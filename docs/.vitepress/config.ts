@@ -6,6 +6,7 @@ export default withMermaid(
     title: 'Code with PHP',
     description: 'Learn PHP and its ecosystem from first principles to advanced.',
     base: '/',
+    cleanUrls: true,
     lastUpdated: true,
     ignoreDeadLinks: [
       // Ignore localhost URLs used in tutorials
@@ -106,6 +107,10 @@ export default withMermaid(
               {
                 text: '15 — Managing State with Sessions and Cookies',
                 link: '/series/php-basics/chapters/15-managing-state-with-sessions-and-cookies'
+              },
+              {
+                text: '15b — CSRF Protection & Form Security',
+                link: '/series/php-basics/chapters/15b-csrf-protection-and-form-security'
               },
               {
                 text: '16 — Writing Better Code with PSR-1 and PSR-12',

@@ -68,33 +68,22 @@ php variables.php
 
 ## Step 1: Understanding Variables (~3 min)
 
-**Goal**: Create variables, assign values, and display them.
+### Goal
+
+Create variables, assign values, and display them.
 
 Think of a variable as a labeled box where you can store a piece of information. You give the box a name (the variable name) and put something inside it (the value).
 
-### Variable Naming Rules
-
-In PHP, a variable name must:
-
-- Start with a dollar sign (`$`)
-- Be followed by a letter or an underscore
-- Contain only letters, numbers, and underscores (`A-z`, `0-9`, and `_`)
-
-Variable names are **case-sensitive**, meaning `$name` and `$Name` are two different variables.
-
-**Naming Conventions**: By convention, PHP developers use `camelCase` for variable names (e.g., `$firstName`, `$totalPrice`). This makes multi-word variable names easier to read.
-
 ### Actions
 
-1.  **Create a New File**:
+1. **Create a new file**:
 
 ```bash
 # Create variables.php in your project directory
 touch variables.php
 ```
 
-2.  **Declare and Use Variables**:
-    Add the following code to the file:
+2. **Declare and use variables**: Open `variables.php` and add:
 
 ```php
 # filename: variables.php
@@ -107,7 +96,7 @@ echo $name;
 echo $age;
 ```
 
-3.  **Run the Script**:
+3. **Run the script**:
 
 ```bash
 # Execute the script
@@ -116,34 +105,31 @@ php variables.php
 
 ### Expected Result
 
-You'll see `Dale41`. The output is mashed together because `echo` simply prints the values one after the other without any spacing.
+The output displays `Dale41`. It appears without spacing because `echo` prints values back-to-back unless you add whitespace.
 
 ### Why It Works
 
-PHP stores the string 'Dale' in memory and labels it `$name`. When you write `echo $name`, PHP retrieves that value and outputs it. The assignment operator (`=`) copies the right-hand value into the variable on the left.
+- Variables start with `$` followed by letters, numbers, or underscores (they’re case-sensitive).
+- The assignment operator (`=`) stores the value on the right-hand side in the variable on the left.
+- `echo` outputs the value currently stored in the variable.
 
 ### Troubleshooting
 
-**Error: "Parse error: syntax error, unexpected '$name'"**
-
-- **Cause**: You forgot the opening `<?php` tag.
-- **Fix**: Always start PHP files with `<?php` on the first line.
-
-**Error: "Undefined variable $Name"**
-
-- **Cause**: Variable names are case-sensitive. `$name` and `$Name` are different.
-- **Fix**: Use the exact variable name as you defined it.
+- **Parse error: unexpected '$name'** — Make sure the file begins with `<?php`.
+- **Undefined variable $Name** — PHP treats `$name` and `$Name` as different variables. Match the case exactly.
+- **Output missing spaces** — Concatenate a space or use multiple `echo` statements with `PHP_EOL` to separate lines.
 
 ## Step 2: Working with Strings (~4 min)
 
-**Goal**: Combine variables and text using concatenation and interpolation.
+### Goal
+
+Combine variables and text using concatenation and interpolation.
 
 Strings are sequences of characters, like "Hello" or "PHP is fun!". PHP provides two primary ways to combine strings and variables: concatenation and interpolation.
 
 ### Actions
 
-1.  **Concatenation**:
-    Concatenation means joining strings together using the dot (`.`) operator. Modify your `variables.php` file:
+1. **Demonstrate concatenation** by updating `variables.php`:
 
 ```php
 # filename: variables.php
@@ -156,15 +142,14 @@ $age = 41;
 echo 'My name is ' . $name . ' and I am ' . $age . ' years old.' . PHP_EOL;
 ```
 
-2.  **Run and Verify**:
+2. **Run the script**:
 
 ```bash
 php variables.php
 # Expected output: My name is Dale and I am 41 years old.
 ```
 
-3.  **Interpolation** (with double quotes):
-    Interpolation is a convenient shortcut where variables inside a **double-quoted string** are automatically replaced with their values. Update your file:
+3. **Show interpolation** (double quotes only) by replacing the previous `echo` with:
 
 ```php
 # filename: variables.php
@@ -177,51 +162,36 @@ $age = 41;
 echo "My name is $name and I am $age years old." . PHP_EOL;
 ```
 
-4.  **Verify the Output**:
-
-```bash
-php variables.php
-# Expected output: My name is Dale and I am 41 years old.
-```
+4. **Verify the output** again with `php variables.php`.
 
 ### Expected Result
 
-Both methods produce identical output: a clean, readable sentence.
+Both approaches print the same sentence, demonstrating that concatenation and interpolation are interchangeable for simple cases.
 
 ### Why It Works
 
-**Concatenation** uses the dot operator to join separate strings and variables into one string before outputting. **Interpolation** (double quotes only) tells PHP to scan the string for `$variables` and replace them with their values before outputting. Interpolation is generally preferred for readability.
-
-**Single vs. Double Quotes**: Single quotes (`'`) treat everything as literal text—what you see is what you get. Double quotes (`"`) enable variable interpolation and interpret escape sequences like `\n` (newline) and `\t` (tab). Single quotes are slightly faster since PHP doesn't need to scan the string, but the difference is negligible in modern PHP.
-
-> **Note**: `PHP_EOL` is a predefined constant that outputs the correct newline character for your operating system (`\n` on Unix/Mac, `\r\n` on Windows).
+- Concatenation (`.`) glues separate strings and variables together before outputting.
+- Interpolation tells PHP to replace variable placeholders inside double quotes with their values.
+- Single quotes treat everything literally, while double quotes interpret escape sequences (`\n`, `\t`) and variables.
+- `PHP_EOL` prints the correct end-of-line character for the current operating system.
 
 ### Troubleshooting
 
-**Output shows "$name" instead of "Dale"**
-
-- **Cause**: You used single quotes for interpolation.
-- **Fix**: Variable interpolation only works with double quotes (`"`). Single quotes (`'`) treat everything as literal text.
-
-**Error: "syntax error, unexpected '.'"**
-
-- **Cause**: Missing quotes or mismatched quotes around strings.
-- **Fix**: Check that every opening quote has a matching closing quote of the same type.
+- **Output shows "$name"** — Interpolation only works with double quotes.
+- **`syntax error, unexpected '.'`** — Quotes are mismatched or missing; ensure each string starts and ends with the same quote type.
+- **Missing spaces** — Add them manually (`'Hello' . ' ' . 'World'`) when concatenating.
 
 ## Step 2b: Advanced String Syntax (~5 min)
 
-**Goal**: Learn multiline strings and complex interpolation for more powerful text handling.
+### Goal
+
+Learn multiline strings and complex interpolation for more powerful text handling.
 
 While single and double quotes work great for short strings, PHP offers additional syntax for working with longer, multiline text and complex variable interpolation.
 
-### Heredoc Syntax (with Interpolation)
-
-Heredoc is perfect for multiline strings that need variable interpolation. It starts with `<<<` followed by an identifier (commonly `EOT` for "End Of Text" or `HTML` for HTML content), and ends with that same identifier on its own line.
-
 ### Actions
 
-1. **Create a Heredoc Example**:
-   Create a new file called `heredoc.php`:
+1. **Create a Heredoc example**:
 
 ```php
 # filename: heredoc.php
@@ -245,30 +215,9 @@ EOT;
 echo $message . PHP_EOL;
 ```
 
-2. **Run the Script**:
+2. **Run the script** with `php heredoc.php`.
 
-```bash
-php heredoc.php
-```
-
-### Expected Result
-
-```text
-Hello, my name is Dale.
-I am 41 years old and I work as a developer.
-
-This is perfect for:
-  - Multiline text
-  - Email templates
-  - HTML content
-```
-
-### Nowdoc Syntax (Literal Text)
-
-Nowdoc is like single quotes but for multiline strings—no variable interpolation. Use it by wrapping the identifier in single quotes.
-
-3. **Add Nowdoc Example**:
-   Update your `heredoc.php` file:
+3. **Add a Nowdoc example** that treats everything literally (no interpolation):
 
 ```php
 # filename: heredoc.php
@@ -286,20 +235,7 @@ EOT;
 echo $template . PHP_EOL;
 ```
 
-### Expected Result
-
-```text
-This is a literal string.
-The variable $name will not be replaced.
-Use this for code examples or templates.
-```
-
-### Complex Interpolation with Braces
-
-When interpolating array values or complex expressions, you need to wrap them in curly braces `{}`:
-
-4. **Create a Complex Interpolation Example**:
-   Create a new file called `interpolation.php`:
+4. **Create a complex interpolation example** to illustrate curly braces:
 
 ```php
 # filename: interpolation.php
@@ -315,11 +251,11 @@ $quantity = 3;
 
 // Complex interpolation requires braces
 echo "User: {$user['name']}, Age: {$user['age']}" . PHP_EOL;
-echo "Total: ${$price * $quantity}" . PHP_EOL; // Note: $ inside {}
-echo "Total (cleaner): " . ($price * $quantity) . PHP_EOL; // Concatenation is clearer
+echo "Total: ${$price * $quantity}" . PHP_EOL; // Avoid this form in real code
+echo "Total (cleaner): " . ($price * $quantity) . PHP_EOL; // Prefer concatenation for expressions
 ```
 
-5. **Run the Script**:
+5. **Execute the script**:
 
 ```bash
 php interpolation.php
@@ -327,7 +263,23 @@ php interpolation.php
 
 ### Expected Result
 
-```text
+```
+Hello, my name is Dale.
+I am 41 years old and I work as a developer.
+
+This is perfect for:
+  - Multiline text
+  - Email templates
+  - HTML content
+```
+
+```
+This is a literal string.
+The variable $name will not be replaced.
+Use this for code examples or templates.
+```
+
+```
 User: Dale, Age: 41
 Total: $89.97
 Total (cleaner): 89.97
@@ -335,57 +287,28 @@ Total (cleaner): 89.97
 
 ### Why It Works
 
-- **Heredoc** (`<<<EOT`) works like double quotes—variables are interpolated and escape sequences are processed.
-- **Nowdoc** (`<<<'EOT'`) works like single quotes—everything is literal, no interpolation.
-- **Curly braces** `{}` tell PHP exactly what variable or expression to interpolate, which is required for arrays, object properties, and complex expressions.
-
-> **Best Practice**: For complex expressions or calculations, use concatenation instead of inline interpolation—it's more readable and easier to debug.
+- **Heredoc** (`<<<EOT`) behaves like double quotes, so variables inside are interpolated and escape sequences are honored.
+- **Nowdoc** (`<<<'EOT'`) behaves like single quotes, leaving the contents untouched.
+- **Curly braces** (`{}`) make complex interpolation unambiguous, especially when accessing arrays or object properties.
+- For arithmetic or concatenated expressions, standard concatenation often remains clearer and easier to debug.
 
 ### Troubleshooting
 
-**Error: "syntax error, unexpected end of file"**
-
-- **Cause**: The closing identifier must be on its own line with no whitespace before or after it (except the semicolon).
-- **Fix**: Ensure the closing identifier (e.g., `EOT;`) is alone on a line:
-
-```php
-$text = <<<EOT
-Some text
-EOT; // Must be alone on the line, no spaces before it
-```
-
-**Array interpolation not working**
-
-- **Cause**: You forgot the curly braces around array access.
-- **Fix**: Use `{$array['key']}` not `$array['key']` in double-quoted strings.
-
-**Heredoc treating everything as literal**
-
-- **Cause**: You accidentally used Nowdoc syntax (single quotes around identifier).
-- **Fix**: Use `<<<EOT` for interpolation, not `<<<'EOT'`.
+- **`syntax error, unexpected end of file`** — The closing identifier must be on its own line with no spaces or indentation.
+- **Array interpolation fails** — Wrap the array access in braces: `{$array['key']}`.
+- **Heredoc acts like Nowdoc** — Ensure the identifier isn’t wrapped in single quotes if you want interpolation.
 
 ## Step 3: Exploring Data Types (~5 min)
 
-**Goal**: Understand PHP's primary data types and use `var_dump()` for debugging.
+### Goal
+
+Understand PHP's primary data types and use `var_dump()` for debugging.
 
 PHP is a "dynamically typed" language. This means you don't have to declare what type of data a variable will hold; PHP figures it out automatically at runtime. While modern PHP (8.0+) supports explicit type declarations for better code safety, understanding PHP's dynamic nature is essential.
 
-### Common Scalar Types
-
-The most common scalar (single value) types are:
-
-- **`string`**: Text (e.g., `"Hello"`)
-- **`int`**: Whole numbers (e.g., `10`, `-50`)
-- **`float`** (or `double`): Numbers with a decimal point (e.g., `3.14`, `99.99`)
-- **`bool`**: Represents `true` or `false`
-- **`null`**: Represents "no value" (we'll explore this in later chapters)
-
-PHP also performs **type juggling** (automatic type conversion) when needed. For example, `"5" + 3` becomes `8` because PHP converts the string `"5"` to an integer. While convenient, this can sometimes lead to unexpected behavior, so use `var_dump()` to verify your types.
-
 ### Actions
 
-1.  **Create a Type Demonstration Script**:
-    Create a new file called `types.php`:
+1. **Create a type demonstration script** named `types.php`:
 
 ```php
 # filename: types.php
@@ -412,7 +335,7 @@ echo "\"5\" + 3 = ";
 var_dump($result); // int(8) - PHP converts "5" to 5
 ```
 
-2.  **Run and Inspect**:
+2. **Run the script**:
 
 ```bash
 php types.php
@@ -420,9 +343,7 @@ php types.php
 
 ### Expected Result
 
-You'll see detailed type information for each variable, followed by a demonstration of type juggling:
-
-```text
+```
 === Variable Types ===
 string(23) "The Lord of the Rings"
 int(1216)
@@ -433,57 +354,33 @@ bool(true)
 "5" + 3 = int(8)
 ```
 
-The number in parentheses after `string` is the character count. For `int` and `float`, it's the value itself. Notice how PHP automatically converts the string `"5"` to an integer when performing addition.
+The number in parentheses after `string` indicates character count. For `int` and `float`, it shows the value itself. PHP automatically converts the string `"5"` to an integer when performing addition.
 
 ### Why It Works
 
-`var_dump()` is PHP's built-in introspection function. It examines a variable's type and contents, then prints them in a human-readable format. This is incredibly useful for debugging because PHP's dynamic typing can sometimes produce unexpected type conversions.
+- `var_dump()` reveals both the type and value of a variable, making it invaluable for debugging.
+- PHP's dynamic typing performs implicit type conversions (type juggling) when needed.
+- Other helpful introspection tools include `print_r()`, `var_export()`, and `gettype()`.
 
-**Other Debugging Functions**:
-
-- `print_r()` — Shows values in a more readable format (but without type information)
-- `var_export()` — Outputs valid PHP code representation of a value
-- `gettype()` — Returns a string containing the type name
-
-> **Tip**: Use `var_dump()` liberally when debugging. It's one of the most powerful tools for understanding what your code is doing.
+> **Tip**: Use `var_dump()` liberally when debugging dynamic values—it provides a complete snapshot of type and content.
 
 ### Troubleshooting
 
-**Boolean shows as "bool(false)" with no output**
-
-- **Cause**: PHP doesn't print anything for `false` booleans with `echo`, but `var_dump()` shows it correctly.
-- **Fix**: Always use `var_dump()` to inspect boolean values.
-
-**Number shows as string: "string(3) "123""**
-
-- **Cause**: You wrapped the number in quotes, making it a string.
-- **Fix**: Remove quotes from numbers: use `123` not `"123"`.
-
-**Unexpected calculation results**
-
-- **Cause**: Type juggling might be converting values in ways you don't expect.
-- **Fix**: Use `var_dump()` on all values involved in the calculation to verify their types. For strict type comparisons, use `===` instead of `==` (we'll cover this in Chapter 03).
+- **Boolean shows as `bool(false)` with no output** — `echo` prints nothing for `false`, but `var_dump()` confirms the value.
+- **Numbers appear as strings** — Remove the quotes if you intend to store numeric values.
+- **Unexpected math results** — Inspect each operand with `var_dump()` to ensure types are what you expect; use `===` for strict comparisons.
 
 ## Step 3b: Type Casting and Conversion (~4 min)
 
-**Goal**: Learn to explicitly control type conversion instead of relying on automatic type juggling.
+### Goal
+
+Learn to explicitly control type conversion instead of relying on automatic type juggling.
 
 While PHP's automatic type juggling is convenient, sometimes you need precise control over type conversion. This is where **type casting** comes in—manually converting a value from one type to another.
 
-### Why Type Casting Matters
-
-Type juggling happens automatically but can be unpredictable. Type casting gives you explicit control:
-
-```php
-"5" + "3"     // 8 (automatic juggling)
-(int)"5" + 3  // 8 (explicit casting)
-(string)42    // "42" (explicit casting)
-```
-
 ### Actions
 
-1. **Create a Type Casting Demonstration**:
-   Create a new file called `casting.php`:
+1. **Create a type casting demonstration** in `casting.php`:
 
 ```php
 # filename: casting.php
@@ -520,9 +417,9 @@ echo "=== Boolean Conversions ===" . PHP_EOL;
 var_dump((bool)"");      // bool(false) - empty string
 var_dump((bool)"0");     // bool(false) - string "0"
 var_dump((bool)"text");  // bool(true)  - non-empty string
-var_dump((bool)0);       // bool(false) - zero
-var_dump((bool)1);       // bool(true)  - non-zero
-var_dump((bool)-1);      // bool(true)  - non-zero
+var_dump((bool)0);        // bool(false) - zero
+var_dump((bool)1);        // bool(true)  - non-zero
+var_dump((bool)-1);       // bool(true)  - non-zero
 echo PHP_EOL;
 
 // Practical Example: User Input
@@ -532,7 +429,7 @@ echo "Processing product ID: ";
 var_dump($productId); // int(123)
 ```
 
-2. **Run the Script**:
+2. **Run the script**:
 
 ```bash
 php casting.php
@@ -540,7 +437,7 @@ php casting.php
 
 ### Expected Result
 
-```text
+```
 === Type Casting Examples ===
 
 String to Int:
@@ -566,85 +463,48 @@ bool(true)
 Processing product ID: int(123)
 ```
 
-### Common Type Casts
-
-| Cast       | Example         | Description                                 |
-| :--------- | :-------------- | :------------------------------------------ |
-| `(int)`    | `(int)"42"`     | Convert to integer (truncates decimals)     |
-| `(float)`  | `(float)"3.14"` | Convert to floating-point number            |
-| `(string)` | `(string)42`    | Convert to string                           |
-| `(bool)`   | `(bool)1`       | Convert to boolean                          |
-| `(array)`  | `(array)$value` | Convert to array (we'll cover arrays later) |
-
-### Falsy Values in PHP
-
-When casting to boolean, these values become `false`:
-
-- `0` (integer zero)
-- `0.0` (float zero)
-- `""` (empty string)
-- `"0"` (string containing only zero)
-- `null` (the null value)
-- `false` (boolean false)
-- `[]` (empty array - covered in Chapter 06)
-
-**Everything else** evaluates to `true` when cast to boolean.
-
 ### Why It Works
 
-Type casting uses the syntax `(type)$variable` to explicitly convert a value. This is compile-time safe and makes your intentions clear. When you see `(int)$id`, you know the developer wants to ensure `$id` is an integer, preventing type-related bugs.
-
-**Type Casting vs. Type Juggling**:
-
-- **Juggling** (automatic): `"5" + 3` → PHP decides the conversion
-- **Casting** (manual): `(int)"5" + 3` → You control the conversion
+- Casting syntax `(type)$value` forces PHP to convert values immediately, preventing unexpected type juggling.
+- When coercing to boolean, remember the "falsy" values: `0`, `0.0`, `"0"`, `""`, `false`, `null`, and `[]`.
+- Explicit casts like `(int)`, `(float)`, `(string)`, `(bool)`, and `(array)` make your intentions clear to readers and linters.
 
 ### Practical Use Cases
 
 ```php
-// 1. Sanitizing user input
-$userId = (int)$_GET['id']; // Ensure it's an integer
+// Sanitizing user input
+$userId = (int)$_GET['id'];
 
-// 2. Formatting output
+// Formatting output
 $price = 29.99;
-$displayPrice = "$" . (string)$price; // Ensure string concatenation
+$displayPrice = "$" . (string)$price;
 
-// 3. Boolean checks
-$hasAccess = (bool)$userPermissions; // Convert to true/false
+// Boolean checks
+$hasAccess = (bool)$userPermissions;
 
-// 4. Preventing decimal issues
-$quantity = (int)$floatQuantity; // Truncate to whole number
+// Preventing decimal issues
+$quantity = (int)$floatQuantity;
 ```
 
 > **Best Practice**: Use type casting when accepting external input (forms, URLs, APIs) to ensure data is the expected type before processing.
 
 ### Troubleshooting
 
-**Unexpected `1` instead of `0` after casting**
-
-- **Cause**: Non-zero numbers, even negative, cast to `true` (which displays as `1` with `echo`).
-- **Fix**: Use `var_dump()` to see the actual boolean value, not `echo`.
-
-**Float casting gives unexpected decimals**
-
-- **Cause**: Floating-point precision issues (inherent to all programming languages).
-- **Fix**: Use `number_format()` for display, and `round()` for calculations.
-
-**String "123abc" becomes `123`**
-
-- **Cause**: `(int)` casting reads from left to right and stops at the first non-numeric character.
-- **Fix**: This is expected behavior. Use validation before casting if you need to reject invalid input.
+- **Unexpected `1` instead of `true`** — Casting a non-zero number to boolean yields `true`, which prints as `1` with `echo`. Use `var_dump()` for clear output.
+- **Float casting seems lossy** — Casting a float to int truncates decimals. Use `round()` or `number_format()` when you need rounding instead of truncation.
+- **`"123abc"` becomes `123`** — `(int)` reads numeric characters until it encounters something non-numeric. Validate strings before casting if you require strict numeric input.
 
 ## Step 4: Using Constants (~3 min)
 
-**Goal**: Define and use constants for values that should never change.
+### Goal
+
+Define and use constants for values that should never change.
 
 Sometimes you need to use a value that should never change during the execution of your script, like a configuration setting or a mathematical value like PI. For this, you use **constants**.
 
 ### Actions
 
-1.  **Create a Tax Calculator**:
-    Create a new file called `constants.php`:
+1. **Create a tax calculator** in `constants.php`:
 
 ```php
 # filename: constants.php
@@ -661,7 +521,7 @@ echo "Tax rate: " . (TAX_RATE * 100) . "%" . PHP_EOL;
 echo "Total price: $" . $totalPrice . PHP_EOL;
 ```
 
-2.  **Run the Calculator**:
+2. **Run the calculator**:
 
 ```bash
 php constants.php
@@ -669,7 +529,7 @@ php constants.php
 
 ### Expected Result
 
-```text
+```
 Product price: $150
 Tax rate: 8%
 Total price: $162
@@ -677,39 +537,19 @@ Total price: $162
 
 ### Why It Works
 
-Constants are defined once and cannot be changed. Unlike variables, constants:
-
-- Do **not** use the `$` prefix
-- Cannot be redefined or undefined once set
-- Are typically written in `UPPER_SNAKE_CASE` by convention
-- Have global scope (accessible everywhere without passing them around)
-
-**`const` vs `define()`**: You can define constants using the `const` keyword or the `define()` function. The `const` keyword is preferred for:
-
-- Better performance (resolved at compile time)
-- Cleaner syntax and improved readability
-- Works at the top level and inside classes
-
-Use `define()` only when you need to define constants conditionally or with dynamic names.
-
-> **Note**: Attempting to change a constant's value will result in a fatal error, which is useful for preventing accidental modifications to critical configuration values.
+- Constants are defined once and cannot be changed. They:
+  - Do **not** use the `$` prefix
+  - Cannot be redefined or undefined once set
+  - Are typically written in `UPPER_SNAKE_CASE`
+  - Have global scope (accessible everywhere without passing them around)
+- `const` is preferred over `define()` because it’s resolved at compile time, has cleaner syntax, and works inside classes. Use `define()` only when you need dynamic names or conditional definitions.
+- Attempting to change a constant triggers a fatal error, protecting critical configuration values from accidental modification.
 
 ### Troubleshooting
 
-**Error: "Undefined constant TAX_RATE"**
-
-- **Cause**: You tried to use the constant with a `$` prefix (`$TAX_RATE`) or misspelled it.
-- **Fix**: Constants don't use `$`. Write `TAX_RATE`, not `$TAX_RATE`.
-
-**Warning: "Constant TAX_RATE already defined"**
-
-- **Cause**: You defined the same constant twice in your script.
-- **Fix**: Remove the duplicate definition. Constants can only be defined once per script execution.
-
-**Error: "Cannot redeclare constant TAX_RATE"**
-
-- **Cause**: You tried to assign a new value to an existing constant.
-- **Fix**: Constants are immutable. Use a variable if you need to change the value.
+- **"Undefined constant TAX_RATE"** — Constants don’t use `$`. Write `TAX_RATE`, not `$TAX_RATE`.
+- **"Constant TAX_RATE already defined"** — You declared it twice. Remove duplicate definitions.
+- **"Cannot redeclare constant TAX_RATE"** — Constants are immutable. Use a variable if you need a changeable value.
 
 ## Exercises
 
@@ -889,7 +729,7 @@ Excellent work! You now have a solid understanding of how to store and manage da
 - ✓ Used `var_dump()` and other debugging functions to inspect types
 - ✓ Defined and used constants with `const` for immutable values
 - ✓ Built practical scripts including a tax calculator
-- ✓ Learned when to use `const` vs. `define()`
+- ✓ Learned when to use `const` vs `define()`
 
 ### Key Takeaways
 
@@ -910,6 +750,14 @@ These concepts are the absolute bedrock of programming in any language. Every ap
 ### Next Steps
 
 In [Chapter 03: Control Structures](/series/php-basics/chapters/03-control-structures), you'll learn how to make decisions and repeat actions in your code using `if` statements and loops—bringing your scripts to life with logic and automation.
+
+## Further Reading
+
+- [PHP Manual: Variables](https://www.php.net/manual/en/language.variables.php) — Official PHP documentation on variables
+- [PHP Manual: Types](https://www.php.net/manual/en/language.types.php) — Complete guide to PHP data types including type juggling
+- [PHP Manual: Constants](https://www.php.net/manual/en/language.constants.php) — Deep dive into constants and their usage
+- [PHP 8.4 Release Notes](https://www.php.net/releases/8.4/) — What's new in PHP 8.4
+- [Type Declarations](https://www.php.net/manual/en/language.types.declarations.php) — Learn about strict typing in modern PHP
 
 ## Knowledge Check
 
@@ -965,11 +813,3 @@ options: [
 }
 ]"
 />
-
-## Further Reading
-
-- [PHP Manual: Variables](https://www.php.net/manual/en/language.variables.php) — Official PHP documentation on variables
-- [PHP Manual: Types](https://www.php.net/manual/en/language.types.php) — Complete guide to PHP data types including type juggling
-- [PHP Manual: Constants](https://www.php.net/manual/en/language.constants.php) — Deep dive into constants and their usage
-- [PHP 8.4 Release Notes](https://www.php.net/releases/8.4/) — What's new in PHP 8.4
-- [Type Declarations](https://www.php.net/manual/en/language.types.declarations.php) — Learn about strict typing in modern PHP

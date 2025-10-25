@@ -21,26 +21,25 @@ In this chapter, you'll build a working blog post display feature using Symfony,
 
 ## Prerequisites
 
-Before starting this chapter, you should have:
+Before starting this chapter, make sure you have:
 
-- **PHP 8.4** installed on your system
-- **Composer** (PHP's dependency manager)
-- Completed [Chapter 20: A Gentle Introduction to Laravel](/series/php-basics/chapters/20-a-gentle-introduction-to-laravel)
-- Basic understanding of MVC architecture
-- Comfort with the command line
-
-**Estimated Time**: ~20 minutes
+- PHP 8.4 installed and available in your terminal
+- Composer 2.x installed ([getcomposer.org](https://getcomposer.org))
+- Symfony CLI installed ([symfony.com/download](https://symfony.com/download))
+- Completed Chapter 20 or comfortable with MVC concepts
+- A text editor and terminal
+- **Estimated time**: 40–50 minutes (hands-on + exploration)
 
 ## What You'll Build
 
-By the end of this chapter, you will have created:
+By the end of this chapter, you'll have:
 
-- A Symfony web application with the full webapp skeleton
-- A database-backed `Post` entity using Doctrine ORM
-- A controller that automatically resolves Post objects from URLs
-- A Twig template to display blog post content
-- Understanding of Symfony's component-based architecture
-- Knowledge of how Symfony compares to Laravel
+- A new Symfony 7 project created with the Symfony CLI
+- A `Post` entity and database table managed via Doctrine migrations
+- A Twig template displaying posts retrieved from the database
+- A controller and route handling the `/posts` endpoint
+- Sample fixture data to verify everything works end-to-end
+- An understanding of how Symfony maps to the MVC concepts you've already learned
 
 ## Quick Start
 
@@ -382,17 +381,15 @@ php bin/console cache:clear
 
 ## Step 5: Create the Twig Template (~2 min)
 
-**Goal**: Create a Twig template to display the blog post's title and content.
+### Goal
 
-Symfony uses **Twig**, a powerful templating engine with its own syntax. It's sandboxed (safer) and more feature-rich than Blade, though slightly different in syntax.
+Create a Twig template to display the blog post's title and content.
+
+Symfony uses **Twig**, a powerful templating engine with its own syntax. It's sandboxed (safer) and more feature-rich than Blade, though the syntax differs slightly.
 
 ### Actions
 
-1. **Create the template file**:
-
-   Create `templates/post/show.html.twig` with the following content:
-
-::: v-pre
+1. **Create the template file** `templates/post/show.html.twig` with the following content:
 
 ```twig
 {# filename: templates/post/show.html.twig #}
@@ -413,33 +410,21 @@ Symfony uses **Twig**, a powerful templating engine with its own syntax. It's sa
 </html>
 ```
 
-:::
-
 ### Expected Result
 
-- The `templates/post/show.html.twig` file exists
-- The template uses Twig syntax with <code v-pre>{{ ... }}</code> for output and `|nl2br` filter for formatting
+- The `templates/post/show.html.twig` file exists.
+- The template uses Twig syntax with `{{ ... }}` for output and the `nl2br` filter for formatting.
 
-### How It Works
+### Why It Works
 
-::: v-pre
-
-- `{{ post.title }}` outputs the post's title. In Twig, `post.title` automatically calls the `getTitle()` method on your Post entity
-- `{{ post.content|nl2br }}` applies the `nl2br` filter, which converts newlines to `<br>` tags
-- Twig automatically escapes all output to prevent XSS attacks, so it's safe by default
-  :::
+- `{{ post.title }}` outputs the post's title. In Twig, `post.title` automatically calls the entity's `getTitle()` method.
+- `{{ post.content|nl2br }}` applies the `nl2br` filter, converting newlines to `<br>` tags.
+- Twig automatically escapes output to prevent XSS, making templates safe by default.
 
 ### Troubleshooting
 
-::: v-pre
-**Problem**: Template shows `{{ post.title }}` literally instead of the actual title
-:::
-
-**Solution**: Ensure the file has the `.twig` extension and is in the `templates/` directory. Clear the cache:
-
-```bash
-php bin/console cache:clear
-```
+- **Template shows `{{ post.title }}` literally** — Ensure the file has a `.twig` extension and lives under `templates/`. Clear the cache with `php bin/console cache:clear`.
+- **Styles not applied** — Confirm inline styles are present or move them to an external stylesheet.
 
 ## Step 6: Add Test Data and View Your Page (~2 min)
 

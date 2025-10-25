@@ -28,6 +28,16 @@ Before starting this chapter, you should:
 - Have completed [Chapter 03: Control Structures](/series/php-basics/chapters/03-control-structures).
 - **Estimated Time**: 30–35 minutes
 
+## What You'll Build
+
+By the end of this chapter, you'll have:
+
+- `functions.php` — A playground script showcasing function definitions, parameters, and return values
+- `strict-functions.php` — Examples using type declarations and strict mode
+- `named-arguments.php` — Demonstrations of named arguments and default values
+- `arrow-functions.php` — Concise helper functions using PHP's arrow syntax
+- Practice exercises that reinforce scope, recursion, and reusable function design
+
 ## Objectives
 
 - Define and call your own custom functions.
@@ -40,15 +50,14 @@ Before starting this chapter, you should:
 
 ## Step 1: Defining and Calling a Function (~3 min)
 
-**Goal**: Create and execute your first custom function.
+### Goal
 
-Let's start with the basics: creating a function and then running it.
+Create and execute your first custom function.
 
-1.  **Create a File**:
-    Create a new file named `functions.php`.
+### Actions
 
-2.  **Define and Call a Simple Function**:
-    The syntax for defining a function starts with the `function` keyword, followed by the function's name and a set of parentheses. The code that belongs to the function goes inside curly braces `{}`.
+1. **Create a file** named `functions.php`.
+2. **Add the code** below to define and call a simple function:
 
 ```php
 # filename: functions.php
@@ -65,29 +74,39 @@ sayHello();
 sayHello();
 ```
 
-3.  **Run the Script**:
+3. **Run the script**:
 
 ```bash
-# Execute the script
 php functions.php
 ```
 
-**Expected Result**:
+### Expected Result
 
 ```
 Hello, world!
 Hello, world!
 ```
 
-**Why it works**: We defined the logic once inside `sayHello()` and then called it twice. Each call executes the code inside the function's body. This is the essence of code reuse—write once, use many times.
+### Why It Works
+
+- The `function` keyword defines a reusable block of code.
+- Calling `sayHello()` executes the logic inside the function body every time.
+- Functions help you avoid repeating logic across your code base.
+
+### Troubleshooting
+
+- **`Call to undefined function`** — Ensure the function is defined before you call it and that filenames match.
+- **No output** — Confirm the function contains an `echo` statement and that you’re calling it after the definition.
 
 ## Step 2: Passing Information with Parameters (~4 min)
 
-**Goal**: Make functions flexible by passing data into them.
+### Goal
 
-Functions become much more powerful when you can pass data into them. We do this using **parameters** (also called **arguments**), which are variables declared inside the function's parentheses.
+Make functions flexible by passing data into them via parameters.
 
-1.  **Update your file with a parameterized function**:
+### Actions
+
+1. **Update your file** with a parameterized function:
 
 ```php
 # filename: functions.php
@@ -103,15 +122,9 @@ greetUser('Dale');   // 'Dale' is the argument passed to the $name parameter.
 greetUser('Alice');  // 'Alice' is the argument.
 ```
 
-**Expected Result**:
+2. **Run the script** to confirm the output.
 
-```
-Hello, Dale!
-Hello, Alice!
-```
-
-2.  **Add Default Values**:
-    You can provide **default values** for parameters, which are used if an argument isn't provided when the function is called.
+3. **Add default values** so the function works even when no argument is provided:
 
 ```php
 # filename: functions.php
@@ -126,24 +139,34 @@ greetUser('Dale'); // Prints "Hello, Dale!"
 greetUser();       // Prints "Hello, Guest!" because no argument was provided.
 ```
 
-**Expected Result**:
+### Expected Result
 
 ```
+Hello, Dale!
+Hello, Alice!
 Hello, Dale!
 Hello, Guest!
 ```
 
-**Why it works**: Parameters act as placeholders. When you call the function with an argument, that value replaces the parameter throughout the function's body. Default values provide fallback behavior, making functions more flexible.
+### Why It Works
+
+- Parameters act as placeholders; when you call the function, the arguments replace those placeholders.
+- Default values provide fallback behavior, making functions more resilient when arguments are omitted.
+
+### Troubleshooting
+
+- **`Too few arguments to function`** — Add a default value or ensure every call provides the required parameters.
+- **Output still shows `Guest`** — Double-check that the function call is passing the expected value.
 
 ## Step 3: Getting Information Back with `return` (~4 min)
 
-**Goal**: Learn how to send values back from functions for reuse.
+### Goal
 
-So far, our functions have only printed text directly. This is often not what you want. A function is most useful when it performs a calculation or a task and then **returns** a result that you can store in a variable or use elsewhere.
+Return values from functions so results can be reused elsewhere in your program.
 
-The `return` keyword immediately stops the function's execution and sends a value back.
+### Actions
 
-1.  **Create a function that returns a value**:
+1. **Create a function that returns a value**:
 
 ```php
 # filename: functions.php
@@ -165,24 +188,38 @@ $anotherSum = add(100, 200);
 echo "Another sum is: " . $anotherSum . PHP_EOL;
 ```
 
-**Expected Result**:
+2. **Run the script**:
+
+```bash
+php functions.php
+```
+
+### Expected Result
 
 ```
 The sum is: 15
 Another sum is: 300
 ```
 
-**Why it works**: The `return` statement sends the calculated value back to the place where the function was called. This value can then be stored in a variable, passed to another function, or used in any expression. Once `return` executes, the function stops immediately—any code after it is ignored.
+### Why It Works
+
+- The `return` keyword sends the computed value back to the caller and halts the function immediately.
+- Returned values can be stored in variables, passed to other functions, or echoed directly.
+
+### Troubleshooting
+
+- **Script prints `This will not be printed.`** — Ensure the `return` statement appears before any cleanup `echo` statements.
+- **`null` is returned** — Confirm every code path in the function returns a value.
 
 ## Step 4: Type Declarations (Strict Typing) (~5 min)
 
-**Goal**: Add type safety to your functions to catch bugs early and make code more predictable.
+### Goal
 
-Modern PHP encourages you to be explicit about the types of data your functions expect and return. This makes your code more predictable and helps catch bugs early.
+Add type safety to your functions to catch bugs early and make code more predictable.
 
-You can add **type declarations** (or "type hints") before parameter names and a **return type declaration** after the parentheses.
+### Actions
 
-1.  **Add type declarations to your function**:
+1. **Add parameter and return type declarations**:
 
 ```php
 # filename: functions.php
@@ -201,17 +238,10 @@ echo "The sum is: " . $sum . PHP_EOL;
 // $wrongSum = add(5, 'ten'); // This will cause a TypeError.
 ```
 
-**Expected Result**:
-
-```
-The sum is: 15
-```
-
-2.  **Enable Strict Mode** (Best Practice):
-    To enforce these types strictly, add a `declare` statement at the very top of your file. This is considered a best practice in modern PHP.
+2. **Enable strict mode** so PHP enforces type declarations:
 
 ```php
-# filename: functions.php
+# filename: strict-functions.php
 <?php
 
 declare(strict_types=1); // Must be the very first statement after <?php
@@ -226,95 +256,111 @@ echo "The sum is: " . $sum . PHP_EOL;
 
 // Now, even if PHP could normally convert the types (e.g., add(5, "5")),
 // it will throw an error because strict mode is enabled.
-// This prevents unexpected behavior.
+// $wrongSum = add(5, "5"); // TypeError: Argument #2 must be of type int.
 ```
 
-**Expected Result**:
+3. **Run each script** to see how PHP behaves with and without strict mode.
+
+### Expected Result
 
 ```
 The sum is: 15
 ```
 
-**Why it works**: Type declarations tell PHP exactly what type of data a function expects and returns. Without `declare(strict_types=1)`, PHP will try to convert types automatically (e.g., `"5"` becomes `5`). With strict mode enabled, PHP requires exact type matches, catching potential bugs at runtime. This is especially valuable in larger codebases.
+In strict mode, passing a string yields a `TypeError` instead of silently converting types.
+
+### Why It Works
+
+- Parameter type declarations (`int $num1`) and return types (`: int`) ensure values adhere to expected types.
+- `declare(strict_types=1);` forces PHP to throw errors when type declarations are violated instead of performing automatic conversions.
+
+### Troubleshooting
+
+- **TypeError when passing strings** — This is expected in strict mode. Cast the value (`(int)` or `(float)`) before passing it to the function.
+- **Strict types ignored** — Ensure `declare(strict_types=1);` is the very first line in the file, before any `namespace` or `use` statements.
 
 ## Step 5: Named Arguments for Clarity (~4 min)
 
-**Goal**: Use named arguments to make function calls more readable and flexible.
+### Goal
 
-One of PHP 8.0's best features is **named arguments**. Instead of passing arguments by position, you can specify them by name. This makes your code self-documenting and allows you to skip optional parameters.
+Use named arguments to make function calls self-documenting and flexible.
 
-1.  **Create a function with multiple parameters**:
+### Actions
+
+1. **Create a function with multiple parameters**:
 
 ```php
 # filename: named_args.php
 <?php
 
-declare(strict_types=1);
-
-function createUser(string $name, string $email, bool $isAdmin = false, bool $isActive = true): string
+function createUser(string $name, string $email, bool $isAdmin = false): array
 {
-    $status = $isAdmin ? 'Admin' : 'User';
-    $activity = $isActive ? 'Active' : 'Inactive';
-
-    return "$name ($email) - $status - $activity";
+    return [
+        'name' => $name,
+        'email' => $email,
+        'admin' => $isAdmin,
+    ];
 }
+```
 
-// Traditional positional arguments (harder to read)
-echo createUser('Dale', 'dale@example.com', false, true) . PHP_EOL;
+2. **Call the function using positional arguments**:
 
-// Named arguments (self-documenting and clear)
-echo createUser(
-    name: 'Alice',
+```php
+$user = createUser('Dale Hurley', 'dale@example.com', true);
+print_r($user);
+```
+
+3. **Call the same function using named arguments**:
+
+```php
+$user = createUser(
     email: 'alice@example.com',
+    name: 'Alice Johnson',
     isAdmin: true,
-    isActive: true
-) . PHP_EOL;
+);
+print_r($user);
 
-// Skip optional parameters - only set what you need
-echo createUser(
-    name: 'Bob',
-    email: 'bob@example.com',
-    isAdmin: true  // isActive uses default value
-) . PHP_EOL;
+// You can omit optional parameters when using named arguments.
+$guest = createUser(
+    name: 'Guest User',
+    email: 'guest@example.com'
+);
+print_r($guest);
 ```
 
-**Expected Result**:
+### Expected Result
 
 ```
-Dale (dale@example.com) - User - Active
-Alice (alice@example.com) - Admin - Active
-Bob (bob@example.com) - Admin - Active
+Array
+(
+    [name] => Dale Hurley
+    [email] => dale@example.com
+    [admin] => 1
+)
+Array
+(
+    [name] => Alice Johnson
+    [email] => alice@example.com
+    [admin] => 1
+)
+Array
+(
+    [name] => Guest User
+    [email] => guest@example.com
+    [admin] =>
+)
 ```
 
-2.  **Mix positional and named arguments**:
-    You can mix both styles, but positional arguments must come first:
+### Why It Works
 
-```php
-# filename: named_args.php
-<?php
+- Named arguments allow values to be passed by parameter name instead of position, improving readability and making code resilient to parameter reordering.
+- Optional parameters with default values (`$isAdmin = false`) can be omitted when unnecessary.
+- Mixing positional and named arguments is allowed, but named arguments must come last.
 
-declare(strict_types=1);
+### Troubleshooting
 
-function greetUser(string $greeting, string $name, string $punctuation = '!'): string
-{
-    return "$greeting, $name$punctuation";
-}
-
-// Mix positional and named
-echo greetUser('Hello', name: 'Charlie', punctuation: '.') . PHP_EOL;
-```
-
-**Expected Result**:
-
-```
-Hello, Charlie.
-```
-
-**Why it works**: Named arguments bind values to parameters by name rather than position. This eliminates the need to remember parameter order, makes function calls self-explanatory, and lets you skip optional parameters in the middle. This is especially useful for functions with many parameters or several optional ones.
-
-::: tip
-Use named arguments when calling functions with multiple boolean parameters or when skipping optional parameters. They make your code dramatically more readable and maintainable.
-:::
+- **`Unknown named parameter`** — Double-check the parameter names in the function definition and the call.
+- **`Argument cannot be passed by name`** — Variadic parameters (`...$items`) or parameters that use the same name multiple times can’t be passed by name.
 
 ## Step 6: Understanding Variable Scope (~3 min)
 
@@ -347,66 +393,41 @@ This is a local variable.
 
 **Why it works**: Each function creates its own "scope"—a private space for variables. Variables inside the function can't leak out, and variables outside can't leak in (unless explicitly passed as parameters). This isolation is a feature, not a limitation—it prevents functions from accidentally breaking each other's data.
 
-## Step 7: Arrow Functions for Quick Operations (~3 min)
+## Step 7: Writing Concise Arrow Functions (~4 min)
 
-**Goal**: Learn a concise syntax for simple, single-expression functions.
+### Goal
 
-PHP 7.4 introduced **arrow functions** (also called "short closures"). They're a shorter syntax for writing small, simple functions—especially useful when working with array functions like `array_map()`, `array_filter()`, and `usort()`.
+Use arrow functions for short, expression-based helpers.
 
-The syntax uses `fn` instead of `function` and automatically returns the result of the expression:
+### Actions
 
-```php
-# filename: arrow_functions.php
-<?php
-
-declare(strict_types=1);
-
-// Traditional function
-function double(int $n): int
-{
-    return $n * 2;
-}
-
-// Arrow function (much shorter!)
-$double = fn(int $n): int => $n * 2;
-
-echo double(5) . PHP_EOL;        // 10
-echo $double(5) . PHP_EOL;       // 10
-```
-
-**Expected Result**:
-
-```
-10
-10
-```
-
-**Arrow Functions with Array Operations**:
-
-Arrow functions really shine when working with arrays (we'll cover these array functions more in Chapter 06):
+1. **Create arrow function examples**:
 
 ```php
-# filename: arrow_functions.php
+# filename: arrow-functions.php
 <?php
-
-declare(strict_types=1);
 
 $numbers = [1, 2, 3, 4, 5];
 
-// Double each number using array_map
-$doubled = array_map(fn($n) => $n * 2, $numbers);
+// Traditional anonymous function
+$doubled = array_map(function (int $number): int {
+    return $number * 2;
+}, $numbers);
+
 print_r($doubled);
 
-// Filter to only even numbers using array_filter
-$evens = array_filter($numbers, fn($n) => $n % 2 === 0);
-print_r($evens);
-
-// Calculate squares
-$squares = array_map(fn($n) => $n ** 2, $numbers);
-print_r($squares);
+// Arrow function version
+$doubledArrow = array_map(fn (int $number): int => $number * 2, $numbers);
+print_r($doubledArrow);
 ```
 
-**Expected Result**:
+2. **Run the script**:
+
+```bash
+php arrow-functions.php
+```
+
+### Expected Result
 
 ```
 Array
@@ -419,54 +440,24 @@ Array
 )
 Array
 (
-    [1] => 2
-    [3] => 4
-)
-Array
-(
-    [0] => 1
+    [0] => 2
     [1] => 4
-    [2] => 9
-    [3] => 16
-    [4] => 25
+    [2] => 6
+    [3] => 8
+    [4] => 10
 )
 ```
 
-**Arrow Functions Automatically Capture Variables**:
+### Why It Works
 
-Unlike regular anonymous functions, arrow functions automatically have access to variables from the parent scope:
+- Arrow functions (`fn ($x) => $x * 2`) provide a more compact syntax for simple, single-expression callbacks.
+- They automatically inherit variables from the parent scope, removing the need for `use (...)` in most cases.
+- For multi-line logic or complex operations, stick with traditional anonymous functions for clarity.
 
-```php
-# filename: arrow_functions.php
-<?php
+### Troubleshooting
 
-declare(strict_types=1);
-
-$multiplier = 10;
-
-$numbers = [1, 2, 3];
-
-// Arrow function automatically accesses $multiplier
-$result = array_map(fn($n) => $n * $multiplier, $numbers);
-print_r($result);
-```
-
-**Expected Result**:
-
-```
-Array
-(
-    [0] => 10
-    [1] => 20
-    [2] => 30
-)
-```
-
-**Why it works**: Arrow functions are syntactic sugar for simple operations. The `fn` keyword defines the function, `=>` separates parameters from the expression, and the result is automatically returned. They can only contain a single expression (not multiple statements), which makes them perfect for quick transformations.
-
-::: tip
-Use arrow functions for simple, one-line operations—especially with array functions. For anything more complex (multiple statements, multiple lines), use regular functions.
-:::
+- **`fn` keyword not recognized** — Arrow functions were introduced in PHP 7.4. Ensure your environment runs PHP 7.4 or later (this project uses PHP 8.4).
+- **Unexpected scope issues** — Remember that arrow functions use implicit `use` semantics. If you need separate scope control, use a traditional `function` closure.
 
 ## Troubleshooting
 
@@ -640,6 +631,13 @@ The modern PHP features you learned—strict typing, named arguments, and arrow 
 **Next Steps**:
 In the next chapter, we'll make our applications interactive by learning how to process data submitted from HTML forms.
 
+## Further Reading
+
+- [PHP Manual: Functions](https://www.php.net/manual/en/language.functions.php) — Official documentation on functions
+- [PHP Manual: Type Declarations](https://www.php.net/manual/en/language.types.declarations.php) — Detailed guide on type hints and return types
+- [PHP: The Right Way - Functions](https://phptherightway.com/#functions) — Best practices for writing functions
+- [PSR-12: Extended Coding Style Guide](https://www.php-fig.org/psr/psr-12/) — Coding standards for function formatting
+
 ## Knowledge Check
 
 Test your understanding of PHP functions:
@@ -694,10 +692,3 @@ options: [
 }
 ]"
 />
-
-## Further Reading
-
-- [PHP Manual: Functions](https://www.php.net/manual/en/language.functions.php) — Official documentation on functions
-- [PHP Manual: Type Declarations](https://www.php.net/manual/en/language.types.declarations.php) — Detailed guide on type hints and return types
-- [PHP: The Right Way - Functions](https://phptherightway.com/#functions) — Best practices for writing functions
-- [PSR-12: Extended Coding Style Guide](https://www.php-fig.org/psr/psr-12/) — Coding standards for function formatting

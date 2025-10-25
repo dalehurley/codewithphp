@@ -24,6 +24,16 @@ This is where control structures come in. They allow us to control the "flow" of
 - Basic understanding of variables, data types, and arrays from previous chapters
 - Estimated time: ~30 minutes
 
+## What You'll Build
+
+By the end of this chapter, you'll have:
+
+- `control-structures.php` — A playground file showcasing conditionals and loop patterns
+- `switch-vs-match.php` — Examples comparing `switch` statements and modern `match` expressions
+- `loop-control.php` — Demonstrations of `break`, `continue`, and common loop pitfalls
+- A set of array iteration patterns using `foreach`
+- Practical exercises such as FizzBuzz, multiplication tables, and a number guessing game
+
 ## Objectives
 
 - Use `if`, `elseif`, and `else` to execute code based on conditions
@@ -39,44 +49,59 @@ This is where control structures come in. They allow us to control the "flow" of
 
 ## Step 1: Making Decisions with `if`, `elseif`, and `else` (~5 min)
 
-The most common way to make a decision in code is with an `if` statement. It works just like it sounds: **if** a certain condition is true, **then** execute a block of code.
+### Goal
 
-You can extend this with `elseif` to check another condition, and `else` to provide a fallback action if no conditions are met.
+Use conditional statements to execute different code paths based on the current state.
 
-1.  **Create a File**:
-    Create a new file named `control-structures.php`.
+### Actions
 
-2.  **Add the Code**:
+Think of an `if` statement as a decision tree: **if** a condition is true, run a block of code; otherwise, skip it. You can extend the decision tree with `elseif` and provide a fallback with `else`.
 
-    ```php
-    <?php
+1. **Create a file** called `control-structures.php`.
+2. **Add the following code**:
 
-    $hour = date('H'); // Gets the current hour in 24-hour format
+```php
+# filename: control-structures.php
+<?php
 
-    if ($hour < 12) {
-        echo "Good morning!";
-    } elseif ($hour < 18) {
-        echo "Good afternoon!";
-    } else {
-        echo "Good evening!";
-    }
+$hour = date('H'); // Gets the current hour in 24-hour format
 
-    echo PHP_EOL;
-    ```
+if ($hour < 12) {
+    echo "Good morning!";
+} elseif ($hour < 18) {
+    echo "Good afternoon!";
+} else {
+    echo "Good evening!";
+}
 
-3.  **Run the Script**:
+echo PHP_EOL;
+```
 
-    ```bash
-    php control-structures.php
-    ```
+3. **Run the script**:
 
-**Expected Result** (will vary based on your current time):
+```bash
+php control-structures.php
+```
 
-```text
+### Expected Result
+
+The greeting changes based on the time of day. You might see:
+
+```
 Good afternoon!
 ```
 
-> **Note**: The output changes based on the time of day. If it's before noon, you'll see "Good morning!", between noon and 6 PM shows "Good afternoon!", and after 6 PM displays "Good evening!".
+### Why It Works
+
+- `date('H')` returns the current hour as a zero-padded integer string (00–23).
+- The condition `$hour < 12` evaluates to `true` if it’s before noon; otherwise PHP checks the next condition.
+- Only the first matching branch executes, ensuring a single greeting is printed.
+
+### Troubleshooting
+
+- **Always prints “Good evening!”** — Confirm your system clock and timezone (`date_default_timezone_set`) are set correctly.
+- **Syntax error near `elseif`** — Ensure all opening braces `{` have matching closing braces `}` and each conditional keyword is lowercase.
+- **Output appears on the same line as the prompt** — Append `PHP_EOL` (as shown) to add a newline after the greeting.
 
 ### Understanding Comparison Operators
 
@@ -122,34 +147,38 @@ if ($age >= 18 && $hasLicense) {
 
 ## Step 2: Repeating Tasks with a `for` Loop (~3 min)
 
-A `for` loop is used when you know exactly how many times you want a piece of code to execute. A classic example is a countdown.
+### Goal
 
-The `for` loop has three parts inside its parentheses, separated by semicolons:
+Repeat an action a specific number of times using a `for` loop.
 
-1.  **Initialization**: Runs once at the very beginning of the loop (`$i = 1`).
-2.  **Condition**: Checked **before** each iteration. If it's true, the loop continues (`$i <= 10`).
-3.  **Increment**: Runs at the **end** of each iteration (`$i++`).
+The `for` loop consists of three parts inside its parentheses, separated by semicolons:
 
-4.  **Add the Code** (you can add this to the same `control-structures.php` file or create a new one):
+1. **Initialization** — Runs once at the beginning (`$i = 1`).
+2. **Condition** — Checked before each iteration. If it’s `true`, the loop continues (`$i <= 10`).
+3. **Increment** — Runs at the end of each iteration (`$i++`).
 
-    ```php
-    <?php
+### Actions
 
-    // This loop will run 10 times.
-    for ($i = 1; $i <= 10; $i++) {
-        echo "This is loop number " . $i . PHP_EOL;
-    }
-    ```
+1. **Add the following code** to `control-structures.php` (or create a separate file if you prefer):
 
-5.  **Run the Script**:
+```php
+<?php
 
-    ```bash
-    php control-structures.php
-    ```
+// This loop will run 10 times.
+for ($i = 1; $i <= 10; $i++) {
+    echo "This is loop number " . $i . PHP_EOL;
+}
+```
 
-**Expected Result**:
+2. **Run the script**:
 
-```text
+```bash
+php control-structures.php
+```
+
+### Expected Result
+
+```
 This is loop number 1
 This is loop number 2
 This is loop number 3
@@ -162,81 +191,100 @@ This is loop number 9
 This is loop number 10
 ```
 
+### Why It Works
+
+- `$i` starts at 1 and increments by 1 after each iteration.
+- The loop stops once `$i` becomes 11 because the condition `$i <= 10` fails.
+- Concatenation (`.`) combines the static text with the current value of `$i`.
+
+### Troubleshooting
+
+- **Loop never stops** — Double-check the condition and increment. If you accidentally wrote `$i >= 10`, the loop won’t terminate.
+- **No output** — Ensure the loop body contains an `echo` statement and that the script runs without syntax errors.
+- **Numbers appear on one line** — Add `PHP_EOL` or `\n` to include line breaks.
+
 ## Step 3: Repeating Tasks with a `while` Loop (~3 min)
 
-A `while` loop is simpler. It continues to run as long as its condition is `true`. This is useful when you don't know in advance how many times you need to loop.
+### Goal
 
-1.  **Add the Code**:
+Continue executing a block of code as long as a condition remains true.
 
-    ```php
-    <?php
+### Actions
 
-    $randomNumber = 0;
-    $count = 0;
+1. **Add the following code** to your script:
 
-    // Keep looping until the number is 5.
-    while ($randomNumber !== 5) {
-        $randomNumber = rand(1, 10); // Generate a random number between 1 and 10
-        $count++;
-        echo "Attempt #$count: The number is $randomNumber" . PHP_EOL;
-    }
+```php
+<?php
 
-    echo "Success! It took $count attempts to get the number 5." . PHP_EOL;
-    ```
+$randomNumber = 0;
+$count = 0;
 
-2.  **Run the Script**:
+// Keep looping until the number is 5.
+while ($randomNumber !== 5) {
+    $randomNumber = rand(1, 10); // Generate a random number between 1 and 10
+    $count++;
+    echo "Attempt #$count: The number is $randomNumber" . PHP_EOL;
+}
 
-    ```bash
-    php control-structures.php
-    ```
+echo "Success! It took $count attempts to get the number 5." . PHP_EOL;
+```
 
-**Expected Result** (will vary each time due to randomness):
+2. **Run the script**:
 
-```text
+```bash
+php control-structures.php
+```
+
+### Expected Result
+
+The output will vary, but it looks something like:
+
+```
 Attempt #1: The number is 3
 Attempt #2: The number is 7
 Attempt #3: The number is 5
 Success! It took 3 attempts to get the number 5.
 ```
 
-> **Warning**: Be careful with `while` loops! If the condition _never_ becomes false, you will create an **infinite loop**, and your script will run forever (or until it crashes or times out).
+### Why It Works
+
+- `while` evaluates the condition before each iteration. If it’s `true`, the loop executes; otherwise, it stops.
+- The loop continues generating numbers until `rand()` returns 5.
+- `$count` tracks how many attempts were needed, providing useful feedback at the end.
+
+### Troubleshooting
+
+- **Infinite loop** — Ensure the loop changes the variables in the condition (`$randomNumber`). Without updating it, the loop never exits.
+- **Same number every time** — `rand()` is pseudo-random but should vary. If it doesn’t, check for mistakes or consider `mt_rand()`.
+- **Off-by-one errors** — Make sure you’re comparing with the correct condition (`!== 5`). Using `!=` works too but strict comparison is safer for type checks.
 
 ## Step 4: Looping Through Arrays with `foreach` (~4 min)
 
-The `foreach` loop is designed specifically for iterating over the elements of an array. It's the cleanest and most common way to work with lists of data.
+### Goal
 
-1.  **Add the Code** (basic `foreach`):
+Iterate over arrays cleanly using `foreach` without managing indexes manually.
 
-    ```php
-    <?php
+### Actions
 
-    $colors = ['Red', 'Green', 'Blue', 'Yellow'];
+1. **Loop through values**:
 
-    foreach ($colors as $color) {
-        echo $color . PHP_EOL;
-    }
-    ```
+```php
+<?php
 
-2.  **Run the Script**:
+$colors = ['Red', 'Green', 'Blue', 'Yellow'];
 
-    ```bash
-    php control-structures.php
-    ```
-
-**Expected Result**:
-
-```text
-Red
-Green
-Blue
-Yellow
+foreach ($colors as $color) {
+    echo $color . PHP_EOL;
+}
 ```
 
-In each iteration, the next element from the `$colors` array is assigned to the `$color` variable, which you can then use inside the loop.
+2. **Run the script**:
 
-### Looping with Keys and Values
+```bash
+php control-structures.php
+```
 
-If you also need the index (or key) of each element, you can use this syntax:
+3. **Loop through keys and values**:
 
 ```php
 <?php
@@ -252,21 +300,41 @@ foreach ($user as $key => $value) {
 }
 ```
 
-**Expected Result**:
+### Expected Result
 
-```text
+```
+Red
+Green
+Blue
+Yellow
+```
+
+```
 name: Dale
 email: dale@example.com
 role: Admin
 ```
 
+### Why It Works
+
+- `foreach` automatically assigns each array value to `$color` on each iteration.
+- Using the `as $key => $value` syntax provides access to both the key and the value without manual indexing.
+- `PHP_EOL` ensures each item prints on its own line across different operating systems.
+
+### Troubleshooting
+
+- **Undefined index errors** — These occur when using `for` with a numeric counter. `foreach` avoids this by iterating over actual elements.
+- **Accidentally modifying the original array** — Remember that iterating by reference (e.g., `foreach ($array as &$value)`) alters the original array. Use references only when you intend to mutate the data.
+
 ## Step 5: Alternative Conditional Structures (~6 min)
 
-While `if`/`elseif`/`else` is the most common way to handle conditions, PHP provides several other tools for specific scenarios. Let's explore the most useful ones.
+### Goal
 
-### Using `switch` for Multiple Conditions
+Compare `switch`, `match`, and other concise conditional operators to choose the right tool for each scenario.
 
-When you need to compare a single variable against many different values, a `switch` statement is cleaner than a long chain of `elseif` statements.
+### Actions
+
+1. **Use `switch` for multiple value comparisons**:
 
 ```php
 <?php
@@ -295,17 +363,9 @@ switch ($day) {
 }
 ```
 
-**Expected Result**:
+2. **Run the script** to observe the output.
 
-```text
-Midweek grind.
-```
-
-> **Important**: The `break` statement is crucial in `switch` blocks. Without it, execution will "fall through" to the next case, which is usually not what you want. Notice how Tuesday, Wednesday, and Thursday share the same code by intentionally omitting `break` between them.
-
-### Using `match` (PHP 8.0+)
-
-The `match` expression is a modern, more powerful alternative to `switch`. It's stricter (uses `===`), returns a value directly, and doesn't require `break` statements.
+3. **Experiment with `match` (PHP 8.0+)**:
 
 ```php
 <?php
@@ -325,22 +385,7 @@ $message = match ($statusCode) {
 echo "HTTP $statusCode: $message" . PHP_EOL;
 ```
 
-**Expected Result**:
-
-```text
-HTTP 404: Not Found
-```
-
-**Key differences from `switch`**:
-
-- `match` uses strict comparison (`===`) instead of loose comparison (`==`)
-- `match` returns a value directly (can be assigned to a variable)
-- `match` doesn't need `break` statements
-- `match` will throw an error if no case matches and there's no `default`
-
-### The Ternary Operator
-
-For simple `if`/`else` decisions, the ternary operator provides a concise one-liner. It follows the pattern: `condition ? valueIfTrue : valueIfFalse`
+4. **Apply concise operators** like the ternary and null coalescing operators:
 
 ```php
 <?php
@@ -349,56 +394,45 @@ $age = 20;
 $status = ($age >= 18) ? 'Adult' : 'Minor';
 echo "Status: $status" . PHP_EOL;
 
-// You can even nest them (but use sparingly, as it reduces readability)
 $ticketPrice = ($age < 12) ? 5 : (($age >= 65) ? 8 : 12);
 echo "Ticket price: $$ticketPrice" . PHP_EOL;
-```
-
-**Expected Result**:
-
-```text
-Status: Adult
-Ticket price: $12
-```
-
-> **Tip**: The ternary operator is great for simple conditions, but avoid nesting them deeply—it makes code hard to read. For complex logic, stick with `if`/`else` or `match`.
-
-### The Null Coalescing Operator (`??`)
-
-This operator provides a clean way to use a default value when a variable is null or undefined. It's especially useful when working with user input or optional data.
-
-```php
-<?php
 
 $username = null;
 $displayName = $username ?? 'Guest';
 echo "Welcome, $displayName!" . PHP_EOL;
-
-// You can chain multiple values
-$config = null;
-$userSetting = null;
-$systemDefault = 'English';
-
-$language = $config ?? $userSetting ?? $systemDefault;
-echo "Language: $language" . PHP_EOL;
 ```
 
-**Expected Result**:
+### Expected Result
 
-```text
+```
+Midweek grind.
+HTTP 404: Not Found
+Status: Adult
+Ticket price: $12
 Welcome, Guest!
-Language: English
 ```
 
-The `??` operator checks if the left side is null or undefined. If it is, it uses the right side. You can chain multiple `??` operators, and it will use the first non-null value it finds.
+### Why It Works
+
+- `switch` is useful when comparing a single value against many discrete options. Remember to include `break` statements to prevent fall-through.
+- `match` uses strict comparison (`===`), returns a value, and doesn’t require `break` statements. It’s ideal when you need an expression rather than statements.
+- The ternary operator offers a concise alternative to simple `if`/`else` checks, while the null coalescing operator (`??`) provides default values when variables are `null` or undefined.
+
+### Troubleshooting
+
+- **`switch` executes multiple cases** — Ensure each case ends with `break` unless you intentionally want fall-through.
+- **`match` throws `UnhandledMatchError`** — Provide a `default` arm to handle unexpected values.
+- **Nested ternaries are unreadable** — If the condition becomes complex, switch back to standard `if`/`else` or use `match` for clarity.
 
 ## Step 6: Controlling Loop Flow with `break` and `continue` (~3 min)
 
-Sometimes you need to exit a loop early or skip the current iteration. PHP provides two keywords for this: `break` and `continue`.
+### Goal
 
-### Using `break` to Exit a Loop
+Exit loops early or skip specific iterations using `break` and `continue`.
 
-The `break` statement immediately exits the loop, regardless of whether the loop condition is still true.
+### Actions
+
+1. **Use `break` to exit a loop** when a condition is met:
 
 ```php
 <?php
@@ -412,17 +446,7 @@ for ($i = 1; $i <= 100; $i++) {
 }
 ```
 
-**Expected Result**:
-
-```text
-Found it! The first number divisible by 7 is: 7
-```
-
-Without `break`, the loop would continue all the way to 100, but we only needed the first match.
-
-### Using `continue` to Skip an Iteration
-
-The `continue` statement skips the rest of the current iteration and moves to the next one.
+2. **Use `continue` to skip specific iterations**:
 
 ```php
 <?php
@@ -436,9 +460,13 @@ for ($i = 1; $i <= 10; $i++) {
 }
 ```
 
-**Expected Result**:
+### Expected Result
 
-```text
+```
+Found it! The first number divisible by 7 is: 7
+```
+
+```
 1
 3
 5
@@ -446,15 +474,35 @@ for ($i = 1; $i <= 10; $i++) {
 9
 ```
 
+### Why It Works
+
+- `break` stops the loop entirely as soon as the condition is satisfied, saving unnecessary iterations.
+- `continue` skips the rest of the current loop body and moves on to the next iteration.
+- Combining these tools allows fine-grained control over loop execution without nesting additional conditionals.
+
+### Troubleshooting
+
+- **Loop still runs after `break`** — Confirm the `break` statement is inside the correct loop, especially when loops are nested.
+- **`continue` appears to skip more iterations than expected** — Check the condition; ensure the code after `continue` isn’t handling required work, and verify the loop counter still increments.
+- **Inconsistent results** — Add debug statements before and after `break`/`continue` to trace the execution flow.
+
 ## Troubleshooting Common Issues
 
-### Issue: Infinite Loop
+### Goal
+
+Identify and fix the most common pitfalls when working with control structures.
+
+### Actions
+
+Review these scenarios and apply the suggested fixes when you run into similar behavior.
+
+#### Issue: Infinite Loop
 
 **Symptom**: Your script runs forever and never completes.
 
 **Cause**: The loop condition never becomes false.
 
-**Solution**: Ensure your loop has a way to exit. Press `Ctrl+C` in the terminal to stop a runaway script.
+**Solution**: Ensure your loop has a way to exit. Press `Ctrl+C` in the terminal to stop a runaway script and then fix the logic.
 
 ```php
 // BAD: This will run forever
@@ -472,13 +520,13 @@ while ($i <= 10) {
 }
 ```
 
-### Issue: Comparison Operator Confusion
+#### Issue: Comparison Operator Confusion
 
 **Symptom**: Your `if` statement isn't working as expected.
 
 **Cause**: Using `=` (assignment) instead of `==` or `===` (comparison).
 
-**Solution**: Always use `===` for comparisons.
+**Solution**: Always use `===` for comparisons so types must match.
 
 ```php
 // BAD: This assigns 5 to $age, doesn't compare!
@@ -492,13 +540,13 @@ if ($age === 5) {
 }
 ```
 
-### Issue: Unexpected Array Loop Behavior
+#### Issue: Unexpected Array Loop Behavior
 
 **Symptom**: Your `foreach` loop modifies the array but changes don't persist.
 
 **Cause**: By default, `foreach` works with a copy of each element.
 
-**Solution**: Use the reference operator (`&`) if you need to modify array elements.
+**Solution**: Use references only when you want to mutate the array, and remember to unset the reference afterward.
 
 ```php
 $numbers = [1, 2, 3];
@@ -513,8 +561,8 @@ foreach ($numbers as $num) {
 foreach ($numbers as &$num) {
     $num = $num * 2;
 }
+unset($num); // Important! Remove the lingering reference
 // $numbers is now [2, 4, 6]
-unset($num); // Good practice: unset the reference after the loop
 ```
 
 ### Issue: Switch Fall-through

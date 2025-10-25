@@ -51,16 +51,15 @@ By the end of this chapter, you will have created:
 
 ## Step 1: Create a "Hello, World!" Script (~2 min)
 
-Let's start by creating a simple file that will output the text "Hello, World!" to the screen.
+### Goal
 
-1.  **Navigate to Your Project Directory**:
-    Open your terminal and navigate to the `php-from-scratch` folder you created in the previous chapter.
+Create your first PHP file and print a message to confirm your environment works.
 
-2.  **Create a New File**:
-    In that directory, create a new file named `hello.php`. You can delete the `index.php` file from the last chapter if you like.
+### Actions
 
-3.  **Add the PHP Code**:
-    Open `hello.php` in VS Code and add the following code:
+1. **Navigate to your project directory**: In your terminal, move into the `php-from-scratch` folder you created earlier.
+2. **Create a new file**: Inside that directory, create a file named `hello.php`. You can delete the previous `index.php` if you no longer need it.
+3. **Add the PHP code**: Open `hello.php` in your editor and add the following:
 
 ```php
 # filename: hello.php
@@ -71,24 +70,31 @@ echo 'Hello, World!';
 
 ### Expected Result
 
-You should now have a file named `hello.php` in your project directory with three lines of code.
+You now have a `hello.php` file that outputs a classic greeting when executed.
 
-### Why it works
+### Why It Works
 
-- `<?php`: This is the opening PHP tag. It tells the server, "Everything after this point is PHP code, so please execute it."
-- `echo`: This is a language construct (very similar to a function) that outputs one or more strings.
-- `'Hello, World!'`: This is a string literal. The text inside the single quotes is the data we want to `echo`.
-- `;`: The semicolon marks the end of a statement. Most lines in PHP must end with a semicolon.
+- `<?php` tells PHP where code execution begins.
+- `echo` outputs the provided string to the terminal or browser.
+- `'Hello, World!'` is a string literal containing the text to display.
+- The trailing semicolon (`;`) ends the statement so PHP knows it’s complete.
+
+### Troubleshooting
+
+- **Error: `syntax error, unexpected '$name'`** — Make sure the file starts with `<?php`.
+- **Error: `Undefined function 'echo'`** — `echo` is a language construct, not a function; double-check you typed it correctly.
+- **Blank file created** — Ensure the code snippet was saved in `hello.php` before moving on.
 
 ## Step 2: Run the Script from the Command Line (~1 min)
 
-The simplest way to run a PHP script is directly from your terminal. This is useful for running maintenance scripts, tools, or just quickly testing a piece of code.
+### Goal
 
-1.  **Open Your Terminal**:
-    Make sure you are still inside your `php-from-scratch` project directory.
+Execute a PHP file from the terminal to verify that the interpreter is installed correctly.
 
-2.  **Run the Script**:
-    Execute the file using the `php` command:
+### Actions
+
+1. **Stay in your project directory**: Confirm you’re still inside `php-from-scratch`.
+2. **Run the script**:
 
 ```bash
 # Execute the PHP script
@@ -97,83 +103,73 @@ php hello.php
 
 ### Expected Result
 
-You should see the output printed directly to your terminal:
+Your terminal prints:
 
 ```text
 Hello, World!
 ```
 
-> **Note**: You might notice your command prompt appears on the same line as the output. To add a newline for cleaner output in the terminal, you can add the special `PHP_EOL` constant (End Of Line) like this: `echo 'Hello, World!' . PHP_EOL;`
+> **Tip**: If the prompt appears on the same line, append `PHP_EOL` to your echo statement to add a newline.
+
+### Why It Works
+
+- The `php` CLI executes the file using the installed PHP interpreter.
+- PHP reads `hello.php`, runs the statements, and sends the output to STDOUT.
 
 ### Troubleshooting
 
-**Error: `php: command not found`**
-
-- PHP is not installed or not in your system's PATH. Return to Chapter 00 and follow the installation instructions for your operating system.
-- Verify PHP installation with: `php --version`
-
-**Error: `Could not open input file: hello.php`**
-
-- You're in the wrong directory. Use `pwd` (macOS/Linux) or `cd` (Windows) to check your current location, then navigate to your project folder.
-- The file doesn't exist. Check the filename is exactly `hello.php` with `ls` (macOS/Linux) or `dir` (Windows).
-
-**Nothing happens or blank output**
-
-- Check that your file contains the exact code shown above, including the opening `<?php` tag.
+- **`php: command not found`** — PHP isn’t installed or isn’t in your PATH. Verify with `php --version` and revisit Chapter 00 if needed.
+- **`Could not open input file: hello.php`** — You’re in the wrong directory or the file is named differently. Use `ls`/`dir` to confirm.
+- **No output** — Ensure your script matches the previous step and includes the `echo` statement.
 
 ## Step 3: Run the Script in the Browser (~2 min)
 
-The real power of PHP shines when it's used to create dynamic web pages. Let's run the same script using the built-in web server.
+### Goal
 
-1.  **Start the Server**:
-    In your terminal, from the project directory, start the server:
+Serve the script through PHP’s built-in web server so you can view output in the browser.
+
+### Actions
+
+1. **Start the development server**:
 
 ```bash
 # Start the built-in PHP development server
 php -S localhost:8000
 ```
 
-You should see output similar to:
+You should see something like:
 
 ```text
-[Sat Oct 25 14:30:00 2025] PHP 8.2.0 Development Server (http://localhost:8000) started
+[Sat Oct 25 14:30:00 2025] PHP 8.4.0 Development Server (http://localhost:8000) started
 ```
 
-2.  **Open Your Browser**:
-    Navigate to `http://localhost:8000/hello.php`.
+2. **Open the script in a browser**: Visit `http://localhost:8000/hello.php`.
 
 ### Expected Result
 
-You will see the text "Hello, World!" displayed in your browser window. It may look plain, but this content was dynamically generated by the PHP engine on the server and sent to your browser as HTML.
+The browser displays “Hello, World!” exactly as the terminal did, confirming PHP is executing on the server and returning HTML to the client.
 
-> **Tip**: Keep the terminal window with the server running open. You'll see a log entry each time you access a page. Press `Ctrl+C` to stop the server when you're done.
+### Why It Works
+
+- `php -S` spins up a lightweight web server ideal for local development.
+- When the browser requests `/hello.php`, PHP executes the script and returns the rendered HTML response.
 
 ### Troubleshooting
 
-**Error: `Failed to listen on localhost:8000`**
-
-- Port 8000 is already in use. Try a different port: `php -S localhost:8001`
-- Update your browser URL to match the new port.
-
-**Browser shows "This site can't be reached"**
-
-- The server isn't running. Check the terminal where you started it.
-- Make sure you included `http://` in the URL: `http://localhost:8000/hello.php`
-
-**Browser shows a blank page**
-
-- Check the server terminal for PHP errors. Common issues: syntax errors in your code.
-- Try viewing the page source (right-click → View Page Source) to see if any content was generated.
+- **`Failed to listen on localhost:8000`** — Another process is using the port. Try `php -S localhost:8001` and adjust the URL accordingly.
+- **“This site can’t be reached”** — Ensure the server is still running in your terminal and that the URL includes `http://`.
+- **Blank page** — Check the terminal running the server for syntax errors or warnings; view the page source to confirm any HTML output.
 
 ## Step 4: Embedding PHP in HTML (~3 min)
 
-PHP was designed to be embedded directly inside HTML, allowing you to build dynamic pages easily. Let's create a proper HTML document and use PHP to insert some dynamic content.
+### Goal
 
-1.  **Create a New File**:
-    Create a new file called `hello-web.php`.
+Mix PHP with HTML to render dynamic content in a traditional web page structure.
 
-2.  **Add the Code**:
-    Add the following HTML and PHP code to the new file:
+### Actions
+
+1. **Create a new file**: Name it `hello-web.php`.
+2. **Add the following HTML/PHP hybrid code**:
 
 ```php
 # filename: hello-web.php
@@ -191,28 +187,36 @@ PHP was designed to be embedded directly inside HTML, allowing you to build dyna
 </html>
 ```
 
-> **Note**: The `date()` function is a built-in PHP function that returns the current date and time formatted according to the string you provide. The format string 'Y-m-d H:i:s' produces output like "2025-10-25 14:30:45".
+> **Note**: `date('Y-m-d H:i:s')` returns a formatted timestamp such as `2025-10-25 14:30:45`.
 
-3.  **View in Browser**:
-    If your server is still running, you can now visit `http://localhost:8000/hello-web.php`.
+3. **View the file**: With the dev server running, open `http://localhost:8000/hello-web.php`.
 
 ### Expected Result
 
-You will see a proper web page with:
+The browser shows an HTML page titled “My First PHP Page” with a heading and a timestamp that reflects the current date and time.
 
-- A heading that says "Hello from the Web!"
-- A paragraph showing the current date and time
+### Why It Works
 
-The heading and timestamp were dynamically inserted by PHP, which runs on the server before sending the HTML to your browser.
+- PHP executes on the server and outputs plain HTML for the browser to render.
+- Embedding code inside `<?php ... ?>` blocks lets you insert dynamic values anywhere in the markup.
+
+### Troubleshooting
+
+- **Raw PHP printed in the browser** — Ensure the file has a `.php` extension and the server is serving it via PHP.
+- **Date always the same** — You’re likely viewing a cached version. Refresh the page or disable caching in your browser.
 
 ## Step 5: Adding Comments (~1 min)
 
-Comments are parts of your code that are ignored by the PHP engine. They are essential for explaining what your code does, for yourself and for other developers.
+### Goal
 
-PHP supports three comment styles:
+Learn how to document code using PHP’s comment syntax.
+
+### Actions
+
+1. **Create an optional demo file** with comment examples:
 
 ```php
-# filename: comments-demo.php (optional demo file)
+# filename: comments-demo.php
 <?php
 
 // This is a single-line comment. It's great for short notes.
@@ -229,34 +233,33 @@ PHP supports three comment styles:
 echo 'Hello with comments!'; // Comments can also be placed at the end of a line.
 ```
 
-### Why use comments
+2. **Run the file** if you’d like to confirm the comments are ignored when the script executes.
 
-- **Clarify intent**: Explain _why_ you wrote something a certain way, not just _what_ it does.
-- **Document complex logic**: Help future you (or other developers) understand tricky code.
-- **Disable code temporarily**: Comment out lines during debugging without deleting them.
+### Expected Result
 
-> **Tip**: Use `//` for most single-line comments in PHP. The `/* ... */` style is ideal for multi-line documentation or temporarily disabling blocks of code.
+The script outputs `Hello with comments!` and nothing else, proving comments have no effect on runtime behavior.
+
+### Why It Works
+
+- `//` and `#` mark single-line comments that PHP skips when executing.
+- `/* ... */` wraps multi-line comments, perfect for longer explanations or temporarily disabling blocks of code.
+
+### Troubleshooting
+
+- **Unexpected output** — Make sure echo statements aren’t inside comment blocks.
+- **Syntax error near `*/`** — Ensure multi-line comments start with `/*` and end with a matching `*/`.
 
 ## Step 6: PHP Tags and String Operations (~3 min)
 
-Now that you understand the basics, let's explore some important details about PHP tags and how to work with strings more effectively.
+### Goal
 
-### The Closing PHP Tag
+Understand PHP tag usage and practice essential string-output techniques.
 
-You may have noticed that our PHP files don't have a closing `?>` tag. This is intentional and follows modern best practices.
+### Actions
 
-**When to OMIT the closing tag** (recommended):
-
-- In pure PHP files (files containing only PHP code)
-- Prevents accidental whitespace after the tag from causing "headers already sent" errors
-- This is the PSR-12 coding standard recommendation
-
-**When to USE the closing tag**:
-
-- When mixing PHP with HTML in the same file
-- The closing tag tells PHP, "Stop executing PHP and treat everything after this as HTML"
-
-Here's an example showing when to use it:
+1. **Review closing tag best practices**:
+   - Omit `?>` in pure PHP files to avoid stray whitespace issues.
+   - Include `?>` only when mixing PHP and HTML in the same file, as shown below:
 
 ```php
 # filename: mixed-example.php
@@ -275,11 +278,7 @@ $greeting = 'Welcome';
 </html>
 ```
 
-> **Best Practice**: For pure PHP files (like classes, configuration files, or standalone scripts), always omit the closing `?>` tag.
-
-### Short Echo Syntax
-
-When embedding PHP in HTML templates, writing `<?php echo ... ?>` repeatedly can be tedious. PHP provides a shorthand syntax specifically for outputting values:
+2. **Experiment with short echo tags** to simplify templates:
 
 ```php
 # filename: short-echo-demo.php
@@ -296,7 +295,7 @@ When embedding PHP in HTML templates, writing `<?php echo ... ?>` repeatedly can
     <!-- Long form -->
     <h1><?php echo $title; ?></h1>
 
-    <!-- Short form (much cleaner!) -->
+    <!-- Short form (cleaner) -->
     <h2><?= $author ?></h2>
 
     <p>Current time: <?= date('H:i:s') ?></p>
@@ -304,13 +303,7 @@ When embedding PHP in HTML templates, writing `<?php echo ... ?>` repeatedly can
 </html>
 ```
 
-The `<?= ?>` syntax is equivalent to `<?php echo ... ?>` and is perfect for templates.
-
-> **Note**: The short echo tag `<?=` has been available since PHP 5.4 and is always enabled, even if short tags are disabled.
-
-### String Concatenation
-
-In PHP, you can join strings together using the concatenation operator (`.`):
+3. **Practice concatenation and interpolation**:
 
 ```php
 # filename: concatenation.php
@@ -336,8 +329,6 @@ $message .= '!';
 echo $message; // Outputs: Hello World!
 ```
 
-**When to use concatenation vs string interpolation**:
-
 ```php
 # filename: string-comparison.php
 <?php
@@ -345,46 +336,42 @@ echo $message; // Outputs: Hello World!
 $name = 'Alice';
 $age = 25;
 
-// Concatenation - works with single or double quotes
-echo 'Name: ' . $name . ', Age: ' . $age;
-echo PHP_EOL;
+// Concatenation
+echo 'Name: ' . $name . ', Age: ' . $age . PHP_EOL;
 
-// String interpolation - only works with double quotes
-echo "Name: $name, Age: $age";
-echo PHP_EOL;
+// String interpolation (double quotes only)
+echo "Name: $name, Age: $age" . PHP_EOL;
 
-// For complex expressions, concatenation is clearer
-echo 'Next year, ' . $name . ' will be ' . ($age + 1) . ' years old.';
+// Complex expressions often read better with concatenation
+echo 'Next year, ' . $name . ' will be ' . ($age + 1) . ' years old.' . PHP_EOL;
+```
+
+4. **Run the concatenation example**:
+
+```bash
+php concatenation.php
 ```
 
 ### Expected Result
 
-Try running the concatenation example:
-
-```bash
-# Run the concatenation script
-php concatenation.php
 ```
-
-You should see:
-
-```text
 Hello World!
 Full name: Jane Doe
 Hello World!
 ```
 
+### Why It Works
+
+- Omitting `?>` prevents accidental whitespace that can break HTTP headers.
+- The short echo tag (`<?=`) is shorthand for `<?php echo ... ?>` and is always enabled in PHP 8.4.
+- The dot operator (`.`) concatenates strings; `.=` appends to an existing string variable.
+- Interpolation within double quotes offers concise syntax for embedding variables.
+
 ### Troubleshooting
 
-**Parse error: syntax error, unexpected '='**
-
-- You're using `<?=` in a pure PHP context. The short echo syntax is only for outputting values in mixed HTML/PHP files.
-- Make sure to use it like this: `<?= $value ?>` not `<?= $value; ?>`
-
-**Concatenation produces unexpected results**
-
-- Check for missing spaces: `'Hello' . 'World'` produces "HelloWorld" not "Hello World"
-- Add spaces explicitly: `'Hello' . ' ' . 'World'`
+- **`<?=` causes a parse error** — You’re likely executing the script via CLI without HTML context. Use standard `echo` in pure PHP scripts.
+- **Unexpected concatenation results** — Add explicit spaces (`'Hello' . ' ' . 'World'`) to avoid merged words.
+- **Output shows literal `$variable`** — Interpolation requires double quotes. Use `"` for interpolation and `'` for literal strings.
 
 ## Exercises
 
@@ -432,18 +419,6 @@ echo "Hello World!";
 
 Run the script. What differences do you notice? Which method do you prefer and why?
 
-## Further Reading
-
-To deepen your understanding of the topics covered in this chapter:
-
-- [PHP Tags](https://www.php.net/manual/en/language.basic-syntax.phptags.php) — Official documentation on PHP opening and closing tags, including short echo syntax
-- [Echo Statement](https://www.php.net/manual/en/function.echo.php) — Learn more about outputting data
-- [String Operators](https://www.php.net/manual/en/language.operators.string.php) — Complete guide to concatenation and string manipulation
-- [PHP Comments](https://www.php.net/manual/en/language.basic-syntax.comments.php) — Best practices for commenting your code
-- [PSR-12: Extended Coding Style](https://www.php-fig.org/psr/psr-12/) — Industry-standard PHP coding style guide (includes closing tag best practices)
-- [Built-in Web Server](https://www.php.net/manual/en/features.commandline.webserver.php) — Advanced options for the development server
-- [Date and Time Functions](https://www.php.net/manual/en/ref.datetime.php) — Complete reference for working with dates
-
 ## Wrap-up
 
 Congratulations! You've successfully written and executed your first PHP scripts. Here's what you've accomplished:
@@ -488,6 +463,18 @@ echo 'Hello' . ' ' . 'World'; // Concatenation
 </body>
 </html>
 ```
+
+## Further Reading
+
+To deepen your understanding of the topics covered in this chapter:
+
+- [PHP Tags](https://www.php.net/manual/en/language.basic-syntax.phptags.php) — Official documentation on PHP opening and closing tags, including short echo syntax
+- [Echo Statement](https://www.php.net/manual/en/function.echo.php) — Learn more about outputting data
+- [String Operators](https://www.php.net/manual/en/language.operators.string.php) — Complete guide to concatenation and string manipulation
+- [PHP Comments](https://www.php.net/manual/en/language.basic-syntax.comments.php) — Best practices for commenting your code
+- [PSR-12: Extended Coding Style](https://www.php-fig.org/psr/psr-12/) — Industry-standard PHP coding style guide (includes closing tag best practices)
+- [Built-in Web Server](https://www.php.net/manual/en/features.commandline.webserver.php) — Advanced options for the development server
+- [Date and Time Functions](https://www.php.net/manual/en/ref.datetime.php) — Complete reference for working with dates
 
 ## Knowledge Check
 

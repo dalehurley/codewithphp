@@ -799,6 +799,13 @@ Congratulations! You now have a comprehensive toolkit for working with strings i
 **Next Steps**:
 With our understanding of core data types like strings and arrays solidified, we're ready to move on to a major new paradigm in programming: Object-Oriented Programming (OOP). In [Chapter 08](/series/php-basics/chapters/08-introduction-to-object-oriented-programming), we'll learn how to model real-world concepts using classes and objects.
 
+## Further Reading
+
+- [PHP String Functions](https://www.php.net/manual/en/ref.strings.php) — Complete reference
+- [PHP Multibyte String Functions](https://www.php.net/manual/en/ref.mbstring.php) — For international text
+- [Regular Expressions in PHP](https://www.php.net/manual/en/book.pcre.php) — Advanced pattern matching
+- [PHP 8.0 Release Notes](https://www.php.net/releases/8.0/en.php) — New string functions
+
 ## Knowledge Check
 
 Test your understanding of string manipulation:
@@ -853,10 +860,3 @@ options: [
 }
 ]"
 />
-
-## Further Reading
-
-- [PHP String Functions](https://www.php.net/manual/en/ref.strings.php) - Complete reference
-- [PHP Multibyte String Functions](https://www.php.net/manual/en/ref.mbstring.php) - For international text
-- [Regular Expressions in PHP](https://www.php.net/manual/en/book.pcre.php) - Advanced pattern matching
-- [PHP 8.0 Release Notes](https://www.php.net/releases/8.0/en.php) - New string functions
