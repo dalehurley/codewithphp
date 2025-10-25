@@ -56,6 +56,62 @@ By the end of this chapter, you'll have created:
 - Dynamic routing support for individual post URLs like `/posts/123`
 - Security features: prepared statements, XSS prevention, input validation
 
+## Blog Application Architecture
+
+Here's the complete architecture of your blog application:
+
+```mermaid
+flowchart TB
+    A[User Browser] -->|Request: /posts| B[index.php]
+    B --> C[Router]
+    C -->|Match Route| D[PostController]
+
+    D -->|index| E[Model::all]
+    D -->|show/:slug| F[Model::findBySlug]
+    D -->|create| G[Model::create]
+
+    E --> H[(Database<br/>posts table)]
+    F --> H
+    G --> H
+
+    H --> E
+    H --> F
+    H --> G
+
+    E --> I[View: index.php<br/>List all posts]
+    F --> J[View: show.php<br/>Single post]
+    G --> K[View: create.php<br/>New post form]
+
+    I --> L[Layout: layout.php]
+    J --> L
+    K --> L
+
+    L --> M[HTML Response]
+    M --> A
+
+    style D fill:#e1f5ff
+    style H fill:#e8daef
+    style L fill:#fff3cd
+```
+
+**Directory Structure:**
+
+```
+simple-blog/
+├── public/
+│   └── index.php           # Front controller
+├── Controllers/
+│   └── PostController.php  # Blog logic
+├── Models/
+│   └── Post.php            # Database operations
+└── Views/
+    ├── layout.php          # Master template
+    └── posts/
+        ├── index.php       # List posts
+        ├── show.php        # Display single post
+        └── create.php      # Create new post
+```
+
 ## Quick Start
 
 If you want to see the complete blog in action immediately, follow these steps:
@@ -1289,6 +1345,61 @@ sqlite3 data/database.sqlite
 > .schema posts
 > .quit
 ```
+
+## Knowledge Check
+
+Test your understanding of building a complete application:
+
+<Quiz
+title="Chapter 19 Quiz: Building a Blog Application"
+:questions="[
+{
+question: 'What is the purpose of a Model class like Post?',
+options: [
+{ text: 'To encapsulate database operations for a specific entity', correct: true, explanation: 'Models represent entities and handle all database interactions for that entity, keeping data logic organized.' },
+{ text: 'To display HTML to users', correct: false, explanation: 'That\'s what Views do; Models handle data and business logic.' },
+{ text: 'To route URLs to handlers', correct: false, explanation: 'That\'s the Router\'s job; Models handle data operations.' },
+{ text: 'To validate HTML forms', correct: false, explanation: 'Form validation can be in Controllers or Models; the Model\'s main job is data management.' }
+]
+},
+{
+question: 'What does CRUD stand for?',
+options: [
+{ text: 'Create, Read, Update, Delete', correct: true, explanation: 'CRUD represents the four basic operations for persistent storage: creating, reading, updating, and deleting records.' },
+{ text: 'Connect, Retrieve, Upload, Download', correct: false, explanation: 'CRUD is Create, Read, Update, Delete—the fundamental data operations.' },
+{ text: 'Class, Route, URL, Database', correct: false, explanation: 'CRUD stands for Create, Read, Update, Delete.' },
+{ text: 'Controller, Request, URL, Data', correct: false, explanation: 'CRUD is Create, Read, Update, Delete.' }
+]
+},
+{
+question: 'Why use prepared statements in database operations?',
+options: [
+{ text: 'To prevent SQL injection attacks', correct: true, explanation: 'Prepared statements separate SQL structure from data, preventing malicious SQL from being executed.' },
+{ text: 'To make queries run faster', correct: false, explanation: 'While they can help performance, the primary reason is security against SQL injection.' },
+{ text: 'To store queries in the database', correct: false, explanation: 'Prepared statements are about safe query execution, not storage.' },
+{ text: 'To avoid writing SQL', correct: false, explanation: 'You still write SQL; prepared statements make it safer by separating logic from data.' }
+]
+},
+{
+question: 'What is the benefit of using a singleton pattern for database connections?',
+options: [
+{ text: 'Reuses one connection instead of creating many', correct: true, explanation: 'Singleton ensures only one database connection exists, avoiding the overhead of multiple connections.' },
+{ text: 'Allows multiple simultaneous connections', correct: false, explanation: 'Singleton specifically limits to one instance; that\'s its purpose.' },
+{ text: 'Encrypts database queries', correct: false, explanation: 'Singleton is about instance management; encryption is separate.' },
+{ text: 'Automatically creates database tables', correct: false, explanation: 'Singleton manages connection instances; table creation is separate.' }
+]
+},
+{
+question: 'What is validation and why is it important?',
+options: [
+{ text: 'Checking user input meets requirements before processing', correct: true, explanation: 'Validation ensures data is correct, complete, and safe before saving or processing it.' },
+{ text: 'Converting data to HTML', correct: false, explanation: 'That\'s output escaping or templating; validation checks input correctness.' },
+{ text: 'Creating database connections', correct: false, explanation: 'Validation checks data quality; connections are separate infrastructure.' },
+{ text: 'Routing URLs to handlers', correct: false, explanation: 'Routing maps URLs; validation checks data correctness.' }
+]
+}
+]"
+/>
 
 ## Further Reading
 

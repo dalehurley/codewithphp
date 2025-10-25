@@ -466,7 +466,7 @@ Always remember to either prefix them with `\` or import them with `use` when in
 
 ## Troubleshooting
 
-### Fatal Error: Class not found
+### Fatal Error - Class not found
 
 ```
 Fatal error: Uncaught Error: Class 'Logger' not found
@@ -478,7 +478,7 @@ Fatal error: Uncaught Error: Class 'Logger' not found
 - Added a `use` statement at the top: `use App\Utils\Logger;`
 - Required/autoloaded the file containing the class
 
-### Fatal Error: Cannot declare class
+### Fatal Error - Cannot declare class
 
 ```
 Fatal error: Cannot declare class App\Utils\Logger, because the name is already in use
@@ -486,7 +486,7 @@ Fatal error: Cannot declare class App\Utils\Logger, because the name is already 
 
 **Solution**: You've required the same file twice or defined the same class twice. Check your `require_once` statements.
 
-### Parse Error: syntax error, unexpected 'namespace'
+### Parse Error - syntax error, unexpected 'namespace'
 
 **Solution**: The `namespace` declaration must be the first statement in your file. Make sure there's no whitespace or HTML before the `<?php` tag, and the namespace comes right after.
 
@@ -561,3 +561,58 @@ You've now added two more professional tools to your OOP toolkit:
 Together, these features allow you to write cleaner, more maintainable code that can scale from small scripts to large applications. You now understand how to organize your code professionally and avoid the naming conflicts that plague large codebases.
 
 In the next chapter, we'll tackle a crucial skill for any professional developer: how to handle situations when things go wrong in your application. You'll learn all about error and exception handling, which will make your code more robust and user-friendly.
+
+## Knowledge Check
+
+Test your understanding of traits and namespaces:
+
+<Quiz
+title="Chapter 10 Quiz: Traits and Namespaces"
+:questions="[
+{
+question: 'What is the primary purpose of traits in PHP?',
+options: [
+{ text: 'To share methods across unrelated classes without inheritance', correct: true, explanation: 'Traits allow horizontal code reuse, letting you share functionality across classes that don\'t have an inheritance relationship.' },
+{ text: 'To replace interfaces', correct: false, explanation: 'Traits complement interfaces but don\'t replace them; interfaces define contracts, traits provide implementations.' },
+{ text: 'To create parent classes', correct: false, explanation: 'Traits are not classes; they\'re code snippets that can be used in classes.' },
+{ text: 'To enforce method signatures', correct: false, explanation: 'That\'s what interfaces do; traits provide reusable implementations.' }
+]
+},
+{
+question: 'When two traits used in a class have methods with the same name, how do you resolve the conflict?',
+options: [
+{ text: 'Use the insteadof keyword to choose which one to use', correct: true, explanation: 'The insteadof keyword tells PHP which trait\'s method to use when there\'s a naming conflict.' },
+{ text: 'PHP automatically uses the first trait\'s method', correct: false, explanation: 'PHP requires you to explicitly resolve conflicts using insteadof or as.' },
+{ text: 'You cannot use both traits', correct: false, explanation: 'You can use both; you just need to resolve the conflict with insteadof and optionally use as for aliasing.' },
+{ text: 'Rename one of the traits', correct: false, explanation: 'You don\'t rename traits; you use insteadof and as to handle method conflicts.' }
+]
+},
+{
+question: 'What is the purpose of namespaces in PHP?',
+options: [
+{ text: 'To avoid naming conflicts and organize code', correct: true, explanation: 'Namespaces provide a way to group related classes and prevent naming collisions, especially important in large projects.' },
+{ text: 'To make code run faster', correct: false, explanation: 'Namespaces are about organization, not performance.' },
+{ text: 'To replace classes', correct: false, explanation: 'Namespaces contain classes; they don\'t replace them.' },
+{ text: 'To hide code from other files', correct: false, explanation: 'Namespaces organize code, not restrict access; use visibility keywords for access control.' }
+]
+},
+{
+question: 'When using a built-in PHP class like Exception inside a custom namespace, how must you reference it?',
+options: [
+{ text: 'Either prefix it with \\ or import it with use', correct: true, explanation: 'Built-in classes live in the global namespace. Use \\Exception or add \'use Exception;\' at the top.' },
+{ text: 'Use it normally without any special syntax', correct: false, explanation: 'Inside a custom namespace, PHP will look for Exception in your namespace unless you prefix with \\ or import it.' },
+{ text: 'You cannot use built-in classes in namespaced code', correct: false, explanation: 'You can use them; you just need to reference the global namespace explicitly.' },
+{ text: 'Only import it, prefixing doesn\'t work', correct: false, explanation: 'Both methods work: \\Exception or use Exception; then Exception.' }
+]
+},
+{
+question: 'What does the use keyword do with namespaces?',
+options: [
+{ text: 'Imports a class so you can use its short name', correct: true, explanation: 'use allows you to import classes from other namespaces so you can refer to them by their short name instead of the full path.' },
+{ text: 'Creates a new namespace', correct: false, explanation: 'namespace creates namespaces; use imports classes from them.' },
+{ text: 'Includes a trait in a class', correct: false, explanation: 'That\'s also done with use, but in a different context (inside a class body for traits vs. at file level for namespaces).' },
+{ text: 'Makes a class public', correct: false, explanation: 'use is for importing; visibility is controlled by public/protected/private keywords.' }
+]
+}
+]"
+/>

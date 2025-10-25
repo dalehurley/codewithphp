@@ -43,16 +43,16 @@ By the end of this chapter, you'll be able to:
 
 ## Step 1: Indexed Arrays (~4 min)
 
-**Goal**: Create and manipulate indexed arrays to store lists of data.
+**Goal** - Create and manipulate indexed arrays to store lists of data.
 
 The simplest type of array is an **indexed array**, where each element is identified by a numeric index, starting from 0.
 
 ### Actions
 
-1.  **Create a File**:
+1.  **Create a File**
     Create a new file named `arrays.php` in your working directory.
 
-2.  **Create an Indexed Array**:
+2.  **Create an Indexed Array**
     You can create an array using the `[]` short syntax, which is the modern standard.
 
 ```php
@@ -69,7 +69,7 @@ echo "The second language is: " . $languages[1] . PHP_EOL; // Index 1 is the sec
 print_r($languages);
 ```
 
-3.  **Run the Script**:
+3.  **Run the Script**
 
 ```bash
 # Execute the script
@@ -105,7 +105,7 @@ echo "Last: " . $languages[count($languages) - 1] . PHP_EOL;
 
 You should see `First: PHP` and `Last: Go`.
 
-4.  **Modifying Indexed Arrays**:
+4.  **Modifying Indexed Arrays**
     You can change an element by referencing its index, or add a new one by using empty square brackets `[]`.
 
 ```php
@@ -122,7 +122,7 @@ $languages[] = 'Rust';
 print_r($languages);
 ```
 
-**Expected Result**:
+**Expected Result**
 
 ```text
 Array
@@ -142,13 +142,13 @@ Array
 
 ## Step 2: Associative Arrays (~5 min)
 
-**Goal**: Create associative arrays with descriptive keys for structured, self-documenting data.
+**Goal** - Create associative arrays with descriptive keys for structured, self-documenting data.
 
 Indexed arrays are great for simple lists, but sometimes you need to store data with more descriptive labels. An **associative array** uses named **keys** instead of numeric indexes. This allows you to create more structured, self-documenting data.
 
 ### Actions
 
-1.  **Create an Associative Array**:
+1.  **Create an Associative Array**
     Replace the contents of `arrays.php` with the following:
 
 ```php
@@ -172,7 +172,7 @@ $user['role'] = 'Admin';
 print_r($user);
 ```
 
-2.  **Run the Script**:
+2.  **Run the Script**
 
 ```bash
 php arrays.php
@@ -219,13 +219,13 @@ if (isset($user['role'])) {
 
 ## Step 3: Multi-dimensional Arrays (~4 min)
 
-**Goal**: Build and navigate multi-dimensional arrays to represent complex, nested data structures.
+**Goal** - Build and navigate multi-dimensional arrays to represent complex, nested data structures.
 
 A multi-dimensional array is simply an array that contains other arrays. This is incredibly useful for grouping related data. For example, you could have a list of users, where each user is an associative array.
 
 ### Actions
 
-1.  **Create a Multi-dimensional Array**:
+1.  **Create a Multi-dimensional Array**
     Update `arrays.php` with this code:
 
 ```php
@@ -261,7 +261,7 @@ foreach ($users as $user) {
 }
 ```
 
-2.  **Run the Script**:
+2.  **Run the Script**
 
 ```bash
 php arrays.php
@@ -304,7 +304,7 @@ You should see `Total users: 3` and `Last user's last name: Johnson`.
 
 ## Step 4: Essential Array Functions (~6 min)
 
-**Goal**: Master the most commonly used array functions for searching, sorting, and transforming data.
+**Goal** - Master the most commonly used array functions for searching, sorting, and transforming data.
 
 PHP has a huge library of built-in functions for working with arrays. Here are the most essential ones you'll use constantly.
 
@@ -344,7 +344,7 @@ PHP has a huge library of built-in functions for working with arrays. Here are t
 
 ### Actions
 
-1.  **Try Basic Array Functions**:
+1.  **Try Basic Array Functions**
     Create a new file `array_functions.php`:
 
 ```php
@@ -373,7 +373,7 @@ echo "Popped value: $last" . PHP_EOL;
 echo "After pop: " . implode(', ', $numbers) . PHP_EOL;
 ```
 
-2.  **Run the Script**:
+2.  **Run the Script**
 
 ```bash
 php array_functions.php
@@ -404,7 +404,7 @@ After pop: 1, 1, 2, 3, 4, 5, 6, 9, 10
 
 Array functions operate directly on the array, often modifying it in place. Functions like `sort()`, `array_push()`, and `array_pop()` change the original array, while functions like `count()` and `in_array()` just read it. The `implode()` function joins array elements into a string—perfect for displaying arrays inline.
 
-### Advanced Example: Working with Keys and Values
+### Advanced Example - Working with Keys and Values
 
 ```php
 # filename: array_keys_values.php
@@ -457,7 +457,7 @@ echo "After sort: " . implode(', ', $test) . PHP_EOL;
 
 ## Step 5: Modern Array Features (~4 min)
 
-**Goal**: Use modern PHP array syntax including the spread operator and array unpacking.
+**Goal** - Use modern PHP array syntax including the spread operator and array unpacking.
 
 PHP has evolved to include powerful array manipulation syntax that makes your code cleaner and more expressive.
 
@@ -544,11 +544,11 @@ You should see all output matching the expected result above.
 
 ## Exercises
 
-### Exercise 1: Student Grades Calculator
+### Exercise 1 - Student Grades Calculator
 
 Create a script that manages and calculates student grades.
 
-**Requirements**:
+**Requirements**
 
 - Create an associative array called `$student` with keys for `name`, `age`, and `grades`
 - The `grades` key should hold an indexed array of numbers (e.g., `[85, 92, 78, 95]`)
@@ -556,17 +556,17 @@ Create a script that manages and calculates student grades.
 - Find the highest and lowest grades using `max()` and `min()`
 - Print a summary like: "Dale is 30 years old and has an average grade of 87.5 (highest: 95, lowest: 78)."
 
-**Expected Output**:
+**Expected Output**
 
 ```text
 Dale is 30 years old and has an average grade of 87.5 (highest: 95, lowest: 78).
 ```
 
-### Exercise 2: Product Inventory Filter
+### Exercise 2 - Product Inventory Filter
 
 Create a product filtering system that shows only available items.
 
-**Requirements**:
+**Requirements**
 
 - Create an array of at least 4 products
 - Each product should be an associative array with keys: `name`, `price`, and `in_stock` (boolean)
@@ -584,11 +584,11 @@ Monitor - $349.99
 Total in stock: 3
 ```
 
-### Exercise 3: Array Manipulation Challenge
+### Exercise 3 - Array Manipulation Challenge
 
 Practice various array operations in a single script.
 
-**Requirements**:
+**Requirements**
 
 - Start with this array: `$numbers = [15, 8, 23, 4, 42, 16]`
 - Add the number `50` to the end
@@ -597,12 +597,158 @@ Practice various array operations in a single script.
 - Use the spread operator to create a new array that includes these numbers plus `[100, 200]`
 - Print the final array and its count
 
-**Expected Output**:
+**Expected Output**
 
 ```text
 Final array: 50, 42, 23, 16, 15, 8, 100, 200
 Total numbers: 8
 ```
+
+## Step 7: PHP 8.4 Modern Array Functions (~5 min)
+
+**Goal** - Use modern PHP 8.4 array functions for cleaner, more expressive code.
+
+PHP 8.4 introduces four powerful new array functions that make searching and validating arrays much simpler and more intuitive than traditional approaches.
+
+### Actions
+
+1.  **Create a New File**
+    Create `php84-arrays.php` in your working directory.
+
+2.  **Explore the New Functions**
+
+```php
+# filename: php84-arrays.php
+<?php
+
+declare(strict_types=1);
+
+$users = [
+    ['id' => 1, 'name' => 'Alice', 'isActive' => true],
+    ['id' => 2, 'name' => 'Bob', 'isActive' => false],
+    ['id' => 3, 'name' => 'Charlie', 'isActive' => true],
+];
+
+// array_find() - Find the first element that matches a condition
+$firstActive = array_find($users, fn($user) => $user['isActive']);
+echo "First active user: " . $firstActive['name'] . PHP_EOL;
+
+// array_find_key() - Find the KEY of the first matching element
+$key = array_find_key($users, fn($user) => $user['name'] === 'Bob');
+echo "Bob is at index: " . $key . PHP_EOL;
+
+// array_any() - Check if ANY element matches a condition
+$hasInactive = array_any($users, fn($user) => !$user['isActive']);
+echo "Has inactive users: " . ($hasInactive ? 'Yes' : 'No') . PHP_EOL;
+
+// array_all() - Check if ALL elements match a condition
+$allActive = array_all($users, fn($user) => $user['isActive']);
+echo "All users active: " . ($allActive ? 'Yes' : 'No') . PHP_EOL;
+```
+
+3.  **Run the Script**
+
+```bash
+php php84-arrays.php
+```
+
+### Expected Output
+
+```text
+First active user: Alice
+Bob is at index: 1
+Has inactive users: Yes
+All users active: No
+```
+
+### Why It Matters
+
+**Before PHP 8.4**, you had to write verbose code like this:
+
+```php
+// Old way to find first active user
+$filtered = array_filter($users, fn($user) => $user['isActive']);
+$firstActive = reset($filtered) ?: null;
+
+// Old way to check if any are inactive
+$hasInactive = count(array_filter($users, fn($u) => !$u['isActive'])) > 0;
+```
+
+**With PHP 8.4**, the code is clearer and more expressive:
+
+```php
+// New way - much cleaner!
+$firstActive = array_find($users, fn($user) => $user['isActive']);
+$hasInactive = array_any($users, fn($u) => !$u['isActive']);
+```
+
+### Comparison Table
+
+| Function           | Purpose                     | Returns           | Old Equivalent                        |
+| ------------------ | --------------------------- | ----------------- | ------------------------------------- |
+| `array_find()`     | Find first matching element | Element or `null` | `array_filter()` + `reset()`          |
+| `array_find_key()` | Find key of first match     | Key or `null`     | `array_keys()` + `array_filter()`     |
+| `array_any()`      | Check if any match          | `bool`            | `count(array_filter())` > 0           |
+| `array_all()`      | Check if all match          | `bool`            | `count(array_filter())` === `count()` |
+
+### Practical Example
+
+Here's a real-world authentication scenario:
+
+```php
+$roles = ['user', 'editor', 'viewer'];
+
+// Check if user has admin privileges
+$isAdmin = array_any($roles, fn($role) => $role === 'admin');
+
+if ($isAdmin) {
+    echo "Access granted!" . PHP_EOL;
+} else {
+    echo "Admin access required." . PHP_EOL;
+}
+
+// Ensure user has at least one valid role
+$validRoles = ['user', 'admin', 'editor', 'viewer'];
+$allValid = array_all($roles, fn($role) => in_array($role, $validRoles));
+
+if (!$allValid) {
+    echo "Invalid roles detected!" . PHP_EOL;
+}
+```
+
+### Code Files
+
+For more comprehensive examples of PHP 8.4 array functions, see:
+
+- [`code/06-arrays/php84-array-functions.php`](../code/06-arrays/php84-array-functions.php)
+
+### Validation
+
+Test the new functions with different scenarios:
+
+```php
+$numbers = [1, 2, 3, 4, 5];
+
+// Find first even number
+$firstEven = array_find($numbers, fn($n) => $n % 2 === 0);
+echo "First even: " . $firstEven . PHP_EOL;  // 2
+
+// Check if any are negative
+$hasNegative = array_any($numbers, fn($n) => $n < 0);
+echo "Has negative: " . ($hasNegative ? 'Yes' : 'No') . PHP_EOL;  // No
+
+// Check if all are positive
+$allPositive = array_all($numbers, fn($n) => $n > 0);
+echo "All positive: " . ($allPositive ? 'Yes' : 'No') . PHP_EOL;  // Yes
+```
+
+::: tip Why Use These New Functions?
+
+- **More readable**: Intent is immediately clear
+- **More efficient**: No need to iterate entire array if early match is found
+- **Type safe**: Returns proper types (`null` instead of `false`)
+- **Less code**: No need to combine multiple functions
+  :::
 
 ## Wrap-up
 
@@ -617,6 +763,61 @@ You've now taken a deep dive into PHP arrays, the workhorse of data collection i
 Understanding how to structure and work with data in arrays is a massive step forward in your PHP journey. Arrays are everywhere in PHP programming—from handling form data to managing database results to building complex application state.
 
 In the next chapter, we'll focus on another crucial data type: strings. You'll learn how to search, replace, format, and manipulate text with precision.
+
+## Knowledge Check
+
+Test your understanding of PHP arrays:
+
+<Quiz
+title="Chapter 06 Quiz - Arrays"
+:questions="[
+{
+question: 'What is the difference between an indexed array and an associative array?',
+options: [
+{ text: 'Indexed arrays use numeric keys, associative arrays use string keys', correct: true, explanation: 'Indexed arrays automatically use 0, 1, 2... as keys, while associative arrays use custom string keys like \'name\' or \'email\'.' },
+{ text: 'Indexed arrays are faster than associative arrays', correct: false, explanation: 'Performance is nearly identical; the difference is in how you access elements.' },
+{ text: 'Associative arrays can only hold strings', correct: false, explanation: 'Associative arrays can hold any data type, just like indexed arrays.' },
+{ text: 'They are exactly the same in PHP', correct: false, explanation: 'They differ in their key types and how you access elements.' }
+]
+},
+{
+question: 'What does the count() function return for an array?',
+options: [
+{ text: 'The number of elements in the array', correct: true, explanation: 'count() returns the total number of elements at the top level of an array.' },
+{ text: 'The total memory size of the array', correct: false, explanation: 'count() returns the element count, not memory usage.' },
+{ text: 'The highest numeric key', correct: false, explanation: 'count() returns element count, which may not match the highest key if you\'ve set custom keys.' },
+{ text: 'The last element in the array', correct: false, explanation: 'That would be end() or accessing with count()-1; count() returns the number.' }
+]
+},
+{
+question: 'What is the new PHP 8.4 array_find() function used for?',
+options: [
+{ text: 'Returns the first element that matches a callback condition', correct: true, explanation: 'array_find() stops at the first match, making it more efficient than array_filter() when you only need one result.' },
+{ text: 'Returns all elements matching a callback', correct: false, explanation: 'That\'s array_filter(); array_find() returns only the first match.' },
+{ text: 'Finds the index of an element', correct: false, explanation: 'That\'s array_search() or array_find_key(); array_find() returns the value.' },
+{ text: 'Sorts an array by value', correct: false, explanation: 'That\'s sort() or asort(); array_find() is for searching.' }
+]
+},
+{
+question: 'How do you access a value in a multi-dimensional array?',
+options: [
+{ text: 'Use multiple square brackets: $array[0][\'key\']', correct: true, explanation: 'Each set of brackets accesses one level deeper into the nested structure.' },
+{ text: 'Use a dot notation: $array.0.key', correct: false, explanation: 'PHP uses brackets, not dots. Dots are for string concatenation.' },
+{ text: 'Use arrow notation: $array->0->key', correct: false, explanation: 'Arrows are for object properties, not array elements.' },
+{ text: 'You can only access the first level', correct: false, explanation: 'You can nest to any depth using multiple brackets.' }
+]
+},
+{
+question: 'What does the in_array() function do?',
+options: [
+{ text: 'Checks if a specific value exists anywhere in the array', correct: true, explanation: 'in_array() searches for a value and returns true if found, false otherwise.' },
+{ text: 'Checks if a key exists in the array', correct: false, explanation: 'That\'s array_key_exists() or isset(); in_array() checks values.' },
+{ text: 'Adds an element to the array', correct: false, explanation: 'That\'s array_push() or $array[] = value; in_array() only checks.' },
+{ text: 'Counts elements in the array', correct: false, explanation: 'That\'s count(); in_array() checks for value existence.' }
+]
+}
+]"
+/>
 
 ## Further Reading
 

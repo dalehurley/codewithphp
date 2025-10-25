@@ -785,3 +785,58 @@ This is the same professional setup that experienced developers use every day. Y
 This foundation will serve you throughout your entire PHP journey. Every line of code you write in this series will run on the environment you just built, and you'll be able to commit your progress after each chapter, building a complete history of your learning journey.
 
 **Next Steps**: In the next chapter, [01: Your First PHP Script](/series/php-basics/chapters/01-your-first-php-script), you'll write real PHP code, learn about syntax, and build your first dynamic web page. See you there!
+
+## Knowledge Check
+
+Test your understanding of setting up a PHP development environment:
+
+<Quiz
+title="Chapter 00 Quiz: Development Environment Setup"
+:questions="[
+{
+question: 'What command do you use to check if PHP is installed and see its version?',
+options: [
+{ text: 'php -v', correct: true, explanation: 'The -v flag displays the PHP version and confirms installation.' },
+{ text: 'php --check', correct: false, explanation: 'This is not a valid PHP command.' },
+{ text: 'php version', correct: false, explanation: 'PHP uses -v or --version flags, not a version command.' },
+{ text: 'check php', correct: false, explanation: 'This is not a valid command in any shell.' }
+]
+},
+{
+question: 'What is the purpose of PHP\'s built-in web server started with `php -S localhost:8000`?',
+options: [
+{ text: 'To run PHP scripts locally during development', correct: true, explanation: 'The built-in server is perfect for local development and testing without Apache or Nginx.' },
+{ text: 'To deploy PHP applications to production', correct: false, explanation: 'The built-in server is for development only, not production use.' },
+{ text: 'To compile PHP code into machine code', correct: false, explanation: 'PHP is interpreted, not compiled, and the server runs your code dynamically.' },
+{ text: 'To install PHP packages and dependencies', correct: false, explanation: 'Package management is handled by Composer, not the web server.' }
+]
+},
+{
+question: 'Which VS Code extension provides intelligent code completion and error checking for PHP?',
+options: [
+{ text: 'PHP Intelephense', correct: true, explanation: 'Intelephense provides IntelliSense, error detection, and documentation for PHP.' },
+{ text: 'Prettier', correct: false, explanation: 'Prettier is a code formatter, not a PHP language server.' },
+{ text: 'PHP Debug', correct: false, explanation: 'PHP Debug is for debugging with Xdebug, not code completion.' },
+{ text: 'ESLint', correct: false, explanation: 'ESLint is for JavaScript/TypeScript, not PHP.' }
+]
+},
+{
+question: 'What is the primary benefit of using Xdebug over echo/var_dump for debugging?',
+options: [
+{ text: 'You can set breakpoints and step through code line by line', correct: true, explanation: 'Xdebug lets you pause execution, inspect variables in real-time, and step through logic systematically.' },
+{ text: 'It makes your code run faster', correct: false, explanation: 'Xdebug actually adds overhead; it\'s for debugging, not performance.' },
+{ text: 'It automatically fixes syntax errors', correct: false, explanation: 'Xdebug helps you find bugs but doesn\'t fix them automatically.' },
+{ text: 'It\'s required for PHP to work', correct: false, explanation: 'Xdebug is optional; PHP works fine without it, but it greatly enhances debugging.' }
+]
+},
+{
+question: 'Why should you use Git for version control from the start of your PHP journey?',
+options: [
+{ text: 'To track changes and have the ability to undo mistakes', correct: true, explanation: 'Git creates snapshots of your code, letting you experiment safely and revert when needed.' },
+{ text: 'It makes PHP run faster', correct: false, explanation: 'Version control doesn\'t affect runtime performance.' },
+{ text: 'It\'s required to run PHP code', correct: false, explanation: 'PHP works without Git; version control is a development best practice.' },
+{ text: 'To automatically deploy code to production', correct: false, explanation: 'While Git enables deployment workflows, that\'s not its primary purpose for beginners.' }
+]
+}
+]"
+/>

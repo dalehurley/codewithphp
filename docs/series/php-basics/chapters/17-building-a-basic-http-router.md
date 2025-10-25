@@ -53,6 +53,37 @@ By the end of this chapter, you'll have:
 - Dispatch a request to the correct route's handler
 - Handle 404 Not Found errors for undefined routes
 
+## Router Architecture: Visual Overview
+
+Here's how the Front Controller pattern and routing work:
+
+```mermaid
+flowchart TB
+    A[Browser Request<br/>/posts/123] -->|All requests| B[index.php<br/>Front Controller]
+    B -->|Parse URI & Method| C[Router]
+    C -->|Match against registered routes| D{Route Found?}
+    D -->|Yes| E[Extract Parameters<br/>id = 123]
+    D -->|No| F[404 Handler]
+    E --> G[Execute Handler<br/>Controller/Closure]
+    G --> H[Generate Response]
+    F --> I[Show 404 Page]
+    H --> J[Send to Browser]
+    I --> J
+
+    style B fill:#e1f5ff
+    style C fill:#e1f5ff
+    style G fill:#d4edda
+    style F fill:#f8d7da
+```
+
+**Key Concepts:**
+
+- **Single Entry Point**: All requests go through `index.php`
+- **URL Matching**: Router compares request URI to registered patterns
+- **Dynamic Parameters**: Extract values like `{id}` from URLs
+- **Handler Execution**: Call the appropriate function/method
+- **404 Fallback**: Handle unmatched routes gracefully
+
 ## Step 1: Setting Up the Project Structure (~5 min)
 
 **Goal**: Create a modern project structure with a public entry point and separate directories for application code.
@@ -928,6 +959,61 @@ In [Chapter 18: Project - Structuring a Simple Application](/series/php-basics/c
 - Implement a simple templating system
 - Connect your router to controllers instead of closures
 - Add view rendering for cleaner separation of logic and presentation
+
+## Knowledge Check
+
+Test your understanding of HTTP routing:
+
+<Quiz
+title="Chapter 17 Quiz: Building an HTTP Router"
+:questions="[
+{
+question: 'What is the purpose of a router in a web application?',
+options: [
+{ text: 'To map URLs to specific code handlers', correct: true, explanation: 'A router matches incoming request URLs and HTTP methods to the appropriate handlers that should process them.' },
+{ text: 'To store routing tables in the database', correct: false, explanation: 'Routes are typically defined in code, not stored in databases.' },
+{ text: 'To encrypt URLs', correct: false, explanation: 'Routers handle request mapping; encryption is handled by HTTPS.' },
+{ text: 'To create database connections', correct: false, explanation: 'Database connections are separate; routers handle URL mapping.' }
+]
+},
+{
+question: 'What does the front controller pattern mean?',
+options: [
+{ text: 'All requests go through a single entry point (e.g., index.php)', correct: true, explanation: 'Front controller pattern routes all requests through one file, giving centralized control over routing.' },
+{ text: 'The first controller created handles all requests', correct: false, explanation: 'Front controller refers to a single entry point file, not which controller was created first.' },
+{ text: 'Only GET requests are handled', correct: false, explanation: 'Front controllers handle all HTTP methods, not just GET.' },
+{ text: 'Controllers must be in the front-end', correct: false, explanation: 'This is about request routing architecture, not front-end vs back-end.' }
+]
+},
+{
+question: 'What are dynamic route parameters like /posts/{id}?',
+options: [
+{ text: 'Placeholders that capture variable URL segments', correct: true, explanation: 'Dynamic parameters like {id} match any value in that position and pass it to the handler.' },
+{ text: 'Fixed routes that never change', correct: false, explanation: 'Dynamic parameters are specifically for variable segments, not fixed ones.' },
+{ text: 'Database query parameters', correct: false, explanation: 'Route parameters are URL segments; database queries are separate.' },
+{ text: 'HTTP headers', correct: false, explanation: 'Route parameters are part of the URL path, not HTTP headers.' }
+]
+},
+{
+question: 'What HTTP method should be used for retrieving/displaying data?',
+options: [
+{ text: 'GET', correct: true, explanation: 'GET is for reading/retrieving data. It should be idempotent (no side effects).' },
+{ text: 'POST', correct: false, explanation: 'POST is for creating data or operations with side effects.' },
+{ text: 'PATCH', correct: false, explanation: 'PATCH is for partially updating existing resources.' },
+{ text: 'DELETE', correct: false, explanation: 'DELETE is for removing resources.' }
+]
+},
+{
+question: 'What is the purpose of $\_SERVER[\'REQUEST\_URI\'] in routing?',
+options: [
+{ text: 'It contains the URL path requested by the client', correct: true, explanation: '$\_SERVER[\'REQUEST_URI\'] holds the full request URI, which the router parses to match against registered routes.' },
+{ text: 'It stores the server\'s IP address', correct: false, explanation: 'That would be SERVER_ADDR; REQUEST_URI contains the requested URL path.' },
+{ text: 'It creates new routes', correct: false, explanation: 'REQUEST_URI is read-only data from the request; routes are defined in code.' },
+{ text: 'It returns HTML content', correct: false, explanation: 'REQUEST_URI contains the URL; content is generated by handlers.' }
+]
+}
+]"
+/>
 
 ## Further Reading
 

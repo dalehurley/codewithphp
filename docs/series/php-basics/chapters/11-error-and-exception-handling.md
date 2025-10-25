@@ -809,6 +809,61 @@ Using these techniques, you control exactly what happens when things go wrong, p
 
 In [Chapter 12: Dependency Management with Composer](/series/php-basics/chapters/12-dependency-management-with-composer), you'll learn how to use Composer, PHP's package manager, to integrate third-party libraries into your projects and manage dependencies professionally. Exception handling becomes even more important when working with external packages that may throw their own exception types.
 
+## Knowledge Check
+
+Test your understanding of error and exception handling:
+
+<Quiz
+title="Chapter 11 Quiz: Error and Exception Handling"
+:questions="[
+{
+question: 'What is the purpose of the try-catch block?',
+options: [
+{ text: 'To catch and handle exceptions gracefully without crashing', correct: true, explanation: 'try-catch allows you to wrap risky code and handle exceptions when they occur, preventing application crashes.' },
+{ text: 'To prevent all errors from occurring', correct: false, explanation: 'try-catch doesn\'t prevent errors; it handles them when they occur.' },
+{ text: 'To make code run faster', correct: false, explanation: 'Exception handling is about error management, not performance.' },
+{ text: 'To validate user input', correct: false, explanation: 'Validation is separate; try-catch handles exceptional situations when they arise.' }
+]
+},
+{
+question: 'What does the finally block do?',
+options: [
+{ text: 'Runs code whether an exception was thrown or not', correct: true, explanation: 'finally always executes, making it perfect for cleanup operations like closing files or database connections.' },
+{ text: 'Only runs if an exception was caught', correct: false, explanation: 'finally runs in all cases: exception thrown, caught, or not thrown at all.' },
+{ text: 'Prevents exceptions from being thrown', correct: false, explanation: 'finally is for cleanup, not prevention.' },
+{ text: 'Returns a value from the function', correct: false, explanation: 'finally is for cleanup code; it shouldn\'t be used for returns (though it can override them).' }
+]
+},
+{
+question: 'How do you create a custom exception class?',
+options: [
+{ text: 'Extend the Exception class', correct: true, explanation: 'Custom exceptions should extend Exception (or one of its subclasses) to inherit exception functionality.' },
+{ text: 'Implement the Exception interface', correct: false, explanation: 'Exception is a class, not an interface. You extend it rather than implement it.' },
+{ text: 'Use the exception keyword', correct: false, explanation: 'There\'s no exception keyword; you create a class that extends Exception.' },
+{ text: 'Just throw an error message string', correct: false, explanation: 'You must throw Exception objects, not strings.' }
+]
+},
+{
+question: 'What\'s the difference between throw and catch?',
+options: [
+{ text: 'throw creates an exception, catch handles it', correct: true, explanation: 'throw is used to raise an exception, while catch is used to handle exceptions that were thrown.' },
+{ text: 'They do the same thing', correct: false, explanation: 'They\'re opposites: throw raises exceptions, catch handles them.' },
+{ text: 'throw is for errors, catch is for exceptions', correct: false, explanation: 'Both work with exceptions; throw creates them, catch handles them.' },
+{ text: 'catch prevents exceptions, throw allows them', correct: false, explanation: 'catch handles exceptions after they\'re thrown; it doesn\'t prevent them.' }
+]
+},
+{
+question: 'What are SPL exceptions?',
+options: [
+{ text: 'Built-in exception types for common scenarios', correct: true, explanation: 'SPL (Standard PHP Library) provides exception classes like InvalidArgumentException, RuntimeException, etc., for common use cases.' },
+{ text: 'Exceptions that cannot be caught', correct: false, explanation: 'All exceptions can be caught; SPL exceptions are just pre-defined types.' },
+{ text: 'Special Performance Language exceptions', correct: false, explanation: 'SPL stands for Standard PHP Library, not Special Performance Language.' },
+{ text: 'Exceptions only for database operations', correct: false, explanation: 'SPL exceptions cover many scenarios, not just databases.' }
+]
+}
+]"
+/>
+
 ## Further Reading
 
 - [PHP Manual: Exceptions](https://www.php.net/manual/en/language.exceptions.php) – Official documentation on exception handling

@@ -598,6 +598,61 @@ Within the next 48 hours, take one concrete action:
 
 Don't wait until you feel "ready." You're ready now.
 
+## Knowledge Check
+
+Reflect on your learning journey:
+
+<Quiz
+title="Chapter 22 Quiz: Your Next Steps"
+:questions="[
+{
+question: 'What is the best way to continue learning after completing this series?',
+options: [
+{ text: 'Build real projects and learn frameworks deeply', correct: true, explanation: 'Practical experience through building projects is the most effective way to solidify and expand your skills.' },
+{ text: 'Only read documentation without building', correct: false, explanation: 'Reading is important, but building projects cements learning and reveals gaps in understanding.' },
+{ text: 'Wait until you know everything before starting', correct: false, explanation: 'You\'ll never know everything; start building now and learn as you encounter challenges.' },
+{ text: 'Memorize all PHP functions', correct: false, explanation: 'Understanding concepts and knowing how to find information is more valuable than memorization.' }
+]
+},
+{
+question: 'What is the value of learning testing (PHPUnit)?',
+options: [
+{ text: 'Ensures code works correctly and prevents regressions', correct: true, explanation: 'Tests verify your code works as intended and alert you when changes break existing functionality.' },
+{ text: 'Testing is only for large companies', correct: false, explanation: 'Testing benefits projects of all sizes by catching bugs early and enabling confident refactoring.' },
+{ text: 'Testing replaces the need for manual testing', correct: false, explanation: 'Automated tests complement manual testing but don\'t completely replace it.' },
+{ text: 'Testing makes code run faster', correct: false, explanation: 'Testing ensures correctness; performance optimization is separate.' }
+]
+},
+{
+question: 'Why should you contribute to open-source projects?',
+options: [
+{ text: 'Learn from real codebases and help the community', correct: true, explanation: 'Open-source contributions provide real-world experience, mentorship opportunities, and give back to the community.' },
+{ text: 'It\'s required to get a job', correct: false, explanation: 'While helpful, open-source contributions aren\'t required—a strong portfolio of any projects works.' },
+{ text: 'Only experts can contribute', correct: false, explanation: 'Projects need contributors at all levels—documentation, bug reports, and small fixes are valuable contributions.' },
+{ text: 'All contributions must be large features', correct: false, explanation: 'Small contributions like fixing typos, improving docs, or reporting bugs are valuable and welcomed.' }
+]
+},
+{
+question: 'What is the most important skill for a professional developer?',
+options: [
+{ text: 'Continuous learning and problem-solving', correct: true, explanation: 'Technology constantly evolves; the ability to learn, adapt, and solve problems is more valuable than any specific skill.' },
+{ text: 'Memorizing syntax', correct: false, explanation: 'Syntax can be looked up; problem-solving and learning ability are what matter.' },
+{ text: 'Knowing only one framework perfectly', correct: false, explanation: 'While depth is valuable, adaptability and breadth of understanding are also crucial.' },
+{ text: 'Working alone always', correct: false, explanation: 'Collaboration and communication are essential skills for professional developers.' }
+]
+},
+{
+question: 'What should your immediate next action be?',
+options: [
+{ text: 'Pick a framework and start building a project', correct: true, explanation: 'The best way to solidify learning is through immediate practice—start building something today!' },
+{ text: 'Wait 6 months before writing code', correct: false, explanation: 'Start building now; waiting only delays progress and learning.' },
+{ text: 'Reread this entire series', correct: false, explanation: 'While review can help, building projects and encountering real problems is more effective.' },
+{ text: 'Learn 5 frameworks before building anything', correct: false, explanation: 'Pick one framework and build with it; deep knowledge beats surface-level knowledge of many tools.' }
+]
+}
+]"
+/>
+
 ### A Final Thank You
 
 Thank you for trusting this series to guide you. The PHP community is better with you in it. Now go build something amazing—and when you do, come back and share it. We'd love to see what you create.

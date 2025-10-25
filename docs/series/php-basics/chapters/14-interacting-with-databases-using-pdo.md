@@ -48,6 +48,39 @@ By the end of this chapter, you'll have created:
 - Multiple ways to fetch data (all rows, single row, single column, as objects)
 - Transaction examples showing commit and rollback behavior
 - NULL value handling and queries
+
+## PDO Architecture: Visual Overview
+
+Here's how PDO connects your PHP application to databases:
+
+```mermaid
+flowchart TB
+    A[PHP Application] -->|1. Create Connection| B[PDO Instance]
+    B -->|2. Prepare Statement| C[PDOStatement]
+    C -->|3. Bind Parameters| C
+    C -->|4. Execute Query| D[Database<br/>MySQL/PostgreSQL/SQLite]
+    D -->|5. Return Results| C
+    C -->|6. Fetch Data| A
+
+    B -.->|Error Mode| E[Exception Handling]
+    C -.->|SQL Injection Protection| F[Prepared Statements]
+
+    style B fill:#e1f5ff
+    style C fill:#e1f5ff
+    style D fill:#d4edda
+    style E fill:#f8d7da
+    style F fill:#fff3cd
+```
+
+**Key Flow:**
+
+1. **Connect** to database using PDO constructor
+2. **Prepare** SQL statement (with placeholders for safety)
+3. **Bind** parameters to prevent SQL injection
+4. **Execute** the query against the database
+5. **Fetch** results in various formats
+6. Handle errors via exceptions
+
 - Batch insert operations with performance comparisons
 - A complete, production-ready blog system class with all best practices
 - Eight runnable example files covering all concepts
@@ -1311,7 +1344,8 @@ class BlogDatabase
             ORDER BY created_at DESC
         ");
 
-        $stmt->execute([':query' => "%$query%"]);
+        $searchTerm = "%$query%";
+        $stmt->execute([':query' => $searchTerm]);
 
         return $stmt->fetchAll();
     }
@@ -1445,6 +1479,61 @@ try {
 - SQL syntax may vary slightly between databases (but PDO code remains the same!)
 - MySQL and PostgreSQL require authentication (username/password)
 - SQLite is file-based; MySQL and PostgreSQL are server-based
+
+## Knowledge Check
+
+Test your understanding of database interactions with PDO:
+
+<Quiz
+title="Chapter 14 Quiz: Databases with PDO"
+:questions="[
+{
+question: 'What is the primary advantage of using prepared statements?',
+options: [
+{ text: 'Prevents SQL injection attacks', correct: true, explanation: 'Prepared statements separate SQL logic from data, preventing malicious SQL from being executed.' },
+{ text: 'Makes queries run faster', correct: false, explanation: 'While they can be slightly faster for repeated queries, security is the primary benefit.' },
+{ text: 'Automatically creates database tables', correct: false, explanation: 'Prepared statements execute queries; they don\'t create schema automatically.' },
+{ text: 'Replaces the need for a database', correct: false, explanation: 'Prepared statements are a way to interact with databases more securely.' }
+]
+},
+{
+question: 'What does the question mark (?) represent in a prepared statement?',
+options: [
+{ text: 'A placeholder for a value that will be bound later', correct: true, explanation: 'The ? is a positional parameter placeholder that gets replaced with actual values safely using execute().' },
+{ text: 'An optional parameter', correct: false, explanation: 'It\'s a required placeholder; optional parameters are handled with default values in your code.' },
+{ text: 'A wildcard for pattern matching', correct: false, explanation: 'Wildcards for LIKE queries use %, not ?. The ? is for parameter binding.' },
+{ text: 'A comment marker', correct: false, explanation: 'SQL comments use -- or /* */; ? is for parameter placeholders.' }
+]
+},
+{
+question: 'What does PDO::FETCH_ASSOC do?',
+options: [
+{ text: 'Returns rows as associative arrays with column names as keys', correct: true, explanation: 'FETCH_ASSOC gives you arrays like [\'id\' => 1, \'name\' => \'John\'] instead of numeric indices.' },
+{ text: 'Fetches all rows at once', correct: false, explanation: 'That\'s fetchAll(); FETCH_ASSOC is a mode that determines the format of fetched data.' },
+{ text: 'Associates the database with a variable', correct: false, explanation: 'FETCH_ASSOC controls the format of returned data, not database connections.' },
+{ text: 'Fetches data as objects', correct: false, explanation: 'That\'s FETCH_OBJ; FETCH_ASSOC returns associative arrays.' }
+]
+},
+{
+question: 'What is the purpose of database transactions?',
+options: [
+{ text: 'To group multiple queries that must all succeed or all fail together', correct: true, explanation: 'Transactions ensure atomicity: either all operations complete successfully, or none do (rollback).' },
+{ text: 'To make queries run faster', correct: false, explanation: 'Transactions are about data integrity, not performance (though they can have performance benefits).' },
+{ text: 'To encrypt database data', correct: false, explanation: 'Transactions handle operation grouping; encryption is handled separately.' },
+{ text: 'To create database backups', correct: false, explanation: 'Backups are separate; transactions ensure consistent state during operations.' }
+]
+},
+{
+question: 'What does lastInsertId() return?',
+options: [
+{ text: 'The auto-generated ID of the last inserted row', correct: true, explanation: 'After an INSERT with an auto-incrementing primary key, lastInsertId() returns that new ID value.' },
+{ text: 'The number of rows inserted', correct: false, explanation: 'That\'s what rowCount() returns; lastInsertId() gives you the generated ID.' },
+{ text: 'The last query executed', correct: false, explanation: 'PDO doesn\'t track query history; lastInsertId() returns the generated ID from INSERT.' },
+{ text: 'The current timestamp', correct: false, explanation: 'Use PHP\'s time() or SQL\'s CURRENT_TIMESTAMP for that; lastInsertId() returns IDs.' }
+]
+}
+]"
+/>
 
 ### Additional Resources
 

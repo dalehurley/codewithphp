@@ -106,25 +106,25 @@ A framework like Laravel provides battle-tested solutions for all of these probl
 
 Here's how the components you built manually map to Laravel features:
 
-| Your Simple Blog                      | Laravel Equivalent                           | What Laravel Adds                                                                               |
-| ------------------------------------- | -------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `$routes` array in `public/index.php` | `Route::get()` in `routes/web.php`           | Named routes, route parameters, middleware, route grouping, route caching                       |
-| Manual `require` for controllers      | Controller classes with dependency injection | Automatic class loading, type-hinted dependencies, resource controllers                         |
-| PDO connection                        | Eloquent ORM + Query Builder                 | Object-oriented queries, relationships (one-to-many, many-to-many), eager loading, soft deletes |
-| Manual `include` of view files        | Blade templating engine                      | Layouts, components, slots, automatic XSS escaping, view caching                                |
-| No database versioning                | Migrations and seeders                       | Version-controlled schema, easy rollback, shareable database structure                          |
-| Manual `htmlspecialchars()`           | Automatic in Blade (`{{ }}`)                 | Built-in XSS protection                                                                         |
-| No structure                          | MVC architecture                             | Clear separation of concerns, testable code                                                     |
+| Your Simple Blog                      | Laravel Equivalent                            | What Laravel Adds                                                                               |
+| ------------------------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `$routes` array in `public/index.php` | `Route::get()` in `routes/web.php`            | Named routes, route parameters, middleware, route grouping, route caching                       |
+| Manual `require` for controllers      | Controller classes with dependency injection  | Automatic class loading, type-hinted dependencies, resource controllers                         |
+| PDO connection                        | Eloquent ORM + Query Builder                  | Object-oriented queries, relationships (one-to-many, many-to-many), eager loading, soft deletes |
+| Manual `include` of view files        | Blade templating engine                       | Layouts, components, slots, automatic XSS escaping, view caching                                |
+| No database versioning                | Migrations and seeders                        | Version-controlled schema, easy rollback, shareable database structure                          |
+| Manual `htmlspecialchars()`           | Automatic in Blade (<code v-pre>{{ }}</code>) | Built-in XSS protection                                                                         |
+| No structure                          | MVC architecture                              | Clear separation of concerns, testable code                                                     |
 
 This isn't to say your from-scratch blog was bad—far from it! Understanding how to build these components manually gives you deep knowledge of _why_ frameworks work the way they do. You're now in a perfect position to appreciate Laravel's elegance.
 
 ## Step 2: Installing Laravel (~5 min)
 
-**Goal**: Create a new Laravel project and verify it runs successfully.
+**Goal** - Create a new Laravel project and verify it runs successfully.
 
 Laravel uses Composer for installation. You can create a new Laravel project with a single command.
 
-1.  **Navigate to Your Projects Directory**:
+1.  **Navigate to Your Projects Directory**
 
     In your terminal, navigate to the directory where you keep your code projects (the parent of your `simple-blog` project).
 
@@ -133,7 +133,7 @@ Laravel uses Composer for installation. You can create a new Laravel project wit
     cd ~/projects
     ```
 
-2.  **Create a New Laravel Project**:
+2.  **Create a New Laravel Project**
 
     Run the following Composer command:
 
@@ -153,7 +153,7 @@ Laravel uses Composer for installation. You can create a new Laravel project wit
     Application ready! Build something amazing.
     ```
 
-3.  **Start the Development Server**:
+3.  **Start the Development Server**
 
     Navigate into the new directory and use Laravel's built-in command-line tool, **Artisan**, to start the development server.
 
@@ -173,7 +173,7 @@ Laravel uses Composer for installation. You can create a new Laravel project wit
     Press Ctrl+C to stop the server
     ```
 
-4.  **Verify Installation**:
+4.  **Verify Installation**
 
     Open your browser and visit `http://localhost:8000`. You should see the beautiful Laravel welcome page with the Laravel logo and links to documentation.
 
@@ -199,11 +199,11 @@ php artisan serve --port=8001
 
 ## Step 3: Configure the Database (~2 min)
 
-**Goal**: Set up SQLite as your database and verify Laravel can connect to it.
+**Goal** - Set up SQLite as your database and verify Laravel can connect to it.
 
 Laravel is pre-configured to use MySQL, but we can easily switch it to SQLite for simplicity.
 
-1.  **Update Environment Configuration**:
+1.  **Update Environment Configuration**
 
     Open the `.env` file in your project root. This file holds your application's environment-specific configuration. Find the database configuration section and update it:
 
@@ -218,7 +218,7 @@ Laravel is pre-configured to use MySQL, but we can easily switch it to SQLite fo
     # DB_PASSWORD=           # Comment out or remove
     ```
 
-2.  **Create the Database File**:
+2.  **Create the Database File**
 
     SQLite uses a single file for the entire database. Create it:
 
@@ -227,7 +227,7 @@ Laravel is pre-configured to use MySQL, but we can easily switch it to SQLite fo
     touch database/database.sqlite
     ```
 
-3.  **Verify Database Connection**:
+3.  **Verify Database Connection**
 
     Run a simple Artisan command to test the connection:
 
@@ -258,7 +258,7 @@ Laravel is pre-configured to use MySQL, but we can easily switch it to SQLite fo
 
 Artisan can generate boilerplate code for us. Let's create a `Post` model and a database **migration** file at the same time. A migration is like version control for your database schema.
 
-1.  **Generate the Model and Migration**:
+1.  **Generate the Model and Migration**
 
     ```bash
     # -m flag creates a migration file alongside the model
@@ -272,7 +272,7 @@ Artisan can generate boilerplate code for us. Let's create a `Post` model and a 
     INFO  Migration [database/migrations/YYYY_MM_DD_HHMMSS_create_posts_table.php] created successfully.
     ```
 
-2.  **Define the Table Schema**:
+2.  **Define the Table Schema**
 
     Open the newly created migration file in `database/migrations/` (it will have a timestamp in the filename). Update the `up()` method:
 
@@ -303,7 +303,7 @@ Artisan can generate boilerplate code for us. Let's create a `Post` model and a 
     };
     ```
 
-3.  **Run the Migration**:
+3.  **Run the Migration**
 
     Execute the migration to create the `posts` table:
 
@@ -319,7 +319,7 @@ Artisan can generate boilerplate code for us. Let's create a `Post` model and a 
     YYYY_MM_DD_HHMMSS_create_posts_table ............. 15ms DONE
     ```
 
-4.  **Verify Table Creation**:
+4.  **Verify Table Creation**
 
     You can use Artisan Tinker (Laravel's REPL) to verify:
 
@@ -351,7 +351,7 @@ Artisan can generate boilerplate code for us. Let's create a `Post` model and a 
 
 **Goal**: Generate a controller to handle post-related HTTP requests.
 
-1.  **Generate the Controller**:
+1.  **Generate the Controller**
 
     ```bash
     # Create a new PostController
@@ -364,7 +364,7 @@ Artisan can generate boilerplate code for us. Let's create a `Post` model and a 
     INFO  Controller [app/Http/Controllers/PostController.php] created successfully.
     ```
 
-2.  **Add the Index Method**:
+2.  **Add the Index Method**
 
     Open `app/Http/Controllers/PostController.php` and add an `index` method:
 
@@ -388,13 +388,13 @@ Artisan can generate boilerplate code for us. Let's create a `Post` model and a 
     }
     ```
 
-**Why it works**: Notice how we can use the `Post` model directly to query the database. This is Laravel's **Eloquent ORM** in action. The `latest()` method orders by `created_at` descending, and `get()` executes the query. No manual SQL required!
+**Why it works** - Notice how we can use the `Post` model directly to query the database. This is Laravel's **Eloquent ORM** in action. The `latest()` method orders by `created_at` descending, and `get()` executes the query. No manual SQL required!
 
 ## Step 6: Define the Route (~1 min)
 
 **Goal**: Map a URL path to your controller method.
 
-1.  **Add the Route**:
+1.  **Add the Route**
 
     Open `routes/web.php` and add the following route:
 
@@ -437,57 +437,64 @@ The key difference: Laravel's infrastructure is more robust with automatic depen
 
 Laravel uses a powerful templating engine called **Blade**. Blade files end in `.blade.php` and provide a cleaner syntax than raw PHP.
 
-1.  **Create the Directory Structure**:
+1.  **Create the Directory Structure**
 
     ```bash
     # Create the posts views directory
     mkdir -p resources/views/posts
     ```
 
-2.  **Create the View File**:
+2.  **Create the View File**
 
     Create `resources/views/posts/index.blade.php` with this content:
 
-    ```blade
-    # filename: resources/views/posts/index.blade.php
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>All Posts - Laravel Blog</title>
-        <style>
-            body { font-family: sans-serif; max-width: 800px; margin: 50px auto; padding: 0 20px; }
-            article { border: 1px solid #ddd; padding: 20px; margin-bottom: 20px; border-radius: 5px; }
-            h1 { color: #333; }
-            h2 { color: #666; margin-top: 0; }
-        </style>
-    </head>
-    <body>
-        <h1>All Posts</h1>
+::: v-pre
 
-        @forelse ($posts as $post)
-            <article>
-                <h2>{{ $post->title }}</h2>
-                <p>{{ $post->content }}</p>
-                <small>Posted on {{ $post->created_at->format('F j, Y') }}</small>
-            </article>
-        @empty
-            <p>No posts yet. Create some posts using Tinker!</p>
-        @endforelse
-    </body>
-    </html>
-    ```
+```blade
+# filename: resources/views/posts/index.blade.php
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Posts - Laravel Blog</title>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 50px auto; padding: 0 20px; }
+        article { border: 1px solid #ddd; padding: 20px; margin-bottom: 20px; border-radius: 5px; }
+        h1 { color: #333; }
+        h2 { color: #666; margin-top: 0; }
+    </style>
+</head>
+<body>
+    <h1>All Posts</h1>
 
-3.  **Verify the Route**:
+    @forelse ($posts as $post)
+        <article>
+            <h2>{{ $post->title }}</h2>
+            <p>{{ $post->content }}</p>
+            <small>Posted on {{ $post->created_at->format('F j, Y') }}</small>
+        </article>
+    @empty
+        <p>No posts yet. Create some posts using Tinker!</p>
+    @endforelse
+</body>
+</html>
+```
+
+:::
+
+3.  **Verify the Route**
 
     Visit `http://localhost:8000/posts` in your browser. You should see the heading "All Posts" and the message "No posts yet."
 
 **Why it works**:
 
+::: v-pre
+
 - `@forelse` is a Blade directive that combines a foreach loop with an empty check
 - `{{ $post->title }}` is Blade's syntax for echoing data—it automatically escapes output to prevent XSS attacks (no need for `htmlspecialchars`)
 - `$post->created_at->format()` works because Eloquent automatically casts timestamp columns to `Carbon` objects (a powerful date/time library)
+  :::
 
 ### Blade vs. Your Layout System
 
@@ -504,6 +511,8 @@ function view(string $viewName, array $data = [], ?string $layout = 'layout'): v
 ```
 
 **Laravel's Blade** uses a different (more elegant) approach with `@extends` and `@section` directives:
+
+::: v-pre
 
 ```blade
 {{-- resources/views/layouts/app.blade.php --}}
@@ -533,6 +542,8 @@ function view(string $viewName, array $data = [], ?string $layout = 'layout'): v
     @endforeach
 @endsection
 ```
+
+:::
 
 **Key differences**:
 
@@ -606,13 +617,13 @@ Choose `$fillable` (whitelist) for maximum security, especially when working wit
 
 Let's use **Tinker**, Laravel's interactive PHP shell, to create some posts.
 
-1.  **Start Tinker**:
+1.  **Start Tinker**
 
     ```bash
     php artisan tinker
     ```
 
-2.  **Create Sample Posts**:
+2.  **Create Sample Posts**
 
     Run these commands in Tinker:
 
@@ -636,7 +647,7 @@ Let's use **Tinker**, Laravel's interactive PHP shell, to create some posts.
        }
     ```
 
-3.  **Verify in Browser**:
+3.  **Verify in Browser**
 
     Refresh `http://localhost:8000/posts`. You should now see all three posts displayed with their titles, content, and formatted dates.
 
@@ -965,10 +976,10 @@ All the fundamental concepts you learned—OOP, MVC, PSR standards, and database
 
 To continue your Laravel journey:
 
-1. **Add more features**: Try implementing a "show single post" page, a create form, and edit/delete functionality
-2. **Learn authentication**: Laravel includes built-in authentication scaffolding with Laravel Breeze or Jetstream
-3. **Explore relationships**: Add authors, categories, or comments to your posts using Eloquent relationships
-4. **Deploy your app**: Try deploying to platforms like Laravel Forge, Vapor, or standard hosting
+1. **Add more features** - Try implementing a "show single post" page, a create form, and edit/delete functionality
+2. **Learn authentication** - Laravel includes built-in authentication scaffolding with Laravel Breeze or Jetstream
+3. **Explore relationships** - Add authors, categories, or comments to your posts using Eloquent relationships
+4. **Deploy your app** - Try deploying to platforms like Laravel Forge, Vapor, or standard hosting
 
 In the next chapter, we'll take a quick look at another major framework, Symfony, to see a different approach to solving the same problems.
 

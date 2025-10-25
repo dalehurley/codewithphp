@@ -1503,6 +1503,61 @@ When working with files in web applications, always remember:
 
 In the next chapter, we'll take a major step forward by learning how to connect to and interact with a database using PHP's PDO extension. While file storage is useful, databases provide better performance, querying capabilities, and data integrity for most applications.
 
+## Knowledge Check
+
+Test your understanding of filesystem operations:
+
+<Quiz
+title="Chapter 13 Quiz: Working with the Filesystem"
+:questions="[
+{
+question: 'What does file_get_contents() do?',
+options: [
+{ text: 'Reads an entire file into a string', correct: true, explanation: 'file_get_contents() is the simplest way to read a whole file at once into a string variable.' },
+{ text: 'Writes content to a file', correct: false, explanation: 'That\'s file_put_contents(); file_get_contents() reads files.' },
+{ text: 'Deletes a file', correct: false, explanation: 'That\'s unlink(); file_get_contents() reads files.' },
+{ text: 'Lists files in a directory', correct: false, explanation: 'That\'s scandir() or glob(); file_get_contents() reads file content.' }
+]
+},
+{
+question: 'What does the FILE_APPEND flag do with file_put_contents()?',
+options: [
+{ text: 'Adds content to the end without overwriting', correct: true, explanation: 'FILE_APPEND adds new content to the end of the file instead of replacing everything.' },
+{ text: 'Creates a new file', correct: false, explanation: 'file_put_contents() creates files by default; FILE_APPEND specifically adds to existing content.' },
+{ text: 'Deletes the file first', correct: false, explanation: 'FILE_APPEND preserves existing content; without it, the file is overwritten.' },
+{ text: 'Converts content to JSON', correct: false, explanation: 'JSON conversion uses json_encode(); FILE_APPEND is about append behavior.' }
+]
+},
+{
+question: 'What function encodes a PHP array into JSON format?',
+options: [
+{ text: 'json_encode()', correct: true, explanation: 'json_encode() converts PHP arrays/objects into JSON strings for storage or API responses.' },
+{ text: 'json_decode()', correct: false, explanation: 'json_decode() does the opposite: converts JSON strings back to PHP arrays.' },
+{ text: 'serialize()', correct: false, explanation: 'serialize() creates PHP-specific format; json_encode() creates JSON.' },
+{ text: 'file_put_contents()', correct: false, explanation: 'file_put_contents() writes to files; json_encode() converts to JSON format.' }
+]
+},
+{
+question: 'Why should you use fopen()/fgets()/fclose() instead of file_get_contents() for large files?',
+options: [
+{ text: 'To read line-by-line without loading entire file into memory', correct: true, explanation: 'fgets() reads one line at a time, preventing memory exhaustion with huge files.' },
+{ text: 'It\'s faster', correct: false, explanation: 'file_get_contents() can be faster for small files; line-by-line is about memory management.' },
+{ text: 'It\'s required for all files', correct: false, explanation: 'file_get_contents() works fine for small files; use line-by-line for large ones.' },
+{ text: 'It creates the file if it doesn\'t exist', correct: false, explanation: 'Both methods can create files; the difference is in how they read.' }
+]
+},
+{
+question: 'What does the glob() function do?',
+options: [
+{ text: 'Finds files matching a pattern with wildcards', correct: true, explanation: 'glob() searches for files using patterns like *.txt or data/*.json, returning matching paths.' },
+{ text: 'Creates global variables', correct: false, explanation: 'glob() finds files; it has nothing to do with global variables.' },
+{ text: 'Deletes multiple files', correct: false, explanation: 'glob() finds files; use unlink() in a loop to delete them.' },
+{ text: 'Combines file contents', correct: false, explanation: 'glob() finds files; combining content requires reading and concatenating.' }
+]
+}
+]"
+/>
+
 ### Further Reading
 
 - [PHP Filesystem Functions](https://www.php.net/manual/en/ref.filesystem.php) - Complete reference

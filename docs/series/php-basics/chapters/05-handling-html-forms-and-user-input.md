@@ -541,7 +541,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 ```php
 // Wrong - will cause errors if no checkboxes selected
-$interests = $_POST['interests'];
+$interests = $_POST['interests'];  // Don't do this!
 
 // Right - provides empty array if nothing selected
 $interests = $_POST['interests'] ?? [];
@@ -592,6 +592,61 @@ Great job! You can now build interactive web pages that accept and process user 
 - Single checkboxes only exist in `$_POST` when checked; use `isset()` to check them
 
 In the next chapter, we'll dive into arrays, PHP's incredibly powerful and versatile tool for storing and managing lists of related data.
+
+## Knowledge Check
+
+Test your understanding of HTML forms and user input:
+
+<Quiz
+title="Chapter 05 Quiz: HTML Forms and User Input"
+:questions="[
+{
+question: 'What is the primary difference between GET and POST methods?',
+options: [
+{ text: 'GET passes data in the URL, POST sends it in the request body', correct: true, explanation: 'GET appends data to the URL (visible and bookmarkable), while POST sends data in the request body (not visible in URL).' },
+{ text: 'GET is faster than POST', correct: false, explanation: 'Performance is nearly identical; the difference is in how data is transmitted.' },
+{ text: 'POST is for reading data, GET is for writing', correct: false, explanation: 'It\'s the opposite: GET is for reading/retrieving, POST is for creating/modifying data.' },
+{ text: 'They are exactly the same', correct: false, explanation: 'They differ significantly in how they transmit data and when they should be used.' }
+]
+},
+{
+question: 'Why must you always use htmlspecialchars() when outputting user data?',
+options: [
+{ text: 'To prevent XSS (Cross-Site Scripting) attacks', correct: true, explanation: 'htmlspecialchars() escapes HTML special characters, preventing malicious scripts from executing in the browser.' },
+{ text: 'To make the output look prettier', correct: false, explanation: 'htmlspecialchars() is for security, not formatting.' },
+{ text: 'To validate the user input', correct: false, explanation: 'Validation checks input correctness; htmlspecialchars() sanitizes output for safe display.' },
+{ text: 'To convert strings to uppercase', correct: false, explanation: 'That\'s what strtoupper() does; htmlspecialchars() escapes special characters.' }
+]
+},
+{
+question: 'What does the $_POST superglobal contain?',
+options: [
+{ text: 'An associative array of data submitted via POST method', correct: true, explanation: '$\_POST contains all form data sent with method=\'POST\', with field names as keys.' },
+{ text: 'All data from any form submission', correct: false, explanation: 'Only POST submissions; GET data is in $_GET.' },
+{ text: 'Only validated form data', correct: false, explanation: '$\_POST contains raw submitted data; you must validate it yourself.' },
+{ text: 'Data from the URL query string', correct: false, explanation: 'URL query string data is in $_GET, not $_POST.' }
+]
+},
+{
+question: 'When checking if a checkbox was checked, why should you use isset() instead of checking the value directly?',
+options: [
+{ text: 'Unchecked checkboxes are not included in $_POST at all', correct: true, explanation: 'Checkboxes only appear in $_POST when checked; unchecked ones are absent entirely.' },
+{ text: 'isset() validates the checkbox value', correct: false, explanation: 'isset() only checks existence; it doesn\'t validate content.' },
+{ text: 'Checkboxes always return null when unchecked', correct: false, explanation: 'They don\'t exist in $_POST when unchecked, so you\'d get an undefined index error.' },
+{ text: 'isset() makes the form load faster', correct: false, explanation: 'isset() is for checking if a variable exists, not performance.' }
+]
+},
+{
+question: 'What is the purpose of filter_var($email, FILTER_VALIDATE_EMAIL)?',
+options: [
+{ text: 'To validate that a string is a properly formatted email address', correct: true, explanation: 'This built-in filter checks if the email format is valid according to email standards.' },
+{ text: 'To send an email to the address', correct: false, explanation: 'Validation only checks format; sending requires mail() or a mailer library.' },
+{ text: 'To sanitize an email by removing special characters', correct: false, explanation: 'That would be FILTER_SANITIZE_EMAIL; FILTER_VALIDATE_EMAIL only validates.' },
+{ text: 'To convert the email to lowercase', correct: false, explanation: 'Validation doesn\'t modify the value; use strtolower() for that.' }
+]
+}
+]"
+/>
 
 ## Further Reading
 

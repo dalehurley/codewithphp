@@ -1,0 +1,18 @@
+# Apache Rewrite Rules for Front Controller Pattern
+# All requests are routed through index.php
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Redirect to index.php if not a real file or directory
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
+
+# Nginx configuration (add to server block):
+#
+# location / {
+#     try_files $uri $uri/ /index.php?$query_string;
+# }
+

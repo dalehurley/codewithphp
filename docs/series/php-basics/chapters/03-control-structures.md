@@ -605,3 +605,58 @@ You've just learned one of the most powerful concepts in programming: controllin
 These building blocks are essential for writing any meaningful program. You'll use them in virtually every script you write from this point forward. The modern features like `match` and `??` are particularly powerful tools that make PHP 8.4 code cleaner and more expressive.
 
 In the next chapter, we'll learn how to bundle our code into reusable blocks called functions, making our programs much more organized and powerful.
+
+## Knowledge Check
+
+Test your understanding of control structures:
+
+<Quiz
+title="Chapter 03 Quiz: Control Structures"
+:questions="[
+{
+question: 'What is the difference between == and === in PHP?',
+options: [
+{ text: '=== checks both value and type, while == only checks value', correct: true, explanation: 'The === operator (identical) checks that both the value and data type are the same, preventing type coercion bugs.' },
+{ text: 'They are exactly the same', correct: false, explanation: '== performs type coercion while === does not.' },
+{ text: '=== is faster than ==', correct: false, explanation: 'While === can be slightly faster, the main difference is type checking behavior.' },
+{ text: '== is stricter than ===', correct: false, explanation: 'It\'s the opposite: === is stricter because it checks both value and type.' }
+]
+},
+{
+question: 'What does the match expression return if no condition matches and there is no default case?',
+options: [
+{ text: 'It throws an UnhandledMatchError', correct: true, explanation: 'Unlike switch, match requires all cases to be handled or a default case, otherwise it throws an error.' },
+{ text: 'It returns null', correct: false, explanation: 'Match throws an error rather than returning a value.' },
+{ text: 'It returns false', correct: false, explanation: 'Match throws an UnhandledMatchError, not false.' },
+{ text: 'It continues execution normally', correct: false, explanation: 'An unhandled match is considered an error in PHP.' }
+]
+},
+{
+question: 'Which loop should you use when you want to iterate over all elements in an array?',
+options: [
+{ text: 'foreach', correct: true, explanation: 'The foreach loop is specifically designed for iterating over arrays and is the cleanest choice.' },
+{ text: 'for', correct: false, explanation: 'While you can use for with arrays, foreach is more idiomatic and cleaner.' },
+{ text: 'while', correct: false, explanation: 'While can work but requires manual index management; foreach is better.' },
+{ text: 'do-while', correct: false, explanation: 'Do-while can work but foreach is the standard choice for arrays.' }
+]
+},
+{
+question: 'What does the break statement do inside a loop?',
+options: [
+{ text: 'Exits the loop immediately', correct: true, explanation: 'Break terminates the loop entirely and continues execution after the loop.' },
+{ text: 'Skips the current iteration and moves to the next', correct: false, explanation: 'That\'s what continue does. Break exits the entire loop.' },
+{ text: 'Pauses the loop temporarily', correct: false, explanation: 'There is no pause mechanism; break exits the loop completely.' },
+{ text: 'Restarts the loop from the beginning', correct: false, explanation: 'Break exits; it doesn\'t restart the loop.' }
+]
+},
+{
+question: 'What is the null coalescing operator (??) used for?',
+options: [
+{ text: 'To provide a default value when a variable is null or undefined', correct: true, explanation: 'The ?? operator returns the left operand if it exists and is not null, otherwise returns the right operand.' },
+{ text: 'To check if two values are equal', correct: false, explanation: 'That\'s what comparison operators (== or ===) do.' },
+{ text: 'To combine multiple conditions', correct: false, explanation: 'That\'s what logical operators (&&, ||) do.' },
+{ text: 'To cast a value to boolean', correct: false, explanation: 'Type casting uses (bool) syntax, not ??.' }
+]
+}
+]"
+/>

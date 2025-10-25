@@ -119,7 +119,7 @@ Symfony has its own dedicated command-line tool that makes creating and managing
 - The development server starts successfully and displays a URL (typically `https://127.0.0.1:8000`)
 - Visiting the URL in your browser shows the Symfony welcome page with a rocket ship icon and "Welcome to Symfony" message
 
-### Why It Works
+### How It Works
 
 The Symfony CLI is a standalone binary that wraps common Symfony tasks. The `--webapp` flag installs the `symfony/webapp-pack`, which is a meta-package that pulls in essential bundles like Twig (templating), Doctrine (ORM), Symfony Forms, Security, and more. This is different from `symfony new my-project` without flags, which creates a minimal skeleton suitable for APIs or microservices.
 
@@ -200,7 +200,7 @@ Symfony uses Doctrine as its ORM (Object-Relational Mapper). Unlike Laravel's El
 - Running the `doctrine:database:create` command outputs: `Created database /path/to/symfony-blog/var/data.db`
 - A new file `var/data.db` exists in your project directory
 
-### Why It Works
+### How It Works
 
 The `%kernel.project_dir%` is a Symfony parameter that resolves to your project's root directory. Doctrine reads the `DATABASE_URL` from the `.env` file and creates a SQLite database file at the specified location. SQLite is perfect for development since it requires no separate database server.
 
@@ -278,15 +278,15 @@ php bin/console doctrine:query:sql "SELECT name FROM sqlite_master WHERE type='t
 
 You should see `post` in the output.
 
-### Why It Works
+### How It Works
 
 The MakerBundle generates entity classes with Doctrine attributes that describe the database schema. The `make:migration` command compares your entities against the current database schema and generates SQL to synchronize them. This migration-based approach allows you to version control your database schema changes, similar to Git for code.
 
 ### Troubleshooting
 
-**Problem**: `The command "make:entity" does not exist`
+**Problem**: The command `make:entity` does not exist
 
-**Solution**: The MakerBundle might not be installed. Install it:
+**Solution** - The MakerBundle might not be installed. Install it:
 
 ```bash
 composer require symfony/maker-bundle --dev
@@ -356,7 +356,7 @@ Symfony uses PHP 8 attributes to define routes directly above controller methods
 - The `src/Controller/PostController.php` file contains a `show` method with a `#[Route]` attribute
 - The method accepts a `Post` parameter and returns a `Response`
 
-### Why It Works
+### How It Works
 
 Symfony's routing system scans your controllers for `#[Route]` attributes. When a request matches `/posts/42`, Symfony extracts `42` as the `id` parameter. Because the method signature declares `Post $post`, Symfony's **ParamConverter** automatically queries the database for `Post` with `id = 42` and injects it into the method. If no post is found, Symfony automatically returns a 404 response.
 
@@ -392,39 +392,48 @@ Symfony uses **Twig**, a powerful templating engine with its own syntax. It's sa
 
    Create `templates/post/show.html.twig` with the following content:
 
-   ```twig
-   {# filename: templates/post/show.html.twig #}
-   <!DOCTYPE html>
-   <html>
-   <head>
-       <meta charset="UTF-8">
-       <title>{{ post.title }}</title>
-       <style>
-           body { font-family: system-ui; max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
-           h1 { color: #000; border-bottom: 2px solid #000; padding-bottom: 0.5rem; }
-       </style>
-   </head>
-   <body>
-       <h1>{{ post.title }}</h1>
-       <div>{{ post.content|nl2br }}</div>
-   </body>
-   </html>
-   ```
+::: v-pre
+
+```twig
+{# filename: templates/post/show.html.twig #}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ post.title }}</title>
+    <style>
+        body { font-family: system-ui; max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+        h1 { color: #000; border-bottom: 2px solid #000; padding-bottom: 0.5rem; }
+    </style>
+</head>
+<body>
+    <h1>{{ post.title }}</h1>
+    <div>{{ post.content|nl2br }}</div>
+</body>
+</html>
+```
+
+:::
 
 ### Expected Result
 
 - The `templates/post/show.html.twig` file exists
-- The template uses Twig syntax with `{{ ... }}` for output and `|nl2br` filter for formatting
+- The template uses Twig syntax with <code v-pre>{{ ... }}</code> for output and `|nl2br` filter for formatting
 
-### Why It Works
+### How It Works
+
+::: v-pre
 
 - `{{ post.title }}` outputs the post's title. In Twig, `post.title` automatically calls the `getTitle()` method on your Post entity
 - `{{ post.content|nl2br }}` applies the `nl2br` filter, which converts newlines to `<br>` tags
 - Twig automatically escapes all output to prevent XSS attacks, so it's safe by default
+  :::
 
 ### Troubleshooting
 
+::: v-pre
 **Problem**: Template shows `{{ post.title }}` literally instead of the actual title
+:::
 
 **Solution**: Ensure the file has the `.twig` extension and is in the `templates/` directory. Clear the cache:
 
@@ -471,7 +480,7 @@ php bin/console doctrine:query:sql "SELECT * FROM post"
 
 You should see your post with `id = 1`.
 
-### Why It Works
+### How It Works
 
 Symfony's routing matched your URL `/posts/1` to the `post_show` route. The ParamConverter loaded the Post entity with `id = 1` from the database, and the controller passed it to the Twig template for rendering. All the pieces—routing, controller, ORM, and templating—work together seamlessly.
 

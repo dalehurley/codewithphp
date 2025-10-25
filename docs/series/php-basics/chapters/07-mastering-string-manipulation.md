@@ -799,6 +799,61 @@ Congratulations! You now have a comprehensive toolkit for working with strings i
 **Next Steps**:
 With our understanding of core data types like strings and arrays solidified, we're ready to move on to a major new paradigm in programming: Object-Oriented Programming (OOP). In [Chapter 08](/series/php-basics/chapters/08-introduction-to-object-oriented-programming), we'll learn how to model real-world concepts using classes and objects.
 
+## Knowledge Check
+
+Test your understanding of string manipulation:
+
+<Quiz
+title="Chapter 07 Quiz: String Manipulation"
+:questions="[
+{
+question: 'What does the trim() function do?',
+options: [
+{ text: 'Removes whitespace from the beginning and end of a string', correct: true, explanation: 'trim() removes spaces, tabs, newlines, and other whitespace characters from both ends of a string.' },
+{ text: 'Removes all whitespace from anywhere in a string', correct: false, explanation: 'trim() only removes from the beginning and end; use str_replace() to remove all whitespace.' },
+{ text: 'Shortens a string to a specific length', correct: false, explanation: 'That\'s substr(); trim() removes whitespace.' },
+{ text: 'Converts a string to lowercase', correct: false, explanation: 'That\'s strtolower(); trim() removes whitespace.' }
+]
+},
+{
+question: 'What is the difference between str_contains() and strpos()?',
+options: [
+{ text: 'str_contains() returns true/false, strpos() returns the position or false', correct: true, explanation: 'str_contains() (PHP 8.0+) returns a boolean, while strpos() returns the numeric position (or false if not found).' },
+{ text: 'They do exactly the same thing', correct: false, explanation: 'They search the same way but return different types: boolean vs integer/false.' },
+{ text: 'str_contains() is case-insensitive', correct: false, explanation: 'Both are case-sensitive; use stripos() for case-insensitive searching.' },
+{ text: 'strpos() is faster than str_contains()', correct: false, explanation: 'Performance is similar; the difference is in what they return.' }
+]
+},
+{
+question: 'What does explode() do?',
+options: [
+{ text: 'Splits a string into an array based on a delimiter', correct: true, explanation: 'explode() breaks a string into pieces wherever the delimiter appears, returning an array.' },
+{ text: 'Joins an array into a string', correct: false, explanation: 'That\'s implode() or join(); explode() does the opposite.' },
+{ text: 'Removes characters from a string', correct: false, explanation: 'That\'s str_replace() or trim(); explode() creates an array.' },
+{ text: 'Converts a string to uppercase', correct: false, explanation: 'That\'s strtoupper(); explode() splits strings.' }
+]
+},
+{
+question: 'Why would you use mb_strlen() instead of strlen() for some strings?',
+options: [
+{ text: 'To correctly count characters in multibyte/international text', correct: true, explanation: 'mb_strlen() properly handles Unicode and multibyte characters like emoji and non-Latin scripts.' },
+{ text: 'It\'s faster than strlen()', correct: false, explanation: 'Actually, strlen() is faster; use mb_strlen() when you need multibyte support.' },
+{ text: 'It returns the length in bytes', correct: false, explanation: 'strlen() returns bytes; mb_strlen() returns character count for multibyte strings.' },
+{ text: 'It works with arrays', correct: false, explanation: 'Both work only with strings; use count() for arrays.' }
+]
+},
+{
+question: 'What does sprintf() do?',
+options: [
+{ text: 'Formats a string with placeholders replaced by variables', correct: true, explanation: 'sprintf() creates formatted strings using format specifiers like %s, %d, %f for professional string building.' },
+{ text: 'Prints a string to the screen', correct: false, explanation: 'sprintf() returns a string; use printf() to print directly, or echo sprintf().' },
+{ text: 'Splits a string by spaces', correct: false, explanation: 'That\'s explode() with a space delimiter; sprintf() formats strings.' },
+{ text: 'Converts a string to an integer', correct: false, explanation: 'That\'s (int) casting or intval(); sprintf() formats strings.' }
+]
+}
+]"
+/>
+
 ## Further Reading
 
 - [PHP String Functions](https://www.php.net/manual/en/ref.strings.php) - Complete reference

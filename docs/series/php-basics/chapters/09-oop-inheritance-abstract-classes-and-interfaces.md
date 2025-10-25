@@ -900,3 +900,58 @@ You can now:
 ## Next Steps
 
 In the [next chapter](/series/php-basics/chapters/10-oop-traits-and-namespaces), we'll cover two more essential OOP tools: **traits** for reusing method implementations across unrelated classes, and **namespaces** for organizing your code in larger projects.
+
+## Knowledge Check
+
+Test your understanding of inheritance, abstract classes, and interfaces:
+
+<Quiz
+title="Chapter 09 Quiz: OOP Advanced Concepts"
+:questions="[
+{
+question: 'What is the difference between an abstract class and an interface?',
+options: [
+{ text: 'Abstract classes can have implementation code, interfaces cannot', correct: true, explanation: 'Abstract classes can have both abstract and concrete methods with implementations. Interfaces only define method signatures.' },
+{ text: 'Interfaces can have properties, abstract classes cannot', correct: false, explanation: 'It\'s the opposite: abstract classes can have properties, interfaces cannot (though they can define constants).' },
+{ text: 'You can extend multiple abstract classes but only one interface', correct: false, explanation: 'It\'s the opposite: you can only extend one class but implement multiple interfaces.' },
+{ text: 'They are exactly the same', correct: false, explanation: 'They serve different purposes: abstract classes share code, interfaces define contracts.' }
+]
+},
+{
+question: 'What does the protected keyword mean in inheritance?',
+options: [
+{ text: 'The property/method is accessible in the class and its child classes', correct: true, explanation: 'Protected members are visible to the class itself and any classes that extend it, but not to outside code.' },
+{ text: 'The property/method is accessible everywhere', correct: false, explanation: 'That\'s public; protected limits access to the class and its descendants.' },
+{ text: 'The property/method is only accessible in the class itself', correct: false, explanation: 'That\'s private; protected also allows child class access.' },
+{ text: 'The property/method cannot be overridden', correct: false, explanation: 'That\'s what final does; protected is about visibility.' }
+]
+},
+{
+question: 'How many interfaces can a class implement?',
+options: [
+{ text: 'As many as needed using comma-separated list', correct: true, explanation: 'A class can implement multiple interfaces: class MyClass implements Interface1, Interface2, Interface3 {}' },
+{ text: 'Only one interface', correct: false, explanation: 'Unlike class extension (only one parent), you can implement multiple interfaces.' },
+{ text: 'Maximum of three interfaces', correct: false, explanation: 'There\'s no limit on the number of interfaces a class can implement.' },
+{ text: 'None, interfaces cannot be implemented', correct: false, explanation: 'Interfaces are specifically designed to be implemented by classes.' }
+]
+},
+{
+question: 'What does the parent:: keyword do?',
+options: [
+{ text: 'Calls a method from the parent class', correct: true, explanation: 'parent:: allows you to call the parent class\'s version of a method from an overriding child method.' },
+{ text: 'Creates a new parent class', correct: false, explanation: 'parent:: is for calling parent methods, not creating classes.' },
+{ text: 'Prevents method overriding', correct: false, explanation: 'That\'s what the final keyword does; parent:: calls parent implementations.' },
+{ text: 'Checks if a class has a parent', correct: false, explanation: 'parent:: calls parent methods; use get_parent_class() to check hierarchy.' }
+]
+},
+{
+question: 'What happens if you try to instantiate an abstract class directly?',
+options: [
+{ text: 'PHP throws a fatal error', correct: true, explanation: 'Abstract classes cannot be instantiated directly; they must be extended by concrete classes.' },
+{ text: 'It works normally', correct: false, explanation: 'Abstract classes are templates and cannot be instantiated.' },
+{ text: 'PHP creates an incomplete object', correct: false, explanation: 'PHP prevents instantiation entirely with a fatal error.' },
+{ text: 'Only abstract methods are available', correct: false, explanation: 'You can\'t create the object at all; instantiation is forbidden.' }
+]
+}
+]"
+/>

@@ -784,7 +784,7 @@ Practice what you've learned with these hands-on exercises:
 
     **Requirements**:
 
-    - Simulate user input with string variables: `$inputAge = "25"`, `$inputPrice = "19.99"`, `$inputQuantity = "3.7"`
+    - Simulate user input with string variables: `$inputAge = '25'`, `$inputPrice = '19.99'`, `$inputQuantity = '3.7'`
     - Cast each input to the appropriate type
     - Calculate total price (price × quantity, with quantity as integer)
     - Check if age is valid for adult content (age >= 18)
@@ -910,6 +910,61 @@ These concepts are the absolute bedrock of programming in any language. Every ap
 ### Next Steps
 
 In [Chapter 03: Control Structures](/series/php-basics/chapters/03-control-structures), you'll learn how to make decisions and repeat actions in your code using `if` statements and loops—bringing your scripts to life with logic and automation.
+
+## Knowledge Check
+
+Test your understanding of variables, data types, and constants:
+
+<Quiz
+title="Chapter 02 Quiz: Variables & Data Types"
+:questions="[
+{
+question: 'Which of the following is a valid PHP variable name?',
+options: [
+{ text: '$my_variable', correct: true, explanation: 'Variables start with $ and can contain letters, numbers, and underscores.' },
+{ text: '$2nd_variable', correct: false, explanation: 'Variable names cannot start with a number.' },
+{ text: 'myVariable', correct: false, explanation: 'PHP variables must start with a $ symbol.' },
+{ text: '$my-variable', correct: false, explanation: 'Hyphens are not allowed in variable names.' }
+]
+},
+{
+question: 'What does `declare(strict_types=1);` do?',
+options: [
+{ text: 'Enables strict type checking for function arguments and return types', correct: true, explanation: 'Strict types prevent automatic type conversion in function calls.' },
+{ text: 'Forces all variables to have explicit types', correct: false, explanation: 'Variables in PHP don\'t require type declarations, only function parameters and returns.' },
+{ text: 'Makes the code run faster', correct: false, explanation: 'While good practice, it doesn\'t affect performance significantly.' },
+{ text: 'Prevents all type juggling', correct: false, explanation: 'It only affects function/method parameters and return types.' }
+]
+},
+{
+question: 'What is the difference between a constant and a variable?',
+options: [
+{ text: 'Constants cannot be changed after definition', correct: true, explanation: 'Once defined, constants remain the same throughout script execution.' },
+{ text: 'Constants are faster than variables', correct: false, explanation: 'Performance difference is negligible in modern PHP.' },
+{ text: 'Constants don\'t need the $ prefix', correct: true, explanation: 'Constants use define() or const and don\'t have the $ symbol.' },
+{ text: 'Constants are case-sensitive', correct: false, explanation: 'By default, constants are case-sensitive, but this is a feature, not a difference.' }
+]
+},
+{
+question: 'What is type juggling in PHP?',
+options: [
+{ text: 'Automatic conversion between data types', correct: true, explanation: 'PHP automatically converts types when needed (e.g., \'5\' + 3 = 8).' },
+{ text: 'A way to declare multiple types for one variable', correct: false, explanation: 'This describes union types, not type juggling.' },
+{ text: 'An error that occurs when types don\'t match', correct: false, explanation: 'With strict_types=0 (default), PHP converts types instead of erroring.' },
+{ text: 'A performance optimization technique', correct: false, explanation: 'Type juggling is about automatic conversion, not optimization.' }
+]
+},
+{
+question: 'Which data type would you use to store `true` or `false`?',
+options: [
+{ text: 'bool', correct: true, explanation: 'Boolean (bool) type is specifically for true/false values.' },
+{ text: 'int', correct: false, explanation: 'While 1/0 can represent true/false, bool is the correct type.' },
+{ text: 'string', correct: false, explanation: 'Strings like \'true\' are not the same as boolean true.' },
+{ text: 'binary', correct: false, explanation: 'Binary is not a PHP data type.' }
+]
+}
+]"
+/>
 
 ## Further Reading
 

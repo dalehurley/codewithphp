@@ -98,6 +98,48 @@ This compact example uses PHP 8.4's constructor property promotion, which we'll 
 - Use modern PHP 8.4 features like constructor property promotion and type declarations.
 - Understand **static** properties, methods, and class constants.
 
+## OOP Concepts: Visual Overview
+
+Here's how classes, objects, and visibility work together:
+
+```mermaid
+classDiagram
+    class User {
+        -string name
+        -string email
+        -int age
+        +__construct(name, email, age)
+        +getName() string
+        +getEmail() string
+        +greet() string
+        +isAdult() bool
+    }
+
+    class UserInstance1 {
+        name: "Alice"
+        email: "alice@example.com"
+        age: 30
+    }
+
+    class UserInstance2 {
+        name: "Bob"
+        email: "bob@example.com"
+        age: 25
+    }
+
+    User <|.. UserInstance1 : instantiates
+    User <|.. UserInstance2 : instantiates
+
+    note for User "Blueprint (Class)\nDefines structure and behavior"
+    note for UserInstance1 "Object (Instance)\nActual data in memory"
+```
+
+**Key Concepts:**
+
+- `-` (minus) = `private` properties (only accessible within the class)
+- `+` (plus) = `public` methods (accessible from anywhere)
+- The class is a template; objects are specific instances with actual data
+
 ## Step 1: From Associative Array to Object (~5 min)
 
 **Goal**: Transform procedural array-based code into an object-oriented class structure.
@@ -711,6 +753,316 @@ In modern PHP, you'll often see static methods used as "named constructors" (fac
 Be careful with static properties! Because they're shared across all instances, they can introduce unexpected behavior if you're not mindful. Prefer instance properties unless you specifically need class-level state.
 :::
 
+## Step 7: PHP 8.4 Modern Features (~6 min)
+
+**Goal**: Learn cutting-edge PHP 8.4 features for cleaner, more maintainable code.
+
+PHP 8.4 introduces powerful new features that make OOP code even more elegant. Let's explore property hooks and asymmetric visibility—two features that eliminate boilerplate and make your intent crystal clear.
+
+### Property Hooks
+
+Property hooks provide a clean alternative to traditional getter and setter methods. Instead of writing separate `getX()` and `setX()` methods, you can add behavior directly to property access.
+
+1.  **Create a new file** called `oop-property-hooks.php`.
+
+2.  **Basic Property Hooks Example**:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+class User
+{
+    // Set hook: automatically normalize email to lowercase
+    public string $email {
+        set => strtolower($value);
+    }
+
+    // Set hook: capitalize first name
+    public string $firstName {
+        set => ucfirst($value);
+    }
+
+    public function __construct(string $email, string $firstName)
+    {
+        $this->email = $email;         // Triggers set hook
+        $this->firstName = $firstName; // Triggers set hook
+    }
+}
+
+$user = new User('JOHN.DOE@EXAMPLE.COM', 'john');
+echo "Email: " . $user->email . PHP_EOL;          // john.doe@example.com
+echo "First Name: " . $user->firstName . PHP_EOL; // John
+```
+
+3.  **Computed Properties with Get Hooks**:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+class Product
+{
+    public string $name;
+    public float $price;
+    public float $taxRate = 0.08;
+
+    // Computed property - calculated on each access
+    public float $priceWithTax {
+        get => $this->price * (1 + $this->taxRate);
+    }
+
+    public function __construct(string $name, float $price)
+    {
+        $this->name = $name;
+        $this->price = $price;
+    }
+}
+
+$product = new Product('Laptop', 999.99);
+echo "Base Price: $" . $product->price . PHP_EOL;
+echo "Price with Tax: $" . number_format($product->priceWithTax, 2) . PHP_EOL;
+// No setter needed - priceWithTax is automatically calculated!
+```
+
+4.  **Combined Get and Set Hooks**:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+class Temperature
+{
+    private float $celsius = 0;
+
+    // Expose as Fahrenheit, store as Celsius
+    public float $fahrenheit {
+        get => ($this->celsius * 9/5) + 32;
+        set => $this->celsius = ($value - 32) * 5/9;
+    }
+
+    public function getCelsius(): float
+    {
+        return $this->celsius;
+    }
+}
+
+$temp = new Temperature();
+$temp->fahrenheit = 68; // Set in Fahrenheit
+echo "Stored as: " . $temp->getCelsius() . "°C" . PHP_EOL;  // 20°C
+echo "Read as: " . $temp->fahrenheit . "°F" . PHP_EOL;       // 68°F
+```
+
+**Why it works**: Property hooks intercept property access (`get`) and modification (`set`). The `$value` variable in a set hook contains the value being assigned. Get hooks compute values on-the-fly without needing separate storage.
+
+**Benefits**:
+
+- Cleaner syntax than traditional `getX()` / `setX()` methods
+- Automatic validation and transformation
+- Computed properties without manual calculation methods
+- Reduces boilerplate code significantly
+
+### Asymmetric Visibility
+
+Asymmetric visibility allows you to specify different access levels for reading and writing a property. The most common pattern is `public private(set)`, which means "anyone can read, only the class can write."
+
+1.  **Create a new file** called `oop-asymmetric-visibility.php`.
+
+2.  **Immutable Properties Example**:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+class Order
+{
+    // Public for reading, private for writing
+    public private(set) string $id;
+    public private(set) DateTime $createdAt;
+
+    public string $customerName; // Fully public
+    public float $total;         // Fully public
+
+    public function __construct(string $customerName, float $total)
+    {
+        // Can set within the class
+        $this->id = uniqid('ORD_');
+        $this->createdAt = new DateTime();
+
+        $this->customerName = $customerName;
+        $this->total = $total;
+    }
+}
+
+$order = new Order('Alice Johnson', 99.99);
+
+// ✓ Can read
+echo "Order ID: " . $order->id . PHP_EOL;
+echo "Created: " . $order->createdAt->format('Y-m-d H:i:s') . PHP_EOL;
+
+// ✗ Cannot write from outside
+// $order->id = 'ORD_123';              // Error!
+// $order->createdAt = new DateTime();  // Error!
+
+// ✓ Can still modify public properties
+$order->customerName = 'Bob Smith';
+```
+
+3.  **Controlled State Example**:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+class ShoppingCart
+{
+    private array $items = [];
+
+    // Total is publicly readable but only the class can update it
+    public private(set) float $total = 0.0;
+
+    public function addItem(string $name, float $price): void
+    {
+        $this->items[] = ['name' => $name, 'price' => $price];
+        $this->total += $price; // Only the class can modify total
+    }
+
+    public function removeLastItem(): void
+    {
+        if (!empty($this->items)) {
+            $item = array_pop($this->items);
+            $this->total -= $item['price'];
+        }
+    }
+}
+
+$cart = new ShoppingCart();
+$cart->addItem('Book', 29.99);
+$cart->addItem('Pen', 5.99);
+
+echo "Total: $" . $cart->total . PHP_EOL; // ✓ Can read
+
+// $cart->total = 1000000; // ✗ Error! Can't manipulate total directly
+```
+
+**Why it works**: The `public private(set)` syntax means:
+
+- Reading the property is `public` (accessible everywhere)
+- Writing the property is `private` (only accessible within the class)
+
+This enforces immutability without requiring private properties plus public getter methods.
+
+**Common Use Cases**:
+
+- **IDs and unique identifiers**: Set once in constructor, never changed
+- **Timestamps**: createdAt, updatedAt automatically managed by the class
+- **Computed values**: totals, counts that should only be updated through business logic
+- **State flags**: isPublished, isActive controlled by class methods
+- **Version numbers**: tracked internally, displayed publicly
+
+**Benefits**:
+
+- Enforces immutability without getter boilerplate
+- Clear intent: "readable everywhere, writable only here"
+- Prevents accidental property modification
+- Reduces API surface area (fewer public methods)
+
+### Comparison: Traditional vs Modern PHP 8.4
+
+**Traditional Approach (Still Valid)**:
+
+```php
+class User
+{
+    private string $email;
+
+    public function __construct(string $email)
+    {
+        $this->setEmail($email);
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): void
+    {
+        $this->email = strtolower($email);
+    }
+}
+```
+
+**Modern PHP 8.4 with Property Hooks**:
+
+```php
+class User
+{
+    public string $email {
+        set => strtolower($value);
+    }
+
+    public function __construct(string $email)
+    {
+        $this->email = $email;
+    }
+}
+```
+
+**Traditional Immutable ID**:
+
+```php
+class Order
+{
+    private string $id;
+
+    public function __construct()
+    {
+        $this->id = uniqid('ORD_');
+    }
+
+    public function getId(): string
+    {
+        return $this->id;
+    }
+}
+```
+
+**Modern with Asymmetric Visibility**:
+
+```php
+class Order
+{
+    public private(set) string $id;
+
+    public function __construct()
+    {
+        $this->id = uniqid('ORD_');
+    }
+    // No getId() needed - access $order->id directly!
+}
+```
+
+::: tip When to Use Each Feature
+**Property Hooks**: Use when you need to transform, validate, or compute values on read/write.
+
+**Asymmetric Visibility**: Use when a value should be set internally but read publicly (IDs, timestamps, computed values).
+
+**Traditional Methods**: Still useful for complex logic, multiple operations, or compatibility with older PHP versions.
+:::
+
+::: info Code Examples
+Complete, runnable examples of these features are available in:
+
+- [`code/08-oop/property-hooks-basic.php`](../code/08-oop/property-hooks-basic.php)
+- [`code/08-oop/asymmetric-visibility.php`](../code/08-oop/asymmetric-visibility.php)
+  :::
+
 ## Troubleshooting
 
 ### Error: "Cannot access private property"
@@ -1000,7 +1352,62 @@ In **Chapter 09**, we'll build on this foundation by learning about:
 
 These advanced OOP concepts will enable you to build flexible, maintainable applications.
 
-### Further Reading
+### Knowledge Check
+
+Test your understanding of Object-Oriented Programming concepts:
+
+<Quiz 
+  title="Chapter 08 Quiz: OOP Fundamentals"
+  :questions="[
+    {
+      question: 'What is the difference between a class and an object?',
+      options: [
+        { text: 'A class is a blueprint, an object is an instance', correct: true, explanation: 'Classes define structure and behavior; objects are specific instances with actual data.' },
+        { text: 'Classes are faster than objects', correct: false, explanation: 'Classes and objects serve different purposes; speed isn\'t the distinction.' },
+        { text: 'Objects can\'t have methods', correct: false, explanation: 'Objects inherit all methods from their class.' },
+        { text: 'There is no difference', correct: false, explanation: 'Classes and objects are fundamentally different concepts.' }
+      ]
+    },
+    {
+      question: 'What does the `private` visibility modifier do?',
+      options: [
+        { text: 'Makes properties/methods accessible only within the class', correct: true, explanation: 'Private members cannot be accessed from outside the class or by child classes.' },
+        { text: 'Makes properties invisible in var_dump()', correct: false, explanation: 'var_dump() shows all properties regardless of visibility.' },
+        { text: 'Improves performance', correct: false, explanation: 'Visibility is about encapsulation, not performance.' },
+        { text: 'Prevents the property from being serialized', correct: false, explanation: 'Private properties are still serialized by default.' }
+      ]
+    },
+    {
+      question: 'What is the purpose of the `__construct()` method?',
+      options: [
+        { text: 'To initialize object state when created', correct: true, explanation: 'Constructors run automatically when you use `new ClassName()`.' },
+        { text: 'To destroy objects when done', correct: false, explanation: 'That\'s __destruct(), not __construct().' },
+        { text: 'To create static methods', correct: false, explanation: 'Constructors are instance methods, not static methods.' },
+        { text: 'To define class constants', correct: false, explanation: 'Constants are defined separately, not in constructors.' }
+      ]
+    },
+    {
+      question: 'What is property hooks in PHP 8.4?',
+      options: [
+        { text: 'A way to add behavior to property access and modification', correct: true, explanation: 'Property hooks let you add get/set logic directly on properties.' },
+        { text: 'A debugging feature', correct: false, explanation: 'Property hooks are for adding business logic, not debugging.' },
+        { text: 'A way to make properties faster', correct: false, explanation: 'They add logic, which makes them slightly slower, but more maintainable.' },
+        { text: 'Required for all properties in PHP 8.4', correct: false, explanation: 'Property hooks are optional and used when you need custom behavior.' }
+      ]
+    },
+    {
+      question: 'What does `$this` refer to inside a class method?',
+      options: [
+        { text: 'The current object instance', correct: true, explanation: '$this is a reference to the object the method was called on.' },
+        { text: 'The class itself', correct: false, explanation: 'Use self:: or ClassName:: to reference the class.' },
+        { text: 'The parent class', correct: false, explanation: 'Use parent:: to reference the parent class.' },
+        { text: 'All instances of the class', correct: false, explanation: '$this only refers to the specific object instance.' }
+      ]
+    }
+  ]"
+/>
+
+## Further Reading
 
 - [PHP Manual: Classes and Objects](https://www.php.net/manual/en/language.oop5.php)
 - [PHP 8.4 Release Notes](https://www.php.net/releases/8.4/) — See all the latest OOP features

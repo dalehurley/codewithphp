@@ -408,29 +408,29 @@ Test your understanding with these hands-on challenges:
     - Declares three variables: `$greeting`, `$name`, and `$punctuation`
     - Uses the `.=` operator to build a complete greeting message
     - Outputs the final message using `echo`
-    - Example: "Hello" + " " + "Alice" + "!" = "Hello Alice!"
+    - Example: 'Hello' + ' ' + 'Alice' + '!' = 'Hello Alice!'
 
 5.  **Mixed Content**: Update `hello-web.php` to display three different pieces of dynamic information using short echo syntax:
 
     - The current day of the week
-    - The current time (formatted as "HH:MM AM/PM")
+    - The current time (formatted as 'HH:MM AM/PM')
     - A custom greeting message based on the time of day
       Use comments to explain what each PHP block does.
 
 6.  **Experiment with Echo**: In a new file, compare these three approaches:
 
-    ```php
-    // Method 1: Multiple arguments to echo
-    echo 'Hello', ' ', 'World!';
+```php
+// Method 1: Multiple arguments to echo
+echo 'Hello', ' ', 'World!';
 
-    // Method 2: Concatenation
-    echo 'Hello' . ' ' . 'World!';
+// Method 2: Concatenation
+echo 'Hello' . ' ' . 'World!';
 
-    // Method 3: String interpolation
-    echo "Hello World!";
-    ```
+// Method 3: String interpolation
+echo "Hello World!";
+```
 
-    Run the script. What differences do you notice? Which method do you prefer and why?
+Run the script. What differences do you notice? Which method do you prefer and why?
 
 ## Further Reading
 
@@ -488,3 +488,58 @@ echo 'Hello' . ' ' . 'World'; // Concatenation
 </body>
 </html>
 ```
+
+## Knowledge Check
+
+Test your understanding of PHP basics and syntax:
+
+<Quiz
+title="Chapter 01 Quiz: Your First PHP Script"
+:questions="[
+{
+question: 'What is the correct way to open a PHP code block?',
+options: [
+{ text: '<?php', correct: true, explanation: 'The <?php tag is the standard way to begin a PHP code block.' },
+{ text: '<php>', correct: false, explanation: 'HTML-style tags don\'t work for PHP. Use <?php instead.' },
+{ text: '<?', correct: false, explanation: 'Short tags are deprecated. Always use <?php for opening tags.' },
+{ text: '<%php%>', correct: false, explanation: 'This syntax is from other languages like ASP, not PHP.' }
+]
+},
+{
+question: 'When should you omit the closing ?> tag in PHP files?',
+options: [
+{ text: 'In pure PHP files that contain only PHP code', correct: true, explanation: 'Omitting the closing tag prevents accidental whitespace and follows PSR-12 standards.' },
+{ text: 'Never, all PHP files must have a closing tag', correct: false, explanation: 'Modern PHP best practices recommend omitting the closing tag in pure PHP files.' },
+{ text: 'Only in files smaller than 100 lines', correct: false, explanation: 'File size doesn\'t matter; it\'s about whether the file mixes HTML and PHP.' },
+{ text: 'Only when using namespaces', correct: false, explanation: 'The closing tag rule applies to all pure PHP files, not just those with namespaces.' }
+]
+},
+{
+question: 'What does the short echo syntax <?= $variable ?> do?',
+options: [
+{ text: 'It outputs the value of $variable (equivalent to <?php echo $variable; ?>)', correct: true, explanation: 'The <?= syntax is shorthand for echoing values in HTML templates.' },
+{ text: 'It assigns a value to $variable', correct: false, explanation: 'The <?= syntax is for output only, not assignment.' },
+{ text: 'It creates a comment', correct: false, explanation: 'Comments use //, #, or /* */ syntax, not <?=.' },
+{ text: 'It imports a variable from another file', correct: false, explanation: 'Importing uses require/include, not <?=.' }
+]
+},
+{
+question: 'How do you concatenate (join) two strings in PHP?',
+options: [
+{ text: 'Using the . (dot) operator', correct: true, explanation: 'PHP uses the . operator for string concatenation: \'Hello\' . \' World\'.' },
+{ text: 'Using the + (plus) operator', correct: false, explanation: 'The + operator is for arithmetic. Use . for string concatenation.' },
+{ text: 'Using the & (ampersand) operator', correct: false, explanation: 'The & is used for references and bitwise operations, not concatenation.' },
+{ text: 'Using the , (comma) operator', correct: false, explanation: 'Commas separate arguments in echo, but . is the concatenation operator.' }
+]
+},
+{
+question: 'Which comment syntax is NOT valid in PHP?',
+options: [
+{ text: '<!-- This is a comment -->', correct: true, explanation: 'HTML comments don\'t work as PHP comments. Use //, #, or /* */.' },
+{ text: '// This is a comment', correct: false, explanation: 'This is valid PHP single-line comment syntax.' },
+{ text: '# This is a comment', correct: false, explanation: 'Shell-style comments work in PHP for single lines.' },
+{ text: '/* This is a comment */', correct: false, explanation: 'This is valid PHP multi-line comment syntax.' }
+]
+}
+]"
+/>
