@@ -391,6 +391,8 @@ Symfony uses **Twig**, a powerful templating engine with its own syntax. It's sa
 
 1. **Create the template file** `templates/post/show.html.twig` with the following content:
 
+::: v-pre
+
 ```twig
 {# filename: templates/post/show.html.twig #}
 <!DOCTYPE html>
@@ -410,20 +412,22 @@ Symfony uses **Twig**, a powerful templating engine with its own syntax. It's sa
 </html>
 ```
 
+:::
+
 ### Expected Result
 
 - The `templates/post/show.html.twig` file exists.
-- The template uses Twig syntax with `{{ ... }}` for output and the `nl2br` filter for formatting.
+- The template uses Twig syntax with double curly braces for output and the `nl2br` filter for formatting.
 
 ### Why It Works
 
-- `{{ post.title }}` outputs the post's title. In Twig, `post.title` automatically calls the entity's `getTitle()` method.
-- `{{ post.content|nl2br }}` applies the `nl2br` filter, converting newlines to `<br>` tags.
+- The double curly braces with `post.title` outputs the post's title. In Twig, `post.title` automatically calls the entity's `getTitle()` method.
+- The double curly braces with `post.content|nl2br` applies the `nl2br` filter, converting newlines to `<br>` tags.
 - Twig automatically escapes output to prevent XSS, making templates safe by default.
 
 ### Troubleshooting
 
-- **Template shows `{{ post.title }}` literally** — Ensure the file has a `.twig` extension and lives under `templates/`. Clear the cache with `php bin/console cache:clear`.
+- **Template shows the Twig syntax literally** — Ensure the file has a `.twig` extension and lives under `templates/`. Clear the cache with `php bin/console cache:clear`.
 - **Styles not applied** — Confirm inline styles are present or move them to an external stylesheet.
 
 ## Step 6: Add Test Data and View Your Page (~2 min)
