@@ -1,6 +1,6 @@
-# PHP From Scratch
+# Code with PHP
 
-A tutorial-based learning resource to help developers fall in love with PHP and the PHP ecosystem. Fully open source (MIT).
+A tutorial-based learning resource at codewithphp.com to help developers fall in love with PHP and the PHP ecosystem. Fully open source (MIT).
 
 - Website powered by VitePress 1.6.4
 - Content lives under `docs/`
@@ -50,7 +50,7 @@ npm run preview
 
 - Docs: `docs/`
 - VitePress: https://vitepress.dev
-- Repo: https://github.com/dalehurley/PHP-From-Scratch
+- Repo: https://github.com/dalehurley/codewithphp
 
 ## License
 

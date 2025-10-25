@@ -21,4 +21,4 @@ Notes
 
 - Each series is independent: overview, prerequisites, chapters, and code live under its own folder.
 - Sidebars are defined per-series in `docs/.vitepress/config.ts` using the directory layout above.
-- GitHub edit links point to `https://github.com/dalehurley/PHP-From-Scratch/edit/main/docs/:path`.
+- GitHub edit links point to `https://github.com/dalehurley/codewithphp/edit/main/docs/:path`.

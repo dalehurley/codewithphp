@@ -38,7 +38,7 @@ try {
         $samplePosts = [
             [
                 'title' => 'Welcome to My Blog',
-                'content' => 'This is the first post on my new PHP blog. I built this from scratch following the PHP From Scratch tutorial series. It features a clean MVC architecture, routing, and a SQLite database.'
+                'content' => 'This is the first post on my new PHP blog. I built this from scratch following the Code with PHP tutorial series. It features a clean MVC architecture, routing, and a SQLite database.'
             ],
             [
                 'title' => 'Understanding MVC Architecture',

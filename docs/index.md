@@ -1,9 +1,9 @@
 ---
-title: PHP From Scratch
+title: Code with PHP
 description: Master PHP from first principles to advanced topics through hands-on, project-based tutorials.
 ---
 
-# PHP From Scratch
+# Code with PHP
 
 Welcome! This is a comprehensive, tutorial-based learning resource designed to help you master PHP and its ecosystem — from first principles to advanced topics. Whether you're a complete beginner or transitioning from another language, you'll find everything you need to become a confident, professional PHP developer.
 
@@ -71,7 +71,7 @@ Most learners complete the PHP Basics series in 20–30 hours over 2–4 weeks, 
 While possible, we don't recommend it. Each chapter builds on previous concepts. If you already know a topic, skim it to ensure you're not missing anything.
 
 **What if I get stuck?**  
-Every chapter includes troubleshooting tips for common issues. You can also use the "Edit this page" link to report unclear explanations or check the [GitHub discussions](https://github.com/dalehurley/PHP-From-Scratch/discussions).
+Every chapter includes troubleshooting tips for common issues. You can also use the "Edit this page" link to report unclear explanations or check the [GitHub discussions](https://github.com/dalehurley/codewithphp/discussions).
 
 **Is this course really free?**  
 Yes! MIT-licensed and completely free. No paywalls, no upsells, no hidden chapters.
@@ -83,7 +83,7 @@ This series provides the foundation. To be job-ready, you'll want to continue wi
 
 Found a typo or want to improve a chapter? Contributions are welcome!
 
-- **GitHub**: [dalehurley/PHP-From-Scratch](https://github.com/dalehurley/PHP-From-Scratch)
+- **GitHub**: [dalehurley/codewithphp](https://github.com/dalehurley/codewithphp)
 - **Edit this page**: Use the "Edit this page" link at the bottom of any tutorial
 - **Report issues**: Open an issue for bugs, unclear explanations, or outdated code
 

@@ -12,7 +12,7 @@ prerequisites: []
 
 ## Overview
 
-Welcome to the first chapter of PHP From Scratch! Before we can start writing code, we need to set up a proper development environment. This foundational step is crucial because it gives you all the tools you need to write, test, debug, and track your PHP applications like a professional developer.
+Welcome to the first chapter of Code with PHP! Before we can start writing code, we need to set up a proper development environment. This foundational step is crucial because it gives you all the tools you need to write, test, debug, and track your PHP applications like a professional developer.
 
 In this chapter, you'll install PHP itself, learn to use its simple built-in web server, and set up a modern code editor (Visual Studio Code) with extensions that will make writing PHP a joy. You'll also set up Git for version control to track your progress, and install Xdebug for powerful debugging capabilities. By the end, you'll have a complete, professional development environment and will run your first PHP script to verify everything works.
 

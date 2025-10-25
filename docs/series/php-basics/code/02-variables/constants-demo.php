@@ -16,7 +16,7 @@ declare(strict_types=1);
 echo "=== Constants in PHP ===" . PHP_EOL . PHP_EOL;
 
 // Method 1: Using define() function
-define('SITE_NAME', 'PHP From Scratch');
+define('SITE_NAME', 'Code with PHP');
 define('MAX_LOGIN_ATTEMPTS', 5);
 define('PI', 3.14159);
 

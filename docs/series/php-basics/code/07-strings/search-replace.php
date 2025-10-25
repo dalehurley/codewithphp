@@ -177,7 +177,7 @@ function createSlug(string $text): string
 
 $titles = [
     "Hello World!",
-    "PHP From Scratch: A Beginner's Guide",
+    "Code with PHP: A Beginner's Guide",
     "10 Tips for Better Code"
 ];
 

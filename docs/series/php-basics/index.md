@@ -12,7 +12,7 @@ prerequisites:
 
 ## Overview
 
-Welcome to **PHP From Scratch** — a comprehensive, hands-on course that takes you from absolute beginner to confident PHP developer. By the end of this series, you'll have built a complete blog application from scratch, understood how frameworks work under the hood, and be ready to tackle Laravel or Symfony with confidence.
+Welcome to **Code with PHP** — a comprehensive, hands-on course that takes you from absolute beginner to confident PHP developer. By the end of this series, you'll have built a complete blog application from scratch, understood how frameworks work under the hood, and be ready to tackle Laravel or Symfony with confidence.
 
 PHP is one of the most widely-used programming languages in the world, powering everything from the smallest blogs to the largest social networks. Its gentle learning curve, massive community, and rich ecosystem of modern tools make it a fantastic first language for aspiring web developers.
 
@@ -285,8 +285,8 @@ After completing this series, you'll be ready for framework-specific learning. W
 - **Read the troubleshooting section** in each chapter for common issues
 - **Check the code samples** in `docs/series/php-basics/code/` for working examples
 - **Consult PHP documentation**: [php.net](https://www.php.net/) is comprehensive and well-maintained
-- **GitHub Discussions**: [Ask questions and share progress](https://github.com/dalehurley/PHP-From-Scratch/discussions)
-- **Report bugs**: [Open an issue](https://github.com/dalehurley/PHP-From-Scratch/issues) for unclear explanations or broken examples
+- **GitHub Discussions**: [Ask questions and share progress](https://github.com/dalehurley/codewithphp/discussions)
+- **Report bugs**: [Open an issue](https://github.com/dalehurley/codewithphp/issues) for unclear explanations or broken examples
 
 ## Related Resources
 

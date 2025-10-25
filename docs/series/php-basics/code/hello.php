@@ -1,2 +1,2 @@
 <?php
-echo "Hello, PHP From Scratch!\n";
+echo "Hello, Code with PHP!\n";

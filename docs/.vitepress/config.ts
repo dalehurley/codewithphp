@@ -3,9 +3,9 @@ import { withMermaid } from 'vitepress-plugin-mermaid'
 
 export default withMermaid(
   defineConfig({
-    title: 'PHP From Scratch',
+    title: 'Code with PHP',
     description: 'Learn PHP and its ecosystem from first principles to advanced.',
-    base: '/PHP-From-Scratch/',
+    base: '/',
     lastUpdated: true,
     ignoreDeadLinks: [
       // Ignore localhost URLs used in tutorials
@@ -19,11 +19,11 @@ export default withMermaid(
       /19b-testing-your-blog-application/
     ],
     head: [
-      ['link', { rel: 'icon', href: '/PHP-From-Scratch/favicon.ico' }],
+      ['link', { rel: 'icon', href: '/favicon.ico' }],
       ['meta', { name: 'theme-color', content: '#3c8772' }],
       ['meta', { property: 'og:type', content: 'website' }],
       ['meta', { property: 'og:locale', content: 'en' }],
-      ['meta', { property: 'og:site_name', content: 'PHP From Scratch' }]
+      ['meta', { property: 'og:site_name', content: 'Code with PHP' }]
     ],
     themeConfig: {
       nav: [
@@ -35,7 +35,7 @@ export default withMermaid(
             { text: 'Modern PHP', link: '/series/modern-php/' }
           ]
         },
-        { text: 'GitHub', link: 'https://github.com/dalehurley/PHP-From-Scratch' }
+        { text: 'GitHub', link: 'https://github.com/dalehurley/codewithphp' }
       ],
       sidebar: {
         '/series/php-basics/': [
@@ -140,11 +140,11 @@ export default withMermaid(
         ]
       },
       socialLinks: [
-        { icon: 'github', link: 'https://github.com/dalehurley/PHP-From-Scratch' }
+        { icon: 'github', link: 'https://github.com/dalehurley/codewithphp' }
       ],
       editLink: {
         pattern:
-          'https://github.com/dalehurley/PHP-From-Scratch/edit/main/docs/:path'
+          'https://github.com/dalehurley/codewithphp/edit/main/docs/:path'
       },
       outline: {
         level: [2, 3],

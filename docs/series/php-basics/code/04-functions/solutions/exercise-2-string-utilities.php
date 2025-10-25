@@ -105,7 +105,7 @@ function createSlug(string $text): string
 echo "5. Bonus - Slug Generator:" . PHP_EOL;
 $titles = [
     'Hello World',
-    'PHP From Scratch',
+    'Code with PHP',
     'Understanding Functions in PHP 8.4!'
 ];
 
