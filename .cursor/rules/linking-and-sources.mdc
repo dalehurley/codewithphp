@@ -1,0 +1,23 @@
+---
+description: Internal/external linking, GitHub edit links, and licensing notes
+---
+
+# Linking & Sources
+
+Internal links
+
+- Prefer absolute-from-root doc links, e.g., `/series/php-basics/chapters/01-getting-started`.
+- Link to colocated code using relative paths.
+
+External links
+
+- Use markdown links with descriptive anchors.
+- Cite authoritative sources when appropriate.
+
+GitHub Edit Links
+
+- Configured via `editLink.pattern` to point to the repo edit page for each doc.
+
+License
+
+- Content and code are MIT licensed. Include attribution where appropriate.

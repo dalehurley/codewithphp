@@ -1,0 +1,37 @@
+---
+globs: docs/**/*.md
+---
+
+# Authoring Guidelines
+
+Frontmatter (required on chapters)
+
+- `title`, `description`, `series`, `chapter`, `order`, `difficulty`, `prerequisites`
+
+File naming
+
+- Chapters: `series/<slug>/chapters/<nn>-<chapter-slug>.md` (zero-padded `nn`)
+- Code samples: `series/<slug>/code/` with descriptive filenames
+
+Structure per chapter
+
+1. Objectives
+2. Prerequisites
+3. Steps (with commands and code snippets)
+4. Code (links to colocated files)
+5. Exercises
+6. Further Reading (optional)
+
+Code blocks
+
+- Use fenced blocks with language: `php`, `bash`, `json`, etc.
+- Keep small snippets inline; place larger files in `series/<slug>/code/` and link relatively.
+
+Links
+
+- Use relative links within the docs, e.g. `/series/<slug>/...`.
+- External links should use markdown links with meaningful anchor text.
+
+Independence
+
+- Each series must be self-contained (overview, prerequisites, and code samples).

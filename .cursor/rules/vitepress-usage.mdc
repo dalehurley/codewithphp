@@ -1,0 +1,30 @@
+---
+description: VitePress usage — dev/build/preview, adding series/chapters, sidebar updates
+---
+
+# VitePress Usage
+
+Commands
+
+- `npm run dev` — start local server
+- `npm run build` — generate static site into `docs/.vitepress/dist`
+- `npm run preview` — preview built site
+
+Add a new series
+
+1. Create `docs/series/<series-slug>/index.md` (overview with objectives & prerequisites)
+2. Create `docs/series/<series-slug>/chapters/`
+3. Create `docs/series/<series-slug>/code/`
+4. Update `docs/.vitepress/config.ts` nav and sidebar entries
+
+Add a chapter
+
+1. Add `docs/series/<slug>/chapters/<nn>-<chapter-slug>.md`
+2. Place larger code in `docs/series/<slug>/code/`
+3. Reference files with relative links
+4. Add chapter to the series sidebar
+
+Deploy
+
+- GitHub Actions builds and deploys to `gh-pages`.
+- Ensure `base` in `config.ts` is `/PHP-From-Scratch/` for project pages.

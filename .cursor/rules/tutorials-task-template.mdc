@@ -1,0 +1,61 @@
+---
+description: Task Template — Fill per tutorial using Global Rules — Tutorials
+globs: docs/**/*.md
+---
+
+# Task Template — Tutorials
+
+Use this template with the Global Rules — Tutorials. Replace placeholders in braces.
+
+## Metadata
+
+- **Topic**: {{ concise title of the tutorial }}
+- **Stack / Tools / Versions**: {{ e.g., Node 20, pnpm 9, Vite 5, React 19, Tailwind 3.4 }}
+- **Goal / Outcome**: {{ 1–2 sentences on the working result }}
+- **Constraints**: {{ e.g., No Docker, Must run on Windows }}
+- **Starting Point**: {{ fresh project | existing repo | partial code }}
+- **Target Length**: {{ e.g., ~1200–1800 words }}
+- **Must-include Sections**: {{ e.g., Deployment to Vercel, CI with GitHub Actions }}
+- **Links to Prefer**: {{ official docs, sample repos }}
+- **Image/Diagram Needs**: {{ optional ASCII diagram or screenshot description }}
+
+## Output Contract
+
+Produce exactly one markdown tutorial using this section order:
+
+1. Overview
+2. Prerequisites
+3. What You’ll Build
+4. Quick Start
+5. Step-by-Step (each step: Goal, Actions, Code, Expected Result, Why it works, Troubleshooting)
+6. Wrap-up
+7. Appendix (optional)
+
+## Authoring Notes
+
+- Use second person, active voice, concise tone.
+- Show complete minimal files; never omit imports or critical config.
+- Pin versions where important; include `--version` checks.
+- Validate after each major step with exact commands and expected outputs.
+- Include at least three likely errors and fixes.
+- Optimise for copy-paste and cross-platform (macOS + Linux; add Windows notes if needed).
+- Prefer links to official docs using descriptive text.
+
+## Snippet Conventions
+
+- Code fences include language and filename comments when helpful.
+
+```bash
+# filename: scripts/clean-slate.sh
+# Reset project (Warning: destructive)
+# Tip: run with --dry-run first if supported
+git clean -xfd
+git reset --hard
+```
+
+```diff
+# Example diff snippet
+@@
+- "dev": "vite --open",
+ + "dev": "vite"
+```

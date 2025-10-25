@@ -1,0 +1,24 @@
+---
+alwaysApply: true
+---
+
+# Project Structure
+
+- `docs/` — VitePress content root
+
+  - `.vitepress/config.ts` — site configuration (title, base, nav, sidebar)
+  - `index.md` — landing page and series entry points
+  - `series/<series-slug>/index.md` — series overview (self-contained)
+  - `series/<series-slug>/chapters/<nn>-<chapter-slug>.md` — numbered chapters
+  - `series/<series-slug>/code/` — chapter code samples colocated with content
+
+- `.cursor/rules/` — Cursor authoring/navigation rules
+
+- `package.json` — scripts for dev/build/preview (VitePress 1.6.4)
+- `.github/workflows/` — CI for GitHub Pages deploy
+
+Notes
+
+- Each series is independent: overview, prerequisites, chapters, and code live under its own folder.
+- Sidebars are defined per-series in `docs/.vitepress/config.ts` using the directory layout above.
+- GitHub edit links point to `https://github.com/dalehurley/PHP-From-Scratch/edit/main/docs/:path`.
