@@ -467,9 +467,9 @@ echo 'Hello' . ' ' . 'World'; // Concatenation
 ::: info Code Examples
 Complete, runnable examples from this chapter are available in:
 
-- [`basic-syntax.php`](/series/php-basics/code/01-first-script/basic-syntax.php) - Basic PHP syntax and echo examples
-- [`mixing-html.php`](/series/php-basics/code/01-first-script/mixing-html.php) - Mixing PHP with HTML
-- [`variables-demo.php`](/series/php-basics/code/01-first-script/variables-demo.php) - Working with variables and concatenation
+- [`basic-syntax.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/01-first-script/basic-syntax.php) - Basic PHP syntax and echo examples
+- [`mixing-html.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/01-first-script/mixing-html.php) - Mixing PHP with HTML
+- [`variables-demo.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/01-first-script/variables-demo.php) - Working with variables and concatenation
 - `solutions/` - Solutions to chapter exercises
   :::
 

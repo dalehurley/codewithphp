@@ -494,10 +494,10 @@ Fatal error: Cannot declare class App\Utils\Logger, because the name is already 
 
 All examples from this chapter are available in the code directory:
 
-- [`traits-basic.php`](/series/php-basics/code/traits-basic.php) - Basic trait usage with timestamps
-- [`traits-conflicts.php`](/series/php-basics/code/traits-conflicts.php) - Resolving trait method conflicts
+- [`traits-basic.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/traits-basic.php) - Basic trait usage with timestamps
+- [`traits-conflicts.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/traits-conflicts.php) - Resolving trait method conflicts
 - [`namespaces/`](/series/php-basics/code/namespaces/README.md) - Complete namespace example with directory structure
-- [`namespaces-global.php`](/series/php-basics/code/namespaces-global.php) - Using built-in PHP classes in namespaced code
+- [`namespaces-global.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/namespaces-global.php) - Using built-in PHP classes in namespaced code
 
 ## Exercises
 

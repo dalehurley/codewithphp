@@ -954,10 +954,10 @@ In the next chapter, we'll take a quick look at another major framework, Symfony
 ::: info Code Examples
 Exercise solutions from this chapter are available in:
 
-- [`solutions/exercise-1-show-post.php`](/series/php-basics/code/20-laravel/solutions/exercise-1-show-post.php) - Single post view
-- [`solutions/exercise-2-navigation.php`](/series/php-basics/code/20-laravel/solutions/exercise-2-navigation.php) - Adding navigation
-- [`solutions/exercise-3-styling.php`](/series/php-basics/code/20-laravel/solutions/exercise-3-styling.php) - Styling improvements
-- [`solutions/exercise-4-excerpts.php`](/series/php-basics/code/20-laravel/solutions/exercise-4-excerpts.php) - Post excerpts
+- [`solutions/exercise-1-show-post.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/20-laravel/solutions/exercise-1-show-post.php) - Single post view
+- [`solutions/exercise-2-navigation.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/20-laravel/solutions/exercise-2-navigation.php) - Adding navigation
+- [`solutions/exercise-3-styling.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/20-laravel/solutions/exercise-3-styling.php) - Styling improvements
+- [`solutions/exercise-4-excerpts.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/20-laravel/solutions/exercise-4-excerpts.php) - Post excerpts
 
 **Note**: These are Laravel-specific Blade template examples. The main code for this chapter is your Laravel application created with `composer create-project laravel/laravel blog`.
 :::

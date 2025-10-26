@@ -57,18 +57,18 @@ All code examples are fully functional and runnable with clear output showing ML
 ::: info Code Examples
 Complete, runnable examples for this chapter:
 
-- [`01-supervised-classification.php`](/series/ai-ml-php-developers/code/chapter-03/01-supervised-classification.php) — Spam classification demo
-- [`02-unsupervised-clustering.php`](/series/ai-ml-php-developers/code/chapter-03/02-unsupervised-clustering.php) — Customer segmentation
-- [`03-feature-extraction.php`](/series/ai-ml-php-developers/code/chapter-03/03-feature-extraction.php) — Text to numeric features
-- [`04-training-inference.php`](/series/ai-ml-php-developers/code/chapter-03/04-training-inference.php) — Two-phase ML lifecycle
-- [`05-overfitting-demo.php`](/series/ai-ml-php-developers/code/chapter-03/05-overfitting-demo.php) — Detecting overfitting
-- [`06-train-test-split.php`](/series/ai-ml-php-developers/code/chapter-03/06-train-test-split.php) — Proper data splitting
-- [`07-iris-workflow.php`](/series/ai-ml-php-developers/code/chapter-03/07-iris-workflow.php) — Complete ML workflow
-- [`08-algorithm-comparison.php`](/series/ai-ml-php-developers/code/chapter-03/08-algorithm-comparison.php) — Algorithm comparison
-- [`09-cross-validation.php`](/series/ai-ml-php-developers/code/chapter-03/09-cross-validation.php) — k-Fold cross-validation
-- [`10-train-val-test-split.php`](/series/ai-ml-php-developers/code/chapter-03/10-train-val-test-split.php) — 3-way split for hyperparameter tuning
-- [`11-regression-example.php`](/series/ai-ml-php-developers/code/chapter-03/11-regression-example.php) — House price prediction (regression)
-- [`12-confusion-matrix.php`](/series/ai-ml-php-developers/code/chapter-03/12-confusion-matrix.php) — Confusion matrix and advanced metrics
+- [`01-supervised-classification.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-03/01-supervised-classification.php) — Spam classification demo
+- [`02-unsupervised-clustering.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-03/02-unsupervised-clustering.php) — Customer segmentation
+- [`03-feature-extraction.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-03/03-feature-extraction.php) — Text to numeric features
+- [`04-training-inference.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-03/04-training-inference.php) — Two-phase ML lifecycle
+- [`05-overfitting-demo.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-03/05-overfitting-demo.php) — Detecting overfitting
+- [`06-train-test-split.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-03/06-train-test-split.php) — Proper data splitting
+- [`07-iris-workflow.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-03/07-iris-workflow.php) — Complete ML workflow
+- [`08-algorithm-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-03/08-algorithm-comparison.php) — Algorithm comparison
+- [`09-cross-validation.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-03/09-cross-validation.php) — k-Fold cross-validation
+- [`10-train-val-test-split.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-03/10-train-val-test-split.php) — 3-way split for hyperparameter tuning
+- [`11-regression-example.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-03/11-regression-example.php) — House price prediction (regression)
+- [`12-confusion-matrix.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-03/12-confusion-matrix.php) — Confusion matrix and advanced metrics
 
 All files are in [`docs/series/ai-ml-php-developers/code/chapter-03/`](/series/ai-ml-php-developers/code/chapter-03/README.md)
 :::
