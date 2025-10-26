@@ -657,10 +657,10 @@ In the next chapter, we'll learn how to bundle our code into reusable blocks cal
 ::: info Code Examples
 Complete, runnable examples from this chapter are available in:
 
-- [`if-else-examples.php`](../code/03-control/if-else-examples.php) - If/else statements and conditional logic
-- [`switch-match-examples.php`](../code/03-control/switch-match-examples.php) - Switch statements and match expressions
-- [`loops-examples.php`](../code/03-control/loops-examples.php) - For, while, and foreach loops
-- [`solutions/`](../code/03-control/solutions/) - Solutions to chapter exercises
+- [`if-else-examples.php`](/series/php-basics/code/03-control/if-else-examples.php) - If/else statements and conditional logic
+- [`switch-match-examples.php`](/series/php-basics/code/03-control/switch-match-examples.php) - Switch statements and match expressions
+- [`loops-examples.php`](/series/php-basics/code/03-control/loops-examples.php) - For, while, and foreach loops
+- [`solutions/`](/series/php-basics/code/03-control/solutions/) - Solutions to chapter exercises
   :::
 
 ## Knowledge Check
