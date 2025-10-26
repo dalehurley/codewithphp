@@ -907,9 +907,9 @@ This chapter covered the foundation of stateful web applications—from e-commer
 ::: info Code Examples
 Complete, runnable examples from this chapter are available in:
 
-- [`session-basics.php`](/series/php-basics/code/15-sessions/session-basics.php) - Session fundamentals and basic usage
-- [`cookie-basics.php`](/series/php-basics/code/15-sessions/cookie-basics.php) - Working with cookies
-- [`auth-system.php`](/series/php-basics/code/15-sessions/auth-system.php) - Complete authentication system with sessions
+- [`session-basics.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/15-sessions/session-basics.php) - Session fundamentals and basic usage
+- [`cookie-basics.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/15-sessions/cookie-basics.php) - Working with cookies
+- [`auth-system.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/15-sessions/auth-system.php) - Complete authentication system with sessions
 - [`README.md`](/series/php-basics/code/15-sessions/README.md) - Complete guide and exercise solutions
   :::
 
