@@ -16,6 +16,18 @@ class TimeHelper
     }
 }
 
-echo "This file will produce an error to demonstrate the problem...\n";
-$helper = new TimeHelper();
-echo $helper->getCurrentTime();
+echo "This file demonstrates a common namespace error...\n\n";
+echo "When you don't import DateTime with 'use', PHP looks for it in the current namespace!\n";
+echo "Expected: \\DateTime (global)\n";
+echo "Actual:   App\\Utils\\DateTime (doesn't exist)\n\n";
+
+try {
+    $helper = new TimeHelper();
+    echo $helper->getCurrentTime();
+} catch (\Error $e) {
+    echo "❌ Error caught (as expected):\n";
+    echo "   " . $e->getMessage() . "\n\n";
+    echo "✅ Fix: Add 'use DateTime;' at the top of the TimeHelper class\n";
+    echo "   Or use: new \\DateTime() to reference the global class\n";
+    exit(0); // Exit successfully to show this is an educational example
+}

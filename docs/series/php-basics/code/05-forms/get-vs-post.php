@@ -168,7 +168,7 @@ $password = $_POST['password'] ?? '';</code></pre>
     <!-- Current Request Info -->
     <div class="method-section">
         <h2>Current Request Information</h2>
-        <p><strong>Method:</strong> <?= htmlspecialchars($_SERVER['REQUEST_METHOD']) ?></p>
+        <p><strong>Method:</strong> <?= htmlspecialchars($_SERVER['REQUEST_METHOD'] ?? 'CLI') ?></p>
         <p><strong>Query String:</strong> <?= htmlspecialchars($_SERVER['QUERY_STRING'] ?? 'none') ?></p>
 
         <?php if (!empty($_GET)): ?>

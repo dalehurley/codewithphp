@@ -9,14 +9,27 @@ declare(strict_types=1);
  * Save as init-db.php in your project root and run: php init-db.php
  */
 
-require 'vendor/autoload.php';
+// Check if autoloader exists, otherwise use direct PDO connection
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require __DIR__ . '/vendor/autoload.php';
+    $pdo = \App\Core\Database::getInstance();
+} else {
+    // Standalone mode: Create SQLite database directly
+    echo "ℹ️  Running in standalone mode (no vendor/autoload.php found)\n";
+    $dbPath = __DIR__ . '/database/blog.db';
+    $dbDir = dirname($dbPath);
 
-use App\Core\Database;
+    if (!is_dir($dbDir)) {
+        mkdir($dbDir, 0755, true);
+    }
+
+    $pdo = new PDO("sqlite:$dbPath");
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+}
 
 echo "Initializing database...\n";
 
 try {
-    $pdo = Database::getInstance();
 
     // Create posts table
     $pdo->exec("CREATE TABLE IF NOT EXISTS posts (

@@ -9,7 +9,7 @@ declare(strict_types=1);
  * Uses k-fold CV to get robust performance estimates that don't depend on lucky/unlucky splits.
  */
 
-require __DIR__ . '/../../chapter-02/vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 use Phpml\Classification\KNearestNeighbors;
 
@@ -20,12 +20,12 @@ echo "╚═══════════════════════�
 // Load iris dataset
 $csvPath = __DIR__ . '/data/iris.csv';
 $file = fopen($csvPath, 'r');
-$header = fgetcsv($file);
+$header = fgetcsv($file, 0, ",", "\"", "\\");
 
 $samples = [];
 $labels = [];
 
-while (($row = fgetcsv($file)) !== false) {
+while (($row = fgetcsv($file, 0, ",", "\"", "\\")) !== false) {
     $samples[] = [(float) $row[0], (float) $row[1], (float) $row[2], (float) $row[3]];
     $labels[] = $row[4];
 }

@@ -9,7 +9,7 @@ declare(strict_types=1);
  * to get reliable performance estimates and avoid overfitting.
  */
 
-require __DIR__ . '/../../chapter-02/vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 use Phpml\Classification\KNearestNeighbors;
 

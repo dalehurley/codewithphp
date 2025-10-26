@@ -6,6 +6,8 @@ A tutorial-based learning resource at codewithphp.com to help developers fall in
 - Content lives under `docs/`
 - Each series is independent with chapters and colocated code samples
 
+> **Note:** Yes, I realize the irony of using VitePress (Vue.js) for a site about PHP. However, it works best with GitHub Pages and provides an excellent developer experience for tutorial documentation.
+
 ## Quickstart
 
 1. Install dependencies

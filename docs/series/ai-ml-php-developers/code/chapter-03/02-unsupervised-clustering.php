@@ -9,7 +9,7 @@ declare(strict_types=1);
  * and groups in unlabeled data without being told what to look for.
  */
 
-require __DIR__ . '/../../chapter-02/vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 use Phpml\Clustering\KMeans;
 
@@ -38,7 +38,7 @@ echo "Note: Data is UNLABELED - we don't know which group each belongs to\n\n";
 
 // Step 1: Cluster the data into 3 groups
 echo "Running K-Means clustering (k=3)...\n";
-$kmeans = new KMeans(n: 3);
+$kmeans = new KMeans(3);  // Number of clusters
 $clusters = $kmeans->cluster($customerData);
 echo "✓ Clustering complete\n\n";
 
@@ -48,14 +48,14 @@ echo str_repeat('=', 60) . "\n";
 
 foreach ($clusters as $clusterIndex => $clusterMembers) {
     echo "\nCluster " . ($clusterIndex + 1) . " (" . count($clusterMembers) . " customers):\n";
-    
+
     // Calculate cluster characteristics
     $avgSpending = array_sum(array_column($clusterMembers, 0)) / count($clusterMembers);
     $avgVisits = array_sum(array_column($clusterMembers, 1)) / count($clusterMembers);
-    
+
     echo "  Average spending: $" . round($avgSpending, 2) . "/month\n";
     echo "  Average visits: " . round($avgVisits, 1) . " visits/month\n";
-    
+
     // Assign a business-friendly label based on characteristics
     if ($avgSpending > 150) {
         $segment = "VIP Customers (high value)";
@@ -64,14 +64,14 @@ foreach ($clusters as $clusterIndex => $clusterMembers) {
     } else {
         $segment = "Occasional Customers (low engagement)";
     }
-    
+
     echo "  → Business Segment: {$segment}\n";
-    
+
     // Show first few customers in this cluster
     echo "  Sample customers: ";
     $sampleCount = min(3, count($clusterMembers));
     for ($i = 0; $i < $sampleCount; $i++) {
-        echo "[${$clusterMembers[$i][0]}, ${$clusterMembers[$i][1]}] ";
+        echo "[{$clusterMembers[$i][0]}, {$clusterMembers[$i][1]}] ";
     }
     echo "\n";
 }
@@ -93,4 +93,3 @@ echo "Business Application:\n";
 echo "- Target VIP customers with premium offers\n";
 echo "- Engage Regular customers with loyalty programs\n";
 echo "- Re-activate Occasional customers with special deals\n";
-

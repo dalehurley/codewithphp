@@ -59,7 +59,7 @@ echo "\n";
 
 // Perform Clustering
 echo "Performing K-Means clustering (k=3 clusters)...\n";
-$kmeans = new KMeans(n: 3);
+$kmeans = new KMeans(3);  // Number of clusters
 $clusters = $kmeans->cluster($customerData);
 echo "✓ Clustering complete! Discovered " . count($clusters) . " customer segments\n\n";
 

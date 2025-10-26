@@ -1,17 +1,12 @@
 {
-  "name": "codewithphp/aiml-chapter-02",
-  "description": "Chapter 02: Environment Setup - Sample code and verification scripts",
+  "name": "codewithphp/aiml-chapter-03",
+  "description": "Chapter 03: Core ML Concepts - Classification, Clustering, and Training examples",
   "type": "project",
   "require": {
     "php": "^8.4",
     "php-ai/php-ml": "^0.10",
     "rubix/ml": "^3.0",
     "rubix/tensor": "^3.0"
-  },
-  "autoload": {
-    "psr-4": {
-      "AiMl\\Chapter02\\": "src/"
-    }
   },
   "config": {
     "optimize-autoloader": true,
