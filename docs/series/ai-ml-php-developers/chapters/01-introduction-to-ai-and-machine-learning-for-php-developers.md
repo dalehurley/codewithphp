@@ -119,7 +119,7 @@ First, install dependencies (one-time setup):
 
 ```bash
 cd docs/series/ai-ml-php-developers/code/chapter-01
-composer install
+composer require php-ai/php-ml
 ```
 
 Then run the example:
