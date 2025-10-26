@@ -9,7 +9,7 @@ declare(strict_types=1);
  * to understand their strengths, weaknesses, and when to use each.
  */
 
-require __DIR__ . '/../../chapter-02/vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Classifiers\GaussianNB;
@@ -24,12 +24,16 @@ echo "╚═══════════════════════�
 // Load Iris dataset
 $csvPath = __DIR__ . '/data/iris.csv';
 $file = fopen($csvPath, 'r');
-fgetcsv($file); // Skip header
+fgetcsv($file, 0, ",", "\"", "\\"); // Skip header
 
 $samples = [];
 $labels = [];
 
-while (($row = fgetcsv($file)) !== false) {
+while (($row = fgetcsv($file, 0, ",", "\"", "\\")) !== false) {
+    // Skip empty rows or rows with insufficient data
+    if (count($row) < 5 || empty($row[4])) {
+        continue;
+    }
     $samples[] = [(float) $row[0], (float) $row[1], (float) $row[2], (float) $row[3]];
     $labels[] = $row[4];
 }
@@ -101,7 +105,7 @@ $algorithms = [
     ],
     [
         'name' => 'Decision Tree',
-        'estimator' => new ClassificationTree(maxDepth: 5),
+        'estimator' => new ClassificationTree(5),  // maxDepth parameter
         'description' => 'Creates a tree of decision rules to classify data',
         'pros' => ['Interpretable', 'Handles non-linear relationships', 'No feature scaling needed'],
         'cons' => ['Can overfit easily', 'Unstable (small changes = different tree)'],

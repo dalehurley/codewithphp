@@ -10,7 +10,7 @@ declare(strict_types=1);
  * whether new emails are spam.
  */
 
-require __DIR__ . '/../../chapter-02/vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 use Phpml\Classification\KNearestNeighbors;
 

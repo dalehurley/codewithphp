@@ -1,0 +1,166 @@
+---
+description: Code testing requirements for all tutorial code samples and snippets
+alwaysApply: true
+---
+
+# Code Testing Requirements
+
+## Testing Directory Structure
+
+All code snippets and samples from tutorials MUST be tested in the `/testing` directory before being considered complete.
+
+- **Testing Root:** `/testing`
+- **PHP Basics Code:** `/testing/php-basics/`
+- **AI/ML Series Code:** `/testing/ai-ml-series/`
+- **Test Script:** [/testing/test-all-samples.php](mdc:/testing/test-all-samples.php)
+- **Test Report:** [/testing/TEST-SUMMARY-REPORT.md](mdc:/testing/TEST-SUMMARY-REPORT.md)
+
+## Testing Requirements
+
+### For New Code Samples
+
+When creating new code samples for tutorials:
+
+1. **Copy to Testing Directory**
+
+   - Place files in appropriate `/testing/{series-name}/` subdirectory
+   - Maintain same directory structure as [docs/series/](mdc:docs/series/)
+
+2. **Run Test Script**
+
+   ```bash
+   cd /Users/dalehurley/Code/PHP-From-Scratch/testing
+   php test-all-samples.php
+   ```
+
+3. **Verify Results**
+   - ✅ Code must execute without errors (return code 0)
+   - OR document expected failures (web server context, dependencies, etc.)
+   - Update [TEST-SUMMARY-REPORT.md](mdc:/testing/TEST-SUMMARY-REPORT.md) if needed
+
+### Code Quality Standards
+
+All tutorial code samples must:
+
+- ✅ Be **complete and runnable** (no partial code)
+- ✅ Use **PHP 8.4** syntax and features
+- ✅ Include proper **error handling** where appropriate
+- ✅ Follow **PSR-12** coding standards
+- ✅ Have **no type errors** or undefined variables (unless intentional for teaching)
+- ✅ Include **comments** explaining key concepts
+- ✅ Cast types explicitly when needed (`(string)`, `(int)`, etc.)
+
+### Expected Failure Categories
+
+Some failures are acceptable if documented:
+
+1. **Web Server Context** - Files requiring `$_SERVER` variables, headers, or HTTP requests
+2. **Missing Dependencies** - Files requiring Composer packages or external libraries
+3. **Configuration Required** - Files needing database connections, API keys, or setup
+4. **Educational Errors** - Intentional errors demonstrating common mistakes
+5. **Integration Files** - Files designed as part of larger applications (routers, controllers)
+
+### Bug Prevention Checklist
+
+Before committing new code samples, verify:
+
+- [ ] No `urlencode()` or similar functions called on non-string types
+- [ ] No deprecated `${var}` syntax (use `{$var}` instead)
+- [ ] Variables are defined before use (or have null coalescing `??`)
+- [ ] Type hints match actual types being passed
+- [ ] CLI scripts work with `php filename.php`
+- [ ] Web scripts documented as requiring web server context
+
+## Test Results Reference
+
+Current test status (as of last run):
+
+- **PHP Basics:** 91/95 passing (95.8%) 🎉 EXCELLENT
+- **AI/ML Series:** 5/24 passing (21% - dependencies required)
+- **Total Success Rate:** 96/119 passing (80.7%) 🎉 PRODUCTION READY
+
+See [TEST-SUMMARY-REPORT.md](mdc:/testing/TEST-SUMMARY-REPORT.md) for detailed analysis.
+
+## Known Issues to Avoid
+
+### Type Errors
+
+```php
+// ❌ BAD - Passing int to function expecting string
+$pairs[] = "$key=" . urlencode($value); // fails if $value is int
+
+// ✅ GOOD - Explicit type casting
+$pairs[] = "$key=" . urlencode((string)$value);
+```
+
+### Deprecated Syntax
+
+```php
+// ❌ BAD - Deprecated in PHP 8.4
+echo "Value: ${count}";
+
+// ✅ GOOD - Modern syntax
+echo "Value: {$count}";
+```
+
+### Undefined Variables
+
+```php
+// ❌ BAD - Variable might not exist in CLI context
+echo htmlspecialchars($_SERVER['REQUEST_METHOD']);
+
+// ✅ GOOD - Handle missing variables
+echo htmlspecialchars($_SERVER['REQUEST_METHOD'] ?? 'CLI');
+```
+
+## Adding New Test Coverage
+
+To add new code samples to testing:
+
+1. **Copy files** from `docs/series/{series-name}/code/` to `testing/{series-name}/`
+2. **Run test script:** `php testing/test-all-samples.php`
+3. **Review failures** and categorize (expected vs bugs)
+4. **Fix bugs** or document expected failures
+5. **Update summary report** if adding new categories
+
+## Web Server Testing
+
+For files requiring web server context:
+
+```bash
+# Start PHP development server
+cd /Users/dalehurley/Code/PHP-From-Scratch/testing/php-basics
+php -S localhost:8000
+
+# Test in browser or with curl
+curl http://localhost:8000/filename.php
+```
+
+## Composer Dependencies
+
+For AI/ML examples requiring PHP-ML:
+
+```bash
+cd /Users/dalehurley/Code/PHP-From-Scratch/testing/ai-ml-series/chapter-XX
+composer install
+php filename.php
+```
+
+## Integration with Development Workflow
+
+**Before committing tutorial code:**
+
+1. Test in `/testing` directory
+2. Verify it passes or document why it doesn't
+3. Update test summary if introducing new patterns
+4. Ensure README.md in code directory explains any setup needed
+
+**When modifying existing code:**
+
+1. Re-run affected tests
+2. Update test report if behavior changes
+3. Document any new dependencies or requirements
+
+---
+
+**Remember:** Every code sample in the tutorials represents a promise to learners that the code works. Testing ensures we keep that promise.

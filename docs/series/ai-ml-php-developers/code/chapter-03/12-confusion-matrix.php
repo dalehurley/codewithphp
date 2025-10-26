@@ -9,7 +9,7 @@ declare(strict_types=1);
  * Introduces precision, recall, and F1-score concepts.
  */
 
-require __DIR__ . '/../../chapter-02/vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 use Phpml\Classification\KNearestNeighbors;
 
@@ -20,20 +20,24 @@ echo "╚═══════════════════════�
 // Load iris dataset
 $csvPath = __DIR__ . '/data/iris.csv';
 $file = fopen($csvPath, 'r');
-$header = fgetcsv($file);
+$header = fgetcsv($file, 0, ",", "\"", "\\");
 
 $samples = [];
 $labels = [];
 
-while (($row = fgetcsv($file)) !== false) {
+while (($row = fgetcsv($file, 0, ",", "\"", "\\")) !== false) {
+    // Skip empty rows or rows with missing labels
+    if (empty($row[4]) || !isset($row[4])) {
+        continue;
+    }
     $samples[] = [(float) $row[0], (float) $row[1], (float) $row[2], (float) $row[3]];
     $labels[] = $row[4];
 }
 
 fclose($file);
 
-// Get unique classes
-$classes = array_values(array_unique($labels));
+// Get unique classes (filter out any empty values)
+$classes = array_values(array_unique(array_filter($labels, fn($label) => !empty($label))));
 sort($classes);
 
 echo "Dataset: " . count($samples) . " iris flowers\n";
@@ -120,14 +124,14 @@ function buildConfusionMatrix(array $predictions, array $actuals, array $classes
 function printConfusionMatrix(array $matrix, array $classes): void
 {
     // Calculate column widths
-    $classWidth = max(array_map('strlen', $classes));
+    $classWidth = max(array_map('strlen', array_filter($classes, fn($c) => $c !== null && $c !== '')));
     $cellWidth = 6;
 
     // Header
     echo str_repeat(' ', $classWidth + 2) . "│ PREDICTED\n";
     echo str_repeat(' ', $classWidth + 2) . "│ ";
     foreach ($classes as $class) {
-        $shortClass = substr($class, 0, $cellWidth);
+        $shortClass = substr((string)$class, 0, $cellWidth);
         echo str_pad($shortClass, $cellWidth + 1);
     }
     echo "\n";

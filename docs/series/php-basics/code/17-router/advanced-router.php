@@ -119,11 +119,12 @@ class AdvancedRouter
      */
     public function dispatch(): void
     {
-        $method = $_SERVER['REQUEST_METHOD'];
-        $uri = $_SERVER['REQUEST_URI'];
+        // CLI compatibility: Use mock data if not in web context
+        $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+        $uri = $_SERVER['REQUEST_URI'] ?? '/';
 
         // Remove query string
-        $uri = strtok($uri, '?');
+        $uri = strtok($uri, '?') ?: '/';
 
         // Run global middleware
         foreach ($this->middleware as $middleware) {

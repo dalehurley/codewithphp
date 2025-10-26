@@ -45,11 +45,12 @@ class Router
      */
     public function dispatch(): void
     {
-        $method = $_SERVER['REQUEST_METHOD'];
-        $uri = $_SERVER['REQUEST_URI'];
+        // CLI compatibility: Use mock data if not in web context
+        $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+        $uri = $_SERVER['REQUEST_URI'] ?? '/';
 
         // Remove query string
-        $uri = strtok($uri, '?');
+        $uri = strtok($uri, '?') ?: '/';
 
         // Find matching route
         foreach ($this->routes as $route) {

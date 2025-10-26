@@ -8,5 +8,15 @@ dist/
 tmp/
 temp/
 
+# PHP Dependencies
+vendor/
+composer.lock
+
+# Testing directory (local testing only)
+/testing
+
+# Python virtual environment
 /python
+
+# Documentation files
 GITHUB-PAGES-SETUP.md

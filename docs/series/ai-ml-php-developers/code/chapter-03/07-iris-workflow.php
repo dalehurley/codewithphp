@@ -11,12 +11,13 @@ declare(strict_types=1);
  * Dataset: Iris flowers (150 samples, 4 features, 3 classes)
  */
 
-require __DIR__ . '/../../chapter-02/vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 use Rubix\ML\Classifiers\KNearestNeighbors;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\CrossValidation\Metrics\Accuracy;
 use Rubix\ML\Persisters\Filesystem;
+use Rubix\ML\Serializers\Native;
 
 echo "╔══════════════════════════════════════════════════════════╗\n";
 echo "║   Complete ML Workflow: Iris Flower Classification       ║\n";
@@ -49,11 +50,15 @@ if (!file_exists($csvPath)) {
 
 // Load CSV file
 $file = fopen($csvPath, 'r');
-$header = fgetcsv($file); // Skip header row
+$header = fgetcsv($file, 0, ",", "\"", "\\"); // Skip header row
 $samples = [];
 $labels = [];
 
-while (($row = fgetcsv($file)) !== false) {
+while (($row = fgetcsv($file, 0, ",", "\"", "\\")) !== false) {
+    // Skip empty rows or rows with insufficient data
+    if (count($row) < 5 || empty($row[4])) {
+        continue;
+    }
     // Features: sepal_length, sepal_width, petal_length, petal_width
     $samples[] = [(float) $row[0], (float) $row[1], (float) $row[2], (float) $row[3]];
     // Label: species
@@ -254,7 +259,8 @@ if (!is_dir($modelDir)) {
 
 $modelPath = $modelDir . '/iris-knn.rbx';
 $persister = new Filesystem($modelPath);
-$persister->save($estimator);
+$encoding = new Native();
+$persister->save($encoding->serialize($estimator));
 
 echo "✓ Model saved to: " . basename($modelPath) . "\n";
 echo "  File size: " . number_format(filesize($modelPath) / 1024, 2) . " KB\n\n";
@@ -267,7 +273,8 @@ echo "STEP 8: Load Model and Predict New Sample\n";
 echo str_repeat('-', 60) . "\n";
 
 // Load the saved model
-$loadedEstimator = $persister->load();
+$loadedData = $persister->load();
+$loadedEstimator = $encoding->deserialize($loadedData);
 echo "✓ Model loaded from disk\n\n";
 
 // Predict on a new, unseen flower

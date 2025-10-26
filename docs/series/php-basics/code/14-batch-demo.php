@@ -74,7 +74,7 @@ try {
     $count = $stmt->fetchColumn();
     echo "Total log entries: $count" . PHP_EOL;
 } catch (PDOException $e) {
-    if ($pdo->inTransaction()) {
+    if (isset($pdo) && $pdo->inTransaction()) {
         $pdo->rollback();
     }
     die("Database error: " . $e->getMessage() . PHP_EOL);

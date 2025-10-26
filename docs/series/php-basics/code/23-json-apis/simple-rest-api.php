@@ -16,19 +16,22 @@ declare(strict_types=1);
  * - DELETE /products/{id}   - Delete product
  */
 
-// Enable CORS for development
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+// CLI compatibility: Only set headers in web context
+if (php_sapi_name() !== 'cli') {
+    // Enable CORS for development
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type');
 
-// Handle preflight requests
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(204);
-    exit;
+    // Handle preflight requests
+    if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {
+        http_response_code(204);
+        exit;
+    }
+
+    // Set JSON response header
+    header('Content-Type: application/json; charset=utf-8');
 }
-
-// Set JSON response header
-header('Content-Type: application/json; charset=utf-8');
 
 // In-memory database (use a real database in production)
 $GLOBALS['products'] = [
@@ -91,8 +94,9 @@ function validateProduct(array $data): ?string
 }
 
 // Parse request
-$method = $_SERVER['REQUEST_METHOD'];
-$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+// CLI compatibility: Use defaults if not in web context
+$method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+$path = parse_url($_SERVER['REQUEST_URI'] ?? '/products', PHP_URL_PATH);
 $pathParts = explode('/', trim($path, '/'));
 $productId = isset($pathParts[0]) && is_numeric($pathParts[0]) ? (int)$pathParts[0] : null;
 

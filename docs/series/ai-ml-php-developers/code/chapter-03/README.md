@@ -116,6 +116,60 @@ cd ../chapter-03
 - **Run**: `php 08-algorithm-comparison.php`
 - **Time**: ~15 seconds
 
+### 09-cross-validation.php
+
+**Concept**: Cross-Validation Techniques
+
+- Demonstrates k-fold cross-validation
+- Shows how to avoid overfitting
+- Compares different validation strategies
+- **Run**: `php 09-cross-validation.php`
+- **Time**: ~10 seconds
+
+### 10-train-val-test-split.php
+
+**Concept**: Three-Way Data Splitting
+
+- Shows train/validation/test split
+- Explains when to use validation set
+- Demonstrates hyperparameter tuning
+- **Run**: `php 10-train-val-test-split.php`
+- **Time**: ~8 seconds
+
+### 11-regression-example.php
+
+**Concept**: Regression for Continuous Predictions
+
+- Predicts continuous numeric values
+- Shows linear regression implementation
+- Compares with classification
+- **Run**: `php 11-regression-example.php`
+- **Time**: ~5 seconds
+
+### 12-confusion-matrix.php
+
+**Concept**: Detailed Classification Metrics
+
+- Creates confusion matrix visualization
+- Shows precision, recall, F1-score
+- Explains multi-class evaluation
+- **Run**: `php 12-confusion-matrix.php`
+- **Time**: ~5 seconds
+
+### 13-tensor-operations-phpml.php ⭐ **Tensor Operations**
+
+**Concept**: Matrix/Tensor Operations with PHP-ML
+
+- Matrix creation and manipulation
+- Linear algebra operations (multiply, transpose, inverse)
+- Statistical operations on matrices
+- Feature scaling and normalization
+- Distance matrix calculations
+- Neural network tensor shapes
+- **Important**: Alternative to PECL Tensor extension (PHP 8.4 compatible)
+- **Run**: `php 13-tensor-operations-phpml.php`
+- **Time**: ~3 seconds
+
 ## Data Files
 
 ### data/iris.csv
@@ -247,11 +301,27 @@ Recommended order for understanding concepts:
 - ✓ Training vs. inference
 - ✓ Overfitting vs. generalization
 - ✓ Train/test splitting
+- ✓ Cross-validation techniques
 - ✓ Feature normalization
-- ✓ Model evaluation (accuracy metric)
+- ✓ Model evaluation (accuracy, confusion matrix)
 - ✓ Model persistence (save/load)
 - ✓ Algorithm comparison
+- ✓ Matrix/tensor operations
 - ✓ Complete ML workflow
+
+## Important Note: Tensor Extension Compatibility
+
+The PECL Tensor extension **does not support PHP 8.4** (only PHP ≤ 8.3). For this reason, we use **PHP-ML** for all matrix and tensor operations in this series. PHP-ML provides:
+
+- ✅ Full PHP 8.4 compatibility
+- ✅ Matrix arithmetic and linear algebra
+- ✅ Statistical operations
+- ✅ Feature scaling and normalization
+- ✅ All operations needed for machine learning
+
+See [`13-tensor-operations-phpml.php`](./13-tensor-operations-phpml.php) for comprehensive examples.
+
+For more details, read the [Tensor Extension Compatibility Note](../TENSOR-EXTENSION-NOTE.md).
 
 ## Further Experimentation
 

@@ -11,7 +11,7 @@ declare(strict_types=1);
  * Uses house price prediction as a practical regression example.
  */
 
-require __DIR__ . '/../../chapter-02/vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Regressors\Ridge;
@@ -161,7 +161,7 @@ echo "Ridge Regression: Linear model with L2 regularization\n";
 echo "  Finds relationship: price = w1*sqft + w2*beds + w3*baths + w4*age + b\n\n";
 
 $trainingDataset = new Labeled($trainSamples, $trainPrices);
-$regressor = new Ridge(alpha: 1.0);
+$regressor = new Ridge(1.0);  // alpha parameter
 
 $trainStart = microtime(true);
 $regressor->train($trainingDataset);

@@ -10,7 +10,7 @@ declare(strict_types=1);
  * mistake in machine learning!
  */
 
-require __DIR__ . '/../../chapter-02/vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 use Phpml\Classification\KNearestNeighbors;
 

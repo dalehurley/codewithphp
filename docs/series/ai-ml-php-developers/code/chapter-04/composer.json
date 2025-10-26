@@ -1,0 +1,14 @@
+{
+  "name": "codewithphp/aiml-chapter-04",
+  "description": "Chapter 04: Data Collection and Preprocessing - Real-world data handling examples",
+  "type": "project",
+  "require": {
+    "php": "^8.4",
+    "php-ai/php-ml": "^0.10"
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "sort-packages": true
+  }
+}
+

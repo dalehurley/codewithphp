@@ -74,7 +74,7 @@ try {
 
     // Train a K-Nearest Neighbors classifier with Euclidean distance
     echo "Training K-Nearest Neighbors classifier (k=3, Euclidean distance)...\n";
-    $estimator = new KNearestNeighbors(3, new Euclidean());
+    $estimator = new KNearestNeighbors(3, false, new Euclidean());
     $estimator->train($dataset);
 
     $trainingTime = microtime(true) - $startTime;

@@ -232,7 +232,7 @@ function buildQueryString(array $params): string
     $pairs = [];
 
     foreach ($params as $key => $value) {
-        $pairs[] = urlencode($key) . '=' . urlencode($value);
+        $pairs[] = urlencode((string)$key) . '=' . urlencode((string)$value);
     }
 
     return implode('&', $pairs);
