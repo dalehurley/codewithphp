@@ -1410,14 +1410,14 @@ This example demonstrates:
 
 All examples from this chapter are available in the `code` directory:
 
-- [`14-database-quickstart.php`](../code/14-database-quickstart.php) - Quick start example
-- [`14-prepared-statements.php`](../code/14-prepared-statements.php) - Prepared statements demonstration
-- [`14-fetch-demo.php`](../code/14-fetch-demo.php) - Fetching data in different ways
-- [`14-update-delete-demo.php`](../code/14-update-delete-demo.php) - UPDATE and DELETE operations
-- [`14-transactions-demo.php`](../code/14-transactions-demo.php) - Transactions and lastInsertId()
-- [`14-null-demo.php`](../code/14-null-demo.php) - Working with NULL values
-- [`14-batch-demo.php`](../code/14-batch-demo.php) - Batch insert operations for performance
-- [`14-complete-blog-system.php`](../code/14-complete-blog-system.php) - Complete production-ready example
+- [`14-database-quickstart.php`](/series/php-basics/code/14-database-quickstart.php) - Quick start example
+- [`14-prepared-statements.php`](/series/php-basics/code/14-prepared-statements.php) - Prepared statements demonstration
+- [`14-fetch-demo.php`](/series/php-basics/code/14-fetch-demo.php) - Fetching data in different ways
+- [`14-update-delete-demo.php`](/series/php-basics/code/14-update-delete-demo.php) - UPDATE and DELETE operations
+- [`14-transactions-demo.php`](/series/php-basics/code/14-transactions-demo.php) - Transactions and lastInsertId()
+- [`14-null-demo.php`](/series/php-basics/code/14-null-demo.php) - Working with NULL values
+- [`14-batch-demo.php`](/series/php-basics/code/14-batch-demo.php) - Batch insert operations for performance
+- [`14-complete-blog-system.php`](/series/php-basics/code/14-complete-blog-system.php) - Complete production-ready example
 
 ### Connecting to MySQL and PostgreSQL
 

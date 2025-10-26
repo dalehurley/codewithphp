@@ -1254,10 +1254,10 @@ Happy coding! 🚀
 
 All code from this chapter is available in the code directory for easy reference:
 
-- [`19-blog-database.php`](../code/19-blog-database.php) - Complete Database singleton class
-- [`19-blog-post-model.php`](../code/19-blog-post-model.php) - Post model with all CRUD operations including search
-- [`19-blog-post-controller.php`](../code/19-blog-post-controller.php) - Complete PostController with all methods including update and delete
-- [`19-blog-init-db.php`](../code/19-blog-init-db.php) - Database initialization script with optional sample data
+- [`19-blog-database.php`](/series/php-basics/code/19-blog-database.php) - Complete Database singleton class
+- [`19-blog-post-model.php`](/series/php-basics/code/19-blog-post-model.php) - Post model with all CRUD operations including search
+- [`19-blog-post-controller.php`](/series/php-basics/code/19-blog-post-controller.php) - Complete PostController with all methods including update and delete
+- [`19-blog-init-db.php`](/series/php-basics/code/19-blog-init-db.php) - Database initialization script with optional sample data
 
 These files include the complete implementations from the chapter plus the exercise solutions. Use them as a reference while building your blog application.
 

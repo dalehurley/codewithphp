@@ -720,7 +720,7 @@ if (!$allValid) {
 
 For more comprehensive examples of PHP 8.4 array functions, see:
 
-- [`code/06-arrays/php84-array-functions.php`](../code/06-arrays/php84-array-functions.php)
+- [`code/06-arrays/php84-array-functions.php`](/series/php-basics/code/06-arrays/php84-array-functions.php)
 
 ### Validation
 

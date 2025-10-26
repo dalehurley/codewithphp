@@ -132,14 +132,14 @@ You'll run actual code examples that prove your environment works, giving you co
 ::: info Code Examples
 Complete, runnable verification scripts for this chapter:
 
-- [`quick-start-verify.php`](../code/chapter-02/quick-start-verify.php) — 2-minute environment check
-- [`verify-installation.php`](../code/chapter-02/verify-installation.php) — Comprehensive 10+ check verification
-- [`composer-setup-check.php`](../code/chapter-02/composer-setup-check.php) — Composer installation verification
-- [`extension-checker.php`](../code/chapter-02/extension-checker.php) — Detailed extension analysis
-- [`test-phpml.php`](../code/chapter-02/test-phpml.php) — PHP-ML library test
-- [`test-rubixml.php`](../code/chapter-02/test-rubixml.php) — Rubix ML library test
+- [`quick-start-verify.php`](/series/ai-ml-php-developers/code/chapter-02/quick-start-verify.php) — 2-minute environment check
+- [`verify-installation.php`](/series/ai-ml-php-developers/code/chapter-02/verify-installation.php) — Comprehensive 10+ check verification
+- [`composer-setup-check.php`](/series/ai-ml-php-developers/code/chapter-02/composer-setup-check.php) — Composer installation verification
+- [`extension-checker.php`](/series/ai-ml-php-developers/code/chapter-02/extension-checker.php) — Detailed extension analysis
+- [`test-phpml.php`](/series/ai-ml-php-developers/code/chapter-02/test-phpml.php) — PHP-ML library test
+- [`test-rubixml.php`](/series/ai-ml-php-developers/code/chapter-02/test-rubixml.php) — Rubix ML library test
 
-All files are in [`docs/series/ai-ml-php-developers/code/chapter-02/`](../code/chapter-02/)
+All files are in [`docs/series/ai-ml-php-developers/code/chapter-02/`](/series/ai-ml-php-developers/code/chapter-02/)
 :::
 
 ## Quick Start

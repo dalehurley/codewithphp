@@ -1059,8 +1059,8 @@ class Order
 ::: info Code Examples
 Complete, runnable examples of these features are available in:
 
-- [`code/08-oop/property-hooks-basic.php`](../code/08-oop/property-hooks-basic.php)
-- [`code/08-oop/asymmetric-visibility.php`](../code/08-oop/asymmetric-visibility.php)
+- [`code/08-oop/property-hooks-basic.php`](/series/php-basics/code/08-oop/property-hooks-basic.php)
+- [`code/08-oop/asymmetric-visibility.php`](/series/php-basics/code/08-oop/asymmetric-visibility.php)
   :::
 
 ## Troubleshooting

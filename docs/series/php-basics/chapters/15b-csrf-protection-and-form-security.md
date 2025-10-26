@@ -811,9 +811,9 @@ header("Content-Security-Policy: default-src 'self'");
 
 Explore comprehensive CSRF protection examples:
 
-- [`code/15b-csrf/csrf-basics.php`](../code/15b-csrf/csrf-basics.php) - Token generation and validation
-- [`code/15b-csrf/CsrfProtection.php`](../code/15b-csrf/CsrfProtection.php) - Reusable protection class
-- [`code/15b-csrf/protected-form.php`](../code/15b-csrf/protected-form.php) - Complete form example
+- [`code/15b-csrf/csrf-basics.php`](/series/php-basics/code/15b-csrf/csrf-basics.php) - Token generation and validation
+- [`code/15b-csrf/CsrfProtection.php`](/series/php-basics/code/15b-csrf/CsrfProtection.php) - Reusable protection class
+- [`code/15b-csrf/protected-form.php`](/series/php-basics/code/15b-csrf/protected-form.php) - Complete form example
 
 ## Troubleshooting
 

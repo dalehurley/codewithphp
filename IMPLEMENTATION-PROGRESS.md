@@ -1,8 +1,35 @@
 # PHP-Basics Series Implementation Progress
 
 **Implementation Started:** 2025-01-25  
+**Last Updated:** 2025-10-26  
 **Status:** ✅ In Progress - Phase 1 & 2  
 **Plan Reference:** [php-basics-series-improvements.plan.md](php-basics-series-improvements.plan.md)
+
+---
+
+## 🔧 Recent Fixes (2025-10-26)
+
+### Code Files 404 Error - RESOLVED ✅
+
+**Issue**: Code example files were returning 404 errors (e.g., `/series/ai-ml-php-developers/code/chapter-01/quick-start-demo.php`)
+
+**Root Cause**: VitePress only serves markdown files and files in the `docs/public/` directory. Code files in `docs/series/*/code/` were not being served.
+
+**Solution Implemented**:
+1. ✅ Copied all code files to `docs/public/series/*/code/` directories
+2. ✅ Updated all chapter markdown files to use absolute paths: `/series/.../code/...`
+3. ✅ Updated VitePress config to remove unnecessary `ignoreDeadLinks` patterns
+4. ✅ Added `npm run sync-code` script to sync code files from source to public
+5. ✅ Created documentation: [CODE-FILES-SETUP.md](CODE-FILES-SETUP.md)
+
+**Files Changed**:
+- Updated all 18 chapter files with code links (PHP Basics + AI/ML series)
+- Updated `docs/.vitepress/config.ts`
+- Updated `package.json` with sync-code script
+- Created `docs/public/series/README.md`
+- Created `CODE-FILES-SETUP.md`
+
+**Result**: All code example files are now accessible at their documented URLs.
 
 ---
 

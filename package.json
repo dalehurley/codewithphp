@@ -5,11 +5,12 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-  "dev": "vitepress dev docs",
-  "docs:dev": "vitepress dev docs",
+    "dev": "vitepress dev docs",
+    "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "build": "vitepress build docs",
-    "preview": "vitepress preview docs"
+    "preview": "vitepress preview docs",
+    "sync-code": "mkdir -p docs/public/series/php-basics/code docs/public/series/ai-ml-php-developers/code && cp -r docs/series/php-basics/code/* docs/public/series/php-basics/code/ && cp -r docs/series/ai-ml-php-developers/code/* docs/public/series/ai-ml-php-developers/code/ && echo 'Code files synced successfully'"
   },
   "devDependencies": {
     "mermaid": "^11.12.0",
