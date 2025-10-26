@@ -57,20 +57,20 @@ All code examples are fully functional and runnable with clear output showing ML
 ::: info Code Examples
 Complete, runnable examples for this chapter:
 
-- [`01-supervised-classification.php`](../code/chapter-03/01-supervised-classification.php) — Spam classification demo
-- [`02-unsupervised-clustering.php`](../code/chapter-03/02-unsupervised-clustering.php) — Customer segmentation
-- [`03-feature-extraction.php`](../code/chapter-03/03-feature-extraction.php) — Text to numeric features
-- [`04-training-inference.php`](../code/chapter-03/04-training-inference.php) — Two-phase ML lifecycle
-- [`05-overfitting-demo.php`](../code/chapter-03/05-overfitting-demo.php) — Detecting overfitting
-- [`06-train-test-split.php`](../code/chapter-03/06-train-test-split.php) — Proper data splitting
-- [`07-iris-workflow.php`](../code/chapter-03/07-iris-workflow.php) — Complete ML workflow
-- [`08-algorithm-comparison.php`](../code/chapter-03/08-algorithm-comparison.php) — Algorithm comparison
-- [`09-cross-validation.php`](../code/chapter-03/09-cross-validation.php) — k-Fold cross-validation
-- [`10-train-val-test-split.php`](../code/chapter-03/10-train-val-test-split.php) — 3-way split for hyperparameter tuning
-- [`11-regression-example.php`](../code/chapter-03/11-regression-example.php) — House price prediction (regression)
-- [`12-confusion-matrix.php`](../code/chapter-03/12-confusion-matrix.php) — Confusion matrix and advanced metrics
+- [`01-supervised-classification.php`](/series/ai-ml-php-developers/code/chapter-03/01-supervised-classification.php) — Spam classification demo
+- [`02-unsupervised-clustering.php`](/series/ai-ml-php-developers/code/chapter-03/02-unsupervised-clustering.php) — Customer segmentation
+- [`03-feature-extraction.php`](/series/ai-ml-php-developers/code/chapter-03/03-feature-extraction.php) — Text to numeric features
+- [`04-training-inference.php`](/series/ai-ml-php-developers/code/chapter-03/04-training-inference.php) — Two-phase ML lifecycle
+- [`05-overfitting-demo.php`](/series/ai-ml-php-developers/code/chapter-03/05-overfitting-demo.php) — Detecting overfitting
+- [`06-train-test-split.php`](/series/ai-ml-php-developers/code/chapter-03/06-train-test-split.php) — Proper data splitting
+- [`07-iris-workflow.php`](/series/ai-ml-php-developers/code/chapter-03/07-iris-workflow.php) — Complete ML workflow
+- [`08-algorithm-comparison.php`](/series/ai-ml-php-developers/code/chapter-03/08-algorithm-comparison.php) — Algorithm comparison
+- [`09-cross-validation.php`](/series/ai-ml-php-developers/code/chapter-03/09-cross-validation.php) — k-Fold cross-validation
+- [`10-train-val-test-split.php`](/series/ai-ml-php-developers/code/chapter-03/10-train-val-test-split.php) — 3-way split for hyperparameter tuning
+- [`11-regression-example.php`](/series/ai-ml-php-developers/code/chapter-03/11-regression-example.php) — House price prediction (regression)
+- [`12-confusion-matrix.php`](/series/ai-ml-php-developers/code/chapter-03/12-confusion-matrix.php) — Confusion matrix and advanced metrics
 
-All files are in [`docs/series/ai-ml-php-developers/code/chapter-03/`](../code/chapter-03/)
+All files are in [`docs/series/ai-ml-php-developers/code/chapter-03/`](/series/ai-ml-php-developers/code/chapter-03/)
 :::
 
 ## Quick Start
@@ -2625,7 +2625,7 @@ In production, you often care more about specific metrics than overall accuracy:
 Test your understanding with these hands-on challenges:
 
 ::: tip Exercise Solutions
-Sample solutions for these exercises are available in [`code/chapter-03/solutions/`](../code/chapter-03/solutions/). Try implementing them yourself first before checking the solutions!
+Sample solutions for these exercises are available in [`code/chapter-03/solutions/`](/series/ai-ml-php-developers/code/chapter-03/solutions/). Try implementing them yourself first before checking the solutions!
 :::
 
 ### Exercise 1: Feature Engineering

@@ -1,0 +1,32 @@
+# Composer dependencies
+/vendor/
+composer.lock
+
+# Environment files
+.env
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Data files (exclude large datasets)
+/data/*.csv
+/data/*.json
+!/data/.gitkeep
+
+# Trained models (exclude large model files)
+/models/*.model
+/models/*.pkl
+/models/*.h5
+!/models/.gitkeep
+
+# Logs
+*.log
+

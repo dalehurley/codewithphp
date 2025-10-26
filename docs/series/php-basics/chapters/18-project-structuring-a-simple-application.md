@@ -807,11 +807,11 @@ You now have a clean, organized, and scalable structure that mirrors the foundat
 ::: info Code Examples
 The complete structured application from this chapter is available in:
 
-- [`public/index.php`](../code/18-structure/public/index.php) - Front controller entry point
-- [`app/`](../code/18-structure/app/) - Application directory with Controllers, Models, and Views
-- [`config/`](../code/18-structure/config/) - Configuration files
-- [`routes.php`](../code/18-structure/routes.php) - Route definitions
-- [`solutions/`](../code/18-structure/solutions/) - Solutions to chapter exercises
+- [`public/index.php`](/series/php-basics/code/18-structure/public/index.php) - Front controller entry point
+- [`app/`](/series/php-basics/code/18-structure/app/) - Application directory with Controllers, Models, and Views
+- [`config/`](/series/php-basics/code/18-structure/config/) - Configuration files
+- [`routes.php`](/series/php-basics/code/18-structure/routes.php) - Route definitions
+- [`solutions/`](/series/php-basics/code/18-structure/solutions/) - Solutions to chapter exercises
 
 This directory contains the complete MVC structure with router integration and template layouts.
 :::

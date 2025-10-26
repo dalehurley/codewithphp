@@ -12,10 +12,8 @@ export default withMermaid(
       // Ignore localhost URLs used in tutorials
       /^http:\/\/localhost/,
       /^https:\/\/127\.0\.0\.1/,
-      // Ignore relative links to code files that may not exist yet
-      /\.\.\/code\//,
+      // Ignore relative links to chapters that may not exist yet
       /\.\.\/\.\.\/chapters\//,
-      /^\/series\/php-basics\/code\//,
       // Ignore links to chapters that don't exist yet
       /19b-testing-your-blog-application/
     ],
