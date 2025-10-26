@@ -852,101 +852,101 @@ To deepen your understanding of the topics covered in this chapter:
 
 Test your understanding of AI and Machine Learning fundamentals:
 
-<Quiz
-title="Chapter 01 Quiz: Introduction to AI and Machine Learning for PHP Developers"
-:questions="[
-{
-question: 'What is the primary difference between Artificial Intelligence and Machine Learning?',
-options: [
-{ text: 'AI is a broad field that includes ML as one approach; ML specifically learns from data without explicit programming', correct: true, explanation: 'AI is the umbrella term for machines simulating intelligence. ML is one method: learning patterns from data automatically.' },
-{ text: 'AI and Machine Learning are the same thing', correct: false, explanation: 'ML is a subset of AI. All ML is AI, but not all AI uses machine learning.' },
-{ text: 'AI is used for chatbots; ML is used for image recognition', correct: false, explanation: 'Both AI and ML can be used for either task. The distinction is about how they work, not what they do.' },
-{ text: 'ML requires more data than AI', correct: false, explanation: 'While ML often works better with more data, the key difference is that ML learns patterns whereas AI uses predefined rules.' }
-]
-},
-{
-question: 'Which of the following is an example of Machine Learning (not just AI)?',
-options: [
-{ text: 'A spam filter that learns to identify spam by analyzing thousands of user-marked emails', correct: true, explanation: 'This is ML because the system learns patterns from data and improves over time, rather than using predefined rules.' },
-{ text: 'A calculator that performs arithmetic based on programmed rules', correct: false, explanation: 'This is rule-based AI but not ML, because it does not learn from data.' },
-{ text: 'A chatbot with predefined responses for common questions', correct: false, explanation: 'Without learning from user interactions, this is rule-based AI but not ML.' },
-{ text: 'A traffic light system that switches colors on a timer', correct: false, explanation: 'This is programmed logic, not AI or ML.' }
-]
-},
-{
-question: 'In which ways can PHP developers contribute to Machine Learning projects? (Multiple answers are correct)',
-options: [
-{ text: 'Implement simple algorithms using PHP-ML or Rubix ML libraries for lightweight tasks', correct: true, explanation: 'PHP libraries enable direct ML model building, training, and prediction for tasks like spam filtering or classification.' },
-{ text: 'Integrate with external Python scripts or cloud APIs (AWS, Google Cloud) for advanced models', correct: true, explanation: 'PHP orchestrates ML workflows by calling Python services or managed AI APIs when specialized models are needed.' },
-{ text: 'Collect, clean, and prepare data before it goes into ML models', correct: true, explanation: 'Data collection, validation, and feature engineering are critical PHP developer roles in the ML pipeline.' },
-{ text: 'Deploy and monitor ML models in production, handling predictions and retraining', correct: true, explanation: 'PHP applications serve ML predictions to users and must track model performance over time.' }
-]
-},
-{
-question: 'Which of these is a real-world use case for AI/ML in web development?',
-options: [
-{ text: 'E-commerce sites recommending products based on browsing history and purchase behavior', correct: true, explanation: 'Recommendations are a common ML use case that improve user experience and increase sales.' },
-{ text: 'Detecting and filtering spam emails or fraudulent transactions', correct: true, explanation: 'Spam and fraud detection are classic supervised ML problems that protect users and platforms.' },
-{ text: 'Analyzing sentiment in user reviews and social media to understand customer opinions', correct: true, explanation: 'Sentiment analysis is an NLP task that helps businesses understand feedback at scale.' },
-{ text: 'All of the above', correct: true, explanation: 'All three are legitimate, high-impact use cases for AI/ML in modern web applications.' }
-]
-},
-{
-question: 'When is it better to build an ML feature in PHP rather than integrate with an external service?',
-options: [
-{ text: 'When you have a simple, well-understood problem and want full control over the model and data', correct: true, explanation: 'Building in PHP is ideal for lightweight tasks where you own the data and avoid external dependencies.' },
-{ text: 'When you need state-of-the-art models (like GPT-4) or specialized algorithms (like advanced image recognition)', correct: false, explanation: 'For advanced models, integration with specialized services is better because they are optimized and battle-tested.' },
-{ text: 'When you have strict latency requirements and need sub-millisecond predictions on large data volumes', correct: false, explanation: 'For strict performance requirements at scale, specialized services or languages may be more suitable.' },
-{ text: 'When your team has no prior experience with ML or PHP', correct: false, explanation: 'This scenario calls for collaboration with experts or integration with managed services.' }
-]
-},
-{
-question: 'What is the difference between supervised and unsupervised learning?',
-options: [
-{ text: 'Supervised learning uses labeled data (input + correct answer); unsupervised learning finds patterns in unlabeled data', correct: true, explanation: 'This is the fundamental distinction. Supervised = you know the answer. Unsupervised = you explore to discover structure.' },
-{ text: 'Supervised is faster; unsupervised is more accurate', correct: false, explanation: 'Speed and accuracy depend on the specific algorithm and data, not whether learning is supervised or unsupervised.' },
-{ text: 'Supervised is for PHP; unsupervised is for Python', correct: false, explanation: 'Both types of learning can be implemented in any language, including PHP.' },
-{ text: 'Supervised requires deep learning; unsupervised uses traditional algorithms', correct: false, explanation: 'Both supervised and unsupervised can use deep learning or traditional algorithms.' }
-]
-},
-{
-question: 'Which statement best describes the ML lifecycle?',
-options: [
-{ text: 'It is iterative and non-linear; you often loop back to earlier steps when results are unsatisfactory', correct: true, explanation: 'The ML lifecycle is not a straight line. Looping back to data collection or model selection is normal and expected.' },
-{ text: 'It is linear: define problem → collect data → train → deploy → done', correct: false, explanation: 'While these are the general steps, real ML projects loop back frequently. Deployment is not done; monitoring is ongoing.' },
-{ text: 'Training is the longest phase; everything else is quick', correct: false, explanation: 'Data collection and preparation often take longer than training. Monitoring and maintenance are ongoing.' },
-{ text: 'Once deployed, you do not need to update or retrain the model', correct: false, explanation: 'Models require ongoing monitoring and retraining as user behavior and data distributions change over time.' }
-]
-},
-{
-question: 'Why is data quality often more important than algorithm choice in ML projects?',
-options: [
-{ text: 'A simple algorithm trained on clean, relevant data outperforms a complex algorithm on messy, biased data', correct: true, explanation: 'This is a fundamental principle: garbage in, garbage out. Data quality trumps algorithmic sophistication.' },
-{ text: 'Algorithms are less important than marketing', correct: false, explanation: 'Algorithm choice matters, but it is secondary to data quality for model performance.' },
-{ text: 'Data quality only matters if you use PHP-ML', correct: false, explanation: 'Data quality is universally important in ML, regardless of library or language.' },
-{ text: 'Complex algorithms automatically handle noisy, biased data', correct: false, explanation: 'No algorithm can fix inherently bad data. Garbage in = garbage out, always.' }
-]
-},
-{
-question: 'Which of the following is a valid ethical concern when building ML systems? (Multiple answers are correct)',
-options: [
-{ text: 'Bias and fairness: models trained on biased historical data will perpetuate discrimination', correct: true, explanation: 'This is a real and serious concern. Historical hiring data, loan data, etc., often contain systemic bias.' },
-{ text: 'Privacy: collecting and storing user data for ML creates risks and privacy obligations', correct: true, explanation: 'ML systems often require large amounts of personal data. Privacy protection and user consent are essential.' },
-{ text: 'Transparency: users should understand when they are interacting with an ML system', correct: true, explanation: 'Users have a right to know they are using AI/ML. Transparency builds trust and accountability.' },
-{ text: 'Accountability: someone must be responsible if an ML system makes a harmful decision', correct: true, explanation: 'High-stakes decisions (hiring, lending, medical) require clear accountability and often human oversight.' }
-]
-},
-{
-question: 'When should you NOT use machine learning?',
-options: [
-{ text: 'The problem is deterministic and rules-based (e.g., email validation, user permissions)', correct: true, explanation: 'Simple if/else or regex logic is clearer, faster, and more maintainable than ML for deterministic problems.' },
-{ text: 'You have insufficient data (fewer than hundreds of labeled examples)', correct: true, explanation: 'Most ML algorithms need hundreds or thousands of examples to learn meaningful patterns.' },
-{ text: 'Latency is critical and real-time predictions are required', correct: true, explanation: 'Traditional logic is faster than ML inference. Use ML only if accuracy is worth the latency cost.' },
-{ text: 'Predictions must be explainable or interpretable', correct: true, explanation: 'Complex ML models are often black boxes. For high-stakes decisions, you need interpretability.' }
-]
-}
-]"
-/>
+<!-- <Quiz
+<!-- title="Chapter 01 Quiz: Introduction to AI and Machine Learning for PHP Developers"
+<!-- :questions="[
+<!-- {
+<!-- question: 'What is the primary difference between Artificial Intelligence and Machine Learning?',
+<!-- options: [
+<!-- { text: 'AI is a broad field that includes ML as one approach; ML specifically learns from data without explicit programming', correct: true, explanation: 'AI is the umbrella term for machines simulating intelligence. ML is one method: learning patterns from data automatically.' },
+<!-- { text: 'AI and Machine Learning are the same thing', correct: false, explanation: 'ML is a subset of AI. All ML is AI, but not all AI uses machine learning.' },
+<!-- { text: 'AI is used for chatbots; ML is used for image recognition', correct: false, explanation: 'Both AI and ML can be used for either task. The distinction is about how they work, not what they do.' },
+<!-- { text: 'ML requires more data than AI', correct: false, explanation: 'While ML often works better with more data, the key difference is that ML learns patterns whereas AI uses predefined rules.' }
+<!-- ]
+<!-- },
+<!-- {
+<!-- question: 'Which of the following is an example of Machine Learning (not just AI)?',
+<!-- options: [
+<!-- { text: 'A spam filter that learns to identify spam by analyzing thousands of user-marked emails', correct: true, explanation: 'This is ML because the system learns patterns from data and improves over time, rather than using predefined rules.' },
+<!-- { text: 'A calculator that performs arithmetic based on programmed rules', correct: false, explanation: 'This is rule-based AI but not ML, because it does not learn from data.' },
+<!-- { text: 'A chatbot with predefined responses for common questions', correct: false, explanation: 'Without learning from user interactions, this is rule-based AI but not ML.' },
+<!-- { text: 'A traffic light system that switches colors on a timer', correct: false, explanation: 'This is programmed logic, not AI or ML.' }
+<!-- ]
+<!-- },
+<!-- {
+<!-- question: 'In which ways can PHP developers contribute to Machine Learning projects? (Multiple answers are correct)',
+<!-- options: [
+<!-- { text: 'Implement simple algorithms using PHP-ML or Rubix ML libraries for lightweight tasks', correct: true, explanation: 'PHP libraries enable direct ML model building, training, and prediction for tasks like spam filtering or classification.' },
+<!-- { text: 'Integrate with external Python scripts or cloud APIs (AWS, Google Cloud) for advanced models', correct: true, explanation: 'PHP orchestrates ML workflows by calling Python services or managed AI APIs when specialized models are needed.' },
+<!-- { text: 'Collect, clean, and prepare data before it goes into ML models', correct: true, explanation: 'Data collection, validation, and feature engineering are critical PHP developer roles in the ML pipeline.' },
+<!-- { text: 'Deploy and monitor ML models in production, handling predictions and retraining', correct: true, explanation: 'PHP applications serve ML predictions to users and must track model performance over time.' }
+<!-- ]
+<!-- },
+<!-- {
+<!-- question: 'Which of these is a real-world use case for AI/ML in web development?',
+<!-- options: [
+<!-- { text: 'E-commerce sites recommending products based on browsing history and purchase behavior', correct: true, explanation: 'Recommendations are a common ML use case that improve user experience and increase sales.' },
+<!-- { text: 'Detecting and filtering spam emails or fraudulent transactions', correct: true, explanation: 'Spam and fraud detection are classic supervised ML problems that protect users and platforms.' },
+<!-- { text: 'Analyzing sentiment in user reviews and social media to understand customer opinions', correct: true, explanation: 'Sentiment analysis is an NLP task that helps businesses understand feedback at scale.' },
+<!-- { text: 'All of the above', correct: true, explanation: 'All three are legitimate, high-impact use cases for AI/ML in modern web applications.' }
+<!-- ]
+<!-- },
+<!-- {
+<!-- question: 'When is it better to build an ML feature in PHP rather than integrate with an external service?',
+<!-- options: [
+<!-- { text: 'When you have a simple, well-understood problem and want full control over the model and data', correct: true, explanation: 'Building in PHP is ideal for lightweight tasks where you own the data and avoid external dependencies.' },
+<!-- { text: 'When you need state-of-the-art models (like GPT-4) or specialized algorithms (like advanced image recognition)', correct: false, explanation: 'For advanced models, integration with specialized services is better because they are optimized and battle-tested.' },
+<!-- { text: 'When you have strict latency requirements and need sub-millisecond predictions on large data volumes', correct: false, explanation: 'For strict performance requirements at scale, specialized services or languages may be more suitable.' },
+<!-- { text: 'When your team has no prior experience with ML or PHP', correct: false, explanation: 'This scenario calls for collaboration with experts or integration with managed services.' }
+<!-- ]
+<!-- },
+<!-- {
+<!-- question: 'What is the difference between supervised and unsupervised learning?',
+<!-- options: [
+<!-- { text: 'Supervised learning uses labeled data (input + correct answer); unsupervised learning finds patterns in unlabeled data', correct: true, explanation: 'This is the fundamental distinction. Supervised = you know the answer. Unsupervised = you explore to discover structure.' },
+<!-- { text: 'Supervised is faster; unsupervised is more accurate', correct: false, explanation: 'Speed and accuracy depend on the specific algorithm and data, not whether learning is supervised or unsupervised.' },
+<!-- { text: 'Supervised is for PHP; unsupervised is for Python', correct: false, explanation: 'Both types of learning can be implemented in any language, including PHP.' },
+<!-- { text: 'Supervised requires deep learning; unsupervised uses traditional algorithms', correct: false, explanation: 'Both supervised and unsupervised can use deep learning or traditional algorithms.' }
+<!-- ]
+<!-- },
+<!-- {
+<!-- question: 'Which statement best describes the ML lifecycle?',
+<!-- options: [
+<!-- { text: 'It is iterative and non-linear; you often loop back to earlier steps when results are unsatisfactory', correct: true, explanation: 'The ML lifecycle is not a straight line. Looping back to data collection or model selection is normal and expected.' },
+<!-- { text: 'It is linear: define problem → collect data → train → deploy → done', correct: false, explanation: 'While these are the general steps, real ML projects loop back frequently. Deployment is not done; monitoring is ongoing.' },
+<!-- { text: 'Training is the longest phase; everything else is quick', correct: false, explanation: 'Data collection and preparation often take longer than training. Monitoring and maintenance are ongoing.' },
+<!-- { text: 'Once deployed, you do not need to update or retrain the model', correct: false, explanation: 'Models require ongoing monitoring and retraining as user behavior and data distributions change over time.' }
+<!-- ]
+<!-- },
+<!-- {
+<!-- question: 'Why is data quality often more important than algorithm choice in ML projects?',
+<!-- options: [
+<!-- { text: 'A simple algorithm trained on clean, relevant data outperforms a complex algorithm on messy, biased data', correct: true, explanation: 'This is a fundamental principle: garbage in, garbage out. Data quality trumps algorithmic sophistication.' },
+<!-- { text: 'Algorithms are less important than marketing', correct: false, explanation: 'Algorithm choice matters, but it is secondary to data quality for model performance.' },
+<!-- { text: 'Data quality only matters if you use PHP-ML', correct: false, explanation: 'Data quality is universally important in ML, regardless of library or language.' },
+<!-- { text: 'Complex algorithms automatically handle noisy, biased data', correct: false, explanation: 'No algorithm can fix inherently bad data. Garbage in = garbage out, always.' }
+<!-- ]
+<!-- },
+<!-- {
+<!-- question: 'Which of the following is a valid ethical concern when building ML systems? (Multiple answers are correct)',
+<!-- options: [
+<!-- { text: 'Bias and fairness: models trained on biased historical data will perpetuate discrimination', correct: true, explanation: 'This is a real and serious concern. Historical hiring data, loan data, etc., often contain systemic bias.' },
+<!-- { text: 'Privacy: collecting and storing user data for ML creates risks and privacy obligations', correct: true, explanation: 'ML systems often require large amounts of personal data. Privacy protection and user consent are essential.' },
+<!-- { text: 'Transparency: users should understand when they are interacting with an ML system', correct: true, explanation: 'Users have a right to know they are using AI/ML. Transparency builds trust and accountability.' },
+<!-- { text: 'Accountability: someone must be responsible if an ML system makes a harmful decision', correct: true, explanation: 'High-stakes decisions (hiring, lending, medical) require clear accountability and often human oversight.' }
+<!-- ]
+<!-- },
+<!-- {
+<!-- question: 'When should you NOT use machine learning?',
+<!-- options: [
+<!-- { text: 'The problem is deterministic and rules-based (e.g., email validation, user permissions)', correct: true, explanation: 'Simple if/else or regex logic is clearer, faster, and more maintainable than ML for deterministic problems.' },
+<!-- { text: 'You have insufficient data (fewer than hundreds of labeled examples)', correct: true, explanation: 'Most ML algorithms need hundreds or thousands of examples to learn meaningful patterns.' },
+<!-- { text: 'Latency is critical and real-time predictions are required', correct: true, explanation: 'Traditional logic is faster than ML inference. Use ML only if accuracy is worth the latency cost.' },
+<!-- { text: 'Predictions must be explainable or interpretable', correct: true, explanation: 'Complex ML models are often black boxes. For high-stakes decisions, you need interpretability.' }
+<!-- ]
+<!-- }
+<!-- ]"
+/> -->
 
 ## Further Exploration
 

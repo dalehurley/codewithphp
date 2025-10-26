@@ -1,0 +1,402 @@
+[
+    {
+        "user_id": 5,
+        "action": "purchase",
+        "product_id": 7,
+        "timestamp": "2025-10-12 10:24:19",
+        "duration_seconds": 355,
+        "device": "tablet"
+    },
+    {
+        "user_id": 13,
+        "action": "login",
+        "product_id": 10,
+        "timestamp": "2025-10-01 10:24:19",
+        "duration_seconds": 486,
+        "device": "mobile"
+    },
+    {
+        "user_id": 4,
+        "action": "purchase",
+        "product_id": 6,
+        "timestamp": "2025-10-08 10:24:19",
+        "duration_seconds": 136,
+        "device": "desktop"
+    },
+    {
+        "user_id": 2,
+        "action": "purchase",
+        "product_id": 19,
+        "timestamp": "2025-10-19 10:24:19",
+        "duration_seconds": 416,
+        "device": "mobile"
+    },
+    {
+        "user_id": 12,
+        "action": "login",
+        "product_id": 15,
+        "timestamp": "2025-10-05 10:24:19",
+        "duration_seconds": 530,
+        "device": "tablet"
+    },
+    {
+        "user_id": 8,
+        "action": "view_product",
+        "product_id": 18,
+        "timestamp": "2025-10-23 10:24:19",
+        "duration_seconds": 481,
+        "device": "desktop"
+    },
+    {
+        "user_id": 9,
+        "action": "purchase",
+        "product_id": 8,
+        "timestamp": "2025-10-03 10:24:19",
+        "duration_seconds": 367,
+        "device": "tablet"
+    },
+    {
+        "user_id": 2,
+        "action": "add_to_cart",
+        "product_id": 11,
+        "timestamp": "2025-09-26 10:24:19",
+        "duration_seconds": 23,
+        "device": "desktop"
+    },
+    {
+        "user_id": 16,
+        "action": "review",
+        "product_id": 10,
+        "timestamp": "2025-10-02 10:24:19",
+        "duration_seconds": 334,
+        "device": "mobile"
+    },
+    {
+        "user_id": 5,
+        "action": "purchase",
+        "product_id": 3,
+        "timestamp": "2025-10-05 10:24:19",
+        "duration_seconds": 227,
+        "device": "mobile"
+    },
+    {
+        "user_id": 17,
+        "action": "add_to_cart",
+        "product_id": 18,
+        "timestamp": "2025-09-28 10:24:19",
+        "duration_seconds": 555,
+        "device": "mobile"
+    },
+    {
+        "user_id": 2,
+        "action": "review",
+        "product_id": 15,
+        "timestamp": "2025-10-14 10:24:19",
+        "duration_seconds": 15,
+        "device": "desktop"
+    },
+    {
+        "user_id": 14,
+        "action": "add_to_cart",
+        "product_id": 17,
+        "timestamp": "2025-10-18 10:24:19",
+        "duration_seconds": 541,
+        "device": "tablet"
+    },
+    {
+        "user_id": 2,
+        "action": "purchase",
+        "product_id": 8,
+        "timestamp": "2025-10-12 10:24:19",
+        "duration_seconds": 471,
+        "device": "desktop"
+    },
+    {
+        "user_id": 13,
+        "action": "add_to_cart",
+        "product_id": 19,
+        "timestamp": "2025-10-10 10:24:19",
+        "duration_seconds": 445,
+        "device": "tablet"
+    },
+    {
+        "user_id": 11,
+        "action": "review",
+        "product_id": 10,
+        "timestamp": "2025-09-26 10:24:19",
+        "duration_seconds": 393,
+        "device": "desktop"
+    },
+    {
+        "user_id": 18,
+        "action": "view_product",
+        "product_id": 1,
+        "timestamp": "2025-10-14 10:24:19",
+        "duration_seconds": 243,
+        "device": "desktop"
+    },
+    {
+        "user_id": 3,
+        "action": "review",
+        "product_id": 20,
+        "timestamp": "2025-10-17 10:24:19",
+        "duration_seconds": 220,
+        "device": "desktop"
+    },
+    {
+        "user_id": 7,
+        "action": "view_product",
+        "product_id": 18,
+        "timestamp": "2025-10-17 10:24:19",
+        "duration_seconds": 431,
+        "device": "desktop"
+    },
+    {
+        "user_id": 12,
+        "action": "review",
+        "product_id": 18,
+        "timestamp": "2025-09-30 10:24:19",
+        "duration_seconds": 93,
+        "device": "tablet"
+    },
+    {
+        "user_id": 4,
+        "action": "login",
+        "product_id": 1,
+        "timestamp": "2025-10-02 10:24:19",
+        "duration_seconds": 456,
+        "device": "desktop"
+    },
+    {
+        "user_id": 4,
+        "action": "purchase",
+        "product_id": 17,
+        "timestamp": "2025-09-29 10:24:19",
+        "duration_seconds": 203,
+        "device": "tablet"
+    },
+    {
+        "user_id": 3,
+        "action": "add_to_cart",
+        "product_id": 14,
+        "timestamp": "2025-10-19 10:24:19",
+        "duration_seconds": 228,
+        "device": "tablet"
+    },
+    {
+        "user_id": 2,
+        "action": "add_to_cart",
+        "product_id": 9,
+        "timestamp": "2025-10-14 10:24:19",
+        "duration_seconds": 79,
+        "device": "desktop"
+    },
+    {
+        "user_id": 17,
+        "action": "add_to_cart",
+        "product_id": 11,
+        "timestamp": "2025-10-25 10:24:19",
+        "duration_seconds": 105,
+        "device": "tablet"
+    },
+    {
+        "user_id": 7,
+        "action": "login",
+        "product_id": 3,
+        "timestamp": "2025-10-22 10:24:19",
+        "duration_seconds": 199,
+        "device": "tablet"
+    },
+    {
+        "user_id": 9,
+        "action": "add_to_cart",
+        "product_id": 3,
+        "timestamp": "2025-10-19 10:24:19",
+        "duration_seconds": 517,
+        "device": "desktop"
+    },
+    {
+        "user_id": 11,
+        "action": "purchase",
+        "product_id": 10,
+        "timestamp": "2025-10-02 10:24:19",
+        "duration_seconds": 391,
+        "device": "desktop"
+    },
+    {
+        "user_id": 15,
+        "action": "login",
+        "product_id": 16,
+        "timestamp": "2025-10-05 10:24:19",
+        "duration_seconds": 158,
+        "device": "mobile"
+    },
+    {
+        "user_id": 12,
+        "action": "view_product",
+        "product_id": 4,
+        "timestamp": "2025-10-24 10:24:19",
+        "duration_seconds": 364,
+        "device": "desktop"
+    },
+    {
+        "user_id": 19,
+        "action": "purchase",
+        "product_id": 11,
+        "timestamp": "2025-10-11 10:24:19",
+        "duration_seconds": 12,
+        "device": "mobile"
+    },
+    {
+        "user_id": 11,
+        "action": "purchase",
+        "product_id": 16,
+        "timestamp": "2025-09-29 10:24:19",
+        "duration_seconds": 270,
+        "device": "desktop"
+    },
+    {
+        "user_id": 5,
+        "action": "review",
+        "product_id": 1,
+        "timestamp": "2025-10-01 10:24:19",
+        "duration_seconds": 62,
+        "device": "tablet"
+    },
+    {
+        "user_id": 3,
+        "action": "purchase",
+        "product_id": 17,
+        "timestamp": "2025-10-16 10:24:19",
+        "duration_seconds": 556,
+        "device": "mobile"
+    },
+    {
+        "user_id": 10,
+        "action": "review",
+        "product_id": 10,
+        "timestamp": "2025-10-14 10:24:19",
+        "duration_seconds": 52,
+        "device": "tablet"
+    },
+    {
+        "user_id": 16,
+        "action": "add_to_cart",
+        "product_id": 3,
+        "timestamp": "2025-10-08 10:24:19",
+        "duration_seconds": 197,
+        "device": "desktop"
+    },
+    {
+        "user_id": 11,
+        "action": "add_to_cart",
+        "product_id": 7,
+        "timestamp": "2025-10-19 10:24:19",
+        "duration_seconds": 385,
+        "device": "desktop"
+    },
+    {
+        "user_id": 6,
+        "action": "view_product",
+        "product_id": 2,
+        "timestamp": "2025-09-26 10:24:19",
+        "duration_seconds": 436,
+        "device": "tablet"
+    },
+    {
+        "user_id": 8,
+        "action": "login",
+        "product_id": 15,
+        "timestamp": "2025-09-26 10:24:19",
+        "duration_seconds": 67,
+        "device": "desktop"
+    },
+    {
+        "user_id": 12,
+        "action": "add_to_cart",
+        "product_id": 3,
+        "timestamp": "2025-10-01 10:24:19",
+        "duration_seconds": 593,
+        "device": "mobile"
+    },
+    {
+        "user_id": 5,
+        "action": "view_product",
+        "product_id": 10,
+        "timestamp": "2025-10-10 10:24:19",
+        "duration_seconds": 240,
+        "device": "mobile"
+    },
+    {
+        "user_id": 11,
+        "action": "login",
+        "product_id": 12,
+        "timestamp": "2025-10-10 10:24:19",
+        "duration_seconds": 302,
+        "device": "tablet"
+    },
+    {
+        "user_id": 12,
+        "action": "view_product",
+        "product_id": 10,
+        "timestamp": "2025-10-03 10:24:19",
+        "duration_seconds": 361,
+        "device": "mobile"
+    },
+    {
+        "user_id": 2,
+        "action": "view_product",
+        "product_id": 5,
+        "timestamp": "2025-10-23 10:24:19",
+        "duration_seconds": 434,
+        "device": "desktop"
+    },
+    {
+        "user_id": 5,
+        "action": "purchase",
+        "product_id": 11,
+        "timestamp": "2025-10-08 10:24:19",
+        "duration_seconds": 214,
+        "device": "tablet"
+    },
+    {
+        "user_id": 13,
+        "action": "purchase",
+        "product_id": 11,
+        "timestamp": "2025-10-21 10:24:19",
+        "duration_seconds": 295,
+        "device": "mobile"
+    },
+    {
+        "user_id": 13,
+        "action": "add_to_cart",
+        "product_id": 2,
+        "timestamp": "2025-10-16 10:24:19",
+        "duration_seconds": 437,
+        "device": "desktop"
+    },
+    {
+        "user_id": 11,
+        "action": "add_to_cart",
+        "product_id": 8,
+        "timestamp": "2025-10-13 10:24:19",
+        "duration_seconds": 592,
+        "device": "tablet"
+    },
+    {
+        "user_id": 16,
+        "action": "purchase",
+        "product_id": 7,
+        "timestamp": "2025-10-23 10:24:19",
+        "duration_seconds": 37,
+        "device": "mobile"
+    },
+    {
+        "user_id": 18,
+        "action": "add_to_cart",
+        "product_id": 8,
+        "timestamp": "2025-10-06 10:24:19",
+        "duration_seconds": 85,
+        "device": "tablet"
+    }
+]

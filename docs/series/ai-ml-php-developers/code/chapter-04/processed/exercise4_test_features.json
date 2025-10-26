@@ -1,0 +1,182 @@
+[
+    {
+        "age": 0.3939393939393939,
+        "avg_order_value": 0.22825540472599296,
+        "has_subscription": 0,
+        "is_active": 1,
+        "gender_Female": 0,
+        "gender_Male": 1,
+        "country_USA": 1
+    },
+    {
+        "age": 0.5151515151515151,
+        "avg_order_value": 0.635243841126194,
+        "has_subscription": 1,
+        "is_active": 1,
+        "gender_Female": 1,
+        "gender_Male": 0,
+        "country_USA": 1
+    },
+    {
+        "age": 0.12121212121212122,
+        "avg_order_value": 0.2704876822523882,
+        "has_subscription": 0,
+        "is_active": 1,
+        "gender_Female": 0,
+        "gender_Male": 1,
+        "country_USA": 1
+    },
+    {
+        "age": 0.5757575757575758,
+        "avg_order_value": 0.4645550527903469,
+        "has_subscription": 1,
+        "is_active": 1,
+        "gender_Female": 1,
+        "gender_Male": 0,
+        "country_USA": 1
+    },
+    {
+        "age": 0.7575757575757576,
+        "avg_order_value": 0.6608848667672196,
+        "has_subscription": 1,
+        "is_active": 1,
+        "gender_Female": 1,
+        "gender_Male": 0,
+        "country_USA": 1
+    },
+    {
+        "age": 0.48484848484848486,
+        "avg_order_value": 0.3969331322272498,
+        "has_subscription": 1,
+        "is_active": 1,
+        "gender_Female": 1,
+        "gender_Male": 0,
+        "country_USA": 1
+    },
+    {
+        "age": 0.5454545454545454,
+        "avg_order_value": 0.7833081950729008,
+        "has_subscription": 1,
+        "is_active": 1,
+        "gender_Female": 0,
+        "gender_Male": 1,
+        "country_USA": 1
+    },
+    {
+        "age": 0.48484848484848486,
+        "avg_order_value": 0.5490196078431372,
+        "has_subscription": 1,
+        "is_active": 1,
+        "gender_Female": 1,
+        "gender_Male": 0,
+        "country_USA": 1
+    },
+    {
+        "age": 0.3333333333333333,
+        "avg_order_value": 0.4012066365007542,
+        "has_subscription": 1,
+        "is_active": 1,
+        "gender_Female": 0,
+        "gender_Male": 1,
+        "country_USA": 1
+    },
+    {
+        "age": 0.15151515151515152,
+        "avg_order_value": 0.15082956259426847,
+        "has_subscription": 0,
+        "is_active": 1,
+        "gender_Female": 1,
+        "gender_Male": 0,
+        "country_USA": 1
+    },
+    {
+        "age": 0.6666666666666666,
+        "avg_order_value": 0.771744595274007,
+        "has_subscription": 1,
+        "is_active": 1,
+        "gender_Female": 0,
+        "gender_Male": 1,
+        "country_USA": 1
+    },
+    {
+        "age": 0.3333333333333333,
+        "avg_order_value": 0.2083961789844143,
+        "has_subscription": 0,
+        "is_active": 1,
+        "gender_Female": 1,
+        "gender_Male": 0,
+        "country_USA": 1
+    },
+    {
+        "age": 0.9090909090909091,
+        "avg_order_value": 0.4547511312217194,
+        "has_subscription": 1,
+        "is_active": 1,
+        "gender_Female": 1,
+        "gender_Male": 0,
+        "country_USA": 1
+    },
+    {
+        "age": 0.24242424242424243,
+        "avg_order_value": 0.38738059326294627,
+        "has_subscription": 1,
+        "is_active": 1,
+        "gender_Female": 0,
+        "gender_Male": 1,
+        "country_USA": 1
+    },
+    {
+        "age": 0.3939393939393939,
+        "avg_order_value": 0.8547008547008547,
+        "has_subscription": 1,
+        "is_active": 1,
+        "gender_Female": 1,
+        "gender_Male": 0,
+        "country_USA": 1
+    },
+    {
+        "age": 0.6060606060606061,
+        "avg_order_value": 0.6277023629964806,
+        "has_subscription": 1,
+        "is_active": 1,
+        "gender_Female": 0,
+        "gender_Male": 1,
+        "country_USA": 1
+    },
+    {
+        "age": 0.2727272727272727,
+        "avg_order_value": 0.17848164906988437,
+        "has_subscription": 0,
+        "is_active": 1,
+        "gender_Female": 0,
+        "gender_Male": 1,
+        "country_USA": 1
+    },
+    {
+        "age": 0,
+        "avg_order_value": 0.036953242835595784,
+        "has_subscription": 0,
+        "is_active": 1,
+        "gender_Female": 1,
+        "gender_Male": 0,
+        "country_USA": 1
+    },
+    {
+        "age": 0.36363636363636365,
+        "avg_order_value": 0.5354449472096531,
+        "has_subscription": 1,
+        "is_active": 1,
+        "gender_Female": 0,
+        "gender_Male": 1,
+        "country_USA": 1
+    },
+    {
+        "age": 0.30303030303030304,
+        "avg_order_value": 0.24660633484162897,
+        "has_subscription": 0,
+        "is_active": 1,
+        "gender_Female": 0,
+        "gender_Male": 1,
+        "country_USA": 1
+    }
+]
