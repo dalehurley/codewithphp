@@ -70,7 +70,7 @@ Complete, runnable examples for this chapter:
 - [`11-regression-example.php`](/series/ai-ml-php-developers/code/chapter-03/11-regression-example.php) — House price prediction (regression)
 - [`12-confusion-matrix.php`](/series/ai-ml-php-developers/code/chapter-03/12-confusion-matrix.php) — Confusion matrix and advanced metrics
 
-All files are in [`docs/series/ai-ml-php-developers/code/chapter-03/`](/series/ai-ml-php-developers/code/chapter-03/)
+All files are in [`docs/series/ai-ml-php-developers/code/chapter-03/`](/series/ai-ml-php-developers/code/chapter-03/README.md)
 :::
 
 ## Quick Start
@@ -2625,7 +2625,7 @@ In production, you often care more about specific metrics than overall accuracy:
 Test your understanding with these hands-on challenges:
 
 ::: tip Exercise Solutions
-Sample solutions for these exercises are available in [`code/chapter-03/solutions/`](/series/ai-ml-php-developers/code/chapter-03/solutions/). Try implementing them yourself first before checking the solutions!
+Sample solutions for these exercises are available in `code/chapter-03/solutions/`. Try implementing them yourself first before checking the solutions!
 :::
 
 ### Exercise 1: Feature Engineering

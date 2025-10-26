@@ -601,7 +601,7 @@ Complete, runnable examples from this chapter are available in:
 - [`validation-example.php`](/series/php-basics/code/05-forms/validation-example.php) - Server-side validation
 - [`sanitization-demo.php`](/series/php-basics/code/05-forms/sanitization-demo.php) - Input sanitization and security
 - [`comprehensive-form.php`](/series/php-basics/code/05-forms/comprehensive-form.php) - Complete form with all input types
-- [`solutions/`](/series/php-basics/code/05-forms/solutions/) - Solutions to chapter exercises
+- `solutions/` - Solutions to chapter exercises
   :::
 
 ## Knowledge Check

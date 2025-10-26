@@ -758,7 +758,7 @@ Complete, runnable examples from this chapter are available in:
 - [`constants-demo.php`](/series/php-basics/code/02-variables/constants-demo.php) - Defining and using constants
 - [`type-juggling.php`](/series/php-basics/code/02-variables/type-juggling.php) - Understanding type juggling and conversion
 - [`strict-types-demo.php`](/series/php-basics/code/02-variables/strict-types-demo.php) - Strict type mode demonstration
-- [`solutions/`](/series/php-basics/code/02-variables/solutions/) - Solutions to chapter exercises
+- `solutions/` - Solutions to chapter exercises
   :::
 
 ## Further Reading
