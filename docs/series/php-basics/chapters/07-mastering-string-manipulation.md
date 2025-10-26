@@ -802,9 +802,9 @@ With our understanding of core data types like strings and arrays solidified, we
 ::: info Code Examples
 Complete, runnable examples from this chapter are available in:
 
-- [`basic-strings.php`](/series/php-basics/code/07-strings/basic-strings.php) - String basics and common operations
-- [`search-replace.php`](/series/php-basics/code/07-strings/search-replace.php) - Searching and replacing in strings
-- [`split-join.php`](/series/php-basics/code/07-strings/split-join.php) - Splitting and joining strings
+- [`basic-strings.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/07-strings/basic-strings.php) - String basics and common operations
+- [`search-replace.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/07-strings/search-replace.php) - Searching and replacing in strings
+- [`split-join.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/07-strings/split-join.php) - Splitting and joining strings
 - `solutions/` - Solutions to chapter exercises
   :::
 
