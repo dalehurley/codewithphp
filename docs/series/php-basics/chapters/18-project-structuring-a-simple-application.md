@@ -804,6 +804,18 @@ You now have a clean, organized, and scalable structure that mirrors the foundat
 
 **What's Next**: In the final project chapter, we'll bring everything together by connecting our `Post` model to a real database, building out full CRUD (Create, Read, Update, Delete) functionality, and completing our blog application.
 
+::: info Code Examples
+The complete structured application from this chapter is available in:
+
+- [`public/index.php`](../code/18-structure/public/index.php) - Front controller entry point
+- [`app/`](../code/18-structure/app/) - Application directory with Controllers, Models, and Views
+- [`config/`](../code/18-structure/config/) - Configuration files
+- [`routes.php`](../code/18-structure/routes.php) - Route definitions
+- [`solutions/`](../code/18-structure/solutions/) - Solutions to chapter exercises
+
+This directory contains the complete MVC structure with router integration and template layouts.
+:::
+
 ## Knowledge Check
 
 Test your understanding of MVC architecture:

@@ -799,6 +799,15 @@ Congratulations! You now have a comprehensive toolkit for working with strings i
 **Next Steps**:
 With our understanding of core data types like strings and arrays solidified, we're ready to move on to a major new paradigm in programming: Object-Oriented Programming (OOP). In [Chapter 08](/series/php-basics/chapters/08-introduction-to-object-oriented-programming), we'll learn how to model real-world concepts using classes and objects.
 
+::: info Code Examples
+Complete, runnable examples from this chapter are available in:
+
+- [`basic-strings.php`](../code/07-strings/basic-strings.php) - String basics and common operations
+- [`search-replace.php`](../code/07-strings/search-replace.php) - Searching and replacing in strings
+- [`split-join.php`](../code/07-strings/split-join.php) - Splitting and joining strings
+- [`solutions/`](../code/07-strings/solutions/) - Solutions to chapter exercises
+  :::
+
 ## Further Reading
 
 - [PHP String Functions](https://www.php.net/manual/en/ref.strings.php) — Complete reference

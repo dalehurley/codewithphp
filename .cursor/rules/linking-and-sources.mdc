@@ -4,20 +4,388 @@ description: Internal/external linking, GitHub edit links, and licensing notes
 
 # Linking & Sources
 
-Internal links
+## Internal Linking
 
-- Prefer absolute-from-root doc links, e.g., `/series/php-basics/chapters/01-getting-started`.
-- Link to colocated code using relative paths.
+### Chapter Links
 
-External links
+- **Always use absolute paths** from doc root for chapter links
+- Format: `/series/<series-slug>/chapters/<nn>-<chapter-title>`
+- Examples:
+  - `/series/php-basics/chapters/01-your-first-php-script`
+  - `/series/ai-ml-php-developers/chapters/02-setting-up-your-ai-development-environment`
 
-- Use markdown links with descriptive anchors.
-- Cite authoritative sources when appropriate.
+```markdown
+See [Chapter 5: Your First ML Model](/series/ai-ml-php-developers/chapters/05-your-first-machine-learning-model-linear-regression-in-php) for the implementation.
+```
 
-GitHub Edit Links
+### Series Index Links
 
-- Configured via `editLink.pattern` to point to the repo edit page for each doc.
+- Link to series overview pages with absolute paths
+- Format: `/series/<series-slug>/`
 
-License
+```markdown
+Review the [PHP Basics series](/series/php-basics/) for foundational concepts.
+```
 
-- Content and code are MIT licensed. Include attribution where appropriate.
+### Code Sample Links
+
+#### From Chapter Markdown to Code Files
+
+Use **relative paths** from the chapter file to the code directory:
+
+```markdown
+::: info Code Examples
+Complete, runnable examples are available in:
+
+- [`verify-installation.php`](../code/chapter-02/verify-installation.php)
+- [`test-phpml.php`](../code/chapter-02/test-phpml.php)
+- [`test-rubixml.php`](../code/chapter-02/test-rubixml.php)
+  :::
+```
+
+Pattern: `../code/<chapter-folder>/<filename>`
+
+**Inline code references:**
+
+```markdown
+The complete implementation is in [`linear-regression.php`](../code/chapter-05/linear-regression.php).
+```
+
+#### From README to Code Files
+
+Within a code directory's README, use relative paths:
+
+```markdown
+- `verify-installation.php` - Comprehensive environment check
+- `test-phpml.php` - PHP-ML library demonstration
+- `solutions/exercise-1.php` - Solution to Exercise 1
+```
+
+Or for subdirectories:
+
+```markdown
+See [`solutions/spam-filter-complete.php`](solutions/spam-filter-complete.php) for the full implementation.
+```
+
+#### Cursor Rule References (MDC Format)
+
+When documenting code files in Cursor rules, use the `mdc:` format with full paths:
+
+```markdown
+For Chapter 2, reference these files:
+
+- [verify-installation.php](mdc:docs/series/ai-ml-php-developers/code/chapter-02/verify-installation.php) - Environment verification
+- [test-phpml.php](mdc:docs/series/ai-ml-php-developers/code/chapter-02/test-phpml.php) - PHP-ML demonstration
+- [composer.json](mdc:docs/series/ai-ml-php-developers/code/chapter-02/composer.json) - Dependencies
+```
+
+This allows Cursor AI to load and reference the actual file contents when helping with tutorial authoring.
+
+## External Linking
+
+### Best Practices
+
+- **Use descriptive anchor text** (never raw URLs)
+- **Add context with em dash** after the link
+- **Prefer official documentation** over third-party sources
+- **Verify links** before committing
+
+### Format
+
+```markdown
+- [PHP Manual: Arrays](https://www.php.net/manual/en/language.types.array.php) — Official array documentation
+- [PSR-12: Extended Coding Style](https://www.php-fig.org/psr/psr-12/) — Industry coding standards
+- [Composer Documentation](https://getcomposer.org/doc/) — Dependency management guide
+```
+
+### Further Reading Sections
+
+Every chapter should include a "Further Reading" section with curated links:
+
+```markdown
+## Further Reading
+
+To deepen your understanding of the topics covered in this chapter:
+
+- [PHP Manual: Object-Oriented Programming](https://www.php.net/manual/en/language.oop5.php) — Official OOP documentation
+- [PSR-4: Autoloader Standard](https://www.php-fig.org/psr/psr-4/) — How autoloading works
+- [PHP The Right Way](https://phptherightway.com/) — Best practices and patterns
+- [Rubix ML Documentation](https://docs.rubixml.com/) — Comprehensive ML library guide
+```
+
+**Order:** Official docs → Standards → Quality resources
+
+### AI/ML Specific Resources
+
+Common external resources for the AI/ML series:
+
+**PHP Libraries:**
+
+- [PHP-ML Documentation](https://php-ml.readthedocs.io/)
+- [Rubix ML Documentation](https://docs.rubixml.com/)
+- [Composer Documentation](https://getcomposer.org/doc/)
+
+**Python Integration:**
+
+- [Python Documentation](https://docs.python.org/3/)
+- [scikit-learn](https://scikit-learn.org/stable/)
+- [TensorFlow](https://www.tensorflow.org/)
+- [PyTorch](https://pytorch.org/)
+
+**APIs & Services:**
+
+- [OpenAI API Reference](https://platform.openai.com/docs/api-reference)
+- [TensorFlow PHP](https://github.com/tensorflow/tensorflow)
+
+**Dataset Sources:**
+
+- [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/index.php)
+- [Kaggle Datasets](https://www.kaggle.com/datasets) — Always provide attribution
+
+**PHP Standards:**
+
+- [PHP 8.4 Release Notes](https://www.php.net/releases/8.4/)
+- [PHP Manual](https://www.php.net/docs.php)
+- [PHP-FIG Standards](https://www.php-fig.org/)
+
+## GitHub Edit Links
+
+### Configuration
+
+Edit links are configured in `docs/.vitepress/config.ts`:
+
+```typescript
+themeConfig: {
+  editLink: {
+    pattern: 'https://github.com/dalehurley/codewithphp/edit/main/docs/:path',
+    text: 'Edit this page on GitHub'
+  }
+}
+```
+
+This automatically adds "Edit this page on GitHub" links to every page, allowing readers to suggest improvements.
+
+### Repository Structure
+
+```
+dalehurley/codewithphp
+└── docs/
+    ├── .vitepress/
+    ├── index.md
+    └── series/
+        ├── php-basics/
+        │   ├── chapters/
+        │   └── code/
+        └── ai-ml-php-developers/
+            ├── chapters/
+            └── code/
+```
+
+## Code File Organization
+
+### Directory Structure
+
+Each chapter's code follows this pattern:
+
+```
+code/
+└── chapter-NN-topic/
+    ├── README.md              # Required: Explains all files
+    ├── composer.json          # If dependencies needed
+    ├── env.example            # If env vars needed
+    ├── basic-example.php      # Simple introduction
+    ├── advanced-example.php   # Complex usage
+    ├── data/                  # Sample datasets
+    │   ├── sample.csv
+    │   └── dataset.json
+    ├── solutions/             # Exercise solutions
+    │   ├── exercise-1.php
+    │   └── exercise-2.php
+    └── tests/                 # Optional test files
+        └── ValidationTest.php
+```
+
+### README Template for Code Directories
+
+Every `code/chapter-XX/` directory must have a README:
+
+````markdown
+# Chapter NN: Topic Title - Code Examples
+
+This directory contains all code examples from Chapter NN.
+
+## Contents
+
+- `basic-example.php` — Brief description
+- `advanced-example.php` — Brief description
+- `data/sample.csv` — Description of dataset
+
+## Quick Start
+
+### 1. Install Dependencies (if needed)
+
+```bash
+cd docs/series/series-slug/code/chapter-NN/
+composer install
+```
+````
+
+### 2. Run Examples
+
+```bash
+php basic-example.php
+```
+
+Expected output:
+
+```
+Show exact output here
+```
+
+## What Each Script Does
+
+### basic-example.php
+
+Detailed explanation of what this demonstrates.
+
+### advanced-example.php
+
+Detailed explanation of advanced features shown.
+
+## Troubleshooting
+
+### Common Error 1
+
+Solution here
+
+### Common Error 2
+
+Solution here
+
+## Next Steps
+
+Suggestions for experimentation or what to do next.
+
+````
+
+## Attribution & Licensing
+
+### License
+
+All content and code in this repository are licensed under the **MIT License**.
+
+See [LICENSE](https://github.com/dalehurley/codewithphp/blob/main/LICENSE) for full text.
+
+### When to Attribute
+
+**Always attribute when using:**
+- Datasets from external sources (UCI ML Repository, Kaggle, etc.)
+- Code snippets from external libraries' documentation
+- Examples adapted from other tutorials or papers
+- Any third-party assets
+
+**Attribution format:**
+
+```markdown
+::: info Dataset Source
+The Iris dataset used in this example is from the [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/iris).
+
+Dua, D. and Graff, C. (2019). UCI Machine Learning Repository. Irvine, CA: University of California, School of Information and Computer Science.
+:::
+````
+
+### Code Sample Headers
+
+For significant code samples adapted from external sources, include attribution in comments:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+/**
+ * K-Nearest Neighbors implementation
+ *
+ * Adapted from Rubix ML documentation examples
+ * https://docs.rubixml.com/latest/classifiers/k-nearest-neighbors.html
+ *
+ * @license MIT
+ */
+```
+
+## Link Validation
+
+Before committing chapters, verify:
+
+- [ ] All internal chapter links use absolute paths
+- [ ] All code sample links use relative paths and are correct
+- [ ] External links are valid and go to correct pages
+- [ ] No raw URLs in prose (use markdown links)
+- [ ] Further Reading section includes descriptions after em dashes
+- [ ] Code directory README exists and is complete
+- [ ] Attribution provided for external datasets and code
+
+## Examples by Series
+
+### PHP Basics Series
+
+```markdown
+## Prerequisites
+
+Before starting, you should have:
+
+- Completed [Chapter 08: Introduction to OOP](/series/php-basics/chapters/08-introduction-to-object-oriented-programming)
+- PHP 8.4+ installed
+
+## Further Reading
+
+- [PHP Manual: Interfaces](https://www.php.net/manual/en/language.oop5.interfaces.php) — Official interface documentation
+- [PSR-4: Autoloader](https://www.php-fig.org/psr/psr-4/) — Autoloading standard
+
+::: info Code Examples
+See [`interface-example.php`](../code/09-oop-advanced/interface-example.php) for the complete implementation.
+:::
+```
+
+### AI/ML for PHP Developers Series
+
+```markdown
+## Prerequisites
+
+Before starting, you should have:
+
+- Completed [Chapter 02: Setting Up Your AI Development Environment](/series/ai-ml-php-developers/chapters/02-setting-up-your-ai-development-environment)
+- Rubix ML installed and verified
+
+## Further Reading
+
+- [Rubix ML: Classifiers](https://docs.rubixml.com/latest/classifiers/overview.html) — Classifier types and usage
+- [UCI ML Repository](https://archive.ics.uci.edu/ml/index.php) — Standard ML datasets
+
+::: info Code Examples
+Complete examples with sample data:
+
+- [`linear-regression.php`](../code/chapter-05/linear-regression.php) — Basic implementation
+- [`house-prices.csv`](../code/chapter-05/data/house-prices.csv) — Sample dataset
+  :::
+```
+
+## Cross-Series References
+
+When referencing content from another series:
+
+```markdown
+If you're new to object-oriented programming in PHP, review the [PHP Basics: OOP chapters](/series/php-basics/chapters/08-introduction-to-object-oriented-programming) before continuing.
+
+The ML classes we build follow the same patterns introduced in the [PHP Basics series](/series/php-basics/).
+```
+
+## Quick Reference
+
+| Context            | Link Type  | Format                           | Example                                                 |
+| ------------------ | ---------- | -------------------------------- | ------------------------------------------------------- |
+| Chapter to chapter | Absolute   | `/series/slug/chapters/nn-title` | `/series/php-basics/chapters/01-your-first-php-script`  |
+| Chapter to code    | Relative   | `../code/chapter-nn/file.php`    | `../code/05-functions/basic-example.php`                |
+| README to code     | Relative   | `file.php` or `subdir/file.php`  | `solutions/exercise-1.php`                              |
+| Rule to code       | MDC format | `(mdc:path/to/file)`             | `(mdc:docs/series/php-basics/code/01-basics/hello.php)` |
+| External           | Markdown   | `[Text](url) — Description`      | `[PHP Manual](https://php.net) — Official docs`         |

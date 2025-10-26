@@ -904,6 +904,15 @@ You've just unlocked the ability to create stateful applications that can "remem
 
 This chapter covered the foundation of stateful web applications—from e-commerce sites with shopping carts to social media platforms with user profiles. Combined with proper security practices, you now have the tools to build production-ready session management.
 
+::: info Code Examples
+Complete, runnable examples from this chapter are available in:
+
+- [`session-basics.php`](../code/15-sessions/session-basics.php) - Session fundamentals and basic usage
+- [`cookie-basics.php`](../code/15-sessions/cookie-basics.php) - Working with cookies
+- [`auth-system.php`](../code/15-sessions/auth-system.php) - Complete authentication system with sessions
+- [`solutions/`](../code/15-sessions/solutions/) - Solutions to chapter exercises
+  :::
+
 ## Further Reading
 
 - [PHP Manual: Sessions](https://www.php.net/manual/en/book.session.php) — Official PHP session documentation

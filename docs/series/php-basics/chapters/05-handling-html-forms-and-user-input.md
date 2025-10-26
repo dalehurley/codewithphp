@@ -593,6 +593,17 @@ Great job! You can now build interactive web pages that accept and process user 
 
 In the next chapter, we'll dive into arrays, PHP's incredibly powerful and versatile tool for storing and managing lists of related data.
 
+::: info Code Examples
+Complete, runnable examples from this chapter are available in:
+
+- [`basic-form.php`](../code/05-forms/basic-form.php) - Simple form handling with POST
+- [`get-vs-post.php`](../code/05-forms/get-vs-post.php) - Demonstrating GET vs POST methods
+- [`validation-example.php`](../code/05-forms/validation-example.php) - Server-side validation
+- [`sanitization-demo.php`](../code/05-forms/sanitization-demo.php) - Input sanitization and security
+- [`comprehensive-form.php`](../code/05-forms/comprehensive-form.php) - Complete form with all input types
+- [`solutions/`](../code/05-forms/solutions/) - Solutions to chapter exercises
+  :::
+
 ## Knowledge Check
 
 Test your understanding of HTML forms and user input:

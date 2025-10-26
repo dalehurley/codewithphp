@@ -951,6 +951,17 @@ To continue your Laravel journey:
 
 In the next chapter, we'll take a quick look at another major framework, Symfony, to see a different approach to solving the same problems.
 
+::: info Code Examples
+Exercise solutions from this chapter are available in:
+
+- [`solutions/exercise-1-show-post.php`](../code/20-laravel/solutions/exercise-1-show-post.php) - Single post view
+- [`solutions/exercise-2-navigation.php`](../code/20-laravel/solutions/exercise-2-navigation.php) - Adding navigation
+- [`solutions/exercise-3-styling.php`](../code/20-laravel/solutions/exercise-3-styling.php) - Styling improvements
+- [`solutions/exercise-4-excerpts.php`](../code/20-laravel/solutions/exercise-4-excerpts.php) - Post excerpts
+
+**Note**: These are Laravel-specific Blade template examples. The main code for this chapter is your Laravel application created with `composer create-project laravel/laravel blog`.
+:::
+
 ## Further Reading
 
 - [Official Laravel Documentation](https://laravel.com/docs) — Comprehensive and well-written

@@ -33,7 +33,7 @@ export default withMermaid(
           text: 'Series',
           items: [
             { text: 'PHP Basics', link: '/series/php-basics/' },
-            { text: 'Modern PHP', link: '/series/modern-php/' }
+            { text: 'AI/ML for PHP Developers', link: '/series/ai-ml-php-developers/' },
           ]
         },
         { text: 'GitHub', link: 'https://github.com/dalehurley/codewithphp' }
@@ -44,6 +44,7 @@ export default withMermaid(
           {
             text: 'Chapters',
             items: [
+              
               {
                 text: '00 — Setting Up Your Development Environment',
                 link: '/series/php-basics/chapters/00-setting-up-your-development-environment'
@@ -142,7 +143,41 @@ export default withMermaid(
               }
             ]
           }
-        ]
+        ],
+
+        '/series/ai-ml-php-developers/': [
+          { text: 'Overview', link: '/series/ai-ml-php-developers/' },
+          {
+            text: 'Chapters',
+            items: [
+              { text: '01 — Introduction to AI and Machine Learning for PHP Developers', link: '/series/ai-ml-php-developers/chapters/01-introduction-to-ai-and-machine-learning-for-php-developers' },
+              { text: '02 — Setting Up Your AI Development Environment', link: '/series/ai-ml-php-developers/chapters/02-setting-up-your-ai-development-environment' },
+              { text: '03 — Core Machine Learning Concepts and Terminology', link: '/series/ai-ml-php-developers/chapters/03-core-machine-learning-concepts-and-terminology' },
+              { text: '04 — Data Collection and Preprocessing in PHP', link: '/series/ai-ml-php-developers/chapters/04-data-collection-and-preprocessing-in-php' },
+              { text: '05 — Your First Machine Learning Model: Linear Regression in PHP', link: '/series/ai-ml-php-developers/chapters/05-your-first-machine-learning-model-linear-regression-in-php' },
+              { text: '06 — Classification Basics and Building a Spam Filter', link: '/series/ai-ml-php-developers/chapters/06-classification-basics-and-building-a-spam-filter' },
+              { text: '07 — Model Evaluation and Improvement', link: '/series/ai-ml-php-developers/chapters/07-model-evaluation-and-improvement' },
+              { text: '08 — Leveraging PHP Machine Learning Libraries', link: '/series/ai-ml-php-developers/chapters/08-leveraging-php-machine-learning-libraries' },
+              { text: '09 — Advanced Machine Learning Techniques (Trees, Ensembles, and Clustering)', link: '/series/ai-ml-php-developers/chapters/09-advanced-machine-learning-techniques-trees-ensembles-and-clustering' },
+              { text: '10 — Neural Networks and Deep Learning Fundamentals', link: '/series/ai-ml-php-developers/chapters/10-neural-networks-and-deep-learning-fundamentals' },
+              { text: '11 — Integrating PHP with Python for Advanced ML', link: '/series/ai-ml-php-developers/chapters/11-integrating-php-with-python-for-advanced-ml' },
+              { text: '12 — Deep Learning with TensorFlow and PHP', link: '/series/ai-ml-php-developers/chapters/12-deep-learning-with-tensorflow-and-php' },
+              { text: '13 — Natural Language Processing (NLP) Fundamentals', link: '/series/ai-ml-php-developers/chapters/13-natural-language-processing-nlp-fundamentals' },
+              { text: '14 — NLP Project: Text Classification in PHP', link: '/series/ai-ml-php-developers/chapters/14-nlp-project-text-classification-in-php' },
+              { text: '15 — Language Models and Text Generation with OpenAI APIs', link: '/series/ai-ml-php-developers/chapters/15-language-models-and-text-generation-with-openai-apis' },
+              { text: '16 — Computer Vision Essentials for PHP Developers', link: '/series/ai-ml-php-developers/chapters/16-computer-vision-essentials-for-php-developers' },
+              { text: '17 — Image Classification Project with Pre-trained Models', link: '/series/ai-ml-php-developers/chapters/17-image-classification-project-with-pre-trained-models' },
+              { text: '18 — Object Detection and Recognition in PHP Applications', link: '/series/ai-ml-php-developers/chapters/18-object-detection-and-recognition-in-php-applications' },
+              { text: '19 — Predictive Analytics and Time Series Data', link: '/series/ai-ml-php-developers/chapters/19-predictive-analytics-and-time-series-data' },
+              { text: '20 — Time Series Forecasting Project', link: '/series/ai-ml-php-developers/chapters/20-time-series-forecasting-project' },
+              { text: '21 — Recommender Systems: Theory and Use Cases', link: '/series/ai-ml-php-developers/chapters/21-recommender-systems-theory-and-use-cases' },
+              { text: '22 — Building a Recommendation Engine in PHP', link: '/series/ai-ml-php-developers/chapters/22-building-a-recommendation-engine-in-php' },
+              { text: '23 — Integrating AI Models into Web Applications', link: '/series/ai-ml-php-developers/chapters/23-integrating-ai-models-into-web-applications' },
+              { text: '24 — Deploying and Scaling AI-Powered PHP Services', link: '/series/ai-ml-php-developers/chapters/24-deploying-and-scaling-ai-powered-php-services' },
+              { text: '25 — Capstone Project and Future Trends', link: '/series/ai-ml-php-developers/chapters/25-capstone-project-and-future-trends' }
+            ]
+          }
+        ],
       },
       socialLinks: [
         { icon: 'github', link: 'https://github.com/dalehurley/codewithphp' }

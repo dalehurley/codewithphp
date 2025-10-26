@@ -631,6 +631,15 @@ The modern PHP features you learned—strict typing, named arguments, and arrow 
 **Next Steps**:
 In the next chapter, we'll make our applications interactive by learning how to process data submitted from HTML forms.
 
+::: info Code Examples
+Complete, runnable examples from this chapter are available in:
+
+- [`basic-functions.php`](../code/04-functions/basic-functions.php) - Basic function syntax and usage
+- [`scope-variadic.php`](../code/04-functions/scope-variadic.php) - Variable scope and variadic functions
+- [`arrow-closures.php`](../code/04-functions/arrow-closures.php) - Arrow functions and closures
+- [`solutions/`](../code/04-functions/solutions/) - Solutions to chapter exercises
+  :::
+
 ## Further Reading
 
 - [PHP Manual: Functions](https://www.php.net/manual/en/language.functions.php) — Official documentation on functions
