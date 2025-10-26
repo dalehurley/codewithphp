@@ -214,7 +214,7 @@ These examples are designed to be run in order:
 
 - [PHP-ML Documentation](https://php-ml.readthedocs.io/)
 - [Chapter 1 Tutorial](../../chapters/01-introduction-to-ai-and-machine-learning-for-php-developers.md)
-- [AI/ML Series Overview](../../index.md)
+- [AI/ML Series Overview](/series/ai-ml-php-developers/)
 
 ## What's Installed?
 
