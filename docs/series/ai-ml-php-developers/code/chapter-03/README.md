@@ -319,7 +319,7 @@ The PECL Tensor extension **does not support PHP 8.4** (only PHP ≤ 8.3). For t
 - ✅ Feature scaling and normalization
 - ✅ All operations needed for machine learning
 
-See [`13-tensor-operations-phpml.php`](./13-tensor-operations-phpml.php) for comprehensive examples.
+See [`13-tensor-operations-phpml.php`](/series/ai-ml-php-developers/code/chapter-03/13-tensor-operations-phpml.php) for comprehensive examples.
 
 For more details, read the [Tensor Extension Compatibility Note](../TENSOR-EXTENSION-NOTE.md).
 
