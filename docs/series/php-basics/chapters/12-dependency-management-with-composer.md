@@ -713,6 +713,15 @@ This was a huge leap into the world of modern PHP development. You now understan
 
 In the next chapter, we'll put this to use and start interacting with the filesystem in a more structured way using Composer-managed libraries.
 
+::: info Code Examples
+Complete, runnable examples from this chapter are available in:
+
+- [`example-project/`](../code/12-composer/example-project/) - Complete Composer project with dependencies
+- [`solutions/`](../code/12-composer/solutions/) - Solutions to chapter exercises
+
+The example project includes a working `composer.json`, autoloading setup, and demonstrates using third-party packages.
+:::
+
 ## Further Reading
 
 - [Composer Official Documentation](https://getcomposer.org/doc/) — Comprehensive guide to all Composer features

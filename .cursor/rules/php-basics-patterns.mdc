@@ -1,0 +1,602 @@
+---
+description: PHP Basics series patterns and conventions extracted from the completed series
+---
+
+# PHP Basics Series: Patterns & Conventions
+
+This document captures specific patterns, conventions, and best practices observed in the php-basics series that should be replicated in new series.
+
+## Chapter Progression Philosophy
+
+The php-basics series follows a deliberate learning path:
+
+1. **Foundation First** (Ch 00-07): Core language features with no OOP
+2. **Paradigm Shift** (Ch 08-10): Introduction to OOP concepts
+3. **Professional Tools** (Ch 11-16): Real-world development practices
+4. **Application Building** (Ch 17-19): Integrating all concepts into projects
+5. **Framework Introduction** (Ch 20-22): Transition to frameworks with strong foundation
+
+**Key Principle**: Don't introduce frameworks until fundamentals are mastered. Build understanding from scratch.
+
+## Step Structure Pattern
+
+Every step follows this exact format:
+
+````markdown
+## Step N: Descriptive Action Title (~X min)
+
+### Goal
+
+Single sentence stating the purpose of this step.
+
+### Actions
+
+1. **Do this first**: Explanation
+2. **Then do this**: Explanation
+3. **Code to write**:
+
+```language
+# filename: file.ext
+code here
+```
+````
+
+### Expected Result
+
+```
+Exact output or state
+```
+
+### Why It Works
+
+Explanation of underlying concepts (2-4 sentences)
+
+### Troubleshooting
+
+- **Error message or symptom** — Cause and solution
+- **Another common issue** — Fix
+
+````
+
+**Rules:**
+- Goal is always a single sentence
+- Actions are numbered and use bold for the action verb
+- Code examples always include filename comment
+- Expected Result shows exact output
+- Why It Works explains concepts, not just mechanics
+- Troubleshooting includes at least 2-3 common issues
+
+## Code Example Patterns
+
+### PHP Script Pattern
+
+```php
+# filename: descriptive-name.php
+<?php
+
+declare(strict_types=1);
+
+// Brief comment explaining the example
+class Example
+{
+    // Implementation
+}
+
+// Usage demonstration
+$example = new Example();
+echo $example->doSomething();
+````
+
+**Key Elements:**
+
+- Filename comment at top
+- `declare(strict_types=1);` for modern examples
+- Opening `<?php` tag always present
+- No closing `?>` tag for pure PHP files
+- Brief explanatory comments
+- Show both definition and usage
+- Include output demonstration
+
+### Command Pattern
+
+```bash
+# Brief explanation of what this accomplishes
+command --flag argument
+
+# Expected output:
+# Output line 1
+# Output line 2
+```
+
+**Rules:**
+
+- Always prefix with explanatory comment
+- Show expected output as comments if relevant
+- Use cross-platform commands
+- Provide Windows alternatives when necessary
+
+## "What You'll Build" Pattern
+
+This section must be specific and tangible:
+
+```markdown
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- A `ClassName` with specific properties and methods
+- X working examples demonstrating concept Y
+- Knowledge of how to do Z
+- A complete mini-project with features A, B, and C
+- Understanding of pattern X and when to use it
+
+All examples will be working PHP scripts you can run immediately.
+```
+
+**Rules:**
+
+- Use past tense: "you will have created"
+- Be specific: class names, file counts, exact features
+- Mix tangible outputs (files, classes) with knowledge gains
+- End with a reminder about runnability/usability
+- Typically 4-6 bullet points
+
+## Exercise Patterns
+
+### Basic Exercise
+
+```markdown
+### Exercise N: Create a [Thing] Class
+
+**Goal**: Apply concept X to model real-world object Y.
+
+Create a file called `exercise-name.php` and implement:
+
+- A `ClassName` with private properties for `prop1`, `prop2`
+- Use constructor property promotion with type declarations
+- Add a method that does X
+- Add validation for Y
+- Demonstrate with Z
+
+**Validation**: Your output should look like:
+```
+
+Expected output line 1
+Expected output line 2
+
+```
+
+```
+
+### Challenge Exercise
+
+```markdown
+### Exercise N: [Advanced Task] (Challenge)
+
+**Goal**: Combine multiple concepts in a practical scenario.
+
+Create a `ClassName` with:
+
+- Requirement 1 (specific details)
+- Requirement 2 (constraints)
+- Requirement 3 (validation rules)
+- Proper input validation on all methods
+
+**Bonus challenges:**
+
+- Extra feature 1
+- Extra feature 2
+```
+
+## Troubleshooting Section Patterns
+
+### Error Pattern
+
+````markdown
+### Error: "Exact Error Message from PHP"
+
+**Symptom**: `Fatal error: Uncaught Error: Specific description`
+
+**Cause**: Clear explanation of what causes this
+
+**Solution**: Step-by-step or code example:
+
+```php
+// Wrong
+$wrong->approach();
+
+// Correct
+$correct->approach();
+```
+````
+
+````
+
+### Anti-Pattern
+
+```markdown
+### Common Mistake Description
+
+**Symptom**: What the developer sees
+
+**Cause**: Why this happens
+
+**Solution**: How to fix it with code example
+````
+
+## Mermaid Diagram Patterns
+
+### Architecture Diagram
+
+```mermaid
+flowchart TB
+    A[User Request] -->|HTTP| B[Front Controller]
+    B --> C[Router]
+    C -->|Match Route| D[Controller]
+    D -->|Query| E[(Database)]
+    E -->|Results| D
+    D -->|Data| F[View]
+    F -->|HTML| A
+
+    style D fill:#e1f5ff
+    style E fill:#e8daef
+    style F fill:#fff3cd
+```
+
+**Pattern:** Always use colors to distinguish layers/types
+
+### Class Hierarchy
+
+```mermaid
+classDiagram
+    class Parent {
+        -string property
+        +method() void
+    }
+    class Child1 {
+        +specificMethod() string
+    }
+    class Child2 {
+        +differentMethod() int
+    }
+
+    Parent <|-- Child1
+    Parent <|-- Child2
+
+    note for Parent "Blueprint defining shared behavior"
+```
+
+**Pattern:** Include notes explaining concepts
+
+## Quick Start Pattern
+
+Quick starts appear in complex chapters and must:
+
+1. Be completable in under 5 minutes
+2. Show the end result working
+3. Use copy-paste commands
+4. Include verification step
+
+````markdown
+## Quick Start
+
+Want to see [feature] in action right away? Follow these steps:
+
+```bash
+# 1. Setup step
+mkdir project && cd project
+
+# 2. Create file
+echo '<?php code' > file.php
+
+# 3. Run it
+php file.php
+
+# Expected output: Specific result
+```
+````
+
+**What's Next?**  
+Now let's understand what just happened by building this step-by-step.
+
+````
+
+## VitePress Component Usage
+
+### Tips
+
+```markdown
+::: tip
+Typing code yourself instead of copy-pasting builds muscle memory and helps you catch errors.
+:::
+````
+
+**Use for:**
+
+- Best practices
+- Time-saving techniques
+- Professional development advice
+- IDE/tool recommendations
+
+### Warnings
+
+```markdown
+::: warning
+Be careful with [thing]! Because [reason], [consequence] can occur.
+:::
+```
+
+**Use for:**
+
+- Destructive operations
+- Common pitfalls
+- Security concerns
+- Breaking changes between versions
+
+### Info Blocks
+
+```markdown
+::: info Code Examples
+Complete, runnable examples are available in:
+
+- [`file1.php`](../code/nn-topic/file1.php)
+- [`file2.php`](../code/nn-topic/file2.php)
+  :::
+```
+
+**Use for:**
+
+- Additional context
+- Version-specific notes
+- Cross-references to code files
+- Historical context
+
+## Modern vs Traditional Pattern
+
+When teaching PHP 8.4 features that replace older patterns:
+
+````markdown
+### Comparison: Traditional vs Modern PHP 8.4
+
+**Traditional Approach (Still Valid)**:
+
+```php
+class User
+{
+    private string $name;
+
+    public function __construct(string $name)
+    {
+        $this->name = $name;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+}
+```
+````
+
+**Modern PHP 8.4**:
+
+```php
+class User
+{
+    public function __construct(
+        public private(set) string $name
+    ) {}
+    // Direct access: $user->name (no getter needed!)
+}
+```
+
+**Benefits of Modern Approach:**
+
+- Less boilerplate code
+- Clearer intent
+- Better IDE support
+- More concise
+
+::: tip When to Use Each
+Use modern syntax for new projects. Traditional syntax still works and is found in existing codebases.
+:::
+
+````
+
+## Prerequisites Pattern
+
+```markdown
+## Prerequisites
+
+Before starting this chapter, you should have:
+
+- PHP 8.4+ installed and confirmed working with `php --version`
+- Completion of [Chapter NN](/series/php-basics/chapters/nn-title) or equivalent understanding
+- A text editor (VS Code recommended)
+- Familiarity with [concept from previous chapter]
+- **Estimated Time**: ~XX minutes
+
+**Verify your setup:**
+
+```bash
+# Check PHP version
+php --version
+
+# Expected: PHP 8.4.x or higher
+````
+
+```
+
+**Rules:**
+- Always link to prerequisite chapters using absolute paths
+- Include time estimate
+- Provide verification commands
+- Be specific about required knowledge
+
+## Code Directory Structure
+
+For each chapter with code examples:
+
+```
+
+code/
+nn-topic-name/
+README.md # Overview of examples
+basic-example.php # Simple introduction
+advanced-example.php # Complex usage
+solutions/
+exercise-1.php # Solution to Exercise 1
+exercise-2.php # Solution to Exercise 2
+
+````
+
+**README Pattern:**
+
+```markdown
+# Chapter NN: Topic Name - Code Examples
+
+This directory contains all code examples from Chapter NN.
+
+## Files
+
+- `basic-example.php` — Brief description
+- `advanced-example.php` — Brief description
+
+## Running Examples
+
+```bash
+php basic-example.php
+````
+
+## Solutions
+
+Exercise solutions are in the `solutions/` directory.
+
+````
+
+## Wrap-up Section Pattern
+
+```markdown
+## Wrap-up
+
+Congratulations! You've just learned [major concept]. You now understand:
+
+- ✓ How to [achievement 1]
+- ✓ How [achievement 2] works
+- ✓ How to [achievement 3]
+- ✓ The difference between [concept A] and [concept B]
+- ✓ Modern PHP 8.4 features like [feature]
+
+[2-3 sentences about why this matters and how it connects to real-world development]
+
+### What You've Achieved
+
+[Paragraph celebrating their progress and emphasizing practical value]
+
+### Next Steps
+
+In **Chapter [N+1]**, we'll build on this foundation by learning about:
+
+- New concept 1
+- New concept 2
+- How concept X enables advanced pattern Y
+
+[Motivational sentence about the journey ahead]
+````
+
+## Further Reading Pattern
+
+```markdown
+## Further Reading
+
+To deepen your understanding of the topics covered in this chapter:
+
+- [Official PHP Manual: Specific Topic](https://www.php.net/manual/en/path) — What you'll find there
+- [PSR-N: Standard Name](https://www.php-fig.org/psr/psr-n/) — Why it matters
+- [Tool/Framework Docs](https://example.com/docs) — When to use this
+- [Concept Deep Dive](https://example.com/article) — Advanced perspective
+```
+
+**Rules:**
+
+- Link official docs first
+- Include description after em dash (—)
+- Order by importance/relevance
+- Typically 4-6 links maximum
+- Mix official docs, standards, and quality external resources
+
+## Knowledge Check Pattern (Optional)
+
+Only include quizzes for complex chapters with multiple important concepts:
+
+```markdown
+## Knowledge Check
+
+Test your understanding of [topic]:
+
+<Quiz
+  title="Chapter NN Quiz: Topic Name"
+  :questions="[
+    {
+      question: 'What is the purpose of [concept]?',
+      options: [
+        { 
+          text: 'Correct answer with technical accuracy', 
+          correct: true, 
+          explanation: 'Explanation of why this is correct and what it means' 
+        },
+        { 
+          text: 'Common misconception', 
+          correct: false, 
+          explanation: 'Why this seems right but isn\'t, and what it actually is' 
+        }
+      ]
+    }
+  ]"
+/>
+```
+
+**Rules:**
+
+- 4-5 questions maximum
+- 4 options per question
+- Explanations for ALL options (correct and incorrect)
+- Questions test understanding, not memorization
+- Cover the most important concepts from the chapter
+
+## Consistency Rules
+
+1. **Tense**: Use future ("you will build") in intro, past ("you built") in wrap-up
+2. **Code style**: Always PSR-12 compliant
+3. **Terminology**: Define once, use consistently (e.g., "object" not "instance" randomly)
+4. **File extensions**: Always `.php` (never `.php7`, `.inc`, etc.)
+5. **Comments**: Use `//` for single line, `/* */` for multi-line
+6. **Variables**: Use descriptive names, camelCase for variables, PascalCase for classes
+7. **Examples**: Always complete and runnable, never pseudo-code in main examples
+8. **Output**: Show actual output, not "something like this"
+
+## Chapter Length Guidelines
+
+- **Concept chapters** (01-16): 400-600 lines markdown
+- **Project chapters** (17-19): 800-1200 lines markdown
+- **Framework intro chapters** (20-21): 300-500 lines markdown
+- **Overview/next steps** (00, 22): 200-400 lines markdown
+
+## Encouragement & Tone
+
+Every chapter should:
+
+- Start with "Welcome to..." or similar engaging opener
+- Acknowledge difficulty when appropriate: "This is a big conceptual shift"
+- Celebrate progress: "Congratulations! You've just..."
+- Connect to real-world: "Professional developers use this every day"
+- Build confidence: "You now have the foundation to..."
+- Encourage experimentation: "Try changing... and see what happens"
+
+**Avoid:**
+
+- Patronizing language
+- Assuming prior knowledge without stating it
+- Skipping "obvious" steps
+- Hand-waving complex topics
+- Leaving readers without clear next actions

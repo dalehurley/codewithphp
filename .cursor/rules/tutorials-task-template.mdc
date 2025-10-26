@@ -1,61 +1,494 @@
 ---
-description: Task Template — Fill per tutorial using Global Rules — Tutorials
-globs: docs/**/*.md
+description: Task Template — Creating new tutorials following Code with PHP standards
 ---
 
-# Task Template — Tutorials
+# Task Template — Creating New Tutorials
 
-Use this template with the Global Rules — Tutorials. Replace placeholders in braces.
+Use this template when creating new tutorial chapters for Code with PHP. This template works in conjunction with the Global Rules — Tutorials and Authoring Guidelines.
 
-## Metadata
+## Pre-Writing Checklist
 
-- **Topic**: {{ concise title of the tutorial }}
-- **Stack / Tools / Versions**: {{ e.g., Node 20, pnpm 9, Vite 5, React 19, Tailwind 3.4 }}
-- **Goal / Outcome**: {{ 1–2 sentences on the working result }}
-- **Constraints**: {{ e.g., No Docker, Must run on Windows }}
-- **Starting Point**: {{ fresh project | existing repo | partial code }}
-- **Target Length**: {{ e.g., ~1200–1800 words }}
-- **Must-include Sections**: {{ e.g., Deployment to Vercel, CI with GitHub Actions }}
-- **Links to Prefer**: {{ official docs, sample repos }}
-- **Image/Diagram Needs**: {{ optional ASCII diagram or screenshot description }}
+Before you start writing, gather:
 
-## Output Contract
+- [ ] Chapter number and position in series
+- [ ] Previous chapter(s) to link in prerequisites
+- [ ] Concepts being taught
+- [ ] What the reader will build
+- [ ] Code examples planned (list files)
+- [ ] Time estimate for completion
+- [ ] Difficulty level (Beginner/Intermediate/Advanced)
 
-Produce exactly one markdown tutorial using this section order:
+## Metadata Template
 
-1. Overview
-2. Prerequisites
-3. What You’ll Build
-4. Quick Start
-5. Step-by-Step (each step: Goal, Actions, Code, Expected Result, Why it works, Troubleshooting)
-6. Wrap-up
-7. Appendix (optional)
-
-## Authoring Notes
-
-- Use second person, active voice, concise tone.
-- Show complete minimal files; never omit imports or critical config.
-- Pin versions where important; include `--version` checks.
-- Validate after each major step with exact commands and expected outputs.
-- Include at least three likely errors and fixes.
-- Optimise for copy-paste and cross-platform (macOS + Linux; add Windows notes if needed).
-- Prefer links to official docs using descriptive text.
-
-## Snippet Conventions
-
-- Code fences include language and filename comments when helpful.
-
-```bash
-# filename: scripts/clean-slate.sh
-# Reset project (Warning: destructive)
-# Tip: run with --dry-run first if supported
-git clean -xfd
-git reset --hard
+```yaml
+---
+title: "[NN]: [Chapter Title]"
+description: "[One-sentence description of what reader will learn]"
+series: "[series-slug]"
+chapter: [N]
+order: [N]
+difficulty: "[Beginner|Intermediate|Advanced]"
+prerequisites:
+  - "[/series/series-slug/chapters/previous-chapter]"
+  - "[Additional requirements if needed]"
+---
 ```
 
-```diff
-# Example diff snippet
-@@
-- "dev": "vite --open",
- + "dev": "vite"
+**Example:**
+
+```yaml
+---
+title: "08: Introduction to Object-Oriented Programming"
+description: "Learn how to model real-world concepts into reusable blueprints (classes) and create individual instances (objects)"
+series: "php-basics"
+chapter: 8
+order: 8
+difficulty: "Intermediate"
+prerequisites:
+  - "/series/php-basics/chapters/07-mastering-string-manipulation"
+---
+```
+
+## Chapter Structure Template
+
+Copy this template and fill in each section:
+
+````markdown
+---
+[frontmatter here]
+---
+
+# Chapter [NN]: [Chapter Title]
+
+## Overview
+
+[Write 2-4 compelling paragraphs that:]
+
+- [Explain what this chapter covers and why it matters]
+- [Connect to previous learning: "Until now, we've..."]
+- [Introduce the paradigm/concept shift if applicable]
+- [Preview what they'll build by the end]
+
+[Example: "Until now, we've been writing code in a **procedural** way: a series of steps and functions that operate on data. This is great for simple scripts, but as applications grow, it can become disorganized..."]
+
+## Prerequisites
+
+Before starting this chapter, you should have:
+
+- PHP 8.4+ installed and confirmed working with `php --version`
+- Completion of [Chapter [N-1]](/series/[slug]/chapters/[prev-chapter]) or equivalent understanding
+- [Specific tool or software needed]
+- [Knowledge/skill requirement]
+- **Estimated Time**: ~[XX] minutes
+
+[Optional verification section:]
+**Verify your setup:**
+
+```bash
+# Command to verify
+php --version
+
+# Expected output
+```
+````
+
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- [Specific deliverable with class names or file counts]
+- [Another concrete outcome]
+- [Knowledge or understanding gained]
+- [Working example with X features]
+- [Modern PHP 8.4 pattern or approach]
+
+[Closing statement: "All examples will be working PHP scripts you can run immediately."]
+
+## Quick Start
+
+[Optional - include for complex chapters]
+
+[Want to see [feature] in action right away? Follow these steps:]
+
+```bash
+# 1. [Setup action]
+[command]
+
+# 2. [Create file]
+[command]
+
+# 3. [Run it]
+[command]
+
+# Expected output: [Specific result]
+```
+
+[**What's Next?**
+Now let's understand what just happened by building this step-by-step.]
+
+## Objectives
+
+- [Action verb] the [concept]
+- [Learn/Understand/Master] how to [do something]
+- [Create/Build/Implement] [specific thing]
+- [Understand/Know] the difference between [X] and [Y]
+- [Use/Apply] modern PHP 8.4 features like [feature]
+
+[4-7 objectives total, using action verbs]
+
+## Step 1: [Descriptive Action Title] (~[X] min)
+
+### Goal
+
+[One sentence stating what this step accomplishes.]
+
+### Actions
+
+1. **[Action with bold verb]**: [Explanation]
+
+2. **[Create/modify something]**:
+
+```php
+# filename: path/to/file.php
+<?php
+
+declare(strict_types=1);
+
+// [Complete, runnable code]
+// [Include necessary context]
+```
+
+3. **[Run or test]**:
+
+```bash
+# [Descriptive comment]
+php file.php
+```
+
+### Expected Result
+
+```
+[Exact output the reader should see]
+[Line by line if multi-line]
+```
+
+### Why It Works
+
+[Explain the underlying concepts in 2-4 sentences. Connect to broader patterns. Help them understand WHY, not just WHAT.]
+
+### Troubleshooting
+
+- **Error: "[Exact error message]"** — [Cause] [Solution with code if needed]
+- **[Symptom]** — [Explanation and fix]
+- **[Common mistake]** — [How to avoid/fix it]
+
+[Repeat Step structure for each major step]
+
+## Step [N]: [Next Major Concept] (~[X] min)
+
+[Follow same structure: Goal → Actions → Expected Result → Why It Works → Troubleshooting]
+
+## Troubleshooting
+
+[Optional dedicated section for chapters with many potential errors]
+
+### Error: "[Exact Error Message]"
+
+**Symptom**: `[Full error text from PHP]`
+
+**Cause**: [Clear explanation of what causes this]
+
+**Solution**: [Step-by-step fix:]
+
+```php
+// Wrong
+[incorrect code]
+
+// Correct
+[corrected code]
+```
+
+### [Another Common Issue]
+
+**Symptom**: [What the user sees]
+
+**Cause**: [Why it happens]
+
+**Solution**: [How to fix it]
+
+## Exercises
+
+### Exercise 1: [Descriptive Title]
+
+**Goal**: [One sentence about what this teaches]
+
+Create a file called `[exercise-name].php` and implement:
+
+- [Specific requirement 1 with details]
+- [Specific requirement 2 with constraints]
+- [Specific requirement 3 with validation rules]
+
+**Validation**: Test your implementation:
+
+```php
+// [Test code]
+$result = testFunction();
+echo $result; // Expected: [specific output]
+```
+
+Expected output:
+
+```
+[Exact expected output]
+```
+
+### Exercise 2: [Next Exercise]
+
+[Follow same pattern]
+
+### Exercise 3: [Challenge Exercise] (Challenge)
+
+**Goal**: [Combine multiple concepts in practical scenario]
+
+[More complex requirements with less scaffolding]
+
+## Wrap-up
+
+Congratulations! You've just learned [major concept]. You now understand:
+
+- ✓ How to [achievement 1]
+- ✓ How [concept] works
+- ✓ How to [achievement 2]
+- ✓ The difference between [X] and [Y]
+- ✓ Modern PHP 8.4 features like [feature]
+
+[2-3 sentences about why this matters and connection to real-world development]
+
+### What You've Achieved
+
+[Paragraph celebrating progress and emphasizing practical value]
+
+### Next Steps
+
+In **Chapter [N+1]**, we'll build on this foundation by learning about:
+
+- [New concept 1]
+- [New concept 2]
+- [How X enables Y]
+
+[Motivational sentence about the journey ahead]
+
+## Further Reading
+
+To deepen your understanding of the topics covered in this chapter:
+
+- [Official PHP Manual: Topic](https://www.php.net/manual/en/path) — [What you'll find there]
+- [PSR-N: Standard Name](https://www.php-fig.org/psr/psr-n/) — [Why it matters]
+- [Tool/Framework Docs](https://example.com) — [When to use this]
+- [Concept Article](https://example.com) — [Advanced perspective]
+
+## Knowledge Check
+
+[Optional - include for complex chapters with multiple important concepts]
+
+Test your understanding of [topic]:
+
+<Quiz
+  title="Chapter [NN] Quiz: [Topic Name]"
+  :questions="[
+    {
+      question: '[Question text with technical accuracy]',
+      options: [
+        { 
+          text: '[Correct answer]', 
+          correct: true, 
+          explanation: '[Why this is correct and what it means]' 
+        },
+        { 
+          text: '[Common misconception]', 
+          correct: false, 
+          explanation: '[Why this seems right but isn\'t]' 
+        },
+        { 
+          text: '[Another wrong answer]', 
+          correct: false, 
+          explanation: '[Why this is incorrect]' 
+        },
+        { 
+          text: '[Another wrong answer]', 
+          correct: false, 
+          explanation: '[Why this is incorrect]' 
+        }
+      ]
+    }
+  ]"
+/>
+
+```
+
+## Planning Checklist
+
+Use this checklist when planning your chapter:
+
+### Content Planning
+- [ ] Main concept clearly identified
+- [ ] Connection to previous chapter established
+- [ ] Learning progression logical
+- [ ] Real-world application explained
+- [ ] 4-7 clear objectives defined
+
+### Code Examples
+- [ ] All examples are complete and runnable
+- [ ] Examples progress from simple to complex
+- [ ] PHP 8.4 syntax used throughout
+- [ ] Modern approaches shown alongside traditional
+- [ ] All code follows PSR-12 standards
+
+### Structure
+- [ ] Frontmatter complete and accurate
+- [ ] Overview compelling and clear
+- [ ] Prerequisites specific and linked
+- [ ] "What You'll Build" is tangible
+- [ ] Each step has Goal/Actions/Result/Why/Troubleshooting
+- [ ] Time estimates included
+
+### Exercises
+- [ ] At least 3 exercises included
+- [ ] Mix of basic and challenge levels
+- [ ] Clear validation criteria
+- [ ] Builds on chapter concepts
+- [ ] Realistic and practical
+
+### Quality Assurance
+- [ ] All code tested and runs
+- [ ] Common errors documented
+- [ ] Explanations clear and accurate
+- [ ] Tone encouraging but professional
+- [ ] Links use descriptive text
+- [ ] VitePress components used correctly
+
+## Writing Tips
+
+### Do's
+- ✓ Test every single code example
+- ✓ Show complete files, not fragments
+- ✓ Explain WHY after showing HOW
+- ✓ Include specific error messages
+- ✓ Use realistic examples and data
+- ✓ Celebrate reader's progress
+- ✓ Connect to real-world development
+- ✓ Provide verification steps
+
+### Don'ts
+- ✗ Assume prior knowledge not in prerequisites
+- ✗ Skip "obvious" steps
+- ✗ Show pseudo-code in main examples
+- ✗ Use vague language ("some", "several")
+- ✗ Leave readers without next steps
+- ✗ Patronize or use condescending tone
+- ✗ Skip validation and testing
+- ✗ Forget troubleshooting sections
+
+## Code Directory Setup
+
+For each chapter, create:
+
+```
+
+docs/series/[slug]/code/[nn]-[topic]/
+README.md # Overview of examples
+basic-example.php # Simple introduction
+advanced-example.php # Complex usage
+solutions/
+exercise-1.php # Exercise 1 solution
+exercise-2.php # Exercise 2 solution
+
+````
+
+## README Template for Code Directory
+
+```markdown
+# Chapter [NN]: [Topic] - Code Examples
+
+This directory contains all code examples from Chapter [NN].
+
+## Files
+
+- `basic-example.php` — [Brief description]
+- `advanced-example.php` — [Brief description]
+
+## Running Examples
+
+```bash
+php basic-example.php
+````
+
+## Solutions
+
+Exercise solutions are in the `solutions/` directory.
+
+Try to complete the exercises yourself before looking at the solutions!
+
+```
+
+## Final Review
+
+Before submitting, verify:
+
+1. **Accuracy**
+   - [ ] All code runs without errors
+   - [ ] Output matches examples shown
+   - [ ] Technical explanations are correct
+   - [ ] Links point to correct locations
+
+2. **Completeness**
+   - [ ] All sections present
+   - [ ] No TODO or placeholder text
+   - [ ] Code directory created with README
+   - [ ] Solutions provided for exercises
+
+3. **Quality**
+   - [ ] Writing is clear and encouraging
+   - [ ] Examples are realistic
+   - [ ] Progression is logical
+   - [ ] Troubleshooting is comprehensive
+
+4. **Standards**
+   - [ ] Follows authoring guidelines
+   - [ ] Uses PHP 8.4 features
+   - [ ] Matches php-basics patterns
+   - [ ] PSR-12 compliant code
+
+## Common Patterns to Follow
+
+### Opening Paragraphs
+- Start with context: "Until now..." or "So far we've..."
+- Introduce the problem/limitation
+- Present the solution/concept
+- Preview what they'll build
+
+### Encouragement
+- "Congratulations! You've just..."
+- "This is a major milestone..."
+- "You now have the foundation to..."
+- "Professional developers use this every day..."
+
+### Transitions
+- "Now that we understand X, let's..."
+- "With X in place, we can move on to..."
+- "Building on what we learned about X..."
+
+### Explanations
+- "Why? Because..."
+- "This works because..."
+- "The reason we do this is..."
+- "This pattern helps us..."
+
+## Need Help?
+
+If you're unsure about:
+- **Structure**: Refer to existing php-basics chapters as examples
+- **Tone**: Match the encouraging, practical style of Chapter 01 or 08
+- **Code examples**: Look at Chapter 08 for OOP or Chapter 14 for databases
+- **Exercises**: Check Chapter 08 for good exercise patterns
 ```

@@ -1,0 +1,101 @@
+customer_id,first_name,last_name,email,age,gender,city,country,total_orders,avg_order_value,account_created,has_subscription,is_active
+1,John,Doe,john.doe@example.com,28,Male,New York,USA,12,85.50,2022-03-15,1,1
+2,Jane,Smith,jane.smith@example.com,34,Female,Los Angeles,USA,8,92.30,2021-11-22,0,1
+3,Michael,Johnson,m.johnson@example.com,45,Male,Chicago,USA,25,156.75,2020-08-10,1,1
+4,Emily,Davis,emily.davis@example.com,29,Female,Houston,USA,15,78.90,2022-01-05,0,1
+5,David,Wilson,d.wilson@example.com,52,Male,Phoenix,USA,18,203.45,2019-12-18,1,1
+6,Sarah,Brown,sarah.brown@example.com,31,Female,Philadelphia,USA,22,134.20,2021-05-30,1,1
+7,Robert,Miller,r.miller@example.com,38,Male,San Antonio,USA,9,67.80,2022-07-14,0,1
+8,Jennifer,Garcia,j.garcia@example.com,42,Female,San Diego,USA,31,189.55,2020-04-25,1,1
+9,William,Martinez,w.martinez@example.com,26,Male,Dallas,USA,6,45.30,2023-02-28,0,1
+10,Linda,Anderson,l.anderson@example.com,55,Female,San Jose,USA,14,112.85,2021-09-12,1,1
+11,Richard,Taylor,r.taylor@example.com,33,Male,Austin,USA,11,89.40,2022-06-20,0,1
+12,Barbara,Thomas,b.thomas@example.com,48,Female,Jacksonville,USA,19,167.90,2020-11-08,1,1
+13,Joseph,Jackson,j.jackson@example.com,37,Male,Fort Worth,USA,7,55.75,2023-01-15,0,1
+14,Mary,White,m.white@example.com,41,Female,Columbus,USA,16,98.65,2021-08-03,1,1
+15,Charles,Harris,c.harris@example.com,29,Male,Charlotte,USA,13,76.20,2022-04-18,0,1
+16,Patricia,Clark,p.clark@example.com,46,Female,San Francisco,USA,28,221.30,2019-10-22,1,1
+17,Christopher,Lewis,c.lewis@example.com,35,Male,Indianapolis,USA,10,71.45,2022-11-10,0,1
+18,Elizabeth,Robinson,e.robinson@example.com,39,Female,Seattle,USA,24,145.80,2021-03-14,1,1
+19,Daniel,Walker,d.walker@example.com,44,Male,Denver,USA,17,123.90,2020-12-05,1,1
+20,Margaret,Hall,m.hall@example.com,51,Female,Boston,USA,12,87.25,2022-02-25,0,1
+21,Matthew,Allen,m.allen@example.com,27,Male,El Paso,USA,5,38.90,2023-03-20,0,1
+22,Dorothy,Young,d.young@example.com,58,Female,Nashville,USA,20,156.45,2020-07-08,1,1
+23,Anthony,Hernandez,a.hernandez@example.com,32,Male,Detroit,USA,14,95.70,2021-12-15,1,1
+24,Nancy,King,n.king@example.com,36,Female,Oklahoma City,USA,9,63.85,2022-09-03,0,1
+25,Mark,Wright,m.wright@example.com,43,Male,Las Vegas,USA,21,178.20,2021-01-28,1,1
+26,Susan,Lopez,s.lopez@example.com,30,Female,Portland,USA,8,52.40,2022-08-12,0,1
+27,Paul,Green,p.green@example.com,49,Male,Louisville,USA,16,109.65,2020-10-18,1,1
+28,Karen,Adams,k.adams@example.com,25,Female,Memphis,USA,4,29.75,2023-04-05,0,1
+29,Steven,Nelson,s.nelson@example.com,40,Male,Baltimore,USA,11,82.30,2022-05-22,1,1
+30,Betty,Carter,b.carter@example.com,54,Female,Milwaukee,USA,15,127.80,2021-06-30,0,1
+31,Andrew,Mitchell,a.mitchell@example.com,28,Male,Albuquerque,USA,7,48.95,2023-01-10,0,1
+32,Helen,Perez,h.perez@example.com,47,Female,Tucson,USA,19,145.35,2020-09-25,1,1
+33,Joshua,Roberts,j.roberts@example.com,33,Male,Fresno,USA,12,79.60,2022-03-08,0,1
+34,Sandra,Turner,s.turner@example.com,38,Female,Mesa,USA,18,132.45,2021-11-14,1,1
+35,Kenneth,Phillips,k.phillips@example.com,41,Male,Sacramento,USA,13,91.25,2022-07-21,1,1
+36,Donna,Campbell,d.campbell@example.com,35,Female,Atlanta,USA,25,198.70,2020-05-12,1,1
+37,George,Parker,g.parker@example.com,52,Male,Kansas City,USA,9,67.90,2022-10-30,0,1
+38,Carol,Evans,c.evans@example.com,44,Female,Long Beach,USA,16,114.80,2021-04-18,1,1
+39,Kevin,Edwards,k.edwards@example.com,31,Male,Colorado Springs,USA,6,41.55,2023-02-14,0,1
+40,Michelle,Collins,m.collins@example.com,39,Female,Virginia Beach,USA,22,162.30,2021-08-22,1,1
+41,Brian,Stewart,b.stewart@example.com,46,Male,Raleigh,USA,14,103.75,2020-11-30,1,1
+42,Amanda,Sanchez,a.sanchez@example.com,29,Female,Omaha,USA,10,69.40,2022-06-15,0,1
+43,Timothy,Morris,t.morris@example.com,37,Male,Miami,USA,17,128.90,2021-03-28,1,1
+44,Deborah,Rogers,d.rogers@example.com,43,Female,Oakland,USA,11,84.65,2022-09-10,1,1
+45,Jason,Reed,j.reed@example.com,26,Male,Minneapolis,USA,5,35.20,2023-05-03,0,1
+46,Sharon,Cook,s.cook@example.com,50,Female,Tulsa,USA,20,153.85,2020-08-14,1,1
+47,Ryan,Morgan,r.morgan@example.com,34,Male,Arlington,USA,8,57.90,2022-11-25,0,1
+48,Cynthia,Bell,c.bell@example.com,48,Female,Tampa,USA,15,121.40,2021-07-08,1,1
+49,Eric,Murphy,e.murphy@example.com,32,Male,New Orleans,USA,12,88.75,2022-04-12,0,1
+50,Angela,Bailey,a.bailey@example.com,45,Female,Wichita,USA,18,139.20,2020-12-20,1,1
+51,Nicholas,Rivera,n.rivera@example.com,39,Male,Cleveland,USA,13,96.30,2021-10-05,1,1
+52,Stephanie,Cooper,s.cooper@example.com,28,Female,Honolulu,USA,7,44.85,2023-01-22,0,1
+53,Jonathan,Richardson,j.richardson@example.com,41,Male,Anaheim,USA,16,111.55,2022-02-18,1,1
+54,Rebecca,Cox,r.cox@example.com,35,Female,Lexington,USA,9,61.70,2022-08-30,0,1
+55,Samuel,Howard,s.howard@example.com,47,Male,Stockton,USA,21,175.90,2021-05-14,1,1
+56,Rachel,Ward,r.ward@example.com,30,Female,Henderson,USA,6,39.45,2023-03-12,0,1
+57,Brandon,Torres,b.torres@example.com,36,Male,Riverside,USA,14,102.20,2020-09-08,1,1
+58,Jacqueline,Peterson,j.peterson@example.com,42,Female,Corpus Christi,USA,19,148.75,2021-01-30,1,1
+59,Gregory,Gray,g.gray@example.com,33,Male,Newark,USA,11,77.35,2022-06-08,0,1
+60,Emma,Ramirez,e.ramirez@example.com,38,Female,Anchorage,USA,24,192.40,2020-06-25,1,1
+61,Jack,James,j.james@example.com,55,Male,Plano,USA,17,126.80,2021-04-10,1,1
+62,Nicole,Watson,n.watson@example.com,27,Female,Lincoln,USA,4,26.90,2023-04-18,0,1
+63,Alex,Ross,a.ross@example.com,44,Male,Orlando,USA,15,118.60,2022-01-25,1,1
+64,Ashley,Henderson,a.henderson@example.com,31,Female,Chula Vista,USA,8,53.25,2022-10-15,0,1
+65,Justin,Coleman,j.coleman@example.com,49,Male,Fort Wayne,USA,20,161.25,2020-11-12,1,1
+66,Samantha,Jenkins,s.jenkins@example.com,25,Female,Buffalo,USA,3,22.40,2023-05-20,0,1
+67,Randall,Perry,r.perry@example.com,40,Male,Durham,USA,12,85.90,2022-03-30,1,1
+68,Kimberly,Powell,k.powell@example.com,46,Female,St. Petersburg,USA,18,136.45,2021-02-14,1,1
+69,Gary,Long,g.long@example.com,35,Male,Chandler,USA,9,60.75,2022-09-22,0,1
+70,Christine,Patterson,c.patterson@example.com,39,Female,Laredo,USA,13,93.80,2021-08-18,1,1
+71,Travis,Hughes,t.hughes@example.com,52,Male,Madison,USA,16,115.35,2020-10-28,1,1
+72,Rachel,Flores,r.flores@example.com,29,Female,Lubbock,USA,7,42.60,2023-02-08,0,1
+73,Keith,Washington,k.washington@example.com,37,Male,Winston-Salem,USA,11,78.25,2022-07-14,0,1
+74,Teresa,Butler,t.butler@example.com,44,Female,Garland,USA,22,169.70,2021-03-22,1,1
+75,Craig,Simmons,c.simmons@example.com,33,Male,Glendale,USA,14,99.45,2022-05-10,1,1
+76,Denise,Foster,d.foster@example.com,48,Female,Hialeah,USA,15,124.90,2020-12-15,1,1
+77,Philip,Gonzalez,p.gonzalez@example.com,26,Male,Reno,USA,5,33.80,2023-03-25,0,1
+78,Julie,Bryant,j.bryant@example.com,41,Female,Scottsdale,USA,17,131.60,2021-06-08,1,1
+79,Jerry,Russell,j.russell@example.com,38,Male,Irving,USA,10,71.95,2022-11-05,0,1
+80,Heather,Diaz,h.diaz@example.com,34,Female,Fremont,USA,8,56.40,2022-08-28,0,1
+81,Dennis,Hayes,d.hayes@example.com,45,Male,Irvine,USA,19,147.25,2020-09-15,1,1
+82,Maria,Meyer,m.meyer@example.com,30,Female,Spokane,USA,6,38.70,2023-01-18,0,1
+83,Wesley,Ford,w.ford@example.com,43,Male,Modesto,USA,12,86.55,2022-04-25,1,1
+84,Jessica,Graham,j.graham@example.com,36,Female,Shreveport,USA,16,113.90,2021-07-20,1,1
+85,Darren,Sullivan,d.sullivan@example.com,51,Male,Tacoma,USA,14,105.70,2020-11-25,1,1
+86,Shannon,Wallace,s.wallace@example.com,28,Female,Oxnard,USA,4,28.25,2023-04-12,0,1
+87,Jimmy,Woods,j.woods@example.com,39,Male,Fontana,USA,11,75.80,2022-06-30,0,1
+88,Erin,Cole,e.cole@example.com,42,Female,Akron,USA,20,158.40,2021-02-28,1,1
+89,Billy,West,b.west@example.com,47,Male,Amarillo,USA,13,92.15,2022-01-14,1,1
+90,Tina,Jordan,t.jordan@example.com,35,Female,Glendale,USA,9,59.90,2022-10-08,0,1
+91,Roger,Owens,r.owens@example.com,40,Male,Tallahassee,USA,15,120.50,2021-05-25,1,1
+92,Carolyn,Reyes,c.reyes@example.com,33,Female,Huntsville,USA,7,43.75,2023-02-20,0,1
+93,Albert,Burns,a.burns@example.com,46,Male,Worcester,USA,18,141.80,2020-08-30,1,1
+94,Diana,Gordon,d.gordon@example.com,29,Female,Chicago,USA,5,32.40,2023-03-15,0,1
+95,Ralph,Shaw,r.shaw@example.com,38,Male,Boise,USA,12,83.60,2022-07-28,1,1
+96,Gloria,Snyder,g.snyder@example.com,44,Female,Baton Rouge,USA,16,117.25,2021-04-08,1,1
+97,Billy,Holmes,b.holmes@example.com,31,Male,Des Moines,USA,8,54.85,2022-09-18,0,1
+98,Marie,Rice,m.rice@example.com,49,Female,Salt Lake City,USA,21,174.60,2020-07-22,1,1
+99,Lawrence,Fox,l.fox@example.com,36,Male,Little Rock,USA,10,68.90,2022-11-15,0,1
+100,Ann,Rogers,a.rogers@example.com,41,Female,Richmond,USA,14,101.35,2021-09-28,1,1

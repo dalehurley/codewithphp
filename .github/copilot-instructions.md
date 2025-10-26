@@ -33,232 +33,75 @@
   npm run docs:build
   ```
 - **Deploy:**
-  - GitHub Actions auto-deploys `main` branch to Pages using `.github/workflows/deploy.yml`.
-- **Test code samples:**
-  - Run PHP scripts directly: `php <filename>.php`
-  - Some chapters include test scripts or expected output in comments/README.
-- **Debugging:**
-  - Use VS Code with Xdebug (see `00-setup/README.md` for setup and troubleshooting).
+  # Copilot AI Agent Instructions for PHP-From-Scratch
 
-## Integration Points
+  ## Project Architecture & Structure
 
-- **VitePress:** All site config in `docs/.vitepress/config.ts`.
-- **GitHub Pages:** Deploy via Actions; see `.github/workflows/`.
-- **Composer:** Only in chapters that teach dependency management (not global).
+  - **Purpose:** Example-driven PHP learning series, organized by topic and chapter, with all code and docs in `docs/`.
+  - **VitePress** powers the documentation site. All config is in `docs/.vitepress/config.ts`.
+  - **Series are self-contained:** Each under `docs/series/<series>/` with `chapters/` (markdown) and `code/` (PHP samples, exercises, solutions).
+  - **No global Composer dependencies:** Composer is only used in chapters that teach it (see `12-dependency-management-with-composer.md`).
+  - **No framework dependencies** except in framework chapters (e.g., Laravel, Symfony).
+  - **All code targets PHP 8.4** (use new features, e.g., property hooks, asymmetric visibility, etc.).
 
-## Project-Specific Guidance
+  ## Developer Workflows
 
-- **Do not add global Composer dependencies.**
-- **Do not restructure `docs/series/` folders.**
-- **Follow naming and placement conventions for new chapters and code.**
-- **Update sidebars in `docs/.vitepress/config.ts` if adding/removing chapters.**
-- **Keep code and explanations tightly coupled in markdown.**
+  - **Preview docs locally:**
+    ```bash
+    npm install
+    npm run docs:dev
+    # Visit http://localhost:5173
+    ```
+  - **Build for production:**
+    ```bash
+    npm run docs:build
+    ```
+  - **Deploy:**
+    - GitHub Actions auto-deploys `main` to Pages via `.github/workflows/deploy.yml`.
+  - **Test code samples:**
+    - Run PHP scripts directly: `php <filename>.php` (from `code/` folders)
+    - Some chapters include test scripts or expected output in comments/README.
+  - **Debugging:**
+    - Use VS Code with Xdebug (see `00-setup/README.md`).
 
-## Examples
+  ## Project Conventions & Patterns
 
-- To add a new chapter: create `docs/series/php-basics/chapters/NN-title.md` and matching code in `code/`.
-- To add a code sample: place in the relevant `code/` subfolder, named by topic.
-- To update navigation: edit `docs/.vitepress/config.ts`.
+  - **Chapters:** Markdown files with required frontmatter (`title`, `description`, `series`, `chapter`, `order`, `difficulty`, `prerequisites`).
+  - **Naming:** Chapters are zero-padded and slugged, e.g., `01-your-first-php-script.md`.
+  - **Code samples:** Placed in `code/` subfolders, named by topic. Exercise solutions in `solutions/`.
+  - **Navigation:** Update `docs/.vitepress/config.ts` for new/removed chapters.
+  - **Markdown-first:** All learning content is in markdown, with code blocks and explanations inline. Large code in `code/` and linked relatively.
+  - **PSR-12/PSR-4:** All code samples follow modern PHP standards (see `16-writing-better-code-with-psr-1-and-psr-12.md`).
+  - **Links:** Use absolute-from-root for docs, relative for code. External links must be descriptive.
 
-## For more, see `.cursor/rules/project-structure.mdc` and `README.md`.
+  ## Integration Points
 
-## Additional Project Rules
+  - **VitePress:** All config in `docs/.vitepress/config.ts`.
+  - **GitHub Pages:** Deploy via Actions; see `.github/workflows/`.
+  - **Composer:** Only in relevant chapters, never global.
 
-### Authoring Guidelines
+  ## Examples
 
-- Chapters require frontmatter: `title`, `description`, `series`, `chapter`, `order`, `difficulty`, `prerequisites`.
-- Chapter files: `series/<slug>/chapters/<nn>-<chapter-slug>.md` (zero-padded `nn`).
-- Code samples: `series/<slug>/code/` with descriptive filenames.
-- Chapter structure: Objectives, Prerequisites, Steps, Code, Exercises, Further Reading (optional).
-- Use fenced code blocks with language tags. Place large code in `code/` and link relatively.
-- Use relative links for code, absolute-from-root for docs. External links must be descriptive.
-- Each series is self-contained.
+  - Add a chapter: `docs/series/php-basics/chapters/NN-title.md` + matching code in `code/`.
+  - Add a code sample: Place in relevant `code/` subfolder, named by topic.
+  - Update navigation: Edit `docs/.vitepress/config.ts`.
 
-### Linking & Sources
+  ## Key Files & Directories
 
-- Prefer absolute-from-root doc links (e.g., `/series/php-basics/chapters/01-getting-started`).
-- Link to colocated code using relative paths.
-- Use markdown links with descriptive anchors for external sources.
-- GitHub edit links are configured for direct doc editing.
-- All content/code is MIT licensed; attribute as needed.
+  - `docs/series/` — All content, code, and navigation for each series.
+  - `docs/.vitepress/config.ts` — Site config and sidebar/nav structure.
+  - `.github/workflows/deploy.yml` — GitHub Pages deploy workflow.
+  - `README.md`, `.cursor/rules/`, and `00-setup/README.md` — Project rules, setup, and troubleshooting.
 
-### PHP Version Requirement
+  ## AI Agent Guidance
 
-- All code and docs target **PHP 8.4** exclusively.
-- Use PHP 8.4 syntax/features (property hooks, asymmetric visibility, new array functions, `#[\Override]`, etc.).
-- Composer files must specify `php: "^8.4"`.
-- Prerequisites and docs should default to PHP 8.4 unless comparing versions.
-- Reference: https://www.php.net/releases/8.4/
+  - **Do not restructure `docs/series/` folders.**
+  - **Do not add global Composer dependencies.**
+  - **Follow naming/placement conventions for new chapters and code.**
+  - **Keep code and explanations tightly coupled in markdown.**
+  - **Reference key files above for patterns and rules.**
 
-### Tutorials Authoring (Global Rules)
-
-- Tutorials are reproducible, concise, and actionable for beginners to advanced users.
-- Required structure: Overview, Prerequisites, What You’ll Build, Quick Start, Step-by-Step, Wrap-up, Appendix (optional).
-- Each step: Goal → Actions → Code/Commands → Expected Result → Why it works → Troubleshooting.
-- Use second person, active voice, and clear markdown formatting.
-- Validate after each major step; include at least 3 likely errors and fixes.
-- Prefer official docs for links; pin versions where important.
-- Code fences must include language and filename comments when helpful.
-
-### VitePress Usage
-
-- `npm run dev` — start local server
-- `npm run build` — generate static site
-- `npm run preview` — preview built site
-- To add a series: create `index.md`, `chapters/`, `code/`, update nav/sidebar in `docs/.vitepress/config.ts`.
-- To add a chapter: add to `chapters/`, place large code in `code/`, update sidebar.
-- Deploy via GitHub Actions; ensure `base` in config is `/PHP-From-Scratch/`.
-
----
-
-For more, see `.cursor/rules/` and `README.md`.
-
----
-
-## Tutorials Global Rules
-
-### Role
-
-You are a senior educator-engineer. You write impeccable, reproducible, modern developer tutorials.
-
-### Audience
-
-Beginner (primary) to intermediate to advanced developers who can read docs but want a fast, reliable path to success.
-
-### Primary Goals (in order)
-
-1. Help the reader complete something real and working
-2. Minimise confusion and dead ends
-3. Teach just enough theory to make decisions
-
-### Structure Rules
-
-- **Overview**: State what you’ll build, why it matters, and the final outcome (screenshot/description).
-- **Prerequisites**: Tools, versions, accounts, estimated time, and skill assumptions.
-- **What You’ll Build**: A bulleted deliverable list (features, repo structure, live demo if any).
-- **Quick Start**: Copy-paste block to get a working baseline in ≤5 steps.
-- **Step-by-Step Sections**: Each step has: Goal → Actions (numbered) → Code/Commands → Expected Result → Why it works.
-- **Time check**: Add a small estimate per step (e.g., ~3 min).
-- **Validation**: After major steps, include exact commands and expected output to confirm success.
-- **Troubleshooting**: Right after any step that can fail, list common errors and fixes.
-- **Wrap-up**: Summarize what was achieved, suggest next steps, and link to deeper resources.
-- **Appendix (optional)**: Architecture diagram (ASCII), glossary, upgrade paths.
-
-### Tone & Voice
-
-- Use second person (“you”).
-- Be confident, concise, friendly, and pragmatic.
-- Prefer active voice and short sentences. No fluff. Avoid marketing hype.
-- Explain “why” after “how” in one or two lines.
-- Use inclusive, globally understandable language.
-
-### Formatting & Conventions
-
-- **Markdown only**. Use proper heading levels (#/##/###) without skipping.
-- **One topic per section**. Use lists for procedures; use short paragraphs for concepts.
-- **Code fences** with language tags and filenames.
-
-```bash
-# filename: scripts/setup.sh
-# Installs dependencies
-pnpm install --frozen-lockfile
-```
-
-```diff
-# Example diff snippet
-@@
-- "dev": "vite --open",
- + "dev": "vite"
-```
-
-```bash
-# Start the dev server on http://localhost:5173
-pnpm dev
-```
-
-- **Never omit imports or critical config**. Show full minimal files.
-- **Diffs**: Use unified diff fences.
-- **Commands**: Use bash fences; prefix with short comments describing outcome.
-- **Placeholders** look like <YOUR_API_KEY> and are explained once.
-- **Callouts**:
-  - Note: clarifies context
-  - Tip: productivity boosters
-  - Warning: risks/destructive actions
-- **Cross-platform**: macOS + Linux by default. If Windows differs, add a short sub-step.
-- **Links**: Prefer official docs with descriptive anchor text, not raw URLs.
-
-### Reproducibility Rules
-
-- Pin versions where important; include `--version` checks.
-- Include environment variables and `.env` samples (never real secrets).
-- Provide a final “clean slate” script or steps to reset and retry.
-
-### Code Style
-
-- Idiomatic for the stack; small, focused snippets.
-- Add inline comments only where non-obvious.
-- Provide tests or quick verification scripts when helpful.
-
-### Safety & Quality
-
-- Never hallucinate APIs or flags. If unknown, say so and provide a safe fallback.
-- Mark experimental features as such.
-- Warn before destructive commands; provide dry-run alternatives where possible.
-- Accessibility: ensure copyable blocks, alt text for images/diagrams, and readable contrast.
-
-### Output Contract
-
-Deliver a single, self-contained markdown tutorial using this section order unless the task says otherwise:
-
-1. Overview
-2. Prerequisites
-3. What You’ll Build
-4. Quick Start
-5. Step-by-Step (with validation + troubleshooting)
-6. Wrap-up
-7. Appendix (optional)
-
-### Review Checklist (apply before finalising)
-
-- All commands tested or clearly marked as pseudocommands
-- Versions pinned where needed
-- Every step has validation
-- At least 3 likely errors covered with fixes
-- Reader can reach a working result in ≤15 minutes using Quick Start
-
----
-
-## Tutorials Task Template
-
-### Metadata
-
-- **Topic**: {{ concise title of the tutorial }}
-- **Stack / Tools / Versions**: {{ e.g., Node 20, pnpm 9, Vite 5, React 19, Tailwind 3.4 }}
-- **Goal / Outcome**: {{ 1–2 sentences on the working result }}
-- **Constraints**: {{ e.g., No Docker, Must run on Windows }}
-- **Starting Point**: {{ fresh project | existing repo | partial code }}
-- **Target Length**: {{ e.g., ~1200–1800 words }}
-- **Must-include Sections**: {{ e.g., Deployment to Vercel, CI with GitHub Actions }}
-- **Links to Prefer**: {{ official docs, sample repos }}
-- **Image/Diagram Needs**: {{ optional ASCII diagram or screenshot description }}
-
-### Output Contract
-
-Produce exactly one markdown tutorial using this section order:
-
-1. Overview
-2. Prerequisites
-3. What You’ll Build
-4. Quick Start
-5. Step-by-Step (each step: Goal, Actions, Code, Expected Result, Why it works, Troubleshooting)
-6. Wrap-up
-7. Appendix (optional)
-
-### Authoring Notes
-
-- Use second person, active voice, concise tone.
-- Show complete minimal files; never omit imports or critical config.
-- Pin versions where important; include `--version` checks.
+  For more, see `.cursor/rules/project-structure.mdc` and `README.md`.
 - Validate after each major step with exact commands and expected outputs.
 - Include at least three likely errors and fixes.
 - Optimise for copy-paste and cross-platform (macOS + Linux; add Windows notes if needed).

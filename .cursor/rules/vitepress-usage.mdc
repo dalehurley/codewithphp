@@ -1,30 +1,496 @@
 ---
-description: VitePress usage — dev/build/preview, adding series/chapters, sidebar updates
+description: VitePress usage — dev/build/preview, adding series/chapters, sidebar configuration, and components
 ---
 
-# VitePress Usage
+# VitePress Usage for Code with PHP
 
-Commands
+## Development Commands
 
-- `npm run dev` — start local server
-- `npm run build` — generate static site into `docs/.vitepress/dist`
-- `npm run preview` — preview built site
+```bash
+# Start local development server
+npm run dev
+# Site available at http://localhost:5173
 
-Add a new series
+# Build static site for production
+npm run build
+# Output: docs/.vitepress/dist
 
-1. Create `docs/series/<series-slug>/index.md` (overview with objectives & prerequisites)
-2. Create `docs/series/<series-slug>/chapters/`
-3. Create `docs/series/<series-slug>/code/`
-4. Update `docs/.vitepress/config.ts` nav and sidebar entries
+# Preview production build locally
+npm run preview
+# Useful for testing before deployment
+```
 
-Add a chapter
+## Project Structure
 
-1. Add `docs/series/<slug>/chapters/<nn>-<chapter-slug>.md`
-2. Place larger code in `docs/series/<slug>/code/`
-3. Reference files with relative links
-4. Add chapter to the series sidebar
+```
+docs/
+├── .vitepress/
+│   ├── config.ts         # Site configuration
+│   └── theme/            # Custom theme (if any)
+├── index.md              # Homepage
+├── public/
+│   └── CNAME             # Custom domain configuration
+└── series/
+    └── <series-slug>/
+        ├── index.md      # Series overview
+        ├── chapters/     # All chapter markdown files
+        │   ├── 00-chapter.md
+        │   ├── 01-chapter.md
+        │   └── ...
+        └── code/         # Code examples colocated with content
+            ├── 00-topic/
+            ├── 01-topic/
+            └── ...
+```
 
-Deploy
+## Adding a New Series
 
-- GitHub Actions builds and deploys to `gh-pages`.
-- Ensure `base` in `config.ts` is `/PHP-From-Scratch/` for project pages.
+### Step 1: Create Series Directory Structure
+
+```bash
+# Create the series directories
+mkdir -p docs/series/<series-slug>/{chapters,code}
+
+# Create the series index
+touch docs/series/<series-slug>/index.md
+```
+
+### Step 2: Create Series Index
+
+The series index must include:
+
+1. Comprehensive overview (4-6 paragraphs)
+2. Who This Is For section
+3. Prerequisites (software, time, skills)
+4. What You'll Build (deliverables)
+5. Learning Objectives
+6. How This Series Works (methodology)
+7. Learning Path Overview (mermaid diagram)
+8. Quick Start (5-minute example)
+9. Chapters (organized by parts with descriptions)
+10. FAQ
+11. Getting Help
+12. Related Resources
+
+See `docs/series/php-basics/index.md` as the reference template.
+
+### Step 3: Update VitePress Config
+
+Edit `docs/.vitepress/config.ts`:
+
+```typescript
+// Add to nav
+nav: [
+  // ... existing items
+  {
+    text: 'Series Name',
+    link: '/series/series-slug/'
+  }
+],
+
+// Add sidebar configuration
+sidebar: {
+  // ... existing sidebars
+  '/series/series-slug/': [
+    {
+      text: 'Series Name',
+      items: [
+        {
+          text: 'Overview',
+          link: '/series/series-slug/'
+        },
+        {
+          text: 'Part 1: Section Name',
+          collapsed: false,
+          items: [
+            {
+              text: '00 — Chapter Title',
+              link: '/series/series-slug/chapters/00-chapter-slug'
+            },
+            {
+              text: '01 — Chapter Title',
+              link: '/series/series-slug/chapters/01-chapter-slug'
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+## Adding a Chapter
+
+### Step 1: Create Chapter File
+
+```bash
+# Create the chapter markdown file (use zero-padded numbers)
+touch docs/series/<slug>/chapters/<nn>-chapter-slug.md
+```
+
+### Step 2: Add Chapter to Sidebar
+
+Edit `docs/.vitepress/config.ts` and add the chapter to the appropriate section:
+
+```typescript
+{
+  text: '0N — Chapter Title',
+  link: '/series/series-slug/chapters/0n-chapter-slug'
+}
+```
+
+### Step 3: Create Code Directory (if needed)
+
+```bash
+# Create directory for chapter code examples
+mkdir -p docs/series/<slug>/code/<nn>-topic/solutions
+
+# Create README
+touch docs/series/<slug>/code/<nn>-topic/README.md
+```
+
+### Step 4: Link Chapter in Sequence
+
+- Update previous chapter's "Next Steps" section
+- Add chapter to prerequisites of following chapter
+- Ensure chapter numbers are sequential
+
+## VitePress Components
+
+### Callouts
+
+```markdown
+::: tip
+Helpful advice, shortcuts, or pro tips
+:::
+
+::: warning
+Important warnings about destructive actions or pitfalls
+:::
+
+::: info
+Additional context, version notes, or supplementary information
+:::
+
+::: danger
+Critical warnings about security or data loss
+:::
+
+::: details Click to expand
+Collapsible content that's supplementary
+:::
+```
+
+### Code Groups (Tabs)
+
+````markdown
+::: code-group
+
+```php [Option 1]
+<?php
+echo "First way";
+```
+````
+
+```php [Option 2]
+<?php
+echo "Alternative way";
+```
+
+:::
+
+````
+
+### Mermaid Diagrams
+
+```markdown
+```mermaid
+flowchart TB
+    A[Start] --> B[Process]
+    B --> C[End]
+
+    style B fill:#e1f5ff
+````
+
+````
+
+### Custom Components
+
+The project may include custom components. Check `docs/.vitepress/theme/` for available components.
+
+**Quiz Component Example:**
+
+```markdown
+<Quiz
+  title="Chapter Title Quiz"
+  :questions="[
+    {
+      question: 'Question text?',
+      options: [
+        { text: 'Answer', correct: true, explanation: 'Why correct' }
+      ]
+    }
+  ]"
+/>
+````
+
+## Frontmatter Configuration
+
+### Series Index Frontmatter
+
+```yaml
+---
+title: Series Title
+description: Brief description
+series: series-slug
+order: 0
+difficulty: Beginner
+prerequisites:
+  - List of prerequisites
+---
+```
+
+### Chapter Frontmatter
+
+```yaml
+---
+title: "NN: Chapter Title"
+description: "One sentence description"
+series: "series-slug"
+chapter: N
+order: N
+difficulty: "Beginner|Intermediate|Advanced"
+prerequisites:
+  - "/series/series-slug/chapters/previous-chapter"
+---
+```
+
+## Sidebar Configuration Patterns
+
+### Collapsed Sections
+
+```typescript
+{
+  text: 'Part Name',
+  collapsed: true,  // Collapsed by default
+  items: [
+    // chapters
+  ]
+}
+```
+
+### Active Sections
+
+```typescript
+{
+  text: 'Part Name',
+  collapsed: false,  // Expanded by default
+  items: [
+    // chapters
+  ]
+}
+```
+
+### Nested Sections
+
+```typescript
+{
+  text: 'Main Section',
+  items: [
+    {
+      text: 'Subsection',
+      collapsed: false,
+      items: [
+        { text: 'Chapter', link: '/path' }
+      ]
+    }
+  ]
+}
+```
+
+## Link Conventions
+
+### Internal Links
+
+```markdown
+<!-- Absolute from docs root (preferred) -->
+
+[Chapter 01](/series/php-basics/chapters/01-first-script)
+
+<!-- Relative (for code files) -->
+
+[example.php](../code/08-oop/example.php)
+```
+
+### External Links
+
+```markdown
+<!-- Use descriptive anchor text -->
+
+[PHP Manual: Arrays](https://www.php.net/manual/en/language.types.array.php)
+
+<!-- NOT raw URLs -->
+
+https://www.php.net/manual/en/language.types.array.php
+```
+
+## Deployment
+
+### GitHub Pages Setup
+
+The project uses GitHub Actions for automated deployment:
+
+1. Push to `main` branch
+2. GitHub Actions builds the site
+3. Deploys to `gh-pages` branch
+4. Site published at configured URL
+
+### Configuration
+
+Ensure `docs/.vitepress/config.ts` has correct base:
+
+```typescript
+export default defineConfig({
+  base: "/PHP-From-Scratch/", // For GitHub Project Pages
+  // or
+  base: "/", // For custom domain
+});
+```
+
+### Custom Domain
+
+If using a custom domain:
+
+1. Add `CNAME` file to `docs/public/`
+2. Configure DNS settings at domain registrar
+3. Set `base: '/'` in config
+
+## Development Tips
+
+### Hot Reload
+
+VitePress supports hot module replacement:
+
+- Saves to markdown files auto-refresh
+- Config changes require server restart
+
+### Markdown Features
+
+VitePress supports:
+
+- GitHub Flavored Markdown
+- Frontmatter (YAML)
+- Code syntax highlighting
+- Mermaid diagrams
+- Custom containers (callouts)
+- Line highlighting in code blocks
+- Emoji :tada:
+
+### Code Block Features
+
+```php{2,4-6}
+<?php
+// Line 2 is highlighted
+echo "Normal";
+// Lines 4-6 are highlighted
+$x = 1;
+echo $x;
+```
+
+### Testing Before Deploy
+
+Always preview the production build:
+
+```bash
+npm run build
+npm run preview
+```
+
+Check for:
+
+- [ ] All links working
+- [ ] Images loading
+- [ ] Sidebar navigation correct
+- [ ] Search functioning
+- [ ] Code blocks rendering properly
+
+## Troubleshooting
+
+### Build Errors
+
+**Dead links:**
+
+- VitePress will warn about broken internal links
+- Fix all broken links before deploying
+
+**Markdown parsing errors:**
+
+- Check for unclosed code fences
+- Verify frontmatter YAML syntax
+- Ensure mermaid diagrams are valid
+
+### Preview Issues
+
+**Sidebar not updating:**
+
+- Restart dev server after config changes
+
+**404 on navigation:**
+
+- Verify file paths match sidebar links
+- Check for typos in file names
+
+**Styling issues:**
+
+- Clear browser cache
+- Check for custom CSS conflicts
+
+## Best Practices
+
+1. **Always use lowercase** for directory and file names
+2. **Use kebab-case** for slugs: `object-oriented-programming`
+3. **Zero-pad chapter numbers**: `01`, `02`, not `1`, `2`
+4. **Test locally** before pushing: `npm run build && npm run preview`
+5. **Keep sidebar organized** by parts/sections
+6. **Use relative links** for code samples
+7. **Use absolute links** for chapters
+8. **Add chapters sequentially** to maintain order
+9. **Update both nav and sidebar** when adding series
+10. **Verify all links work** before deploying
+
+## Configuration Reference
+
+### Key Config Options
+
+```typescript
+export default defineConfig({
+  title: "Code with PHP",
+  description: "Learn PHP from fundamentals to frameworks",
+  base: "/PHP-From-Scratch/",
+
+  themeConfig: {
+    nav: [
+      // Top navigation
+    ],
+    sidebar: {
+      // Per-section sidebars
+    },
+    socialLinks: [{ icon: "github", link: "https://github.com/..." }],
+    editLink: {
+      pattern: "https://github.com/.../edit/main/docs/:path",
+      text: "Edit this page on GitHub",
+    },
+    footer: {
+      message: "Released under the MIT License.",
+      copyright: "Copyright © 2025",
+    },
+  },
+});
+```
+
+## Resources
+
+- [VitePress Documentation](https://vitepress.dev/)
+- [VitePress Default Theme Config](https://vitepress.dev/reference/default-theme-config)
+- [Markdown Extensions](https://vitepress.dev/guide/markdown)
+- [Mermaid Diagram Syntax](https://mermaid.js.org/)

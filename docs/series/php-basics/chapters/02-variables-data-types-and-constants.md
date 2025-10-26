@@ -751,6 +751,16 @@ These concepts are the absolute bedrock of programming in any language. Every ap
 
 In [Chapter 03: Control Structures](/series/php-basics/chapters/03-control-structures), you'll learn how to make decisions and repeat actions in your code using `if` statements and loops—bringing your scripts to life with logic and automation.
 
+::: info Code Examples
+Complete, runnable examples from this chapter are available in:
+
+- [`data-types-demo.php`](../code/02-variables/data-types-demo.php) - Working with different data types
+- [`constants-demo.php`](../code/02-variables/constants-demo.php) - Defining and using constants
+- [`type-juggling.php`](../code/02-variables/type-juggling.php) - Understanding type juggling and conversion
+- [`strict-types-demo.php`](../code/02-variables/strict-types-demo.php) - Strict type mode demonstration
+- [`solutions/`](../code/02-variables/solutions/) - Solutions to chapter exercises
+  :::
+
 ## Further Reading
 
 - [PHP Manual: Variables](https://www.php.net/manual/en/language.variables.php) — Official PHP documentation on variables

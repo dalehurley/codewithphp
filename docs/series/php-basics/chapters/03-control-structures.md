@@ -654,6 +654,15 @@ These building blocks are essential for writing any meaningful program. You'll u
 
 In the next chapter, we'll learn how to bundle our code into reusable blocks called functions, making our programs much more organized and powerful.
 
+::: info Code Examples
+Complete, runnable examples from this chapter are available in:
+
+- [`if-else-examples.php`](../code/03-control/if-else-examples.php) - If/else statements and conditional logic
+- [`switch-match-examples.php`](../code/03-control/switch-match-examples.php) - Switch statements and match expressions
+- [`loops-examples.php`](../code/03-control/loops-examples.php) - For, while, and foreach loops
+- [`solutions/`](../code/03-control/solutions/) - Solutions to chapter exercises
+  :::
+
 ## Knowledge Check
 
 Test your understanding of control structures:

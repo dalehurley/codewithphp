@@ -464,6 +464,15 @@ echo 'Hello' . ' ' . 'World'; // Concatenation
 </html>
 ```
 
+::: info Code Examples
+Complete, runnable examples from this chapter are available in:
+
+- [`basic-syntax.php`](../code/01-first-script/basic-syntax.php) - Basic PHP syntax and echo examples
+- [`mixing-html.php`](../code/01-first-script/mixing-html.php) - Mixing PHP with HTML
+- [`variables-demo.php`](../code/01-first-script/variables-demo.php) - Working with variables and concatenation
+- [`solutions/`](../code/01-first-script/solutions/) - Solutions to chapter exercises
+  :::
+
 ## Further Reading
 
 To deepen your understanding of the topics covered in this chapter:

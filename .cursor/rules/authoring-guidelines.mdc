@@ -1,37 +1,448 @@
 ---
 globs: docs/**/*.md
+description: Comprehensive tutorial authoring guidelines based on php-basics series patterns
 ---
 
-# Authoring Guidelines
+# Authoring Guidelines for Code with PHP Tutorials
 
-Frontmatter (required on chapters)
+This document defines the structure, formatting, and conventions for all tutorial chapters based on the established patterns in the php-basics series.
 
-- `title`, `description`, `series`, `chapter`, `order`, `difficulty`, `prerequisites`
+## Frontmatter Requirements
 
-File naming
+Every chapter MUST include this frontmatter structure:
 
-- Chapters: `series/<slug>/chapters/<nn>-<chapter-slug>.md` (zero-padded `nn`)
-- Code samples: `series/<slug>/code/` with descriptive filenames
+```yaml
+---
+title: "NN: Chapter Title Here"
+description: "One-sentence description of what the reader will learn"
+series: "series-slug"
+chapter: N
+order: N
+difficulty: "Beginner|Intermediate|Advanced"
+prerequisites:
+  - "/series/series-slug/chapters/previous-chapter"
+  - "Another prerequisite if needed"
+---
+```
 
-Structure per chapter
+**Field Specifications:**
 
-1. Objectives
-2. Prerequisites
-3. Steps (with commands and code snippets)
-4. Code (links to colocated files)
-5. Exercises
-6. Further Reading (optional)
+- `title`: Format as "NN: Title" where NN is zero-padded chapter number
+- `description`: Single sentence, action-oriented, no period at end
+- `series`: Must match the series directory name
+- `chapter` and `order`: Usually the same number (but order can differ for special chapters)
+- `difficulty`: One of three values: Beginner, Intermediate, Advanced
+- `prerequisites`: Array of chapter links (absolute paths) or text requirements
 
-Code blocks
+## File Naming Conventions
 
-- Use fenced blocks with language: `php`, `bash`, `json`, etc.
-- Keep small snippets inline; place larger files in `series/<slug>/code/` and link relatively.
+**Chapters:**
 
-Links
+- Format: `series/<series-slug>/chapters/<nn>-<chapter-slug>.md`
+- Use zero-padded two-digit numbers: `00`, `01`, `02`, etc.
+- Use kebab-case for slugs: `building-a-simple-blog`
+- Examples: `01-your-first-php-script.md`, `19-project-building-a-simple-blog.md`
 
-- Use relative links within the docs, e.g. `/series/<slug>/...`.
-- External links should use markdown links with meaningful anchor text.
+**Code Samples:**
 
-Independence
+- Store in `series/<series-slug>/code/<chapter-nn>-topic/`
+- Use descriptive filenames: `basic-functions.php`, `validation-example.php`
+- Include a `README.md` in each code directory explaining the examples
+- Place exercise solutions in `code/<chapter-nn>-topic/solutions/`
 
-- Each series must be self-contained (overview, prerequisites, and code samples).
+## Chapter Structure Template
+
+Every chapter MUST follow this exact structure:
+
+````markdown
+# Chapter NN: Chapter Title
+
+## Overview
+
+A compelling 2-4 paragraph introduction that:
+
+- Explains what the chapter covers and why it matters
+- Connects to previous learning
+- Previews what the reader will build
+- Sets clear expectations
+
+## Prerequisites
+
+Before starting this chapter, you should have:
+
+- Specific requirement with link
+- PHP version requirement
+- Software/tools needed
+- **Estimated Time**: ~XX minutes
+
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- Specific deliverable 1
+- Specific deliverable 2
+- Knowledge/skill gained
+- Working example with X features
+
+## Quick Start (Optional)
+
+A 5-minute copy-paste example showing the end result:
+
+```bash
+# Create file
+# Run command
+# Expected output
+```
+````
+
+## Objectives
+
+- Bullet list of learning objectives
+- Use action verbs: Understand, Create, Implement, Learn
+- Keep to 4-7 objectives maximum
+
+## Step N: Descriptive Step Title (~X min)
+
+### Goal
+
+One sentence explaining what this step accomplishes.
+
+### Actions
+
+1. **First action**: Description
+2. **Second action**: Description
+3. **Code example**:
+
+```php
+# filename: example.php
+<?php
+// Complete, runnable code
+```
+
+### Expected Result
+
+```
+Exact output the user should see
+```
+
+### Why It Works
+
+2-4 sentences explaining the underlying concepts and how the code functions.
+
+### Troubleshooting
+
+- **Error: "Specific error message"** — Cause and solution
+- **Problem symptom** — Explanation and fix
+- **Common mistake** — How to avoid it
+
+## Exercises
+
+Practical challenges to reinforce learning:
+
+### Exercise 1: Descriptive Title
+
+**Goal**: What the exercise teaches
+
+Requirements:
+
+- Specific requirement 1
+- Specific requirement 2
+
+**Validation**: How to verify it works
+
+```php
+// Test code or expected output
+```
+
+## Wrap-up
+
+Summary section that includes:
+
+- What was accomplished (checklist format)
+- Key concepts learned
+- How this connects to next chapter
+- Encouragement and next steps
+
+## Further Reading
+
+- [Link Text](URL) — Brief description
+- Official docs, relevant PSR standards, related resources
+
+## Knowledge Check (Optional)
+
+VitePress Quiz component for self-assessment
+
+````
+
+## Code Block Conventions
+
+### Inline Code Snippets
+
+```php
+# filename: example.php
+<?php
+
+declare(strict_types=1);
+
+// Always use proper PHP 8.4 syntax
+// Include helpful comments
+// Show complete, runnable examples
+````
+
+**Rules:**
+
+- Always include `# filename: path.php` comment at the top
+- Use `declare(strict_types=1);` for modern examples
+- Include minimal but sufficient context (imports, setup, etc.)
+- Never show partial code that won't run
+- Keep snippets focused on the concept being taught
+
+### Terminal Commands
+
+```bash
+# Descriptive comment explaining what this does
+command --with-flags argument
+
+# Expected output or result
+```
+
+**Rules:**
+
+- Prefix every command with a comment
+- Show expected output when relevant
+- Use cross-platform commands when possible
+- Note platform-specific alternatives when necessary
+
+### Code in Separate Files
+
+For examples longer than ~50 lines:
+
+1. Create file in `series/<slug>/code/<chapter-topic>/`
+2. Reference it in the chapter:
+
+```markdown
+The complete implementation is available in [`example.php`](../code/08-oop/property-hooks-basic.php).
+```
+
+## Time Estimates
+
+Include time estimates for:
+
+- Prerequisites section: `**Estimated Time**: ~30 minutes`
+- Each step: `## Step 3: Title (~5 min)`
+- Exercises: Mention if they're quick (5 min) or longer (15+ min)
+
+## VitePress Components & Formatting
+
+### Callouts
+
+```markdown
+::: tip
+Helpful advice, shortcuts, or pro tips
+:::
+
+::: warning
+Important warnings about destructive actions or common pitfalls
+:::
+
+::: info
+Additional context, version notes, or supplementary information
+:::
+```
+
+### Diagrams
+
+Use Mermaid for architecture, flow, or relationship diagrams:
+
+````markdown
+```mermaid
+flowchart TB
+    A[Start] --> B[Process]
+    B --> C[End]
+```
+````
+
+````
+
+### Quiz Components
+
+```markdown
+<Quiz
+  title="Chapter NN Quiz: Topic"
+  :questions="[
+    {
+      question: 'Question text?',
+      options: [
+        { text: 'Correct answer', correct: true, explanation: 'Why this is correct' },
+        { text: 'Wrong answer', correct: false, explanation: 'Why this is wrong' }
+      ]
+    }
+  ]"
+/>
+````
+
+## Writing Style Guidelines
+
+### Voice & Tone
+
+- Use second person ("you")
+- Be encouraging and supportive
+- Assume intelligence but not prior knowledge
+- Explain the "why" after showing the "how"
+- Use active voice and present tense
+
+### Technical Writing
+
+- Define terms on first use
+- Use consistent terminology throughout
+- Show don't tell: prefer working examples
+- Validate every example (must be runnable)
+- Include edge cases in troubleshooting
+
+### Formatting
+
+- Use **bold** for UI elements, buttons, filenames when emphasizing action
+- Use `code formatting` for:
+  - Function names: `array_map()`
+  - Variables: `$userName`
+  - Class names: `DateTime`
+  - Commands: `php artisan serve`
+  - File paths: `src/Controllers/PostController.php`
+- Use _italics_ sparingly for emphasis
+- Keep paragraphs short (2-4 sentences)
+- Use bullet lists for related items
+- Use numbered lists for sequential steps
+
+## Prerequisites Section Format
+
+````markdown
+## Prerequisites
+
+Before starting this chapter, you should have:
+
+- PHP 8.4+ installed and confirmed working with `php --version`
+- Completion of Chapter NN or equivalent understanding
+- Specific tool or knowledge requirement
+- **Estimated Time**: ~XX-YY minutes
+
+**Verify your setup:**
+
+```bash
+# Command to verify
+php --version
+```
+````
+
+````
+
+## Exercise Format
+
+```markdown
+### Exercise N: Descriptive Title
+
+**Goal**: One sentence about what this teaches
+
+Create a file called `exercise-name.php` and implement:
+
+- Requirement 1 with specifics
+- Requirement 2 with constraints
+- Requirement 3 with validation rules
+
+**Validation**: Test your implementation:
+
+```php
+// Test code
+$result = testFunction();
+echo $result; // Expected: specific output
+````
+
+Expected output:
+
+```
+Exact expected output
+Multiple lines if needed
+```
+
+````
+
+## Troubleshooting Section Format
+
+```markdown
+## Troubleshooting
+
+### Error: "Exact Error Message"
+
+**Symptom**: `Fatal error: Uncaught Error: Description`
+
+**Cause**: Explanation of what causes this error
+
+**Solution**: Step-by-step fix:
+
+```php
+// Wrong
+$wrong->code();
+
+// Correct
+$correct->code();
+````
+
+### Problem Description
+
+**Symptom**: What the user sees
+
+**Cause**: Why it happens
+
+**Solution**: How to fix it
+
+```
+
+## Series Index Structure
+
+Each series `index.md` must include:
+
+1. **Comprehensive overview** (4-6 paragraphs)
+2. **Who This Is For** section
+3. **Prerequisites** (software, time, skills)
+4. **What You'll Build** (deliverables)
+5. **Learning Objectives** (outcomes)
+6. **How This Series Works** (methodology)
+7. **Learning Path Overview** (mermaid diagram showing progression)
+8. **Quick Start** (5-minute example)
+9. **Chapters** (organized by parts/sections with descriptions)
+10. **FAQ** section
+11. **Getting Help** resources
+12. **Related Resources** links
+
+## Modern PHP 8.4 Standards
+
+All code examples must:
+- Use PHP 8.4 syntax and features
+- Use type declarations: `function greet(string $name): void`
+- Use constructor property promotion where appropriate
+- Use property hooks and asymmetric visibility for PHP 8.4 examples
+- Show modern approaches alongside traditional when teaching transitions
+- Follow PSR-12 coding standards
+- Use `declare(strict_types=1);` in examples that benefit from strict typing
+
+## Cross-Referencing
+
+- Use absolute paths from doc root: `/series/php-basics/chapters/01-first-script`
+- Link to previous chapters in prerequisites
+- Reference related chapters in "Further Reading"
+- Link to code samples using relative paths: `../code/08-oop/example.php`
+
+## Validation Checklist
+
+Before committing a chapter, verify:
+- [ ] All code examples are complete and runnable
+- [ ] Time estimates are included
+- [ ] Troubleshooting covers at least 3 common errors
+- [ ] Exercises have clear validation criteria
+- [ ] External links use descriptive anchor text
+- [ ] Frontmatter is complete and correct
+- [ ] Chapter number matches filename
+- [ ] Prerequisites link to actual chapters
+- [ ] Code samples exist in `/code/` directory
+- [ ] README exists in code directory
+- [ ] Writing follows voice/tone guidelines
+```
