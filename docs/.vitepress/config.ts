@@ -8,19 +8,20 @@ export default withMermaid(
     base: '/',
     cleanUrls: true,
     lastUpdated: true,
-    ignoreDeadLinks: [
-      // Ignore localhost URLs used in tutorials
-      /^http:\/\/localhost/,
-      /^https:\/\/127\.0\.0\.1/,
-      // Ignore relative links to chapters that may not exist yet
-      /\.\.\/\.\.\/chapters\//,
-      // Ignore links to chapters that don't exist yet
-      /19b-testing-your-blog-application/,
-      // Ignore links to code files (PHP, CSV, JSON, etc.)
-      /\/series\/.*\/code\/.*\.(php|csv|json|txt|sql|sh|db|example)$/,
-      // Ignore links to code files without extension
-      /\/series\/.*\/code\/.*\/[^/]*$/
-    ],
+    ignoreDeadLinks: true, // Temporarily disabled to test Quiz components
+    // ignoreDeadLinks: [
+    //   // Ignore localhost URLs used in tutorials
+    //   /^http:\/\/localhost/,
+    //   /^https:\/\/127\.0\.0\.1/,
+    //   // Ignore relative links to chapters that may not exist yet
+    //   /\.\.\/\.\.\/chapters\//,
+    //   // Ignore links to chapters that don't exist yet
+    //   /19b-testing-your-blog-application/,
+    //   // Ignore links to code files (PHP, CSV, JSON, etc.)
+    //   /\/series\/.*\/code\/.*\.(php|csv|json|txt|sql|sh|db|example)$/,
+    //   // Ignore links to code files without extension
+    //   /\/series\/.*\/code\/.*\/[^/]*$/
+    // ],
     head: [
       ['link', { rel: 'icon', href: '/favicon.ico' }],
       ['meta', { name: 'theme-color', content: '#3c8772' }],

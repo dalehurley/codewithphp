@@ -1949,98 +1949,98 @@ To deepen your understanding of the tools and libraries you've installed:
 
 Test your understanding of development environment setup:
 
-<Quiz
-title="Chapter 02 Quiz: Setting Up Your AI Development Environment"
-:questions="[
-{
-question: 'Why is PHP 8.4 required for this series rather than older versions like PHP 7.4?',
-options: [
-{ text: 'PHP 8.4 includes modern features like property hooks, better type system, and performance improvements needed for ML work', correct: true, explanation: 'PHP 8.4 provides language features that make ML code clearer and more efficient, plus significant performance gains.' },
-{ text: 'Older PHP versions cannot run machine learning libraries at all', correct: false, explanation: 'PHP-ML works on PHP 7.2+, but we use 8.4 for modern features and best practices.' },
-{ text: 'PHP 8.4 includes built-in machine learning functions', correct: false, explanation: 'PHP does not have built-in ML functions; we use external libraries like PHP-ML and Rubix ML.' },
-{ text: 'Only PHP 8.4 can integrate with Python', correct: false, explanation: 'Any PHP version can integrate with Python via shell commands or APIs.' }
-]
-},
-{
-question: 'What is the primary purpose of Composer in PHP development?',
-options: [
-{ text: 'Managing dependencies, downloading libraries from Packagist, and handling version conflicts automatically', correct: true, explanation: 'Composer is PHP\'s dependency manager, similar to npm for JavaScript or pip for Python.' },
-{ text: 'Compiling PHP code into machine code for better performance', correct: false, explanation: 'Composer manages dependencies; PHP is interpreted, not compiled (though it has opcache).' },
-{ text: 'Creating machine learning models', correct: false, explanation: 'Composer installs libraries; it doesn\'t create models. Libraries like PHP-ML create models.' },
-{ text: 'Running PHP web servers', correct: false, explanation: 'Composer manages packages; web servers are separate (Apache, Nginx, or php -S).' }
-]
-},
-{
-question: 'When should you use PHP-ML versus Rubix ML?',
-options: [
-{ text: 'PHP-ML for learning and simple tasks; Rubix ML for advanced algorithms and production work requiring better performance', correct: true, explanation: 'PHP-ML is simpler and great for learning. Rubix ML has 40+ algorithms, better performance, and production features.' },
-{ text: 'PHP-ML for web applications; Rubix ML for command-line scripts', correct: false, explanation: 'Both work in web and CLI contexts. Choose based on algorithm needs and performance requirements.' },
-{ text: 'PHP-ML requires Python; Rubix ML is pure PHP', correct: false, explanation: 'Both are pure PHP libraries with no Python requirement. Python integration is optional for advanced chapters.' },
-{ text: 'Always use both libraries together in every project', correct: false, explanation: 'Choose one based on project needs. Using both adds unnecessary complexity.' }
-]
-},
-{
-question: 'What PHP extensions are required for AI/ML work in this series?',
-options: [
-{ text: 'json, mbstring, curl, and optionally xml', correct: true, explanation: 'These extensions handle data formats (JSON), text processing (mbstring), HTTP requests (curl), and XML parsing.' },
-{ text: 'Only the ml and tensor extensions', correct: false, explanation: 'PHP doesn\'t have native ml/tensor extensions. We use libraries that work with standard extensions.' },
-{ text: 'Python, NumPy, and scikit-learn extensions', correct: false, explanation: 'Those are Python packages, not PHP extensions. Python integration is optional.' },
-{ text: 'No extensions are needed; PHP 8.4 includes everything', correct: false, explanation: 'Extensions provide critical functionality for data processing and API communication.' }
-]
-},
-{
-question: 'What does the environment verification script (verify-installation.php) check?',
-options: [
-{ text: 'PHP version, required extensions, Composer, autoloader, and ML library installations', correct: true, explanation: 'The script systematically verifies every component needed for AI/ML development in PHP.' },
-{ text: 'Only PHP version and Composer installation', correct: false, explanation: 'It checks much more: extensions, libraries, autoloader, and optional components like Python.' },
-{ text: 'The accuracy of your machine learning models', correct: false, explanation: 'It checks environment setup, not model performance. Model evaluation comes in later chapters.' },
-{ text: 'Your network connection and API keys', correct: false, explanation: 'The script checks local software installations, not network or credentials.' }
-]
-},
-{
-question: 'Why is Python installation optional in this chapter?',
-options: [
-{ text: 'Python is only needed for advanced ML tasks in Chapters 11-12 and beyond; PHP libraries handle most tasks', correct: true, explanation: 'PHP-ML and Rubix ML cover fundamentals. Python integration adds access to TensorFlow, PyTorch, and advanced models.' },
-{ text: 'Python makes PHP slower and should be avoided', correct: false, explanation: 'Python integration is for specific advanced tasks, not regular PHP execution.' },
-{ text: 'Python cannot integrate with PHP at all', correct: false, explanation: 'PHP and Python integrate well via shell commands, REST APIs, or message queues.' },
-{ text: 'Python is required for all machine learning work', correct: false, explanation: 'PHP can handle many ML tasks independently with libraries like PHP-ML and Rubix ML.' }
-]
-},
-{
-question: 'What is the purpose of the project directory structure (src/, tests/, data/, models/)?',
-options: [
-{ text: 'Organize code, tests, datasets, and trained models following PHP best practices and PSR standards', correct: true, explanation: 'Proper structure makes projects maintainable, testable, and follows community conventions.' },
-{ text: 'Required by PHP-ML and Rubix ML libraries', correct: false, explanation: 'Libraries don\'t mandate structure, but organizing projects well is best practice.' },
-{ text: 'Only needed for production deployment', correct: false, explanation: 'Good structure helps from day one, making development easier and preventing technical debt.' },
-{ text: 'To separate PHP code from Python code', correct: false, explanation: 'Structure organizes PHP project components; Python scripts (if used) would be separate.' }
-]
-},
-{
-question: 'What does the Rubix Tensor extension provide?',
-options: [
-{ text: 'Optimized mathematical operations for better ML performance; Rubix ML works without it but runs slower', correct: true, explanation: 'Tensor provides fast matrix operations. Without it, Rubix ML falls back to pure PHP (functional but slower).' },
-{ text: 'Additional machine learning algorithms not in core Rubix ML', correct: false, explanation: 'Tensor provides performance, not algorithms. All algorithms are in core Rubix ML.' },
-{ text: 'A requirement for any Rubix ML usage', correct: false, explanation: 'Tensor is optional. Rubix ML detects its presence and uses it if available for speed.' },
-{ text: 'Deep learning capabilities like neural networks', correct: false, explanation: 'Rubix ML includes neural networks in the core library; Tensor just speeds up computations.' }
-]
-},
-{
-question: 'How can you confirm that Composer has successfully installed a package?',
-options: [
-{ text: 'Check composer.json for the package in require section, verify vendor/ directory exists, and test with require autoload', correct: true, explanation: 'All three confirm installation: composer.json records it, vendor/ contains files, autoload makes classes available.' },
-{ text: 'Only by running composer install again', correct: false, explanation: 'composer install installs packages; confirmation comes from checking composer.json and testing code.' },
-{ text: 'Composer always outputs Success! if installation worked', correct: false, explanation: 'Composer shows what was installed but may have warnings. Best to verify by testing your code.' },
-{ text: 'By checking if PHP version matches package requirements', correct: false, explanation: 'This is a prerequisite check, not confirmation of installation success.' }
-]
-},
-{
-question: 'What should you do if the verification script reports failures?',
-options: [
-{ text: 'Review the output to identify what failed, revisit the relevant step in this chapter, and fix the issue', correct: true, explanation: 'The script provides specific feedback. Use it to diagnose and fix problems systematically.' },
-{ text: 'Ignore failures and proceed to Chapter 03 anyway', correct: false, explanation: 'Failures mean missing components. Proceeding will cause errors in later chapters.' },
-{ text: 'Reinstall PHP completely from scratch', correct: false, explanation: 'Most issues are specific (missing extension, wrong version). Targeted fixes are better than reinstalling everything.' },
-{ text: 'Delete the vendor directory and start over', correct: false, explanation: 'This helps with corrupted Composer installations but doesn\'t fix PHP version or extension issues.' }
-]
-}
-]"
-/>
+<!-- <Quiz
+<!-- title="Chapter 02 Quiz: Setting Up Your AI Development Environment"
+<!-- :questions="[
+<!-- {
+<!-- question: 'Why is PHP 8.4 required for this series rather than older versions like PHP 7.4?',
+<!-- options: [
+<!-- { text: 'PHP 8.4 includes modern features like property hooks, better type system, and performance improvements needed for ML work', correct: true, explanation: 'PHP 8.4 provides language features that make ML code clearer and more efficient, plus significant performance gains.' },
+<!-- { text: 'Older PHP versions cannot run machine learning libraries at all', correct: false, explanation: 'PHP-ML works on PHP 7.2+, but we use 8.4 for modern features and best practices.' },
+<!-- { text: 'PHP 8.4 includes built-in machine learning functions', correct: false, explanation: 'PHP does not have built-in ML functions; we use external libraries like PHP-ML and Rubix ML.' },
+<!-- { text: 'Only PHP 8.4 can integrate with Python', correct: false, explanation: 'Any PHP version can integrate with Python via shell commands or APIs.' }
+<!-- ]
+<!-- },
+<!-- {
+<!-- question: 'What is the primary purpose of Composer in PHP development?',
+<!-- options: [
+<!-- { text: 'Managing dependencies, downloading libraries from Packagist, and handling version conflicts automatically', correct: true, explanation: 'Composer is PHP\'s dependency manager, similar to npm for JavaScript or pip for Python.' },
+<!-- { text: 'Compiling PHP code into machine code for better performance', correct: false, explanation: 'Composer manages dependencies; PHP is interpreted, not compiled (though it has opcache).' },
+<!-- { text: 'Creating machine learning models', correct: false, explanation: 'Composer installs libraries; it does not create models. Libraries like PHP-ML create models.' },
+<!-- { text: 'Running PHP web servers', correct: false, explanation: 'Composer manages packages; web servers are separate (Apache, Nginx, or php -S).' }
+<!-- ]
+<!-- },
+<!-- {
+<!-- question: 'When should you use PHP-ML versus Rubix ML?',
+<!-- options: [
+<!-- { text: 'PHP-ML for learning and simple tasks; Rubix ML for advanced algorithms and production work requiring better performance', correct: true, explanation: 'PHP-ML is simpler and great for learning. Rubix ML has 40+ algorithms, better performance, and production features.' },
+<!-- { text: 'PHP-ML for web applications; Rubix ML for command-line scripts', correct: false, explanation: 'Both work in web and CLI contexts. Choose based on algorithm needs and performance requirements.' },
+<!-- { text: 'PHP-ML requires Python; Rubix ML is pure PHP', correct: false, explanation: 'Both are pure PHP libraries with no Python requirement. Python integration is optional for advanced chapters.' },
+<!-- { text: 'Always use both libraries together in every project', correct: false, explanation: 'Choose one based on project needs. Using both adds unnecessary complexity.' }
+<!-- ]
+<!-- },
+<!-- {
+<!-- question: 'What PHP extensions are required for AI/ML work in this series?',
+<!-- options: [
+<!-- { text: 'json, mbstring, curl, and optionally xml', correct: true, explanation: 'These extensions handle data formats (JSON), text processing (mbstring), HTTP requests (curl), and XML parsing.' },
+<!-- { text: 'Only the ml and tensor extensions', correct: false, explanation: 'PHP does not have native ml/tensor extensions. We use libraries that work with standard extensions.' },
+<!-- { text: 'Python, NumPy, and scikit-learn extensions', correct: false, explanation: 'Those are Python packages, not PHP extensions. Python integration is optional.' },
+<!-- { text: 'No extensions are needed; PHP 8.4 includes everything', correct: false, explanation: 'Extensions provide critical functionality for data processing and API communication.' }
+<!-- ]
+<!-- },
+<!-- {
+<!-- question: 'What does the environment verification script (verify-installation.php) check?',
+<!-- options: [
+<!-- { text: 'PHP version, required extensions, Composer, autoloader, and ML library installations', correct: true, explanation: 'The script systematically verifies every component needed for AI/ML development in PHP.' },
+<!-- { text: 'Only PHP version and Composer installation', correct: false, explanation: 'It checks much more: extensions, libraries, autoloader, and optional components like Python.' },
+<!-- { text: 'The accuracy of your machine learning models', correct: false, explanation: 'It checks environment setup, not model performance. Model evaluation comes in later chapters.' },
+<!-- { text: 'Your network connection and API keys', correct: false, explanation: 'The script checks local software installations, not network or credentials.' }
+<!-- ]
+<!-- },
+<!-- {
+<!-- question: 'Why is Python installation optional in this chapter?',
+<!-- options: [
+<!-- { text: 'Python is only needed for advanced ML tasks in Chapters 11-12 and beyond; PHP libraries handle most tasks', correct: true, explanation: 'PHP-ML and Rubix ML cover fundamentals. Python integration adds access to TensorFlow, PyTorch, and advanced models.' },
+<!-- { text: 'Python makes PHP slower and should be avoided', correct: false, explanation: 'Python integration is for specific advanced tasks, not regular PHP execution.' },
+<!-- { text: 'Python cannot integrate with PHP at all', correct: false, explanation: 'PHP and Python integrate well via shell commands, REST APIs, or message queues.' },
+<!-- { text: 'Python is required for all machine learning work', correct: false, explanation: 'PHP can handle many ML tasks independently with libraries like PHP-ML and Rubix ML.' }
+<!-- ]
+<!-- },
+<!-- {
+<!-- question: 'What is the purpose of the project directory structure (src/, tests/, data/, models/)?',
+<!-- options: [
+<!-- { text: 'Organize code, tests, datasets, and trained models following PHP best practices and PSR standards', correct: true, explanation: 'Proper structure makes projects maintainable, testable, and follows community conventions.' },
+<!-- { text: 'Required by PHP-ML and Rubix ML libraries', correct: false, explanation: 'Libraries do not mandate structure, but organizing projects well is best practice.' },
+<!-- { text: 'Only needed for production deployment', correct: false, explanation: 'Good structure helps from day one, making development easier and preventing technical debt.' },
+<!-- { text: 'To separate PHP code from Python code', correct: false, explanation: 'Structure organizes PHP project components; Python scripts (if used) would be separate.' }
+<!-- ]
+<!-- },
+<!-- {
+<!-- question: 'What does the Rubix Tensor extension provide?',
+<!-- options: [
+<!-- { text: 'Optimized mathematical operations for better ML performance; Rubix ML works without it but runs slower', correct: true, explanation: 'Tensor provides fast matrix operations. Without it, Rubix ML falls back to pure PHP (functional but slower).' },
+<!-- { text: 'Additional machine learning algorithms not in core Rubix ML', correct: false, explanation: 'Tensor provides performance, not algorithms. All algorithms are in core Rubix ML.' },
+<!-- { text: 'A requirement for any Rubix ML usage', correct: false, explanation: 'Tensor is optional. Rubix ML detects its presence and uses it if available for speed.' },
+<!-- { text: 'Deep learning capabilities like neural networks', correct: false, explanation: 'Rubix ML includes neural networks in the core library; Tensor just speeds up computations.' }
+<!-- ]
+<!-- },
+<!-- {
+<!-- question: 'How can you confirm that Composer has successfully installed a package?',
+<!-- options: [
+<!-- { text: 'Check composer.json for the package in require section, verify vendor/ directory exists, and test with require autoload', correct: true, explanation: 'All three confirm installation: composer.json records it, vendor/ contains files, autoload makes classes available.' },
+<!-- { text: 'Only by running composer install again', correct: false, explanation: 'composer install installs packages; confirmation comes from checking composer.json and testing code.' },
+<!-- { text: 'Composer always outputs Success! if installation worked', correct: false, explanation: 'Composer shows what was installed but may have warnings. Best to verify by testing your code.' },
+<!-- { text: 'By checking if PHP version matches package requirements', correct: false, explanation: 'This is a prerequisite check, not confirmation of installation success.' }
+<!-- ]
+<!-- },
+<!-- {
+<!-- question: 'What should you do if the verification script reports failures?',
+<!-- options: [
+<!-- { text: 'Review the output to identify what failed, revisit the relevant step in this chapter, and fix the issue', correct: true, explanation: 'The script provides specific feedback. Use it to diagnose and fix problems systematically.' },
+<!-- { text: 'Ignore failures and proceed to Chapter 03 anyway', correct: false, explanation: 'Failures mean missing components. Proceeding will cause errors in later chapters.' },
+<!-- { text: 'Reinstall PHP completely from scratch', correct: false, explanation: 'Most issues are specific (missing extension, wrong version). Targeted fixes are better than reinstalling everything.' },
+<!-- { text: 'Delete the vendor directory and start over', correct: false, explanation: 'This helps with corrupted Composer installations but does not fix PHP version or extension issues.' }
+<!-- ]
+<!-- }
+<!-- ]"
+/> -->

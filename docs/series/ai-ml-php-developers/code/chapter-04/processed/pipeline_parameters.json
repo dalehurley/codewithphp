@@ -1,0 +1,28 @@
+{
+    "transformations": [
+        "HandleMissing(age, mean)",
+        "Normalize(age, minmax)",
+        "Normalize(total_orders, zscore)",
+        "Encode(gender, label)"
+    ],
+    "parameters": {
+        "minmax_age": {
+            "min": 25,
+            "max": 58,
+            "column": "age"
+        },
+        "zscore_total_orders": {
+            "mean": 13.51,
+            "std": 5.830085762662501,
+            "column": "total_orders"
+        },
+        "label_gender": {
+            "mapping": {
+                "Male": 0,
+                "Female": 1
+            },
+            "column": "gender"
+        }
+    },
+    "created_at": "2025-10-26 20:43:28"
+}

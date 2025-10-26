@@ -3139,80 +3139,80 @@ To deepen your understanding of the concepts covered in this chapter:
 
 Test your understanding of core ML concepts:
 
-<Quiz
-title="Chapter 03 Quiz: Core Machine Learning Concepts and Terminology"
-:questions="[
-{
-question: 'What is the primary difference between supervised and unsupervised learning?',
-options: [
-{ text: 'Supervised learning uses labeled data (features + correct answers); unsupervised finds patterns in unlabeled data', correct: true, explanation: 'This is the fundamental distinction. Supervised = you provide labels during training. Unsupervised = algorithm discovers structure without labels.' },
-{ text: 'Supervised learning is always more accurate than unsupervised learning', correct: false, explanation: 'Accuracy depends on the problem and data quality, not the learning paradigm. They solve different types of problems.' },
-{ text: 'Unsupervised learning requires more computational power', correct: false, explanation: 'Computational requirements depend on the specific algorithm and dataset size, not the learning paradigm.' },
-{ text: 'Supervised learning can only do classification, while unsupervised can only do regression', correct: false, explanation: 'Supervised learning includes both classification AND regression. Unsupervised includes clustering, dimensionality reduction, etc.' }
-]
-},
-{
-question: 'Why is feature normalization important for k-Nearest Neighbors?',
-options: [
-{ text: 'k-NN calculates distances; without normalization, large-valued features dominate the distance calculation', correct: true, explanation: 'Distance metrics treat all features equally. If income (thousands) and age (tens) are not normalized, income will dominate, making age almost irrelevant.' },
-{ text: 'k-NN cannot process features outside the range [0, 1]', correct: false, explanation: 'k-NN can process any numeric values, but unnormalized features cause one feature to dominate distance calculations.' },
-{ text: 'Normalization makes k-NN train faster', correct: false, explanation: 'k-NN has no training phase (just stores data). Normalization helps inference accuracy, not speed.' },
-{ text: 'Feature normalization is only needed for deep learning', correct: false, explanation: 'Many algorithms benefit from normalization, including k-NN, SVM, and neural networks. Decision trees are an exception.' }
-]
-},
-{
-question: 'What indicates overfitting?',
-options: [
-{ text: 'Training accuracy is much higher than test accuracy (large gap)', correct: true, explanation: 'A large gap means the model memorized training data but failed to generalize. For example: 100% train, 60% test = overfitting.' },
-{ text: 'Both training and test accuracy are low', correct: false, explanation: 'This indicates underfitting - the model is too simple to capture patterns in the data.' },
-{ text: 'Test accuracy is higher than training accuracy', correct: false, explanation: 'This is unusual and may indicate data leakage or a problem with the split. Test should never be higher than train.' },
-{ text: 'Training takes a very long time', correct: false, explanation: 'Training time is not an indicator of overfitting. A model can overfit quickly or slowly depending on complexity.' }
-]
-},
-{
-question: 'Which of the following is the correct order for train/test splitting?',
-options: [
-{ text: 'Shuffle data → Split into train/test → Normalize training data → Apply same normalization to test data', correct: true, explanation: 'This prevents data leakage. Calculate normalization parameters (min/max) from training data only, then apply to both sets.' },
-{ text: 'Normalize all data → Split into train/test → Train model', correct: false, explanation: 'Normalizing before splitting causes data leakage - test data statistics influence training data normalization.' },
-{ text: 'Split into train/test → Shuffle each set → Normalize separately', correct: false, explanation: 'Never calculate separate normalization parameters for test data. Use training data parameters for both sets.' },
-{ text: 'Split into train/test → Train model → Then normalize if needed', correct: false, explanation: 'Normalization (if needed) must happen after split but before training, using only training data statistics.' }
-]
-},
-{
-question: 'What is the purpose of training in machine learning?',
-options: [
-{ text: 'Learn patterns from labeled data to make predictions on new, unseen data', correct: true, explanation: 'Training optimizes model parameters to minimize error on training data, enabling the model to generalize to new data.' },
-{ text: 'Make predictions on user-provided data as fast as possible', correct: false, explanation: 'That is inference. Training happens offline during development to create the model that will be used for inference.' },
-{ text: 'Validate that the test data is formatted correctly', correct: false, explanation: 'Training uses training data only. Test data should not be touched during training - that is for evaluation.' },
-{ text: 'Normalize features to the [0, 1] range', correct: false, explanation: 'Normalization is preprocessing, not training. Training is where the algorithm learns patterns and optimizes parameters.' }
-]
-},
-{
-question: 'When choosing between algorithms, which factors should you consider?',
-options: [
-{ text: 'Dataset size, accuracy requirements, inference speed needs, and interpretability requirements', correct: true, explanation: 'All these factors matter. k-NN: good accuracy but slow inference. Naive Bayes: fast but assumes independence. Trees: interpretable but prone to overfitting.' },
-{ text: 'Only accuracy - always choose the algorithm with highest accuracy', correct: false, explanation: 'A 99% accurate model that takes 10 seconds per prediction is useless for real-time applications. Trade-offs matter.' },
-{ text: 'Only speed - always choose the fastest algorithm', correct: false, explanation: 'A model that predicts instantly but is only 60% accurate is useless if you need 90% accuracy.' },
-{ text: 'Always use neural networks because they are the most advanced', correct: false, explanation: 'Neural networks are overkill for many problems and require more data and computational resources. Start simple.' }
-]
-},
-{
-question: 'What does the k parameter control in k-Nearest Neighbors?',
-options: [
-{ text: 'How many nearest training examples to consider when making a prediction', correct: true, explanation: 'k=3 means find the 3 closest training points and take a majority vote. Larger k = smoother decision boundaries but potentially less accurate.' },
-{ text: 'The number of features to use from the dataset', correct: false, explanation: 'k-NN uses all features. The k parameter controls how many neighbors vote on each prediction.' },
-{ text: 'The number of training iterations', correct: false, explanation: 'k-NN has no training iterations - it simply stores training data. k controls the number of neighbors consulted during inference.' },
-{ text: 'How many times to split the data for cross-validation', correct: false, explanation: 'That is a separate parameter for cross-validation (often also called k, confusingly). k-NN k controls neighbor count.' }
-]
-},
-{
-question: 'Why is it critical to shuffle data before splitting into train/test sets?',
-options: [
-{ text: 'To avoid bias from ordered data where all examples of one class are grouped together', correct: true, explanation: 'If data is ordered (all setosa, then versicolor, then virginica), without shuffling your test set might contain only one class!' },
-{ text: 'Shuffling improves model accuracy', correct: false, explanation: 'Shuffling does not improve the model itself. It ensures a representative split so your evaluation is accurate.' },
-{ text: 'The machine learning algorithm requires shuffled input', correct: false, explanation: 'Algorithms work on any order. We shuffle for splitting purposes, not for the algorithm.' },
-{ text: 'To make the model train faster', correct: false, explanation: 'Shuffling does not affect training speed. It ensures the split is representative of the full dataset distribution.' }
-]
-}
-]"
-/>
+<!-- <Quiz
+<!-- title="Chapter 03 Quiz: Core Machine Learning Concepts and Terminology"
+<!-- :questions="[
+<!-- {
+<!-- question: 'What is the primary difference between supervised and unsupervised learning?',
+<!-- options: [
+<!-- { text: 'Supervised learning uses labeled data (features + correct answers); unsupervised finds patterns in unlabeled data', correct: true, explanation: 'This is the fundamental distinction. Supervised = you provide labels during training. Unsupervised = algorithm discovers structure without labels.' },
+<!-- { text: 'Supervised learning is always more accurate than unsupervised learning', correct: false, explanation: 'Accuracy depends on the problem and data quality, not the learning paradigm. They solve different types of problems.' },
+<!-- { text: 'Unsupervised learning requires more computational power', correct: false, explanation: 'Computational requirements depend on the specific algorithm and dataset size, not the learning paradigm.' },
+<!-- { text: 'Supervised learning can only do classification, while unsupervised can only do regression', correct: false, explanation: 'Supervised learning includes both classification AND regression. Unsupervised includes clustering, dimensionality reduction, etc.' }
+<!-- ]
+<!-- },
+<!-- {
+<!-- question: 'Why is feature normalization important for k-Nearest Neighbors?',
+<!-- options: [
+<!-- { text: 'k-NN calculates distances; without normalization, large-valued features dominate the distance calculation', correct: true, explanation: 'Distance metrics treat all features equally. If income (thousands) and age (tens) are not normalized, income will dominate, making age almost irrelevant.' },
+<!-- { text: 'k-NN cannot process features outside the range [0, 1]', correct: false, explanation: 'k-NN can process any numeric values, but unnormalized features cause one feature to dominate distance calculations.' },
+<!-- { text: 'Normalization makes k-NN train faster', correct: false, explanation: 'k-NN has no training phase (just stores data). Normalization helps inference accuracy, not speed.' },
+<!-- { text: 'Feature normalization is only needed for deep learning', correct: false, explanation: 'Many algorithms benefit from normalization, including k-NN, SVM, and neural networks. Decision trees are an exception.' }
+<!-- ]
+<!-- },
+<!-- {
+<!-- question: 'What indicates overfitting?',
+<!-- options: [
+<!-- { text: 'Training accuracy is much higher than test accuracy (large gap)', correct: true, explanation: 'A large gap means the model memorized training data but failed to generalize. For example: 100% train, 60% test = overfitting.' },
+<!-- { text: 'Both training and test accuracy are low', correct: false, explanation: 'This indicates underfitting - the model is too simple to capture patterns in the data.' },
+<!-- { text: 'Test accuracy is higher than training accuracy', correct: false, explanation: 'This is unusual and may indicate data leakage or a problem with the split. Test should never be higher than train.' },
+<!-- { text: 'Training takes a very long time', correct: false, explanation: 'Training time is not an indicator of overfitting. A model can overfit quickly or slowly depending on complexity.' }
+<!-- ]
+<!-- },
+<!-- {
+<!-- question: 'Which of the following is the correct order for train/test splitting?',
+<!-- options: [
+<!-- { text: 'Shuffle data → Split into train/test → Normalize training data → Apply same normalization to test data', correct: true, explanation: 'This prevents data leakage. Calculate normalization parameters (min/max) from training data only, then apply to both sets.' },
+<!-- { text: 'Normalize all data → Split into train/test → Train model', correct: false, explanation: 'Normalizing before splitting causes data leakage - test data statistics influence training data normalization.' },
+<!-- { text: 'Split into train/test → Shuffle each set → Normalize separately', correct: false, explanation: 'Never calculate separate normalization parameters for test data. Use training data parameters for both sets.' },
+<!-- { text: 'Split into train/test → Train model → Then normalize if needed', correct: false, explanation: 'Normalization (if needed) must happen after split but before training, using only training data statistics.' }
+<!-- ]
+<!-- },
+<!-- {
+<!-- question: 'What is the purpose of training in machine learning?',
+<!-- options: [
+<!-- { text: 'Learn patterns from labeled data to make predictions on new, unseen data', correct: true, explanation: 'Training optimizes model parameters to minimize error on training data, enabling the model to generalize to new data.' },
+<!-- { text: 'Make predictions on user-provided data as fast as possible', correct: false, explanation: 'That is inference. Training happens offline during development to create the model that will be used for inference.' },
+<!-- { text: 'Validate that the test data is formatted correctly', correct: false, explanation: 'Training uses training data only. Test data should not be touched during training - that is for evaluation.' },
+<!-- { text: 'Normalize features to the [0, 1] range', correct: false, explanation: 'Normalization is preprocessing, not training. Training is where the algorithm learns patterns and optimizes parameters.' }
+<!-- ]
+<!-- },
+<!-- {
+<!-- question: 'When choosing between algorithms, which factors should you consider?',
+<!-- options: [
+<!-- { text: 'Dataset size, accuracy requirements, inference speed needs, and interpretability requirements', correct: true, explanation: 'All these factors matter. k-NN: good accuracy but slow inference. Naive Bayes: fast but assumes independence. Trees: interpretable but prone to overfitting.' },
+<!-- { text: 'Only accuracy - always choose the algorithm with highest accuracy', correct: false, explanation: 'A 99% accurate model that takes 10 seconds per prediction is useless for real-time applications. Trade-offs matter.' },
+<!-- { text: 'Only speed - always choose the fastest algorithm', correct: false, explanation: 'A model that predicts instantly but is only 60% accurate is useless if you need 90% accuracy.' },
+<!-- { text: 'Always use neural networks because they are the most advanced', correct: false, explanation: 'Neural networks are overkill for many problems and require more data and computational resources. Start simple.' }
+<!-- ]
+<!-- },
+<!-- {
+<!-- question: 'What does the k parameter control in k-Nearest Neighbors?',
+<!-- options: [
+<!-- { text: 'How many nearest training examples to consider when making a prediction', correct: true, explanation: 'k=3 means find the 3 closest training points and take a majority vote. Larger k = smoother decision boundaries but potentially less accurate.' },
+<!-- { text: 'The number of features to use from the dataset', correct: false, explanation: 'k-NN uses all features. The k parameter controls how many neighbors vote on each prediction.' },
+<!-- { text: 'The number of training iterations', correct: false, explanation: 'k-NN has no training iterations - it simply stores training data. k controls the number of neighbors consulted during inference.' },
+<!-- { text: 'How many times to split the data for cross-validation', correct: false, explanation: 'That is a separate parameter for cross-validation (often also called k, confusingly). k-NN k controls neighbor count.' }
+<!-- ]
+<!-- },
+<!-- {
+<!-- question: 'Why is it critical to shuffle data before splitting into train/test sets?',
+<!-- options: [
+<!-- { text: 'To avoid bias from ordered data where all examples of one class are grouped together', correct: true, explanation: 'If data is ordered (all setosa, then versicolor, then virginica), without shuffling your test set might contain only one class!' },
+<!-- { text: 'Shuffling improves model accuracy', correct: false, explanation: 'Shuffling does not improve the model itself. It ensures a representative split so your evaluation is accurate.' },
+<!-- { text: 'The machine learning algorithm requires shuffled input', correct: false, explanation: 'Algorithms work on any order. We shuffle for splitting purposes, not for the algorithm.' },
+<!-- { text: 'To make the model train faster', correct: false, explanation: 'Shuffling does not affect training speed. It ensures the split is representative of the full dataset distribution.' }
+<!-- ]
+<!-- }
+<!-- ]"
+/> -->
