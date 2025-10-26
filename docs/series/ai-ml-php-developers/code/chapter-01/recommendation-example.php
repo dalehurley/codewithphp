@@ -9,7 +9,7 @@ declare(strict_types=1);
  * recommendation system using machine learning.
  */
 
-require_once __DIR__ . '/../chapter-02/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 use Phpml\Classification\KNearestNeighbors;
 

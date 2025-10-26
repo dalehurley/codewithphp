@@ -9,7 +9,7 @@ declare(strict_types=1);
  * with labeled examples (spam vs ham) and use it to classify new emails.
  */
 
-require_once __DIR__ . '/../chapter-02/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 use Phpml\Classification\KNearestNeighbors;
 
