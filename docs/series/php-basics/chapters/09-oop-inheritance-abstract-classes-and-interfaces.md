@@ -95,7 +95,7 @@ php oop_demo.php
 # Output: Playing Fender Stratocaster: Strum strum
 ```
 
-**Code**: [View complete example](/series/php-basics/code/09-oop-demo.php)
+**Code**: [View complete example](/series/php-basics/code/09-inheritance/09-oop-demo.php)
 
 Now let's understand each concept in detail.
 
@@ -171,7 +171,7 @@ Bob approved the expense.
 Notice how we use typed properties (`protected string $name`) and return type declarations (`: string`). These features, available since PHP 7.4 and enhanced in PHP 8.x, help catch bugs early and make your code more maintainable.
 :::
 
-**Code**: [View complete example](/series/php-basics/code/09-inheritance.php)
+**Code**: [View complete example](/series/php-basics/code/09-inheritance/09-inheritance.php)
 
 ### Method Overriding and the `parent::` Keyword
 
@@ -271,7 +271,7 @@ Annual bonus: $17,000.00
 - In `getAnnualBonus()`, we provide a completely different calculation
 - This is powerful: you can reuse parent behavior where it makes sense, and customize where it doesn't
 
-**Code**: [View complete example](/series/php-basics/code/09-method-overriding.php)
+**Code**: [View complete example](/series/php-basics/code/09-inheritance/09-method-overriding.php)
 
 ### The `protected` Keyword
 
@@ -456,7 +456,7 @@ The blue square has an area of: 16
 Use abstract classes when child classes share **implementation** (like the `getColor()` method in `Shape`). Use interfaces when you only want to define **behavior contracts** without any shared implementation. You'll see interfaces in the next step!
 :::
 
-**Code**: [View complete example](/series/php-basics/code/09-abstract-shapes.php)
+**Code**: [View complete example](/series/php-basics/code/09-inheritance/09-abstract-shapes.php)
 
 ### Troubleshooting
 
@@ -560,7 +560,7 @@ Sharing image: /images/trip.jpg (Mountain landscape)
 
 **Why it works**: The `processShareable` function can accept _any_ object, as long as that object implements the `Shareable` interface. This makes the code incredibly flexible and decoupled. You can add new shareable types (like `Video` or `Podcast`) without changing the `processShareable` function.
 
-**Code**: [View complete example](/series/php-basics/code/09-interfaces.php)
+**Code**: [View complete example](/series/php-basics/code/09-inheritance/09-interfaces.php)
 
 ### Understanding Polymorphism
 
@@ -758,7 +758,7 @@ Caching with key: video_100 for 7200s
 
 **Why it works**: Each interface defines a specific capability. Classes can "opt-in" to as many capabilities as they need by implementing multiple interfaces. This is far more flexible than trying to express all these relationships through inheritance.
 
-**Code**: [View complete example](/series/php-basics/code/09-multiple-interfaces.php)
+**Code**: [View complete example](/series/php-basics/code/09-inheritance/09-multiple-interfaces.php)
 
 ::: tip Interface Segregation
 It's better to have many small, focused interfaces (like `Shareable`, `Cacheable`) than one large interface with many methods. This principle is called **Interface Segregation** and is part of the SOLID design principles. Classes should only implement the interfaces they actually need.

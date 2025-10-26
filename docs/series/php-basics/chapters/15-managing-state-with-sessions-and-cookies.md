@@ -910,7 +910,7 @@ Complete, runnable examples from this chapter are available in:
 - [`session-basics.php`](/series/php-basics/code/15-sessions/session-basics.php) - Session fundamentals and basic usage
 - [`cookie-basics.php`](/series/php-basics/code/15-sessions/cookie-basics.php) - Working with cookies
 - [`auth-system.php`](/series/php-basics/code/15-sessions/auth-system.php) - Complete authentication system with sessions
-- [`solutions/`](/series/php-basics/code/15-sessions/solutions/) - Solutions to chapter exercises
+- [`README.md`](/series/php-basics/code/15-sessions/README.md) - Complete guide and exercise solutions
   :::
 
 ## Further Reading
