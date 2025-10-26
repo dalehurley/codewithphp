@@ -596,11 +596,11 @@ In the next chapter, we'll dive into arrays, PHP's incredibly powerful and versa
 ::: info Code Examples
 Complete, runnable examples from this chapter are available in:
 
-- [`basic-form.php`](/series/php-basics/code/05-forms/basic-form.php) - Simple form handling with POST
-- [`get-vs-post.php`](/series/php-basics/code/05-forms/get-vs-post.php) - Demonstrating GET vs POST methods
-- [`validation-example.php`](/series/php-basics/code/05-forms/validation-example.php) - Server-side validation
-- [`sanitization-demo.php`](/series/php-basics/code/05-forms/sanitization-demo.php) - Input sanitization and security
-- [`comprehensive-form.php`](/series/php-basics/code/05-forms/comprehensive-form.php) - Complete form with all input types
+- [`basic-form.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/05-forms/basic-form.php) - Simple form handling with POST
+- [`get-vs-post.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/05-forms/get-vs-post.php) - Demonstrating GET vs POST methods
+- [`validation-example.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/05-forms/validation-example.php) - Server-side validation
+- [`sanitization-demo.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/05-forms/sanitization-demo.php) - Input sanitization and security
+- [`comprehensive-form.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/05-forms/comprehensive-form.php) - Complete form with all input types
 - `solutions/` - Solutions to chapter exercises
   :::
 

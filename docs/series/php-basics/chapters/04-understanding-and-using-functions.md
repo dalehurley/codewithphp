@@ -634,9 +634,9 @@ In the next chapter, we'll make our applications interactive by learning how to 
 ::: info Code Examples
 Complete, runnable examples from this chapter are available in:
 
-- [`basic-functions.php`](/series/php-basics/code/04-functions/basic-functions.php) - Basic function syntax and usage
-- [`scope-variadic.php`](/series/php-basics/code/04-functions/scope-variadic.php) - Variable scope and variadic functions
-- [`arrow-closures.php`](/series/php-basics/code/04-functions/arrow-closures.php) - Arrow functions and closures
+- [`basic-functions.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/04-functions/basic-functions.php) - Basic function syntax and usage
+- [`scope-variadic.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/04-functions/scope-variadic.php) - Variable scope and variadic functions
+- [`arrow-closures.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/04-functions/arrow-closures.php) - Arrow functions and closures
 - `solutions/` - Solutions to chapter exercises
   :::
 
