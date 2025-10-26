@@ -139,7 +139,7 @@ Complete, runnable verification scripts for this chapter:
 - [`test-phpml.php`](/series/ai-ml-php-developers/code/chapter-02/test-phpml.php) — PHP-ML library test
 - [`test-rubixml.php`](/series/ai-ml-php-developers/code/chapter-02/test-rubixml.php) — Rubix ML library test
 
-All files are in [`docs/series/ai-ml-php-developers/code/chapter-02/`](/series/ai-ml-php-developers/code/chapter-02/)
+All files are in [`docs/series/ai-ml-php-developers/code/chapter-02/`](/series/ai-ml-php-developers/code/chapter-02/README.md)
 :::
 
 ## Quick Start

@@ -637,7 +637,7 @@ Complete, runnable examples from this chapter are available in:
 - [`basic-functions.php`](/series/php-basics/code/04-functions/basic-functions.php) - Basic function syntax and usage
 - [`scope-variadic.php`](/series/php-basics/code/04-functions/scope-variadic.php) - Variable scope and variadic functions
 - [`arrow-closures.php`](/series/php-basics/code/04-functions/arrow-closures.php) - Arrow functions and closures
-- [`solutions/`](/series/php-basics/code/04-functions/solutions/) - Solutions to chapter exercises
+- `solutions/` - Solutions to chapter exercises
   :::
 
 ## Further Reading

@@ -52,7 +52,7 @@ Complete, runnable examples for this chapter:
 - [`ml-lifecycle-demo.php`](/series/ai-ml-php-developers/code/chapter-01/ml-lifecycle-demo.php) — Complete 6-step ML workflow
 - [`recommendation-example.php`](/series/ai-ml-php-developers/code/chapter-01/recommendation-example.php) — Movie recommendation system
 
-All files are in [`docs/series/ai-ml-php-developers/code/chapter-01/`](/series/ai-ml-php-developers/code/chapter-01/)
+All files are in [`docs/series/ai-ml-php-developers/code/chapter-01/`](/series/ai-ml-php-developers/code/chapter-01/README.md)
 :::
 
 ## Quick Start
