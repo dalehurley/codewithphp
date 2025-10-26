@@ -65,7 +65,7 @@ Want to see machine learning in action right now? Here's a 5-minute spam classif
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../chapter-02/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 use Phpml\Classification\KNearestNeighbors;
 
@@ -115,9 +115,16 @@ foreach ($newEmails as $index => $email) {
 
 **Run it:**
 
+First, install dependencies (one-time setup):
+
 ```bash
-# From the project root
 cd docs/series/ai-ml-php-developers/code/chapter-01
+composer install
+```
+
+Then run the example:
+
+```bash
 php quick-start-demo.php
 ```
 
