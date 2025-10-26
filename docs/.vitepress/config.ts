@@ -15,7 +15,11 @@ export default withMermaid(
       // Ignore relative links to chapters that may not exist yet
       /\.\.\/\.\.\/chapters\//,
       // Ignore links to chapters that don't exist yet
-      /19b-testing-your-blog-application/
+      /19b-testing-your-blog-application/,
+      // Ignore links to code files (PHP, CSV, JSON, etc.)
+      /\/series\/.*\/code\/.*\.(php|csv|json|txt|sql|sh|db|example)$/,
+      // Ignore links to code files without extension
+      /\/series\/.*\/code\/.*\/[^/]*$/
     ],
     head: [
       ['link', { rel: 'icon', href: '/favicon.ico' }],

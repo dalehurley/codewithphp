@@ -716,8 +716,8 @@ In the next chapter, we'll put this to use and start interacting with the filesy
 ::: info Code Examples
 Complete, runnable examples from this chapter are available in:
 
-- [`example-project/`](/series/php-basics/code/12-composer/example-project/) - Complete Composer project with dependencies
-- [`solutions/`](/series/php-basics/code/12-composer/solutions/) - Solutions to chapter exercises
+- `example-project/` - Complete Composer project with dependencies
+- `solutions/` - Solutions to chapter exercises
 
 The example project includes a working `composer.json`, autoloading setup, and demonstrates using third-party packages.
 :::

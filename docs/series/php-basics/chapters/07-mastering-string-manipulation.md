@@ -805,7 +805,7 @@ Complete, runnable examples from this chapter are available in:
 - [`basic-strings.php`](/series/php-basics/code/07-strings/basic-strings.php) - String basics and common operations
 - [`search-replace.php`](/series/php-basics/code/07-strings/search-replace.php) - Searching and replacing in strings
 - [`split-join.php`](/series/php-basics/code/07-strings/split-join.php) - Splitting and joining strings
-- [`solutions/`](/series/php-basics/code/07-strings/solutions/) - Solutions to chapter exercises
+- `solutions/` - Solutions to chapter exercises
   :::
 
 ## Further Reading
