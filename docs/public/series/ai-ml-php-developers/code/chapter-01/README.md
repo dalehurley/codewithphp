@@ -2,20 +2,30 @@
 
 This directory contains runnable PHP examples demonstrating core AI and ML concepts from Chapter 1.
 
-## Prerequisites
+## Quick Setup
 
-Before running these examples, ensure you have:
-
-1. **PHP 8.4+** installed and working
-2. **Composer** installed
-3. **PHP-ML library** installed (from Chapter 2 setup)
-
-If you haven't completed Chapter 2 setup, run this from the `chapter-02` directory:
+Before running these examples, you need to install dependencies:
 
 ```bash
-cd ../chapter-02
+# Navigate to this directory
+cd docs/series/ai-ml-php-developers/code/chapter-01
+
+# Install PHP-ML library via Composer
 composer install
-cd ../chapter-01
+```
+
+That's it! You're ready to run the examples.
+
+## Prerequisites
+
+- **PHP 8.4+** installed and working
+- **Composer** installed
+
+Verify your setup:
+
+```bash
+php --version    # Should show 8.4 or higher
+composer --version
 ```
 
 ## Running the Examples
@@ -128,35 +138,54 @@ Each script produces formatted output showing:
 3. **Predictions**: What the model predicts for new data
 4. **Explanations**: Why it works and key concepts
 
-## Common Issues
+## Troubleshooting
 
-### Error: "Class not found"
+### Error: "Class not found" or "vendor/autoload.php not found"
 
-**Cause**: PHP-ML library not installed
-
-**Solution**:
-
-```bash
-cd ../chapter-02
-composer install
-```
-
-### Error: "vendor/autoload.php not found"
-
-**Cause**: Running from wrong directory or Composer packages not installed
+**Cause**: Dependencies not installed
 
 **Solution**:
 
 ```bash
-# Ensure you're in chapter-01 directory
+# Make sure you're in the chapter-01 directory
 pwd
 # Should show: .../code/chapter-01
 
 # Install dependencies
-cd ../chapter-02
 composer install
-cd ../chapter-01
 ```
+
+### Composer not found
+
+**Cause**: Composer not installed on your system
+
+**Solution**:
+
+Install Composer from [getcomposer.org](https://getcomposer.org/):
+
+```bash
+# macOS/Linux
+curl -sS https://getcomposer.org/installer | php
+sudo mv composer.phar /usr/local/bin/composer
+
+# Or use your package manager:
+# macOS: brew install composer
+# Ubuntu: apt install composer
+```
+
+### PHP version too old
+
+**Cause**: PHP 8.4+ required
+
+**Solution**:
+
+Check your PHP version:
+
+```bash
+php --version
+```
+
+If it's below 8.4, upgrade PHP using your system's package manager or download from [php.net](https://www.php.net/downloads).
 
 ### Predictions seem wrong
 
@@ -187,13 +216,12 @@ These examples are designed to be run in order:
 - [Chapter 1 Tutorial](../../chapters/01-introduction-to-ai-and-machine-learning-for-php-developers.md)
 - [AI/ML Series Overview](../../index.md)
 
-## Questions or Issues?
+## What's Installed?
 
-If examples don't run:
+The `composer.json` file installs:
 
-1. Verify PHP version: `php --version` (need 8.4+)
-2. Check Composer: `composer --version`
-3. Verify PHP-ML installation: `composer show php-ai/php-ml` (from chapter-02)
-4. Review Chapter 2 for complete setup instructions
+- **php-ai/php-ml** (^0.10) - Machine learning library for PHP with classification, regression, clustering, and more
+
+This is all you need for Chapter 01 examples. Chapter 02 will introduce additional tools and libraries.
 
 Happy learning! 🚀

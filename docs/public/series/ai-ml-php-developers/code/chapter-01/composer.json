@@ -1,0 +1,13 @@
+{
+  "name": "codewithphp/aiml-chapter-01",
+  "description": "Chapter 01: Introduction to AI and ML - Runnable code examples",
+  "type": "project",
+  "require": {
+    "php": "^8.4",
+    "php-ai/php-ml": "^0.10"
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "sort-packages": true
+  }
+}
