@@ -9,6 +9,8 @@ prerequisites:
   - "/series/php-basics/chapters/21-a-gentle-introduction-to-symfony"
 ---
 
+![What to Learn Next](/images/php-basics/chapter-22-next-steps-hero-full.webp)
+
 # Chapter 22: What to Learn Next
 
 ## Objectives

@@ -9,6 +9,8 @@ prerequisites:
   - "/series/php-basics/chapters/01-your-first-php-script"
 ---
 
+![Variables, Data Types, and Constants](/images/php-basics/chapter-02-variables-data-types-hero-full.webp)
+
 # Chapter 02: Variables, Data Types, and Constants
 
 ## Overview

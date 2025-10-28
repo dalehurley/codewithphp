@@ -9,6 +9,8 @@ prerequisites:
   - "/series/php-basics/chapters/19-project-building-a-simple-blog"
 ---
 
+![A Gentle Introduction to Laravel](/images/php-basics/chapter-20-laravel-intro-hero-full.webp)
+
 # Chapter 20: A Gentle Introduction to Laravel
 
 ## Overview

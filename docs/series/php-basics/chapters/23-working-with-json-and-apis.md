@@ -12,6 +12,8 @@ estimatedTime: "25 minutes"
 tags: ["json", "api", "rest", "curl", "http"]
 ---
 
+![Working with JSON & APIs](/images/php-basics/chapter-23-json-apis-hero-full.webp)
+
 # Chapter 23: Working with JSON & APIs
 
 ## Overview

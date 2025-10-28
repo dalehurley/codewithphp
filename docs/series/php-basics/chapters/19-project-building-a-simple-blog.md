@@ -9,6 +9,8 @@ prerequisites:
   - "/series/php-basics/chapters/18-project-structuring-a-simple-application"
 ---
 
+![Project: Building a Simple Blog](/images/php-basics/chapter-19-blog-project-hero-full.webp)
+
 # Chapter 19: Project: Building a Simple Blog
 
 ## Overview

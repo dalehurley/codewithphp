@@ -10,6 +10,8 @@ prerequisites:
   - "/series/ai-ml-php-developers/chapters/08-leveraging-php-machine-learning-libraries"
 ---
 
+![Advanced Machine Learning Techniques (Trees, Ensembles, and Clustering)](/images/ai-ml-php-developers/chapter-09-advanced-ml-techniques-hero-full.webp)
+
 # Chapter 09: Advanced Machine Learning Techniques (Trees, Ensembles, and Clustering)
 
 ## Overview

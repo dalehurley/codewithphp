@@ -9,6 +9,8 @@ prerequisites:
   - "/series/php-basics/chapters/03-control-structures"
 ---
 
+![Understanding and Using Functions](/images/php-basics/chapter-04-functions-hero-full.webp)
+
 # Chapter 04: Understanding and Using Functions
 
 ## Overview

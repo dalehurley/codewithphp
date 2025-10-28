@@ -1,0 +1,35 @@
+{
+  "name": "aiml-php/chapter-13-nlp-fundamentals",
+  "description": "Natural Language Processing fundamentals for PHP developers - tokenization, stemming, TF-IDF",
+  "type": "project",
+  "license": "MIT",
+  "require": {
+    "php": "^8.4",
+    "ext-mbstring": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "AiMlPhp\\Chapter13\\": ""
+    }
+  },
+  "config": {
+    "platform": {
+      "php": "8.4"
+    }
+  },
+  "scripts": {
+    "demo": "php demo.php",
+    "test-tokenizer": "php test-tokenizer.php",
+    "test-stopwords": "php test-stopwords.php",
+    "test-stemmer": "php test-stemmer.php",
+    "test-bow": "php test-bow.php",
+    "test-tfidf": "php test-tfidf.php",
+    "test-all": [
+      "@test-tokenizer",
+      "@test-stopwords",
+      "@test-stemmer",
+      "@test-bow",
+      "@test-tfidf"
+    ]
+  }
+}

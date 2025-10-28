@@ -9,6 +9,8 @@ prerequisites:
   - "/series/php-basics/chapters/11-error-and-exception-handling"
 ---
 
+![Dependency Management with Composer](/images/php-basics/chapter-12-composer-hero-full.webp)
+
 # Chapter 12: Dependency Management with Composer
 
 ## Overview

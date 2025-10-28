@@ -8,6 +8,8 @@ difficulty: intermediate
 prerequisites: [19-predictive-analytics-and-time-series-data]
 ---
 
+![Time Series Forecasting Project](/images/ai-ml-php-developers/chapter-20-time-series-forecasting-hero-full.webp)
+
 # Time Series Forecasting Project
 
 ::: warning Chapter Under Construction

@@ -9,6 +9,8 @@ prerequisites:
   - "/series/php-basics/chapters/02-variables-data-types-and-constants"
 ---
 
+![Control Structures](/images/php-basics/chapter-03-control-structures-hero-full.webp)
+
 # Chapter 03: Control Structures
 
 ## Overview

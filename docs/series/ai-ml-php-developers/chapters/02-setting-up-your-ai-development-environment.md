@@ -9,6 +9,8 @@ prerequisites:
   - "/series/ai-ml-php-developers/chapters/01-introduction-to-ai-and-machine-learning-for-php-developers"
 ---
 
+![Setting Up Your AI Development Environment](/images/ai-ml-php-developers/chapter-02-ai-environment-setup-hero-full.webp)
+
 # Chapter 02: Setting Up Your AI Development Environment
 
 ## Overview

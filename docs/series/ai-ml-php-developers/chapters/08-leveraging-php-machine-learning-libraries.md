@@ -10,6 +10,8 @@ prerequisites:
   - "/series/ai-ml-php-developers/chapters/07-model-evaluation-and-improvement"
 ---
 
+![Leveraging PHP Machine Learning Libraries](/images/ai-ml-php-developers/chapter-08-ml-libraries-hero-full.webp)
+
 # Chapter 08: Leveraging PHP Machine Learning Libraries
 
 ## Overview

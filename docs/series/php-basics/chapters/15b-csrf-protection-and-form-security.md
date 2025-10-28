@@ -12,6 +12,8 @@ estimatedTime: "30 minutes"
 tags: ["security", "csrf", "forms", "sessions", "xss"]
 ---
 
+![CSRF Protection & Form Security](/images/php-basics/chapter-15b-csrf-protection-hero-full.webp)
+
 # Chapter 15b: CSRF Protection & Form Security
 
 ## Overview

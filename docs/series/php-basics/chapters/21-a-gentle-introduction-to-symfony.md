@@ -9,6 +9,8 @@ prerequisites:
   - "/series/php-basics/chapters/20-a-gentle-introduction-to-laravel"
 ---
 
+![A Gentle Introduction to Symfony](/images/php-basics/chapter-21-symfony-intro-hero-full.webp)
+
 # Chapter 21: A Gentle Introduction to Symfony
 
 ## Overview

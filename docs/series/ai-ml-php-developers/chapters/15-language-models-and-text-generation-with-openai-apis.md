@@ -8,6 +8,8 @@ difficulty: intermediate
 prerequisites: [14-nlp-project-text-classification-in-php]
 ---
 
+![Language Models and Text Generation with OpenAI APIs](/images/ai-ml-php-developers/chapter-15-language-models-hero-full.webp)
+
 # Language Models and Text Generation with OpenAI APIs
 
 ::: warning Chapter Under Construction

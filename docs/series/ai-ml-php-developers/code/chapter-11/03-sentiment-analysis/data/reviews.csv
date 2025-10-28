@@ -1,0 +1,34 @@
+text,sentiment
+"This product is amazing! Exceeded all expectations.",positive
+"Terrible quality. Broke after one day.",negative
+"Okay product. Nothing special.",neutral
+"Love it! Best purchase ever.",positive
+"Waste of money. Very disappointed.",negative
+"Does what it's supposed to do.",neutral
+"Absolutely fantastic! Highly recommend.",positive
+"Poor design and bad customer service.",negative
+"Average product at a fair price.",neutral
+"Incredible value! Can't believe the quality.",positive
+"Arrived damaged and seller won't respond.",negative
+"It's fine. Works as expected.",neutral
+"Outstanding! Solved all my problems.",positive
+"Cheap materials. Not worth it.",negative
+"Decent product for the price.",neutral
+"Exceeded my expectations! Five stars.",positive
+"Horrible experience from start to finish.",negative
+"Acceptable but nothing to write home about.",neutral
+"Absolutely perfect! Love everything about it.",positive
+"Completely useless. Total waste.",negative
+"It works. That's about it.",neutral
+"Best product I've ever bought!",positive
+"Broke immediately. Don't buy.",negative
+"Mediocre at best.",neutral
+"Fantastic quality and fast shipping!",positive
+"Disappointed with the quality.",negative
+"It's okay for the price.",neutral
+"Amazing product! Can't recommend enough.",positive
+"Not as described. Very misleading.",negative
+"Does the job. Nothing more.",neutral
+
+
+

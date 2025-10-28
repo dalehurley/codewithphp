@@ -1,0 +1,13 @@
+gate,input1,input2,output
+AND,0,0,0
+AND,0,1,0
+AND,1,0,0
+AND,1,1,1
+OR,0,0,0
+OR,0,1,1
+OR,1,0,1
+OR,1,1,1
+XOR,0,0,0
+XOR,0,1,1
+XOR,1,0,1
+XOR,1,1,0

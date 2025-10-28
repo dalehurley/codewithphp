@@ -9,6 +9,8 @@ prerequisites:
   - "/series/php-basics/chapters/06-deep-dive-into-arrays"
 ---
 
+![Mastering String Manipulation](/images/php-basics/chapter-07-string-manipulation-hero-full.webp)
+
 # Chapter 07: Mastering String Manipulation
 
 ## Overview

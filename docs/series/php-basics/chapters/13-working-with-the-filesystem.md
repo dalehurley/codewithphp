@@ -9,6 +9,8 @@ prerequisites:
   - "/series/php-basics/chapters/12-dependency-management-with-composer"
 ---
 
+![Working with the Filesystem](/images/php-basics/chapter-13-filesystem-hero-full.webp)
+
 # Chapter 13: Working with the Filesystem
 
 ## Overview

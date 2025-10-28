@@ -9,6 +9,8 @@ prerequisites:
   - "/series/php-basics/chapters/07-mastering-string-manipulation"
 ---
 
+![Introduction to Object-Oriented Programming](/images/php-basics/chapter-08-oop-intro-hero-full.webp)
+
 # Chapter 08: Introduction to Object-Oriented Programming
 
 ## Overview

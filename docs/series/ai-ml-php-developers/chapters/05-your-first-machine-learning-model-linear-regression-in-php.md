@@ -10,6 +10,8 @@ prerequisites:
   - "/series/ai-ml-php-developers/chapters/04-data-collection-and-preprocessing-in-php"
 ---
 
+![Your First Machine Learning Model: Linear Regression in PHP](/images/ai-ml-php-developers/chapter-05-linear-regression-hero-full.webp)
+
 # Chapter 05: Your First Machine Learning Model: Linear Regression in PHP
 
 ## Overview

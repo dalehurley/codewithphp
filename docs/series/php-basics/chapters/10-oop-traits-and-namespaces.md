@@ -9,6 +9,8 @@ prerequisites:
   - "/series/php-basics/chapters/09-oop-inheritance-abstract-classes-and-interfaces"
 ---
 
+![OOP: Traits and Namespaces](/images/php-basics/chapter-10-traits-namespaces-hero-full.webp)
+
 # Chapter 10: OOP: Traits and Namespaces
 
 ## Overview

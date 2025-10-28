@@ -8,6 +8,8 @@ difficulty: intermediate
 prerequisites: [17-image-classification-project-with-pre-trained-models]
 ---
 
+![Object Detection and Recognition in PHP Applications](/images/ai-ml-php-developers/chapter-18-object-detection-hero-full.webp)
+
 # Object Detection and Recognition in PHP Applications
 
 ::: warning Chapter Under Construction

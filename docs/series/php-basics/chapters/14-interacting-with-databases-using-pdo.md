@@ -9,6 +9,8 @@ prerequisites:
   - "/series/php-basics/chapters/13-working-with-the-filesystem"
 ---
 
+![Interacting with Databases using PDO](/images/php-basics/chapter-14-databases-pdo-hero-full.webp)
+
 # Chapter 14: Interacting with Databases using PDO
 
 ## Overview

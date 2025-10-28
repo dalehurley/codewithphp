@@ -8,6 +8,8 @@ difficulty: intermediate
 prerequisites: [22-building-a-recommendation-engine-in-php]
 ---
 
+![Integrating AI Models into Web Applications](/images/ai-ml-php-developers/chapter-23-ai-web-integration-hero-full.webp)
+
 # Integrating AI Models into Web Applications
 
 ::: warning Chapter Under Construction

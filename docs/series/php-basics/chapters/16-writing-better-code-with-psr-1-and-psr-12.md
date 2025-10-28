@@ -9,6 +9,8 @@ prerequisites:
   - "/series/php-basics/chapters/15-managing-state-with-sessions-and-cookies"
 ---
 
+![Writing Better Code with PSR-1 and PSR-12](/images/php-basics/chapter-16-psr-standards-hero-full.webp)
+
 # Chapter 16: Writing Better Code with PSR-1 and PSR-12
 
 ## Overview

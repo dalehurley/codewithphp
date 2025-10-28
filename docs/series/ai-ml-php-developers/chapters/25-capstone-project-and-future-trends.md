@@ -8,6 +8,8 @@ difficulty: intermediate
 prerequisites: [24-deploying-and-scaling-ai-powered-php-services]
 ---
 
+![Capstone Project and Future Trends](/images/ai-ml-php-developers/chapter-25-capstone-future-trends-hero-full.webp)
+
 # Capstone Project and Future Trends
 
 ::: warning Chapter Under Construction

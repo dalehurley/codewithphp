@@ -1,0 +1,26 @@
+{
+  "name": "code-with-php/chapter-10-neural-networks",
+  "description": "Chapter 10: Neural Networks and Deep Learning Fundamentals - Code Examples",
+  "type": "project",
+  "require": {
+    "php": "^8.4"
+  },
+  "require-dev": {
+    "rubix/ml": "^3.0"
+  },
+  "suggest": {
+    "rubix/ml": "Required for production neural network examples (11-rubixml-mlp-basic.php, 12-pattern-recognizer.php)"
+  },
+  "autoload": {
+    "classmap": [
+      "Perceptron.php",
+      "ActivationFunctions.php",
+      "SimpleNeuralNetwork.php",
+      "helpers.php"
+    ]
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "sort-packages": true
+  }
+}

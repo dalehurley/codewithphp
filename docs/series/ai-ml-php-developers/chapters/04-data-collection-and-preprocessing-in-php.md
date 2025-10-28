@@ -9,6 +9,8 @@ prerequisites:
   - "/series/ai-ml-php-developers/chapters/03-core-machine-learning-concepts-and-terminology"
 ---
 
+![Data Collection and Preprocessing in PHP](/images/ai-ml-php-developers/chapter-04-data-preprocessing-hero-full.webp)
+
 # Chapter 04: Data Collection and Preprocessing in PHP
 
 ## Overview

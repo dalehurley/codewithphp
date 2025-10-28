@@ -10,6 +10,8 @@ prerequisites:
   - "/series/ai-ml-php-developers/chapters/06-classification-basics-and-building-a-spam-filter"
 ---
 
+![Model Evaluation and Improvement](/images/ai-ml-php-developers/chapter-07-model-evaluation-hero-full.webp)
+
 # Chapter 07: Model Evaluation and Improvement
 
 ## Overview

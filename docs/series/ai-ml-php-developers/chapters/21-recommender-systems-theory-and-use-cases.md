@@ -8,6 +8,8 @@ difficulty: intermediate
 prerequisites: [20-time-series-forecasting-project]
 ---
 
+![Recommender Systems: Theory and Use Cases](/images/ai-ml-php-developers/chapter-21-recommender-systems-hero-full.webp)
+
 # Recommender Systems: Theory and Use Cases
 
 ::: warning Chapter Under Construction
