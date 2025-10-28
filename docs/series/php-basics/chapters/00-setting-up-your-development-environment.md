@@ -8,6 +8,8 @@ difficulty: "Beginner"
 prerequisites: []
 ---
 
+![Setting Up Your Development Environment](/images/php-basics/chapter-00-setting-up-development-environment-hero-full.webp)
+
 # Chapter 00: Setting Up Your Development Environment
 
 ## Overview

@@ -11,6 +11,8 @@ prerequisites:
   - "/series/ai-ml-php-developers/chapters/05-your-first-machine-learning-model-linear-regression-in-php"
 ---
 
+![Classification Basics and Building a Spam Filter](/images/ai-ml-php-developers/chapter-06-classification-spam-filter-hero-full.webp)
+
 # Chapter 06: Classification Basics and Building a Spam Filter
 
 ## Overview

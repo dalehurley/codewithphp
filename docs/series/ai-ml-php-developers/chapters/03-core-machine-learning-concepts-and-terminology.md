@@ -10,6 +10,8 @@ prerequisites:
   - "/series/ai-ml-php-developers/chapters/02-setting-up-your-ai-development-environment"
 ---
 
+![Core Machine Learning Concepts and Terminology](/images/ai-ml-php-developers/chapter-03-ml-concepts-hero-full.webp)
+
 # Chapter 03: Core Machine Learning Concepts and Terminology
 
 ## Overview

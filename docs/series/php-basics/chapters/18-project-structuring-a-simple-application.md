@@ -9,6 +9,8 @@ prerequisites:
   - "/series/php-basics/chapters/17-building-a-basic-http-router"
 ---
 
+![Project: Structuring a Simple Application](/images/php-basics/chapter-18-project-structure-hero-full.webp)
+
 # Chapter 18: Project: Structuring a Simple Application
 
 ## Overview

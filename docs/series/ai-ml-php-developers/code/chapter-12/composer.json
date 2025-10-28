@@ -1,0 +1,21 @@
+{
+  "name": "codewithphp/chapter-12-tensorflow",
+  "description": "Deep Learning with TensorFlow and PHP - Chapter 12 Code Examples",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": "^8.4",
+    "ext-gd": "*",
+    "ext-json": "*",
+    "ext-curl": "*"
+  },
+  "suggest": {
+    "ext-imagick": "For better image processing performance and format support",
+    "ext-redis": "For production caching in Exercise 4"
+  },
+  "autoload": {
+    "psr-4": {
+      "AiMlPhp\\Chapter12\\": "src/"
+    }
+  }
+}

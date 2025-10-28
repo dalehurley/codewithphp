@@ -8,6 +8,8 @@ difficulty: intermediate
 prerequisites: [15-language-models-and-text-generation-with-openai-apis]
 ---
 
+![Computer Vision Essentials for PHP Developers](/images/ai-ml-php-developers/chapter-16-computer-vision-hero-full.webp)
+
 # Computer Vision Essentials for PHP Developers
 
 ::: warning Chapter Under Construction

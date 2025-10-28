@@ -9,6 +9,8 @@ prerequisites:
   - "/series/php-basics/chapters/05-handling-html-forms-and-user-input"
 ---
 
+![Deep Dive into Arrays](/images/php-basics/chapter-06-arrays-hero-full.webp)
+
 # Chapter 06: Deep Dive into Arrays
 
 ## Overview

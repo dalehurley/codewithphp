@@ -8,6 +8,8 @@ difficulty: intermediate
 prerequisites: [18-object-detection-and-recognition-in-php-applications]
 ---
 
+![Predictive Analytics and Time Series Data](/images/ai-ml-php-developers/chapter-19-predictive-analytics-hero-full.webp)
+
 # Predictive Analytics and Time Series Data
 
 ::: warning Chapter Under Construction

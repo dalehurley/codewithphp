@@ -8,6 +8,8 @@ difficulty: intermediate
 prerequisites: [21-recommender-systems-theory-and-use-cases]
 ---
 
+![Building a Recommendation Engine in PHP](/images/ai-ml-php-developers/chapter-22-recommendation-engine-hero-full.webp)
+
 # Building a Recommendation Engine in PHP
 
 ::: warning Chapter Under Construction

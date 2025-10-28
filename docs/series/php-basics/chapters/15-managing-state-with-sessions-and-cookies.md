@@ -9,6 +9,8 @@ prerequisites:
   - "/series/php-basics/chapters/14-interacting-with-databases-using-pdo"
 ---
 
+![Managing State with Sessions and Cookies](/images/php-basics/chapter-15-sessions-cookies-hero-full.webp)
+
 # Chapter 15: Managing State with Sessions and Cookies
 
 ## Overview

@@ -8,6 +8,8 @@ difficulty: beginner
 prerequisites: []
 ---
 
+![Introduction to AI and Machine Learning for PHP Developers](/images/ai-ml-php-developers/chapter-01-ai-ml-intro-hero-full.webp)
+
 # Chapter 01: Introduction to AI and Machine Learning for PHP Developers
 
 ## Overview

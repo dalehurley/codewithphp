@@ -1,0 +1,55 @@
+# Temporary files
+/tmp/*
+*.tmp
+*.log
+
+# Python
+*.pyc
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+
+# Model files (large, should be downloaded)
+/models/
+!/models/.gitkeep
+
+# Environment files (keep example, ignore actual)
+.env
+!.env.example
+
+# Cache directories
+/cache/
+*_cache/
+predictions_cache/
+
+# Test-generated images
+/data/sample_images/*_test*.jpg
+/data/sample_images/test_*.jpg
+/data/sample_images/uploaded_*.jpg
+/data/sample_images/dup_*.jpg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Composer
+/vendor/
+composer.lock
+composer.phar
+
+# Generated documentation
+/docs/generated/
+
+# Backup files
+*.bak
+*.backup
+

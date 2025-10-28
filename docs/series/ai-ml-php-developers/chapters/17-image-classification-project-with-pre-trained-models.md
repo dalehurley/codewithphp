@@ -8,6 +8,8 @@ difficulty: intermediate
 prerequisites: [16-computer-vision-essentials-for-php-developers]
 ---
 
+![Image Classification Project with Pre-trained Models](/images/ai-ml-php-developers/chapter-17-image-classification-hero-full.webp)
+
 # Image Classification Project with Pre-trained Models
 
 ::: warning Chapter Under Construction

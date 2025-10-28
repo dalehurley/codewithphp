@@ -9,6 +9,8 @@ prerequisites:
   - "/series/php-basics/chapters/00-setting-up-your-development-environment"
 ---
 
+![Your First PHP Script](/images/php-basics/chapter-01-first-php-script-hero-full.webp)
+
 # Chapter 01: Your First PHP Script
 
 ## Overview

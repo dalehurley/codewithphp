@@ -9,6 +9,8 @@ prerequisites:
   - "/series/php-basics/chapters/16-writing-better-code-with-psr-1-and-psr-12"
 ---
 
+![Building a Basic HTTP Router](/images/php-basics/chapter-17-http-router-hero-full.webp)
+
 # Chapter 17: Building a Basic HTTP Router
 
 ## Overview

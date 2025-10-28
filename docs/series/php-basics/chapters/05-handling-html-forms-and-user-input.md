@@ -9,6 +9,8 @@ prerequisites:
   - "/series/php-basics/chapters/04-understanding-and-using-functions"
 ---
 
+![Handling HTML Forms and User Input](/images/php-basics/chapter-05-html-forms-user-input-hero-full.webp)
+
 # Chapter 05: Handling HTML Forms and User Input
 
 ## Overview

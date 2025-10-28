@@ -1,0 +1,30 @@
+Document 1:
+Machine learning is a subset of artificial intelligence that enables computers to learn from data without being explicitly programmed. It focuses on developing algorithms that can access data and use it to learn for themselves.
+
+Document 2:
+Deep learning is a subset of machine learning that uses neural networks with multiple layers. These deep neural networks can learn complex patterns in large amounts of data and have achieved state-of-the-art results in computer vision and natural language processing.
+
+Document 3:
+Natural language processing helps computers understand, interpret, and generate human language in a valuable way. NLP combines computational linguistics with statistical machine learning and deep learning models.
+
+Document 4:
+Data science is an interdisciplinary field that uses scientific methods, processes, algorithms, and systems to extract knowledge and insights from structured and unstructured data. It combines statistics, data analysis, and machine learning.
+
+Document 5:
+Artificial intelligence systems can perform tasks that typically require human intelligence, such as visual perception, speech recognition, decision-making, and language translation. AI systems learn from experience and can adapt to new inputs.
+
+Document 6:
+Computer vision enables machines to interpret and understand the visual world. Using digital images from cameras and videos and deep learning models, machines can accurately identify and classify objects.
+
+Document 7:
+Neural networks are computing systems inspired by biological neural networks that constitute animal brains. They consist of interconnected nodes or neurons that process information using a connectionist approach to computation.
+
+Document 8:
+Supervised learning is a machine learning approach where the model is trained on labeled data. The algorithm learns to predict the output from the input data by learning the relationship between input features and target labels.
+
+Document 9:
+Unsupervised learning involves training algorithms on unlabeled data. The algorithm tries to find patterns and relationships in the data without any prior knowledge of what it should look for or what the outputs should be.
+
+Document 10:
+Reinforcement learning is a machine learning approach where an agent learns to make decisions by performing actions in an environment. The agent receives rewards or penalties based on its actions and learns to maximize cumulative rewards over time.
+

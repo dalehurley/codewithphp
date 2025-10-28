@@ -3,6 +3,8 @@ title: Code with PHP
 description: Master PHP from first principles to advanced topics through hands-on, project-based tutorials.
 ---
 
+![Master PHP from First Principles](/images/php-basics/chapter-00-landing-hero-full.webp)
+
 # Code with PHP
 
 Welcome! This is a comprehensive, tutorial-based learning resource designed to help you master PHP and its ecosystem — from first principles to advanced topics. Whether you're a complete beginner or transitioning from another language, you'll find everything you need to become a confident, professional PHP developer.

@@ -27,7 +27,13 @@ export default withMermaid(
       ['meta', { name: 'theme-color', content: '#3c8772' }],
       ['meta', { property: 'og:type', content: 'website' }],
       ['meta', { property: 'og:locale', content: 'en' }],
-      ['meta', { property: 'og:site_name', content: 'Code with PHP' }]
+      ['meta', { property: 'og:site_name', content: 'Code with PHP' }],
+      // Enforce HTTPS redirect
+      ['script', {}, `
+        if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+          location.replace('https://' + location.host + location.pathname + location.search + location.hash);
+        }
+      `]
     ],
     themeConfig: {
       nav: [

@@ -8,6 +8,8 @@ difficulty: intermediate
 prerequisites: [23-integrating-ai-models-into-web-applications]
 ---
 
+![Deploying and Scaling AI-Powered PHP Services](/images/ai-ml-php-developers/chapter-24-deploying-ai-services-hero-full.webp)
+
 # Deploying and Scaling AI-Powered PHP Services
 
 ::: warning Chapter Under Construction

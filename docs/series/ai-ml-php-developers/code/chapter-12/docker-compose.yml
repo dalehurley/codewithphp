@@ -1,0 +1,81 @@
+version: "3.8"
+
+services:
+  # TensorFlow Serving - serves machine learning models via REST and gRPC
+  tensorflow-serving:
+    image: tensorflow/serving:latest
+    container_name: tensorflow_serving
+
+    # Port mappings
+    ports:
+      - "8501:8501" # REST API port
+      - "8500:8500" # gRPC port (optional, faster but more complex)
+
+    # Volume mounting - maps local model directory to container
+    volumes:
+      - /tmp/mobilenet:/models/mobilenet:ro # :ro = read-only for security
+
+    # Environment variables
+    environment:
+      # Model name that TensorFlow Serving will load
+      MODEL_NAME: mobilenet
+
+      # Optional: Enable model version labels
+      # MODEL_VERSION_LABELS: "stable=1,canary=2"
+
+      # Optional: Batch configuration for better throughput
+      # BATCHING_PARAMETERS_FILE: /models/batching_config.txt
+
+      # Optional: Enable CORS for web interfaces
+      # TF_SERVING_ENABLE_CORS: "true"
+
+    # Health check - ensures container is ready
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/v1/models/mobilenet"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+    # Restart policy
+    restart: unless-stopped
+
+    # Resource limits (optional but recommended for production)
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '2.0'
+    #       memory: 4G
+    #     reservations:
+    #       cpus: '1.0'
+    #       memory: 2G
+# Optional: Add a second model service for comparison
+#  tensorflow-serving-resnet:
+#    image: tensorflow/serving:latest
+#    container_name: tensorflow_serving_resnet
+#    ports:
+#      - "8502:8501"  # Different port for second model
+#    volumes:
+#      - /tmp/resnet50:/models/resnet50:ro
+#    environment:
+#      MODEL_NAME: resnet50
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://localhost:8501/v1/models/resnet50"]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
+#      start_period: 40s
+#    restart: unless-stopped
+
+# Networks (optional for multi-container setups)
+# networks:
+#   ml-network:
+#     driver: bridge
+
+# Usage:
+#   Start:    docker-compose up -d
+#   Stop:     docker-compose down
+#   Logs:     docker-compose logs -f
+#   Status:   docker-compose ps
+#   Restart:  docker-compose restart
+

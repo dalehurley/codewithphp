@@ -9,6 +9,8 @@ prerequisites:
   - "/series/php-basics/chapters/10-oop-traits-and-namespaces"
 ---
 
+![Error and Exception Handling](/images/php-basics/chapter-11-error-exception-handling-hero-full.webp)
+
 # Chapter 11: Error and Exception Handling
 
 ## Overview
