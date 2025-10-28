@@ -1,0 +1,31 @@
+{
+  "name": "@codewithphp/imagen",
+  "version": "1.0.0",
+  "description": "Image generation tool using Gemini 2.5 Flash Image API with MCP server support",
+  "type": "module",
+  "main": "src/mcp-server.js",
+  "scripts": {
+    "dev": "node src/mcp-server.js",
+    "mcp": "node src/mcp-server.js",
+    "cli": "node src/cli.js",
+    "test": "node src/cli.js test",
+    "generate": "node src/cli.js generate",
+    "example:simple": "node src/cli.js generate 'Modern PHP code editor' --series php-basics --chapter 01 --slug example --sizes full,thumbnail",
+    "example:creative": "node src/cli.js generate 'Building REST APIs' --creative --title 'Building REST APIs' --series php-basics --chapter 23 --slug example-creative --sizes full,thumbnail"
+  },
+  "keywords": [
+    "gemini",
+    "image-generation",
+    "mcp",
+    "model-context-protocol"
+  ],
+  "author": "Code with PHP",
+  "license": "MIT",
+  "dependencies": {
+    "@google/genai": "^1.27.0",
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "commander": "^12.0.0",
+    "dotenv": "^17.2.3",
+    "sharp": "^0.33.0"
+  }
+}

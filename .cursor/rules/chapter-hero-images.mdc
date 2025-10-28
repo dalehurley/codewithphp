@@ -1,0 +1,198 @@
+---
+description: Hero image generation for new tutorial chapters
+globs: docs/series/*/chapters/*.md
+---
+
+# Hero Image Generation for Tutorial Chapters
+
+When creating or editing tutorial chapter files, always include a hero image at the top of the content.
+
+## Hero Image Requirements
+
+Every chapter MUST have a hero image placed immediately after the frontmatter and before the main heading.
+
+### Placement Format
+
+```markdown
+---
+title: "NN: Chapter Title"
+description: "Chapter description"
+series: "series-slug"
+chapter: N
+order: N
+difficulty: "Beginner|Intermediate|Advanced"
+prerequisites: []
+---
+
+![Chapter Title](/images/{series}/chapter-{nn}-{slug}-hero-full.webp)
+
+# Chapter NN: Chapter Title
+
+## Overview
+
+...
+```
+
+## Generating Hero Images
+
+### Using the MCP Imagen Tool
+
+When creating a new chapter, generate the hero image using the `mcp_imagen_generate_image` tool:
+
+```javascript
+mcp_imagen_generate_image({
+  prompt:
+    "Contextual description based on chapter topic, technical illustration",
+  series: "php-basics" | "ai-ml-php-developers",
+  chapter: "00" | "01" | "15b", // Zero-padded chapter number
+  slug: "descriptive-slug-hero", // Kebab-case based on chapter title
+  creative_mode: false,
+  sizes: ["full", "thumbnail"],
+});
+```
+
+### Prompt Generation Guidelines
+
+Create prompts based on the chapter topic:
+
+**PHP Basics Examples:**
+
+- Chapter 00 (Environment Setup): "PHP development environment setup with code editor and terminal, technical illustration, computer workspace"
+- Chapter 02 (Variables): "Variables and data types symbols, programming variables visualization, technical illustration"
+- Chapter 08 (OOP): "Object-oriented programming PHP classes and objects, OOP concepts diagram, technical illustration"
+- Chapter 14 (Databases): "Database connection with PDO PHP, database tables and SQL queries, technical illustration"
+
+**AI/ML Examples:**
+
+- Chapter 01 (AI Intro): "Artificial intelligence and machine learning concepts, AI technology visualization, technical illustration"
+- Chapter 05 (Linear Regression): "Linear regression model graph, first ML model visualization, technical illustration"
+- Chapter 13 (NLP): "Natural language processing text analysis, NLP word clouds and text, technical illustration"
+
+### Slug Naming Convention
+
+Generate slugs from chapter titles:
+
+- Use kebab-case
+- Keep it concise and descriptive
+- Always append "-hero" suffix
+- Examples:
+  - "Variables, Data Types, and Constants" → "variables-data-types-hero"
+  - "Building a Basic HTTP Router" → "http-router-hero"
+  - "Neural Networks and Deep Learning" → "neural-networks-hero"
+
+## Image Output Locations
+
+Images are automatically saved to:
+
+```
+/docs/public/images/{series}/chapter-{nn}-{slug}-{size}.webp
+```
+
+Where:
+
+- `{series}`: "php-basics" or "ai-ml-php-developers"
+- `{nn}`: Zero-padded chapter number (00, 01, 02, 15b, etc.)
+- `{slug}`: Descriptive slug with "-hero" suffix
+- `{size}`: "full" (1536×1024) or "thumbnail" (384×256)
+
+## Image Specifications
+
+- **Format:** WebP
+- **Full size:** 1536×1024 pixels
+- **Thumbnail:** 384×256 pixels
+- **Style:** Technical illustrations, not creative/artistic
+- **Alt text:** Use the chapter title
+
+## Workflow for New Chapters
+
+1. **Write chapter frontmatter** with title, description, series, etc.
+2. **Generate hero image** using the MCP tool with contextual prompt
+3. **Add image reference** after frontmatter using the format:
+   ```markdown
+   ![Chapter Title](/images/{series}/chapter-{nn}-{slug}-full.webp)
+   ```
+4. **Continue with chapter content** starting with the H1 heading
+
+## Verification
+
+After generating the image, verify:
+
+- [ ] Image files exist in `/docs/public/images/{series}/`
+- [ ] Both full and thumbnail sizes were created
+- [ ] Markdown image reference uses correct path
+- [ ] Image appears between frontmatter and main heading
+- [ ] Alt text matches chapter title
+
+## Examples
+
+### PHP Basics Chapter 02
+
+```markdown
+---
+title: "02: Variables, Data Types, and Constants"
+description: "Learn how to store, manage, and work with different kinds of data"
+series: "php-basics"
+chapter: 2
+order: 2
+difficulty: "Beginner"
+prerequisites:
+  - "/series/php-basics/chapters/01-your-first-php-script"
+---
+
+![Variables, Data Types, and Constants](/images/php-basics/chapter-02-variables-data-types-hero-full.webp)
+
+# Chapter 02: Variables, Data Types, and Constants
+
+## Overview
+
+...
+```
+
+### AI/ML Chapter 10
+
+```markdown
+---
+title: "10: Neural Networks and Deep Learning Fundamentals"
+description: "Understand neural networks architecture and deep learning"
+series: "ai-ml-php-developers"
+chapter: 10
+order: 10
+difficulty: "Intermediate"
+prerequisites:
+  - "/series/ai-ml-php-developers/chapters/09-advanced-ml-techniques"
+---
+
+![Neural Networks and Deep Learning Fundamentals](/images/ai-ml-php-developers/chapter-10-neural-networks-hero-full.webp)
+
+# Chapter 10: Neural Networks and Deep Learning Fundamentals
+
+## Overview
+
+...
+```
+
+## Troubleshooting
+
+### Image Generation Fails
+
+If image generation fails:
+
+1. Simplify the prompt (remove complex terms)
+2. Retry with adjusted description
+3. Check that chapter number is properly zero-padded
+4. Verify series name matches exactly ("php-basics" or "ai-ml-php-developers")
+
+### Wrong Image Path
+
+Correct format: `/images/{series}/chapter-{nn}-{slug}-full.webp`
+
+- ✅ `/images/php-basics/chapter-02-variables-data-types-hero-full.webp`
+- ❌ `/images/php-basics/02-variables-data-types-hero-full.webp` (missing "chapter-")
+- ❌ `/images/chapter-02-variables-hero-full.webp` (missing series)
+
+## Notes
+
+- Always use **full.webp** in markdown (not thumbnail.webp)
+- Thumbnails are generated automatically for use in other contexts
+- Images are optimized for web delivery (10-200KB typically)
+- Use `creative_mode: false` for consistent technical illustration style

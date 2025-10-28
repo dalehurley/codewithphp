@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "imagen": {
+      "command": "node",
+      "args": [
+        "/Users/dalehurley/Code/PHP-From-Scratch/imagen/src/mcp-server.js"
+      ],
+      "env": {
+        "GEMINI_API_KEY": "your_api_key_here"
+      }
+    }
+  }
+}
