@@ -1,0 +1,25 @@
+{
+  "name": "codewithphp/chapter-18-object-detection",
+  "description": "Object Detection and Recognition examples for Chapter 18",
+  "type": "project",
+  "require": {
+    "php": "^8.4",
+    "ext-gd": "*",
+    "ext-json": "*"
+  },
+  "require-dev": {
+    "google/cloud-vision": "^1.7",
+    "aws/aws-sdk-php": "^3.300"
+  },
+  "autoload": {
+    "psr-4": {
+      "Chapter18\\": "src/"
+    }
+  },
+  "config": {
+    "sort-packages": true,
+    "optimize-autoloader": true
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}

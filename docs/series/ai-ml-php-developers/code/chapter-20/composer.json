@@ -1,0 +1,15 @@
+{
+  "name": "code-with-php/time-series-forecasting",
+  "description": "Time series forecasting examples for Chapter 20",
+  "require": {
+    "php": "^8.4",
+    "rubix/ml": "^3.0"
+  },
+  "autoload": {
+    "files": [
+      "01-load-and-explore.php",
+      "02-moving-average.php",
+      "03-linear-regression.php"
+    ]
+  }
+}

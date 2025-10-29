@@ -1,0 +1,7 @@
+# Python dependencies for ONNX local inference
+# Install with: pip3 install -r requirements.txt
+
+onnxruntime>=1.16.0
+Pillow>=10.0.0
+numpy>=1.24.0
+
