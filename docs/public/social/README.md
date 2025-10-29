@@ -1,99 +1,198 @@
 # Social Share Images
 
-This directory contains pre-generated social share images (1200×630px) for Open Graph and Twitter Cards.
+This directory contains automatically generated social share images (1200×630px) for Open Graph and Twitter Card meta tags.
+
+## Features
+
+- **AI-Generated Backgrounds**: Contextual backgrounds created using Gemini 2.5 Flash Image API
+- **Syntax-Highlighted Code Snippets**: Automatically extracts and displays PHP code from chapters
+- **Programmatic Text Overlays**: Sharp-rendered text with proper contrast and readability
+- **Intelligent Caching**: Backgrounds are cached to avoid regeneration
+- **Fallback Support**: Gradient backgrounds when AI generation is unavailable
+- **Terminal-Style Code Display**: Code appears in VS Code Dark+ themed terminal windows
 
 ## Generation
 
-Images are **generated locally** during article creation and committed to git:
-
-```bash
-# Generate images for all chapters
-node scripts/generate-social-images.js
-```
-
-## Naming Convention
-
-```
-{series}-chapter-{nn}.jpg
-```
-
-Examples:
-
-- `php-basics-chapter-01.jpg`
-- `ai-ml-php-developers-chapter-13.jpg`
-- `php-basics-overview.jpg` (series index)
-- `homepage.jpg` (site homepage)
-
-## When to Regenerate
-
-Regenerate images when:
-
-- ✏️ Creating a new chapter
-- ✏️ Updating a chapter title
-- ✏️ Adding a new series
-- 🎨 Changing color schemes in generator script
-
-## Workflow
-
-1. **Write/edit chapter** with proper frontmatter (title, series, chapter)
-2. **Generate images**: `node scripts/generate-social-images.js`
-3. **Review output**: Check `docs/public/social/` for new/updated images
-4. **Commit together**:
-   ```bash
-   git add docs/series/{series}/chapters/{chapter}.md
-   git add docs/public/social/{series}-chapter-{nn}.jpg
-   git commit -m "Add Chapter XX with social image"
-   ```
-
-## Do NOT
-
-- ❌ Delete this directory
-- ❌ Regenerate images on every deploy (they're static assets)
-- ❌ Edit images manually (regenerate from script instead)
-- ❌ Commit without reviewing (check for quality)
-
-## Customization
-
-To customize image appearance, edit `scripts/generate-social-images.js`:
-
-- **Colors**: Modify `SERIES_COLORS` object
-- **Layout**: Edit `generateSVG()` function
-- **Typography**: Adjust font sizes and positions
-
-After customization, regenerate all images:
+### Generate All Images
 
 ```bash
 node scripts/generate-social-images.js
 ```
 
-## Image Specifications
+### Force Regenerate (Ignore Cache)
 
-- **Dimensions**: 1200×630px (Open Graph standard)
+```bash
+node scripts/generate-social-images.js --force-regenerate
+```
+
+## Requirements
+
+### With AI Backgrounds
+
+To generate AI backgrounds, set your Gemini API key:
+
+```bash
+export GEMINI_API_KEY="your_api_key_here"
+```
+
+Get your API key: https://ai.google.dev/gemini-api/docs/api-key
+
+### Without AI (Fallback)
+
+The script will automatically use gradient backgrounds if:
+
+- Imagen generator is not available
+- GEMINI_API_KEY is not set
+- AI generation fails
+
+## Technical Details
+
+### Image Specifications
+
+- **Dimensions**: 1200×630 pixels (Open Graph standard)
 - **Format**: JPEG (quality: 90)
-- **File size**: Typically 50-200KB per image
-- **Series colors**:
-  - PHP Basics: Purple-blue gradient (#7C7EAF, #4F5887)
-  - AI/ML Series: Blue gradient (#4A90E2, #2E5C8A)
+- **File Size**: Typically 75-150 KB
+- **Color Space**: sRGB
 
-## Verification
+### Composition Layers
 
-After generating, verify images work:
+1. **Background**: AI-generated or gradient (1800×1200 → cropped to 1200×630)
+2. **Gradient Overlay**: Semi-transparent overlay for text contrast
+3. **Code Snippet** (optional): Terminal-style window with syntax-highlighted PHP code
+4. **Text Elements**: Title, series label, chapter number (when no code), branding
 
-1. **Check file exists**: `ls docs/public/social/{series}-chapter-{nn}.jpg`
-2. **Build site**: `npm run docs:build`
-3. **Test sharing**: Use Facebook Debugger or Twitter Card Validator
-4. **Validate locally**: Open image in browser to verify appearance
+### Text Rendering
 
-## Current Status
+- **Font Stack**: System fonts (-apple-system, BlinkMacSystemFont, Segoe UI)
+- **Title**: 60px, bold, auto-wrapped
+- **Series Label**: 26px, in rounded badge
+- **Chapter Number**: 30px, in rounded badge (only when no code snippet)
+- **Branding**: 22px, codewithphp.com
+- **Code**: 19px, Monaco/Menlo monospace, VS Code Dark+ colors
 
-Generated images: **53** (as of last generation)
+### Code Snippet Display
 
-- Homepage: 1
-- Series overviews: 2
-- PHP Basics chapters: 24
-- AI/ML chapters: 26
+Code snippets are automatically extracted from chapter markdown files:
+
+- **Source**: First PHP code block found in chapter
+- **Lines**: Maximum 4 lines displayed
+- **Container**: Dark terminal-style window with macOS traffic light dots
+- **Syntax Colors**:
+  - Variables: Cyan (#56B6C2)
+  - Keywords: Purple (#C678DD)
+  - Comments: Gray (#5C6370)
+  - Default: Light Gray (#ABB2BF)
+- **Background**: VS Code Dark+ theme (#282C34)
+
+### Caching System
+
+Backgrounds are cached in `.cache/` directory:
+
+- **Cache Key**: MD5 hash of title + series + chapter
+- **Storage**: WebP format for efficient caching
+- **Manifest**: `.cache/manifest.json` tracks all cached backgrounds
+
+## Background Themes
+
+The generator intelligently selects visual themes based on chapter titles:
+
+- **Variables**: Data streams, memory cells
+- **Functions**: Gears, mechanisms, modular blocks
+- **Arrays**: Grid patterns, data structures
+- **Strings**: Text ribbons, typography
+- **Database**: File cabinets, data tables
+- **API**: Network connections, data exchange
+- **Neural**: Interconnected nodes, synapses
+- **AI**: Artificial intelligence symbols, futuristic tech
+
+## Usage in VitePress
+
+Images are automatically referenced in frontmatter:
+
+```yaml
+---
+title: "Variables and Data Types"
+series: php-basics
+chapter: 2
+socialImage: /social/php-basics-chapter-02.jpg
+---
+```
+
+## File Naming Convention
+
+- **Chapters**: `{series}-chapter-{nn}.jpg`
+- **Series Overview**: `{series}-overview.jpg`
+- **Homepage**: `homepage.jpg`
+
+## Examples
+
+### PHP Basics Chapter (without code)
+
+![Sample PHP Basics](sample-php-basics-02.jpg)
+
+### PHP Basics Chapter (with code snippet)
+
+![Sample with Code](test-with-code.jpg)
+
+### AI/ML Chapter
+
+![Sample AI/ML](sample-ai-ml-03.jpg)
+
+## Maintenance
+
+### Clear Cache
+
+```bash
+rm -rf docs/public/social/.cache
+```
+
+### Regenerate Specific Series
+
+Edit the script to filter by series, or regenerate all with `--force-regenerate`.
+
+## Performance
+
+- **Initial Generation**: ~3-5 seconds per image with AI
+- **Cached Generation**: < 1 second per image
+- **Fallback Generation**: < 1 second per image
+
+## Social Media Validation
+
+All images meet requirements for:
+
+- ✅ Open Graph (Facebook, LinkedIn)
+- ✅ Twitter Cards
+- ✅ Pinterest
+- ✅ Slack
+- ✅ Discord
+
+Minimum dimensions: 1200×630 (1.91:1 ratio)
+
+## Troubleshooting
+
+### Images Not Displaying
+
+- Verify path: `/social/filename.jpg` (not `/docs/public/social/...`)
+- Check file exists: `ls docs/public/social/`
+- Clear browser cache
+
+### AI Generation Fails
+
+- Verify GEMINI_API_KEY is set
+- Check API quota/rate limits
+- Script will automatically fall back to gradients
+
+### Text Cut Off
+
+- Adjust `wrapText()` maxWidth in script
+- Consider shorter chapter titles
+- Increase font size for better legibility
+
+## License
+
+Social images are generated content for Code with PHP tutorials and are subject to the same license as the documentation.
 
 ---
 
-**Script Location**: `scripts/generate-social-images.js`  
-**Documentation**: See `SEO-IMPLEMENTATION.md` for complete details
+**Generated by**: `scripts/generate-social-images.js`  
+**Last Updated**: 2025-10-29

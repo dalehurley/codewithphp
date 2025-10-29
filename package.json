@@ -13,6 +13,7 @@
     "sync-code": "mkdir -p docs/public/series/php-basics/code docs/public/series/ai-ml-php-developers/code && cp -r docs/series/php-basics/code/* docs/public/series/php-basics/code/ && cp -r docs/series/ai-ml-php-developers/code/* docs/public/series/ai-ml-php-developers/code/ && echo 'Code files synced successfully'"
   },
   "devDependencies": {
+    "dotenv": "^17.2.3",
     "markdown-it-mathjax3": "^4.3.2",
     "mermaid": "^11.12.0",
     "sharp": "^0.34.4",
