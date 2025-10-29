@@ -1,0 +1,33 @@
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# AI/ML Bot specific rules
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+# Disallow build artifacts
+Disallow: /.vitepress/
+Disallow: /node_modules/
+
+# Sitemap
+Sitemap: https://codewithphp.com/sitemap.xml
+

@@ -1,5 +1,9 @@
-import { defineConfig } from 'vitepress'
+import { defineConfig, type HeadConfig } from 'vitepress'
 import { withMermaid } from 'vitepress-plugin-mermaid'
+import { generateSocialImagePath, getCanonicalUrl } from './theme/utils/seo'
+import { generateCourseSchema, generateLearningResourceSchema, generateWebSiteSchema, generateOrganizationSchema } from './theme/composables/useStructuredData'
+import { generateBreadcrumbSchema } from './theme/composables/useBreadcrumb'
+import mathjax3 from 'markdown-it-mathjax3'
 
 export default withMermaid(
   defineConfig({
@@ -28,6 +32,25 @@ export default withMermaid(
       ['meta', { property: 'og:type', content: 'website' }],
       ['meta', { property: 'og:locale', content: 'en' }],
       ['meta', { property: 'og:site_name', content: 'Code with PHP' }],
+      
+      // MathJax for LaTeX math rendering
+      ['link', { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css' }],
+      
+      // GenAI optimization
+      ['meta', { name: 'author', content: 'Code with PHP' }],
+      ['meta', { name: 'publisher', content: 'Code with PHP' }],
+      ['meta', { name: 'robots', content: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' }],
+      
+      // SearchGPT and AI crawler hints
+      ['meta', { property: 'article:publisher', content: 'https://codewithphp.com' }],
+      ['meta', { property: 'article:section', content: 'Programming Tutorials' }],
+      
+      // Keywords for AI understanding
+      ['meta', { name: 'keywords', content: 'PHP tutorial, PHP 8.4, learn PHP, PHP course, web development, programming tutorial' }],
+      
+      // Language
+      ['meta', { httpEquiv: 'content-language', content: 'en' }],
+      
       // Enforce HTTPS redirect
       ['script', {}, `
         if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
@@ -35,6 +58,92 @@ export default withMermaid(
         }
       `]
     ],
+    
+    // Sitemap configuration
+    sitemap: {
+      hostname: 'https://codewithphp.com'
+    },
+    
+    // Per-page metadata injection
+    transformHead: ({ pageData }) => {
+      const head: HeadConfig[] = []
+      
+      // Canonical URL
+      const canonicalUrl = getCanonicalUrl(pageData.relativePath)
+      head.push(['link', { rel: 'canonical', href: canonicalUrl }])
+      
+      // Page title and description
+      const title = pageData.title || 'Code with PHP'
+      const description = pageData.description || 'Learn PHP and its ecosystem from first principles to advanced topics.'
+      
+      // Open Graph tags
+      head.push(['meta', { property: 'og:title', content: title }])
+      head.push(['meta', { property: 'og:description', content: description }])
+      head.push(['meta', { property: 'og:url', content: canonicalUrl }])
+      
+      // Social share image
+      const socialImage = generateSocialImagePath(pageData)
+      head.push(['meta', { property: 'og:image', content: socialImage }])
+      head.push(['meta', { property: 'og:image:width', content: '1200' }])
+      head.push(['meta', { property: 'og:image:height', content: '630' }])
+      head.push(['meta', { property: 'og:image:alt', content: title }])
+      
+      // Twitter Card tags
+      head.push(['meta', { name: 'twitter:card', content: 'summary_large_image' }])
+      head.push(['meta', { name: 'twitter:title', content: title }])
+      head.push(['meta', { name: 'twitter:description', content: description }])
+      head.push(['meta', { name: 'twitter:image', content: socialImage }])
+      head.push(['meta', { name: 'twitter:image:alt', content: title }])
+      
+      // Article metadata for GenAI
+      if (pageData.frontmatter.datePublished) {
+        head.push(['meta', { property: 'article:published_time', content: pageData.frontmatter.datePublished }])
+      }
+      if (pageData.frontmatter.dateModified || pageData.lastUpdated) {
+        head.push(['meta', { property: 'article:modified_time', content: pageData.frontmatter.dateModified || new Date(pageData.lastUpdated).toISOString() }])
+      }
+      if (pageData.frontmatter.author) {
+        head.push(['meta', { name: 'article:author', content: pageData.frontmatter.author }])
+      }
+      
+      // Structured data (JSON-LD)
+      const structuredData: object[] = []
+      
+      // Homepage: WebSite + Organization
+      if (pageData.relativePath === 'index.md') {
+        structuredData.push(generateWebSiteSchema())
+        structuredData.push(generateOrganizationSchema())
+      }
+      
+      // Series index: Course schema
+      if (pageData.relativePath.match(/series\/[^/]+\/index\.md$/)) {
+        const courseSchema = generateCourseSchema(pageData)
+        if (courseSchema) structuredData.push(courseSchema)
+      }
+      
+      // Chapter pages: LearningResource schema
+      if (pageData.frontmatter.series && pageData.frontmatter.chapter !== undefined) {
+        const learningResourceSchema = generateLearningResourceSchema(pageData)
+        if (learningResourceSchema) structuredData.push(learningResourceSchema)
+      }
+      
+      // Breadcrumb schema (for all non-homepage pages)
+      if (pageData.relativePath !== 'index.md') {
+        const breadcrumbSchema = generateBreadcrumbSchema(pageData)
+        if (breadcrumbSchema) structuredData.push(breadcrumbSchema)
+      }
+      
+      // Inject structured data
+      if (structuredData.length > 0) {
+        head.push([
+          'script',
+          { type: 'application/ld+json' },
+          JSON.stringify(structuredData.length === 1 ? structuredData[0] : structuredData)
+        ])
+      }
+      
+      return head
+    },
     themeConfig: {
       nav: [
         { text: 'Home', link: '/' },
@@ -208,6 +317,9 @@ export default withMermaid(
       theme: {
         light: 'github-light',
         dark: 'github-dark'
+      },
+      config: (md) => {
+        md.use(mathjax3)
       }
     },
     mermaid: {
