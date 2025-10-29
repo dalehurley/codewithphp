@@ -126,17 +126,7 @@ socialImage: /social/php-basics-chapter-02.jpg
 
 ## Examples
 
-### PHP Basics Chapter (without code)
-
-![Sample PHP Basics](sample-php-basics-02.jpg)
-
-### PHP Basics Chapter (with code snippet)
-
-![Sample with Code](test-with-code.jpg)
-
-### AI/ML Chapter
-
-![Sample AI/ML](sample-ai-ml-03.jpg)
+Generated images follow a consistent format with AI backgrounds, code snippets, and chapter information.
 
 ## Maintenance
 

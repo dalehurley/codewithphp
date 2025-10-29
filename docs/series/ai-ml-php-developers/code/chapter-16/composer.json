@@ -1,0 +1,41 @@
+{
+  "name": "codewithphp/chapter-16-computer-vision-essentials",
+  "description": "Computer Vision Essentials for PHP Developers - Chapter 16 code examples",
+  "type": "project",
+  "require": {
+    "php": "^8.4",
+    "ext-gd": "*"
+  },
+  "require-dev": {},
+  "autoload": {
+    "classmap": [
+      "ImageLoader.php",
+      "ImageProcessor.php",
+      "ColorConverter.php",
+      "FeatureExtractor.php",
+      "ImageFilter.php"
+    ],
+    "files": [
+      "helpers.php"
+    ]
+  },
+  "scripts": {
+    "generate-images": "php generate-sample-images.php",
+    "check-setup": "php 02-check-extensions.php",
+    "test-all": [
+      "@check-setup",
+      "php 01-image-representation.php",
+      "php 03-load-save-images.php",
+      "php 04-image-manipulations.php",
+      "php 05-color-conversions.php",
+      "php 06-feature-extraction.php",
+      "php 07-image-filters.php",
+      "php 08-ml-preparation.php"
+    ]
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}

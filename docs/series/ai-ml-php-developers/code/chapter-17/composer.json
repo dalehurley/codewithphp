@@ -1,0 +1,22 @@
+{
+  "name": "codewithphp/chapter-17-image-classification",
+  "description": "Image Classification with Pre-trained Models - Cloud and Local approaches",
+  "type": "project",
+  "require": {
+    "php": "^8.4",
+    "ext-curl": "*",
+    "ext-json": "*",
+    "ext-gd": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "AiMlPhp\\Chapter17\\": "src/"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "sort-packages": true
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}
