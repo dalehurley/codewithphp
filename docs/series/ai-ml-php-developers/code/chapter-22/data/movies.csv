@@ -1,0 +1,53 @@
+movie_id,title,genre,year
+1,The Matrix Revolution,sci-fi,1999
+2,Interstellar Journey,sci-fi,2014
+3,Blade Runner 2049,sci-fi,2017
+4,Inception Dreams,sci-fi,2010
+5,Star Wars: A New Hope,sci-fi,1977
+6,The Terminator,sci-fi,1984
+7,E.T. the Extra-Terrestrial,sci-fi,1982
+8,Back to the Future,sci-fi,1985
+9,Avatar,sci-fi,2009
+10,District 9,sci-fi,2009
+11,Superbad,comedy,2007
+12,The Hangover,comedy,2009
+13,Bridesmaids,comedy,2011
+14,Airplane!,comedy,1980
+15,Groundhog Day,comedy,1993
+16,Dumb and Dumber,comedy,1994
+17,The Grand Budapest Hotel,comedy,2014
+18,Monty Python and the Holy Grail,comedy,1975
+19,Ferris Bueller's Day Off,comedy,1986
+20,The Big Lebowski,comedy,1998
+21,The Shawshank Redemption,drama,1994
+22,The Godfather,drama,1972
+23,Forrest Gump,drama,1994
+24,Schindler's List,drama,1993
+25,The Green Mile,drama,1999
+26,A Beautiful Mind,drama,2001
+27,Good Will Hunting,drama,1997
+28,The Pursuit of Happyness,drama,2006
+29,12 Years a Slave,drama,2013
+30,Moonlight,drama,2016
+31,Die Hard,action,1988
+32,The Dark Knight,action,2008
+33,Mad Max: Fury Road,action,2015
+34,John Wick,action,2014
+35,The Bourne Identity,action,2002
+36,Mission: Impossible,action,1996
+37,Gladiator,action,2000
+38,The Avengers,action,2012
+39,Casino Royale,action,2006
+40,Kill Bill Vol. 1,action,2003
+41,The Exorcist,horror,1973
+42,The Shining,horror,1980
+43,A Nightmare on Elm Street,horror,1984
+44,Halloween,horror,1978
+45,The Conjuring,horror,2013
+46,Get Out,horror,2017
+47,Hereditary,horror,2018
+48,The Ring,horror,2002
+49,It,horror,2017
+50,A Quiet Place,horror,2018
+
+

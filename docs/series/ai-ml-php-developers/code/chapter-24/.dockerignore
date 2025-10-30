@@ -1,0 +1,54 @@
+# Git files
+.git
+.gitignore
+.github
+
+# Environment files
+.env
+.env.*
+!.env.example
+.env.php
+
+# Dependencies
+vendor
+node_modules
+
+# Tests
+tests
+*.test.php
+
+# Documentation
+*.md
+!README.md
+docs
+
+# Docker files
+docker-compose*.yml
+Dockerfile*
+.docker
+
+# IDE files
+.vscode
+.idea
+*.sublime-*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs
+
+# Temp files
+tmp
+temp
+cache
+*.tmp
+*.cache
+
+# Build artifacts
+dist
+build
+
+

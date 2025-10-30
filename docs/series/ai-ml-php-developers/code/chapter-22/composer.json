@@ -1,0 +1,22 @@
+{
+  "name": "codewithphp/chapter-22-recommendation-engine",
+  "description": "Chapter 22: Building a Recommendation Engine in PHP - Code Examples",
+  "type": "project",
+  "require": {
+    "php": "^8.4",
+    "rubix/ml": "^3.0",
+    "php-ai/php-ml": "^0.10"
+  },
+  "autoload": {
+    "psr-4": {
+      "Chapter22\\": "src/"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "sort-packages": true
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}
+
