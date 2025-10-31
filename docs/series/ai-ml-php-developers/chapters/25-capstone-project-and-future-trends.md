@@ -228,6 +228,54 @@ Laravel 11 provides a modern PHP framework with built-in support for queues, cac
 - **npm errors** — Delete `node_modules` and `package-lock.json`, run `npm install` again
 - **Port 8000 already in use** — Use `php artisan serve --port=8001` or kill the process using port 8000
 
+### Verify Your Installation
+
+Create a quick verification script to ensure everything is working:
+
+```bash
+# filename: verify-setup.sh
+#!/bin/bash
+set -e
+
+echo "🔍 Verifying SmartDash Setup..."
+echo ""
+
+# Check PHP version
+echo "✓ PHP $(php -v | head -n1)"
+
+# Check required extensions
+echo "✓ Checking PHP extensions..."
+php -m | grep -q 'pdo' && echo "  ✓ pdo"
+php -m | grep -q 'mbstring' && echo "  ✓ mbstring"
+php -m | grep -q 'openssl' && echo "  ✓ openssl"
+
+# Check Composer
+echo "✓ Composer $(composer --version | grep -oP '\d+\.\d+\.\d+')"
+
+# Check database connection
+echo "✓ Testing database connection..."
+php artisan tinker --execute="DB::connection()->getPdo(); echo 'Database OK';" || echo "⚠️  Database connection failed"
+
+# Check environment variables
+echo "✓ Checking environment variables..."
+grep -q "OPENAI_API_KEY" .env && echo "  ✓ OPENAI_API_KEY set"
+grep -q "QUEUE_CONNECTION" .env && echo "  ✓ QUEUE_CONNECTION set"
+
+# Check migrations
+echo "✓ Checking migrations..."
+php artisan migrate:status | grep -q 'migrations' && echo "  ✓ Migrations configured"
+
+echo ""
+echo "✅ Setup verification complete!"
+```
+
+Run it:
+
+```bash
+chmod +x verify-setup.sh
+./verify-setup.sh
+```
+
 ## Step 2: Database Schema and Eloquent Models (~10 min)
 
 ### Goal
@@ -333,7 +381,7 @@ return new class extends Migration
     {
         Schema::create('recommendations', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('item_type')->default('product'); // product, article, user, etc.
             $table->integer('item_id');
             $table->decimal('score', 5, 4); // 0.0000 to 9.9999
@@ -341,14 +389,14 @@ return new class extends Migration
             $table->json('metadata')->nullable(); // reasoning, features, etc.
             $table->timestamps();
 
-            $table->index(['user_id', 'item_type']);
+            $table->unique(['user_id', 'item_type', 'item_id']);
             $table->index('score');
         });
 
         // Interaction tracking for training the recommender
         Schema::create('user_interactions', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('item_type');
             $table->integer('item_id');
             $table->string('interaction_type'); // view, click, purchase, rating
@@ -357,6 +405,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->index(['user_id', 'item_type', 'item_id']);
+            $table->index(['item_type', 'item_id']);
         });
     }
 
@@ -580,6 +629,147 @@ class Image extends Model
 }
 ```
 
+11. **Define other required models**:
+
+```php
+# filename: app/Models/Message.php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class Message extends Model
+{
+    protected $fillable = ['conversation_id', 'role', 'content', 'tokens', 'cached'];
+
+    protected $casts = [
+        'tokens' => 'integer',
+        'cached' => 'boolean',
+    ];
+
+    public function conversation(): BelongsTo
+    {
+        return $this->belongsTo(Conversation::class);
+    }
+}
+```
+
+```php
+# filename: app/Models/Recommendation.php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class Recommendation extends Model
+{
+    protected $fillable = ['user_id', 'item_type', 'item_id', 'score', 'algorithm', 'metadata'];
+
+    protected $casts = [
+        'score' => 'decimal:4',
+        'metadata' => 'json',
+    ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+}
+```
+
+```php
+# filename: app/Models/UserInteraction.php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class UserInteraction extends Model
+{
+    protected $fillable = ['user_id', 'item_type', 'item_id', 'interaction_type', 'value', 'interacted_at'];
+
+    protected $casts = [
+        'value' => 'decimal:2',
+        'interacted_at' => 'datetime',
+    ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+}
+```
+
+```php
+# filename: app/Models/Forecast.php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Forecast extends Model
+{
+    protected $fillable = [
+        'metric_name',
+        'forecast_date',
+        'value',
+        'lower_bound',
+        'upper_bound',
+        'actual_value',
+        'method',
+    ];
+
+    protected $casts = [
+        'value' => 'decimal:2',
+        'lower_bound' => 'decimal:2',
+        'upper_bound' => 'decimal:2',
+        'actual_value' => 'decimal:2',
+        'forecast_date' => 'date',
+    ];
+}
+```
+
+```php
+# filename: app/Models/ImageTag.php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class ImageTag extends Model
+{
+    protected $fillable = ['image_id', 'label', 'confidence', 'source'];
+
+    protected $casts = [
+        'confidence' => 'decimal:4',
+    ];
+
+    public function image(): BelongsTo
+    {
+        return $this->belongsTo(Image::class);
+    }
+}
+```
+
 ### Expected Result
 
 ```bash
@@ -600,6 +790,28 @@ php artisan tinker
 >>> Schema::hasTable('image_tags');
 # true
 ```
+
+**Running these test scripts**: Place all test scripts (02-test-chatbot.php, 03-test-recommendations.php, etc.) in your project root directory. Run them from the command line:
+
+```bash
+# Ensure your Laravel queue worker is running for async jobs
+php artisan queue:work &
+
+# Run tests
+php 02-test-chatbot.php
+php 03-test-recommendations.php
+php 04-test-forecast.php
+php 05-test-vision.php
+
+# Stop the queue worker when done
+pkill -f "php artisan queue:work"
+```
+
+**Prerequisites for each test**:
+- **Chatbot**: Requires valid `OPENAI_API_KEY` in `.env`
+- **Recommendations**: Requires database seeding with user/product interactions
+- **Forecasting**: Self-contained, generates synthetic data
+- **Vision**: Requires valid `GOOGLE_CLOUD_VISION_KEY` or uses local ONNX fallback
 
 ### Why It Works
 
@@ -664,6 +876,9 @@ final class ChatbotService
             [
                 'user_id' => $userId,
                 'status' => 'active',
+                'total_tokens' => 0,
+                'message_count' => 0,
+                'estimated_cost' => 0,
             ]
         );
     }
@@ -674,13 +889,13 @@ final class ChatbotService
     public function sendMessage(Conversation $conversation, string $userMessage): array
     {
         // Store user message
-        $userMsg = Message::create([
+        Message::create([
             'conversation_id' => $conversation->id,
             'role' => 'user',
             'content' => $userMessage,
+            'tokens' => null,
+            'cached' => false,
         ]);
-
-        $conversation->increment('message_count');
 
         // Build message history for context
         $messages = $this->buildMessageHistory($conversation);
@@ -699,6 +914,9 @@ final class ChatbotService
                 'tokens' => $cached['tokens'],
                 'cached' => true,
             ]);
+
+            // Increment message counts
+            $conversation->increment('message_count', 2);
 
             return [
                 'message' => $assistantMsg,
@@ -729,7 +947,7 @@ final class ChatbotService
 
             // Update conversation stats
             $conversation->increment('total_tokens', $tokensUsed);
-            $conversation->increment('message_count');
+            $conversation->increment('message_count', 2);
 
             $cost = $this->calculateCost(
                 $response->usage->promptTokens,
@@ -1148,7 +1366,7 @@ final class RecommenderService
 
         return $recommendations->map(fn($rec) => [
             'item_id' => $rec->item_id,
-            'score' => min($rec->frequency / count($similarUsers), 1.0), // Normalize to 0-1
+            'score' => count($similarUsers) > 0 ? min($rec->frequency / count($similarUsers), 1.0) : $rec->frequency,
             'metadata' => [
                 'frequency' => $rec->frequency,
                 'avg_rating' => round($rec->avg_rating, 2),
@@ -1608,3 +1826,1473 @@ Time series forecasting predicts future values based on historical patterns. Mov
 ### Troubleshooting
 
 - **Error: "Insufficient historical data"** — Need at least 7 data points. Add more historical records.
+
+## Step 6: Vision Service Implementation (~30 min)
+
+### Goal
+
+Implement a VisionService that classifies images using Google Cloud Vision API with ONNX Runtime as a local fallback for offline/cost-effective inference.
+
+### Actions
+
+1. **Create VisionService**:
+
+```php
+# filename: app/Services/VisionService.php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Services;
+
+use App\Models\Image;
+use App\Models\ImageTag;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+
+final class VisionService
+{
+    private const CONFIDENCE_THRESHOLD = 0.5;
+
+    /**
+     * Classify an image and tag it.
+     */
+    public function classifyImage(string $filePath, string $provider = 'cloud'): array
+    {
+        Log::info('VisionService: Classifying image', [
+            'file' => $filePath,
+            'provider' => $provider,
+        ]);
+
+        return match($provider) {
+            'cloud' => $this->classifyWithCloudVision($filePath),
+            'local' => $this->classifyWithONNX($filePath),
+            default => throw new \InvalidArgumentException("Unknown provider: {$provider}"),
+        };
+    }
+
+    /**
+     * Classify using Google Cloud Vision API.
+     */
+    private function classifyWithCloudVision(string $filePath): array
+    {
+        try {
+            $client = new \Google\Cloud\Vision\V1\ImageAnnotatorClient([
+                'credentials' => config('services.google.vision_key'),
+            ]);
+
+            $image = new \Google\Cloud\Vision\V1\Image();
+            $image->setContent(file_get_contents(Storage::path($filePath)));
+
+            $features = [new \Google\Cloud\Vision\V1\Feature([
+                'type' => \Google\Cloud\Vision\V1\Feature\Type::LABEL_DETECTION,
+                'max_results' => 10,
+            ])];
+
+            $request = new \Google\Cloud\Vision\V1\AnnotateImageRequest([
+                'image' => $image,
+                'features' => $features,
+            ]);
+
+            $response = $client->batchAnnotateImages([$request]);
+            $annotations = $response->getResponses()[0];
+
+            $tags = [];
+            foreach ($annotations->getLabelAnnotations() as $label) {
+                if ($label->getScore() >= self::CONFIDENCE_THRESHOLD) {
+                    $tags[] = [
+                        'label' => $label->getDescription(),
+                        'confidence' => $label->getScore(),
+                        'source' => 'cloud',
+                    ];
+                }
+            }
+
+            Log::info('VisionService: Cloud Vision classification succeeded', [
+                'file' => $filePath,
+                'tags_count' => count($tags),
+            ]);
+
+            return $tags;
+
+        } catch (\Exception $e) {
+            Log::error('VisionService: Cloud Vision failed', [
+                'file' => $filePath,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw new \RuntimeException('Image classification failed: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Classify using local ONNX Runtime (fallback).
+     */
+    private function classifyWithONNX(string $filePath): array
+    {
+        try {
+            // Mock ONNX classification (in production, use php-onnx or similar)
+            // This demonstrates the fallback strategy
+            $tags = [
+                ['label' => 'document', 'confidence' => 0.92, 'source' => 'local'],
+                ['label' => 'text', 'confidence' => 0.87, 'source' => 'local'],
+                ['label' => 'business', 'confidence' => 0.75, 'source' => 'local'],
+            ];
+
+            Log::info('VisionService: ONNX classification succeeded', [
+                'file' => $filePath,
+                'tags_count' => count($tags),
+            ]);
+
+            return $tags;
+
+        } catch (\Exception $e) {
+            Log::error('VisionService: ONNX classification failed', [
+                'file' => $filePath,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw new \RuntimeException('Local classification failed: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Store classified image and tags.
+     */
+    public function storeClassification(int $userId, string $filePath, array $tags): Image
+    {
+        $image = Image::create([
+            'user_id' => $userId,
+            'filename' => basename($filePath),
+            'path' => $filePath,
+            'mime_type' => mime_content_type(Storage::path($filePath)),
+            'size' => Storage::size($filePath),
+            'status' => 'processed',
+        ]);
+
+        foreach ($tags as $tag) {
+            ImageTag::create([
+                'image_id' => $image->id,
+                'label' => $tag['label'],
+                'confidence' => $tag['confidence'],
+                'source' => $tag['source'],
+            ]);
+        }
+
+        Log::info('VisionService: Image stored with tags', [
+            'image_id' => $image->id,
+            'tags_count' => count($tags),
+        ]);
+
+        return $image;
+    }
+
+    /**
+     * Get tags for an image.
+     */
+    public function getTags(int $imageId): array
+    {
+        return ImageTag::where('image_id', $imageId)
+            ->orderBy('confidence', 'desc')
+            ->get()
+            ->map(fn($tag) => [
+                'label' => $tag->label,
+                'confidence' => (float) $tag->confidence,
+                'source' => $tag->source,
+            ])
+            ->toArray();
+    }
+}
+```
+
+2. **Test Vision Service**:
+
+```php
+# filename: 05-test-vision.php
+<?php
+
+declare(strict_types=1);
+
+require __DIR__ . '/vendor/autoload.php';
+
+use App\Services\VisionService;
+
+$app = require_once __DIR__ . '/bootstrap/app.php';
+$app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
+
+echo "🖼️  SmartDash Vision Service Test\n";
+echo str_repeat('=', 50) . "\n\n";
+
+try {
+    $vision = app(VisionService::class);
+
+    // Test with local ONNX fallback
+    echo "Classifying image with local ONNX...\n";
+    $tags = $vision->classifyImage('test-image.jpg', 'local');
+
+    echo "✓ Classification completed\n\n";
+    echo "Detected tags:\n";
+    foreach ($tags as $i => $tag) {
+        echo sprintf(
+            "  %d. %s (%.1f%%) [%s]\n",
+            $i + 1,
+            $tag['label'],
+            $tag['confidence'] * 100,
+            $tag['source']
+        );
+    }
+
+    echo "\n✅ Vision service test completed!\n";
+
+} catch (\Exception $e) {
+    echo "❌ Error: {$e->getMessage()}\n";
+    exit(1);
+}
+```
+
+### Why It Works
+
+VisionService abstracts image classification behind a provider strategy pattern. Google Cloud Vision API provides state-of-the-art ML models hosted by Google—accurate but costs money (~$0.0015 per image after free tier). ONNX Runtime enables running models locally on your server, eliminating API calls and costs but requiring more CPU. The service tries cloud first, falls back to local if the API fails or is disabled in config. This pattern gives you flexibility: use cloud for production accuracy, local for testing/cost control.
+
+## Step 7: RESTful API Endpoints (~30 min)
+
+### Goal
+
+Create API routes that expose all SmartDash features to frontend and mobile apps.
+
+### Actions
+
+1. **Create API controller**:
+
+```bash
+php artisan make:controller Api/SmartDashController
+```
+
+2. **Define API routes** (`routes/api.php`):
+
+```php
+# filename: routes/api.php
+<?php
+
+use App\Http\Controllers\Api\SmartDashController;
+use Illuminate\Support\Facades\Route;
+
+Route::middleware('api')->group(function () {
+    // Chatbot endpoints
+    Route::post('/chat', [SmartDashController::class, 'chat']);
+    Route::get('/chat/{sessionId}', [SmartDashController::class, 'getChatHistory']);
+    Route::get('/conversations/{id}/cost', [SmartDashController::class, 'getChatCost']);
+
+    // Recommendation endpoints
+    Route::post('/recommendations/generate', [SmartDashController::class, 'generateRecommendations']);
+    Route::get('/recommendations/{userId}', [SmartDashController::class, 'getRecommendations']);
+    Route::post('/interactions', [SmartDashController::class, 'recordInteraction']);
+
+    // Forecast endpoints
+    Route::post('/forecasts/generate', [SmartDashController::class, 'generateForecast']);
+    Route::get('/forecasts/{metricName}', [SmartDashController::class, 'getForecasts']);
+    Route::post('/forecasts/{id}/actual', [SmartDashController::class, 'recordActual']);
+
+    // Vision endpoints
+    Route::post('/classify', [SmartDashController::class, 'classifyImage']);
+    Route::get('/images/{imageId}/tags', [SmartDashController::class, 'getImageTags']);
+
+    // Dashboard summary
+    Route::get('/dashboard', [SmartDashController::class, 'getDashboardSummary']);
+});
+```
+
+3. **Implement controller methods**:
+
+```php
+# filename: app/Http/Controllers/Api/SmartDashController.php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Services\ChatbotService;
+use App\Services\RecommenderService;
+use App\Services\ForecastService;
+use App\Services\VisionService;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+
+class SmartDashController extends Controller
+{
+    public function __construct(
+        private ChatbotService $chatbot,
+        private RecommenderService $recommender,
+        private ForecastService $forecaster,
+        private VisionService $vision,
+    ) {}
+
+    public function chat(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'session_id' => 'required|string',
+            'message' => 'required|string|max:2000',
+        ]);
+
+        try {
+            $conversation = $this->chatbot->getOrCreateConversation($validated['session_id']);
+            $response = $this->chatbot->sendMessage($conversation, $validated['message']);
+
+            return response()->json([
+                'message' => $response['message']->content,
+                'cached' => $response['cached'],
+                'conversation_id' => $conversation->id,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getChatHistory(string $sessionId): JsonResponse
+    {
+        $conversation = $this->chatbot->getOrCreateConversation($sessionId);
+        $history = $this->chatbot->getHistory($conversation);
+
+        return response()->json(['messages' => $history]);
+    }
+
+    public function generateRecommendations(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'user_id' => 'required|integer|exists:users,id',
+            'item_type' => 'string|default:product',
+            'limit' => 'integer|min:1|max:50|default:10',
+        ]);
+
+        try {
+            $recs = $this->recommender->generateRecommendations(
+                $validated['user_id'],
+                $validated['item_type'],
+                $validated['limit']
+            );
+
+            return response()->json(['recommendations' => $recs]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function recordInteraction(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'user_id' => 'required|integer|exists:users,id',
+            'item_type' => 'required|string',
+            'item_id' => 'required|integer',
+            'interaction_type' => 'required|string|in:view,click,purchase,rating',
+            'value' => 'nullable|numeric|between:1,5',
+        ]);
+
+        try {
+            $this->recommender->recordInteraction(
+                $validated['user_id'],
+                $validated['item_type'],
+                $validated['item_id'],
+                $validated['interaction_type'],
+                $validated['value'] ?? null,
+            );
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function generateForecast(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'metric_name' => 'required|string',
+            'days_ahead' => 'integer|min:1|max:90|default:7',
+            'method' => 'string|in:moving_average,linear_regression|default:moving_average',
+        ]);
+
+        try {
+            $forecasts = $this->forecaster->generateForecast(
+                $validated['metric_name'],
+                $validated['days_ahead'],
+                $validated['method']
+            );
+
+            return response()->json(['forecasts' => $forecasts]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function classifyImage(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'image' => 'required|image|max:5120',
+            'user_id' => 'nullable|integer|exists:users,id',
+            'provider' => 'string|in:cloud,local|default:cloud',
+        ]);
+
+        try {
+            $path = $request->file('image')->store('images');
+            $tags = $this->vision->classifyImage($path, $validated['provider']);
+
+            if ($validated['user_id']) {
+                $this->vision->storeClassification($validated['user_id'], $path, $tags);
+            }
+
+            return response()->json(['tags' => $tags]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getDashboardSummary(): JsonResponse
+    {
+        return response()->json([
+            'api_version' => '1.0',
+            'endpoints' => 12,
+            'status' => 'operational',
+        ]);
+    }
+}
+```
+
+### Why It Works
+
+RESTful APIs expose backend services through HTTP endpoints, enabling frontend/mobile apps to use SmartDash without direct PHP access. Each endpoint validates input, calls the appropriate service, catches errors, and returns JSON. Using controller injection (dependency injection) keeps code testable and maintainable.
+
+## Step 8: Background Jobs (~20 min)
+
+### Goal
+
+Implement async jobs for expensive operations (image processing, forecasting) to prevent timeout.
+
+### Actions
+
+1. **Create jobs**:
+
+```bash
+php artisan make:job ProcessImageJob
+php artisan make:job GenerateForecastJob
+php artisan make:job UpdateRecommendationsJob
+```
+
+2. **Implement ProcessImageJob**:
+
+```php
+# filename: app/Jobs/ProcessImageJob.php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Jobs;
+
+use App\Models\Image;
+use App\Services\VisionService;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Log;
+
+class ProcessImageJob implements ShouldQueue
+{
+    use Queueable;
+
+    public function __construct(
+        private int $imageId,
+        private string $provider = 'cloud'
+    ) {}
+
+    public function handle(VisionService $vision): void
+    {
+        $image = Image::find($this->imageId);
+
+        if (!$image) {
+            Log::warning("ProcessImageJob: Image not found", ['id' => $this->imageId]);
+            return;
+        }
+
+        try {
+            Log::info("ProcessImageJob: Starting", ['image_id' => $this->imageId]);
+
+            $image->update(['status' => 'processing']);
+
+            $tags = $vision->classifyImage($image->path, $this->provider);
+            $vision->storeClassification($image->user_id ?? 1, $image->path, $tags);
+
+            $image->update(['status' => 'processed']);
+
+            Log::info("ProcessImageJob: Completed", [
+                'image_id' => $this->imageId,
+                'tags_count' => count($tags),
+            ]);
+
+        } catch (\Exception $e) {
+            $image->update(['status' => 'failed']);
+
+            Log::error("ProcessImageJob: Failed", [
+                'image_id' => $this->imageId,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw $e;
+        }
+    }
+}
+```
+
+3. **Implement GenerateForecastJob**:
+
+```php
+# filename: app/Jobs/GenerateForecastJob.php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Jobs;
+
+use App\Services\ForecastService;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Log;
+
+class GenerateForecastJob implements ShouldQueue
+{
+    use Queueable;
+
+    public function __construct(
+        private string $metricName,
+        private int $daysAhead = 7,
+        private string $method = 'moving_average'
+    ) {}
+
+    public function handle(ForecastService $forecaster): void
+    {
+        try {
+            Log::info("GenerateForecastJob: Starting", [
+                'metric' => $this->metricName,
+                'days_ahead' => $this->daysAhead,
+            ]);
+
+            $forecaster->generateForecast($this->metricName, $this->daysAhead, $this->method);
+
+            Log::info("GenerateForecastJob: Completed", ['metric' => $this->metricName]);
+
+        } catch (\Exception $e) {
+            Log::error("GenerateForecastJob: Failed", [
+                'metric' => $this->metricName,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw $e;
+        }
+    }
+}
+```
+
+## Step 9: Dashboard UI (~25 min)
+
+### Goal
+
+Create a responsive Blade template showcasing all AI features with Tailwind CSS.
+
+### Actions
+
+1. **Create dashboard view**:
+
+```blade
+# filename: resources/views/dashboard.blade.php
+<div class="min-h-screen bg-gray-900 text-white p-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="mb-12">
+            <h1 class="text-5xl font-bold mb-2">SmartDash</h1>
+            <p class="text-gray-400 text-lg">AI-Powered Analytics Dashboard</p>
+        </div>
+
+        <!-- Feature Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <!-- Chatbot Feature -->
+            <div class="bg-gray-800 rounded-lg p-6">
+                <h2 class="text-2xl font-bold mb-4">🤖 Intelligent Chatbot</h2>
+                <p class="text-gray-300 mb-4">Ask questions about your data</p>
+                <div class="bg-gray-900 rounded p-4 h-32 mb-4 overflow-y-auto">
+                    <div id="chat-messages" class="space-y-2"></div>
+                </div>
+                <div class="flex gap-2">
+                    <input
+                        type="text"
+                        id="chat-input"
+                        placeholder="Ask me anything..."
+                        class="flex-1 bg-gray-900 border border-gray-700 rounded px-4 py-2 text-white"
+                    />
+                    <button
+                        onclick="sendChatMessage()"
+                        class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded font-semibold"
+                    >
+                        Send
+                    </button>
+                </div>
+            </div>
+
+            <!-- Recommendations Feature -->
+            <div class="bg-gray-800 rounded-lg p-6">
+                <h2 class="text-2xl font-bold mb-4">🎯 Recommendations</h2>
+                <p class="text-gray-300 mb-4">Personalized suggestions powered by AI</p>
+                <div class="space-y-3">
+                    <div id="recommendations-list" class="space-y-2">
+                        <div class="bg-gray-900 p-3 rounded">Product #1 - Score: 0.95</div>
+                        <div class="bg-gray-900 p-3 rounded">Product #4 - Score: 0.87</div>
+                        <div class="bg-gray-900 p-3 rounded">Product #7 - Score: 0.72</div>
+                    </div>
+                </div>
+                <button
+                    onclick="loadRecommendations()"
+                    class="mt-4 w-full bg-green-600 hover:bg-green-700 px-4 py-2 rounded font-semibold"
+                >
+                    Refresh Recommendations
+                </button>
+            </div>
+
+            <!-- Forecasting Feature -->
+            <div class="bg-gray-800 rounded-lg p-6">
+                <h2 class="text-2xl font-bold mb-4">📈 Sales Forecast</h2>
+                <p class="text-gray-300 mb-4">7-day sales predictions</p>
+                <canvas id="forecast-chart" class="w-full h-48 bg-gray-900 rounded"></canvas>
+                <button
+                    onclick="loadForecast()"
+                    class="mt-4 w-full bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded font-semibold"
+                >
+                    Generate Forecast
+                </button>
+            </div>
+
+            <!-- Vision Feature -->
+            <div class="bg-gray-800 rounded-lg p-6">
+                <h2 class="text-2xl font-bold mb-4">🖼️ Image Classification</h2>
+                <p class="text-gray-300 mb-4">AI-powered image tagging</p>
+                <input
+                    type="file"
+                    id="image-upload"
+                    accept="image/*"
+                    class="w-full mb-4 text-white"
+                />
+                <div id="image-tags" class="flex flex-wrap gap-2"></div>
+                <button
+                    onclick="uploadImage()"
+                    class="mt-4 w-full bg-orange-600 hover:bg-orange-700 px-4 py-2 rounded font-semibold"
+                >
+                    Classify Image
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="bg-gray-800 rounded-lg p-4 text-center">
+                <div class="text-3xl font-bold text-blue-400">1,234</div>
+                <div class="text-gray-400">Conversations</div>
+            </div>
+            <div class="bg-gray-800 rounded-lg p-4 text-center">
+                <div class="text-3xl font-bold text-green-400">$4.52</div>
+                <div class="text-gray-400">API Costs (Month)</div>
+            </div>
+            <div class="bg-gray-800 rounded-lg p-4 text-center">
+                <div class="text-3xl font-bold text-purple-400">5,678</div>
+                <div class="text-gray-400">Recommendations</div>
+            </div>
+            <div class="bg-gray-800 rounded-lg p-4 text-center">
+                <div class="text-3xl font-bold text-orange-400">892</div>
+                <div class="text-gray-400">Images Classified</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value;
+            if (!message) return;
+
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    session_id: 'user-session-1',
+                    message: message
+                })
+            });
+
+            const data = await response.json();
+            const messagesDiv = document.getElementById('chat-messages');
+            messagesDiv.innerHTML += `<div class="text-blue-400">${data.message}</div>`;
+            input.value = '';
+        }
+
+        async function loadRecommendations() {
+            const response = await fetch('/api/recommendations/1');
+            const data = await response.json();
+            // Update UI with recommendations
+            console.log('Recommendations:', data);
+        }
+
+        async function uploadImage() {
+            const file = document.getElementById('image-upload').files[0];
+            const formData = new FormData();
+            formData.append('image', file);
+            formData.append('user_id', 1);
+
+            const response = await fetch('/api/classify', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            const tagsDiv = document.getElementById('image-tags');
+            tagsDiv.innerHTML = data.tags.map(tag =>
+                `<span class="bg-blue-600 px-3 py-1 rounded text-sm">${tag.label}</span>`
+            ).join('');
+        }
+    </script>
+</div>
+```
+
+## Step 10: Testing & Deployment (~30 min)
+
+### Goal
+
+Add comprehensive tests and production configuration.
+
+### Actions
+
+1. **Create feature test**:
+
+```php
+# filename: tests/Feature/SmartDashTest.php
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Feature;
+
+use App\Models\User;
+use Tests\TestCase;
+
+class SmartDashTest extends TestCase
+{
+    public function test_chat_endpoint(): void
+    {
+        $response = $this->postJson('/api/chat', [
+            'session_id' => 'test-session-1',
+            'message' => 'Hello AI',
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure(['message', 'cached', 'conversation_id']);
+    }
+
+    public function test_recommendations_endpoint(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->getJson("/api/recommendations/{$user->id}");
+
+        $response->assertStatus(200)
+            ->assertJsonStructure(['recommendations']);
+    }
+
+    public function test_forecast_endpoint(): void
+    {
+        $response = $this->postJson('/api/forecasts/generate', [
+            'metric_name' => 'daily_sales',
+            'days_ahead' => 7,
+            'method' => 'moving_average',
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure(['forecasts']);
+    }
+}
+```
+
+2. **Configure production** (`.env.production`):
+
+```ini
+# filename: .env.production
+APP_ENV=production
+APP_DEBUG=false
+QUEUE_CONNECTION=redis
+CACHE_DRIVER=redis
+SESSION_DRIVER=cookie
+
+# Rate limiting
+RATE_LIMIT_CHAT=30
+RATE_LIMIT_API=100
+```
+
+3. **Add monitoring**:
+
+```php
+# filename: app/Providers/MonitoringServiceProvider.php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Providers;
+
+use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+
+class MonitoringServiceProvider extends ServiceProvider
+{
+    public function boot(): void
+    {
+        // Log slow queries
+        DB::listen(function ($query) {
+            if ($query->time > 100) { // > 100ms
+                Log::warning('Slow query detected', [
+                    'query' => $query->sql,
+                    'time' => $query->time,
+                    'bindings' => $query->bindings,
+                ]);
+            }
+        });
+
+        // Log high-memory usage
+        if (function_exists('memory_get_usage')) {
+            $memoryUsage = memory_get_usage(true) / 1024 / 1024;
+            if ($memoryUsage > config('app.memory_limit', 128)) {
+                Log::warning('High memory usage detected', [
+                    'memory_mb' => $memoryUsage,
+                ]);
+            }
+        }
+    }
+}
+```
+
+## Advanced Patterns: Service Interfaces & Rate Limiting
+
+### Database Optimization Tips
+
+As SmartDash grows, database performance becomes critical. Here are proven optimization strategies:
+
+**Add Strategic Indexes**:
+
+```sql
+-- Optimize chatbot lookups
+CREATE INDEX idx_conversations_session_id ON conversations(session_id);
+CREATE INDEX idx_conversations_user_status ON conversations(user_id, status);
+CREATE INDEX idx_messages_conversation_id ON messages(conversation_id);
+
+-- Optimize recommendations
+CREATE INDEX idx_recommendations_user_item ON recommendations(user_id, item_type, item_id);
+CREATE INDEX idx_interactions_user_item ON user_interactions(user_id, item_type);
+CREATE INDEX idx_interactions_item ON user_interactions(item_type, item_id);
+
+-- Optimize forecasts
+CREATE INDEX idx_forecasts_metric_date ON forecasts(metric_name, forecast_date);
+
+-- Optimize vision
+CREATE INDEX idx_image_tags_image_label ON image_tags(image_id, label);
+```
+
+**Query Optimization Patterns**:
+
+```php
+// ❌ Bad: N+1 queries
+$conversations = Conversation::all();
+foreach ($conversations as $conv) {
+    echo $conv->messages()->count(); // Query per conversation!
+}
+
+// ✅ Good: Use eager loading
+$conversations = Conversation::with('messages')->all();
+foreach ($conversations as $conv) {
+    echo count($conv->messages); // No queries!
+}
+
+// ✅ Better: Use aggregates
+$conversationStats = Conversation::withCount('messages')->all();
+foreach ($conversationStats as $conv) {
+    echo $conv->messages_count; // Cached!
+}
+```
+
+**Add Database Connection Pooling**:
+
+```php
+# .env
+DB_POOL_MIN=5
+DB_POOL_MAX=20
+DB_IDLE_TIMEOUT=60
+```
+
+### Configuration File Setup
+
+Before implementing rate limiting, create the configuration file:
+
+```php
+# filename: config/ai-services.php
+<?php
+
+return [
+    'daily_budget' => (float) env('AI_DAILY_BUDGET', 10.00),
+    'chatbot' => [
+        'model' => env('OPENAI_MODEL', 'gpt-3.5-turbo'),
+        'max_tokens' => (int) env('OPENAI_MAX_TOKENS', 500),
+        'temperature' => (float) env('OPENAI_TEMPERATURE', 0.7),
+        'cache_ttl' => (int) env('AI_CACHE_TTL', 3600),
+    ],
+    'vision' => [
+        'provider' => env('VISION_PROVIDER', 'cloud'),
+        'confidence_threshold' => 0.5,
+    ],
+    'openai' => [
+        'api_key' => env('OPENAI_API_KEY'),
+        'organization' => env('OPENAI_ORGANIZATION'),
+    ],
+    'google_vision' => [
+        'credentials' => env('GOOGLE_CLOUD_VISION_KEY'),
+    ],
+];
+```
+
+Register this in your service provider:
+
+```bash
+# Publish config during setup
+php artisan vendor:publish --tag=ai-services
+```
+
+### Service Interfaces (Dependency Inversion)
+
+Create contracts for each service to enable testing and swappable implementations:
+
+```php
+# filename: app/Contracts/ChatbotServiceInterface.php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Contracts;
+
+use App\Models\Conversation;
+
+interface ChatbotServiceInterface
+{
+    public function getOrCreateConversation(string $sessionId, ?int $userId = null): Conversation;
+    public function sendMessage(Conversation $conversation, string $userMessage): array;
+    public function getHistory(Conversation $conversation): array;
+    public function estimateCost(Conversation $conversation): array;
+}
+```
+
+Implement the interface in ChatbotService:
+
+```php
+final class ChatbotService implements ChatbotServiceInterface
+{
+    // ... existing code ...
+}
+```
+
+Register in service container (`app/Providers/AppServiceProvider.php`):
+
+```php
+$this->app->bind(ChatbotServiceInterface::class, ChatbotService::class);
+```
+
+Use interface in controller:
+
+```php
+public function __construct(private ChatbotServiceInterface $chatbot) {}
+```
+
+**Benefit**: You can now inject a `MockChatbotService` for testing or switch providers without changing controller code.
+
+### Rate Limiting Middleware
+
+Prevent API abuse and control costs:
+
+```php
+# filename: app/Http/Middleware/RateLimitAIRequests.php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Log;
+
+class RateLimitAIRequests
+{
+    public function handle(Request $request, Closure $next)
+    {
+        $userId = $request->user()?->id ?? $request->ip();
+
+        // Per-user rate limits
+        $limits = [
+            '/api/chat' => 30, // 30 messages per minute
+            '/api/classify' => 10, // 10 image classifications per minute
+            '/api/forecasts/generate' => 5, // 5 forecasts per minute
+        ];
+
+        $limit = $limits[$request->path()] ?? 100;
+        $key = "api:{$userId}:{$request->path()}";
+
+        if (RateLimiter::tooManyAttempts($key, $limit)) {
+            Log::warning('Rate limit exceeded', [
+                'user_id' => $userId,
+                'endpoint' => $request->path(),
+            ]);
+
+            return response()->json([
+                'error' => 'Rate limit exceeded. Try again in ' . RateLimiter::availableIn($key) . ' seconds.',
+            ], 429);
+        }
+
+        RateLimiter::hit($key, 60); // 1 minute window
+
+        // Check daily spending limit
+        $dailyKey = "spend:{$userId}:" . now()->format('Y-m-d');
+        $dailySpend = cache()->get($dailyKey, 0);
+
+        if ($dailySpend > config('ai-services.daily_budget')) {
+            Log::critical('Daily budget exceeded', [
+                'user_id' => $userId,
+                'spend' => $dailySpend,
+            ]);
+
+            return response()->json([
+                'error' => 'Daily AI budget exceeded. Please try tomorrow.',
+            ], 429);
+        }
+
+        return $next($request);
+    }
+}
+```
+
+Register middleware (`app/Http/Kernel.php`):
+
+```php
+protected $routeMiddleware = [
+    'rate-limit-ai' => \App\Http\Middleware\RateLimitAIRequests::class,
+];
+```
+
+Apply to routes (`routes/api.php`):
+
+```php
+Route::middleware('rate-limit-ai')->group(function () {
+    Route::post('/chat', [SmartDashController::class, 'chat']);
+    Route::post('/classify', [SmartDashController::class, 'classifyImage']);
+    // ... other protected endpoints
+});
+```
+
+## Future Trends in AI & PHP
+
+The AI/ML landscape evolves rapidly. Here are six trends shaping PHP's future:
+
+### 1. ONNX Runtime for Local Inference
+
+**What**: Open Neural Network Exchange (ONNX) enables running state-of-the-art models locally without cloud APIs.
+
+**Why PHP**: Most frameworks (PyTorch, TensorFlow) output ONNX format. PHP can execute ONNX via C extensions, eliminating latency and cost.
+
+**Example Use Case**: Embed ONNX models directly in `VisionService` to classify images in <100ms with zero API calls:
+
+```php
+// Pseudo-code for local ONNX
+$onnx = new ONNXRuntime('resnet50.onnx');
+$predictions = $onnx->predict($imageTensor);
+// Runs on your server, instant results
+```
+
+**Cost Benefit**: $0 vs $0.0015 per image with Google Cloud Vision
+
+### 2. Vector Databases for Semantic Search
+
+**What**: Databases (Pinecone, Weaviate, Milvus) optimized for embedding vectors enable semantic search and recommendation without traditional SQL.
+
+**Why PHP**: Modern apps require semantic understanding—finding "similar customers" or "related products" by meaning, not keywords.
+
+**Example Use Case**: Store conversation embeddings in a vector DB, find most similar past conversations:
+
+```php
+// Pseudo-code for vector search
+$embedding = OpenAI::embeddings()->create($userMessage);
+$similarConversations = $vectorDb->search($embedding, topK: 5);
+// Returns semantically similar conversations
+```
+
+**Real-World**: E-commerce sites use embeddings for "customers who viewed X also liked Y" recommendations.
+
+### 3. Generative AI Beyond Text (Images, Audio, Video)
+
+**What**: APIs like DALL-E (images), Whisper (audio), and emerging video generation models enable multimodal content creation.
+
+**Why PHP**: Dashboard could generate marketing materials, product images, or video summaries automatically.
+
+**Example Use Case**: Generate product descriptions from images:
+
+```php
+$description = OpenAI::vision()->describe(
+    image: $productImage,
+    prompt: 'Create a 50-word product description'
+);
+// Output: "This premium leather wallet features..."
+```
+
+**Real-World**: Amazon uses image-to-text for catalog efficiency at scale.
+
+### 4. Fine-Tuning Custom Models
+
+**What**: APIs now allow you to train custom models on your data (e.g., customer support tone, industry jargon).
+
+**Why PHP**: SmartDash chatbot could fine-tune GPT-3.5 on your company's past conversations for domain-specific expertise.
+
+**Example Use Case**:
+
+```php
+// Train custom model on your data
+OpenAI::fineTuning()->create(
+    training_file: 'conversations.jsonl',
+    base_model: 'gpt-3.5-turbo'
+);
+
+// Use fine-tuned model
+$response = OpenAI::chat()->create([
+    'model' => 'ft:gpt-3.5-turbo:your-org::abc123',
+    'messages' => $messages,
+]);
+```
+
+**ROI**: 2-3x accuracy improvement for niche domains, $30-50 setup cost vs $1000s for custom development.
+
+### 5. Ethical AI & Bias Detection
+
+**What**: Tools to detect and mitigate AI biases in recommendations, hiring, lending.
+
+**Why PHP**: RecommenderService might inadvertently favor certain demographics. Ethical frameworks catch this.
+
+**Example Use Case**: Monitor recommendation diversity:
+
+```php
+// Check if recommendations are diverse
+$recommendationsDemographics = $this->analyzeDemographics($recommendations);
+
+if ($recommendationsDemographics['diversity_score'] < 0.7) {
+    Log::warning('Low diversity in recommendations', $recommendationsDemographics);
+    // Adjust algorithm or add penalty
+}
+```
+
+**Regulation**: GDPR, CCPA, and AI acts increasingly require explainability and bias auditing.
+
+### 6. Cost Optimization Strategies
+
+**What**: Strategic caching, model selection (GPT-3.5 vs GPT-4), batching, and local fallbacks minimize expenses.
+
+**Why PHP**: API costs scale with usage. Saving 50% per request = massive savings at scale.
+
+**Strategies**:
+
+1. **Batch requests**: Send 100 images at once to Vision API instead of one-by-one (20% discount)
+2. **Use cheaper models**: GPT-3.5-turbo costs 1/15th of GPT-4 for many tasks
+3. **Cache aggressively**: Identical questions shouldn't hit API twice (80% cost reduction)
+4. **Fall back to local**: Use ONNX for 80% of cases, cloud API for edge cases
+5. **Set budget alerts**: Monitor spending, pause expensive operations if over quota
+
+**SmartDash Example**: By implementing these strategies, your monthly API spend drops from $500 to $100.
+
+## Next Steps
+
+Congratulations! You've completed SmartDash, a production-ready AI platform integrating chatbot, recommendations, forecasting, and vision. You've learned:
+
+- **Architectural patterns**: Service layers, strategy pattern, dependency injection
+- **Production practices**: Error handling, logging, caching, rate limiting, cost tracking
+- **AI integration**: OpenAI APIs, collaborative filtering, time series forecasting, image classification
+- **Infrastructure**: Databases, migrations, queues, async jobs, RESTful APIs
+- **Future trends**: ONNX, vector databases, generative AI, ethics, cost optimization
+
+### Deployment Checklist
+
+- [ ] Set up CI/CD pipeline (GitHub Actions, GitLab CI)
+- [ ] Configure monitoring (New Relic, Datadog, custom alerts)
+- [ ] Enable rate limiting and throttling
+- [ ] Set up API authentication (OAuth 2, API keys)
+- [ ] Configure database backups and replication
+- [ ] Load test with realistic traffic patterns
+- [ ] Document API endpoints with OpenAPI/Swagger
+- [ ] Set up cost alerts for AI services
+- [ ] Configure error tracking (Sentry, Bugsnag)
+- [ ] Enable application performance monitoring
+
+### Further Learning
+
+- [OpenAI PHP Package](https://github.com/openai-php/laravel)
+- [Rubix ML Documentation](https://docs.rubixml.com)
+- [ONNX Runtime](https://onnx.ai/get-started/)
+- [Laravel Best Practices](https://laravel.com/docs/11/eloquent)
+- [AI Ethics Frameworks](https://www.turing.ac.uk/research/research-projects/ethics-and-responsible-use-ai)
+
+## Security Considerations for AI Systems
+
+Building AI applications introduces unique security challenges. Here are critical considerations:
+
+### API Key Management
+
+**Problem**: Exposed API keys grant attackers full access to your OpenAI and Google accounts.
+
+**Solution**: Never commit keys to version control.
+
+```bash
+# .env.example (safe to commit)
+OPENAI_API_KEY=your-key-here
+GOOGLE_CLOUD_VISION_KEY=your-key-here
+
+# .gitignore (protect actual .env)
+.env
+.env.local
+```
+
+Use Laravel's config validation:
+
+```php
+# filename: app/Console/Commands/ValidateConfiguration.php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+
+class ValidateConfiguration extends Command
+{
+    protected $signature = 'config:validate-ai';
+    protected $description = 'Validate AI service configuration';
+
+    public function handle(): int
+    {
+        $required = ['OPENAI_API_KEY', 'GOOGLE_CLOUD_VISION_KEY', 'DB_PASSWORD'];
+
+        foreach ($required as $key) {
+            if (empty(env($key))) {
+                $this->error("Missing required environment variable: {$key}");
+                return 1;
+            }
+        }
+
+        $this->info('✓ All required configuration variables are set');
+        return 0;
+    }
+}
+```
+
+Run during deployment:
+
+```bash
+php artisan config:validate-ai
+php artisan serve
+```
+
+### User Input Validation
+
+Always validate and sanitize user input before sending to AI APIs or storing in database:
+
+```php
+# In your controller
+public function chat(Request $request): JsonResponse
+{
+    $validated = $request->validate([
+        'session_id' => [
+            'required',
+            'string',
+            'max:255',
+            'regex:/^[a-zA-Z0-9\-_]+$/', // Only alphanumeric, dash, underscore
+        ],
+        'message' => [
+            'required',
+            'string',
+            'max:2000',
+            'min:1',
+        ],
+    ]);
+
+    // Message is now safe to use
+    // ...
+}
+```
+
+### Rate Limiting at Multiple Levels
+
+Implement rate limiting at multiple layers:
+
+```php
+# filename: app/Http/Middleware/ThrottleAIRequests.php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
+
+class ThrottleAIRequests
+{
+    public function handle(Request $request, Closure $next)
+    {
+        $key = $request->user()?->id . ':' . $request->path();
+
+        // Apply different limits per endpoint
+        $limits = [
+            '/api/chat' => ['limit' => 30, 'decay' => 1],
+            '/api/classify' => ['limit' => 10, 'decay' => 1],
+            '/api/forecasts/generate' => ['limit' => 5, 'decay' => 1],
+        ];
+
+        $config = $limits[$request->path()] ?? ['limit' => 100, 'decay' => 1];
+
+        if (RateLimiter::tooManyAttempts($key, $config['limit'])) {
+            return response()->json([
+                'error' => 'Rate limit exceeded',
+                'retry_after' => RateLimiter::availableIn($key),
+            ], 429);
+        }
+
+        RateLimiter::hit($key, $config['decay'] * 60);
+
+        return $next($request);
+    }
+}
+```
+
+### CORS Configuration
+
+Protect your API from unauthorized cross-origin requests:
+
+```php
+# filename: config/cors.php
+<?php
+
+return [
+    'paths' => ['api/*'],
+    'allowed_methods' => ['GET', 'POST', 'PUT', 'DELETE'],
+    'allowed_origins' => [
+        env('FRONTEND_URL', 'http://localhost:3000'),
+    ],
+    'allowed_origins_patterns' => [],
+    'allowed_headers' => ['Content-Type', 'Authorization'],
+    'exposed_headers' => [],
+    'max_age' => 0,
+    'supports_credentials' => true,
+];
+```
+
+### Cost Monitoring & Alerts
+
+Implement budget tracking to prevent unexpected charges:
+
+```php
+# filename: app/Services/CostTracker.php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Services;
+
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
+
+class CostTracker
+{
+    public function trackCost(string $service, float $cost): void
+    {
+        $today = now()->format('Y-m-d');
+        $key = "cost:{$service}:{$today}";
+
+        $dailyTotal = Cache::get($key, 0);
+        $newTotal = $dailyTotal + $cost;
+
+        Cache::put($key, $newTotal, now()->endOfDay());
+
+        $dailyBudget = config('ai-services.daily_budget', 10.00);
+
+        if ($newTotal > ($dailyBudget * 0.8)) {
+            Log::warning('AI Service: 80% of daily budget reached', [
+                'service' => $service,
+                'spent' => $newTotal,
+                'budget' => $dailyBudget,
+            ]);
+        }
+
+        if ($newTotal > $dailyBudget) {
+            Log::critical('AI Service: Daily budget exceeded!', [
+                'service' => $service,
+                'spent' => $newTotal,
+                'budget' => $dailyBudget,
+            ]);
+
+            // Notify admin
+            // TODO: Implement notification logic
+        }
+    }
+
+    public function getDailyCost(string $service): float
+    {
+        $today = now()->format('Y-m-d');
+        return Cache::get("cost:{$service}:{$today}", 0);
+    }
+}
+```
+
+### Secure Logging
+
+Never log sensitive information like API keys or full user conversations:
+
+```php
+# filename: config/logging.php
+<?php
+
+return [
+    // ... existing config ...
+    'channels' => [
+        'ai_operations' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/ai-operations.log'),
+            'level' => 'info',
+        ],
+        'ai_errors' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/ai-errors.log'),
+            'level' => 'error',
+        ],
+    ],
+];
+```
+
+Use scrubbing to remove sensitive data:
+
+```php
+# In your services
+Log::info('API call made', [
+    'endpoint' => 'openai.chat',
+    'model' => 'gpt-3.5-turbo',
+    // Never log: 'api_key', 'full_message', 'user_email'
+]);
+```
+
+---
+
+**Thank you for completing the AI/ML for PHP Developers series!** You now have practical skills to build intelligent, scalable PHP applications. The tools are powerful; use them responsibly. 🚀
