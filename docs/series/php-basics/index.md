@@ -38,6 +38,17 @@ You don't need any previous programming knowledge — just basic computer skills
 - **Terminal/Command line** access (built into macOS/Linux; we'll help Windows users too)
 - **SQLite** (comes bundled with PHP)
 
+::: info PHP Version Compatibility
+**PHP 8.4 is recommended** for the full learning experience. While most examples work on PHP 8.0+, some modern features require 8.4:
+
+- **Property hooks** (Chapter 8): Requires PHP 8.4
+- **Asymmetric visibility** (Chapter 8): Requires PHP 8.4
+- **Constructor property promotion**: Works on PHP 8.0+
+- **Named arguments, match expressions**: Work on PHP 8.0+
+
+For the best experience and to future-proof your skills, install PHP 8.4.
+:::
+
 **Time Commitment:**
 
 - **Estimated total**: 20–30 hours to complete all chapters
@@ -142,8 +153,8 @@ This diagram shows how concepts build on each other throughout the series:
 └────────────────────────┬────────────────────────────────────┘
                          │
 ┌────────────────────────▼────────────────────────────────────┐
-│  Part 6: Frameworks & Beyond (Ch 20-22)                     │
-│  • Laravel • Symfony • Next Steps                           │
+│  Part 6: Frameworks & Beyond (Ch 20-23)                     │
+│  • Laravel • Symfony • Next Steps • JSON & APIs             │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -239,16 +250,18 @@ Put it all together: build a router, structure an app, and create a complete blo
 - [**19 — Project: Building a Simple Blog**](/series/php-basics/chapters/19-project-building-a-simple-blog)  
   Build a full CRUD application with authentication and database
 
-### Part 6: Next Steps (Chapters 20–22)
+### Part 6: Frameworks & Beyond (Chapters 20–23)
 
-Graduate to modern frameworks with confidence.
+Graduate to modern frameworks and master essential web technologies.
 
-- [**20 — A Gentle Introduction to Laravel**](/series/php-basics/chapters/20-a-gentle-introduction-to-laravel)  
+- [**20 — A Gentle Introduction to Laravel**](/series/php-basics/chapters/20-a-gentle-introduction-to-laravel)
   Get started with the world's most popular PHP framework
-- [**21 — A Gentle Introduction to Symfony**](/series/php-basics/chapters/21-a-gentle-introduction-to-symfony)  
+- [**21 — A Gentle Introduction to Symfony**](/series/php-basics/chapters/21-a-gentle-introduction-to-symfony)
   Explore Symfony's powerful component architecture
-- [**22 — What to Learn Next**](/series/php-basics/chapters/22-what-to-learn-next)  
+- [**22 — What to Learn Next**](/series/php-basics/chapters/22-what-to-learn-next)
   Continue your PHP journey with advanced topics and resources
+- [**23 — Working with JSON and APIs**](/series/php-basics/chapters/23-working-with-json-and-apis)
+  Master JSON handling and consume RESTful APIs
 
 ---
 
@@ -266,8 +279,8 @@ No! Professional developers look things up constantly. Focus on understanding co
 **What if the exercises are too hard?**  
 Go back and re-read the chapter. Try the example code yourself. Break the problem into smaller pieces. If you're still stuck, check the troubleshooting section or ask for help (see below).
 
-**Can I use PHP 8.0, 8.1, 8.2, or 8.3 instead of 8.4?**  
-Most examples will work, but we use PHP 8.4 features and syntax throughout. We recommend installing 8.4 to avoid confusion and get the full learning experience.
+**Can I use PHP 8.0, 8.1, 8.2, or 8.3 instead of 8.4?**
+Most examples will work on PHP 8.0+, but some advanced features (property hooks and asymmetric visibility in Chapter 8) specifically require PHP 8.4. We strongly recommend installing 8.4 to get the complete learning experience and avoid compatibility issues.
 
 **Which IDE/editor should I use?**  
 Use whatever you're comfortable with. VS Code (free) is popular and has excellent PHP extensions. PhpStorm (paid, with free student licenses) is the industry standard. Even a simple text editor like Sublime Text works fine.
