@@ -7,7 +7,7 @@ Complete code examples for integrating ML models into Laravel applications.
 ### 1. Create Laravel Project
 
 ```bash
-composer create-project laravel/laravel ml-shop "11.*"
+composer create-project laravel/laravel ml-shop "12.*"
 cd ml-shop
 ```
 
@@ -484,10 +484,10 @@ Solution code for exercises is available in the `solutions/` directory.
 
 ## Further Resources
 
-- [Laravel Documentation](https://laravel.com/docs/11.x)
+- [Laravel Documentation](https://laravel.com/docs/12.x)
 - [PHP-ML Documentation](https://php-ml.readthedocs.io/)
 - [Redis Best Practices](https://redis.io/docs/management/optimization/)
-- [Laravel Queue Documentation](https://laravel.com/docs/11.x/queues)
+- [Laravel Queue Documentation](https://laravel.com/docs/12.x/queues)
 
 ## Support
 

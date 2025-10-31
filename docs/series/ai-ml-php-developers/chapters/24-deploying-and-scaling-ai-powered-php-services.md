@@ -62,6 +62,18 @@ docker run hello-world
 
 Expected output confirms Docker 20+, PHP 8.4+, Composer 2.x, and successful Docker test.
 
+::: warning PHP 8.4 Compatibility
+PHP 8.4 was released in November 2024. If your hosting provider or CI/CD environment doesn't support it yet, you can modify the Dockerfile to use PHP 8.3:
+
+```dockerfile
+# Change this line in Dockerfile:
+- FROM php:8.4-cli-alpine AS builder
++ FROM php:8.3-cli-alpine AS builder
+```
+
+All code examples in this chapter are compatible with PHP 8.3+. The main benefits of 8.4 (property hooks, asymmetric visibility) aren't critical for the deployment patterns shown here.
+:::
+
 ::: tip Cloud Provider Choice
 This chapter uses DigitalOcean for examples ($12/month droplet, $5 credit for new users), but the Docker-based approach works on any cloud provider (AWS EC2, Google Cloud, Azure, Linode). The concepts are platform-agnostic.
 :::
@@ -148,16 +160,24 @@ services:
     image: redis:7-alpine
     ports:
       - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
   app:
-    image: php:8.4-fpm-alpine
+    image: php:8.4-cli-alpine
     volumes:
-      - ./:/var/www/html
+      - ./:/app
+    working_dir: /app
     environment:
       REDIS_HOST: redis
+      REDIS_PORT: 6379
     depends_on:
-      - redis
-    command: php /var/www/html/quick-ml-service.php
+      redis:
+        condition: service_healthy
+    command: php quick-ml-service.php
 ```
 
 ```php
@@ -166,39 +186,71 @@ services:
 
 declare(strict_types=1);
 
-// Quick ML service demo
-$redis = new Redis();
-$redis->connect($_ENV['REDIS_HOST'] ?? 'redis', 6379);
-
-echo "AI Service Running!\n";
-echo "Queue depth: " . $redis->lLen('ml:jobs') . "\n";
-echo "Ready to process predictions...\n";
-
-// Simulate processing
-while (true) {
-    $job = $redis->brPop(['ml:jobs'], 5);
-    if ($job) {
-        echo "Processing: " . $job[1] . "\n";
-        $redis->set("result:{$job[1]}", json_encode(['prediction' => 0.95]));
+// Quick ML service demo with proper error handling
+try {
+    $redis = new Redis();
+    $redis->connect(getenv('REDIS_HOST') ?: 'redis', 6379);
+    
+    // Verify Redis connectivity
+    if (!$redis->ping()) {
+        throw new RuntimeException('Redis ping failed - connection issue');
     }
+
+    echo "🚀 AI Service Running!\n";
+    echo "📊 Queue depth: " . $redis->lLen('ml:jobs') . "\n";
+    echo "⏳ Ready to process predictions...\n\n";
+
+    // Process jobs continuously
+    while (true) {
+        $job = $redis->brPop(['ml:jobs'], 5); // 5-second timeout
+        if ($job) {
+            $jobId = $job[1];
+            echo "[" . date('Y-m-d H:i:s') . "] Processing: {$jobId}\n";
+            
+            // Simulate ML inference (in production, call actual model)
+            sleep(1);
+            
+            // Store result in Redis
+            $result = json_encode([
+                'prediction' => 0.95,
+                'confidence' => 0.87,
+                'processed_at' => date('c')
+            ], JSON_THROW_ON_ERROR);
+            
+            $redis->set("result:{$jobId}", $result);
+            echo "[" . date('Y-m-d H:i:s') . "] ✓ Job {$jobId} completed\n";
+        }
+    }
+} catch (Exception $e) {
+    echo "❌ Error: " . $e->getMessage() . "\n";
+    exit(1);
 }
 ```
 
 Run it:
 
 ```bash
-# Start the service
-docker compose -f quick-start-compose.yml up
+# Start the entire stack
+docker compose -f quick-start-compose.yml up -d
 
-# In another terminal, queue a job
-docker exec -it $(docker ps -qf "name=app") sh -c "php -r \"
-\$r = new Redis(); \$r->connect('redis', 6379);
-\$r->lPush('ml:jobs', 'test-prediction-1');
-echo 'Job queued!\n';
-\""
+# Wait for Redis to be ready
+sleep 3
+
+# In another terminal, queue a test job
+docker compose -f quick-start-compose.yml exec redis redis-cli LPUSH ml:jobs test-prediction-1
+
+# Check the result (will be available after ~2 seconds)
+sleep 2
+docker compose -f quick-start-compose.yml exec redis redis-cli GET "result:test-prediction-1"
+
+# View logs in real-time
+docker compose -f quick-start-compose.yml logs -f app
+
+# Clean up
+docker compose -f quick-start-compose.yml down
 ```
 
-Expected output shows the service processing your prediction request through the queue! Now let's build a production-ready version.
+Expected output shows the service receiving jobs, processing them through Redis, and storing results. Queue a few jobs and watch them process sequentially! Now let's build the production-ready version with multiple workers and load balancing.
 
 ## Objectives
 
@@ -215,6 +267,55 @@ By completing this chapter, you will:
 ::: tip Complete Code Examples
 This chapter includes extensive code examples. All files are available in [`code/chapter-24/`](../code/chapter-24/) with detailed inline documentation. Each step below references the specific files you'll need.
 :::
+
+## Typical Request Flow
+
+To understand how everything works together, here's a complete workflow from user request to result:
+
+```
+1. User Request
+   └─> POST /api/ml/sentiment
+       Content: { "text": "Great product!" }
+
+2. API Endpoint (04-api-endpoint.php)
+   ├─> Validates input
+   ├─> Generates unique job ID
+   └─> Returns HTTP 202 "Accepted"
+       Response: { "job_id": "pred_abc123", "status": "queued" }
+
+3. Job Queued to Redis
+   └─> LPUSH ml:jobs "pred_abc123"
+
+4. Worker Process (03-ml-worker.php) 
+   ├─> Continuous loop: BRPOP ml:jobs (blocks until job available)
+   ├─> Retrieves job from queue
+   └─> Processes prediction
+
+5. Caching Layer (05-caching-layer.php)
+   ├─> Checks if input features already cached
+   ├─> Cache hit? Return cached result (2ms)
+   └─> Cache miss? Run inference (~250ms)
+
+6. ML Inference
+   └─> Load model → Extract features → Get prediction
+
+7. Result Stored
+   └─> SET result:pred_abc123 "{ prediction: 0.95 }"
+       SET cache:v1:sentiment:hash123 "{ ... }" EX 3600
+
+8. User Polls Result
+   └─> GET /api/results/pred_abc123
+       Response: { "prediction": 0.95, "cached": false }
+       or (on cache hit):
+       Response: { "prediction": 0.78, "cached": true }
+
+9. Monitoring & Metrics
+   └─> INCR metrics:requests:total
+       LPUSH metrics:latency 245
+       INCR metrics:cache:misses
+```
+
+This asynchronous pattern prevents the user's HTTP request from blocking while waiting for potentially slow ML inference. The user gets an immediate response with a job ID, can check status later, and the system handles predictions in the background with multiple workers processing jobs in parallel.
 
 ## Implementation Roadmap
 
@@ -256,7 +357,10 @@ Create a multi-stage Dockerfile that separates build dependencies from runtime:
 1. Build a **multi-stage Docker image** with separate builder and production stages
 2. Install PHP extensions (`redis`, `pcntl`, `sockets`) for ML operations
 3. Create **docker-compose.yml** orchestrating app, Redis, and worker services
-4. Test the container locally before cloud deployment
+4. Configure Nginx reverse proxy for routing (added in Step 6 for production)
+5. Test the container locally before cloud deployment
+
+**Note**: While the final production setup includes Nginx load balancing (Step 6), the basic development docker-compose.yml exposes the app directly on port 8000 for simplicity during development.
 
 **Build and Test:**
 
@@ -270,10 +374,10 @@ docker build -t ai-ml-service:latest .
 # Verify image size (should be <150MB)
 docker images ai-ml-service
 
-# Test the container
+# Test the container with the test script
 docker run --rm ai-ml-service php 01-simple-docker-test.php
 
-# Start full stack
+# Start full development stack
 docker compose up -d
 ```
 
@@ -287,13 +391,14 @@ docker compose up -d
 All tests passed! Docker setup is working correctly.
 ```
 
-**Why It Works:** Multi-stage builds keep your production image small by excluding build tools. Alpine Linux base (~5MB) plus PHP and extensions results in a lean ~80-150MB final image versus 400+MB with full Debian.
+**Why It Works:** Multi-stage builds keep your production image small by excluding build tools. Alpine Linux base (~5MB) plus PHP and extensions results in a lean ~80-150MB final image versus 400+MB with full Debian. This efficiency becomes critical at scale when deploying hundreds of container instances.
 
 **Common Issues:**
 
-- **Image size >500MB**: Use Alpine base, not Debian
-- **Redis connection fails**: Check `docker network ls` - services must be on same network
-- **Permission errors**: Container runs as `www-data` - ensure files are readable
+- **Image size >500MB**: Ensure you're using Alpine base (`php:8.4-cli-alpine`), not Debian (`php:8.4-cli`)
+- **Redis connection fails**: Check `docker network ls` - services must be on same Docker Compose network. Use service name (`redis`) not `localhost`
+- **Permission errors**: Container runs as `www-data` user - ensure PHP files are readable. Use `docker compose exec app ls -la` to debug
+- **Port already in use**: If port 8000 is taken, modify `ports: ["8001:8000"]` in docker-compose.yml
 
 ## Step 2: Setting Up Redis and Job Queues (~15 min)
 
@@ -500,41 +605,105 @@ ssh root@your_server_ip
 # Install Docker
 curl -fsSL https://get.docker.com | sh
 
-# Clone your repo
+# Clone your repo (adjust path to your actual repo)
 git clone https://github.com/you/ai-ml-service.git /opt/ai-ml-service
-cd /opt/ai-ml-service/docs/series/ai-ml-php-developers/code/chapter-24
+cd /opt/ai-ml-service
 
-# Configure environment
+# Copy environment template and configure
 cp env.example .env.production
-nano .env.production  # Set REDIS_PASSWORD, etc.
+nano .env.production  # Edit: Set REDIS_PASSWORD, APP_ENV, domain, etc.
 
-# Deploy!
+# Make deploy script executable
 chmod +x scripts/deploy.sh
+
+# Run deployment
 ./scripts/deploy.sh
 ```
 
-**Production Overrides:**
-
-- Remove volume mounts (immutable deployments)
-- Set `restart: always` for automatic recovery
-- Bind services to `127.0.0.1` (only nginx public)
-- Add resource limits (CPU/memory)
-- Enable health checks
-
-**SSL Setup (Let's Encrypt):**
+**Environment Configuration Best Practices:**
 
 ```bash
-apt install certbot
-certbot certonly --standalone -d yourdomain.com
+# filename: .env.production (NEVER commit to git!)
+# Keep these secrets safe:
+
+# Strong random password (generate with: openssl rand -base64 32)
+REDIS_PASSWORD=your_strong_random_password_here
+
+# Application configuration
+APP_ENV=production
+APP_URL=https://yourdomain.com
+APP_DEBUG=false  # Never use debug mode in production
+
+# Worker configuration
+WORKER_COUNT=4   # Adjust based on server CPU cores
+
+# Monitoring
+METRICS_ENABLED=true
+HEALTH_CHECK_INTERVAL=30
 ```
 
-Then uncomment HTTPS section in `nginx/default.conf`.
+**Secrets Management:**
+
+1. **Never commit `.env.production` to Git** - Use `.gitignore` to exclude it
+2. **Use strong passwords** - Generate with `openssl rand -base64 32`
+3. **Rotate credentials periodically** - Especially `REDIS_PASSWORD`
+4. **Use environment variables** - Docker Compose can load from `.env.production`
+5. **Restrict file permissions** - `chmod 600 .env.production` on the server
+6. **For Kubernetes/cloud platforms** - Use secrets management (AWS Secrets Manager, Azure Key Vault, etc.)
+
+**Production Overrides:**
+
+The `docker-compose.prod.yml` includes production-specific settings:
+
+- Remove volume mounts (immutable, reproducible deployments)
+- Set `restart: always` for automatic recovery from crashes
+- Bind services to `127.0.0.1` (only Nginx is public-facing)
+- Add resource limits (CPU/memory) to prevent one process consuming all resources
+- Enable health checks for orchestration platforms
+- Use build `target: production` to exclude dev dependencies
+
+**SSL/TLS Setup (Let's Encrypt):**
+
+```bash
+# Install Certbot
+apt install certbot
+
+# Get free SSL certificate
+certbot certonly --standalone -d yourdomain.com
+
+# Update nginx/default.conf to use HTTPS (uncomment HTTPS section)
+# then rebuild containers:
+docker compose -f docker-compose.yml -f docker-compose.prod.yml build
+
+# Restart
+docker compose -f docker-compose.yml -f docker-compose.prod.yml restart nginx
+```
+
+**Deployment Verification:**
+
+After running the deploy script, verify your service is running:
+
+```bash
+# Check if containers are running
+docker compose -f docker-compose.yml -f docker-compose.prod.yml ps
+
+# Check health endpoint
+curl https://yourdomain.com/health | jq
+
+# View logs
+docker compose -f docker-compose.yml -f docker-compose.prod.yml logs -f
+
+# Test API
+curl -X POST https://yourdomain.com/api/ml/sentiment \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Great product!"}'
+```
 
 ## Step 6: Load Balancing and Scaling (~15 min)
 
 ### Goal
 
-Distribute traffic across multiple application instances for high availability and increased capacity.
+Distribute traffic across multiple application instances for high availability and increased capacity. Handle traffic spikes gracefully by scaling workers and app containers together.
 
 ### Implementation
 
@@ -542,34 +711,92 @@ Distribute traffic across multiple application instances for high availability a
 
 - [`nginx/default.conf`](../code/chapter-24/nginx/default.conf) - Reverse proxy config
 - [`nginx/load-balancer.conf`](../code/chapter-24/nginx/load-balancer.conf) - Multi-instance config
+- [`scripts/scale-workers.sh`](../code/chapter-24/scripts/scale-workers.sh) - Scaling automation
 
-**Nginx Configuration:**
+**Nginx Load Balancer:**
+
+Nginx sits in front of your application containers and distributes requests:
 
 ```nginx
 upstream php_backend {
-    least_conn;  # Route to server with fewest connections
+    least_conn;  # Route to server with fewest active connections
     server app:8000 max_fails=3 fail_timeout=30s;
-    # Add more for horizontal scaling:
+    # Add more for horizontal scaling (or use Docker service discovery):
     # server app2:8000 max_fails=3 fail_timeout=30s;
+    # server app3:8000 max_fails=3 fail_timeout=30s;
+}
+
+server {
+    listen 80;
+    location /api/ {
+        proxy_pass http://php_backend;
+        proxy_http_version 1.1;
+        # Important headers for passing request context
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        # Timeouts for slow ML inference
+        proxy_read_timeout 60s;
+    }
 }
 ```
 
-**Scale Workers:**
+**Scaling Strategy:**
+
+For development/small production setups, scale containers directly:
 
 ```bash
-# Scale to 4 workers
-docker compose up -d --scale worker=4
+# Scale to 3 application instances (you'll need to update Nginx upstream)
+docker compose up -d --scale app=3
 
-# Or use the scaling script
-./scripts/scale-workers.sh 6
+# Scale workers independently based on queue depth
+docker compose up -d --scale worker=6
 ```
 
-**Features:**
+For larger production deployments, use orchestration:
 
-- ✅ **Automatic failover**: Nginx retries failed requests on other backends
-- ✅ **Health checks**: `/health` endpoint monitors worker status
-- ✅ **Circuit breaker**: Temporarily remove failing backends
+- **Docker Swarm**: Built-in Docker feature for orchestrating containers across multiple hosts
+- **Kubernetes**: Industry-standard container orchestration with advanced scaling policies
+- **Managed services**: AWS ECS, Google Cloud Run, Azure Container Instances handle scaling automatically
+
+**Manual Scaling Script:**
+
+```bash
+# Scale to specific number of workers
+./scripts/scale-workers.sh 8
+
+# This monitors queue depth and adjusts worker count automatically
+```
+
+**Load Balancer Features:**
+
+- ✅ **Least connections algorithm**: Routes new requests to least-loaded backend
+- ✅ **Automatic failover**: Retries on failed backends; removes failing servers temporarily
+- ✅ **Health checks**: `/health` endpoint monitors each backend
 - ✅ **Connection pooling**: Keepalive connections reduce latency
+- ✅ **Buffering**: Prevents slow clients from tying up backend processes
+
+**Scaling Considerations:**
+
+1. **Vertical Scaling** (increase server size): Simple but limited by single machine capacity
+2. **Horizontal Scaling** (add more instances): Better for handling traffic spikes
+3. **Auto-Scaling Policies**: Scale based on:
+   - Queue depth (when jobs accumulate, add workers)
+   - CPU/Memory usage (when constrained, add app instances)
+   - Time of day (predictable traffic patterns)
+   - Response time (when exceeds threshold, scale up)
+
+**Monitoring During Scaling:**
+
+```bash
+# Watch Nginx upstream status in real-time
+watch 'docker compose exec nginx nginx -T 2>/dev/null | grep upstream'
+
+# Monitor queue depth
+watch 'docker compose exec redis redis-cli LLEN ml:jobs'
+
+# View worker count
+docker compose ps | grep worker | wc -l
+```
 
 ## Step 7: Monitoring and Logging (~15 min)
 
@@ -588,44 +815,118 @@ Track system health, ML performance, and operational metrics in real-time to det
 
 **Health Check Endpoint:**
 
+The `/health` endpoint returns detailed JSON with your system status:
+
 ```bash
 curl http://localhost/health | jq
 
 {
   "status": "healthy",
+  "timestamp": "2025-01-31T12:34:56Z",
   "system": {
     "active_workers": 4,
-    "total_processed": 1543
+    "total_processed": 1543,
+    "uptime_seconds": 3600,
+    "memory_usage_mb": 256
   },
   "queue": {
     "depth": 3,
     "retry_count": 0,
-    "failed_count": 1
+    "failed_count": 1,
+    "avg_processing_time_ms": 245
   },
   "cache": {
-    "hit_rate": 67.5
+    "hit_rate": 67.5,
+    "total_hits": 2156,
+    "total_misses": 1044
   }
 }
+```
+
+**Understanding Health Status:**
+
+- **healthy**: All systems operational. Safe for load balancer to route traffic.
+- **degraded**: Service operational but experiencing issues. Active workers < expected, or error rate elevated. Load balancers may reduce traffic.
+- **unhealthy**: Service not available. Load balancers should stop routing traffic and alert operators.
+- **warming_up**: Service started <60 seconds ago. Still initializing. Don't mark as healthy yet.
+
+**Thresholds for Status:**
+
+```
+degraded if:
+  - Active workers = 0
+  - Queue depth > 1000
+  - Error rate > 5%
+  - Cache hit rate < 20%
+
+unhealthy if:
+  - Redis connection fails
+  - Error rate > 20%
+  - All workers have crashed
+  - Memory usage > 90% of limit
 ```
 
 **Monitoring Dashboard:**
 
 Access `http://your-server/monitoring/dashboard.php` for real-time metrics:
 
-- **System Health**: Worker count, queue depth, cache performance
-- **Request Metrics**: RPM, average latency, total requests
-- **Model Performance**: Inference times, error rates, prediction counts
-- **Auto-refresh**: Updates every 5 seconds
+- **System Health**: Current worker count, queue depth, cache statistics, memory usage
+- **Request Metrics**: Requests per minute, average latency, total requests, error count
+- **Model Performance**: Inference time distribution, prediction accuracy, error types
+- **Historical Data**: Metrics over last hour with trend visualization
+- **Auto-refresh**: Updates every 5 seconds with WebSocket for near real-time updates
 
-**Metrics Tracked:**
+**Key Metrics to Monitor:**
 
-- Requests per minute
-- Average response time
-- Queue depth over time
-- Cache hit rate
-- Worker health status
-- Model inference times
-- Error rates by type
+| Metric | Target | Alert if | Notes |
+|--------|--------|----------|-------|
+| Queue Depth | < 50 jobs | > 200 | Indicates workers can't keep up |
+| Response Time | < 500ms | > 2s | Slow responses hurt user experience |
+| Error Rate | < 1% | > 5% | Indicates system reliability issues |
+| Cache Hit Rate | > 60% | < 40% | Optimize cache strategy if low |
+| Worker Health | All active | Any down | Check logs for why workers crashed |
+| Memory Usage | 60-70% | > 85% | Risk of OOM kills; scale up or optimize |
+| Inference Time | < 250ms | > 1000ms | Model slow; check GPU/CPU availability |
+
+**Setting Up Alerts:**
+
+For production, integrate with monitoring services:
+
+```bash
+# Example: Datadog integration
+# Send metrics to Datadog API every 60 seconds
+curl -X POST https://api.datadoghq.com/api/v1/series \
+  -H "DD-API-KEY: $DATADOG_API_KEY" \
+  -d @- << EOF
+{
+  "series": [
+    {
+      "metric": "ai_service.queue_depth",
+      "points": [[$(date +%s), $(redis-cli LLEN ml:jobs)]],
+      "type": "gauge"
+    }
+  ]
+}
+EOF
+```
+
+**Structured Logging:**
+
+The service logs in JSON format for easy parsing:
+
+```json
+{
+  "timestamp": "2025-01-31T12:34:56.789Z",
+  "level": "info",
+  "worker": "worker-1",
+  "job_id": "pred_12345",
+  "event": "job_completed",
+  "duration_ms": 234,
+  "status": "success"
+}
+```
+
+Use `docker compose logs --tail=100 app | jq 'select(.level=="error")'` to filter errors.
 
 ## Step 8: CI/CD Pipeline (~15 min)
 
@@ -825,23 +1126,50 @@ Congratulations! You've built a complete, production-ready AI-powered PHP servic
 
 ✅ **Intelligent Caching**: 60-80% cache hit rates significantly reduce computational costs
 
-✅ **Cloud Deployment**: Live service on public infrastructure with SSL/TLS
+✅ **Cloud Deployment**: Live service on public infrastructure with SSL/TLS and secrets management
 
-✅ **Load Balancing**: Nginx distributing traffic with automatic failover
+✅ **Load Balancing**: Nginx distributing traffic with automatic failover and health checks
 
 ✅ **Comprehensive Monitoring**: Real-time dashboards tracking system and ML-specific metrics
 
-✅ **CI/CD Automation**: Push-to-deploy workflow with automated testing
+✅ **CI/CD Automation**: Push-to-deploy workflow with automated testing and health verification
 
 ### Real-World Impact
 
 Your infrastructure can handle:
 
-- **1000+ predictions/minute** with 2-4 workers
-- **Automatic scaling** based on queue depth
-- **Zero-downtime deployments** via blue-green strategy
-- **Graceful failure handling** with retries and circuit breakers
-- **Cost optimization** through intelligent caching
+- **1000+ predictions/minute** with 2-4 workers (varies by model complexity)
+- **Automatic scaling** based on queue depth and system load
+- **Zero-downtime deployments** via blue-green strategy (Exercise 2)
+- **Graceful failure handling** with retries, circuit breakers, and fallback strategies
+- **Cost optimization** through intelligent caching reducing redundant computations
+- **High availability** with multiple instances and automatic failover
+
+### Production Deployment Checklist
+
+Before going live with your AI service:
+
+- [ ] Set strong, unique `REDIS_PASSWORD` in production
+- [ ] Enable `APP_DEBUG=false` 
+- [ ] Configure SSL/TLS with valid certificate
+- [ ] Set up monitoring and alerting (health check failures)
+- [ ] Test database backups and recovery procedures
+- [ ] Configure log aggregation (centralize logs from all containers)
+- [ ] Set resource limits to prevent runaway processes
+- [ ] Test horizontal scaling (add/remove containers, verify traffic distribution)
+- [ ] Document your deployment process and runbook for operators
+- [ ] Set up automated security scanning of Docker images
+- [ ] Configure rate limiting on API endpoints to prevent abuse
+
+### Common Production Pitfalls
+
+1. **Not monitoring workers** - Workers can fail silently; always monitor health
+2. **Cache invalidation issues** - Old predictions served when models update; version your cache keys
+3. **Resource exhaustion** - Set memory limits on containers and workers
+4. **No graceful shutdown** - Use SIGTERM handlers to finish current job before exiting
+5. **Hardcoded secrets** - Never commit `.env.production` to git
+6. **Insufficient logging** - Include context (job_id, worker, timing) in all logs
+7. **No fallback** - If ML service fails, have degraded mode for your application
 
 ### Next Steps
 

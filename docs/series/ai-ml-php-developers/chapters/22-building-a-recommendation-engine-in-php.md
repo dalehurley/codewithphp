@@ -1,6 +1,6 @@
 ---
 title: "22: Building a Recommendation Engine in PHP"
-description: "Build a production-ready recommendation system using collaborative filtering—implement user similarity calculations, rating predictions, cold start handling, and deploy an optimized recommender with caching"
+description: "Build a production-ready recommendation system using collaborative filtering—implement user similarity calculations, rating predictions, cold start handling, bias mitigation, privacy preservation, and deploy with caching, monitoring, and real-time/batch processing strategies"
 series: "ai-ml-php-developers"
 chapter: 22
 order: 22
@@ -26,6 +26,19 @@ In this chapter, you'll build a complete movie recommendation system using a rea
 
 The skills you develop here translate directly to real-world scenarios: recommending products to e-commerce customers, suggesting articles to blog readers, matching users on social platforms, or creating personalized playlists. You'll understand not just how to make recommendations, but how to evaluate their quality, optimize for speed, and handle the challenges that arise when deploying machine learning in production PHP applications.
 
+:::tip Chapter Scope
+This chapter goes **beyond the basics** covered in Chapter 21. While Chapter 21 teaches the theory, this chapter provides:
+
+- **14+ production-grade code examples** ready to integrate into real applications
+- **Complete implementation** with real datasets (not toy examples)
+- **Advanced production patterns**: real-time vs. batch, monitoring, caching strategies
+- **Real-world challenges**: bias handling, privacy concerns, model staleness, fairness
+- **PHP 8.4 features**: property hooks, asymmetric visibility, Fibers for concurrency
+- **7 detailed troubleshooting scenarios** for common production issues
+
+This is a **comprehensive, enterprise-ready** treatment of recommendation systems in PHP.
+:::
+
 ## Prerequisites
 
 Before starting this chapter, you should have:
@@ -37,7 +50,7 @@ Before starting this chapter, you should have:
 - Understanding of arrays, file I/O, and mathematical operations in PHP
 - Text editor or IDE with PHP support
 
-**Estimated Time**: ~90-120 minutes (reading, coding, and exercises)
+**Estimated Time**: ~2-3 hours (reading, coding, exercises, and advanced topics)
 
 ## What You'll Build
 
@@ -59,8 +72,15 @@ By the end of this chapter, you will have created:
 - A **production recommender class** with configuration options, caching, error handling, and performance monitoring
 - A **batch recommendation processor** that efficiently generates recommendations for multiple users
 - A **hybrid recommendation system** combining collaborative filtering, content-based filtering, and popularity for improved quality
+- A **real-time vs. batch decision framework** with appropriate architectural patterns
+- A **diversity booster** that mitigates filter bubbles through genre/category constraints
+- A **privacy-aware recommender** implementing differential privacy and GDPR compliance
+- A **model staleness handler** with incremental retraining and cache invalidation
+- A **database-backed recommender** with persistent storage patterns
+- A **Redis-based recommender** for high-speed live recommendations
+- A **monitoring and health check system** tracking performance and errors
 - **Complete test/train data splits** for proper evaluation without data leakage
-- **Working code for 14 complete examples** with datasets, demonstrating every aspect of recommendation systems
+- **Working code for 21+ complete examples** with datasets, demonstrating every aspect of recommendation systems
 
 All code examples are fully functional, tested, include realistic datasets, and follow PHP 8.4 best practices.
 
@@ -215,6 +235,12 @@ By completing this chapter, you will:
 - **Handle** cold start problems with popularity-based and content-based fallback strategies
 - **Optimize** performance using similarity caching, batch processing, and efficient matrix operations
 - **Deploy** a production-ready recommender class with configuration, monitoring, and error handling
+- **Design** real-time vs. batch processing strategies with optimal trade-offs
+- **Address** recommendation bias, filter bubbles, and fairness through diversity constraints
+- **Implement** privacy-preserving techniques including differential privacy and GDPR compliance
+- **Manage** model staleness through incremental retraining and cache invalidation strategies
+- **Deploy** recommendations using multiple architectural patterns (database-backed, Redis, queue-based)
+- **Monitor** recommendation system health with performance metrics and alerting
 
 ## Step 1: Understanding Collaborative Filtering Implementation (~10 min)
 
@@ -1719,6 +1745,403 @@ With caching enabled:
 | Generate 10 recommendations | ~150ms               | ~10ms             | 15x     |
 | Batch 100 users             | ~15s                 | ~1s               | 15x     |
 
+## Step 9: Advanced Production Considerations (~15 min)
+
+### Goal
+
+Address real-world deployment challenges including model staleness, bias handling, privacy concerns, and deployment patterns for recommendation systems.
+
+### Real-Time vs. Batch Processing
+
+Recommendation systems operate in two modes:
+
+**Batch Processing (Offline):**
+
+```php
+// Compute recommendations for all users overnight
+$recommender = new ProductionRecommender($ratings, $movies);
+$batchRecommendations = [];
+
+foreach ($allUserIds as $userId) {
+    $batchRecommendations[$userId] = $recommender
+        ->recommend($userId, 10, 10);
+}
+
+// Store in database or cache for fast retrieval
+$cache->setMany($batchRecommendations, 3600); // 1 hour TTL
+```
+
+**Benefits**: Predictable load, optimized computation, fresher recommendations
+
+**Real-Time Processing (Online):**
+
+```php
+// Compute recommendations on-demand
+public function getRecommendations(int $userId): array
+{
+    // Check cache first
+    $cached = $cache->get("rec:user:{$userId}");
+    if ($cached) {
+        return $cached;
+    }
+
+    // Compute and cache
+    $recommendations = $this->recommender->recommend($userId, 10);
+    $cache->set("rec:user:{$userId}", $recommendations, 600); // 10 min TTL
+
+    return $recommendations;
+}
+```
+
+**Benefits**: Incorporates latest ratings immediately, responds to user behavior
+
+**Hybrid Approach (Recommended):**
+
+- Pre-compute recommendations offline during low-traffic hours
+- Use short cache TTL (5-10 minutes) for real-time updates
+- Fall back to batch recommendations if real-time computation exceeds threshold
+- Re-rank cached recommendations with latest user activity
+
+### Handling Model Staleness
+
+Recommendation models degrade over time as user preferences change:
+
+```php
+class RecommenderWithFreshness
+{
+    private int $maxModelAge = 86400; // 24 hours
+
+    public function shouldRetrain(): bool
+    {
+        $modelAge = time() - $this->model->lastTrainedAt();
+        $ratingsSinceRetrain = $this->countNewRatings();
+
+        // Retrain if: model is old OR significant rating volume
+        return $modelAge > $this->maxModelAge
+            || $ratingsSinceRetrain > 1000;
+    }
+
+    public function getRecommendations(int $userId): array
+    {
+        if ($this->shouldRetrain()) {
+            // Trigger async retraining job
+            $this->queue->push(new RetrainRecommenderJob());
+
+            // Use stale recommendations while retraining
+            return $this->cache->get("rec:user:{$userId}") ?? [];
+        }
+
+        return $this->recommender->recommend($userId);
+    }
+
+    private function countNewRatings(): int
+    {
+        // Count ratings since last retraining
+        return Rating::whereDate('created_at', '>', $this->model->lastTrainedAt())
+            ->count();
+    }
+}
+```
+
+**Strategies for Freshness:**
+
+1. **Scheduled Retraining**: Retrain daily/weekly during low-traffic periods
+2. **Incremental Updates**: Update similarities for recently active users
+3. **Decay Functions**: Reduce weight of old ratings over time
+4. **Trigger-based Retraining**: Retrain when significant data changes detected
+5. **Multi-model Ensemble**: Maintain multiple models with different ages, blend predictions
+
+### Addressing Recommendation Bias
+
+**Problem**: Recommendation systems can amplify bias:
+
+```php
+// This could create a "filter bubble" - only showing similar content
+$recommendations = $this->recommend($userId, 10); // All similar, safe items
+```
+
+**Solutions:**
+
+```php
+class FairRecommender
+{
+    /**
+     * Apply diversity constraints to reduce filter bubble effect.
+     */
+    public function recommendWithDiversity(
+        int $userId,
+        int $n = 10,
+        float $diversityWeight = 0.2
+    ): array {
+        $cfRecs = $this->recommend($userId, $n * 2, 10);
+        $rerankend = [];
+
+        foreach ($cfRecs as $movieId => $score) {
+            $diversityPenalty = 0;
+
+            // Penalize movies similar to already-selected
+            foreach ($rerankend as $selectedId => $selectedScore) {
+                $similarity = $this->itemSimilarity($movieId, $selectedId);
+                $diversityPenalty += $similarity;
+            }
+
+            $adjusted = $score * (1 - $diversityWeight * $diversityPenalty);
+            $rerankend[$movieId] = $adjusted;
+        }
+
+        arsort($rerankend);
+        return array_slice($rerankend, 0, $n, true);
+    }
+
+    /**
+     * Ensure long-tail items get recommended (not just popular).
+     */
+    public function recommendWithPopularityDebiasing(
+        int $userId,
+        int $n = 10,
+        float $longTailRatio = 0.3
+    ): array {
+        $recommendations = $this->recommend($userId, $n, 10);
+        $longTailCount = (int) ($n * $longTailRatio);
+
+        // Replace some popular items with niche items
+        $longTailItems = $this->findUnderrepresentedItems($userId);
+        $toReplace = array_slice(array_keys($recommendations), 0, $longTailCount);
+
+        foreach ($toReplace as $index => $itemId) {
+            if (isset($longTailItems[$index])) {
+                unset($recommendations[$itemId]);
+                $recommendations[$longTailItems[$index]] = 3.0; // Default score for discovery
+            }
+        }
+
+        arsort($recommendations);
+        return array_slice($recommendations, 0, $n, true);
+    }
+
+    private function findUnderrepresentedItems(int $userId): array
+    {
+        // Find items rated <100 times in dataset
+        return Item::whereRaw('rating_count < 100')
+            ->whereNotIn('id', $this->userRatedItems($userId))
+            ->limit(50)
+            ->pluck('id')
+            ->toArray();
+    }
+}
+```
+
+**Bias Types to Address:**
+
+1. **Popularity Bias**: Over-recommending popular items
+2. **Filter Bubble**: Only recommending similar content
+3. **Cold-Start Bias**: New items get no recommendations
+4. **User Demographic Bias**: Recommendations differ by demographics
+5. **Temporal Bias**: Recent items weighted too heavily
+
+### Privacy-Preserving Recommendations
+
+GDPR and privacy regulations require careful handling:
+
+```php
+class PrivacyAwareRecommender
+{
+    /**
+     * Generate recommendations without storing personal data.
+     *
+     * Uses differential privacy to protect user ratings.
+     */
+    public function getPrivateRecommendations(
+        int $userId,
+        float $epsilon = 0.5 // Privacy budget
+    ): array {
+        // Add Laplace noise to user ratings for differential privacy
+        $noisyRatings = $this->addLaplaceNoise($userId, $epsilon);
+
+        // Compute recommendations using noisy data
+        return $this->recommend($userId, 10); // Using noisy ratings
+    }
+
+    private function addLaplaceNoise(int $userId, float $epsilon): array
+    {
+        $sensitivity = 5.0; // Max rating - Min rating
+        $scale = $sensitivity / $epsilon;
+        $userRatings = $this->ratingsMatrix[$userId] ?? [];
+
+        $noisy = [];
+        foreach ($userRatings as $movieId => $rating) {
+            $noise = $this->laplacianRandom(0, $scale);
+            $noisy[$movieId] = max(1, min(5, $rating + $noise));
+        }
+
+        return $noisy;
+    }
+
+    private function laplacianRandom(float $mu, float $b): float
+    {
+        $u = (mt_rand() / mt_getrandmax()) - 0.5;
+        return $mu - $b * (($u <=> 0) * log(1 - 2 * abs($u)));
+    }
+
+    /**
+     * Implement right to be forgotten.
+     */
+    public function deleteUserData(int $userId): void
+    {
+        // Remove all user ratings
+        unset($this->ratingsMatrix[$userId]);
+
+        // Clear from cache
+        $this->cache->delete("rec:user:{$userId}");
+        $this->cache->delete("sim:user:{$userId}");
+
+        // Log deletion for compliance
+        Log::info("User data deleted for GDPR compliance", ['user_id' => $userId]);
+
+        // Retrain to exclude user (optional, depending on retention policy)
+        $this->queue->push(new IncrementalRetrainJob());
+    }
+}
+```
+
+**Privacy Best Practices:**
+
+1. **Data Minimization**: Only collect ratings necessary for recommendations
+2. **Encryption**: Store user data encrypted at rest
+3. **Differential Privacy**: Add noise to protect individual records
+4. **Right to Deletion**: Implement data deletion on request
+5. **Transparency**: Explain to users how recommendations work
+6. **Audit Logging**: Track access to user data
+
+### Deployment Patterns
+
+**Pattern 1: Database-Backed Recommendations**
+
+```php
+// Store pre-computed recommendations in database
+class DatabaseBackedRecommender
+{
+    public function getRecommendations(int $userId): array
+    {
+        // Check if cached recommendations exist
+        $cached = $this->db->table('recommendations')
+            ->where('user_id', $userId)
+            ->where('created_at', '>', now()->subHours(1))
+            ->first();
+
+        if ($cached) {
+            return json_decode($cached->recommendations, true);
+        }
+
+        // Compute and store
+        $recommendations = $this->recommender->recommend($userId, 10);
+        $this->db->table('recommendations')->insert([
+            'user_id' => $userId,
+            'recommendations' => json_encode($recommendations),
+            'created_at' => now(),
+        ]);
+
+        return $recommendations;
+    }
+}
+```
+
+**Pattern 2: Message Queue for Async Batch**
+
+```php
+// Use queue for offline batch processing
+class BatchRecommenderJob
+{
+    public function handle()
+    {
+        $userIds = User::pluck('id')->toArray();
+        $recommender = new ProductionRecommender($ratings, $movies);
+
+        foreach (array_chunk($userIds, 100) as $chunk) {
+            $recommendations = [];
+
+            foreach ($chunk as $userId) {
+                $recommendations[$userId] = $recommender
+                    ->recommend($userId, 10);
+            }
+
+            // Store batch in cache
+            Cache::manyput($recommendations, 3600);
+        }
+    }
+}
+```
+
+**Pattern 3: Redis-Based Live Recommendations**
+
+```php
+// Use Redis for high-speed lookups
+class RedisRecommender
+{
+    public function getRecommendations(int $userId): array
+    {
+        $key = "rec:user:{$userId}";
+
+        // Try cache first
+        $cached = Redis::get($key);
+        if ($cached) {
+            return json_decode($cached, true);
+        }
+
+        // Compute and cache with short TTL
+        $recommendations = $this->compute($userId);
+        Redis::setex($key, 300, json_encode($recommendations)); // 5 min
+
+        return $recommendations;
+    }
+}
+```
+
+### Troubleshooting Production Issues
+
+**Issue: "Recommendations become stale or irrelevant over time"**
+
+**Diagnosis**:
+```php
+// Check model age and rating velocity
+$modelAge = time() - $this->model->lastTrainedAt();
+$ratingsPerHour = Rating::where('created_at', '>', now()->subHours(1))->count();
+
+if ($modelAge > 86400 || $ratingsPerHour > 100) {
+    // Trigger retraining
+}
+```
+
+**Solutions**:
+- Reduce training interval (daily → 6 hourly)
+- Implement incremental updates (retrain only for changed users)
+- Use time decay (older ratings weighted less)
+
+**Issue: "Recommendations are too popular/homogeneous"**
+
+Check diversity metrics:
+```php
+$diversity = $this->calculateDiversity($recommendations);
+if ($diversity < 0.5) {
+    // Apply diversity boosting
+    $recommendations = $this->applyDiversityConstraints($recommendations);
+}
+```
+
+**Issue: "High latency for real-time recommendations"**
+
+**Debug**:
+```php
+$start = microtime(true);
+$recs = $this->recommend($userId, 10);
+$duration = (microtime(true) - $start) * 1000;
+
+if ($duration > 500) { // >500ms
+    // Use batch fallback
+    $recs = $this->cache->get("rec:batch:{$userId}") ?? [];
+}
+```
+
 ## Exercises
 
 ### Exercise 1: Implement Euclidean Distance Similarity
@@ -1847,6 +2270,313 @@ echo json_encode([
 
 ```bash
 curl "http://localhost:8000/api/recommend.php?user_id=5&n=10"
+```
+
+### Exercise 5: Implement Offline Batch Recommendations
+
+**Goal**: Create a batch processor for precomputing recommendations for all users.
+
+```php
+# filename: batch-compute-recommendations.php
+<?php
+
+declare(strict_types=1);
+
+/**
+ * Batch compute recommendations for all users and store in cache.
+ */
+
+$ratings = loadRatings();
+$movies = loadMovies();
+$recommender = new ProductionRecommender($ratings, $movies);
+
+$userIds = array_keys($ratings);
+$batchSize = 50;
+$recommendations = [];
+
+echo "Computing recommendations for " . count($userIds) . " users...\n\n";
+
+$start = microtime(true);
+
+foreach (array_chunk($userIds, $batchSize) as $index => $chunk) {
+    foreach ($chunk as $userId) {
+        $recommendations[$userId] = $recommender->recommend($userId, 10);
+    }
+
+    // Store in cache or database
+    storeRecommendations($recommendations);
+    $recommendations = []; // Clear for next batch
+
+    $processed = ($index + 1) * $batchSize;
+    echo "Processed: {$processed} / " . count($userIds) . "\n";
+}
+
+$duration = microtime(true) - $start;
+echo "\n✅ Batch processing complete in " . round($duration, 2) . " seconds\n";
+
+function storeRecommendations(array $recs): void
+{
+    // Store in Redis, cache, or database
+    foreach ($recs as $userId => $recommendations) {
+        // Example: Save to JSON files
+        $filename = "cache/rec-user-{$userId}.json";
+        file_put_contents($filename, json_encode($recommendations));
+    }
+}
+```
+
+**Validation**: Run and verify output file count:
+
+```bash
+php batch-compute-recommendations.php
+ls -la cache/rec-user-*.json | wc -l  # Should equal user count
+```
+
+### Exercise 6: Implement Diversity Boosting
+
+**Goal**: Add diversity constraints to prevent filter bubbles.
+
+```php
+# filename: diversity-recommender.php
+<?php
+
+declare(strict_types=1);
+
+class DiversityRecommender
+{
+    private ProductionRecommender $recommender;
+
+    public function __construct(ProductionRecommender $recommender)
+    {
+        $this->recommender = $recommender;
+    }
+
+    /**
+     * Get recommendations with diversity constraints.
+     *
+     * Ensures recommendations span multiple genres/categories.
+     */
+    public function recommendWithDiversity(
+        int $userId,
+        int $n = 10,
+        float $diversityWeight = 0.3
+    ): array {
+        // Get more than needed for re-ranking
+        $candidates = $this->recommender->recommend($userId, $n * 3);
+
+        $selected = [];
+        $selectedGenres = [];
+
+        foreach ($candidates as $movieId => $score) {
+            $genre = $this->movies[$movieId]['genre'];
+
+            // Calculate diversity penalty
+            $penalty = 0;
+            if (isset($selectedGenres[$genre])) {
+                $penalty = ($selectedGenres[$genre] / count($selected)) * $diversityWeight;
+            }
+
+            // Adjusted score with diversity penalty
+            $adjustedScore = $score * (1 - $penalty);
+
+            $selected[$movieId] = $adjustedScore;
+
+            // Update genre counts
+            $selectedGenres[$genre] = ($selectedGenres[$genre] ?? 0) + 1;
+
+            if (count($selected) >= $n) {
+                break;
+            }
+        }
+
+        arsort($selected);
+        return array_slice($selected, 0, $n, true);
+    }
+}
+```
+
+**Validation**: Compare original and diversity-boosted recommendations:
+
+```php
+$original = $recommender->recommend(1, 10);
+$diverse = (new DiversityRecommender($recommender))
+    ->recommendWithDiversity(1, 10);
+
+// Original should have more of same genre
+// Diverse should have better genre distribution
+```
+
+### Exercise 7: Add Performance Monitoring
+
+**Goal**: Instrument the recommender with timing and health checks.
+
+```php
+# filename: monitored-recommender.php
+<?php
+
+declare(strict_types=1);
+
+class MonitoredRecommender
+{
+    private ProductionRecommender $recommender;
+    private array $metrics = [];
+
+    public function __construct(ProductionRecommender $recommender)
+    {
+        $this->recommender = $recommender;
+    }
+
+    public function recommend(int $userId, int $n = 10): array
+    {
+        $startTime = microtime(true);
+
+        try {
+            $recommendations = $this->recommender->recommend($userId, $n);
+            $duration = (microtime(true) - $startTime) * 1000;
+
+            $this->recordMetric('recommendation_time_ms', $duration);
+            $this->recordMetric('recommendations_returned', count($recommendations));
+
+            if ($duration > 500) {
+                $this->recordMetric('slow_recommendations', 1);
+            }
+
+            return $recommendations;
+        } catch (Exception $e) {
+            $this->recordMetric('recommendation_errors', 1);
+            throw $e;
+        }
+    }
+
+    public function getMetrics(): array
+    {
+        return [
+            'avg_time_ms' => array_sum($this->metrics['recommendation_time_ms'] ?? []) /
+                            max(1, count($this->metrics['recommendation_time_ms'] ?? [])),
+            'total_slow' => count($this->metrics['slow_recommendations'] ?? []),
+            'total_errors' => count($this->metrics['recommendation_errors'] ?? []),
+            'cache_stats' => $this->recommender->getStats(),
+        ];
+    }
+
+    private function recordMetric(string $name, float $value): void
+    {
+        if (!isset($this->metrics[$name])) {
+            $this->metrics[$name] = [];
+        }
+        $this->metrics[$name][] = $value;
+    }
+}
+```
+
+**Validation**: Monitor production recommendations:
+
+```php
+$monitored = new MonitoredRecommender($recommender);
+
+for ($i = 0; $i < 100; $i++) {
+    $monitored->recommend($i % 50, 10);
+}
+
+print_r($monitored->getMetrics());
+// Should show avg_time_ms, slow counts, error counts
+```
+
+## PHP 8.4 Features for Recommendation Systems
+
+This chapter's code leverages modern PHP 8.4 features to make recommendation systems more maintainable and performant:
+
+### Property Hooks (PHP 8.4 feature)
+
+```php
+class CachedRecommender
+{
+    private array $cache = [];
+    private int $cacheHits = 0;
+
+    // Use property hooks to auto-increment on cache access
+    public int $accesses {
+        get => count($this->cache);
+    }
+
+    public float $cacheHitRate {
+        get => $this->accesses > 0
+            ? ($this->cacheHits / $this->accesses)
+            : 0;
+    }
+}
+```
+
+### Asymmetric Visibility (PHP 8.4 feature)
+
+```php
+class RecommendationMetrics
+{
+    // Public read, private write - protect internal counters
+    public(set) private int $totalRecommendations = 0;
+    public(set) private int $cacheHits = 0;
+
+    public function recordHit(): void
+    {
+        $this->cacheHits++;
+        $this->totalRecommendations++;
+    }
+}
+```
+
+### Fibers for Concurrent Processing (PHP 8.1+)
+
+```php
+use Fiber;
+
+class ConcurrentRecommender
+{
+    /**
+     * Process multiple user recommendations concurrently using Fibers.
+     */
+    public function recommendConcurrently(
+        array $userIds,
+        int $fiberCount = 4
+    ): array {
+        $results = [];
+        $fibers = [];
+
+        // Create worker fibers
+        foreach (range(1, $fiberCount) as $i) {
+            $fibers[] = new Fiber(function () use ($userIds, &$results) {
+                foreach ($userIds as $userId) {
+                    $results[$userId] = $this->recommend($userId, 10);
+                    Fiber::suspend(); // Yield to next fiber
+                }
+            });
+        }
+
+        // Run all concurrently
+        foreach ($fibers as $fiber) {
+            if (!$fiber->isStarted()) {
+                $fiber->start();
+            } elseif (!$fiber->isTerminated()) {
+                $fiber->resume();
+            }
+        }
+
+        return $results;
+    }
+}
+```
+
+### Named Arguments for Clarity
+
+```php
+// The production recommender uses named arguments for clarity:
+$recommendations = $recommender->recommend(
+    userId: $userId,
+    n: 10,
+    k: 5,
+);
+
+// More readable than positional:
+$recommendations = $recommender->recommend($userId, 10, 5);
 ```
 
 ## Troubleshooting
@@ -2012,6 +2742,12 @@ By completing this chapter, you have:
 - ✅ Deployed a production-ready recommender with monitoring and configuration
 - ✅ Built hybrid systems combining multiple recommendation strategies
 - ✅ Mastered evaluation metrics and debugging techniques for recommender systems
+- ✅ Designed real-time vs. batch recommendation processing
+- ✅ Addressed recommendation bias and filter bubble effects with diversity boosting
+- ✅ Implemented privacy-preserving techniques (differential privacy, GDPR compliance)
+- ✅ Handled model staleness and implemented incremental retraining
+- ✅ Deployed recommendations with multiple patterns (database, Redis, queue-based)
+- ✅ Leveraged PHP 8.4 features (property hooks, asymmetric visibility, Fibers)
 
 You now have production-ready recommendation code that you can adapt for:
 
