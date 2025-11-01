@@ -2,13 +2,13 @@
 title: "06: Classification Basics and Building a Spam Filter"
 description: "Master binary classification by building a complete spam filter in PHP: extract text features, train Naive Bayes and k-NN classifiers, evaluate with precision/recall metrics, and deploy a working email filter"
 series: "ai-ml-php-developers"
-chapter: 6
+chapter: "06"
 order: 6
 difficulty: "Beginner"
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/03-core-machine-learning-concepts-and-terminology"
-  - "/series/ai-ml-php-developers/chapters/04-data-collection-and-preprocessing-in-php"
-  - "/series/ai-ml-php-developers/chapters/05-your-first-machine-learning-model-linear-regression-in-php"
+  - "03"
+  - "04"
+  - "05"
 ---
 
 ![Classification Basics and Building a Spam Filter](/images/ai-ml-php-developers/chapter-06-classification-spam-filter-hero-full.webp)

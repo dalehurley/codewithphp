@@ -1,20 +1,18 @@
 ---
-title: Capstone Project and Future Trends
+title: "25: Capstone Project and Future Trends"
 description: Build SmartDash, a comprehensive AI-powered analytics dashboard integrating chatbot, recommendations, forecasting, and image tagging. Explore future trends including ONNX Runtime, generative AI, vector databases, and AI ethics.
 series: ai-ml-php-developers
-chapter: 25-capstone-project-and-future-trends
+chapter: "25"
 order: 25
-difficulty: advanced
+difficulty: Advanced
 prerequisites:
-  [
-    15-language-models-and-text-generation-with-openai-apis,
-    17-image-classification-project-with-pre-trained-models,
-    20-time-series-forecasting-project,
-    21-recommender-systems-theory-and-use-cases,
-    22-building-a-recommendation-engine-in-php,
-    23-integrating-ai-models-into-web-applications,
-    24-deploying-and-scaling-ai-powered-php-services,
-  ]
+  - "15"
+  - "17"
+  - "20"
+  - "21"
+  - "22"
+  - "23"
+  - "24"
 ---
 
 ![Capstone Project and Future Trends](/images/ai-ml-php-developers/chapter-25-capstone-future-trends-hero-full.webp)

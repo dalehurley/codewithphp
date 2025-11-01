@@ -2,11 +2,11 @@
 title: "24: Deploying and Scaling AI-Powered PHP Services"
 description: "Learn to deploy AI-powered PHP applications to production with Docker, async job queues, load balancing, monitoring, and CI/CD pipelines"
 series: "ai-ml-php-developers"
-chapter: 24
+chapter: "24"
 order: 24
 difficulty: "Advanced"
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/23-integrating-ai-models-into-web-applications"
+  - "23"
 ---
 
 ![Deploying and Scaling AI-Powered PHP Services](/images/ai-ml-php-developers/chapter-24-deploying-ai-services-hero-full.webp)

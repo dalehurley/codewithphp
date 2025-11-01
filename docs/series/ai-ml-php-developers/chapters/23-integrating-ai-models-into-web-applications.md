@@ -2,13 +2,13 @@
 title: "23: Integrating AI Models into Web Applications"
 description: "Build production-ready Laravel applications with ML integration: create model service layers, implement caching strategies, process predictions in background jobs, and deploy intelligent features with proper error handling and performance optimization"
 series: "ai-ml-php-developers"
-chapter: 23
+chapter: "23"
 order: 23
 difficulty: "Intermediate"
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/22-building-a-recommendation-engine-in-php"
-  - "/series/ai-ml-php-developers/chapters/15-language-models-and-text-generation-with-openai-apis"
-  - "/series/ai-ml-php-developers/chapters/14-nlp-project-text-classification-in-php"
+  - "22"
+  - "15"
+  - "14"
 ---
 
 ![Integrating AI Models into Web Applications](/images/ai-ml-php-developers/chapter-23-ai-web-integration-hero-full.webp)

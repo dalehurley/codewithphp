@@ -2,12 +2,12 @@
 title: "14: NLP Project: Text Classification in PHP"
 description: "Build a production-ready sentiment analyzer using PHP to preprocess text, extract TF-IDF features, train Naive Bayes/SVM/Logistic Regression classifiers, and achieve 85%+ accuracy on movie reviews"
 series: "ai-ml-php-developers"
-chapter: 14
+chapter: "14"
 order: 14
 difficulty: "Intermediate"
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/13-natural-language-processing-nlp-fundamentals"
-  - "/series/ai-ml-php-developers/chapters/08-leveraging-php-machine-learning-libraries"
+  - "13"
+  - "08"
 ---
 
 # Chapter 14: NLP Project: Text Classification in PHP

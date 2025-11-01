@@ -2,12 +2,12 @@
 title: "11: Integrating PHP with Python for Advanced ML"
 description: "Learn how to leverage Python's rich ML ecosystem from PHP applications: master shell execution, REST APIs, and message queues; build a production sentiment analyzer combining PHP's web strengths with Python's ML power"
 series: "ai-ml-php-developers"
-chapter: 11
+chapter: "11"
 order: 11
 difficulty: "Intermediate"
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/10-neural-networks-and-deep-learning-fundamentals"
-  - "/series/ai-ml-php-developers/chapters/08-leveraging-php-machine-learning-libraries"
+  - "10"
+  - "08"
 ---
 
 ![Integrating PHP with Python for Advanced ML](/images/ai-ml-php-developers/chapter-11-php-python-integration-hero-full.webp)

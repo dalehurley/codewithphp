@@ -2,12 +2,12 @@
 title: "03: Core Machine Learning Concepts and Terminology"
 description: "Master essential ML concepts through PHP examples: supervised vs unsupervised learning, features and labels, training vs inference, overfitting prevention, and the complete ML workflow with hands-on classification projects"
 series: "ai-ml-php-developers"
-chapter: 3
+chapter: "03"
 order: 3
 difficulty: "Beginner"
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/01-introduction-to-ai-and-machine-learning-for-php-developers"
-  - "/series/ai-ml-php-developers/chapters/02-setting-up-your-ai-development-environment"
+  - "01"
+  - "02"
 ---
 
 ![Core Machine Learning Concepts and Terminology](/images/ai-ml-php-developers/chapter-03-ml-concepts-hero-full.webp)

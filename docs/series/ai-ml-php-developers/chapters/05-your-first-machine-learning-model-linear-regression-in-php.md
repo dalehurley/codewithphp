@@ -2,12 +2,12 @@
 title: "05: Your First Machine Learning Model: Linear Regression in PHP"
 description: "Build a complete predictive model from scratch: understand linear regression theory, implement the math in PHP, train on real data, evaluate with proper metrics, and deploy a working house price predictor"
 series: "ai-ml-php-developers"
-chapter: 5
+chapter: "05"
 order: 5
 difficulty: "Beginner"
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/03-core-machine-learning-concepts-and-terminology"
-  - "/series/ai-ml-php-developers/chapters/04-data-collection-and-preprocessing-in-php"
+  - "03"
+  - "04"
 ---
 
 ![Your First Machine Learning Model: Linear Regression in PHP](/images/ai-ml-php-developers/chapter-05-linear-regression-hero-full.webp)

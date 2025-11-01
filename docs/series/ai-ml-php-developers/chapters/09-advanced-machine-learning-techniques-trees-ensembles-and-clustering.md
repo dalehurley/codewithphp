@@ -2,12 +2,12 @@
 title: "09: Advanced Machine Learning Techniques (Trees, Ensembles, and Clustering)"
 description: "Master decision trees, random forests, gradient boosting, and clustering algorithms in PHP: build interpretable classifiers, ensemble models for superior accuracy, and discover hidden patterns with k-means and hierarchical clustering"
 series: "ai-ml-php-developers"
-chapter: 9
+chapter: "09"
 order: 9
 difficulty: "Intermediate"
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/03-core-machine-learning-concepts-and-terminology"
-  - "/series/ai-ml-php-developers/chapters/08-leveraging-php-machine-learning-libraries"
+  - "03"
+  - "08"
 ---
 
 ![Advanced Machine Learning Techniques (Trees, Ensembles, and Clustering)](/images/ai-ml-php-developers/chapter-09-advanced-ml-techniques-hero-full.webp)
