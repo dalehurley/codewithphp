@@ -3468,70 +3468,32 @@ Most importantly, you have a **systematic improvement process**:
 
 ### What's Next
 
-In [Chapter 08: Leveraging PHP Machine Learning Libraries](/
-series/ai-ml-php-developers/chapters/
-08-leveraging-php-machine-learning-libraries), you'll dive deep
-into using PHP-ML and Rubix ML to:
+In [Chapter 08: Leveraging PHP Machine Learning Libraries](/series/ai-ml-php-developers/chapters/08-leveraging-php-machine-learning-libraries), you'll dive deep into using PHP-ML and Rubix ML to:
 
-- Leverage 40+ pre-built algorithms without implementing from
-  scratch
-- Use advanced features like pipelines, transformers, and
-  cross-validators
+- Leverage 40+ pre-built algorithms without implementing from scratch
+- Use advanced features like pipelines, transformers, and cross-validators
 - Save and load models for production deployment
 - Build real-world projects faster with production-ready libraries
 - Understand when to use which library and algorithm
 
-You'll apply all the evaluation techniques from this chapter to
-compare algorithms and choose the best for your specific use case.
+You'll apply all the evaluation techniques from this chapter to compare algorithms and choose the best for your specific use case.
 
 ## Further Reading
 
 To deepen your understanding of model evaluation and improvement:
 
-- [Precision and Recall - Wikipedia](https://en.wikipedia.org/
-  wiki/Precision_and_recall) — Comprehensive explanation with
-  examples across multiple domains
-- [ROC Curve and AUC Explained](https://developers.google.com/
-  machine-learning/crash-course/classification/roc-and-auc) —
-  Google's ML crash course on ROC curves
-- [An Introduction to Statistical Learning](https://www.
-  statlearning.com/) — Chapter 5 covers resampling methods (CV,
-  bootstrap) in depth; Chapter 8 covers ensemble methods
-- [Feature Selection Guide - scikit-learn](https://scikit-learn.
-  org/stable/modules/feature_selection.html) — Comprehensive
-  coverage of feature selection techniques
-- [Hyperparameter Optimization - Practical Guide](https://
-  machinelearningmastery.com/
-  hyperparameter-optimization-with-random-search-and-grid-search/)
-  — When to use grid search vs. random search
-- [Understanding the Bias-Variance Tradeoff](http://scott.
-  fortmann-roe.com/docs/BiasVariance.html) — Visual explanation of
-  learning curves and what they reveal
-- [Rubix ML: Cross Validation](https://docs.rubixml.com/latest/
-  cross-validation/api.html) — Official docs on metrics and
-  validation in Rubix ML
-- [Matthews Correlation Coefficient](https://en.wikipedia.org/
-  wiki/Matthews_correlation_coefficient) — Why MCC is excellent for
-  imbalanced data
-- [Interpreting Learning Curves](https://machinelearningmastery.
-  com/
-  learning-curves-for-diagnosing-machine-learning-model-performance/
-  ) — Detailed guide to diagnosing model issues
-- [Permutation Importance](https://christophm.github.io/
-  interpretable-ml-book/feature-importance.html) — From
-  "Interpretable Machine Learning" book
-- [Ensemble Methods - scikit-learn](https://scikit-learn.org/
-  stable/modules/ensemble.html) — Comprehensive guide to voting,
-  bagging, boosting, and stacking
-- [SMOTE: Synthetic Minority Over-sampling Technique](https://
-  arxiv.org/abs/1106.1813) — Original research paper introducing
-  SMOTE
-- [Imbalanced-learn Documentation](https://imbalanced-learn.org/)
-  — Python library specializing in imbalanced datasets (reference
-  for techniques)
-- [Learning from Imbalanced Data](https://www.jair.org/index.php/
-  jair/article/view/10302) — Comprehensive survey paper on handling
-  class imbalance
-- [Random Forests (Bagging Example)](https://www.stat.berkeley.
-  edu/~breiman/RandomForests/cc_home.htm) — Leo Breiman's
-  introduction to Random Forests, the most famous bagging ensemble
+- [Precision and Recall - Wikipedia](https://en.wikipedia.org/wiki/Precision_and_recall) — Comprehensive explanation with examples across multiple domains
+- [ROC Curve and AUC Explained](https://developers.google.com/machine-learning/crash-course/classification/roc-and-auc) — Google's ML crash course on ROC curves
+- [An Introduction to Statistical Learning](https://www.statlearning.com/) — Chapter 5 covers resampling methods (CV, bootstrap) in depth; Chapter 8 covers ensemble methods
+- [Feature Selection Guide - scikit-learn](https://scikit-learn.org/stable/modules/feature_selection.html) — Comprehensive coverage of feature selection techniques
+- [Hyperparameter Optimization - Practical Guide](https://machinelearningmastery.com/hyperparameter-optimization-with-random-search-and-grid-search/) — When to use grid search vs. random search
+- [Understanding the Bias-Variance Tradeoff](http://scott.fortmann-roe.com/docs/BiasVariance.html) — Visual explanation of learning curves and what they reveal
+- [Rubix ML: Cross Validation](https://docs.rubixml.com/latest/cross-validation/api.html) — Official docs on metrics and validation in Rubix ML
+- [Matthews Correlation Coefficient](https://en.wikipedia.org/wiki/Matthews_correlation_coefficient) — Why MCC is excellent for imbalanced data
+- [Interpreting Learning Curves](https://machinelearningmastery.com/learning-curves-for-diagnosing-machine-learning-model-performance/) — Detailed guide to diagnosing model issues
+- [Permutation Importance](https://christophm.github.io/interpretable-ml-book/feature-importance.html) — From "Interpretable Machine Learning" book
+- [Ensemble Methods - scikit-learn](https://scikit-learn.org/stable/modules/ensemble.html) — Comprehensive guide to voting, bagging, boosting, and stacking
+- [SMOTE: Synthetic Minority Over-sampling Technique](https://arxiv.org/abs/1106.1813) — Original research paper introducing SMOTE
+- [Imbalanced-learn Documentation](https://imbalanced-learn.org/) — Python library specializing in imbalanced datasets (reference for techniques)
+- [Learning from Imbalanced Data](https://www.jair.org/index.php/jair/article/view/10302) — Comprehensive survey paper on handling class imbalance
+- [Random Forests (Bagging Example)](https://www.stat.berkeley.edu/~breiman/RandomForests/cc_home.htm) — Leo Breiman's introduction to Random Forests, the most famous bagging ensemble
