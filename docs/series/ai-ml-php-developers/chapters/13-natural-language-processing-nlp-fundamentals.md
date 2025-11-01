@@ -2,11 +2,11 @@
 title: "13: Natural Language Processing (NLP) Fundamentals"
 description: Learn to process and analyze text data in PHP—from tokenization, stop-word removal, and stemming to bag-of-words and TF-IDF feature extraction for NLP projects
 series: ai-ml-php-developers
-chapter: 13
+chapter: "13"
 order: 13
 difficulty: Intermediate
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/12-deep-learning-with-tensorflow-and-php"
+  - "12"
 ---
 
 ![Natural Language Processing (NLP) Fundamentals](/images/ai-ml-php-developers/chapter-13-nlp-fundamentals-hero-full.webp)

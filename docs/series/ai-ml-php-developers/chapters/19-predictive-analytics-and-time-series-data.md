@@ -2,12 +2,12 @@
 title: "19: Predictive Analytics and Time Series Data"
 description: "Master time series forecasting techniques to predict future trends using stock price data, moving averages, linear regression, and Python integration with Prophet"
 series: "ai-ml-php-developers"
-chapter: 19
+chapter: "19"
 order: 19
 difficulty: "Intermediate"
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/18-object-detection-and-recognition-in-php-applications"
-  - "/series/ai-ml-php-developers/chapters/08-leveraging-php-machine-learning-libraries"
+  - "18"
+  - "08"
 ---
 
 ![Predictive Analytics and Time Series Data](/images/ai-ml-php-developers/chapter-19-predictive-analytics-hero-full.webp)

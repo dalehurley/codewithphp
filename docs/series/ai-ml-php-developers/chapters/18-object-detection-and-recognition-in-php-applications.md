@@ -2,11 +2,11 @@
 title: "18: Object Detection and Recognition in PHP Applications"
 description: "Learn to locate and identify multiple objects in images using YOLO, cloud APIs, and OpenCV with PHP integration"
 series: "ai-ml-php-developers"
-chapter: 18
+chapter: "18"
 order: 18
 difficulty: "Intermediate"
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/17-image-classification-project-with-pre-trained-models"
+  - "17"
 ---
 
 ![Object Detection and Recognition in PHP Applications](/images/ai-ml-php-developers/chapter-18-object-detection-hero-full.webp)

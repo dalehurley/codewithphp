@@ -2,11 +2,11 @@
 title: "15: Language Models and Text Generation with OpenAI APIs"
 description: "Master large language models by building text generators, summarizers, and intelligent chatbots using OpenAI's GPT API with both raw HTTP and library approaches"
 series: "ai-ml-php-developers"
-chapter: 15
+chapter: "15"
 order: 15
 difficulty: "Intermediate"
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/14-nlp-project-text-classification-in-php"
+  - "14"
 ---
 
 ![Language Models and Text Generation with OpenAI APIs](/images/ai-ml-php-developers/chapter-15-language-models-hero-full.webp)

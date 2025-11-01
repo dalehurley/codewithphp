@@ -2,14 +2,14 @@
 title: "22: Building a Recommendation Engine in PHP"
 description: "Build a production-ready recommendation system using collaborative filtering—implement user similarity calculations, rating predictions, cold start handling, bias mitigation, privacy preservation, and deploy with caching, monitoring, and real-time/batch processing strategies"
 series: "ai-ml-php-developers"
-chapter: 22
+chapter: "22"
 order: 22
 difficulty: "Intermediate"
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/21-recommender-systems-theory-and-use-cases"
-  - "/series/ai-ml-php-developers/chapters/08-leveraging-php-machine-learning-libraries"
-  - "/series/ai-ml-php-developers/chapters/03-core-machine-learning-concepts-and-terminology"
-  - "/series/ai-ml-php-developers/chapters/06-classification-basics-and-building-a-spam-filter"
+  - "21"
+  - "08"
+  - "03"
+  - "06"
 ---
 
 ![Building a Recommendation Engine in PHP](/images/ai-ml-php-developers/chapter-22-recommendation-engine-hero-full.webp)

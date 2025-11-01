@@ -2,11 +2,11 @@
 title: "21: Recommender Systems: Theory and Use Cases"
 description: "Learn how recommendation engines work—from collaborative filtering and content-based approaches to similarity measures, prediction algorithms, and real-world use cases"
 series: "ai-ml-php-developers"
-chapter: 21
+chapter: "21"
 order: 21
 difficulty: "Intermediate"
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/20-time-series-forecasting-project"
+  - "20"
 ---
 
 ![Recommender Systems: Theory and Use Cases](/images/ai-ml-php-developers/chapter-21-recommender-systems-hero-full.webp)

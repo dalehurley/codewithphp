@@ -2,11 +2,11 @@
 title: "16: Computer Vision Essentials for PHP Developers"
 description: "Master image processing in PHP—from loading and manipulating images to extracting features for machine learning, using GD extension and custom processors"
 series: "ai-ml-php-developers"
-chapter: 16
+chapter: "16"
 order: 16
 difficulty: "Intermediate"
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/15-language-models-and-text-generation-with-openai-apis"
+  - "15"
 ---
 
 ![Computer Vision Essentials for PHP Developers](/images/ai-ml-php-developers/chapter-16-computer-vision-hero-full.webp)

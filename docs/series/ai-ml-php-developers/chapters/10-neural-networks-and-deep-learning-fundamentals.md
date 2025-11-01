@@ -2,12 +2,12 @@
 title: "10: Neural Networks and Deep Learning Fundamentals"
 description: "Master neural networks from the ground up: build perceptrons from scratch, understand activation functions and backpropagation, solve the XOR problem with multi-layer networks, and deploy production MLPs in PHP"
 series: "ai-ml-php-developers"
-chapter: 10
+chapter: "10"
 order: 10
 difficulty: "Intermediate"
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/03-core-machine-learning-concepts-and-terminology"
-  - "/series/ai-ml-php-developers/chapters/09-advanced-machine-learning-techniques-trees-ensembles-and-clustering"
+  - "03"
+  - "09"
 ---
 
 ![Neural Networks and Deep Learning Fundamentals](/images/ai-ml-php-developers/chapter-10-neural-networks-hero-full.webp)

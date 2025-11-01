@@ -2,13 +2,13 @@
 title: "20: Time Series Forecasting Project"
 description: "Build a complete sales forecasting system with moving average, linear regression, and Facebook Prophet integration to predict e-commerce revenue with accuracy evaluation"
 series: "ai-ml-php-developers"
-chapter: 20
+chapter: "20"
 order: 20
 difficulty: "Intermediate"
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/19-predictive-analytics-and-time-series-data"
-  - "/series/ai-ml-php-developers/chapters/11-integrating-php-with-python-for-advanced-ml"
-  - "/series/ai-ml-php-developers/chapters/08-leveraging-php-machine-learning-libraries"
+  - "19"
+  - "11"
+  - "08"
 ---
 
 ![Time Series Forecasting Project](/images/ai-ml-php-developers/chapter-20-time-series-forecasting-hero-full.webp)

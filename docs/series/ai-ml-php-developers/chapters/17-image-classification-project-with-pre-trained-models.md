@@ -2,12 +2,12 @@
 title: "17: Image Classification Project with Pre-trained Models"
 description: "Build a production-ready image classifier using both cloud vision APIs and local ONNX models: implement Google Cloud Vision integration, deploy MobileNet locally, and create a unified classification service with caching and error handling"
 series: "ai-ml-php-developers"
-chapter: 17
+chapter: "17"
 order: 17
 difficulty: "Intermediate"
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/16-computer-vision-essentials-for-php-developers"
-  - "/series/ai-ml-php-developers/chapters/12-deep-learning-with-tensorflow-and-php"
+  - "16"
+  - "12"
 ---
 
 ![Image Classification Project with Pre-trained Models](/images/ai-ml-php-developers/chapter-17-image-classification-hero-full.webp)

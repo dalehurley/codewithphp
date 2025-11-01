@@ -1,10 +1,10 @@
 ---
-title: Introduction to AI and Machine Learning for PHP Developers
+title: "01: Introduction to AI and Machine Learning for PHP Developers"
 description: Introduces the fundamentals of AI and machine learning in a PHP context. Discusses why AI/ML matters for web development, common use cases (like recommendations, chatbots, and image tagging), and how PHP can participate in AI solutions. Outlines the journey from basic concepts to advanced implementations.
 series: ai-ml-php-developers
-chapter: 01-introduction-to-ai-and-machine-learning-for-php-developers
+chapter: "01"
 order: 1
-difficulty: beginner
+difficulty: Beginner
 prerequisites: []
 ---
 

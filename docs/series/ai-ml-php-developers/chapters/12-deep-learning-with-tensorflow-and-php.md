@@ -2,12 +2,12 @@
 title: "12: Deep Learning with TensorFlow and PHP"
 description: "Learn to integrate TensorFlow deep learning models into PHP applications using TensorFlow Serving and REST APIs: deploy pre-trained neural networks, build an image classification service, and leverage state-of-the-art AI in production"
 series: "ai-ml-php-developers"
-chapter: 12
+chapter: "12"
 order: 12
 difficulty: "Intermediate"
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/10-neural-networks-and-deep-learning-fundamentals"
-  - "/series/ai-ml-php-developers/chapters/11-integrating-php-with-python-for-advanced-ml"
+  - "10"
+  - "11"
 ---
 
 ![Deep Learning with TensorFlow and PHP](/images/ai-ml-php-developers/chapter-12-tensorflow-php-hero-full.webp)

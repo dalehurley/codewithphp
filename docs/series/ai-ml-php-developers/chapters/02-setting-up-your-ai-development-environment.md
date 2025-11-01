@@ -2,11 +2,11 @@
 title: "02: Setting Up Your AI Development Environment"
 description: "Configure a complete development environment for AI/ML with PHP, including PHP 8.4, Composer, ML libraries, and optional Python integration for advanced projects"
 series: "ai-ml-php-developers"
-chapter: 2
+chapter: "02"
 order: 2
 difficulty: "Beginner"
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/01-introduction-to-ai-and-machine-learning-for-php-developers"
+  - "01"
 ---
 
 ![Setting Up Your AI Development Environment](/images/ai-ml-php-developers/chapter-02-ai-environment-setup-hero-full.webp)

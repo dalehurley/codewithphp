@@ -2,12 +2,12 @@
 title: "07: Model Evaluation and Improvement"
 description: "Master model evaluation with accuracy, precision, recall, F1-score, and ROC-AUC metrics. Learn cross-validation, hyperparameter tuning, feature selection, and ensemble methods to systematically improve your machine learning models"
 series: "ai-ml-php-developers"
-chapter: 7
+chapter: "07"
 order: 7
 difficulty: "Intermediate"
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/03-core-machine-learning-concepts-and-terminology"
-  - "/series/ai-ml-php-developers/chapters/06-classification-basics-and-building-a-spam-filter"
+  - "03"
+  - "06"
 ---
 
 ![Model Evaluation and Improvement](/images/ai-ml-php-developers/chapter-07-model-evaluation-hero-full.webp)

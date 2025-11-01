@@ -2,12 +2,12 @@
 title: "08: Leveraging PHP Machine Learning Libraries"
 description: "Master PHP-ML and Rubix ML to build production-ready classifiers, clustering systems, and regressors with battle-tested algorithms - reducing 200 lines of code to 20"
 series: "ai-ml-php-developers"
-chapter: 8
+chapter: "08"
 order: 8
 difficulty: "Intermediate"
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/06-classification-basics-and-building-a-spam-filter"
-  - "/series/ai-ml-php-developers/chapters/07-model-evaluation-and-improvement"
+  - "06"
+  - "07"
 ---
 
 ![Leveraging PHP Machine Learning Libraries](/images/ai-ml-php-developers/chapter-08-ml-libraries-hero-full.webp)
