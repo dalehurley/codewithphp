@@ -6,8 +6,8 @@ chapter: "07"
 order: 7
 difficulty: "Intermediate"
 prerequisites:
-  - "03"
-  - "06"
+  - "/series/ai-ml-php-developers/chapters/03-core-machine-learning-concepts-and-terminology"
+  - "/series/ai-ml-php-developers/chapters/06-classification-basics-and-building-a-spam-filter"
 ---
 
 ![Model Evaluation and Improvement](/images/ai-ml-php-developers/chapter-07-model-evaluation-hero-full.webp)
@@ -63,23 +63,23 @@ All code examples are fully functional and include visualizations (text-based) o
 ::: info Code Examples
 Complete, runnable examples for this chapter:
 
-- [`01-evaluation-metrics.php`](../code/chapter-07/01-evaluation-metrics.php) — Comprehensive metrics toolkit
-- [`02-confusion-matrix-deep-dive.php`](../code/chapter-07/02-confusion-matrix-deep-dive.php) — Advanced confusion matrix analysis
-- [`03-precision-recall-tradeoff.php`](../code/chapter-07/03-precision-recall-tradeoff.php) — Understanding the tradeoff
-- [`04-stratified-cross-validation.php`](../code/chapter-07/04-stratified-cross-validation.php) — Handling imbalanced classes
-- [`05-roc-curve.php`](../code/chapter-07/05-roc-curve.php) — ROC-AUC analysis
-- [`06-learning-curves.php`](../code/chapter-07/06-learning-curves.php) — Diagnosing data needs
-- [`07-grid-search.php`](../code/chapter-07/07-grid-search.php) — Hyperparameter tuning
-- [`08-feature-importance.php`](../code/chapter-07/08-feature-importance.php) — Feature ranking
-- [`09-feature-selection.php`](../code/chapter-07/09-feature-selection.php) — Automated feature selection
-- [`10-ensemble-voting.php`](../code/chapter-07/10-ensemble-voting.php) — Voting classifiers
-- [`11-ensemble-bagging.php`](../code/chapter-07/11-ensemble-bagging.php) — Bootstrap aggregating
-- [`12-class-imbalance-smote.php`](../code/chapter-07/12-class-imbalance-smote.php) — SMOTE implementation
-- [`13-class-weights.php`](../code/chapter-07/13-class-weights.php) — Class weight handling
-- [`14-error-analysis.php`](../code/chapter-07/14-error-analysis.php) — Understanding failures
-- [`15-spam-filter-optimized.php`](../code/chapter-07/15-spam-filter-optimized.php) — Production-ready spam filter
+- [`01-evaluation-metrics.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/01-evaluation-metrics.php) — Comprehensive metrics toolkit
+- [`02-confusion-matrix-deep-dive.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/02-confusion-matrix-deep-dive.php) — Advanced confusion matrix analysis
+- [`03-precision-recall-tradeoff.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/03-precision-recall-tradeoff.php) — Understanding the tradeoff
+- [`04-stratified-cross-validation.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/04-stratified-cross-validation.php) — Handling imbalanced classes
+- [`05-roc-curve.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/05-roc-curve.php) — ROC-AUC analysis
+- [`06-learning-curves.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/06-learning-curves.php) — Diagnosing data needs
+- [`07-grid-search.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/07-grid-search.php) — Hyperparameter tuning
+- [`08-feature-importance.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/08-feature-importance.php) — Feature ranking
+- [`09-feature-selection.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/09-feature-selection.php) — Automated feature selection
+- [`10-ensemble-voting.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/10-ensemble-voting.php) — Voting classifiers
+- [`11-ensemble-bagging.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/11-ensemble-bagging.php) — Bootstrap aggregating
+- [`12-class-imbalance-smote.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/12-class-imbalance-smote.php) — SMOTE implementation
+- [`13-class-weights.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/13-class-weights.php) — Class weight handling
+- [`14-error-analysis.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/14-error-analysis.php) — Understanding failures
+- [`15-spam-filter-optimized.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/15-spam-filter-optimized.php) — Production-ready spam filter
 
-All files are in [`docs/series/ai-ml-php-developers/code/chapter-07/`](../code/chapter-07/README.md)
+All files are in [`docs/series/ai-ml-php-developers/code/chapter-07/`](/series/ai-ml-php-developers/code/chapter-07/README.md)
 :::
 
 ## Quick Start
@@ -3142,7 +3142,7 @@ Create `exercise3.php` that:
 Create `exercise4.php` that:
 
 1. Calculates permutation importance for all features
-2. Tries models with top-k features for k ∈ {3, 5, 7, 10, all}
+2. Tries models with top-k features for k ∈ \{3, 5, 7, 10, all\}
 3. Plots accuracy vs. number of features
 4. Identifies optimal feature count
 5. Lists selected features with importance scores
@@ -3414,21 +3414,35 @@ $correctedPredictions = array_map(
 
 ## Wrap-up
 
-Congratulations! You've mastered model evaluation and improvement. Here's what you've accomplished:
+Congratulations! You've mastered model evaluation and
+improvement. Here's what you've accomplished:
 
-- ✓ **Calculated comprehensive metrics** going far beyond accuracy to include precision, recall, F1-score, specificity, and MCC for balanced evaluation
-- ✓ **Understood the precision-recall tradeoff** and learned when to optimize for each based on business costs
-- ✓ **Implemented stratified cross-validation** to get reliable estimates even with imbalanced datasets
-- ✓ **Generated and interpreted ROC curves** to visualize classifier performance across all thresholds and calculate AUC-ROC
-- ✓ **Created learning curves** to diagnose whether models need more data, better features, or different algorithms
-- ✓ **Performed grid search** to systematically find optimal hyperparameters using cross-validation
-- ✓ **Calculated feature importance** using permutation importance to identify which features drive predictions
-- ✓ **Implemented feature selection** to remove unhelpful features and improve generalization
-- ✓ **Built ensemble classifiers** using voting and bagging to achieve 2-5% accuracy gains over single models
-- ✓ **Handled severely imbalanced datasets** with SMOTE, random sampling, and class weights to improve minority class detection
-- ✓ **Performed systematic error analysis** to identify patterns in misclassifications and target improvements
+- ✓ **Calculated comprehensive metrics** going far beyond
+  accuracy to include precision, recall, F1-score, specificity, and
+  MCC for balanced evaluation
+- ✓ **Understood the precision-recall tradeoff** and learned when
+  to optimize for each based on business costs
+- ✓ **Implemented stratified cross-validation** to get reliable
+  estimates even with imbalanced datasets
+- ✓ **Generated and interpreted ROC curves** to visualize
+  classifier performance across all thresholds and calculate AUC-ROC
+- ✓ **Created learning curves** to diagnose whether models need
+  more data, better features, or different algorithms
+- ✓ **Performed grid search** to systematically find optimal
+  hyperparameters using cross-validation
+- ✓ **Calculated feature importance** using permutation
+  importance to identify which features drive predictions
+- ✓ **Implemented feature selection** to remove unhelpful
+  features and improve generalization
+- ✓ **Built ensemble classifiers** using voting and bagging to
+  achieve 2-5% accuracy gains over single models
+- ✓ **Handled severely imbalanced datasets** with SMOTE, random
+  sampling, and class weights to improve minority class detection
+- ✓ **Performed systematic error analysis** to identify patterns
+  in misclassifications and target improvements
 
-You now have a comprehensive evaluation framework that separates amateur models from production-ready systems. You understand:
+You now have a comprehensive evaluation framework that separates
+amateur models from production-ready systems. You understand:
 
 - Why accuracy alone is dangerously misleading
 - How to choose metrics that match your business goals
@@ -3439,144 +3453,85 @@ You now have a comprehensive evaluation framework that separates amateur models 
 
 Most importantly, you have a **systematic improvement process**:
 
-1. **Evaluate comprehensively** with multiple metrics and cross-validation
+1. **Evaluate comprehensively** with multiple metrics and
+   cross-validation
 2. **Diagnose issues** with learning curves (bias vs. variance)
-3. **Handle class imbalance** with SMOTE, undersampling, or class weights if needed
+3. **Handle class imbalance** with SMOTE, undersampling, or class
+   weights if needed
 4. **Tune hyperparameters** with grid search and proper validation
 5. **Select features** to reduce overfitting and improve speed
 6. **Build ensembles** if accuracy gain justifies added complexity
-7. **Analyze errors** to identify patterns and target specific weaknesses
+7. **Analyze errors** to identify patterns and target specific
+   weaknesses
 8. **Iterate** until performance meets requirements
 9. **Deploy** with confidence backed by rigorous evaluation
 
 ### What's Next
 
-In [Chapter 08: Leveraging PHP Machine Learning Libraries](/series/ai-ml-php-developers/chapters/08-leveraging-php-machine-learning-libraries), you'll dive deep into using PHP-ML and Rubix ML to:
+In [Chapter 08: Leveraging PHP Machine Learning Libraries](/
+series/ai-ml-php-developers/chapters/
+08-leveraging-php-machine-learning-libraries), you'll dive deep
+into using PHP-ML and Rubix ML to:
 
-- Leverage 40+ pre-built algorithms without implementing from scratch
-- Use advanced features like pipelines, transformers, and cross-validators
+- Leverage 40+ pre-built algorithms without implementing from
+  scratch
+- Use advanced features like pipelines, transformers, and
+  cross-validators
 - Save and load models for production deployment
 - Build real-world projects faster with production-ready libraries
 - Understand when to use which library and algorithm
 
-You'll apply all the evaluation techniques from this chapter to compare algorithms and choose the best for your specific use case.
+You'll apply all the evaluation techniques from this chapter to
+compare algorithms and choose the best for your specific use case.
 
 ## Further Reading
 
 To deepen your understanding of model evaluation and improvement:
 
-- [Precision and Recall - Wikipedia](https://en.wikipedia.org/wiki/Precision_and_recall) — Comprehensive explanation with examples across multiple domains
-- [ROC Curve and AUC Explained](https://developers.google.com/machine-learning/crash-course/classification/roc-and-auc) — Google's ML crash course on ROC curves
-- [An Introduction to Statistical Learning](https://www.statlearning.com/) — Chapter 5 covers resampling methods (CV, bootstrap) in depth; Chapter 8 covers ensemble methods
-- [Feature Selection Guide - scikit-learn](https://scikit-learn.org/stable/modules/feature_selection.html) — Comprehensive coverage of feature selection techniques
-- [Hyperparameter Optimization - Practical Guide](https://machinelearningmastery.com/hyperparameter-optimization-with-random-search-and-grid-search/) — When to use grid search vs. random search
-- [Understanding the Bias-Variance Tradeoff](http://scott.fortmann-roe.com/docs/BiasVariance.html) — Visual explanation of learning curves and what they reveal
-- [Rubix ML: Cross Validation](https://docs.rubixml.com/latest/cross-validation/api.html) — Official docs on metrics and validation in Rubix ML
-- [Matthews Correlation Coefficient](https://en.wikipedia.org/wiki/Matthews_correlation_coefficient) — Why MCC is excellent for imbalanced data
-- [Interpreting Learning Curves](https://machinelearningmastery.com/learning-curves-for-diagnosing-machine-learning-model-performance/) — Detailed guide to diagnosing model issues
-- [Permutation Importance](https://christophm.github.io/interpretable-ml-book/feature-importance.html) — From "Interpretable Machine Learning" book
-- [Ensemble Methods - scikit-learn](https://scikit-learn.org/stable/modules/ensemble.html) — Comprehensive guide to voting, bagging, boosting, and stacking
-- [SMOTE: Synthetic Minority Over-sampling Technique](https://arxiv.org/abs/1106.1813) — Original research paper introducing SMOTE
-- [Imbalanced-learn Documentation](https://imbalanced-learn.org/) — Python library specializing in imbalanced datasets (reference for techniques)
-- [Learning from Imbalanced Data](https://www.jair.org/index.php/jair/article/view/10302) — Comprehensive survey paper on handling class imbalance
-- [Random Forests (Bagging Example)](https://www.stat.berkeley.edu/~breiman/RandomForests/cc_home.htm) — Leo Breiman's introduction to Random Forests, the most famous bagging ensemble
-
-## Knowledge Check
-
-Test your understanding of model evaluation and improvement:
-
-<!-- <!-- <Quiz
-<!-- <!-- title="Chapter 07 Quiz: Model Evaluation and Improvement"
-<!-- <!-- :questions="[
-<!-- <!-- {
-<!-- <!-- question: 'Why is accuracy alone misleading for imbalanced datasets?',
-<!-- <!-- options: [
-<!-- <!-- { text: 'A naive classifier that always predicts the majority class can achieve high accuracy without learning anything useful', correct: true, explanation: 'With 95% class A and 5% class B, always predicting A gives 95% accuracy but is useless for detecting B. This is why precision, recall, and F1-score are critical.' },
-<!-- <!-- { text: 'Accuracy cannot be calculated for imbalanced datasets', correct: false, explanation: 'Accuracy can always be calculated (correct/total). The problem is that it hides poor performance on minority classes.' },
-<!-- <!-- { text: 'Imbalanced datasets always cause low accuracy', correct: false, explanation: 'Imbalanced datasets can actually make accuracy misleadingly HIGH. A naive classifier gets high accuracy by exploiting imbalance.' },
-<!-- <!-- { text: 'Accuracy requires equal numbers of each class', correct: false, explanation: 'Accuracy can be calculated regardless of class distribution. It just becomes less informative with imbalance.' }
-<!-- <!-- ]
-<!-- <!-- },
-<!-- <!-- {
-<!-- <!-- question: 'What does the precision metric tell you about a spam filter?',
-<!-- <!-- options: [
-<!-- <!-- { text: 'Of all emails flagged as spam, what percentage are actually spam (reliability of spam predictions)', correct: true, explanation: 'Precision = TP/(TP+FP). It measures how many of your positive predictions are correct. High precision = few false positives = rarely blocks good emails.' },
-<!-- <!-- { text: 'Of all actual spam emails, what percentage did we catch', correct: false, explanation: 'That is recall, not precision. Recall = TP/(TP+FN) measures completeness of spam detection.' },
-<!-- <!-- { text: 'The overall percentage of correct predictions', correct: false, explanation: 'That is accuracy. Accuracy = (TP+TN)/Total measures overall correctness.' },
-<!-- <!-- { text: 'How confident the model is in its predictions', correct: false, explanation: 'Precision measures correctness of positive predictions, not confidence. Confidence comes from probability scores.' }
-<!-- <!-- ]
-<!-- <!-- },
-<!-- <!-- {
-<!-- <!-- question: 'What does it mean when a learning curve shows high training accuracy but low test accuracy that doesn\\'t improve with more data?',
-<!-- <!-- options: [
-<!-- <!-- { text: 'High variance (overfitting) - the model has memorized training data and more data will help', correct: false, explanation: 'If more data doesn\\'t help (curves have plateaued), it\\'s not high variance. High variance shows as a gap that narrows with more data.' },
-<!-- <!-- { text: 'High bias (underfitting) - the model is too simple and needs better features or more complexity', correct: true, explanation: 'When both curves plateau at low values and the gap doesn\\'t close with more data, the model cannot capture the patterns (high bias). Need more complex model or better features.' },
-<!-- <!-- { text: 'Perfect fit - the model is working optimally', correct: false, explanation: 'Low test accuracy means poor performance. Perfect fit shows high accuracy on both train and test with small gap.' },
-<!-- <!-- { text: 'Data leakage - test data has contaminated training', correct: false, explanation: 'Data leakage would make test accuracy artificially high, not low. This scenario shows genuinely poor test performance.' }
-<!-- <!-- ]
-<!-- <!-- },
-<!-- <!-- {
-<!-- <!-- question: 'Why use stratified k-fold cross-validation instead of regular k-fold?',
-<!-- <!-- options: [
-<!-- <!-- { text: 'Stratified CV ensures each fold maintains the same class proportions as the full dataset, preventing folds with missing minority classes', correct: true, explanation: 'With 10% minority class and 5 folds, random splitting might create folds with 0%, 5%, or 20% minority class. Stratified ensures all folds have 10%, giving reliable estimates.' },
-<!-- <!-- { text: 'Stratified CV is faster than regular k-fold', correct: false, explanation: 'Stratification adds computational overhead (grouping by class). It\\'s slightly slower but provides better estimates for imbalanced data.' },
-<!-- <!-- { text: 'Stratified CV always produces higher accuracy', correct: false, explanation: 'Stratification doesn\\'t change the model or its performance. It provides more reliable and stable performance estimates.' },
-<!-- <!-- { text: 'Stratified CV is required for balanced datasets', correct: false, explanation: 'Stratification helps most with imbalanced data. For balanced datasets, regular k-fold usually works fine.' }
-<!-- <!-- ]
-<!-- <!-- },
-<!-- <!-- {
-<!-- <!-- question: 'What does an AUC-ROC score of 0.5 indicate?',
-<!-- <!-- options: [
-<!-- <!-- { text: 'The model is no better than random guessing', correct: true, explanation: 'AUC=0.5 means the ROC curve follows the diagonal, indicating the model ranks positive and negative examples randomly. It has zero discriminative power.' },
-<!-- <!-- { text: 'The model is 50% accurate', correct: false, explanation: 'AUC measures ranking ability across all thresholds, not accuracy at a specific threshold. A model with 70% accuracy could have AUC=0.5 if predictions are random.' },
-<!-- <!-- { text: 'The model needs more training data', correct: false, explanation: 'AUC=0.5 indicates the model cannot distinguish classes. More data won\\'t help if features are uninformative or algorithm is inappropriate.' },
-<!-- <!-- { text: 'The model is halfway to optimal performance', correct: false, explanation: 'AUC=0.5 is the worst possible (equivalent to random). Optimal is AUC=1.0. But improvement isn\\'t linear - going from 0.5 to 0.9 is much easier than 0.9 to 1.0.' }
-<!-- <!-- ]
-<!-- <!-- },
-<!-- <!-- {
-<!-- <!-- question: 'When should you optimize for high precision over high recall?',
-<!-- <!-- options: [
-<!-- <!-- { text: 'When false positives are more costly than false negatives (e.g., spam filter - don\\'t block important emails)', correct: true, explanation: 'High precision minimizes false positives. For spam: better to let some spam through (false negative) than block important emails (false positive). User can always mark spam manually.' },
-<!-- <!-- { text: 'When false negatives are more costly than false positives', correct: false, explanation: 'That\\'s when you optimize for recall. Example: cancer screening - missing cancer (false negative) is much worse than false alarm (false positive).' },
-<!-- <!-- { text: 'Always - precision is more important than recall', correct: false, explanation: 'Neither metric is universally more important. The choice depends on the relative costs of false positives vs. false negatives in your specific application.' },
-<!-- <!-- { text: 'When the dataset is balanced', correct: false, explanation: 'Dataset balance doesn\\'t determine whether precision or recall matters more. Cost of errors determines optimization goal, regardless of class distribution.' }
-<!-- <!-- ]
-<!-- <!-- },
-<!-- <!-- {
-<!-- <!-- question: 'What is the purpose of grid search in hyperparameter tuning?',
-<!-- <!-- options: [
-<!-- <!-- { text: 'Systematically evaluate all combinations of hyperparameter values using cross-validation to find the optimal configuration', correct: true, explanation: 'Grid search exhaustively tries every combination in your parameter grid (e.g., k * weighted * distance = all combos) and uses CV to evaluate each, ensuring you find the best within your grid.' },
-<!-- <!-- { text: 'Randomly sample hyperparameter values to find good configurations faster than exhaustive search', correct: false, explanation: 'That describes random search, not grid search. Grid search is exhaustive within the specified grid.' },
-<!-- <!-- { text: 'Automatically determine which hyperparameters to tune', correct: false, explanation: 'You specify which hyperparameters to tune and what values to try. Grid search doesn\\'t decide this automatically.' },
-<!-- <!-- { text: 'Train the model faster by using parallel processing', correct: false, explanation: 'While grid search can use parallel processing, its purpose is finding optimal hyperparameters, not speeding up training.' }
-<!-- <!-- ]
-<!-- <!-- },
-<!-- <!-- {
-<!-- <!-- question: 'What does negative permutation importance for a feature indicate?',
-<!-- <!-- options: [
-<!-- <!-- { text: 'The feature is adding noise - shuffling it actually improves performance', correct: true, explanation: 'Negative importance means accuracy increases when the feature is randomized. The feature was misleading the model. Remove it!' },
-<!-- <!-- { text: 'The feature is highly important and should be kept', correct: false, explanation: 'High importance shows as large positive values. Negative importance means the feature hurts performance.' },
-<!-- <!-- { text: 'An error in the permutation importance calculation', correct: false, explanation: 'Negative importance is valid and meaningful. It reveals features that add more noise than signal.' },
-<!-- <!-- { text: 'The feature has inverse correlation with the target', correct: false, explanation: 'Inverse correlation would show positive importance (model uses it correctly). Negative importance means the feature is misleading the model.' }
-<!-- <!-- ]
-<!-- <!-- },
-<!-- <!-- {
-<!-- <!-- question: 'When should you use ensemble methods like voting classifiers or bagging?',
-<!-- <!-- options: [
-<!-- <!-- { text: 'When you need 2-5% accuracy improvement and can accept slower inference and added complexity', correct: true, explanation: 'Ensembles typically improve accuracy by 2-5% over single models but are N times slower (where N = number of models). Use them when this tradeoff makes sense for your application.' },
-<!-- <!-- { text: 'Always use ensembles because they are always better than single models', correct: false, explanation: 'Ensembles add complexity, slower inference, and reduced interpretability. Use them only when the accuracy gain justifies these costs.' },
-<!-- <!-- { text: 'Only when you have very little training data', correct: false, explanation: 'Bagging helps with limited data, but ensembles are useful in many scenarios. The decision depends on accuracy needs vs. speed/complexity constraints.' },
-<!-- <!-- { text: 'When you need fast inference for production systems', correct: false, explanation: 'Ensembles are slower (N times inference time). For fast inference, stick with single models or use model compression techniques.' }
-<!-- <!-- ]
-<!-- <!-- },
-<!-- <!-- {
-<!-- <!-- question: 'Your dataset has 1000 samples: 990 class A, 10 class B. Your model predicts all samples as class A, achieving 99% accuracy. What technique would best improve class B detection?',
-<!-- <!-- options: [
-<!-- <!-- { text: 'SMOTE to create synthetic class B samples, balancing the dataset to 990:990', correct: true, explanation: 'SMOTE creates synthetic minority samples via interpolation, giving the model enough class B examples to learn patterns. This typically works better than simple duplication (random oversampling).' },
-<!-- <!-- { text: 'Nothing - 99% accuracy means the model is working perfectly', correct: false, explanation: '99% accuracy is misleading! The model learns to always predict A (achieving 99% accuracy) but catches zero class B samples (0% recall for class B). This is useless for detecting class B.' },
-<!-- <!-- { text: 'Use a different metric instead of accuracy', correct: false, explanation: 'While you should track precision/recall/F1 instead of just accuracy, this doesn\\'t solve the problem. The model still needs balanced training data to learn class B patterns.' },
-<!-- <!-- { text: 'Reduce k in k-NN to make the model more sensitive', correct: false, explanation: 'Hyperparameter tuning won\\'t help if the model never sees enough class B examples during training. Fix the data imbalance first.' }
-<!-- <!-- ]
-<!-- <!-- }
-<!-- <!-- ]"
-<!-- <!-- /> -->
+- [Precision and Recall - Wikipedia](https://en.wikipedia.org/
+  wiki/Precision_and_recall) — Comprehensive explanation with
+  examples across multiple domains
+- [ROC Curve and AUC Explained](https://developers.google.com/
+  machine-learning/crash-course/classification/roc-and-auc) —
+  Google's ML crash course on ROC curves
+- [An Introduction to Statistical Learning](https://www.
+  statlearning.com/) — Chapter 5 covers resampling methods (CV,
+  bootstrap) in depth; Chapter 8 covers ensemble methods
+- [Feature Selection Guide - scikit-learn](https://scikit-learn.
+  org/stable/modules/feature_selection.html) — Comprehensive
+  coverage of feature selection techniques
+- [Hyperparameter Optimization - Practical Guide](https://
+  machinelearningmastery.com/
+  hyperparameter-optimization-with-random-search-and-grid-search/)
+  — When to use grid search vs. random search
+- [Understanding the Bias-Variance Tradeoff](http://scott.
+  fortmann-roe.com/docs/BiasVariance.html) — Visual explanation of
+  learning curves and what they reveal
+- [Rubix ML: Cross Validation](https://docs.rubixml.com/latest/
+  cross-validation/api.html) — Official docs on metrics and
+  validation in Rubix ML
+- [Matthews Correlation Coefficient](https://en.wikipedia.org/
+  wiki/Matthews_correlation_coefficient) — Why MCC is excellent for
+  imbalanced data
+- [Interpreting Learning Curves](https://machinelearningmastery.
+  com/
+  learning-curves-for-diagnosing-machine-learning-model-performance/
+  ) — Detailed guide to diagnosing model issues
+- [Permutation Importance](https://christophm.github.io/
+  interpretable-ml-book/feature-importance.html) — From
+  "Interpretable Machine Learning" book
+- [Ensemble Methods - scikit-learn](https://scikit-learn.org/
+  stable/modules/ensemble.html) — Comprehensive guide to voting,
+  bagging, boosting, and stacking
+- [SMOTE: Synthetic Minority Over-sampling Technique](https://
+  arxiv.org/abs/1106.1813) — Original research paper introducing
+  SMOTE
+- [Imbalanced-learn Documentation](https://imbalanced-learn.org/)
+  — Python library specializing in imbalanced datasets (reference
+  for techniques)
+- [Learning from Imbalanced Data](https://www.jair.org/index.php/
+  jair/article/view/10302) — Comprehensive survey paper on handling
+  class imbalance
+- [Random Forests (Bagging Example)](https://www.stat.berkeley.
+  edu/~breiman/RandomForests/cc_home.htm) — Leo Breiman's
+  introduction to Random Forests, the most famous bagging ensemble
