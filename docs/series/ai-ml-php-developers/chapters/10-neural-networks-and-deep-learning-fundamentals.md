@@ -2,12 +2,12 @@
 title: "10: Neural Networks and Deep Learning Fundamentals"
 description: "Master neural networks from the ground up: build perceptrons from scratch, understand activation functions and backpropagation, solve the XOR problem with multi-layer networks, and deploy production MLPs in PHP"
 series: "ai-ml-php-developers"
-chapter: 10
+chapter: "10"
 order: 10
 difficulty: "Intermediate"
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/03-core-machine-learning-concepts-and-terminology"
-  - "/series/ai-ml-php-developers/chapters/09-advanced-machine-learning-techniques-trees-ensembles-and-clustering"
+  - "03"
+  - "09"
 ---
 
 ![Neural Networks and Deep Learning Fundamentals](/images/ai-ml-php-developers/chapter-10-neural-networks-hero-full.webp)
@@ -77,35 +77,35 @@ Complete, runnable examples for this chapter:
 
 **Basic Perceptron Examples:**
 
-- [`01-perceptron-basics.php`](../code/chapter-10/01-perceptron-basics.php) — Simple perceptron class from scratch
-- [`02-logic-gates-and-or.php`](../code/chapter-10/02-logic-gates-and-or.php) — AND/OR gate implementations
-- [`03-perceptron-training.php`](../code/chapter-10/03-perceptron-training.php) — Training loop with weight updates
-- [`04-activation-functions.php`](../code/chapter-10/04-activation-functions.php) — Sigmoid, tanh, ReLU, step functions
-- [`05-activation-comparison.php`](../code/chapter-10/05-activation-comparison.php) — Compare activation behaviors
+- [`01-perceptron-basics.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-10/01-perceptron-basics.php) — Simple perceptron class from scratch
+- [`02-logic-gates-and-or.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-10/02-logic-gates-and-or.php) — AND/OR gate implementations
+- [`03-perceptron-training.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-10/03-perceptron-training.php) — Training loop with weight updates
+- [`04-activation-functions.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-10/04-activation-functions.php) — Sigmoid, tanh, ReLU, step functions
+- [`05-activation-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-10/05-activation-comparison.php) — Compare activation behaviors
 
 **Multi-Layer Network Examples:**
 
-- [`06-xor-problem.php`](../code/chapter-10/06-xor-problem.php) — Demonstrate perceptron limitations
-- [`07-simple-mlp-scratch.php`](../code/chapter-10/07-simple-mlp-scratch.php) — Basic 2-layer network from scratch
-- [`08-forward-propagation.php`](../code/chapter-10/08-forward-propagation.php) — Layer-by-layer forward pass
-- [`09-backpropagation.php`](../code/chapter-10/09-backpropagation.php) — Complete backprop implementation
-- [`10-xor-mlp-solution.php`](../code/chapter-10/10-xor-mlp-solution.php) — Solve XOR with hidden layer
+- [`06-xor-problem.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-10/06-xor-problem.php) — Demonstrate perceptron limitations
+- [`07-simple-mlp-scratch.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-10/07-simple-mlp-scratch.php) — Basic 2-layer network from scratch
+- [`08-forward-propagation.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-10/08-forward-propagation.php) — Layer-by-layer forward pass
+- [`09-backpropagation.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-10/09-backpropagation.php) — Complete backprop implementation
+- [`10-xor-mlp-solution.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-10/10-xor-mlp-solution.php) — Solve XOR with hidden layer
 
 **Production Examples:**
 
-- [`11-rubixml-mlp-basic.php`](../code/chapter-10/11-rubixml-mlp-basic.php) — Using Rubix ML MLPClassifier
-- [`12-pattern-recognizer.php`](../code/chapter-10/12-pattern-recognizer.php) — Binary pattern classification
-- [`13-learning-rate-tuning.php`](../code/chapter-10/13-learning-rate-tuning.php) — Compare learning rates
-- [`14-convergence-analysis.php`](../code/chapter-10/14-convergence-analysis.php) — Track loss over epochs
+- [`11-rubixml-mlp-basic.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-10/11-rubixml-mlp-basic.php) — Using Rubix ML MLPClassifier
+- [`12-pattern-recognizer.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-10/12-pattern-recognizer.php) — Binary pattern classification
+- [`13-learning-rate-tuning.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-10/13-learning-rate-tuning.php) — Compare learning rates
+- [`14-convergence-analysis.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-10/14-convergence-analysis.php) — Track loss over epochs
 
 **Helper Classes:**
 
-- [`Perceptron.php`](../code/chapter-10/Perceptron.php) — Complete perceptron class
-- [`ActivationFunctions.php`](../code/chapter-10/ActivationFunctions.php) — OOP activation functions
-- [`SimpleNeuralNetwork.php`](../code/chapter-10/SimpleNeuralNetwork.php) — Basic MLP implementation
-- [`helpers.php`](../code/chapter-10/helpers.php) — Utility functions
+- [`Perceptron.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-10/Perceptron.php) — Complete perceptron class
+- [`ActivationFunctions.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-10/ActivationFunctions.php) — OOP activation functions
+- [`SimpleNeuralNetwork.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-10/SimpleNeuralNetwork.php) — Basic MLP implementation
+- [`helpers.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-10/helpers.php) — Utility functions
 
-All files are in [`docs/series/ai-ml-php-developers/code/chapter-10/`](../code/chapter-10/README.md)
+All files are in [`docs/series/ai-ml-php-developers/code/chapter-10/`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-10/README.md)
 :::
 
 ## Quick Start
@@ -2740,6 +2740,8 @@ Congratulations! You've built a solid foundation in neural networks. Let's revie
 - Control systems: Robotics, game AI, autonomous vehicles
 
 You now understand how neural networks really work—not just as a black box, but as mathematical functions that learn by adjusting weights through gradient descent. This foundation is essential for deep learning and advanced AI applications.
+
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="10-neural-networks-and-deep-learning-fundamentals" />
 
 ## Further Reading
 

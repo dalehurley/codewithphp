@@ -1,10 +1,10 @@
 ---
-title: Introduction to AI and Machine Learning for PHP Developers
+title: "01: Introduction to AI and Machine Learning for PHP Developers"
 description: Introduces the fundamentals of AI and machine learning in a PHP context. Discusses why AI/ML matters for web development, common use cases (like recommendations, chatbots, and image tagging), and how PHP can participate in AI solutions. Outlines the journey from basic concepts to advanced implementations.
 series: ai-ml-php-developers
-chapter: 01-introduction-to-ai-and-machine-learning-for-php-developers
+chapter: "01"
 order: 1
-difficulty: beginner
+difficulty: Beginner
 prerequisites: []
 ---
 
@@ -48,11 +48,11 @@ By the end of this chapter, you will have:
 ::: info Code Examples
 Complete, runnable examples for this chapter:
 
-- [`quick-start-demo.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-01/quick-start-demo.php) — Your first ML model in 5 minutes
-- [`supervised-example.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-01/supervised-example.php) — Detailed spam classification demo
-- [`unsupervised-example.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-01/unsupervised-example.php) — Customer segmentation clustering
-- [`ml-lifecycle-demo.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-01/ml-lifecycle-demo.php) — Complete 6-step ML workflow
-- [`recommendation-example.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-01/recommendation-example.php) — Movie recommendation system
+- [`quick-start-demo.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-01/quick-start-demo.php) — Your first ML model in 5 minutes
+- [`supervised-example.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-01/supervised-example.php) — Detailed spam classification demo
+- [`unsupervised-example.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-01/unsupervised-example.php) — Customer segmentation clustering
+- [`ml-lifecycle-demo.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-01/ml-lifecycle-demo.php) — Complete 6-step ML workflow
+- [`recommendation-example.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-01/recommendation-example.php) — Movie recommendation system
 
 All files are in [`docs/series/ai-ml-php-developers/code/chapter-01/`](/series/ai-ml-php-developers/code/chapter-01/README.md)
 :::
@@ -837,6 +837,8 @@ In the next chapter, we'll explore the **fundamental concepts of machine learnin
 2. **Integrate**: Connect to Python scripts or REST APIs
 3. **Collaborate**: Work with data scientists on complex projects
 
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="01-introduction-to-ai-and-machine-learning-for-php-developers" />
+
 ## Further Reading
 
 To deepen your understanding of the topics covered in this chapter:
@@ -1047,7 +1049,7 @@ cd docs/series/ai-ml-php-developers/code/chapter-01
 php recommendation-example.php
 ```
 
-Here's the core concept (excerpt from [`recommendation-example.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-01/recommendation-example.php)):
+Here's the core concept (excerpt from [`recommendation-example.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-01/recommendation-example.php)):
 
 ```php
 # filename: recommendation-example.php (excerpt)

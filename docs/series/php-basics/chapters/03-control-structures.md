@@ -628,6 +628,8 @@ switch ($color) {
     - Below 60: F
     - Hint: You can use `match` with conditions like `$score >= 90 => 'A'`
 
+<ChapterCheckbox seriesId="php-basics" chapterId="03-control-structures" />
+
 ## Further Reading
 
 To dive deeper into control structures, check out these official PHP documentation pages:
@@ -659,9 +661,9 @@ In the next chapter, we'll learn how to bundle our code into reusable blocks cal
 ::: info Code Examples
 Complete, runnable examples from this chapter are available in:
 
-- [`if-else-examples.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/03-control/if-else-examples.php) - If/else statements and conditional logic
-- [`switch-match-examples.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/03-control/switch-match-examples.php) - Switch statements and match expressions
-- [`loops-examples.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/03-control/loops-examples.php) - For, while, and foreach loops
+- [`if-else-examples.php`](https://github.com/dalehurley/codewithphp/blob/main/code/php-basics/03-control/if-else-examples.php) - If/else statements and conditional logic
+- [`switch-match-examples.php`](https://github.com/dalehurley/codewithphp/blob/main/code/php-basics/03-control/switch-match-examples.php) - Switch statements and match expressions
+- [`loops-examples.php`](https://github.com/dalehurley/codewithphp/blob/main/code/php-basics/03-control/loops-examples.php) - For, while, and foreach loops
 - `solutions/` - Solutions to chapter exercises
   :::
 

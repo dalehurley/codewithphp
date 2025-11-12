@@ -9,7 +9,7 @@ prerequisites:
   - "/series/php-basics/chapters/12-dependency-management-with-composer"
 ---
 
-![Working with the Filesystem](/images/php-basics/chapter-13-filesystem-hero-full.webp)
+![Working with the Filesystem](/images/php-basics/chapter-13-working-filesystem-hero-full.webp)
 
 # Chapter 13: Working with the Filesystem
 
@@ -1560,7 +1560,9 @@ options: [
 ]"
 />
 
-### Further Reading
+<ChapterCheckbox seriesId="php-basics" chapterId="13-working-with-the-filesystem" />
+
+## Further Reading
 
 - [PHP Filesystem Functions](https://www.php.net/manual/en/ref.filesystem.php) - Complete reference
 - [JSON Functions in PHP](https://www.php.net/manual/en/ref.json.php) - Detailed JSON documentation

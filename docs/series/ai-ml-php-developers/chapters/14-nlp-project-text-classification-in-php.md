@@ -2,13 +2,15 @@
 title: "14: NLP Project: Text Classification in PHP"
 description: "Build a production-ready sentiment analyzer using PHP to preprocess text, extract TF-IDF features, train Naive Bayes/SVM/Logistic Regression classifiers, and achieve 85%+ accuracy on movie reviews"
 series: "ai-ml-php-developers"
-chapter: 14
+chapter: "14"
 order: 14
 difficulty: "Intermediate"
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/13-natural-language-processing-nlp-fundamentals"
-  - "/series/ai-ml-php-developers/chapters/08-leveraging-php-machine-learning-libraries"
+  - "13"
+  - "08"
 ---
+
+![NLP Project: Text Classification in PHP](/images/ai-ml-php-developers/chapter-14-text-classification-hero-full.webp)
 
 # Chapter 14: NLP Project: Text Classification in PHP
 
@@ -62,22 +64,22 @@ All code examples are fully functional, tested, and include realistic datasets y
 ::: info Code Examples
 Complete, runnable examples for this chapter:
 
-- [`01-load-dataset.php`](../code/chapter-14/01-load-dataset.php) — Load and inspect movie review dataset
-- [`02-text-preprocessing.php`](../code/chapter-14/02-text-preprocessing.php) — Complete text preprocessing pipeline
-- [`03-bag-of-words.php`](../code/chapter-14/03-bag-of-words.php) — Bag-of-words vectorization
-- [`04-tfidf-vectorizer.php`](../code/chapter-14/04-tfidf-vectorizer.php) — TF-IDF feature extraction
-- [`05-naive-bayes-sentiment.php`](../code/chapter-14/05-naive-bayes-sentiment.php) — Naive Bayes classifier
-- [`06-svm-sentiment.php`](../code/chapter-14/06-svm-sentiment.php) — SVM classifier
-- [`07-logistic-regression-sentiment.php`](../code/chapter-14/07-logistic-regression-sentiment.php) — Logistic Regression classifier
-- [`08-evaluation-metrics.php`](../code/chapter-14/08-evaluation-metrics.php) — Comprehensive evaluation metrics
-- [`09-model-comparison.php`](../code/chapter-14/09-model-comparison.php) — Algorithm benchmarking
-- [`10-advanced-features.php`](../code/chapter-14/10-advanced-features.php) — N-grams and feature selection
-- [`11-model-persistence.php`](../code/chapter-14/11-model-persistence.php) — Save and load trained models
-- [`12-production-sentiment-analyzer.php`](../code/chapter-14/12-production-sentiment-analyzer.php) — Production-ready analyzer
-- [`data/movie_reviews.csv`](../code/chapter-14/data/movie_reviews.csv) — 1,000 labeled movie reviews
-- [`data/stopwords.txt`](../code/chapter-14/data/stopwords.txt) — English stopwords list
+- [`01-load-dataset.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-14/01-load-dataset.php) — Load and inspect movie review dataset
+- [`02-text-preprocessing.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-14/02-text-preprocessing.php) — Complete text preprocessing pipeline
+- [`03-bag-of-words.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-14/03-bag-of-words.php) — Bag-of-words vectorization
+- [`04-tfidf-vectorizer.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-14/04-tfidf-vectorizer.php) — TF-IDF feature extraction
+- [`05-naive-bayes-sentiment.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-14/05-naive-bayes-sentiment.php) — Naive Bayes classifier
+- [`06-svm-sentiment.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-14/06-svm-sentiment.php) — SVM classifier
+- [`07-logistic-regression-sentiment.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-14/07-logistic-regression-sentiment.php) — Logistic Regression classifier
+- [`08-evaluation-metrics.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-14/08-evaluation-metrics.php) — Comprehensive evaluation metrics
+- [`09-model-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-14/09-model-comparison.php) — Algorithm benchmarking
+- [`10-advanced-features.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-14/10-advanced-features.php) — N-grams and feature selection
+- [`11-model-persistence.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-14/11-model-persistence.php) — Save and load trained models
+- [`12-production-sentiment-analyzer.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-14/12-production-sentiment-analyzer.php) — Production-ready analyzer
+- [`data/movie_reviews.csv`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-14/data/movie_reviews.csv) — 1,000 labeled movie reviews
+- [`data/stopwords.txt`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-14/data/stopwords.txt) — English stopwords list
 
-All files are in [`docs/series/ai-ml-php-developers/code/chapter-14/`](../code/chapter-14/README.md)
+All files are in [`docs/series/ai-ml-php-developers/code/chapter-14/`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-14/README.md)
 :::
 
 ## Quick Start
@@ -2408,6 +2410,8 @@ Building a working sentiment analyzer is no small feat. You:
 These are the exact skills data scientists and ML engineers use daily. Whether you're adding smart features to existing PHP apps or building AI-powered products from scratch, you now have the foundation to make it happen.
 
 **Keep experimenting!** Try the exercises, adapt this code to your domain, and push the boundaries of what you can build. The best way to master ML is to apply it to problems you care about.
+
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="14-nlp-project-text-classification-in-php" />
 
 ## Further Reading
 

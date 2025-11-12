@@ -2,12 +2,12 @@
 title: "11: Integrating PHP with Python for Advanced ML"
 description: "Learn how to leverage Python's rich ML ecosystem from PHP applications: master shell execution, REST APIs, and message queues; build a production sentiment analyzer combining PHP's web strengths with Python's ML power"
 series: "ai-ml-php-developers"
-chapter: 11
+chapter: "11"
 order: 11
 difficulty: "Intermediate"
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/10-neural-networks-and-deep-learning-fundamentals"
-  - "/series/ai-ml-php-developers/chapters/08-leveraging-php-machine-learning-libraries"
+  - "10"
+  - "08"
 ---
 
 ![Integrating PHP with Python for Advanced ML](/images/ai-ml-php-developers/chapter-11-php-python-integration-hero-full.webp)
@@ -75,29 +75,29 @@ Complete, runnable examples for this chapter:
 
 **Integration Examples:**
 
-- [`01-simple-shell/hello.php`](../code/chapter-11/01-simple-shell/hello.php) — Basic PHP calling Python
-- [`01-simple-shell/hello.py`](../code/chapter-11/01-simple-shell/hello.py) — Python script receiving data
-- [`02-data-passing/exchange.php`](../code/chapter-11/02-data-passing/exchange.php) — JSON data exchange
-- [`02-data-passing/process.py`](../code/chapter-11/02-data-passing/process.py) — Python processing structured data
+- [`01-simple-shell/hello.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-11/01-simple-shell/hello.php) — Basic PHP calling Python
+- [`01-simple-shell/hello.py`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-11/01-simple-shell/hello.py) — Python script receiving data
+- [`02-data-passing/exchange.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-11/02-data-passing/exchange.php) — JSON data exchange
+- [`02-data-passing/process.py`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-11/02-data-passing/process.py) — Python processing structured data
 
 **Sentiment Analysis Project:**
 
-- [`03-sentiment-analysis/analyze.php`](../code/chapter-11/03-sentiment-analysis/analyze.php) — PHP web interface
-- [`03-sentiment-analysis/train_model.py`](../code/chapter-11/03-sentiment-analysis/train_model.py) — Python training script
-- [`03-sentiment-analysis/predict.py`](../code/chapter-11/03-sentiment-analysis/predict.py) — Python prediction service
-- [`03-sentiment-analysis/data/reviews.csv`](../code/chapter-11/03-sentiment-analysis/data/reviews.csv) — Training data
+- [`03-sentiment-analysis/analyze.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-11/03-sentiment-analysis/analyze.php) — PHP web interface
+- [`03-sentiment-analysis/train_model.py`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-11/03-sentiment-analysis/train_model.py) — Python training script
+- [`03-sentiment-analysis/predict.py`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-11/03-sentiment-analysis/predict.py) — Python prediction service
+- [`03-sentiment-analysis/data/reviews.csv`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-11/03-sentiment-analysis/data/reviews.csv) — Training data
 
 **REST API Example:**
 
-- [`04-rest-api-example/flask_server.py`](../code/chapter-11/04-rest-api-example/flask_server.py) — Flask ML API
-- [`04-rest-api-example/php_client.php`](../code/chapter-11/04-rest-api-example/php_client.php) — PHP API client
+- [`04-rest-api-example/flask_server.py`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-11/04-rest-api-example/flask_server.py) — Flask ML API
+- [`04-rest-api-example/php_client.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-11/04-rest-api-example/php_client.php) — PHP API client
 
 **Production Patterns:**
 
-- [`05-production-patterns/secure_executor.php`](../code/chapter-11/05-production-patterns/secure_executor.php) — Hardened shell execution
-- [`05-production-patterns/async_queue.php`](../code/chapter-11/05-production-patterns/async_queue.php) — Redis queue example
+- [`05-production-patterns/secure_executor.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-11/05-production-patterns/secure_executor.php) — Hardened shell execution
+- [`05-production-patterns/async_queue.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-11/05-production-patterns/async_queue.php) — Redis queue example
 
-See [`README.md`](../code/chapter-11/README.md) for complete setup instructions.
+See [`README.md`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-11/README.md) for complete setup instructions.
 :::
 
 ## Quick Start
@@ -2515,6 +2515,8 @@ You can now build systems like:
 In [Chapter 12: Deep Learning with TensorFlow and PHP](/series/ai-ml-php-developers/chapters/12-deep-learning-with-tensorflow-and-php), you'll apply these integration techniques to use cutting-edge deep learning models. You'll load pre-trained neural networks, run inference from PHP, and build an image classification API using TensorFlow.
 
 The patterns you learned here—REST APIs, async processing, proper error handling—are the foundation for enterprise ML systems. You're ready to build production applications that leverage the best of PHP and Python!
+
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="11-integrating-php-with-python-for-advanced-ml" />
 
 ## Further Reading
 

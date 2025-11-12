@@ -1,0 +1,14 @@
+{
+  "name": "database-hero",
+  "description": "Template for database-related tutorial hero images",
+  "prompt": "${title} - ${description}. Style: ${style}. Visualizing database concepts and operations.",
+  "parameters": {
+    "title": "string",
+    "description": "string",
+    "style": "string"
+  },
+  "defaults": {
+    "style": "diagram"
+  }
+}
+

@@ -2,12 +2,12 @@
 title: "03: Core Machine Learning Concepts and Terminology"
 description: "Master essential ML concepts through PHP examples: supervised vs unsupervised learning, features and labels, training vs inference, overfitting prevention, and the complete ML workflow with hands-on classification projects"
 series: "ai-ml-php-developers"
-chapter: 3
+chapter: "03"
 order: 3
 difficulty: "Beginner"
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/01-introduction-to-ai-and-machine-learning-for-php-developers"
-  - "/series/ai-ml-php-developers/chapters/02-setting-up-your-ai-development-environment"
+  - "01"
+  - "02"
 ---
 
 ![Core Machine Learning Concepts and Terminology](/images/ai-ml-php-developers/chapter-03-ml-concepts-hero-full.webp)
@@ -59,18 +59,18 @@ All code examples are fully functional and runnable with clear output showing ML
 ::: info Code Examples
 Complete, runnable examples for this chapter:
 
-- [`01-supervised-classification.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-03/01-supervised-classification.php) — Spam classification demo
-- [`02-unsupervised-clustering.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-03/02-unsupervised-clustering.php) — Customer segmentation
-- [`03-feature-extraction.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-03/03-feature-extraction.php) — Text to numeric features
-- [`04-training-inference.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-03/04-training-inference.php) — Two-phase ML lifecycle
-- [`05-overfitting-demo.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-03/05-overfitting-demo.php) — Detecting overfitting
-- [`06-train-test-split.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-03/06-train-test-split.php) — Proper data splitting
-- [`07-iris-workflow.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-03/07-iris-workflow.php) — Complete ML workflow
-- [`08-algorithm-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-03/08-algorithm-comparison.php) — Algorithm comparison
-- [`09-cross-validation.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-03/09-cross-validation.php) — k-Fold cross-validation
-- [`10-train-val-test-split.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-03/10-train-val-test-split.php) — 3-way split for hyperparameter tuning
-- [`11-regression-example.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-03/11-regression-example.php) — House price prediction (regression)
-- [`12-confusion-matrix.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-03/12-confusion-matrix.php) — Confusion matrix and advanced metrics
+- [`01-supervised-classification.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-03/01-supervised-classification.php) — Spam classification demo
+- [`02-unsupervised-clustering.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-03/02-unsupervised-clustering.php) — Customer segmentation
+- [`03-feature-extraction.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-03/03-feature-extraction.php) — Text to numeric features
+- [`04-training-inference.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-03/04-training-inference.php) — Two-phase ML lifecycle
+- [`05-overfitting-demo.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-03/05-overfitting-demo.php) — Detecting overfitting
+- [`06-train-test-split.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-03/06-train-test-split.php) — Proper data splitting
+- [`07-iris-workflow.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-03/07-iris-workflow.php) — Complete ML workflow
+- [`08-algorithm-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-03/08-algorithm-comparison.php) — Algorithm comparison
+- [`09-cross-validation.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-03/09-cross-validation.php) — k-Fold cross-validation
+- [`10-train-val-test-split.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-03/10-train-val-test-split.php) — 3-way split for hyperparameter tuning
+- [`11-regression-example.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-03/11-regression-example.php) — House price prediction (regression)
+- [`12-confusion-matrix.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-03/12-confusion-matrix.php) — Confusion matrix and advanced metrics
 
 All files are in [`docs/series/ai-ml-php-developers/code/chapter-03/`](/series/ai-ml-php-developers/code/chapter-03/README.md)
 :::
@@ -3123,6 +3123,8 @@ In [Chapter 04: Data Collection and Preprocessing in PHP](/series/ai-ml-php-deve
 - Building a complete data preprocessing pipeline
 
 You'll build on the normalization and feature extraction techniques from this chapter, learning production-ready approaches for messy, real-world data.
+
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="03-core-machine-learning-concepts-and-terminology" />
 
 ## Further Reading
 

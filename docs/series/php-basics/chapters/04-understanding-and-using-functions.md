@@ -9,7 +9,7 @@ prerequisites:
   - "/series/php-basics/chapters/03-control-structures"
 ---
 
-![Understanding and Using Functions](/images/php-basics/chapter-04-functions-hero-full.webp)
+![Understanding and Using Functions](/images/php-basics/chapter-04-understanding-using-functions-hero-full.webp)
 
 # Chapter 04: Understanding and Using Functions
 
@@ -636,11 +636,13 @@ In the next chapter, we'll make our applications interactive by learning how to 
 ::: info Code Examples
 Complete, runnable examples from this chapter are available in:
 
-- [`basic-functions.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/04-functions/basic-functions.php) - Basic function syntax and usage
-- [`scope-variadic.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/04-functions/scope-variadic.php) - Variable scope and variadic functions
-- [`arrow-closures.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/04-functions/arrow-closures.php) - Arrow functions and closures
+- [`basic-functions.php`](https://github.com/dalehurley/codewithphp/blob/main/code/php-basics/04-functions/basic-functions.php) - Basic function syntax and usage
+- [`scope-variadic.php`](https://github.com/dalehurley/codewithphp/blob/main/code/php-basics/04-functions/scope-variadic.php) - Variable scope and variadic functions
+- [`arrow-closures.php`](https://github.com/dalehurley/codewithphp/blob/main/code/php-basics/04-functions/arrow-closures.php) - Arrow functions and closures
 - `solutions/` - Solutions to chapter exercises
   :::
+
+<ChapterCheckbox seriesId="php-basics" chapterId="04-understanding-and-using-functions" />
 
 ## Further Reading
 

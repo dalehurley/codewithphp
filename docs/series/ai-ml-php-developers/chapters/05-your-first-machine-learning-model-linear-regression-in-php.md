@@ -2,12 +2,12 @@
 title: "05: Your First Machine Learning Model: Linear Regression in PHP"
 description: "Build a complete predictive model from scratch: understand linear regression theory, implement the math in PHP, train on real data, evaluate with proper metrics, and deploy a working house price predictor"
 series: "ai-ml-php-developers"
-chapter: 5
+chapter: "05"
 order: 5
 difficulty: "Beginner"
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/03-core-machine-learning-concepts-and-terminology"
-  - "/series/ai-ml-php-developers/chapters/04-data-collection-and-preprocessing-in-php"
+  - "03"
+  - "04"
 ---
 
 ![Your First Machine Learning Model: Linear Regression in PHP](/images/ai-ml-php-developers/chapter-05-linear-regression-hero-full.webp)
@@ -59,17 +59,17 @@ All examples include complete, runnable code with clear output demonstrating reg
 ::: info Code Examples
 Complete, runnable examples for this chapter:
 
-- [`01-simple-linear-regression.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-05/01-simple-linear-regression.php) — From-scratch implementation with least squares
-- [`01b-check-assumptions.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-05/01b-check-assumptions.php) — Validate linear regression assumptions
-- [`02-gradient-descent.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-05/02-gradient-descent.php) — Iterative optimization demonstration
-- [`03-multiple-regression.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-05/03-multiple-regression.php) — Multi-variable predictions
-- [`04-model-evaluation.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-05/04-model-evaluation.php) — RMSE, MAE, R² calculations
-- [`05-residual-analysis.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-05/05-residual-analysis.php) — Comprehensive diagnostic plots and outlier detection
-- [`06-salary-predictor.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-05/06-salary-predictor.php) — Experience to salary model
-- [`07-overfitting-polynomial.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-05/07-overfitting-polynomial.php) — Polynomial regression and overfitting
-- [`08-regression-cross-validation.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-05/08-regression-cross-validation.php) — k-fold CV for regression
-- [`09-production-model.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-05/09-production-model.php) — Rubix ML implementation
-- [`10-feature-importance.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-05/10-feature-importance.php) — Feature contribution analysis
+- [`01-simple-linear-regression.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-05/01-simple-linear-regression.php) — From-scratch implementation with least squares
+- [`01b-check-assumptions.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-05/01b-check-assumptions.php) — Validate linear regression assumptions
+- [`02-gradient-descent.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-05/02-gradient-descent.php) — Iterative optimization demonstration
+- [`03-multiple-regression.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-05/03-multiple-regression.php) — Multi-variable predictions
+- [`04-model-evaluation.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-05/04-model-evaluation.php) — RMSE, MAE, R² calculations
+- [`05-residual-analysis.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-05/05-residual-analysis.php) — Comprehensive diagnostic plots and outlier detection
+- [`06-salary-predictor.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-05/06-salary-predictor.php) — Experience to salary model
+- [`07-overfitting-polynomial.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-05/07-overfitting-polynomial.php) — Polynomial regression and overfitting
+- [`08-regression-cross-validation.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-05/08-regression-cross-validation.php) — k-fold CV for regression
+- [`09-production-model.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-05/09-production-model.php) — Rubix ML implementation
+- [`10-feature-importance.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-05/10-feature-importance.php) — Feature contribution analysis
 
 All files are in [`docs/series/ai-ml-php-developers/code/chapter-05/`](/series/ai-ml-php-developers/code/chapter-05/README.md)
 :::
@@ -3290,6 +3290,8 @@ In [Chapter 06: Classification Basics and Building a Spam Filter](/series/ai-ml-
 - Multi-class classification
 
 You'll apply the same training/evaluation workflow you learned here, but for categorical predictions instead of continuous values.
+
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="05-your-first-machine-learning-model-linear-regression-in-php" />
 
 ## Further Reading
 

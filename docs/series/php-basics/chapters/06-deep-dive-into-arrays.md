@@ -9,7 +9,7 @@ prerequisites:
   - "/series/php-basics/chapters/05-handling-html-forms-and-user-input"
 ---
 
-![Deep Dive into Arrays](/images/php-basics/chapter-06-arrays-hero-full.webp)
+![Deep Dive into Arrays](/images/php-basics/chapter-06-deep-dive-arrays-hero-full.webp)
 
 # Chapter 06: Deep Dive into Arrays
 
@@ -722,7 +722,7 @@ if (!$allValid) {
 
 For more comprehensive examples of PHP 8.4 array functions, see:
 
-- [`code/06-arrays/php84-array-functions.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/06-arrays/php84-array-functions.php)
+- [`code/06-arrays/php84-array-functions.php`](https://github.com/dalehurley/codewithphp/blob/main/code/php-basics/06-arrays/php84-array-functions.php)
 
 ### Validation
 
@@ -820,6 +820,8 @@ options: [
 }
 ]"
 />
+
+<ChapterCheckbox seriesId="php-basics" chapterId="06-deep-dive-into-arrays" />
 
 ## Further Reading
 

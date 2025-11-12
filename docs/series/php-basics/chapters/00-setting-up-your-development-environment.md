@@ -765,6 +765,8 @@ Let's recap what you've achieved in this chapter:
 
 You now have a professional-grade PHP development setup that mirrors what developers use in production environments. You have version control for tracking changes, intelligent code completion, and powerful debugging tools—everything you need to learn and build with confidence.
 
+<ChapterCheckbox seriesId="php-basics" chapterId="00-setting-up-your-development-environment" />
+
 ## Further Reading
 
 Want to dive deeper into your new tools? Here are some excellent resources:

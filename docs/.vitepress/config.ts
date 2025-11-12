@@ -100,7 +100,8 @@ export default withMermaid(
         head.push(['meta', { property: 'article:published_time', content: pageData.frontmatter.datePublished }])
       }
       if (pageData.frontmatter.dateModified || pageData.lastUpdated) {
-        head.push(['meta', { property: 'article:modified_time', content: pageData.frontmatter.dateModified || new Date(pageData.lastUpdated).toISOString() }])
+        const modifiedDate = pageData.frontmatter.dateModified || (pageData.lastUpdated ? new Date(pageData.lastUpdated).toISOString() : new Date().toISOString())
+        head.push(['meta', { property: 'article:modified_time', content: modifiedDate }])
       }
       if (pageData.frontmatter.author) {
         head.push(['meta', { name: 'article:author', content: pageData.frontmatter.author }])
@@ -152,6 +153,7 @@ export default withMermaid(
           items: [
             { text: 'PHP Basics', link: '/series/php-basics/' },
             { text: 'AI/ML for PHP Developers', link: '/series/ai-ml-php-developers/' },
+            { text: 'Why Python Developers Will Love PHP and Laravel', link: '/series/python-developers-love-php-laravel/' },
           ]
         },
         { text: 'GitHub', link: 'https://github.com/dalehurley/codewithphp' }
@@ -296,6 +298,59 @@ export default withMermaid(
             ]
           }
         ],
+
+        '/series/python-developers-love-php-laravel/': [
+          { text: 'Overview', link: '/series/python-developers-love-php-laravel/' },
+          {
+            text: 'Chapters',
+            items: [
+              {
+                text: '00 — Introduction: Why Look at PHP & Laravel',
+                link: '/series/python-developers-love-php-laravel/chapters/00-introduction-why-look-at-php-laravel'
+              },
+              {
+                text: '01 — Mapping Concepts: Python Web Frameworks vs Laravel',
+                link: '/series/python-developers-love-php-laravel/chapters/01-mapping-concepts-python-web-frameworks-vs-laravel'
+              },
+              {
+                text: '02 — Modern PHP: What\'s Changed',
+                link: '/series/python-developers-love-php-laravel/chapters/02-modern-php-whats-changed'
+              },
+              {
+                text: '03 — Laravel\'s Developer Experience: Productivity, Conventions and Tools',
+                link: '/series/python-developers-love-php-laravel/chapters/03-laravel-developer-experience-productivity-tools'
+              },
+              {
+                text: '04 — The PHP Syntax & Language Differences for Python Devs',
+                link: '/series/python-developers-love-php-laravel/chapters/04-php-syntax-language-differences-for-python-devs'
+              },
+              {
+                text: '05 — Working with Data: Eloquent ORM & Database Workflow',
+                link: '/series/python-developers-love-php-laravel/chapters/05-working-with-data-eloquent-orm-database-workflow'
+              },
+              {
+                text: '06 — Building REST APIs & Integrations: From Python Flask/Django to Laravel',
+                link: '/series/python-developers-love-php-laravel/chapters/06-building-rest-apis-integrations-python-to-laravel'
+              },
+              {
+                text: '07 — Testing, Deployment, DevOps: Best Practices You Know + Laravel Workflow',
+                link: '/series/python-developers-love-php-laravel/chapters/07-testing-deployment-devops-best-practices'
+              },
+              {
+                text: '08 — Ecosystem, Community, Packages & Where Laravel Excels',
+                link: '/series/python-developers-love-php-laravel/chapters/08-ecosystem-community-packages-where-laravel-excels'
+              },
+              {
+                text: '09 — When to Use Laravel (and When Python Still Makes Sense)',
+                link: '/series/python-developers-love-php-laravel/chapters/09-when-to-use-laravel-when-python-still-makes-sense'
+              },
+              {
+                text: '10 — Bonus: Hands-On Mini Project',
+                link: '/series/python-developers-love-php-laravel/chapters/10-bonus-hands-on-mini-project'
+              }
+            ]
+          }
+        ],
       },
       socialLinks: [
         { icon: 'github', link: 'https://github.com/dalehurley/codewithphp' }
@@ -309,7 +364,46 @@ export default withMermaid(
         label: 'On This Page'
       },
       search: {
-        provider: 'local'
+        provider: 'local',
+        options: {
+          detailedView: true,
+          miniSearch: {
+            searchOptions: {
+              fuzzy: 0.2,
+              prefix: true,
+              boost: {
+                title: 4,
+                heading: 3,
+                text: 2
+              }
+            }
+          },
+          locales: {
+            root: {
+              translations: {
+                button: {
+                  buttonText: 'Search',
+                  buttonAriaLabel: 'Search documentation'
+                },
+                modal: {
+                  displayDetails: 'Display detailed list',
+                  resetButtonTitle: 'Reset search',
+                  backButtonTitle: 'Close search',
+                  noResultsText: 'No results for',
+                  footer: {
+                    selectText: 'to select',
+                    selectKeyAriaLabel: 'enter',
+                    navigateText: 'to navigate',
+                    navigateUpKeyAriaLabel: 'up arrow',
+                    navigateDownKeyAriaLabel: 'down arrow',
+                    closeText: 'to close',
+                    closeKeyAriaLabel: 'escape'
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     markdown: {

@@ -12,7 +12,7 @@ estimatedTime: "30 minutes"
 tags: ["security", "csrf", "forms", "sessions", "xss"]
 ---
 
-![CSRF Protection & Form Security](/images/php-basics/chapter-15b-csrf-protection-hero-full.webp)
+![CSRF Protection & Form Security](/images/php-basics/chapter-15b-csrf-protection-form-security-hero-full.webp)
 
 # Chapter 15b: CSRF Protection & Form Security
 
@@ -813,9 +813,9 @@ header("Content-Security-Policy: default-src 'self'");
 
 Explore comprehensive CSRF protection examples:
 
-- [`code/15b-csrf/csrf-basics.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/15b-csrf/csrf-basics.php) - Token generation and validation
-- [`code/15b-csrf/CsrfProtection.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/15b-csrf/CsrfProtection.php) - Reusable protection class
-- [`code/15b-csrf/protected-form.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/15b-csrf/protected-form.php) - Complete form example
+- [`code/15b-csrf/csrf-basics.php`](https://github.com/dalehurley/codewithphp/blob/main/code/php-basics/15b-csrf/csrf-basics.php) - Token generation and validation
+- [`code/15b-csrf/CsrfProtection.php`](https://github.com/dalehurley/codewithphp/blob/main/code/php-basics/15b-csrf/CsrfProtection.php) - Reusable protection class
+- [`code/15b-csrf/protected-form.php`](https://github.com/dalehurley/codewithphp/blob/main/code/php-basics/15b-csrf/protected-form.php) - Complete form example
 
 ## Troubleshooting
 
@@ -919,6 +919,8 @@ Test your understanding of CSRF protection and form security:
     }
   ]"
 />
+
+<ChapterCheckbox seriesId="php-basics" chapterId="15b-csrf-protection-and-form-security" />
 
 ## Further Reading
 

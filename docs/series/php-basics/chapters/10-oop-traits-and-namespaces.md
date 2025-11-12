@@ -9,7 +9,7 @@ prerequisites:
   - "/series/php-basics/chapters/09-oop-inheritance-abstract-classes-and-interfaces"
 ---
 
-![OOP: Traits and Namespaces](/images/php-basics/chapter-10-traits-namespaces-hero-full.webp)
+![OOP: Traits and Namespaces](/images/php-basics/chapter-10-oop-traits-namespaces-hero-full.webp)
 
 # Chapter 10: OOP: Traits and Namespaces
 
@@ -496,10 +496,10 @@ Fatal error: Cannot declare class App\Utils\Logger, because the name is already 
 
 All examples from this chapter are available in the code directory:
 
-- [`traits-basic.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/traits-basic.php) - Basic trait usage with timestamps
-- [`traits-conflicts.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/traits-conflicts.php) - Resolving trait method conflicts
+- [`traits-basic.php`](https://github.com/dalehurley/codewithphp/blob/main/code/php-basics/traits-basic.php) - Basic trait usage with timestamps
+- [`traits-conflicts.php`](https://github.com/dalehurley/codewithphp/blob/main/code/php-basics/traits-conflicts.php) - Resolving trait method conflicts
 - [`namespaces/`](/series/php-basics/code/namespaces/README.md) - Complete namespace example with directory structure
-- [`namespaces-global.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/namespaces-global.php) - Using built-in PHP classes in namespaced code
+- [`namespaces-global.php`](https://github.com/dalehurley/codewithphp/blob/main/code/php-basics/namespaces-global.php) - Using built-in PHP classes in namespaced code
 
 ## Exercises
 
@@ -543,6 +543,8 @@ All examples from this chapter are available in the code directory:
     - Remember: you'll need to properly reference the built-in `Exception` class!
 
     **Validation**: The script should catch the exception and print a friendly error message without crashing.
+
+<ChapterCheckbox seriesId="php-basics" chapterId="10-oop-traits-and-namespaces" />
 
 ## Further Reading
 

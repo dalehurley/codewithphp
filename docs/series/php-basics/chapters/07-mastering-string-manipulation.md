@@ -9,7 +9,7 @@ prerequisites:
   - "/series/php-basics/chapters/06-deep-dive-into-arrays"
 ---
 
-![Mastering String Manipulation](/images/php-basics/chapter-07-string-manipulation-hero-full.webp)
+![Mastering String Manipulation](/images/php-basics/chapter-07-mastering-string-manipulation-hero-full.webp)
 
 # Chapter 07: Mastering String Manipulation
 
@@ -804,11 +804,13 @@ With our understanding of core data types like strings and arrays solidified, we
 ::: info Code Examples
 Complete, runnable examples from this chapter are available in:
 
-- [`basic-strings.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/07-strings/basic-strings.php) - String basics and common operations
-- [`search-replace.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/07-strings/search-replace.php) - Searching and replacing in strings
-- [`split-join.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/07-strings/split-join.php) - Splitting and joining strings
+- [`basic-strings.php`](https://github.com/dalehurley/codewithphp/blob/main/code/php-basics/07-strings/basic-strings.php) - String basics and common operations
+- [`search-replace.php`](https://github.com/dalehurley/codewithphp/blob/main/code/php-basics/07-strings/search-replace.php) - Searching and replacing in strings
+- [`split-join.php`](https://github.com/dalehurley/codewithphp/blob/main/code/php-basics/07-strings/split-join.php) - Splitting and joining strings
 - `solutions/` - Solutions to chapter exercises
   :::
+
+<ChapterCheckbox seriesId="php-basics" chapterId="07-mastering-string-manipulation" />
 
 ## Further Reading
 

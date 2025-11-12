@@ -2,11 +2,11 @@
 title: "16: Computer Vision Essentials for PHP Developers"
 description: "Master image processing in PHP—from loading and manipulating images to extracting features for machine learning, using GD extension and custom processors"
 series: "ai-ml-php-developers"
-chapter: 16
+chapter: "16"
 order: 16
 difficulty: "Intermediate"
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/15-language-models-and-text-generation-with-openai-apis"
+  - "15"
 ---
 
 ![Computer Vision Essentials for PHP Developers](/images/ai-ml-php-developers/chapter-16-computer-vision-hero-full.webp)
@@ -87,32 +87,32 @@ Complete, runnable examples for this chapter:
 
 **Core Classes:**
 
-- [`ImageLoader.php`](../code/chapter-16/ImageLoader.php) — Load, save, and inspect images
-- [`ImageProcessor.php`](../code/chapter-16/ImageProcessor.php) — Resize, crop, rotate, transform
-- [`ColorConverter.php`](../code/chapter-16/ColorConverter.php) — Color space conversions and analysis
-- [`FeatureExtractor.php`](../code/chapter-16/FeatureExtractor.php) — Extract ML features from images
-- [`ImageFilter.php`](../code/chapter-16/ImageFilter.php) — Apply filters and effects
-- [`ImageAugmentor.php`](../code/chapter-16/ImageAugmentor.php) — Generate training variations via augmentation
+- [`ImageLoader.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-16/ImageLoader.php) — Load, save, and inspect images
+- [`ImageProcessor.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-16/ImageProcessor.php) — Resize, crop, rotate, transform
+- [`ColorConverter.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-16/ColorConverter.php) — Color space conversions and analysis
+- [`FeatureExtractor.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-16/FeatureExtractor.php) — Extract ML features from images
+- [`ImageFilter.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-16/ImageFilter.php) — Apply filters and effects
+- [`ImageAugmentor.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-16/ImageAugmentor.php) — Generate training variations via augmentation
 
 **Step-by-Step Examples:**
 
-- [`01-image-representation.php`](../code/chapter-16/01-image-representation.php) — Understanding images as data
-- [`02-check-extensions.php`](../code/chapter-16/02-check-extensions.php) — Verify PHP setup
-- [`03-load-save-images.php`](../code/chapter-16/03-load-save-images.php) — Load and save in multiple formats
-- [`04-image-manipulations.php`](../code/chapter-16/04-image-manipulations.php) — Resize, crop, rotate operations
-- [`05-color-conversions.php`](../code/chapter-16/05-color-conversions.php) — Grayscale and channel extraction
-- [`06-feature-extraction.php`](../code/chapter-16/06-feature-extraction.php) — Extract features for ML
-- [`07-image-filters.php`](../code/chapter-16/07-image-filters.php) — Apply various filters
-- [`08-ml-preparation.php`](../code/chapter-16/08-ml-preparation.php) — Prepare images for ML models
-- [`09-data-augmentation.php`](../code/chapter-16/09-data-augmentation.php) — Image augmentation for training
+- [`01-image-representation.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-16/01-image-representation.php) — Understanding images as data
+- [`02-check-extensions.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-16/02-check-extensions.php) — Verify PHP setup
+- [`03-load-save-images.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-16/03-load-save-images.php) — Load and save in multiple formats
+- [`04-image-manipulations.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-16/04-image-manipulations.php) — Resize, crop, rotate operations
+- [`05-color-conversions.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-16/05-color-conversions.php) — Grayscale and channel extraction
+- [`06-feature-extraction.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-16/06-feature-extraction.php) — Extract features for ML
+- [`07-image-filters.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-16/07-image-filters.php) — Apply various filters
+- [`08-ml-preparation.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-16/08-ml-preparation.php) — Prepare images for ML models
+- [`09-data-augmentation.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-16/09-data-augmentation.php) — Image augmentation for training
 
 **Supporting Files:**
 
-- [`helpers.php`](../code/chapter-16/helpers.php) — Utility functions
-- [`generate-sample-images.php`](../code/chapter-16/generate-sample-images.php) — Create test images
-- [`data/`](../code/chapter-16/data/) — Sample images (sample.jpg, landscape.jpg, face.jpg)
+- [`helpers.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-16/helpers.php) — Utility functions
+- [`generate-sample-images.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-16/generate-sample-images.php) — Create test images
+- [`data/`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-16/data/) — Sample images (sample.jpg, landscape.jpg, face.jpg)
 
-All files in [`docs/series/ai-ml-php-developers/code/chapter-16/`](../code/chapter-16/README.md)
+All files in [`docs/series/ai-ml-php-developers/code/chapter-16/`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-16/README.md)
 :::
 
 ## Quick Start
@@ -393,7 +393,7 @@ Learn to load images from files, save them in different formats with quality set
 php 03-load-save-images.php
 ```
 
-2. **Examine the `ImageLoader` class** in [`ImageLoader.php`](../code/chapter-16/ImageLoader.php):
+2. **Examine the `ImageLoader` class** in [`ImageLoader.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-16/ImageLoader.php):
 
 ```php
 # filename: ImageLoader.php (excerpt)
@@ -527,7 +527,7 @@ php 04-image-manipulations.php
 
 This demonstrates 7 different manipulation techniques and saves each result.
 
-2. **Study the `ImageProcessor` class** in [`ImageProcessor.php`](../code/chapter-16/ImageProcessor.php). Key methods:
+2. **Study the `ImageProcessor` class** in [`ImageProcessor.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-16/ImageProcessor.php). Key methods:
 
 ```php
 # filename: ImageProcessor.php (excerpt)
@@ -686,7 +686,7 @@ php 05-color-conversions.php
 
 2. **Understand why grayscale matters for ML**: Converting RGB (3 channels) to grayscale (1 channel) reduces input dimensions by 66%, speeding up training and reducing model complexity without significant information loss for many tasks.
 
-3. **Study the `ColorConverter` class** in [`ColorConverter.php`](../code/chapter-16/ColorConverter.php):
+3. **Study the `ColorConverter` class** in [`ColorConverter.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-16/ColorConverter.php):
 
 ```php
 # filename: ColorConverter.php (excerpt)
@@ -845,7 +845,7 @@ Extract numeric features from images (statistics, histograms, edge density) that
 php 06-feature-extraction.php
 ```
 
-2. **Study the `FeatureExtractor` class** in [`FeatureExtractor.php`](../code/chapter-16/FeatureExtractor.php):
+2. **Study the `FeatureExtractor` class** in [`FeatureExtractor.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-16/FeatureExtractor.php):
 
 ```php
 # filename: FeatureExtractor.php (excerpt)
@@ -1052,7 +1052,7 @@ php 07-image-filters.php
 
 This applies 20+ different filters and saves the results.
 
-2. **Study the `ImageFilter` class** in [`ImageFilter.php`](../code/chapter-16/ImageFilter.php):
+2. **Study the `ImageFilter` class** in [`ImageFilter.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-16/ImageFilter.php):
 
 ```php
 # filename: ImageFilter.php (excerpt)
@@ -1949,7 +1949,7 @@ foreach ($samples as $i => $sample) {
 
 ## Exercises
 
-Test your understanding with these practical exercises. Solutions are in the [`solutions/`](../code/chapter-16/solutions/) directory.
+Test your understanding with these practical exercises. Solutions are in the [`solutions/`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-16/solutions/) directory.
 
 ### Exercise 1: Image Analyzer
 
@@ -1982,7 +1982,7 @@ php image-analyzer.php data/sample.jpg
 
 Expected output should include all metrics and a summary assessment.
 
-**Solution**: [`solutions/exercise1-image-analyzer.php`](../code/chapter-16/solutions/exercise1-image-analyzer.php)
+**Solution**: [`solutions/exercise1-image-analyzer.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-16/solutions/exercise1-image-analyzer.php)
 
 ### Exercise 2: Thumbnail Generator
 
@@ -2012,7 +2012,7 @@ php thumbnail-generator.php data/landscape.jpg output/
 
 Verify that 5 thumbnail files are created with correct dimensions.
 
-**Solution**: [`solutions/exercise2-thumbnail-generator.php`](../code/chapter-16/solutions/exercise2-thumbnail-generator.php)
+**Solution**: [`solutions/exercise2-thumbnail-generator.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-16/solutions/exercise2-thumbnail-generator.php)
 
 ### Exercise 3: Image Feature Comparison
 
@@ -2048,7 +2048,7 @@ php feature-comparison.php data/sample.jpg data/landscape.jpg
 php feature-comparison.php data/sample.jpg output/sample_resized.jpg
 ```
 
-**Solution**: [`solutions/exercise3-feature-comparison.php`](../code/chapter-16/solutions/exercise3-feature-comparison.php)
+**Solution**: [`solutions/exercise3-feature-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-16/solutions/exercise3-feature-comparison.php)
 
 ### Bonus Challenge: Batch Image Processor
 
@@ -2353,6 +2353,8 @@ But the skills you've learned here—loading images, extracting features, prepro
 **5. Understand tradeoffs**: Memory vs. quality, speed vs. accuracy, statistical vs. raw features, PHP vs. Python—choose based on requirements.
 
 You're now ready to tackle image classification, apply pre-trained models, and build intelligent image-processing features into your PHP applications!
+
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="16-computer-vision-essentials-for-php-developers" />
 
 ## Further Reading
 

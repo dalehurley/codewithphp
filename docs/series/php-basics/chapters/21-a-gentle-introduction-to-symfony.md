@@ -649,6 +649,8 @@ To deepen your understanding of Symfony, try these challenges:
 
    This will teach you about Symfony's Service Container and dependency injection.
 
+<ChapterCheckbox seriesId="php-basics" chapterId="21-a-gentle-introduction-to-symfony" />
+
 ## Further Reading
 
 - [Symfony Official Documentation](https://symfony.com/doc/current/index.html) — Comprehensive guides and best practices

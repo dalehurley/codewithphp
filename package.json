@@ -9,8 +9,7 @@
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "build": "vitepress build docs",
-    "preview": "vitepress preview docs",
-    "sync-code": "mkdir -p docs/public/series/php-basics/code docs/public/series/ai-ml-php-developers/code && cp -r docs/series/php-basics/code/* docs/public/series/php-basics/code/ && cp -r docs/series/ai-ml-php-developers/code/* docs/public/series/ai-ml-php-developers/code/ && echo 'Code files synced successfully'"
+    "preview": "vitepress preview docs"
   },
   "devDependencies": {
     "dotenv": "^17.2.3",

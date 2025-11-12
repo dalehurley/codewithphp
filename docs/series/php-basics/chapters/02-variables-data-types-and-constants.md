@@ -756,12 +756,14 @@ In [Chapter 03: Control Structures](/series/php-basics/chapters/03-control-struc
 ::: info Code Examples
 Complete, runnable examples from this chapter are available in:
 
-- [`data-types-demo.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/02-variables/data-types-demo.php) - Working with different data types
-- [`constants-demo.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/02-variables/constants-demo.php) - Defining and using constants
-- [`type-juggling.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/02-variables/type-juggling.php) - Understanding type juggling and conversion
-- [`strict-types-demo.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/php-basics/code/02-variables/strict-types-demo.php) - Strict type mode demonstration
+- [`data-types-demo.php`](https://github.com/dalehurley/codewithphp/blob/main/code/php-basics/02-variables/data-types-demo.php) - Working with different data types
+- [`constants-demo.php`](https://github.com/dalehurley/codewithphp/blob/main/code/php-basics/02-variables/constants-demo.php) - Defining and using constants
+- [`type-juggling.php`](https://github.com/dalehurley/codewithphp/blob/main/code/php-basics/02-variables/type-juggling.php) - Understanding type juggling and conversion
+- [`strict-types-demo.php`](https://github.com/dalehurley/codewithphp/blob/main/code/php-basics/02-variables/strict-types-demo.php) - Strict type mode demonstration
 - `solutions/` - Solutions to chapter exercises
   :::
+
+<ChapterCheckbox seriesId="php-basics" chapterId="02-variables-data-types-and-constants" />
 
 ## Further Reading
 

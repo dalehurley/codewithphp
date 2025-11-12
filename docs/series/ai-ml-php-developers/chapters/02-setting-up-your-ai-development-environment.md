@@ -2,11 +2,11 @@
 title: "02: Setting Up Your AI Development Environment"
 description: "Configure a complete development environment for AI/ML with PHP, including PHP 8.4, Composer, ML libraries, and optional Python integration for advanced projects"
 series: "ai-ml-php-developers"
-chapter: 2
+chapter: "02"
 order: 2
 difficulty: "Beginner"
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/01-introduction-to-ai-and-machine-learning-for-php-developers"
+  - "01"
 ---
 
 ![Setting Up Your AI Development Environment](/images/ai-ml-php-developers/chapter-02-ai-environment-setup-hero-full.webp)
@@ -134,12 +134,12 @@ You'll run actual code examples that prove your environment works, giving you co
 ::: info Code Examples
 Complete, runnable verification scripts for this chapter:
 
-- [`quick-start-verify.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-02/quick-start-verify.php) — 2-minute environment check
-- [`verify-installation.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-02/verify-installation.php) — Comprehensive 10+ check verification
-- [`composer-setup-check.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-02/composer-setup-check.php) — Composer installation verification
-- [`extension-checker.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-02/extension-checker.php) — Detailed extension analysis
-- [`test-phpml.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-02/test-phpml.php) — PHP-ML library test
-- [`test-rubixml.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-02/test-rubixml.php) — Rubix ML library test
+- [`quick-start-verify.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-02/quick-start-verify.php) — 2-minute environment check
+- [`verify-installation.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-02/verify-installation.php) — Comprehensive 10+ check verification
+- [`composer-setup-check.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-02/composer-setup-check.php) — Composer installation verification
+- [`extension-checker.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-02/extension-checker.php) — Detailed extension analysis
+- [`test-phpml.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-02/test-phpml.php) — PHP-ML library test
+- [`test-rubixml.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-02/test-rubixml.php) — Rubix ML library test
 
 All files are in [`docs/series/ai-ml-php-developers/code/chapter-02/`](/series/ai-ml-php-developers/code/chapter-02/README.md)
 :::
@@ -1933,6 +1933,8 @@ In Chapter 03, we'll dive into **Core Machine Learning Concepts and Terminology*
 - The bias-variance tradeoff
 
 You'll use the environment you just set up to write your first data preprocessing scripts and understand how raw data transforms into machine learning features.
+
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="02-setting-up-your-ai-development-environment" />
 
 ## Further Reading
 

@@ -1,0 +1,21 @@
+<!-- filename: templates/blog/post_list.html -->
+<!-- Django Template Example -->
+{% raw %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Posts</title>
+</head>
+<body>
+    <h1>Blog Posts</h1>
+    {% for post in posts %}
+        <article>
+            <h2>{{ post.title }}</h2>
+            <p>{{ post.content|truncatewords:30 }}</p>
+            <p>Published: {{ post.published_at|date:"F j, Y" }}</p>
+        </article>
+    {% endfor %}
+</body>
+</html>
+{% endraw %}
+

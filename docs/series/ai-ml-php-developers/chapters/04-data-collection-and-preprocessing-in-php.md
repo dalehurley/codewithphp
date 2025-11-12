@@ -2,11 +2,11 @@
 title: "04: Data Collection and Preprocessing in PHP"
 description: Learn to acquire and prepare data for machine learning using PHP—from databases, CSV/JSON files, and APIs to cleaning, normalizing, and encoding for quality datasets
 series: ai-ml-php-developers
-chapter: 4
+chapter: "04"
 order: 4
 difficulty: Beginner
 prerequisites:
-  - "/series/ai-ml-php-developers/chapters/03-core-machine-learning-concepts-and-terminology"
+  - "03"
 ---
 
 ![Data Collection and Preprocessing in PHP](/images/ai-ml-php-developers/chapter-04-data-preprocessing-hero-full.webp)
@@ -2102,6 +2102,8 @@ function batchNormalize(array $records, array $params): array {
     );
 }
 ```
+
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="04-data-collection-and-preprocessing-in-php" />
 
 ## Further Reading
 

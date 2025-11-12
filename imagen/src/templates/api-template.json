@@ -1,0 +1,14 @@
+{
+  "name": "api-hero",
+  "description": "Template for API-related tutorial hero images",
+  "prompt": "${title} - ${description}. Style: ${style}. Featuring a developer working with APIs.",
+  "parameters": {
+    "title": "string",
+    "description": "string",
+    "style": "string"
+  },
+  "defaults": {
+    "style": "cyberpunk"
+  }
+}
+
