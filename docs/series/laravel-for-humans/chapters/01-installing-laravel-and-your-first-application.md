@@ -1175,6 +1175,288 @@ You understand that:
 3. **Use config() helper** - Don't read `.env` directly in code
 4. **Cache config in production**: `php artisan config:cache`
 
+## Step 8: Version Control Setup (~Optional, 5 min)
+
+### Goal
+
+Initialize Git for your Laravel project and make your first commit.
+
+### Why Use Version Control?
+
+Version control lets you:
+- **Track changes** - See what changed, when, and why
+- **Undo mistakes** - Revert to previous working versions
+- **Collaborate** - Work with others without conflicts
+- **Deploy confidently** - Deploy known-good versions to production
+
+Laravel projects come with a `.gitignore` file already configured, so you're ready to go!
+
+### Actions
+
+1. **Initialize Git** (if not already done):
+
+```bash
+cd taskflow
+
+# Initialize repository
+git init
+
+# Check status
+git status
+```
+
+You'll see many untracked files.
+
+2. **Inspect the `.gitignore` file**:
+
+```bash
+cat .gitignore
+```
+
+Laravel's `.gitignore` already excludes:
+- `/vendor/` - Composer dependencies (regenerated via `composer install`)
+- `/node_modules/` - npm dependencies (regenerated via `npm install`)
+- `.env` - Environment secrets (never commit!)
+- `/storage/*.key` - Encryption keys
+- `/public/hot` - Vite dev server files
+- `/public/storage` - Symlinked storage
+- `Homestead.yaml`, `.phpunit.result.cache`, etc.
+
+::: tip Why Not Commit vendor/ and node_modules/?
+These directories contain thousands of files that can be regenerated from `composer.json` and `package.json`. Committing them:
+- Bloats your repository (100+ MB)
+- Causes merge conflicts
+- Makes diffs unreadable
+
+Instead, teammates run `composer install` and `npm install` to get the same dependencies.
+:::
+
+3. **Make your first commit**:
+
+```bash
+# Add all files (respecting .gitignore)
+git add .
+
+# Verify what will be committed
+git status
+
+# Create initial commit
+git commit -m "Initial Laravel 12 project setup"
+```
+
+4. **Verify your commit**:
+
+```bash
+# View commit history
+git log
+
+# See files in the commit
+git show --name-only
+```
+
+### Setting Up Remote Repository (Optional)
+
+To push to GitHub/GitLab/Bitbucket:
+
+```bash
+# Create repository on GitHub first, then:
+git remote add origin https://github.com/your-username/taskflow.git
+git branch -M main
+git push -u origin main
+```
+
+### Good Commit Practices
+
+**DO:**
+- Make small, focused commits
+- Write clear commit messages
+- Commit working code
+- Commit often (every feature/fix)
+
+**Example commit messages:**
+```
+git commit -m "Add user authentication routes"
+git commit -m "Fix task creation validation bug"
+git commit -m "Refactor ProjectController for readability"
+```
+
+**DON'T:**
+- Commit `.env` files
+- Make huge commits with unrelated changes
+- Write vague messages like "fix stuff" or "wip"
+- Commit broken/untested code
+
+### Expected Result
+
+You have:
+- A Git repository tracking your Laravel project
+- Understanding of what should/shouldn't be committed
+- Your first commit representing a clean Laravel installation
+
+As you complete each chapter, commit your progress:
+```bash
+git add .
+git commit -m "Complete Chapter 01: Installing Laravel"
+```
+
+## Common Pitfalls (~3 min)
+
+### Goal
+
+Learn the most common beginner mistakes and how to avoid them.
+
+Before jumping into the exercises, let's cover mistakes that trip up new Laravel developers:
+
+### 1. ⚠️ Forgetting to Import Classes
+
+**Problem:**
+```php
+Route::get('/test', [HomeController::class, 'index']);
+// Error: Class "HomeController" not found
+```
+
+**Solution:**
+```php
+use App\Http\Controllers\HomeController;  // Add this at the top!
+
+Route::get('/test', [HomeController::class, 'index']);
+```
+
+**Why:** PHP namespaces require explicit imports. Laravel uses PSR-4 autoloading.
+
+### 2. ⚠️ Returning Views That Don't Exist
+
+**Problem:**
+```php
+return view('dashboard');  // Error: View [dashboard] not found
+```
+
+**Solution:**
+```php
+// Create the file first:
+// resources/views/dashboard.blade.php
+
+return view('dashboard');  // Now it works!
+```
+
+**Why:** Laravel looks for `{name}.blade.php` in `resources/views/`.
+
+### 3. ⚠️ Using `.env` Directly Instead of config()
+
+**Problem:**
+```php
+$name = $_ENV['APP_NAME'];  // Works locally, fails in production
+```
+
+**Solution:**
+```php
+$name = config('app.name');  // Correct way
+```
+
+**Why:** In production, config is cached. `$_ENV` won't have values, but `config()` will.
+
+### 4. ⚠️ File Permission Errors
+
+**Problem:**
+```
+The stream or file "/path/to/storage/logs/laravel.log" could not be opened
+```
+
+**Solution:**
+```bash
+chmod -R 775 storage bootstrap/cache
+```
+
+**Why:** Laravel needs write access to `storage/` and `bootstrap/cache/`.
+
+### 5. ⚠️ Missing APP_KEY
+
+**Problem:**
+```
+No application encryption key has been specified.
+```
+
+**Solution:**
+```bash
+php artisan key:generate
+```
+
+**Why:** Laravel requires an encryption key for security. This command generates one and saves it to `.env`.
+
+### 6. ⚠️ Typos in Route Names/Methods
+
+**Problem:**
+```php
+Route::get('/users', [UserController::class, 'indx']);  // Typo!
+// Error: Method indx does not exist
+```
+
+**Solution:**
+```php
+Route::get('/users', [UserController::class, 'index']);  // Correct
+```
+
+**Why:** PHP is case-sensitive. Double-check method names.
+
+### 7. ⚠️ Caching Issues During Development
+
+**Problem:**
+Changes to routes/config aren't showing up.
+
+**Solution:**
+```bash
+php artisan optimize:clear  # Clear all caches
+```
+
+**Why:** Laravel caches routes and config for performance. Caching should only be used in production, but sometimes caches persist.
+
+### 8. ⚠️ Editing Files in vendor/
+
+**Problem:**
+Making changes in `vendor/` directory.
+
+**Solution:**
+Never edit `vendor/`. Changes will be lost when you run `composer update`.
+
+**Why:** `vendor/` is regenerated from `composer.json`. Extend or override classes instead.
+
+### 9. ⚠️ Not Reading Error Messages
+
+**Problem:**
+Seeing an error and immediately searching Google.
+
+**Solution:**
+**Read the error message first!** Laravel errors are extremely helpful:
+- They tell you exactly what's wrong
+- They show the file and line number
+- They often suggest how to fix it
+
+**Example:**
+```
+Target class [TaskControler] does not exist.
+Did you mean App\Http\Controllers\TaskController?
+```
+
+Laravel even suggests the fix!
+
+### 10. ⚠️ Skipping the Documentation
+
+**Problem:**
+Trying to guess how Laravel features work.
+
+**Solution:**
+Laravel has the best documentation of any PHP framework: [laravel.com/docs](https://laravel.com/docs/12.x)
+
+When stuck:
+1. Read the error message
+2. Check the docs
+3. Search Laravel News/Stack Overflow
+4. Ask in Laravel Discord
+
+::: tip Success Mindset
+Laravel is designed to be developer-friendly. If something feels overly complicated, you're probably doing it the hard way. There's usually a simpler Laravel way—check the docs!
+:::
+
 ## Exercises
 
 Test your understanding with these hands-on challenges:
