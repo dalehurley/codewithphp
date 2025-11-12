@@ -39,7 +39,7 @@ Before starting this chapter, you should have:
 
 By the end of this chapter, you will have:
 
-- A fresh Laravel 11 installation
+- A fresh Laravel 12 installation (released February 2025)
 - Understanding of the Laravel project structure
 - Your first working routes (web and API)
 - A basic controller
@@ -769,7 +769,7 @@ Route::get('/', function () {
 
 Congratulations! You've successfully installed Laravel and created your first application. Here's what you've accomplished:
 
-- ✓ Installed Laravel 11 using Composer
+- ✓ Installed Laravel 12 using Composer
 - ✓ Understood the Laravel directory structure
 - ✓ Created routes using closures and controllers
 - ✓ Learned the request/response lifecycle
@@ -845,13 +845,13 @@ Complete, runnable examples from this chapter are available in:
 
 To deepen your understanding of the topics covered in this chapter:
 
-- [Laravel Installation](https://laravel.com/docs/11.x/installation) - Official installation guide
-- [Directory Structure](https://laravel.com/docs/11.x/structure) - Detailed explanation of each folder
-- [Routing](https://laravel.com/docs/11.x/routing) - Complete routing documentation
-- [Controllers](https://laravel.com/docs/11.x/controllers) - Controller best practices
-- [Configuration](https://laravel.com/docs/11.x/configuration) - Environment and config management
-- [Artisan Console](https://laravel.com/docs/11.x/artisan) - All Artisan commands
-- [Request Lifecycle](https://laravel.com/docs/11.x/lifecycle) - Deep dive into Laravel's request handling
+- [Laravel Installation](https://laravel.com/docs/12.x/installation) - Official installation guide
+- [Directory Structure](https://laravel.com/docs/12.x/structure) - Detailed explanation of each folder
+- [Routing](https://laravel.com/docs/12.x/routing) - Complete routing documentation
+- [Controllers](https://laravel.com/docs/12.x/controllers) - Controller best practices
+- [Configuration](https://laravel.com/docs/12.x/configuration) - Environment and config management
+- [Artisan Console](https://laravel.com/docs/12.x/artisan) - All Artisan commands
+- [Request Lifecycle](https://laravel.com/docs/12.x/lifecycle) - Deep dive into Laravel's request handling
 
 ## Knowledge Check
 

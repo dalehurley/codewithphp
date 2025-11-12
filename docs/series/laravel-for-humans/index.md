@@ -19,7 +19,7 @@ prerequisites:
 
 Welcome to **Laravel for Humans** — a comprehensive, project-based series that transforms you from a Laravel beginner into a confident developer capable of building and deploying production-ready SaaS applications. By the end of this series, you'll have built a complete collaborative project management SaaS with team features, subscription billing, real-time updates, and professional deployment on Laravel Forge.
 
-Laravel is the world's most popular PHP framework, powering thousands of successful applications from startups to enterprises. Its elegant syntax, powerful features, and thriving ecosystem make it the perfect choice for modern web development. This series will teach you not just how to use Laravel, but how to build professional, scalable applications the right way.
+Laravel is the world's most popular PHP framework, powering thousands of successful applications from startups to enterprises. Its elegant syntax, powerful features, and thriving ecosystem make it the perfect choice for modern web development. This series uses **Laravel 12** (released February 2025), the latest version with enhanced performance, modern starter kits, and improved developer experience. You'll learn not just how to use Laravel, but how to build professional, scalable applications the right way.
 
 ## Who This Is For
 
@@ -370,7 +370,7 @@ Yes! We use SQLite for simplicity in early chapters, but the code works identica
 You don't need to deploy until Chapter 26, and you can use free alternatives like Laravel Cloud or self-host if budget is tight.
 
 **Will this be kept up to date with new Laravel versions?**
-Yes! We'll update the series for major Laravel releases. Current content is for Laravel 11, which has long-term support through 2026.
+Yes! We'll update the series for major Laravel releases. Current content is for Laravel 12 (released February 2025), which receives bug fixes until August 2026 and security fixes until February 2027.
 
 **I'm coming from [Django/Rails/Express] — will this make sense?**
 Yes! If you know another web framework, you'll find Laravel familiar. We highlight patterns and show Laravel equivalents for common framework concepts.
@@ -415,8 +415,8 @@ Your application will use modern Laravel ecosystem tools:
 
 **Core Framework:**
 
-- Laravel 11 (latest LTS)
-- PHP 8.2+ (8.3 recommended)
+- Laravel 12 (released February 2025)
+- PHP 8.2+ (8.3 or 8.4 recommended)
 - MySQL/PostgreSQL (production) or SQLite (development)
 
 **Frontend:**
