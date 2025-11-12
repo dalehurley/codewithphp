@@ -139,7 +139,7 @@ Understand Laravel's Artisan CLI and how it compares to Django's `manage.py` and
    php artisan tinker
    ```
 
-   The complete Artisan command examples are available in [`artisan-commands.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-03/artisan-commands.php).
+   The complete Artisan command examples are available in [`artisan-commands.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-03/artisan-commands.php).
 
 2. **Common Commands Comparison**
 
@@ -216,7 +216,7 @@ Understand Laravel's Artisan CLI and how it compares to Django's `manage.py` and
    php artisan make:command SendEmails
    ```
 
-   The custom command examples are available in [`artisan-commands.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-03/artisan-commands.php) and [`django-manage.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-03/django-manage.py).
+   The custom command examples are available in [`artisan-commands.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-03/artisan-commands.php) and [`django-manage.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-03/django-manage.py).
 
 4. **Artisan Tinker - Interactive Shell**
 
@@ -467,7 +467,7 @@ Master Laravel migrations and understand how they compare to Django migrations.
    Laravel migrations use timestamps in filenames (e.g., `2024_01_01_120000_create_users_table.php`). This ensures migrations run in chronological order, even if created on different machines. Django uses numbered migrations (`0001_initial.py`), which can cause conflicts in team environments.
    :::
 
-   The migration examples are available in [`laravel-migration.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-03/laravel-migration.php) and [`django-migration.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-03/django-migration.py).
+   The migration examples are available in [`laravel-migration.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-03/laravel-migration.php) and [`django-migration.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-03/django-migration.py).
 
 3. **Running Migrations**
 
@@ -633,7 +633,7 @@ Learn PHPUnit testing and understand how it compares to pytest and unittest.
    }
    ```
 
-   The test examples are available in [`phpunit-test.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-03/phpunit-test.php) and [`pytest-test.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-03/pytest-test.py).
+   The test examples are available in [`phpunit-test.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-03/phpunit-test.php) and [`pytest-test.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-03/pytest-test.py).
 
 2. **Feature Tests vs Unit Tests**
 
@@ -898,7 +898,7 @@ Understand Laravel seeders and factories, and how they compare to Django fixture
    php artisan make:seeder UserSeeder
    ```
 
-   The seeder examples are available in [`laravel-seeder.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-03/laravel-seeder.php) and [`django-fixture.json`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-03/django-fixture.json).
+   The seeder examples are available in [`laravel-seeder.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-03/laravel-seeder.php) and [`django-fixture.json`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-03/django-fixture.json).
 
 2. **Running Seeders**
 
@@ -1009,7 +1009,7 @@ Understand Laravel seeders and factories, and how they compare to Django fixture
    $users = User::factory()->count(10)->create();
    ```
 
-   The factory examples are available in [`laravel-factory.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-03/laravel-factory.php).
+   The factory examples are available in [`laravel-factory.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-03/laravel-factory.php).
 
 4. **DatabaseSeeder - Main Seeder**
 
@@ -1472,7 +1472,7 @@ php artisan users:list --limit=5
 # Expected: Formatted table with user data
 ```
 
-**Reference**: See [`artisan-commands.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-03/artisan-commands.php) for examples.
+**Reference**: See [`artisan-commands.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-03/artisan-commands.php) for examples.
 
 ### Exercise 2: Write a Migration and Seeder (~20 min)
 
@@ -1506,7 +1506,7 @@ php artisan tinker
 >>> Post::count() // Should return 10
 ```
 
-**Reference**: See [`laravel-migration.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-03/laravel-migration.php) and [`laravel-seeder.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-03/laravel-seeder.php) for examples.
+**Reference**: See [`laravel-migration.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-03/laravel-migration.php) and [`laravel-seeder.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-03/laravel-seeder.php) for examples.
 
 ### Exercise 3: Write a PHPUnit Test (~15 min)
 
@@ -1536,7 +1536,7 @@ php artisan test --filter PostTest
 # Expected: All tests pass
 ```
 
-**Reference**: See [`phpunit-test.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-03/phpunit-test.php) for examples.
+**Reference**: See [`phpunit-test.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-03/phpunit-test.php) for examples.
 
 ### Exercise 4: Use Code Generation Commands (~10 min)
 
@@ -1577,7 +1577,7 @@ ls app/Http/Controllers/PostController.php
 ls app/Http/Requests/StorePostRequest.php
 ```
 
-**Reference**: See code generation examples in [`artisan-commands.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-03/artisan-commands.php).
+**Reference**: See code generation examples in [`artisan-commands.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-03/artisan-commands.php).
 
 ## Wrap-up
 
@@ -1614,17 +1614,17 @@ Your understanding of Laravel's developer experience tools will help you appreci
 
 All code examples from this chapter are available in the [`code/chapter-03/`](https://github.com/dalehurley/codewithphp/tree/main/docs/series/python-developers-love-php-laravel/code/chapter-03) directory:
 
-- **Artisan Commands**: [`artisan-commands.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-03/artisan-commands.php) — Custom Artisan command examples
-- **Django manage.py**: [`django-manage.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-03/django-manage.py) — Django management command comparison
-- **Laravel Migration**: [`laravel-migration.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-03/laravel-migration.php) — Laravel migration example
-- **Django Migration**: [`django-migration.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-03/django-migration.py) — Django migration comparison
-- **PHPUnit Test**: [`phpunit-test.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-03/phpunit-test.php) — PHPUnit test example
-- **pytest Test**: [`pytest-test.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-03/pytest-test.py) — pytest comparison example
-- **Laravel Seeder**: [`laravel-seeder.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-03/laravel-seeder.php) — Laravel seeder example
-- **Django Fixture**: [`django-fixture.json`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-03/django-fixture.json) — Django fixture comparison
-- **Laravel Factory**: [`laravel-factory.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-03/laravel-factory.php) — Laravel factory example
+- **Artisan Commands**: [`artisan-commands.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-03/artisan-commands.php) — Custom Artisan command examples
+- **Django manage.py**: [`django-manage.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-03/django-manage.py) — Django management command comparison
+- **Laravel Migration**: [`laravel-migration.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-03/laravel-migration.php) — Laravel migration example
+- **Django Migration**: [`django-migration.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-03/django-migration.py) — Django migration comparison
+- **PHPUnit Test**: [`phpunit-test.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-03/phpunit-test.php) — PHPUnit test example
+- **pytest Test**: [`pytest-test.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-03/pytest-test.py) — pytest comparison example
+- **Laravel Seeder**: [`laravel-seeder.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-03/laravel-seeder.php) — Laravel seeder example
+- **Django Fixture**: [`django-fixture.json`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-03/django-fixture.json) — Django fixture comparison
+- **Laravel Factory**: [`laravel-factory.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-03/laravel-factory.php) — Laravel factory example
 
-See the [README.md](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-03/README.md) for detailed instructions on running each example.
+See the [README.md](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-03/README.md) for detailed instructions on running each example.
 
 <ChapterCheckbox seriesId="python-developers-love-php-laravel" chapterId="03-laravel-developer-experience-productivity-tools" />
 

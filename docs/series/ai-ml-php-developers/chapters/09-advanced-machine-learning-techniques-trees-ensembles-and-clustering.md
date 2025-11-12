@@ -74,32 +74,32 @@ Complete, runnable examples for this chapter:
 
 **Main Examples:**
 
-- [`01-decision-tree-basics.php`](../code/chapter-09/01-decision-tree-basics.php) — Introduction to decision trees
-- [`02-customer-churn-tree.php`](../code/chapter-09/02-customer-churn-tree.php) — Customer churn prediction with visualization
-- [`03-random-forest.php`](../code/chapter-09/03-random-forest.php) — Ensemble learning with Random Forests
-- [`04-feature-importance.php`](../code/chapter-09/04-feature-importance.php) — Analyzing feature importance
-- [`05-gradient-boosting.php`](../code/chapter-09/05-gradient-boosting.php) — Gradient Boosting classifier
-- [`06-ensemble-comparison.php`](../code/chapter-09/06-ensemble-comparison.php) — Comparing ensemble methods
-- [`07-kmeans-clustering.php`](../code/chapter-09/07-kmeans-clustering.php) — k-means customer segmentation
-- [`08-hierarchical-clustering.php`](../code/chapter-09/08-hierarchical-clustering.php) — Hierarchical clustering
-- [`09-cluster-evaluation.php`](../code/chapter-09/09-cluster-evaluation.php) — Elbow method and silhouette scores
-- [`10-advanced-comparison.php`](../code/chapter-09/10-advanced-comparison.php) — Complete algorithm comparison
-- [`11-dbscan-clustering.php`](../code/chapter-09/11-dbscan-clustering.php) — DBSCAN for arbitrary-shaped clusters
-- [`12-isolation-forest.php`](../code/chapter-09/12-isolation-forest.php) — Isolation Forest anomaly detection
-- [`13-extra-trees-comparison.php`](../code/chapter-09/13-extra-trees-comparison.php) — Comparing Random Forest vs Extra Trees
-- [`14-gaussian-mixture.php`](../code/chapter-09/14-gaussian-mixture.php) — GMM for probabilistic clustering
+- [`01-decision-tree-basics.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-09/01-decision-tree-basics.php) — Introduction to decision trees
+- [`02-customer-churn-tree.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-09/02-customer-churn-tree.php) — Customer churn prediction with visualization
+- [`03-random-forest.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-09/03-random-forest.php) — Ensemble learning with Random Forests
+- [`04-feature-importance.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-09/04-feature-importance.php) — Analyzing feature importance
+- [`05-gradient-boosting.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-09/05-gradient-boosting.php) — Gradient Boosting classifier
+- [`06-ensemble-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-09/06-ensemble-comparison.php) — Comparing ensemble methods
+- [`07-kmeans-clustering.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-09/07-kmeans-clustering.php) — k-means customer segmentation
+- [`08-hierarchical-clustering.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-09/08-hierarchical-clustering.php) — Hierarchical clustering
+- [`09-cluster-evaluation.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-09/09-cluster-evaluation.php) — Elbow method and silhouette scores
+- [`10-advanced-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-09/10-advanced-comparison.php) — Complete algorithm comparison
+- [`11-dbscan-clustering.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-09/11-dbscan-clustering.php) — DBSCAN for arbitrary-shaped clusters
+- [`12-isolation-forest.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-09/12-isolation-forest.php) — Isolation Forest anomaly detection
+- [`13-extra-trees-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-09/13-extra-trees-comparison.php) — Comparing Random Forest vs Extra Trees
+- [`14-gaussian-mixture.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-09/14-gaussian-mixture.php) — GMM for probabilistic clustering
 
 **Helper Functions:**
 
-- [`helpers.php`](../code/chapter-09/helpers.php) — Shared utility functions (loadCreditRiskDataset, trainTestSplit, etc.)
+- [`helpers.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-09/helpers.php) — Shared utility functions (loadCreditRiskDataset, trainTestSplit, etc.)
 
 **Sample Data:**
 
-- [`data/customer-churn.csv`](../code/chapter-09/data/customer-churn.csv) — Customer churn dataset (40 samples)
-- [`data/credit-risk.csv`](../code/chapter-09/data/credit-risk.csv) — Credit risk dataset (200 samples)
-- [`data/ecommerce-customers.csv`](../code/chapter-09/data/ecommerce-customers.csv) — E-commerce customer data (200 samples)
+- [`data/customer-churn.csv`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-09/data/customer-churn.csv) — Customer churn dataset (40 samples)
+- [`data/credit-risk.csv`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-09/data/credit-risk.csv) — Credit risk dataset (200 samples)
+- [`data/ecommerce-customers.csv`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-09/data/ecommerce-customers.csv) — E-commerce customer data (200 samples)
 
-**Note:** All examples include `require_once 'helpers.php';` for shared functions. See [`README.md`](../code/chapter-09/README.md) for setup instructions.
+**Note:** All examples include `require_once 'helpers.php';` for shared functions. See [`README.md`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-09/README.md) for setup instructions.
 :::
 
 ## Quick Start

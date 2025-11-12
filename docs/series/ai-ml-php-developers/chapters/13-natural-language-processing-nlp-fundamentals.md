@@ -60,31 +60,31 @@ By the end of this chapter, you will have created:
 - Reusable, object-oriented classes with proper error handling
 
 ::: info Code Examples
-Complete, runnable examples are available in [`code/chapter-13/`](../code/chapter-13/):
+Complete, runnable examples are available in [`code/chapter-13/`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-13/):
 
 **Core Classes:**
 
-- [`tokenizer.php`](../code/chapter-13/tokenizer.php) — Text tokenization with multiple strategies
-- [`stop-words.php`](../code/chapter-13/stop-words.php) — Stop word removal
-- [`stemmer.php`](../code/chapter-13/stemmer.php) — Word stemming algorithm
-- [`bag-of-words.php`](../code/chapter-13/bag-of-words.php) — Bag-of-words vectorization
-- [`tfidf.php`](../code/chapter-13/tfidf.php) — TF-IDF feature extraction
-- [`text-processor.php`](../code/chapter-13/text-processor.php) — Complete processing pipeline
+- [`tokenizer.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-13/tokenizer.php) — Text tokenization with multiple strategies
+- [`stop-words.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-13/stop-words.php) — Stop word removal
+- [`stemmer.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-13/stemmer.php) — Word stemming algorithm
+- [`bag-of-words.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-13/bag-of-words.php) — Bag-of-words vectorization
+- [`tfidf.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-13/tfidf.php) — TF-IDF feature extraction
+- [`text-processor.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-13/text-processor.php) — Complete processing pipeline
 
 **Test Scripts:**
 
-- [`text-transformation-demo.php`](../code/chapter-13/text-transformation-demo.php) — Step-by-step text transformation
-- [`test-tokenizer.php`](../code/chapter-13/test-tokenizer.php) — Tokenization examples
-- [`test-stopwords.php`](../code/chapter-13/test-stopwords.php) — Stop word filtering demo
-- [`test-stemmer.php`](../code/chapter-13/test-stemmer.php) — Stemming examples
-- [`test-bow.php`](../code/chapter-13/test-bow.php) — Bag-of-words demonstration
-- [`test-tfidf.php`](../code/chapter-13/test-tfidf.php) — TF-IDF scoring examples
-- [`demo.php`](../code/chapter-13/demo.php) — Complete pipeline demonstration
+- [`text-transformation-demo.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-13/text-transformation-demo.php) — Step-by-step text transformation
+- [`test-tokenizer.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-13/test-tokenizer.php) — Tokenization examples
+- [`test-stopwords.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-13/test-stopwords.php) — Stop word filtering demo
+- [`test-stemmer.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-13/test-stemmer.php) — Stemming examples
+- [`test-bow.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-13/test-bow.php) — Bag-of-words demonstration
+- [`test-tfidf.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-13/test-tfidf.php) — TF-IDF scoring examples
+- [`demo.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-13/demo.php) — Complete pipeline demonstration
 
 **Data:**
 
-- [`data/stop-words-en.txt`](../code/chapter-13/data/stop-words-en.txt) — English stop words list
-- [`data/sample-documents.txt`](../code/chapter-13/data/sample-documents.txt) — Sample documents
+- [`data/stop-words-en.txt`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-13/data/stop-words-en.txt) — English stop words list
+- [`data/sample-documents.txt`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-13/data/sample-documents.txt) — Sample documents
   :::
 
 ## Quick Start

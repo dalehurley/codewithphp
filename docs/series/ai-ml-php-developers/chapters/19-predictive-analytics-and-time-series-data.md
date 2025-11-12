@@ -76,21 +76,21 @@ All code examples are fully functional, tested, and ready to run with provided s
 ::: info Code Examples
 Complete, runnable examples for this chapter are available in:
 
-- [`quick-start.php`](../code/chapter-19/quick-start.php) — 5-minute moving average forecaster
-- [`01-load-stock-data.php`](../code/chapter-19/01-load-stock-data.php) — Load and validate time series data
-- [`02-moving-averages.php`](../code/chapter-19/02-moving-averages.php) — SMA and EMA implementations
-- [`03-linear-trend.php`](../code/chapter-19/03-linear-trend.php) — Linear regression forecaster
-- [`04-seasonal-decomposition.php`](../code/chapter-19/04-seasonal-decomposition.php) — Decompose time series
-- [`05-evaluation-metrics.php`](../code/chapter-19/05-evaluation-metrics.php) — MAE, RMSE, MAPE calculators
-- [`06-simple-arma.php`](../code/chapter-19/06-simple-arma.php) — Simplified ARMA model
-- [`07-python-prophet-api.php`](../code/chapter-19/07-python-prophet-api.php) — Prophet via REST API
-- [`08-python-statsmodels-cli.php`](../code/chapter-19/08-python-statsmodels-cli.php) — statsmodels via CLI
-- [`09-stock-price-forecaster.php`](../code/chapter-19/09-stock-price-forecaster.php) — Complete production system
-- [`10-comparison-demo.php`](../code/chapter-19/10-comparison-demo.php) — Compare all approaches
+- [`quick-start.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-19/quick-start.php) — 5-minute moving average forecaster
+- [`01-load-stock-data.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-19/01-load-stock-data.php) — Load and validate time series data
+- [`02-moving-averages.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-19/02-moving-averages.php) — SMA and EMA implementations
+- [`03-linear-trend.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-19/03-linear-trend.php) — Linear regression forecaster
+- [`04-seasonal-decomposition.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-19/04-seasonal-decomposition.php) — Decompose time series
+- [`05-evaluation-metrics.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-19/05-evaluation-metrics.php) — MAE, RMSE, MAPE calculators
+- [`06-simple-arma.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-19/06-simple-arma.php) — Simplified ARMA model
+- [`07-python-prophet-api.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-19/07-python-prophet-api.php) — Prophet via REST API
+- [`08-python-statsmodels-cli.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-19/08-python-statsmodels-cli.php) — statsmodels via CLI
+- [`09-stock-price-forecaster.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-19/09-stock-price-forecaster.php) — Complete production system
+- [`10-comparison-demo.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-19/10-comparison-demo.php) — Compare all approaches
 
-Supporting classes in [`src/`](../code/chapter-19/src/) directory, Python scripts in [`python/`](../code/chapter-19/python/), and sample data in [`data/`](../code/chapter-19/data/).
+Supporting classes in [`src/`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-19/src/) directory, Python scripts in [`python/`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-19/python/), and sample data in [`data/`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-19/data/).
 
-All files are in [`docs/series/ai-ml-php-developers/code/chapter-19/`](../code/chapter-19/README.md)
+All files are in [`docs/series/ai-ml-php-developers/code/chapter-19/`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-19/README.md)
 :::
 
 ::: warning Financial Data Disclaimer

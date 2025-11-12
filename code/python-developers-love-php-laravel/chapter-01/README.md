@@ -235,9 +235,9 @@ php artisan serve
 
 | Framework | Variables | Loops | Filters |
 |-----------|-----------|-------|---------|
-| Django | `{{ var }}` | `{% for %}` | `{{ var\|filter }}` |
-| Jinja2 | `{{ var }}` | `{% for %}` | `{{ var\|filter }}` |
-| Blade | `{{ $var }}` | `@foreach` | `{{ Str::method($var) }}` |
+| Django | `{% raw %}{{ var }}{% endraw %}` | `{% for %}` | `{% raw %}{{ var|filter }}{% endraw %}` |
+| Jinja2 | `{% raw %}{{ var }}{% endraw %}` | `{% for %}` | `{% raw %}{{ var|filter }}{% endraw %}` |
+| Blade | `{% raw %}{{ $var }}{% endraw %}` | `@foreach` | `{% raw %}{{ Str::method($var) }}{% endraw %}` |
 
 ### ORM Patterns
 

@@ -87,23 +87,23 @@ All code examples are fully functional, tested, include realistic datasets, and 
 ::: info Code Examples
 Complete, runnable examples for this chapter:
 
-- [`quick-start.php`](../code/chapter-22/quick-start.php) — 5-minute basic recommender demonstration
-- [`01-load-ratings-dataset.php`](../code/chapter-22/01-load-ratings-dataset.php) — Load and explore movie ratings
-- [`02-user-similarity.php`](../code/chapter-22/02-user-similarity.php) — Calculate cosine and Pearson similarity
-- [`03-collaborative-filtering-scratch.php`](../code/chapter-22/03-collaborative-filtering-scratch.php) — Complete CF from scratch
-- [`04-predict-ratings.php`](../code/chapter-22/04-predict-ratings.php) — Rating prediction and accuracy
-- [`05-generate-recommendations.php`](../code/chapter-22/05-generate-recommendations.php) — Generate personalized recommendations
-- [`06-evaluation-metrics.php`](../code/chapter-22/06-evaluation-metrics.php) — Comprehensive evaluation metrics
-- [`07-item-based-filtering.php`](../code/chapter-22/07-item-based-filtering.php) — Item-based collaborative filtering
-- [`08-rubixml-recommender.php`](../code/chapter-22/08-rubixml-recommender.php) — Rubix ML KNNRegressor integration
-- [`09-cold-start-handling.php`](../code/chapter-22/09-cold-start-handling.php) — Cold start problem solutions
-- [`10-matrix-operations.php`](../code/chapter-22/10-matrix-operations.php) — Efficient matrix operations
-- [`11-model-persistence.php`](../code/chapter-22/11-model-persistence.php) — Save and load trained models
-- [`12-production-recommender.php`](../code/chapter-22/12-production-recommender.php) — Production-ready class
-- [`13-batch-recommendations.php`](../code/chapter-22/13-batch-recommendations.php) — Batch processing
-- [`14-hybrid-recommender.php`](../code/chapter-22/14-hybrid-recommender.php) — Hybrid approach
+- [`quick-start.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-22/quick-start.php) — 5-minute basic recommender demonstration
+- [`01-load-ratings-dataset.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-22/01-load-ratings-dataset.php) — Load and explore movie ratings
+- [`02-user-similarity.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-22/02-user-similarity.php) — Calculate cosine and Pearson similarity
+- [`03-collaborative-filtering-scratch.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-22/03-collaborative-filtering-scratch.php) — Complete CF from scratch
+- [`04-predict-ratings.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-22/04-predict-ratings.php) — Rating prediction and accuracy
+- [`05-generate-recommendations.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-22/05-generate-recommendations.php) — Generate personalized recommendations
+- [`06-evaluation-metrics.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-22/06-evaluation-metrics.php) — Comprehensive evaluation metrics
+- [`07-item-based-filtering.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-22/07-item-based-filtering.php) — Item-based collaborative filtering
+- [`08-rubixml-recommender.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-22/08-rubixml-recommender.php) — Rubix ML KNNRegressor integration
+- [`09-cold-start-handling.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-22/09-cold-start-handling.php) — Cold start problem solutions
+- [`10-matrix-operations.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-22/10-matrix-operations.php) — Efficient matrix operations
+- [`11-model-persistence.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-22/11-model-persistence.php) — Save and load trained models
+- [`12-production-recommender.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-22/12-production-recommender.php) — Production-ready class
+- [`13-batch-recommendations.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-22/13-batch-recommendations.php) — Batch processing
+- [`14-hybrid-recommender.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-22/14-hybrid-recommender.php) — Hybrid approach
 
-All files are in [`docs/series/ai-ml-php-developers/code/chapter-22/`](../code/chapter-22/README.md)
+All files are in [`docs/series/ai-ml-php-developers/code/chapter-22/`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-22/README.md)
 :::
 
 ## Quick Start
@@ -1280,7 +1280,7 @@ Implement comprehensive evaluation metrics to measure how well your recommender 
 
 1. **Implement evaluation metrics**:
 
-The complete evaluation code is in [`06-evaluation-metrics.php`](../code/chapter-22/06-evaluation-metrics.php). It calculates:
+The complete evaluation code is in [`06-evaluation-metrics.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-22/06-evaluation-metrics.php). It calculates:
 
 - **RMSE** (Root Mean Squared Error): Prediction accuracy for ratings
 - **MAE** (Mean Absolute Error): Average prediction error magnitude
@@ -1553,7 +1553,7 @@ Create a production-ready recommendation class with configuration options, cachi
 
 1. **Review the production recommender implementation**:
 
-The complete production recommender is in [`12-production-recommender.php`](../code/chapter-22/12-production-recommender.php). Run it to see all features in action:
+The complete production recommender is in [`12-production-recommender.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-22/12-production-recommender.php). Run it to see all features in action:
 
 ```bash
 php 12-production-recommender.php
@@ -1609,8 +1609,8 @@ final class ProductionRecommender
 - ✅ **Error Handling**: Graceful degradation on failures (returns empty array instead of throwing)
 - ✅ **Monitoring**: Track performance metrics (predictions, cache hits, cache misses)
 - ✅ **Cold Start**: Automatic fallback to popularity-based recommendations for new users
-- ✅ **Batch Processing**: Generate multiple recommendations efficiently ([`13-batch-recommendations.php`](../code/chapter-22/13-batch-recommendations.php))
-- ✅ **Hybrid Approach**: Combine CF + content-based for improved quality ([`14-hybrid-recommender.php`](../code/chapter-22/14-hybrid-recommender.php))
+- ✅ **Batch Processing**: Generate multiple recommendations efficiently ([`13-batch-recommendations.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-22/13-batch-recommendations.php))
+- ✅ **Hybrid Approach**: Combine CF + content-based for improved quality ([`14-hybrid-recommender.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-22/14-hybrid-recommender.php))
 
 3. **Review performance monitoring**:
 

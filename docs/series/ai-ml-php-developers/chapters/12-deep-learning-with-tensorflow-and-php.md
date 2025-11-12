@@ -79,32 +79,32 @@ Complete, runnable examples for this chapter are available in:
 
 **Setup Scripts:**
 
-- [`download_model.py`](../code/chapter-12/download_model.py) — Download pre-trained MobileNetV2
-- [`start_tensorflow_serving.sh`](../code/chapter-12/start_tensorflow_serving.sh) — Launch TensorFlow Serving container
-- [`verify_serving.sh`](../code/chapter-12/verify_serving.sh) — Verify TensorFlow Serving is running
+- [`download_model.py`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-12/download_model.py) — Download pre-trained MobileNetV2
+- [`start_tensorflow_serving.sh`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-12/start_tensorflow_serving.sh) — Launch TensorFlow Serving container
+- [`verify_serving.sh`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-12/verify_serving.sh) — Verify TensorFlow Serving is running
 
 **Progressive PHP Examples:**
 
-- [`01-simple-prediction.php`](../code/chapter-12/01-simple-prediction.php) — Basic cURL request to TensorFlow Serving
-- [`02-tensorflow-client.php`](../code/chapter-12/02-tensorflow-client.php) — Reusable TensorFlowClient class
-- [`03-image-preprocessor.php`](../code/chapter-12/03-image-preprocessor.php) — Image loading and preprocessing
-- [`04-image-classifier.php`](../code/chapter-12/04-image-classifier.php) — Complete classification system
-- [`05-batch-predictor.php`](../code/chapter-12/05-batch-predictor.php) — Batch processing multiple images
-- [`06-web-upload.php`](../code/chapter-12/06-web-upload.php) — Web interface with file upload
+- [`01-simple-prediction.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-12/01-simple-prediction.php) — Basic cURL request to TensorFlow Serving
+- [`02-tensorflow-client.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-12/02-tensorflow-client.php) — Reusable TensorFlowClient class
+- [`03-image-preprocessor.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-12/03-image-preprocessor.php) — Image loading and preprocessing
+- [`04-image-classifier.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-12/04-image-classifier.php) — Complete classification system
+- [`05-batch-predictor.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-12/05-batch-predictor.php) — Batch processing multiple images
+- [`06-web-upload.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-12/06-web-upload.php) — Web interface with file upload
 
 **Data Files:**
 
-- [`data/imagenet_labels.json`](../code/chapter-12/data/imagenet_labels.json) — 1,000 ImageNet class labels
-- [`data/sample_images/`](../code/chapter-12/data/sample_images/) — Test images for classification
+- [`data/imagenet_labels.json`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-12/data/imagenet_labels.json) — 1,000 ImageNet class labels
+- [`data/sample_images/`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-12/data/sample_images/) — Test images for classification
 
 **Exercise Solutions:**
 
-- [`solutions/exercise1-formats.php`](../code/chapter-12/solutions/exercise1-formats.php) — Multiple image format support
-- [`solutions/exercise2-batch.php`](../code/chapter-12/solutions/exercise2-batch.php) — Optimized batch processing
-- [`solutions/exercise3-resnet.php`](../code/chapter-12/solutions/exercise3-resnet.php) — Using ResNet50 model
-- [`solutions/exercise4-caching.php`](../code/chapter-12/solutions/exercise4-caching.php) — Production caching system
+- [`solutions/exercise1-formats.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-12/solutions/exercise1-formats.php) — Multiple image format support
+- [`solutions/exercise2-batch.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-12/solutions/exercise2-batch.php) — Optimized batch processing
+- [`solutions/exercise3-resnet.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-12/solutions/exercise3-resnet.php) — Using ResNet50 model
+- [`solutions/exercise4-caching.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-12/solutions/exercise4-caching.php) — Production caching system
 
-See [`README.md`](../code/chapter-12/README.md) for detailed setup instructions.
+See [`README.md`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-12/README.md) for detailed setup instructions.
 :::
 
 ## Quick Start

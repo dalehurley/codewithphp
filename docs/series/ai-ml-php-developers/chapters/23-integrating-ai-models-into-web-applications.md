@@ -95,59 +95,59 @@ Complete, runnable examples for this chapter are available in the code directory
 
 **Setup & Configuration:**
 
-- [`composer.json`](../code/chapter-23/composer.json) — Laravel + ML dependencies
-- [`env.example`](../code/chapter-23/env.example) — Environment configuration template
-- [`README.md`](../code/chapter-23/README.md) — Setup and installation instructions
+- [`composer.json`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-23/composer.json) — Laravel + ML dependencies
+- [`env.example`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-23/env.example) — Environment configuration template
+- [`README.md`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-23/README.md) — Setup and installation instructions
 
 **Core Services:**
 
-- [`app/Services/ML/ModelService.php`](../code/chapter-23/app/Services/ML/ModelService.php) — Base ML service class
-- [`app/Services/ML/SentimentAnalysisService.php`](../code/chapter-23/app/Services/ML/SentimentAnalysisService.php) — Sentiment analysis implementation
-- [`app/Services/ML/ProductRecommendationService.php`](../code/chapter-23/app/Services/ML/ProductRecommendationService.php) — Recommendation engine integration
-- [`app/Services/ML/ChatbotService.php`](../code/chapter-23/app/Services/ML/ChatbotService.php) — OpenAI chatbot service
+- [`app/Services/ML/ModelService.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-23/app/Services/ML/ModelService.php) — Base ML service class
+- [`app/Services/ML/SentimentAnalysisService.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-23/app/Services/ML/SentimentAnalysisService.php) — Sentiment analysis implementation
+- [`app/Services/ML/ProductRecommendationService.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-23/app/Services/ML/ProductRecommendationService.php) — Recommendation engine integration
+- [`app/Services/ML/ChatbotService.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-23/app/Services/ML/ChatbotService.php) — OpenAI chatbot service
 
 **Controllers & Routes:**
 
-- [`app/Http/Controllers/MLController.php`](../code/chapter-23/app/Http/Controllers/MLController.php) — ML API endpoints
-- [`routes/api.php`](../code/chapter-23/routes/api.php) — API route definitions
-- [`routes/web.php`](../code/chapter-23/routes/web.php) — Web route definitions
+- [`app/Http/Controllers/MLController.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-23/app/Http/Controllers/MLController.php) — ML API endpoints
+- [`routes/api.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-23/routes/api.php) — API route definitions
+- [`routes/web.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-23/routes/web.php) — Web route definitions
 
 **Middleware & Validation:**
 
-- [`app/Http/Middleware/ValidateMLInput.php`](../code/chapter-23/app/Http/Middleware/ValidateMLInput.php) — Input validation middleware
-- [`app/Http/Requests/SentimentAnalysisRequest.php`](../code/chapter-23/app/Http/Requests/SentimentAnalysisRequest.php) — Sentiment request validation
+- [`app/Http/Middleware/ValidateMLInput.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-23/app/Http/Middleware/ValidateMLInput.php) — Input validation middleware
+- [`app/Http/Requests/SentimentAnalysisRequest.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-23/app/Http/Requests/SentimentAnalysisRequest.php) — Sentiment request validation
 
 **Background Jobs:**
 
-- [`app/Jobs/ProcessPredictionJob.php`](../code/chapter-23/app/Jobs/ProcessPredictionJob.php) — Async prediction processing
-- [`app/Jobs/BatchPredictionJob.php`](../code/chapter-23/app/Jobs/BatchPredictionJob.php) — Batch processing
+- [`app/Jobs/ProcessPredictionJob.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-23/app/Jobs/ProcessPredictionJob.php) — Async prediction processing
+- [`app/Jobs/BatchPredictionJob.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-23/app/Jobs/BatchPredictionJob.php) — Batch processing
 
 **Models & Migrations:**
 
-- [`app/Models/Prediction.php`](../code/chapter-23/app/Models/Prediction.php) — Prediction result model
-- [`database/migrations/create_predictions_table.php`](../code/chapter-23/database/migrations/create_predictions_table.php) — Predictions table schema
+- [`app/Models/Prediction.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-23/app/Models/Prediction.php) — Prediction result model
+- [`database/migrations/create_predictions_table.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-23/database/migrations/create_predictions_table.php) — Predictions table schema
 
 **Service Provider:**
 
-- [`app/Providers/MLServiceProvider.php`](../code/chapter-23/app/Providers/MLServiceProvider.php) — ML services registration
-- [`bootstrap/providers.php`](../code/chapter-23/bootstrap/providers.php) — Provider registration
+- [`app/Providers/MLServiceProvider.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-23/app/Providers/MLServiceProvider.php) — ML services registration
+- [`bootstrap/providers.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-23/bootstrap/providers.php) — Provider registration
 
 **Frontend:**
 
-- [`resources/views/ml-demo.blade.php`](../code/chapter-23/resources/views/ml-demo.blade.php) — Demo page
-- [`resources/views/components/sentiment-widget.blade.php`](../code/chapter-23/resources/views/components/sentiment-widget.blade.php) — Sentiment Blade component
-- [`resources/js/components/SentimentAnalyzer.vue`](../code/chapter-23/resources/js/components/SentimentAnalyzer.vue) — Vue sentiment widget
+- [`resources/views/ml-demo.blade.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-23/resources/views/ml-demo.blade.php) — Demo page
+- [`resources/views/components/sentiment-widget.blade.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-23/resources/views/components/sentiment-widget.blade.php) — Sentiment Blade component
+- [`resources/js/components/SentimentAnalyzer.vue`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-23/resources/js/components/SentimentAnalyzer.vue) — Vue sentiment widget
 
 **Tests:**
 
-- [`tests/Feature/MLIntegrationTest.php`](../code/chapter-23/tests/Feature/MLIntegrationTest.php) — Feature tests
-- [`tests/Unit/SentimentServiceTest.php`](../code/chapter-23/tests/Unit/SentimentServiceTest.php) — Unit tests
+- [`tests/Feature/MLIntegrationTest.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-23/tests/Feature/MLIntegrationTest.php) — Feature tests
+- [`tests/Unit/SentimentServiceTest.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-23/tests/Unit/SentimentServiceTest.php) — Unit tests
 
 **Configuration:**
 
-- [`config/ml.php`](../code/chapter-23/config/ml.php) — ML configuration file
+- [`config/ml.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-23/config/ml.php) — ML configuration file
 
-All files are in [`docs/series/ai-ml-php-developers/code/chapter-23/`](../code/chapter-23/)
+All files are in [`docs/series/ai-ml-php-developers/code/chapter-23/`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-23/)
 :::
 
 ## Quick Start
@@ -1229,4 +1229,4 @@ Include:
 
 ---
 
-**Code Examples**: All complete, runnable code for this chapter is available in [`docs/series/ai-ml-php-developers/code/chapter-23/`](../code/chapter-23/)
+**Code Examples**: All complete, runnable code for this chapter is available in [`docs/series/ai-ml-php-developers/code/chapter-23/`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-23/)

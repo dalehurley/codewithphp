@@ -77,18 +77,18 @@ All code examples are fully functional, tested, and include realistic datasets y
 ::: info Code Examples
 Complete, runnable examples for this chapter:
 
-- [`01-load-and-explore.php`](../code/chapter-20/01-load-and-explore.php) — Load sales data and display statistics
-- [`02-moving-average.php`](../code/chapter-20/02-moving-average.php) — Simple moving average forecaster
-- [`03-linear-regression.php`](../code/chapter-20/03-linear-regression.php) — Regression-based forecasting
-- [`04-prophet-integration.php`](../code/chapter-20/04-prophet-integration.php) — PHP-Python Prophet integration
-- [`05-visualize-all.php`](../code/chapter-20/05-visualize-all.php) — Compare all three methods
-- [`06-evaluate-accuracy.php`](../code/chapter-20/06-evaluate-accuracy.php) — Calculate error metrics
-- [`train_prophet.py`](../code/chapter-20/train_prophet.py) — Python script for Prophet forecasting
-- [`sample-sales-data.csv`](../code/chapter-20/sample-sales-data.csv) — 36 months of e-commerce sales
-- [`composer.json`](../code/chapter-20/composer.json) — PHP dependencies
-- [`requirements.txt`](../code/chapter-20/requirements.txt) — Python dependencies
+- [`01-load-and-explore.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-20/01-load-and-explore.php) — Load sales data and display statistics
+- [`02-moving-average.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-20/02-moving-average.php) — Simple moving average forecaster
+- [`03-linear-regression.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-20/03-linear-regression.php) — Regression-based forecasting
+- [`04-prophet-integration.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-20/04-prophet-integration.php) — PHP-Python Prophet integration
+- [`05-visualize-all.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-20/05-visualize-all.php) — Compare all three methods
+- [`06-evaluate-accuracy.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-20/06-evaluate-accuracy.php) — Calculate error metrics
+- [`train_prophet.py`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-20/train_prophet.py) — Python script for Prophet forecasting
+- [`sample-sales-data.csv`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-20/sample-sales-data.csv) — 36 months of e-commerce sales
+- [`composer.json`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-20/composer.json) — PHP dependencies
+- [`requirements.txt`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-20/requirements.txt) — Python dependencies
 
-All files are in [`docs/series/ai-ml-php-developers/code/chapter-20/`](../code/chapter-20/README.md)
+All files are in [`docs/series/ai-ml-php-developers/code/chapter-20/`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-20/README.md)
 :::
 
 ## Quick Start

@@ -104,47 +104,47 @@ Complete, runnable examples for this chapter are available in:
 
 **Configuration Files:**
 
-- [`Dockerfile`](../code/chapter-24/Dockerfile) — Multi-stage PHP container with ML dependencies
-- [`docker-compose.yml`](../code/chapter-24/docker-compose.yml) — Development stack configuration
-- [`docker-compose.prod.yml`](../code/chapter-24/docker-compose.prod.yml) — Production overrides
-- [`.dockerignore`](../code/chapter-24/.dockerignore) — Files to exclude from Docker context
-- [`env.example`](../code/chapter-24/env.example) — Environment variables template
+- [`Dockerfile`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/Dockerfile) — Multi-stage PHP container with ML dependencies
+- [`docker-compose.yml`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/docker-compose.yml) — Development stack configuration
+- [`docker-compose.prod.yml`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/docker-compose.prod.yml) — Production overrides
+- [`.dockerignore`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/.dockerignore) — Files to exclude from Docker context
+- [`env.example`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/env.example) — Environment variables template
 
 **Application Code:**
 
-- [`01-simple-docker-test.php`](../code/chapter-24/01-simple-docker-test.php) — Verify Docker setup works
-- [`02-job-queue-system.php`](../code/chapter-24/02-job-queue-system.php) — Job and Queue implementation
-- [`03-ml-worker.php`](../code/chapter-24/03-ml-worker.php) — Worker daemon process
-- [`04-api-endpoint.php`](../code/chapter-24/04-api-endpoint.php) — REST API for predictions
-- [`05-caching-layer.php`](../code/chapter-24/05-caching-layer.php) — Redis caching
-- [`06-health-check.php`](../code/chapter-24/06-health-check.php) — Health monitoring endpoint
-- [`07-metrics-collector.php`](../code/chapter-24/07-metrics-collector.php) — Performance metrics
+- [`01-simple-docker-test.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/01-simple-docker-test.php) — Verify Docker setup works
+- [`02-job-queue-system.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/02-job-queue-system.php) — Job and Queue implementation
+- [`03-ml-worker.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/03-ml-worker.php) — Worker daemon process
+- [`04-api-endpoint.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/04-api-endpoint.php) — REST API for predictions
+- [`05-caching-layer.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/05-caching-layer.php) — Redis caching
+- [`06-health-check.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/06-health-check.php) — Health monitoring endpoint
+- [`07-metrics-collector.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/07-metrics-collector.php) — Performance metrics
 
 **Server Configuration:**
 
-- [`nginx/default.conf`](../code/chapter-24/nginx/default.conf) — Nginx reverse proxy
-- [`nginx/load-balancer.conf`](../code/chapter-24/nginx/load-balancer.conf) — Load balancer config
-- [`supervisor/worker.conf`](../code/chapter-24/supervisor/worker.conf) — Supervisor for workers
+- [`nginx/default.conf`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/nginx/default.conf) — Nginx reverse proxy
+- [`nginx/load-balancer.conf`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/nginx/load-balancer.conf) — Load balancer config
+- [`supervisor/worker.conf`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/supervisor/worker.conf) — Supervisor for workers
 
 **Deployment:**
 
-- [`.github/workflows/deploy.yml`](../code/chapter-24/.github/workflows/deploy.yml) — CI/CD pipeline
-- [`scripts/deploy.sh`](../code/chapter-24/scripts/deploy.sh) — Deployment script
-- [`scripts/scale-workers.sh`](../code/chapter-24/scripts/scale-workers.sh) — Worker scaling
+- [`.github/workflows/deploy.yml`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/.github/workflows/deploy.yml) — CI/CD pipeline
+- [`scripts/deploy.sh`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/scripts/deploy.sh) — Deployment script
+- [`scripts/scale-workers.sh`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/scripts/scale-workers.sh) — Worker scaling
 
 **Monitoring:**
 
-- [`monitoring/dashboard.php`](../code/chapter-24/monitoring/dashboard.php) — Metrics dashboard
-- [`monitoring/logger.php`](../code/chapter-24/monitoring/logger.php) — Centralized logging
+- [`monitoring/dashboard.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/monitoring/dashboard.php) — Metrics dashboard
+- [`monitoring/logger.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/monitoring/logger.php) — Centralized logging
 
 **Exercise Solutions:**
 
-- [`solutions/exercise1-autoscale.php`](../code/chapter-24/solutions/exercise1-autoscale.php) — Auto-scaling implementation
-- [`solutions/exercise2-blue-green.sh`](../code/chapter-24/solutions/exercise2-blue-green.sh) — Blue-green deployment
-- [`solutions/exercise3-health-check.php`](../code/chapter-24/solutions/exercise3-health-check.php) — Advanced health checks
-- [`solutions/exercise4-optimized.Dockerfile`](../code/chapter-24/solutions/exercise4-optimized.Dockerfile) — Optimized Docker image
+- [`solutions/exercise1-autoscale.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/solutions/exercise1-autoscale.php) — Auto-scaling implementation
+- [`solutions/exercise2-blue-green.sh`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/solutions/exercise2-blue-green.sh) — Blue-green deployment
+- [`solutions/exercise3-health-check.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/solutions/exercise3-health-check.php) — Advanced health checks
+- [`solutions/exercise4-optimized.Dockerfile`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/solutions/exercise4-optimized.Dockerfile) — Optimized Docker image
 
-All files are in [`docs/series/ai-ml-php-developers/code/chapter-24/`](../code/chapter-24/README.md)
+All files are in [`docs/series/ai-ml-php-developers/code/chapter-24/`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/README.md)
 :::
 
 ## Quick Start
@@ -265,7 +265,7 @@ By completing this chapter, you will:
 - **Optimize for production** balancing cost, performance, reliability, and maintainability in real-world deployments
 
 ::: tip Complete Code Examples
-This chapter includes extensive code examples. All files are available in [`code/chapter-24/`](../code/chapter-24/) with detailed inline documentation. Each step below references the specific files you'll need.
+This chapter includes extensive code examples. All files are available in [`code/chapter-24/`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/) with detailed inline documentation. Each step below references the specific files you'll need.
 :::
 
 ## Typical Request Flow
@@ -348,9 +348,9 @@ Create a multi-stage Dockerfile that separates build dependencies from runtime:
 
 📄 **Primary Files:**
 
-- [`Dockerfile`](../code/chapter-24/Dockerfile) - Multi-stage build with PHP 8.4
-- [`docker-compose.yml`](../code/chapter-24/docker-compose.yml) - Development stack
-- [`.dockerignore`](../code/chapter-24/.dockerignore) - Exclude unnecessary files
+- [`Dockerfile`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/Dockerfile) - Multi-stage build with PHP 8.4
+- [`docker-compose.yml`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/docker-compose.yml) - Development stack
+- [`.dockerignore`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/.dockerignore) - Exclude unnecessary files
 
 **Key Actions:**
 
@@ -410,7 +410,7 @@ Implement async job processing so ML predictions don't block web requests. Users
 
 📄 **Primary Files:**
 
-- [`02-job-queue-system.php`](../code/chapter-24/02-job-queue-system.php) - PredictionJob and JobQueue classes
+- [`02-job-queue-system.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/02-job-queue-system.php) - PredictionJob and JobQueue classes
 
 **Core Classes:**
 
@@ -468,7 +468,7 @@ Create daemon processes that continuously pull jobs from the queue, run ML infer
 
 📄 **Primary Files:**
 
-- [`03-ml-worker.php`](../code/chapter-24/03-ml-worker.php) - Worker daemon with signal handling
+- [`03-ml-worker.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/03-ml-worker.php) - Worker daemon with signal handling
 
 **Worker Features:**
 
@@ -525,7 +525,7 @@ Avoid redundant ML computations by caching prediction results. Identical inputs 
 
 📄 **Primary Files:**
 
-- [`05-caching-layer.php`](../code/chapter-24/05-caching-layer.php) - PredictionCache class
+- [`05-caching-layer.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/05-caching-layer.php) - PredictionCache class
 
 **Key Features:**
 
@@ -585,8 +585,8 @@ Deploy your containerized service to a cloud server, making it accessible via pu
 
 📄 **Primary Files:**
 
-- [`docker-compose.prod.yml`](../code/chapter-24/docker-compose.prod.yml) - Production overrides
-- [`scripts/deploy.sh`](../code/chapter-24/scripts/deploy.sh) - Automated deployment
+- [`docker-compose.prod.yml`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/docker-compose.prod.yml) - Production overrides
+- [`scripts/deploy.sh`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/scripts/deploy.sh) - Automated deployment
 
 **Deployment Steps:**
 
@@ -709,9 +709,9 @@ Distribute traffic across multiple application instances for high availability a
 
 📄 **Primary Files:**
 
-- [`nginx/default.conf`](../code/chapter-24/nginx/default.conf) - Reverse proxy config
-- [`nginx/load-balancer.conf`](../code/chapter-24/nginx/load-balancer.conf) - Multi-instance config
-- [`scripts/scale-workers.sh`](../code/chapter-24/scripts/scale-workers.sh) - Scaling automation
+- [`nginx/default.conf`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/nginx/default.conf) - Reverse proxy config
+- [`nginx/load-balancer.conf`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/nginx/load-balancer.conf) - Multi-instance config
+- [`scripts/scale-workers.sh`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/scripts/scale-workers.sh) - Scaling automation
 
 **Nginx Load Balancer:**
 
@@ -808,10 +808,10 @@ Track system health, ML performance, and operational metrics in real-time to det
 
 📄 **Primary Files:**
 
-- [`06-health-check.php`](../code/chapter-24/06-health-check.php) - Health endpoint
-- [`07-metrics-collector.php`](../code/chapter-24/07-metrics-collector.php) - Metrics system
-- [`monitoring/dashboard.php`](../code/chapter-24/monitoring/dashboard.php) - Visual dashboard
-- [`monitoring/logger.php`](../code/chapter-24/monitoring/logger.php) - Structured logging
+- [`06-health-check.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/06-health-check.php) - Health endpoint
+- [`07-metrics-collector.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/07-metrics-collector.php) - Metrics system
+- [`monitoring/dashboard.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/monitoring/dashboard.php) - Visual dashboard
+- [`monitoring/logger.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/monitoring/logger.php) - Structured logging
 
 **Health Check Endpoint:**
 
@@ -938,7 +938,7 @@ Automate testing, Docker image building, and deployment so `git push` triggers a
 
 📄 **Primary Files:**
 
-- [`.github/workflows/deploy.yml`](../code/chapter-24/.github/workflows/deploy.yml) - GitHub Actions workflow
+- [`.github/workflows/deploy.yml`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/.github/workflows/deploy.yml) - GitHub Actions workflow
 
 **Pipeline Stages:**
 
@@ -984,7 +984,7 @@ Test your understanding with these practical challenges:
 - Scale down when depth < 10 for 5+ minutes (remove 2, min 2)
 - Prevent rapid scaling (cooldown period)
 
-**Solution**: [`solutions/exercise1-autoscale.php`](../code/chapter-24/solutions/exercise1-autoscale.php)
+**Solution**: [`solutions/exercise1-autoscale.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/solutions/exercise1-autoscale.php)
 
 ### Exercise 2: Blue-Green Deployment
 
@@ -997,7 +997,7 @@ Test your understanding with these practical challenges:
 - Switch traffic atomically
 - Keep old containers for quick rollback
 
-**Solution**: [`solutions/exercise2-blue-green.sh`](../code/chapter-24/solutions/exercise2-blue-green.sh)
+**Solution**: [`solutions/exercise2-blue-green.sh`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/solutions/exercise2-blue-green.sh)
 
 ### Exercise 3: Advanced Health Check with Circuit Breaker
 
@@ -1010,7 +1010,7 @@ Test your understanding with these practical challenges:
 - Status "unhealthy" if error rate > 20%
 - Include "warming up" state for first 60 seconds
 
-**Solution**: [`solutions/exercise3-health-check.php`](../code/chapter-24/solutions/exercise3-health-check.php)
+**Solution**: [`solutions/exercise3-health-check.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/solutions/exercise3-health-check.php)
 
 ### Exercise 4: Optimize Docker Image Size
 
@@ -1023,7 +1023,7 @@ Test your understanding with these practical challenges:
 - Combine RUN commands to reduce layers
 - Leverage `.dockerignore`
 
-**Solution**: [`solutions/exercise4-optimized.Dockerfile`](../code/chapter-24/solutions/exercise4-optimized.Dockerfile)
+**Solution**: [`solutions/exercise4-optimized.Dockerfile`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/solutions/exercise4-optimized.Dockerfile)
 
 ## Troubleshooting
 

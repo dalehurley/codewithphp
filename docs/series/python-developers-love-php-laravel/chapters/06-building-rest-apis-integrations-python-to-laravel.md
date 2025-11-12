@@ -156,7 +156,7 @@ Understand how to define API routes and create controllers in Laravel, comparing
 
 1. **Flask-RESTful API Route** (Python):
 
-The complete Flask-RESTful example is available in [`flask-restful-api.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-06/flask-restful-api.py):
+The complete Flask-RESTful example is available in [`flask-restful-api.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-06/flask-restful-api.py):
 
 ```python
 # filename: app.py
@@ -199,7 +199,7 @@ api.add_resource(UserResource, '/api/users/<int:user_id>')
 
 2. **Django REST Framework ViewSet** (Python):
 
-The complete Django REST example is available in [`django-rest-api.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-06/django-rest-api.py):
+The complete Django REST example is available in [`django-rest-api.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-06/django-rest-api.py):
 
 ```python
 # filename: views.py
@@ -246,7 +246,7 @@ urlpatterns = [path('api/', include(router.urls))]
 
 3. **Laravel API Routes & Controller** (PHP/Laravel):
 
-The complete Laravel API example is available in [`laravel-api-routes.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-06/laravel-api-routes.php) and [`laravel-api-controller.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-06/laravel-api-controller.php):
+The complete Laravel API example is available in [`laravel-api-routes.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-06/laravel-api-routes.php) and [`laravel-api-controller.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-06/laravel-api-controller.php):
 
 ```php
 <?php
@@ -502,7 +502,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 **Laravel Query Parameters (PHP):**
 
-The complete Laravel query filtering example is available in [`laravel-query-filtering.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-06/laravel-query-filtering.php):
+The complete Laravel query filtering example is available in [`laravel-query-filtering.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-06/laravel-query-filtering.php):
 
 ```php
 <?php
@@ -605,7 +605,7 @@ Understand how to format API responses using Laravel API Resources, comparing Dj
 
 1. **Django REST Framework Serializer** (Python):
 
-The complete Django REST serializer example is available in [`django-serializer.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-06/django-serializer.py):
+The complete Django REST serializer example is available in [`django-serializer.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-06/django-serializer.py):
 
 ```python
 # filename: serializers.py
@@ -665,7 +665,7 @@ def get_user(user_id):
 
 3. **Laravel API Resource** (PHP/Laravel):
 
-The complete Laravel API Resource example is available in [`laravel-api-resource.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-06/laravel-api-resource.php):
+The complete Laravel API Resource example is available in [`laravel-api-resource.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-06/laravel-api-resource.php):
 
 ```php
 <?php
@@ -789,7 +789,7 @@ Master request validation in Laravel using Form Requests, comparing Django form 
 
 1. **Flask Request Validation** (Python):
 
-The complete Flask validation example is available in [`flask-validation.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-06/flask-validation.py):
+The complete Flask validation example is available in [`flask-validation.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-06/flask-validation.py):
 
 ```python
 # filename: app.py
@@ -833,7 +833,7 @@ def create_user(request):
 
 3. **Laravel Form Request** (PHP/Laravel):
 
-The complete Laravel Form Request example is available in [`laravel-form-request.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-06/laravel-form-request.php):
+The complete Laravel Form Request example is available in [`laravel-form-request.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-06/laravel-form-request.php):
 
 ```php
 <?php
@@ -1003,7 +1003,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 **Laravel File Upload (PHP):**
 
-The complete Laravel file upload example is available in [`laravel-file-upload.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-06/laravel-file-upload.php):
+The complete Laravel file upload example is available in [`laravel-file-upload.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-06/laravel-file-upload.php):
 
 ```php
 <?php
@@ -1164,7 +1164,7 @@ def protected():
 
 2. **Django REST Framework Authentication** (Python):
 
-The complete Django REST auth example is available in [`django-rest-auth.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-06/django-rest-auth.py):
+The complete Django REST auth example is available in [`django-rest-auth.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-06/django-rest-auth.py):
 
 ```python
 # filename: views.py
@@ -1191,7 +1191,7 @@ def protected(request):
 
 3. **Laravel Sanctum Authentication** (PHP/Laravel):
 
-The complete Laravel Sanctum example is available in [`laravel-api-auth.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-06/laravel-api-auth.php):
+The complete Laravel Sanctum example is available in [`laravel-api-auth.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-06/laravel-api-auth.php):
 
 ```php
 <?php
@@ -1377,7 +1377,7 @@ CORS_ALLOW_HEADERS = [
 
 **Laravel CORS Configuration (PHP):**
 
-The complete Laravel CORS configuration example is available in [`laravel-cors-config.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-06/laravel-cors-config.php):
+The complete Laravel CORS configuration example is available in [`laravel-cors-config.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-06/laravel-cors-config.php):
 
 Laravel includes CORS middleware by default. Configure it in `config/cors.php`:
 
@@ -1479,7 +1479,7 @@ Learn how to make HTTP requests to external APIs using Laravel's HTTP Client, co
 
 1. **Python `requests` Library** (Python):
 
-The complete Python requests example is available in [`python-requests-example.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-06/python-requests-example.py):
+The complete Python requests example is available in [`python-requests-example.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-06/python-requests-example.py):
 
 ```python
 # filename: external_api.py
@@ -1514,7 +1514,7 @@ def create_user(user_data):
 
 2. **Laravel HTTP Client** (PHP/Laravel):
 
-The complete Laravel HTTP client example is available in [`laravel-http-client.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-06/laravel-http-client.php):
+The complete Laravel HTTP client example is available in [`laravel-http-client.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-06/laravel-http-client.php):
 
 ```php
 <?php
@@ -1709,7 +1709,7 @@ Understand API versioning strategies and documentation approaches in Laravel, co
 
 1. **API Versioning in Routes** (Laravel):
 
-The complete Laravel API versioning example is available in [`laravel-api-versioning.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-06/laravel-api-versioning.php):
+The complete Laravel API versioning example is available in [`laravel-api-versioning.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-06/laravel-api-versioning.php):
 
 ```php
 <?php

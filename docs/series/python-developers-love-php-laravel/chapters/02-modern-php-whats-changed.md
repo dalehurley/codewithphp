@@ -153,7 +153,7 @@ Understand the fundamental improvements PHP 7.x introduced that transformed PHP 
        return items * (1 + tax)
    ```
 
-   The complete type declaration examples are available in [`php7-types.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/php7-types.php).
+   The complete type declaration examples are available in [`php7-types.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/php7-types.php).
 
 2. **Return Type Declarations**
 
@@ -247,7 +247,7 @@ Understand the fundamental improvements PHP 7.x introduced that transformed PHP 
    email = user.email or 'no-email@example.com'
    ```
 
-   The null coalescing examples are available in [`null-coalescing.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/null-coalescing.php).
+   The null coalescing examples are available in [`null-coalescing.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/null-coalescing.php).
 
 ### Expected Result
 
@@ -334,7 +334,7 @@ Learn the modern language features PHP 8.0+ introduced that bring it on par with
        return 42
    ```
 
-   The union types examples are available in [`union-types.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/union-types.php).
+   The union types examples are available in [`union-types.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/union-types.php).
 
 3. **Named Arguments (PHP 8.0+)**
 
@@ -392,7 +392,7 @@ Learn the modern language features PHP 8.0+ introduced that bring it on par with
    )
    ```
 
-   The named arguments examples are available in [`named-arguments.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/named-arguments.php).
+   The named arguments examples are available in [`named-arguments.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/named-arguments.php).
 
 4. **Match Expressions (PHP 8.0+)**
 
@@ -430,7 +430,7 @@ Learn the modern language features PHP 8.0+ introduced that bring it on par with
                return 'Unknown status.'
    ```
 
-   The match expressions examples are available in [`match-expressions.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/match-expressions.php).
+   The match expressions examples are available in [`match-expressions.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/match-expressions.php).
 
 5. **Constructor Property Promotion (PHP 8.0+)**
 
@@ -485,7 +485,7 @@ Learn the modern language features PHP 8.0+ introduced that bring it on par with
    print(user.name)  # 'John Doe'
    ```
 
-   The constructor property promotion examples are available in [`constructor-promotion.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/constructor-promotion.php).
+   The constructor property promotion examples are available in [`constructor-promotion.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/constructor-promotion.php).
 
 6. **Attributes (PHP 8.0+)**
 
@@ -538,7 +538,7 @@ Learn the modern language features PHP 8.0+ introduced that bring it on par with
            return {'id': user_id, 'name': 'John Doe'}
    ```
 
-   Attributes are used extensively in Laravel for routing, validation, and more. The attributes examples are available in [`attributes.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/attributes.php).
+   Attributes are used extensively in Laravel for routing, validation, and more. The attributes examples are available in [`attributes.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/attributes.php).
 
 7. **Enums (PHP 8.1+)**
 
@@ -599,7 +599,7 @@ Learn the modern language features PHP 8.0+ introduced that bring it on par with
    print(process_status(status))  # 'Processing...'
    ```
 
-   Enums provide type safety and are commonly used in Laravel for status fields, permissions, and more. The enums examples are available in [`enums.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/enums.php).
+   Enums provide type safety and are commonly used in Laravel for status fields, permissions, and more. The enums examples are available in [`enums.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/enums.php).
 
 ### Expected Result
 
@@ -700,7 +700,7 @@ Learn the cutting-edge features PHP 8.4 introduced that demonstrate PHP's contin
            self._name = value.strip()
    ```
 
-   The property hooks examples are available in [`property-hooks.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/property-hooks.php).
+   The property hooks examples are available in [`property-hooks.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/property-hooks.php).
 
 2. **Asymmetric Visibility (PHP 8.4)**
 
@@ -750,7 +750,7 @@ Learn the cutting-edge features PHP 8.4 introduced that demonstrate PHP's contin
        # No setter = read-only from outside
    ```
 
-   The asymmetric visibility examples are available in [`asymmetric-visibility.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/asymmetric-visibility.php).
+   The asymmetric visibility examples are available in [`asymmetric-visibility.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/asymmetric-visibility.php).
 
 3. **Typed Class Constants (PHP 8.4)**
 
@@ -781,7 +781,7 @@ Learn the cutting-edge features PHP 8.4 introduced that demonstrate PHP's contin
        MAX_RETRIES: int = 3
    ```
 
-   The typed constants examples are available in [`typed-constants.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/typed-constants.php).
+   The typed constants examples are available in [`typed-constants.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/typed-constants.php).
 
 ### Expected Result
 
@@ -861,7 +861,7 @@ Understand how PHP's community and ecosystem have evolved to support modern, pro
            return self.repository.find(user_id)
    ```
 
-   The PSR-12 example is available in [`psr12-example.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/psr12-example.php).
+   The PSR-12 example is available in [`psr12-example.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/psr12-example.php).
 
 2. **Composer Ecosystem**
 
@@ -1091,7 +1091,7 @@ $result2 = processData(42);
 echo $result2;  // Expected: "Processed: 42, Items: 0"
 ```
 
-**Reference**: See [`union-types.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/union-types.php) for examples.
+**Reference**: See [`union-types.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/union-types.php) for examples.
 
 ### Exercise 2: Rewrite PHP 5-Style Code Using PHP 8.4 Features (~15 min)
 
@@ -1146,7 +1146,7 @@ echo $result2;  // Expected: "Processed: 42, Items: 0"
 - Have full type safety
 - Work identically to the original
 
-**Reference**: See [`constructor-promotion.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/constructor-promotion.php) and [`match-expressions.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/match-expressions.php) for examples.
+**Reference**: See [`constructor-promotion.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/constructor-promotion.php) and [`match-expressions.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/match-expressions.php) for examples.
 
 ### Exercise 3: Compare Python and PHP Performance Characteristics (~10 min)
 
@@ -1206,21 +1206,21 @@ Your understanding of modern PHP will help you appreciate Laravel's design decis
 
 All code examples from this chapter are available in the [`code/chapter-02/`](https://github.com/dalehurley/codewithphp/tree/main/docs/series/python-developers-love-php-laravel/code/chapter-02) directory:
 
-- **Type Declarations**: [`php7-types.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/php7-types.php) — PHP 7.x type hints
-- **Null Coalescing**: [`null-coalescing.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/null-coalescing.php) — PHP 7.0+ null coalescing operator
-- **Strict Typing**: [`strict-typing.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/strict-typing.php) — PHP 7.0+ strict type checking
-- **Union Types**: [`union-types.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/union-types.php) — PHP 8.0+ union types
-- **Named Arguments**: [`named-arguments.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/named-arguments.php) — PHP 8.0+ named arguments
-- **Match Expressions**: [`match-expressions.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/match-expressions.php) — PHP 8.0+ match vs switch
-- **Constructor Promotion**: [`constructor-promotion.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/constructor-promotion.php) — PHP 8.0+ constructor property promotion
-- **Attributes**: [`attributes.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/attributes.php) — PHP 8.0+ attributes (similar to Python decorators)
-- **Enums**: [`enums.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/enums.php) — PHP 8.1+ enums (similar to Python Enum class)
-- **Property Hooks**: [`property-hooks.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/property-hooks.php) — PHP 8.4 property hooks
-- **Asymmetric Visibility**: [`asymmetric-visibility.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/asymmetric-visibility.php) — PHP 8.4 asymmetric visibility
-- **Typed Constants**: [`typed-constants.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/typed-constants.php) — PHP 8.4 typed class constants
-- **PSR-12 Example**: [`psr12-example.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/psr12-example.php) — Modern PHP code structure
+- **Type Declarations**: [`php7-types.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/php7-types.php) — PHP 7.x type hints
+- **Null Coalescing**: [`null-coalescing.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/null-coalescing.php) — PHP 7.0+ null coalescing operator
+- **Strict Typing**: [`strict-typing.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/strict-typing.php) — PHP 7.0+ strict type checking
+- **Union Types**: [`union-types.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/union-types.php) — PHP 8.0+ union types
+- **Named Arguments**: [`named-arguments.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/named-arguments.php) — PHP 8.0+ named arguments
+- **Match Expressions**: [`match-expressions.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/match-expressions.php) — PHP 8.0+ match vs switch
+- **Constructor Promotion**: [`constructor-promotion.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/constructor-promotion.php) — PHP 8.0+ constructor property promotion
+- **Attributes**: [`attributes.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/attributes.php) — PHP 8.0+ attributes (similar to Python decorators)
+- **Enums**: [`enums.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/enums.php) — PHP 8.1+ enums (similar to Python Enum class)
+- **Property Hooks**: [`property-hooks.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/property-hooks.php) — PHP 8.4 property hooks
+- **Asymmetric Visibility**: [`asymmetric-visibility.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/asymmetric-visibility.php) — PHP 8.4 asymmetric visibility
+- **Typed Constants**: [`typed-constants.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/typed-constants.php) — PHP 8.4 typed class constants
+- **PSR-12 Example**: [`psr12-example.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/psr12-example.php) — Modern PHP code structure
 
-See the [README.md](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-02/README.md) for detailed instructions on running each example.
+See the [README.md](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/README.md) for detailed instructions on running each example.
 
 ## Knowledge Check
 

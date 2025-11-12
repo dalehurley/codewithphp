@@ -79,23 +79,23 @@ All code examples are fully functional, tested with real models and APIs, and in
 ::: info Code Examples
 Complete, runnable examples for this chapter:
 
-- [`01-detect-yolo.php`](../code/chapter-18/01-detect-yolo.php) — YOLO object detection via Python integration
-- [`02-draw-boxes.php`](../code/chapter-18/02-draw-boxes.php) — Draw bounding boxes with labels
-- [`03-google-vision-api.php`](../code/chapter-18/03-google-vision-api.php) — Google Vision API integration
-- [`04-aws-rekognition.php`](../code/chapter-18/04-aws-rekognition.php) — AWS Rekognition integration
-- [`05-opencv-faces.php`](../code/chapter-18/05-opencv-faces.php) — Face detection with OpenCV
-- [`06-batch-processor.php`](../code/chapter-18/06-batch-processor.php) — Process multiple images
-- [`07-production-api.php`](../code/chapter-18/07-production-api.php) — Production REST API endpoint
-- [`08-compare-approaches.php`](../code/chapter-18/08-compare-approaches.php) — Performance benchmarking
-- [`09-confidence-filter.php`](../code/chapter-18/09-confidence-filter.php) — Filter by confidence threshold
-- [`10-object-tracker.php`](../code/chapter-18/10-object-tracker.php) — Track objects across frames
-- [`detect_yolo.py`](../code/chapter-18/detect_yolo.py) — Python YOLOv8 detection script
-- [`detect_opencv.py`](../code/chapter-18/detect_opencv.py) — Python OpenCV face detection
-- [`BoundingBoxDrawer.php`](../code/chapter-18/BoundingBoxDrawer.php) — Annotation drawing class
-- [`DetectionService.php`](../code/chapter-18/DetectionService.php) — Production service class
-- [`CloudDetector.php`](../code/chapter-18/CloudDetector.php) — Unified cloud API interface
+- [`01-detect-yolo.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-18/01-detect-yolo.php) — YOLO object detection via Python integration
+- [`02-draw-boxes.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-18/02-draw-boxes.php) — Draw bounding boxes with labels
+- [`03-google-vision-api.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-18/03-google-vision-api.php) — Google Vision API integration
+- [`04-aws-rekognition.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-18/04-aws-rekognition.php) — AWS Rekognition integration
+- [`05-opencv-faces.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-18/05-opencv-faces.php) — Face detection with OpenCV
+- [`06-batch-processor.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-18/06-batch-processor.php) — Process multiple images
+- [`07-production-api.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-18/07-production-api.php) — Production REST API endpoint
+- [`08-compare-approaches.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-18/08-compare-approaches.php) — Performance benchmarking
+- [`09-confidence-filter.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-18/09-confidence-filter.php) — Filter by confidence threshold
+- [`10-object-tracker.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-18/10-object-tracker.php) — Track objects across frames
+- [`detect_yolo.py`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-18/detect_yolo.py) — Python YOLOv8 detection script
+- [`detect_opencv.py`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-18/detect_opencv.py) — Python OpenCV face detection
+- [`BoundingBoxDrawer.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-18/BoundingBoxDrawer.php) — Annotation drawing class
+- [`DetectionService.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-18/DetectionService.php) — Production service class
+- [`CloudDetector.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-18/CloudDetector.php) — Unified cloud API interface
 
-All files are in [`docs/series/ai-ml-php-developers/code/chapter-18/`](../code/chapter-18/README.md)
+All files are in [`docs/series/ai-ml-php-developers/code/chapter-18/`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-18/README.md)
 :::
 
 ## Quick Start

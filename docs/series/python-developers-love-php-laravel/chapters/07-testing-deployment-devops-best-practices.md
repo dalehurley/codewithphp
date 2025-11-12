@@ -146,7 +146,7 @@ Understand PHPUnit vs pytest, comparing test structure, assertions, fixtures, an
 
 1. **pytest Test Example** (Python):
 
-The complete pytest example is available in [`pytest-test-example.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-07/testing/pytest-test-example.py):
+The complete pytest example is available in [`pytest-test-example.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-07/testing/pytest-test-example.py):
 
 ```python
 # filename: test_user.py
@@ -181,7 +181,7 @@ def test_user_list():
 
 2. **PHPUnit Unit Test** (Laravel):
 
-The complete PHPUnit example is available in [`phpunit-test-example.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-07/testing/phpunit-test-example.php):
+The complete PHPUnit example is available in [`phpunit-test-example.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-07/testing/phpunit-test-example.php):
 
 ```php
 <?php
@@ -233,7 +233,7 @@ class UserTest extends TestCase
 
 3. **Laravel Feature Test (HTTP Testing)** (PHP/Laravel):
 
-The complete Laravel feature test example is available in [`laravel-feature-test.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-07/testing/laravel-feature-test.php):
+The complete Laravel feature test example is available in [`laravel-feature-test.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-07/testing/laravel-feature-test.php):
 
 ```php
 <?php
@@ -420,7 +420,7 @@ Compare pytest fixtures and mocks to PHPUnit mocks and Laravel's testing feature
 
 1. **pytest Fixtures and Mocks** (Python):
 
-The complete pytest fixtures and mocks example is available in [`pytest-fixtures-mocks.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-07/testing/pytest-fixtures-mocks.py):
+The complete pytest fixtures and mocks example is available in [`pytest-fixtures-mocks.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-07/testing/pytest-fixtures-mocks.py):
 
 ```python
 # filename: test_user_service.py
@@ -465,7 +465,7 @@ def test_external_api_call(mock_get):
 
 2. **PHPUnit Mocks and Laravel Fakes** (PHP/Laravel):
 
-The complete PHPUnit mocks and fakes example is available in [`phpunit-mocks-fakes.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-07/testing/phpunit-mocks-fakes.php):
+The complete PHPUnit mocks and fakes example is available in [`phpunit-mocks-fakes.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-07/testing/phpunit-mocks-fakes.php):
 
 ```php
 <?php
@@ -533,7 +533,7 @@ class UserServiceTest extends TestCase
 
 3. **Laravel Model Factories** (PHP/Laravel):
 
-The complete Laravel factories example is available in [`laravel-factories.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-07/testing/laravel-factories.php):
+The complete Laravel factories example is available in [`laravel-factories.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-07/testing/laravel-factories.php):
 
 ```php
 <?php
@@ -710,7 +710,7 @@ Compare GitHub Actions workflows for Python vs Laravel, understanding how to aut
 
 1. **Python GitHub Actions Workflow**:
 
-The complete Python CI workflow example is available in [`python-ci.yml`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-07/cicd/python-ci.yml):
+The complete Python CI workflow example is available in [`python-ci.yml`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-07/cicd/python-ci.yml):
 
 ```yaml
 # filename: .github/workflows/python-ci.yml
@@ -766,7 +766,7 @@ jobs:
 
 2. **Laravel GitHub Actions Workflow**:
 
-The complete Laravel CI workflow example is available in [`laravel-ci.yml`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-07/cicd/laravel-ci.yml):
+The complete Laravel CI workflow example is available in [`laravel-ci.yml`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-07/cicd/laravel-ci.yml):
 
 ```yaml
 # filename: .github/workflows/laravel-ci.yml
@@ -933,7 +933,7 @@ Compare Docker setups for Python apps vs Laravel apps, understanding containeriz
 
 1. **Python Dockerfile** (Flask/Django):
 
-The complete Python Dockerfile example is available in [`Dockerfile.python`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-07/docker/Dockerfile.python):
+The complete Python Dockerfile example is available in [`Dockerfile.python`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-07/docker/Dockerfile.python):
 
 ```dockerfile
 # filename: Dockerfile
@@ -963,7 +963,7 @@ CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:8000"]
 
 2. **Laravel Dockerfile**:
 
-The complete Laravel Dockerfile example is available in [`Dockerfile.laravel`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-07/docker/Dockerfile.laravel):
+The complete Laravel Dockerfile example is available in [`Dockerfile.laravel`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-07/docker/Dockerfile.laravel):
 
 ```dockerfile
 # filename: Dockerfile
@@ -1004,7 +1004,7 @@ CMD php artisan serve --host=0.0.0.0 --port=8000
 
 3. **Python docker-compose**:
 
-The complete Python docker-compose example is available in [`docker-compose.python.yml`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-07/docker/docker-compose.python.yml):
+The complete Python docker-compose example is available in [`docker-compose.python.yml`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-07/docker/docker-compose.python.yml):
 
 ```yaml
 # filename: docker-compose.yml
@@ -1035,7 +1035,7 @@ volumes:
 
 4. **Laravel docker-compose**:
 
-The complete Laravel docker-compose example is available in [`docker-compose.laravel.yml`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-07/docker/docker-compose.laravel.yml):
+The complete Laravel docker-compose example is available in [`docker-compose.laravel.yml`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-07/docker/docker-compose.laravel.yml):
 
 ```yaml
 # filename: docker-compose.yml
@@ -1133,7 +1133,7 @@ Compare deployment options (Heroku/Railway vs Laravel Forge/Vapor), understandin
 
 1. **Python Deployment (Heroku/Railway)**:
 
-The complete Python Procfile example is available in [`Procfile.python`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-07/deployment/Procfile.python):
+The complete Python Procfile example is available in [`Procfile.python`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-07/deployment/Procfile.python):
 
 ```bash
 # filename: Procfile
@@ -1198,7 +1198,7 @@ Set in Forge dashboard:
 
 3. **Laravel Vapor (Serverless)**:
 
-The complete Laravel Vapor config example is available in [`vapor.yml`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-07/deployment/vapor.yml):
+The complete Laravel Vapor config example is available in [`vapor.yml`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-07/deployment/vapor.yml):
 
 ```yaml
 # filename: vapor.yml
@@ -1290,7 +1290,7 @@ Compare Celery vs Laravel Queues, understanding job creation, queue drivers, and
 
 1. **Celery Task** (Python):
 
-The complete Celery task example is available in [`celery-task.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-07/queues/celery-task.py):
+The complete Celery task example is available in [`celery-task.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-07/queues/celery-task.py):
 
 ```python
 # filename: tasks.py
@@ -1329,7 +1329,7 @@ process_payment.delay(user_id=1, amount=100.00)
 
 2. **Celery Beat (Scheduling)**:
 
-The complete Celery Beat example is available in [`celery-beat.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-07/queues/celery-beat.py):
+The complete Celery Beat example is available in [`celery-beat.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-07/queues/celery-beat.py):
 
 ```python
 # filename: celery_beat.py
@@ -1360,7 +1360,7 @@ def cleanup_old_data():
 
 3. **Laravel Job**:
 
-The complete Laravel job example is available in [`laravel-job.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-07/queues/laravel-job.php):
+The complete Laravel job example is available in [`laravel-job.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-07/queues/laravel-job.php):
 
 ```php
 <?php
@@ -1419,7 +1419,7 @@ SendEmailJob::dispatch('user@example.com', 'Welcome', 'Welcome!')
 
 4. **Laravel Job with Retry Logic**:
 
-The complete Laravel job with retry logic example is available in [`laravel-job-retry.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-07/queues/laravel-job-retry.php):
+The complete Laravel job with retry logic example is available in [`laravel-job-retry.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-07/queues/laravel-job-retry.php):
 
 ```php
 <?php
@@ -1463,7 +1463,7 @@ class ProcessPaymentJob implements ShouldQueue
 
 5. **Laravel Scheduled Tasks**:
 
-The complete Laravel scheduled task example is available in [`laravel-scheduled-task.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-07/queues/laravel-scheduled-task.php):
+The complete Laravel scheduled task example is available in [`laravel-scheduled-task.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-07/queues/laravel-scheduled-task.php):
 
 ```php
 <?php

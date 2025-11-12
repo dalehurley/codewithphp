@@ -75,29 +75,29 @@ Complete, runnable examples for this chapter:
 
 **Integration Examples:**
 
-- [`01-simple-shell/hello.php`](../code/chapter-11/01-simple-shell/hello.php) — Basic PHP calling Python
-- [`01-simple-shell/hello.py`](../code/chapter-11/01-simple-shell/hello.py) — Python script receiving data
-- [`02-data-passing/exchange.php`](../code/chapter-11/02-data-passing/exchange.php) — JSON data exchange
-- [`02-data-passing/process.py`](../code/chapter-11/02-data-passing/process.py) — Python processing structured data
+- [`01-simple-shell/hello.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-11/01-simple-shell/hello.php) — Basic PHP calling Python
+- [`01-simple-shell/hello.py`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-11/01-simple-shell/hello.py) — Python script receiving data
+- [`02-data-passing/exchange.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-11/02-data-passing/exchange.php) — JSON data exchange
+- [`02-data-passing/process.py`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-11/02-data-passing/process.py) — Python processing structured data
 
 **Sentiment Analysis Project:**
 
-- [`03-sentiment-analysis/analyze.php`](../code/chapter-11/03-sentiment-analysis/analyze.php) — PHP web interface
-- [`03-sentiment-analysis/train_model.py`](../code/chapter-11/03-sentiment-analysis/train_model.py) — Python training script
-- [`03-sentiment-analysis/predict.py`](../code/chapter-11/03-sentiment-analysis/predict.py) — Python prediction service
-- [`03-sentiment-analysis/data/reviews.csv`](../code/chapter-11/03-sentiment-analysis/data/reviews.csv) — Training data
+- [`03-sentiment-analysis/analyze.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-11/03-sentiment-analysis/analyze.php) — PHP web interface
+- [`03-sentiment-analysis/train_model.py`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-11/03-sentiment-analysis/train_model.py) — Python training script
+- [`03-sentiment-analysis/predict.py`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-11/03-sentiment-analysis/predict.py) — Python prediction service
+- [`03-sentiment-analysis/data/reviews.csv`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-11/03-sentiment-analysis/data/reviews.csv) — Training data
 
 **REST API Example:**
 
-- [`04-rest-api-example/flask_server.py`](../code/chapter-11/04-rest-api-example/flask_server.py) — Flask ML API
-- [`04-rest-api-example/php_client.php`](../code/chapter-11/04-rest-api-example/php_client.php) — PHP API client
+- [`04-rest-api-example/flask_server.py`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-11/04-rest-api-example/flask_server.py) — Flask ML API
+- [`04-rest-api-example/php_client.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-11/04-rest-api-example/php_client.php) — PHP API client
 
 **Production Patterns:**
 
-- [`05-production-patterns/secure_executor.php`](../code/chapter-11/05-production-patterns/secure_executor.php) — Hardened shell execution
-- [`05-production-patterns/async_queue.php`](../code/chapter-11/05-production-patterns/async_queue.php) — Redis queue example
+- [`05-production-patterns/secure_executor.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-11/05-production-patterns/secure_executor.php) — Hardened shell execution
+- [`05-production-patterns/async_queue.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-11/05-production-patterns/async_queue.php) — Redis queue example
 
-See [`README.md`](../code/chapter-11/README.md) for complete setup instructions.
+See [`README.md`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-11/README.md) for complete setup instructions.
 :::
 
 ## Quick Start
