@@ -34,29 +34,6 @@ npm run build
 npm run preview
 ```
 
-### Builder Dashboard (Laravel)
-
-The `builder/` directory contains a Laravel application for managing tutorial creation, AI-assisted content generation, and quality control.
-
-```bash
-cd builder
-
-# Install PHP dependencies
-composer install
-
-# Setup environment
-cp .env.example .env
-php artisan key:generate
-
-# Run migrations
-php artisan migrate
-
-# Start dashboard server
-php artisan serve
-```
-
-See [builder/README.md](builder/README.md) for full documentation.
-
 ### Testing Code Samples
 
 All tutorial code is validated in the `testing/` directory before publication.
@@ -96,14 +73,6 @@ PHP-From-Scratch/
 │   ├── test-all-samples.php
 │   └── TEST-SUMMARY-REPORT.md
 │
-├── builder/                 # Laravel dashboard for content management
-│   ├── app/
-│   │   ├── Console/Commands/   # CLI tools for tutorial generation
-│   │   ├── Livewire/          # Interactive dashboard components
-│   │   ├── Models/            # Project, Chapter, ReviewNote models
-│   │   └── Services/          # AI integration services
-│   └── database/
-│
 ├── imagen/                  # AI image generation (MCP server)
 │   ├── src/               # Gemini 2.5 Flash integration
 │   └── output/            # Generated hero images
@@ -123,14 +92,6 @@ PHP-From-Scratch/
 - **GitHub Pages** — Hosting & deployment
 
 > **Note:** Yes, I realize the irony of using VitePress (Vue.js) for a PHP site. However, it provides the best developer experience for technical documentation and works seamlessly with GitHub Pages.
-
-### Builder Dashboard
-
-- **Laravel 11** — PHP framework for content management
-- **Livewire 3** — Real-time interactive components
-- **SQLite** — Lightweight database
-- **Anthropic Claude API** — AI-assisted content generation
-- **Reverb** — WebSocket server for real-time updates
 
 ### Image Generation
 
@@ -180,10 +141,8 @@ Key rules documents:
 
 ### For Contributors
 
-- 🤖 **AI-Assisted Authoring** — Builder dashboard with Claude integration
 - 🧪 **Automated Testing** — Validate all code samples before publish
 - 🎨 **Image Generation** — AI-generated hero images for chapters
-- 📊 **Quality Metrics** — Track content quality and completeness
 - 🔄 **Real-Time Preview** — See changes instantly
 
 ## 🔗 Links
