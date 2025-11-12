@@ -2066,20 +2066,20 @@ In [Chapter 05: Working with Data: Eloquent ORM & Database Workflow](/series/pyt
 
 All code examples from this chapter are available in the [`code/chapter-04/`](https://github.com/dalehurley/codewithphp/tree/main/docs/series/python-developers-love-php-laravel/code/chapter-04) directory:
 
-- **Quick Start**: [`quickstart.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-04/quickstart.php) — Quick syntax comparison example
-- **Variables**: [`variables-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-04/variables-comparison.php) — Variable prefixes and assignment
-- **Types**: [`types-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-04/types-comparison.php) — Type declarations and nullable types
-- **Strings**: [`strings-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-04/strings-comparison.php) — String interpolation and concatenation
-- **Arrays**: [`arrays-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-04/arrays-comparison.php) — Array syntax and operations
-- **Functions**: [`functions-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-04/functions-comparison.php) — Function definitions and arrow functions
-- **Operators**: [`operators-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-04/operators-comparison.php) — Ternary operator and null coalescing operator
-- **Match Expressions**: [`match-expressions-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-04/match-expressions-comparison.php) — Match expressions vs Python match statements
-- **OOP**: [`oop-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-04/oop-comparison.php) — Class syntax, visibility, inheritance, and traits
-- **Namespaces**: [`namespaces-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-04/namespaces-comparison.php) — Namespaces and autoloading
-- **Exceptions**: [`exceptions-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-04/exceptions-comparison.php) — Exception handling syntax
+- **Quick Start**: [`quickstart.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-04/quickstart.php) — Quick syntax comparison example
+- **Variables**: [`variables-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-04/variables-comparison.php) — Variable prefixes and assignment
+- **Types**: [`types-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-04/types-comparison.php) — Type declarations and nullable types
+- **Strings**: [`strings-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-04/strings-comparison.php) — String interpolation and concatenation
+- **Arrays**: [`arrays-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-04/arrays-comparison.php) — Array syntax and operations
+- **Functions**: [`functions-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-04/functions-comparison.php) — Function definitions and arrow functions
+- **Operators**: [`operators-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-04/operators-comparison.php) — Ternary operator and null coalescing operator
+- **Match Expressions**: [`match-expressions-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-04/match-expressions-comparison.php) — Match expressions vs Python match statements
+- **OOP**: [`oop-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-04/oop-comparison.php) — Class syntax, visibility, inheritance, and traits
+- **Namespaces**: [`namespaces-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-04/namespaces-comparison.php) — Namespaces and autoloading
+- **Exceptions**: [`exceptions-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-04/exceptions-comparison.php) — Exception handling syntax
 - **Exercise Solutions**: [`solutions/`](https://github.com/dalehurley/codewithphp/tree/main/docs/series/python-developers-love-php-laravel/code/chapter-04/solutions) — Complete solutions for all exercises
 
-See the [README.md](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-04/README.md) for detailed instructions on running each example.
+See the [README.md](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-04/README.md) for detailed instructions on running each example.
 
 <ChapterCheckbox seriesId="python-developers-love-php-laravel" chapterId="04-php-syntax-language-differences-for-python-devs" />
 

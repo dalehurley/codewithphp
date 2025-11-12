@@ -63,21 +63,21 @@ All code examples are fully functional and include visualizations (text-based) o
 ::: info Code Examples
 Complete, runnable examples for this chapter:
 
-- [`01-evaluation-metrics.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/01-evaluation-metrics.php) — Comprehensive metrics toolkit
-- [`02-confusion-matrix-deep-dive.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/02-confusion-matrix-deep-dive.php) — Advanced confusion matrix analysis
-- [`03-precision-recall-tradeoff.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/03-precision-recall-tradeoff.php) — Understanding the tradeoff
-- [`04-stratified-cross-validation.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/04-stratified-cross-validation.php) — Handling imbalanced classes
-- [`05-roc-curve.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/05-roc-curve.php) — ROC-AUC analysis
-- [`06-learning-curves.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/06-learning-curves.php) — Diagnosing data needs
-- [`07-grid-search.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/07-grid-search.php) — Hyperparameter tuning
-- [`08-feature-importance.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/08-feature-importance.php) — Feature ranking
-- [`09-feature-selection.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/09-feature-selection.php) — Automated feature selection
-- [`10-ensemble-voting.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/10-ensemble-voting.php) — Voting classifiers
-- [`11-ensemble-bagging.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/11-ensemble-bagging.php) — Bootstrap aggregating
-- [`12-class-imbalance-smote.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/12-class-imbalance-smote.php) — SMOTE implementation
-- [`13-class-weights.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/13-class-weights.php) — Class weight handling
-- [`14-error-analysis.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/14-error-analysis.php) — Understanding failures
-- [`15-spam-filter-optimized.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-07/15-spam-filter-optimized.php) — Production-ready spam filter
+- [`01-evaluation-metrics.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-07/01-evaluation-metrics.php) — Comprehensive metrics toolkit
+- [`02-confusion-matrix-deep-dive.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-07/02-confusion-matrix-deep-dive.php) — Advanced confusion matrix analysis
+- [`03-precision-recall-tradeoff.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-07/03-precision-recall-tradeoff.php) — Understanding the tradeoff
+- [`04-stratified-cross-validation.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-07/04-stratified-cross-validation.php) — Handling imbalanced classes
+- [`05-roc-curve.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-07/05-roc-curve.php) — ROC-AUC analysis
+- [`06-learning-curves.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-07/06-learning-curves.php) — Diagnosing data needs
+- [`07-grid-search.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-07/07-grid-search.php) — Hyperparameter tuning
+- [`08-feature-importance.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-07/08-feature-importance.php) — Feature ranking
+- [`09-feature-selection.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-07/09-feature-selection.php) — Automated feature selection
+- [`10-ensemble-voting.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-07/10-ensemble-voting.php) — Voting classifiers
+- [`11-ensemble-bagging.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-07/11-ensemble-bagging.php) — Bootstrap aggregating
+- [`12-class-imbalance-smote.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-07/12-class-imbalance-smote.php) — SMOTE implementation
+- [`13-class-weights.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-07/13-class-weights.php) — Class weight handling
+- [`14-error-analysis.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-07/14-error-analysis.php) — Understanding failures
+- [`15-spam-filter-optimized.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-07/15-spam-filter-optimized.php) — Production-ready spam filter
 
 All files are in [`docs/series/ai-ml-php-developers/code/chapter-07/`](/series/ai-ml-php-developers/code/chapter-07/README.md)
 :::

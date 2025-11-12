@@ -139,7 +139,7 @@ Understand how Eloquent models are defined and compare them to Django models and
 
 1. **Django ORM Model** (Python):
 
-The complete Django model example is available in [`django-orm-model.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-05/django-orm-model.py):
+The complete Django model example is available in [`django-orm-model.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-05/django-orm-model.py):
 
 ```python
 # filename: models.py
@@ -161,7 +161,7 @@ class Post(models.Model):
 
 2. **SQLAlchemy Model** (Python):
 
-The complete SQLAlchemy model example is available in [`sqlalchemy-model.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-05/sqlalchemy-model.py):
+The complete SQLAlchemy model example is available in [`sqlalchemy-model.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-05/sqlalchemy-model.py):
 
 ```python
 # filename: models.py
@@ -185,7 +185,7 @@ class Post(Base):
 
 3. **Eloquent Model** (PHP/Laravel):
 
-The complete Eloquent model example is available in [`eloquent-model.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-05/eloquent-model.php):
+The complete Eloquent model example is available in [`eloquent-model.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-05/eloquent-model.php):
 
 ```php
 <?php
@@ -292,7 +292,7 @@ Master Laravel migrations and compare them to Django migrations, understanding s
 
 1. **Django Migration** (Python):
 
-The complete Django migration example is available in [`django-migration-detailed.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-05/django-migration-detailed.py):
+The complete Django migration example is available in [`django-migration-detailed.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-05/django-migration-detailed.py):
 
 ```python
 # filename: migrations/0001_initial.py
@@ -341,7 +341,7 @@ class Migration(migrations.Migration):
 
 2. **Laravel Migration** (PHP):
 
-The complete Laravel migration example is available in [`laravel-migration-detailed.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-05/laravel-migration-detailed.php):
+The complete Laravel migration example is available in [`laravel-migration-detailed.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-05/laravel-migration-detailed.php):
 
 ```php
 <?php
@@ -477,7 +477,7 @@ Master Eloquent relationships and compare them to Django ORM and SQLAlchemy rela
 
 1. **Django ORM Relationships** (Python):
 
-The complete Django relationships example is available in [`django-relationships.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-05/django-relationships.py):
+The complete Django relationships example is available in [`django-relationships.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-05/django-relationships.py):
 
 ```python
 # filename: models.py
@@ -513,7 +513,7 @@ class Post(models.Model):
 
 2. **SQLAlchemy Relationships** (Python):
 
-The complete SQLAlchemy relationships example is available in [`sqlalchemy-relationships.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-05/sqlalchemy-relationships.py):
+The complete SQLAlchemy relationships example is available in [`sqlalchemy-relationships.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-05/sqlalchemy-relationships.py):
 
 ```python
 # filename: models.py
@@ -559,7 +559,7 @@ class Tag(Base):
 
 3. **Eloquent Relationships** (PHP/Laravel):
 
-The complete Eloquent relationships example is available in [`eloquent-relationships.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-05/eloquent-relationships.php):
+The complete Eloquent relationships example is available in [`eloquent-relationships.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-05/eloquent-relationships.php):
 
 ```php
 <?php
@@ -793,7 +793,7 @@ Master Eloquent's query builder and compare it to Django ORM and SQLAlchemy quer
 
 1. **Django ORM Queries** (Python):
 
-The complete Django query examples are available in [`django-queries.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-05/django-queries.py):
+The complete Django query examples are available in [`django-queries.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-05/django-queries.py):
 
 ```python
 # filename: queries.py
@@ -829,7 +829,7 @@ posts = Post.objects.filter(author_id=1).order_by('-published_at').exclude(title
 
 2. **SQLAlchemy Queries** (Python):
 
-The complete SQLAlchemy query examples are available in [`sqlalchemy-queries.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-05/sqlalchemy-queries.py):
+The complete SQLAlchemy query examples are available in [`sqlalchemy-queries.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-05/sqlalchemy-queries.py):
 
 ```python
 # filename: queries.py
@@ -871,7 +871,7 @@ posts = session.query(Post).filter(Post.author_id == 1).order_by(Post.published_
 
 3. **Eloquent Queries** (PHP/Laravel):
 
-The complete Eloquent query examples are available in [`eloquent-queries.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-05/eloquent-queries.php):
+The complete Eloquent query examples are available in [`eloquent-queries.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-05/eloquent-queries.php):
 
 ```php
 <?php
@@ -1069,7 +1069,7 @@ posts = Post.objects.prefetch_related('tags').all()
 
 3. **Eloquent Eager Loading** (PHP):
 
-The complete eager loading example is available in [`eloquent-eager-loading.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-05/eloquent-eager-loading.php):
+The complete eager loading example is available in [`eloquent-eager-loading.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-05/eloquent-eager-loading.php):
 
 ```php
 <?php
@@ -1231,7 +1231,7 @@ session.commit()
 
 3. **Eloquent Mass Assignment** (PHP):
 
-The complete mass assignment example is available in [`eloquent-model.php`](../code/chapter-05/eloquent-model.php) (see Step 1):
+The complete mass assignment example is available in [`eloquent-model.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-05/eloquent-model.php) (see Step 1):
 
 ```php
 <?php
@@ -1393,7 +1393,7 @@ class Post(Base):
 
 3. **Eloquent Scopes, Accessors & Mutators** (PHP):
 
-The complete scopes, accessors, and mutators example is available in [`eloquent-scopes.php`](../code/chapter-05/eloquent-scopes.php) and [`eloquent-accessors-mutators.php`](../code/chapter-05/eloquent-accessors-mutators.php):
+The complete scopes, accessors, and mutators example is available in [`eloquent-scopes.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-05/eloquent-scopes.php) and [`eloquent-accessors-mutators.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-05/eloquent-accessors-mutators.php):
 
 ```php
 <?php
@@ -1659,7 +1659,7 @@ def post_deleting(mapper, connection, target):
 
 3. **Eloquent Model Events** (PHP):
 
-The complete model events example is available in [`eloquent-events.php`](../code/chapter-05/eloquent-events.php):
+The complete model events example is available in [`eloquent-events.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-05/eloquent-events.php):
 
 ```php
 <?php

@@ -45,10 +45,10 @@ prerequisites:
 
 **Code Samples:**
 
-- Store in `series/<series-slug>/code/<chapter-nn>-topic/`
+- Store in `/code/<series-slug>/<chapter-nn>-topic/` at the project root
 - Use descriptive filenames: `basic-functions.php`, `validation-example.php`
 - Include a `README.md` in each code directory explaining the examples
-- Place exercise solutions in `code/<chapter-nn>-topic/solutions/`
+- Place exercise solutions in `/code/<series-slug>/<chapter-nn>-topic/solutions/`
 
 ## Chapter Structure Template
 
@@ -217,11 +217,11 @@ command --with-flags argument
 
 For examples longer than ~50 lines:
 
-1. Create file in `series/<slug>/code/<chapter-topic>/`
-2. Reference it in the chapter:
+1. Create file in `/code/<series-slug>/<chapter-topic>/` at the project root
+2. Reference it in the chapter using full GitHub URLs:
 
 ```markdown
-The complete implementation is available in [`example.php`](../code/08-oop/property-hooks-basic.php).
+The complete implementation is available in [`example.php`](https://github.com/dalehurley/codewithphp/blob/main/code/php-basics/08-oop/property-hooks-basic.php).
 ```
 
 ## Time Estimates
@@ -429,7 +429,7 @@ All code examples must:
 - Use absolute paths from doc root: `/series/php-basics/chapters/01-first-script`
 - Link to previous chapters in prerequisites
 - Reference related chapters in "Further Reading"
-- Link to code samples using relative paths: `../code/08-oop/example.php`
+- Link to code samples using full GitHub URLs: `https://github.com/dalehurley/codewithphp/blob/main/code/php-basics/08-oop/example.php`
 
 ## Validation Checklist
 
@@ -442,7 +442,8 @@ Before committing a chapter, verify:
 - [ ] Frontmatter is complete and correct
 - [ ] Chapter number matches filename
 - [ ] Prerequisites link to actual chapters
-- [ ] Code samples exist in `/code/` directory
+- [ ] Code samples exist in `/code/<series-slug>/` directory at project root
 - [ ] README exists in code directory
+- [ ] Code references use full GitHub URLs
 - [ ] Writing follows voice/tone guidelines
 ```

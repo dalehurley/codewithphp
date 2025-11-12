@@ -85,46 +85,46 @@ Complete, runnable examples for this chapter are available in:
 
 **Setup & Configuration:**
 
-- [`composer.json`](../code/chapter-17/composer.json) — PHP dependencies
-- [`requirements.txt`](../code/chapter-17/requirements.txt) — Python dependencies for ONNX
-- [`env.example`](../code/chapter-17/env.example) — Environment variables template
-- [`download_model.sh`](../code/chapter-17/download_model.sh) — Download ONNX model script
-- [`.env.php`](../code/chapter-17/.env.php) — Environment variable loader
+- [`composer.json`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-17/composer.json) — PHP dependencies
+- [`requirements.txt`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-17/requirements.txt) — Python dependencies for ONNX
+- [`env.example`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-17/env.example) — Environment variables template
+- [`download_model.sh`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-17/download_model.sh) — Download ONNX model script
+- [`.env.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-17/.env.php) — Environment variable loader
 
 **Cloud Vision API Examples:**
 
-- [`01-cloud-vision-setup.php`](../code/chapter-17/01-cloud-vision-setup.php) — Test Google Cloud Vision API connection
-- [`02-cloud-vision-client.php`](../code/chapter-17/02-cloud-vision-client.php) — CloudVisionClient class implementation
-- [`03-classify-with-cloud.php`](../code/chapter-17/03-classify-with-cloud.php) — Complete cloud classification example
+- [`01-cloud-vision-setup.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-17/01-cloud-vision-setup.php) — Test Google Cloud Vision API connection
+- [`02-cloud-vision-client.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-17/02-cloud-vision-client.php) — CloudVisionClient class implementation
+- [`03-classify-with-cloud.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-17/03-classify-with-cloud.php) — Complete cloud classification example
 
 **Local ONNX Model Examples:**
 
-- [`04-onnx-setup-test.php`](../code/chapter-17/04-onnx-setup-test.php) — Verify ONNX Runtime availability
-- [`05-onnx-classifier.php`](../code/chapter-17/05-onnx-classifier.php) — ONNXClassifier class with Python bridge
-- [`onnx_inference.py`](../code/chapter-17/onnx_inference.py) — Python script for ONNX model inference
+- [`04-onnx-setup-test.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-17/04-onnx-setup-test.php) — Verify ONNX Runtime availability
+- [`05-onnx-classifier.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-17/05-onnx-classifier.php) — ONNXClassifier class with Python bridge
+- [`onnx_inference.py`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-17/onnx_inference.py) — Python script for ONNX model inference
 
 **Production Integration:**
 
-- [`06-model-comparison.php`](../code/chapter-17/06-model-comparison.php) — Compare cloud vs local performance
-- [`07-unified-service.php`](../code/chapter-17/07-unified-service.php) — ImageClassificationService with strategy pattern
-- [`08-batch-classifier.php`](../code/chapter-17/08-batch-classifier.php) — Batch processing multiple images
-- [`09-caching-layer.php`](../code/chapter-17/09-caching-layer.php) — Result caching implementation
-- [`10-php-image-preprocessor.php`](../code/chapter-17/10-php-image-preprocessor.php) — PHP-native image preprocessing
-- [`11-web-upload-with-security.php`](../code/chapter-17/11-web-upload-with-security.php) — Secure web upload interface
+- [`06-model-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-17/06-model-comparison.php) — Compare cloud vs local performance
+- [`07-unified-service.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-17/07-unified-service.php) — ImageClassificationService with strategy pattern
+- [`08-batch-classifier.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-17/08-batch-classifier.php) — Batch processing multiple images
+- [`09-caching-layer.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-17/09-caching-layer.php) — Result caching implementation
+- [`10-php-image-preprocessor.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-17/10-php-image-preprocessor.php) — PHP-native image preprocessing
+- [`11-web-upload-with-security.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-17/11-web-upload-with-security.php) — Secure web upload interface
 
 **Data Files:**
 
-- [`data/imagenet_labels.json`](../code/chapter-17/data/imagenet_labels.json) — 1,000 ImageNet class labels
-- [`data/sample_images/`](../code/chapter-17/data/sample_images/) — Test images for classification
+- [`data/imagenet_labels.json`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-17/data/imagenet_labels.json) — 1,000 ImageNet class labels
+- [`data/sample_images/`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-17/data/sample_images/) — Test images for classification
 
 **Exercise Solutions:**
 
-- [`solutions/exercise1-aws-rekognition.php`](../code/chapter-17/solutions/exercise1-aws-rekognition.php) — AWS Rekognition integration
-- [`solutions/exercise2-top-k.php`](../code/chapter-17/solutions/exercise2-top-k.php) — Top-K predictions
-- [`solutions/exercise3-custom-labels.php`](../code/chapter-17/solutions/exercise3-custom-labels.php) — Custom label mapping
-- [`solutions/exercise4-hybrid.php`](../code/chapter-17/solutions/exercise4-hybrid.php) — Hybrid cloud/local strategy
+- [`solutions/exercise1-aws-rekognition.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-17/solutions/exercise1-aws-rekognition.php) — AWS Rekognition integration
+- [`solutions/exercise2-top-k.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-17/solutions/exercise2-top-k.php) — Top-K predictions
+- [`solutions/exercise3-custom-labels.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-17/solutions/exercise3-custom-labels.php) — Custom label mapping
+- [`solutions/exercise4-hybrid.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-17/solutions/exercise4-hybrid.php) — Hybrid cloud/local strategy
 
-All files are in [`docs/series/ai-ml-php-developers/code/chapter-17/`](../code/chapter-17/README.md)
+All files are in [`docs/series/ai-ml-php-developers/code/chapter-17/`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-17/README.md)
 :::
 
 ## Quick Start

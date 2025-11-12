@@ -59,17 +59,17 @@ All examples include complete, runnable code with clear output demonstrating reg
 ::: info Code Examples
 Complete, runnable examples for this chapter:
 
-- [`01-simple-linear-regression.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-05/01-simple-linear-regression.php) — From-scratch implementation with least squares
-- [`01b-check-assumptions.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-05/01b-check-assumptions.php) — Validate linear regression assumptions
-- [`02-gradient-descent.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-05/02-gradient-descent.php) — Iterative optimization demonstration
-- [`03-multiple-regression.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-05/03-multiple-regression.php) — Multi-variable predictions
-- [`04-model-evaluation.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-05/04-model-evaluation.php) — RMSE, MAE, R² calculations
-- [`05-residual-analysis.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-05/05-residual-analysis.php) — Comprehensive diagnostic plots and outlier detection
-- [`06-salary-predictor.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-05/06-salary-predictor.php) — Experience to salary model
-- [`07-overfitting-polynomial.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-05/07-overfitting-polynomial.php) — Polynomial regression and overfitting
-- [`08-regression-cross-validation.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-05/08-regression-cross-validation.php) — k-fold CV for regression
-- [`09-production-model.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-05/09-production-model.php) — Rubix ML implementation
-- [`10-feature-importance.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/ai-ml-php-developers/code/chapter-05/10-feature-importance.php) — Feature contribution analysis
+- [`01-simple-linear-regression.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-05/01-simple-linear-regression.php) — From-scratch implementation with least squares
+- [`01b-check-assumptions.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-05/01b-check-assumptions.php) — Validate linear regression assumptions
+- [`02-gradient-descent.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-05/02-gradient-descent.php) — Iterative optimization demonstration
+- [`03-multiple-regression.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-05/03-multiple-regression.php) — Multi-variable predictions
+- [`04-model-evaluation.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-05/04-model-evaluation.php) — RMSE, MAE, R² calculations
+- [`05-residual-analysis.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-05/05-residual-analysis.php) — Comprehensive diagnostic plots and outlier detection
+- [`06-salary-predictor.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-05/06-salary-predictor.php) — Experience to salary model
+- [`07-overfitting-polynomial.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-05/07-overfitting-polynomial.php) — Polynomial regression and overfitting
+- [`08-regression-cross-validation.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-05/08-regression-cross-validation.php) — k-fold CV for regression
+- [`09-production-model.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-05/09-production-model.php) — Rubix ML implementation
+- [`10-feature-importance.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-05/10-feature-importance.php) — Feature contribution analysis
 
 All files are in [`docs/series/ai-ml-php-developers/code/chapter-05/`](/series/ai-ml-php-developers/code/chapter-05/README.md)
 :::

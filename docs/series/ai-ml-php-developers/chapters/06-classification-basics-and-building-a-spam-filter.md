@@ -61,20 +61,20 @@ All code examples are fully functional, tested, and include realistic email data
 ::: info Code Examples
 Complete, runnable examples for this chapter:
 
-- [`01-binary-classification-intro.php`](../code/chapter-06/01-binary-classification-intro.php) — Binary classification fundamentals
-- [`02-feature-extraction-basic.php`](../code/chapter-06/02-feature-extraction-basic.php) — Basic text feature extraction
-- [`03-bag-of-words.php`](../code/chapter-06/03-bag-of-words.php) — Bag-of-words implementation
-- [`04-tfidf-features.php`](../code/chapter-06/04-tfidf-features.php) — TF-IDF feature engineering
-- [`05-naive-bayes-spam-filter.php`](../code/chapter-06/05-naive-bayes-spam-filter.php) — Naive Bayes classifier
-- [`06-knn-spam-filter.php`](../code/chapter-06/06-knn-spam-filter.php) — k-NN comparison
-- [`07-evaluation-metrics.php`](../code/chapter-06/07-evaluation-metrics.php) — Precision, recall, F1-score
-- [`08-confusion-matrix-analysis.php`](../code/chapter-06/08-confusion-matrix-analysis.php) — Error analysis
-- [`09-feature-importance.php`](../code/chapter-06/09-feature-importance.php) — Which words indicate spam
-- [`10-complete-spam-filter.php`](../code/chapter-06/10-complete-spam-filter.php) — Production-ready filter
-- [`11-advanced-topics.php`](../code/chapter-06/11-advanced-topics.php) — Train/test split, feature importance, imbalanced data
-- [`data/emails.csv`](../code/chapter-06/data/emails.csv) — Sample email dataset
+- [`01-binary-classification-intro.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-06/01-binary-classification-intro.php) — Binary classification fundamentals
+- [`02-feature-extraction-basic.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-06/02-feature-extraction-basic.php) — Basic text feature extraction
+- [`03-bag-of-words.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-06/03-bag-of-words.php) — Bag-of-words implementation
+- [`04-tfidf-features.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-06/04-tfidf-features.php) — TF-IDF feature engineering
+- [`05-naive-bayes-spam-filter.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-06/05-naive-bayes-spam-filter.php) — Naive Bayes classifier
+- [`06-knn-spam-filter.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-06/06-knn-spam-filter.php) — k-NN comparison
+- [`07-evaluation-metrics.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-06/07-evaluation-metrics.php) — Precision, recall, F1-score
+- [`08-confusion-matrix-analysis.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-06/08-confusion-matrix-analysis.php) — Error analysis
+- [`09-feature-importance.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-06/09-feature-importance.php) — Which words indicate spam
+- [`10-complete-spam-filter.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-06/10-complete-spam-filter.php) — Production-ready filter
+- [`11-advanced-topics.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-06/11-advanced-topics.php) — Train/test split, feature importance, imbalanced data
+- [`data/emails.csv`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-06/data/emails.csv) — Sample email dataset
 
-All files are in [`docs/series/ai-ml-php-developers/code/chapter-06/`](../code/chapter-06/README.md)
+All files are in [`docs/series/ai-ml-php-developers/code/chapter-06/`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-06/README.md)
 :::
 
 ## Quick Start
@@ -849,7 +849,7 @@ php 05-naive-bayes-spam-filter.php
 
 :::
 
-Run the complete example: [`05-naive-bayes-spam-filter.php`](../code/chapter-06/05-naive-bayes-spam-filter.php)
+Run the complete example: [`05-naive-bayes-spam-filter.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-06/05-naive-bayes-spam-filter.php)
 
 The full implementation combines feature extraction with classification:
 
@@ -2263,7 +2263,7 @@ php 11-advanced-topics.php
 
 :::
 
-Run the complete example: [`11-advanced-topics.php`](../code/chapter-06/11-advanced-topics.php)
+Run the complete example: [`11-advanced-topics.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-06/11-advanced-topics.php)
 
 #### Part A: Proper Train/Test Splitting
 

@@ -127,7 +127,7 @@ Understand how Composer (PHP's package manager) compares to pip (Python's packag
 
 1. **pip/PyPI Package Installation** (Python):
 
-The complete pip example is available in [`composer-vs-pip-comparison.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-08/composer-vs-pip-comparison.py):
+The complete pip example is available in [`composer-vs-pip-comparison.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-08/composer-vs-pip-comparison.py):
 
 ```python
 # filename: requirements.txt
@@ -161,7 +161,7 @@ pytest>=7.4.0,<8.0.0
 
 2. **Composer/Packagist Package Installation** (PHP/Laravel):
 
-The complete Composer example is available in [`composer-vs-pip-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-08/composer-vs-pip-comparison.php):
+The complete Composer example is available in [`composer-vs-pip-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-08/composer-vs-pip-comparison.php):
 
 ```php
 <?php
@@ -636,7 +636,7 @@ composer require spatie/laravel-sluggable
 
 **Spatie Laravel Permission Example:**
 
-The complete Spatie permissions example is available in [`spatie-permissions-example.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-08/spatie-permissions-example.php):
+The complete Spatie permissions example is available in [`spatie-permissions-example.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-08/spatie-permissions-example.php):
 
 ```php
 <?php
@@ -705,7 +705,7 @@ Livewire allows you to build dynamic interfaces using only PHP—no JavaScript f
 
 **Livewire Component Example:**
 
-The complete Livewire example is available in [`livewire-basic-example.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-08/livewire-basic-example.php):
+The complete Livewire example is available in [`livewire-basic-example.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-08/livewire-basic-example.php):
 
 ```php
 <?php

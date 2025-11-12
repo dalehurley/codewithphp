@@ -318,8 +318,8 @@ Exact expected output
 
 - **Internal links**: Use absolute paths from doc root
   - `/series/php-basics/chapters/01-your-first-script`
-- **Code samples**: Use relative paths
-  - `../code/08-oop/example.php`
+- **Code samples**: Use full GitHub URLs
+  - `https://github.com/dalehurley/codewithphp/blob/main/code/php-basics/08-oop/example.php`
 - **Prerequisites**: Link to previous chapters
 - **Further Reading**: Link related chapters and external resources
 
@@ -344,7 +344,8 @@ Before considering a tutorial complete:
 - [ ] Frontmatter complete and correct
 - [ ] Chapter number matches filename
 - [ ] Prerequisites link to actual chapters
-- [ ] Code samples exist in `/code/` directory with README
+- [ ] Code samples exist in `/code/<series-slug>/` directory at project root with README
+- [ ] Code references use full GitHub URLs
 - [ ] Tone is encouraging without being patronizing
 - [ ] Technical accuracy verified
 - [ ] Examples follow PHP 8.4 and PSR-12 standards

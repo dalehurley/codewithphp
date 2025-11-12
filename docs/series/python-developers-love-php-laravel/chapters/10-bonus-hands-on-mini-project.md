@@ -146,7 +146,7 @@ php artisan serve
 Expected result: You'll have a basic Laravel application running. We'll build out the complete Task Manager step by step in this chapter.
 
 ::: info Complete Code Samples
-All code samples for this chapter are available in [`chapter-10/`](../code/chapter-10/). The directory includes models, controllers, views, routes, tests, and deployment guides. Each file is complete and ready to use.
+All code samples for this chapter are available in [`chapter-10/`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-10/). The directory includes models, controllers, views, routes, tests, and deployment guides. Each file is complete and ready to use.
 :::
 
 ## Objectives

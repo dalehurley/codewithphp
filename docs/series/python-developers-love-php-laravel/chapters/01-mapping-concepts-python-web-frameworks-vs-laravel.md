@@ -168,7 +168,7 @@ See how Python routing (Django URLs, Flask routes) maps to Laravel routes.
 
 1. **Flask Routing** (Python):
 
-The complete Flask routing example is available in [`flask-routing.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/flask-routing.py):
+The complete Flask routing example is available in [`flask-routing.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/flask-routing.py):
 
 ```python
 @app.route('/')
@@ -189,7 +189,7 @@ def post_detail(slug):
 
 2. **Django Routing** (Python):
 
-Django routing examples are available in [`django-routing-urls.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/django-routing-urls.py) and [`django-routing-views.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/django-routing-views.py):
+Django routing examples are available in [`django-routing-urls.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/django-routing-urls.py) and [`django-routing-views.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/django-routing-views.py):
 
 ```python
 # urls.py
@@ -206,7 +206,7 @@ def index(request):
 
 3. **Laravel Routing** (PHP):
 
-The complete Laravel routing example with PHP 8.4 syntax is available in [`laravel-routing.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/laravel-routing.php):
+The complete Laravel routing example with PHP 8.4 syntax is available in [`laravel-routing.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/laravel-routing.php):
 
 ```php
 Route::get('/', function (): string {
@@ -237,7 +237,7 @@ All frameworks provide ways to generate URLs from route names, avoiding hardcode
 
 **Django:**
 
-URL generation examples are available in [`url-generation-django.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/url-generation-django.py):
+URL generation examples are available in [`url-generation-django.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/url-generation-django.py):
 
 ```python
 # In Python code
@@ -250,7 +250,7 @@ url = reverse('user_profile', args=[123])  # Returns: '/user/123/'
 
 **Flask:**
 
-URL generation examples are available in [`url-generation-flask.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/url-generation-flask.py):
+URL generation examples are available in [`url-generation-flask.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/url-generation-flask.py):
 
 ```python
 # In Python code
@@ -263,7 +263,7 @@ url = url_for('user_profile', user_id=123)  # Returns: '/user/123'
 
 **Laravel:**
 
-URL generation examples are available in [`url-generation-laravel.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/url-generation-laravel.php):
+URL generation examples are available in [`url-generation-laravel.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/url-generation-laravel.php):
 
 ```php
 // In PHP code
@@ -281,7 +281,7 @@ All frameworks provide objects to access HTTP request data and create responses:
 
 **Django:**
 
-Request/Response examples are available in [`request-response-django.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/request-response-django.py):
+Request/Response examples are available in [`request-response-django.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/request-response-django.py):
 
 ```python
 def my_view(request):
@@ -298,7 +298,7 @@ def my_view(request):
 
 **Flask:**
 
-Request/Response examples are available in [`request-response-flask.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/request-response-flask.py):
+Request/Response examples are available in [`request-response-flask.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/request-response-flask.py):
 
 ```python
 @app.route('/example')
@@ -316,7 +316,7 @@ def example():
 
 **Laravel:**
 
-Request/Response examples with PHP 8.4 syntax are available in [`request-response-laravel.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/request-response-laravel.php):
+Request/Response examples with PHP 8.4 syntax are available in [`request-response-laravel.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/request-response-laravel.php):
 
 ```php
 Route::get('/example', function (Request $request): Response {
@@ -351,7 +351,7 @@ Compare Django templates and Flask's Jinja2 with Laravel's Blade templating engi
 
 1. **Django Template** (Python):
 
-Django template examples are available in [`django-template-view.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/django-template-view.py) and [`django-template.html`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/django-template.html):
+Django template examples are available in [`django-template-view.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/django-template-view.py) and [`django-template.html`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/django-template.html):
 
 ```python
 # views.py
@@ -378,7 +378,7 @@ def post_list(request):
 
 2. **Flask Template** (Python):
 
-Flask template examples are available in [`flask-template-view.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/flask-template-view.py) and [`flask-template.html`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/flask-template.html):
+Flask template examples are available in [`flask-template-view.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/flask-template-view.py) and [`flask-template.html`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/flask-template.html):
 
 ```python
 # app.py
@@ -390,7 +390,7 @@ def post_list():
 
 3. **Laravel Blade Template** (PHP):
 
-Laravel Blade examples are available in [`laravel-blade-route.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/laravel-blade-route.php) and [`laravel-blade-template.blade.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/laravel-blade-template.blade.php):
+Laravel Blade examples are available in [`laravel-blade-route.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/laravel-blade-route.php) and [`laravel-blade-template.blade.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/laravel-blade-template.blade.php):
 
 ```php
 // routes/web.php
@@ -499,7 +499,7 @@ Compare Django ORM and SQLAlchemy with Laravel's Eloquent ORM.
 
 1. **Django ORM** (Python):
 
-Django ORM examples are available in [`django-orm-model.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/django-orm-model.py) and [`django-orm-queries.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/django-orm-queries.py):
+Django ORM examples are available in [`django-orm-model.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/django-orm-model.py) and [`django-orm-queries.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/django-orm-queries.py):
 
 ```python
 # models.py
@@ -520,7 +520,7 @@ recent_posts = Post.objects.filter(published_at__gte=timezone.now() - timedelta(
 
 2. **SQLAlchemy** (Python, used with Flask):
 
-SQLAlchemy examples are available in [`sqlalchemy-model.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/sqlalchemy-model.py) and [`sqlalchemy-queries.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/sqlalchemy-queries.py):
+SQLAlchemy examples are available in [`sqlalchemy-model.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/sqlalchemy-model.py) and [`sqlalchemy-queries.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/sqlalchemy-queries.py):
 
 ```python
 # models.py
@@ -539,7 +539,7 @@ recent_posts = Post.query.filter(Post.published_at >= datetime.now() - timedelta
 
 3. **Eloquent ORM** (PHP/Laravel):
 
-Eloquent examples with PHP 8.4 syntax are available in [`eloquent-model.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/eloquent-model.php) and [`eloquent-queries.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/eloquent-queries.php):
+Eloquent examples with PHP 8.4 syntax are available in [`eloquent-model.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/eloquent-model.php) and [`eloquent-queries.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/eloquent-queries.php):
 
 ```php
 // app/Models/Post.php
@@ -602,7 +602,7 @@ Understand how Django middleware, Flask decorators, and Laravel middleware handl
 
 1. **Django Middleware** (Python):
 
-Django middleware examples are available in [`django-middleware.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/django-middleware.py):
+Django middleware examples are available in [`django-middleware.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/django-middleware.py):
 
 ```python
 # middleware.py
@@ -621,7 +621,7 @@ class LoggingMiddleware:
 
 2. **Flask Middleware** (Python):
 
-Flask middleware examples are available in [`flask-middleware.py`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/flask-middleware.py):
+Flask middleware examples are available in [`flask-middleware.py`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/flask-middleware.py):
 
 ```python
 # Using decorators (most common)
@@ -637,7 +637,7 @@ def log_response(response):
 
 3. **Laravel Middleware** (PHP):
 
-Laravel middleware examples with PHP 8.4 syntax are available in [`laravel-middleware.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/laravel-middleware.php):
+Laravel middleware examples with PHP 8.4 syntax are available in [`laravel-middleware.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/laravel-middleware.php):
 
 ```php
 // app/Http/Middleware/LoggingMiddleware.php
@@ -734,7 +734,7 @@ Test your understanding by converting Python web framework patterns to Laravel e
 - Have named routes for easy reference
 - Use proper type hints for parameters
 
-**Reference**: See [`laravel-routing.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/laravel-routing.php) for examples.
+**Reference**: See [`laravel-routing.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/laravel-routing.php) for examples.
 
 ### Exercise 2: Template Conversion (~15 min)
 
@@ -787,7 +787,7 @@ Test your understanding by converting Python web framework patterns to Laravel e
 - Convert filters to PHP methods (e.g., `Str::limit()`, `Str::title()`)
 - Maintain the same logic flow and output structure
 
-**Reference**: See [`laravel-blade-template.blade.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/laravel-blade-template.blade.php) for examples.
+**Reference**: See [`laravel-blade-template.blade.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/laravel-blade-template.blade.php) for examples.
 
 ### Exercise 3: ORM Query Translation (~15 min)
 
@@ -834,7 +834,7 @@ Test your understanding by converting Python web framework patterns to Laravel e
 - Use `paginate()` for pagination (Laravel has built-in pagination)
 - Maintain the same filtering logic
 
-**Reference**: See [`eloquent-queries.php`](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/eloquent-queries.php) for examples.
+**Reference**: See [`eloquent-queries.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/eloquent-queries.php) for examples.
 
 **Bonus Challenge**: Create a complete Laravel route that combines all three concepts—a route that queries posts, renders a Blade template, and handles both GET and POST requests.
 
@@ -875,7 +875,7 @@ All code examples from this chapter are available in the [`code/chapter-01/`](ht
 - **ORM**: Django ORM, SQLAlchemy, and Eloquent examples
 - **Middleware**: Django middleware, Flask decorators, and Laravel middleware examples
 
-See the [README.md](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/README.md) for detailed instructions on running each example.
+See the [README.md](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/README.md) for detailed instructions on running each example.
 
 <ChapterCheckbox seriesId="python-developers-love-php-laravel" chapterId="01-mapping-concepts-python-web-frameworks-vs-laravel" />
 

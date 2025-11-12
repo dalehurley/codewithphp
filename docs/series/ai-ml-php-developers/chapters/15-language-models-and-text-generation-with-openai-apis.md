@@ -74,22 +74,22 @@ All examples are complete, tested, and include realistic use cases you can adapt
 ::: info Code Examples
 Complete, runnable examples for this chapter are available in the code directory. We'll create these as we progress:
 
-- [`01-raw-http-request.php`](../code/chapter-15/01-raw-http-request.php) — Raw cURL-based API call
-- [`02-library-setup.php`](../code/chapter-15/02-library-setup.php) — OpenAI PHP library initialization
-- [`03-simple-text-generation.php`](../code/chapter-15/03-simple-text-generation.php) — Basic text generation
-- [`04-article-summarizer.php`](../code/chapter-15/04-article-summarizer.php) — Text summarization
-- [`05-simple-chatbot.php`](../code/chapter-15/05-simple-chatbot.php) — Basic conversation
-- [`06-chatbot-with-history.php`](../code/chapter-15/06-chatbot-with-history.php) — Context management
-- [`07-streaming-chatbot.php`](../code/chapter-15/07-streaming-chatbot.php) — Real-time responses
-- [`08-production-chatbot.php`](../code/chapter-15/08-production-chatbot.php) — Full-featured implementation
-- [`09-token-counter.php`](../code/chapter-15/09-token-counter.php) — Token counting utility
-- [`10-cost-estimator.php`](../code/chapter-15/10-cost-estimator.php) — Cost calculation
-- [`TextGenerator.php`](../code/chapter-15/TextGenerator.php) — Text generation class
-- [`Summarizer.php`](../code/chapter-15/Summarizer.php) — Summarization class
-- [`Chatbot.php`](../code/chapter-15/Chatbot.php) — Production chatbot class
-- [`OpenAIClient.php`](../code/chapter-15/OpenAIClient.php) — Custom HTTP client wrapper
+- [`01-raw-http-request.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-15/01-raw-http-request.php) — Raw cURL-based API call
+- [`02-library-setup.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-15/02-library-setup.php) — OpenAI PHP library initialization
+- [`03-simple-text-generation.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-15/03-simple-text-generation.php) — Basic text generation
+- [`04-article-summarizer.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-15/04-article-summarizer.php) — Text summarization
+- [`05-simple-chatbot.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-15/05-simple-chatbot.php) — Basic conversation
+- [`06-chatbot-with-history.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-15/06-chatbot-with-history.php) — Context management
+- [`07-streaming-chatbot.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-15/07-streaming-chatbot.php) — Real-time responses
+- [`08-production-chatbot.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-15/08-production-chatbot.php) — Full-featured implementation
+- [`09-token-counter.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-15/09-token-counter.php) — Token counting utility
+- [`10-cost-estimator.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-15/10-cost-estimator.php) — Cost calculation
+- [`TextGenerator.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-15/TextGenerator.php) — Text generation class
+- [`Summarizer.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-15/Summarizer.php) — Summarization class
+- [`Chatbot.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-15/Chatbot.php) — Production chatbot class
+- [`OpenAIClient.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-15/OpenAIClient.php) — Custom HTTP client wrapper
 
-All files are in [`docs/series/ai-ml-php-developers/code/chapter-15/`](../code/chapter-15/README.md)
+All files are in [`docs/series/ai-ml-php-developers/code/chapter-15/`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-15/README.md)
 :::
 
 ## Quick Start
