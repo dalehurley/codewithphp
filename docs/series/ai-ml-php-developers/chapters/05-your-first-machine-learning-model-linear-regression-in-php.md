@@ -3291,6 +3291,8 @@ In [Chapter 06: Classification Basics and Building a Spam Filter](/series/ai-ml-
 
 You'll apply the same training/evaluation workflow you learned here, but for categorical predictions instead of continuous values.
 
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="05-your-first-machine-learning-model-linear-regression-in-php" />
+
 ## Further Reading
 
 Deepen your understanding of regression and optimization:

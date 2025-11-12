@@ -2516,6 +2516,8 @@ In [Chapter 12: Deep Learning with TensorFlow and PHP](/series/ai-ml-php-develop
 
 The patterns you learned here—REST APIs, async processing, proper error handling—are the foundation for enterprise ML systems. You're ready to build production applications that leverage the best of PHP and Python!
 
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="11-integrating-php-with-python-for-advanced-ml" />
+
 ## Further Reading
 
 **Python ML Libraries:**

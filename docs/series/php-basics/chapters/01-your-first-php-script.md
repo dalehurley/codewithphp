@@ -475,6 +475,8 @@ Complete, runnable examples from this chapter are available in:
 - `solutions/` - Solutions to chapter exercises
   :::
 
+<ChapterCheckbox seriesId="php-basics" chapterId="01-your-first-php-script" />
+
 ## Further Reading
 
 To deepen your understanding of the topics covered in this chapter:

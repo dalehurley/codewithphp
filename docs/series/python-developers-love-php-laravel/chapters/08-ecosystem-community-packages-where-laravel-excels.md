@@ -1792,6 +1792,8 @@ In [Chapter 09](/series/python-developers-love-php-laravel/chapters/09-when-to-u
 
 This chapter will help you make informed decisions about when each ecosystem makes sense for your projects.
 
+<ChapterCheckbox seriesId="python-developers-love-php-laravel" chapterId="08-ecosystem-community-packages-where-laravel-excels" />
+
 ## Further Reading
 
 Want to dive deeper into Laravel's ecosystem? These resources will help:

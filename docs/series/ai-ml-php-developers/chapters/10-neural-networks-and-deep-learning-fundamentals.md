@@ -2741,6 +2741,8 @@ Congratulations! You've built a solid foundation in neural networks. Let's revie
 
 You now understand how neural networks really work—not just as a black box, but as mathematical functions that learn by adjusting weights through gradient descent. This foundation is essential for deep learning and advanced AI applications.
 
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="10-neural-networks-and-deep-learning-fundamentals" />
+
 ## Further Reading
 
 Deepen your understanding with these carefully selected resources:

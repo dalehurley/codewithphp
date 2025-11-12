@@ -1626,6 +1626,8 @@ All code examples from this chapter are available in the [`code/chapter-03/`](ht
 
 See the [README.md](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-03/README.md) for detailed instructions on running each example.
 
+<ChapterCheckbox seriesId="python-developers-love-php-laravel" chapterId="03-laravel-developer-experience-productivity-tools" />
+
 ## Further Reading
 
 To deepen your understanding:

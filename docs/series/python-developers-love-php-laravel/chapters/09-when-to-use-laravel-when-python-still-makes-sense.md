@@ -1778,6 +1778,8 @@ You've completed the decision-making chapter! In [Chapter 10: Bonus Hands-On Min
 
 If you're ready to start building, head to Chapter 10. If you want to review specific concepts, revisit the relevant chapters. Remember: the goal isn't to choose one technology forever—it's to make informed decisions based on your specific needs.
 
+<ChapterCheckbox seriesId="python-developers-love-php-laravel" chapterId="09-when-to-use-laravel-when-python-still-makes-sense" />
+
 ## Further Reading
 
 Want to dive deeper into technology decision-making? These resources provide additional perspectives:

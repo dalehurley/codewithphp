@@ -642,6 +642,8 @@ Complete, runnable examples from this chapter are available in:
 - `solutions/` - Solutions to chapter exercises
   :::
 
+<ChapterCheckbox seriesId="php-basics" chapterId="04-understanding-and-using-functions" />
+
 ## Further Reading
 
 - [PHP Manual: Functions](https://www.php.net/manual/en/language.functions.php) — Official documentation on functions

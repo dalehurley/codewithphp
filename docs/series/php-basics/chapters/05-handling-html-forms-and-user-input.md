@@ -661,6 +661,8 @@ options: [
 ]"
 />
 
+<ChapterCheckbox seriesId="php-basics" chapterId="05-handling-html-forms-and-user-input" />
+
 ## Further Reading
 
 - [PHP: Handling file uploads](https://www.php.net/manual/en/features.file-upload.php) — Learn how to accept file uploads through forms

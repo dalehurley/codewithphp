@@ -3320,6 +3320,8 @@ You can now apply these techniques to:
 
 In [Chapter 21](/series/ai-ml-php-developers/chapters/21-recommender-systems-theory-and-use-cases), we'll explore recommender systems—another crucial ML application for personalizing user experiences. You'll learn collaborative filtering, content-based recommendations, and how to suggest relevant products or content based on user behavior.
 
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="20-time-series-forecasting-project" />
+
 ## Further Reading
 
 ### Official Documentation

@@ -915,6 +915,8 @@ Complete, runnable examples from this chapter are available in:
 - [`README.md`](/series/php-basics/code/15-sessions/README.md) - Complete guide and exercise solutions
   :::
 
+<ChapterCheckbox seriesId="php-basics" chapterId="15-managing-state-with-sessions-and-cookies" />
+
 ## Further Reading
 
 - [PHP Manual: Sessions](https://www.php.net/manual/en/book.session.php) — Official PHP session documentation

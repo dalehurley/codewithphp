@@ -724,6 +724,8 @@ Complete, runnable examples from this chapter are available in:
 The example project includes a working `composer.json`, autoloading setup, and demonstrates using third-party packages.
 :::
 
+<ChapterCheckbox seriesId="php-basics" chapterId="12-dependency-management-with-composer" />
+
 ## Further Reading
 
 - [Composer Official Documentation](https://getcomposer.org/doc/) — Comprehensive guide to all Composer features

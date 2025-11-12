@@ -1720,6 +1720,8 @@ Congratulations! You've completed a comprehensive guide to professional developm
 
 In [Chapter 08](/series/python-developers-love-php-laravel/chapters/08-ecosystem-community-packages-where-laravel-excels), you'll explore Laravel's ecosystem, community, and packages. You'll learn about Livewire, Inertia, Laravel Nova, and other tools that make Laravel development delightful. You'll also see where Laravel excels compared to Python frameworks.
 
+<ChapterCheckbox seriesId="python-developers-love-php-laravel" chapterId="07-testing-deployment-devops-best-practices" />
+
 ## Further Reading
 
 - [Laravel Testing Documentation](https://laravel.com/docs/testing) — Complete guide to testing in Laravel

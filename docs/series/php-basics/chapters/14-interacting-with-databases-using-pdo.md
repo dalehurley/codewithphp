@@ -1537,6 +1537,8 @@ options: [
 ]"
 />
 
+<ChapterCheckbox seriesId="php-basics" chapterId="14-interacting-with-databases-using-pdo" />
+
 ### Additional Resources
 
 - [PHP PDO Official Documentation](https://www.php.net/manual/en/book.pdo.php)

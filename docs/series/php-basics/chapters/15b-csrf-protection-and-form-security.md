@@ -920,6 +920,8 @@ Test your understanding of CSRF protection and form security:
   ]"
 />
 
+<ChapterCheckbox seriesId="php-basics" chapterId="15b-csrf-protection-and-form-security" />
+
 ## Further Reading
 
 - [OWASP: Cross-Site Request Forgery](https://owasp.org/www-community/attacks/csrf)

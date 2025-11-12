@@ -2039,6 +2039,8 @@ In the next chapter, you'll explore **Computer Vision Essentials for PHP Develop
 
 The journey from text to images expands your AI toolkit significantly, enabling applications like automatic image tagging, facial recognition, object detection, and OCR—opening up entirely new categories of intelligent features for PHP applications.
 
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="15-language-models-and-text-generation-with-openai-apis" />
+
 ## Further Reading
 
 ### Official OpenAI Resources

@@ -1017,6 +1017,8 @@ options: [
 ]"
 />
 
+<ChapterCheckbox seriesId="php-basics" chapterId="17-building-a-basic-http-router" />
+
 ## Further Reading
 
 - [PSR-7: HTTP Message Interfaces](https://www.php-fig.org/psr/psr-7/) - Standard for HTTP requests/responses

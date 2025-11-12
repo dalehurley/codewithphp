@@ -2354,6 +2354,8 @@ But the skills you've learned here—loading images, extracting features, prepro
 
 You're now ready to tackle image classification, apply pre-trained models, and build intelligent image-processing features into your PHP applications!
 
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="16-computer-vision-essentials-for-php-developers" />
+
 ## Further Reading
 
 ### Official Documentation

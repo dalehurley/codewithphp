@@ -821,6 +821,8 @@ options: [
 ]"
 />
 
+<ChapterCheckbox seriesId="php-basics" chapterId="06-deep-dive-into-arrays" />
+
 ## Further Reading
 
 - [PHP Arrays Documentation](https://www.php.net/manual/en/language.types.array.php) — Complete reference for array syntax and behavior

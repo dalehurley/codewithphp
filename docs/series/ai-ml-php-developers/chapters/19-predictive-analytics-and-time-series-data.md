@@ -3404,6 +3404,8 @@ The techniques you've learned power critical business decisions:
 
 While this chapter used stock prices as teaching data, remember: machine learning forecasts are **not investment advice**. Financial markets are influenced by countless unpredictable factors. Always consult qualified financial professionals before making investment decisions. The skills you've gained apply to any time-indexed data—sales, traffic, metrics—where forecasting creates genuine business value.
 
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="19-predictive-analytics-and-time-series-data" />
+
 ## Further Reading
 
 Deepen your understanding with these carefully selected resources:

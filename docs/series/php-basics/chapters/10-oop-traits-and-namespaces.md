@@ -544,6 +544,8 @@ All examples from this chapter are available in the code directory:
 
     **Validation**: The script should catch the exception and print a friendly error message without crashing.
 
+<ChapterCheckbox seriesId="php-basics" chapterId="10-oop-traits-and-namespaces" />
+
 ## Further Reading
 
 - [PHP Manual: Traits](https://www.php.net/manual/en/language.oop5.traits.php) - Official documentation on traits

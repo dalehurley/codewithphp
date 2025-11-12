@@ -2002,6 +2002,8 @@ In Chapter 14, you'll apply these techniques to build a complete text classifica
 - Explore the `solutions/` directory for exercise implementations
 - Read Chapter 14 to see these techniques power real NLP models
 
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="13-natural-language-processing-nlp-fundamentals" />
+
 ## Further Reading
 
 ### NLP Fundamentals

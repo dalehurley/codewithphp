@@ -894,6 +894,8 @@ You can now:
 
 In the [next chapter](/series/php-basics/chapters/10-oop-traits-and-namespaces), we'll cover two more essential OOP tools: **traits** for reusing method implementations across unrelated classes, and **namespaces** for organizing your code in larger projects.
 
+<ChapterCheckbox seriesId="php-basics" chapterId="09-oop-inheritance-abstract-classes-and-interfaces" />
+
 ## Further Reading
 
 - [PHP Manual: Object Inheritance](https://www.php.net/manual/en/language.oop5.inheritance.php)

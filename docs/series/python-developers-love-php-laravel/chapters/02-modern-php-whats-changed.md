@@ -1304,6 +1304,8 @@ Test your understanding of modern PHP features and how they compare to Python:
   ]"
 />
 
+<ChapterCheckbox seriesId="python-developers-love-php-laravel" chapterId="02-modern-php-whats-changed" />
+
 ## Further Reading
 
 To deepen your understanding:

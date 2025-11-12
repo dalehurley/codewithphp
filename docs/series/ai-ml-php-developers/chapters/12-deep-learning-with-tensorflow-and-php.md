@@ -1885,6 +1885,8 @@ In [Chapter 13](/series/ai-ml-php-developers/chapters/13-natural-language-proces
 
 You've crossed an important milestone—you can now leverage state-of-the-art deep learning in any PHP application. Deep learning is no longer just for Python developers!
 
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="12-deep-learning-with-tensorflow-and-php" />
+
 ## Further Reading
 
 ### TensorFlow & TensorFlow Serving

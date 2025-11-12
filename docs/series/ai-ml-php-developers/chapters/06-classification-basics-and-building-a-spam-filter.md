@@ -3365,6 +3365,8 @@ In [Chapter 07: Model Evaluation and Improvement](/series/ai-ml-php-developers/c
 
 You'll also explore ROC curves, AUC scores, and advanced evaluation techniques that go beyond simple accuracy metrics.
 
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="06-classification-basics-and-building-a-spam-filter" />
+
 ## Further Reading
 
 To deepen your understanding of classification and text processing:

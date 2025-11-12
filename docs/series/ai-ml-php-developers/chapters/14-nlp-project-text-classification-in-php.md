@@ -2411,6 +2411,8 @@ These are the exact skills data scientists and ML engineers use daily. Whether y
 
 **Keep experimenting!** Try the exercises, adapt this code to your domain, and push the boundaries of what you can build. The best way to master ML is to apply it to problems you care about.
 
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="14-nlp-project-text-classification-in-php" />
+
 ## Further Reading
 
 ### Official Documentation

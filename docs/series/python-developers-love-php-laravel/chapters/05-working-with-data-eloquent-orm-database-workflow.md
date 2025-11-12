@@ -2483,6 +2483,8 @@ Congratulations! You've completed a comprehensive deep dive into Eloquent ORM. L
 
 In [Chapter 06](/series/python-developers-love-php-laravel/chapters/06-building-rest-apis-integrations-python-to-laravel), you'll learn how to build REST APIs in Laravel, comparing Flask-RESTful and Django REST Framework approaches. You'll master API routing, authentication, validation, and external integrations—bringing together everything you've learned about Laravel so far.
 
+<ChapterCheckbox seriesId="python-developers-love-php-laravel" chapterId="05-working-with-data-eloquent-orm-database-workflow" />
+
 ## Further Reading
 
 - [Laravel Eloquent Documentation](https://laravel.com/docs/eloquent) — Comprehensive guide to Eloquent ORM

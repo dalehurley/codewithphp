@@ -810,6 +810,8 @@ Complete, runnable examples from this chapter are available in:
 - `solutions/` - Solutions to chapter exercises
   :::
 
+<ChapterCheckbox seriesId="php-basics" chapterId="07-mastering-string-manipulation" />
+
 ## Further Reading
 
 - [PHP String Functions](https://www.php.net/manual/en/ref.strings.php) — Complete reference

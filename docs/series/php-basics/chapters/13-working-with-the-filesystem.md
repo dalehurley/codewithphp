@@ -1560,7 +1560,9 @@ options: [
 ]"
 />
 
-### Further Reading
+<ChapterCheckbox seriesId="php-basics" chapterId="13-working-with-the-filesystem" />
+
+## Further Reading
 
 - [PHP Filesystem Functions](https://www.php.net/manual/en/ref.filesystem.php) - Complete reference
 - [JSON Functions in PHP](https://www.php.net/manual/en/ref.json.php) - Detailed JSON documentation

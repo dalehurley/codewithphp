@@ -4360,6 +4360,8 @@ Before deploying an ML system to production, verify:
 **Remember:** A 95% accurate model that takes 10 seconds per prediction is worse than an 85% accurate model that predicts in 10ms. Production requirements always trump theoretical perfection.
 :::
 
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="08-leveraging-php-machine-learning-libraries" />
+
 ## Further Reading
 
 Deepen your understanding of PHP ML libraries and best practices:

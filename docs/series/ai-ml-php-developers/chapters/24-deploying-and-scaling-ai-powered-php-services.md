@@ -1182,6 +1182,8 @@ Continue to [Chapter 25](/series/ai-ml-php-developers/chapters/25-capstone-proje
 
 The deployment skills you've gained apply to any PHP application requiring high availability and professional operations. You're now equipped to deploy and maintain production systems with confidence!
 
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="24-deploying-and-scaling-ai-powered-php-services" />
+
 ## Further Reading
 
 ### Docker and Containerization

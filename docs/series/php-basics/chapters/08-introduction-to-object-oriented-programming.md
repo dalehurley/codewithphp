@@ -1409,6 +1409,8 @@ Test your understanding of Object-Oriented Programming concepts:
   ]"
 />
 
+<ChapterCheckbox seriesId="php-basics" chapterId="08-introduction-to-object-oriented-programming" />
+
 ## Further Reading
 
 - [PHP Manual: Classes and Objects](https://www.php.net/manual/en/language.oop5.php)
