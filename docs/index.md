@@ -677,7 +677,7 @@ _Helping developers fall in love with PHP, one tutorial at a time._
   display: inline-block;
   padding: 1rem 2.5rem;
   background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
-  color: white;
+  color: white !important;
   border-radius: 8px;
   text-decoration: none;
   font-weight: bold;
@@ -687,6 +687,7 @@ _Helping developers fall in love with PHP, one tutorial at a time._
 }
 
 .hero-cta a:hover {
+  color: white !important;
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(245, 158, 11, 0.5);
 }
@@ -890,11 +891,12 @@ _Helping developers fall in love with PHP, one tutorial at a time._
 
 .series-card-popular .series-cta a {
   background: linear-gradient(135deg, var(--php-amber) 0%, var(--php-orange) 100%);
-  color: white;
+  color: white !important;
   box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
 }
 
 .series-card-popular .series-cta a:hover {
+  color: white !important;
   box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
   transform: translateY(-2px);
 }
@@ -977,7 +979,7 @@ _Helping developers fall in love with PHP, one tutorial at a time._
   display: inline-block;
   padding: 1.25rem 3rem;
   background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
-  color: white;
+  color: white !important;
   border-radius: 8px;
   text-decoration: none;
   font-weight: bold;
@@ -987,6 +989,7 @@ _Helping developers fall in love with PHP, one tutorial at a time._
 }
 
 .cta-section a:hover {
+  color: white !important;
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(245, 158, 11, 0.5);
 }
@@ -1015,7 +1018,7 @@ _Helping developers fall in love with PHP, one tutorial at a time._
   display: inline-block;
   padding: 1rem 2.5rem;
   background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
-  color: white;
+  color: white !important;
   border-radius: 8px;
   text-decoration: none;
   font-weight: bold;
@@ -1025,6 +1028,7 @@ _Helping developers fall in love with PHP, one tutorial at a time._
 }
 
 .final-cta-button a:hover {
+  color: white !important;
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(245, 158, 11, 0.5);
 }
