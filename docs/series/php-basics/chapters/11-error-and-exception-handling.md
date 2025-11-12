@@ -866,6 +866,8 @@ options: [
 ]"
 />
 
+<ChapterCheckbox seriesId="php-basics" chapterId="11-error-and-exception-handling" />
+
 ## Further Reading
 
 - [PHP Manual: Exceptions](https://www.php.net/manual/en/language.exceptions.php) – Official documentation on exception handling

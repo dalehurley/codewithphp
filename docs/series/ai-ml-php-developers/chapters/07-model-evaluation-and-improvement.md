@@ -3478,6 +3478,8 @@ In [Chapter 08: Leveraging PHP Machine Learning Libraries](/series/ai-ml-php-dev
 
 You'll apply all the evaluation techniques from this chapter to compare algorithms and choose the best for your specific use case.
 
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="07-model-evaluation-and-improvement" />
+
 ## Further Reading
 
 To deepen your understanding of model evaluation and improvement:

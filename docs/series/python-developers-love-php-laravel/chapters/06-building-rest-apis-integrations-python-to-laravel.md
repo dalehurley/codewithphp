@@ -1991,6 +1991,8 @@ Congratulations! You've completed a comprehensive guide to building REST APIs in
 
 In [Chapter 07](/series/python-developers-love-php-laravel/chapters/07-testing-deployment-devops-best-practices), you'll learn about testing, deployment, and DevOps practices in Laravel, comparing pytest to PHPUnit, CI/CD workflows, and deployment strategies. You'll bring together everything you've learned to build and deploy production-ready applications.
 
+<ChapterCheckbox seriesId="python-developers-love-php-laravel" chapterId="06-building-rest-apis-integrations-python-to-laravel" />
+
 ## Further Reading
 
 - [Laravel API Documentation](https://laravel.com/docs/routing#api-routes) — Complete guide to API routing

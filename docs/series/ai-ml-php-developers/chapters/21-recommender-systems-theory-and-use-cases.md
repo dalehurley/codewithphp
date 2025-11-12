@@ -3849,6 +3849,8 @@ Before moving to Chapter 22, try designing a recommendation system for a project
 
 Having a concrete use case in mind makes Chapter 22's implementation immediately applicable to your work.
 
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="21-recommender-systems-theory-and-use-cases" />
+
 ## Further Reading
 
 - [Collaborative Filtering for Implicit Feedback Datasets](http://yifanhu.net/PUB/cf.pdf) — Foundational paper on recommendation algorithms by Hu, Koren, and Volinsky

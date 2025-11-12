@@ -637,6 +637,8 @@ Test your understanding of JSON and APIs:
   ]"
 />
 
+<ChapterCheckbox seriesId="php-basics" chapterId="23-working-with-json-and-apis" />
+
 ## Further Reading
 
 - [PHP JSON Functions Documentation](https://www.php.net/manual/en/ref.json.php)

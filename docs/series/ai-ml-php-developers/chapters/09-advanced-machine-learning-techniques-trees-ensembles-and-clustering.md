@@ -3940,6 +3940,8 @@ In [Chapter 10: Neural Networks and Deep Learning Fundamentals](/series/ai-ml-ph
 
 You'll build on the ensemble concepts from this chapter, seeing how neural networks are like ensembles of simple mathematical operations working together.
 
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="09-advanced-machine-learning-techniques-trees-ensembles-and-clustering" />
+
 ## Further Reading
 
 Deepen your understanding of advanced ML algorithms:

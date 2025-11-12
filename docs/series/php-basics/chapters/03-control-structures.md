@@ -628,6 +628,8 @@ switch ($color) {
     - Below 60: F
     - Hint: You can use `match` with conditions like `$score >= 90 => 'A'`
 
+<ChapterCheckbox seriesId="php-basics" chapterId="03-control-structures" />
+
 ## Further Reading
 
 To dive deeper into control structures, check out these official PHP documentation pages:

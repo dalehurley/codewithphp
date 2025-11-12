@@ -2080,6 +2080,8 @@ In Chapter 18, you'll extend beyond classification to **object detection**—loc
 
 You now have the foundation to add intelligent image understanding to any PHP application, whether you choose cloud convenience or local control!
 
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="17-image-classification-project-with-pre-trained-models" />
+
 ## Further Reading
 
 **Google Cloud Vision**

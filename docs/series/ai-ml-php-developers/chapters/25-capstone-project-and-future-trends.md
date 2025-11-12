@@ -3294,4 +3294,6 @@ Log::info('API call made', [
 
 ---
 
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="25-capstone-project-and-future-trends" />
+
 **Thank you for completing the AI/ML for PHP Developers series!** You now have practical skills to build intelligent, scalable PHP applications. The tools are powerful; use them responsibly. 🚀

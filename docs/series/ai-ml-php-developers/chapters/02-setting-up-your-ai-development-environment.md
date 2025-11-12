@@ -1934,6 +1934,8 @@ In Chapter 03, we'll dive into **Core Machine Learning Concepts and Terminology*
 
 You'll use the environment you just set up to write your first data preprocessing scripts and understand how raw data transforms into machine learning features.
 
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="02-setting-up-your-ai-development-environment" />
+
 ## Further Reading
 
 To deepen your understanding of the tools and libraries you've installed:

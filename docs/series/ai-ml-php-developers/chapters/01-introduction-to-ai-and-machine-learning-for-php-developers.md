@@ -837,6 +837,8 @@ In the next chapter, we'll explore the **fundamental concepts of machine learnin
 2. **Integrate**: Connect to Python scripts or REST APIs
 3. **Collaborate**: Work with data scientists on complex projects
 
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="01-introduction-to-ai-and-machine-learning-for-php-developers" />
+
 ## Further Reading
 
 To deepen your understanding of the topics covered in this chapter:

@@ -1403,6 +1403,8 @@ options: [
 ]"
 />
 
+<ChapterCheckbox seriesId="php-basics" chapterId="19-project-building-a-simple-blog" />
+
 ## Further Reading
 
 - [PHP 8.4 Release Notes](https://www.php.net/releases/8.4/) - New features and improvements

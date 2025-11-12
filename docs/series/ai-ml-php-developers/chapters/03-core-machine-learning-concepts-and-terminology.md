@@ -3124,6 +3124,8 @@ In [Chapter 04: Data Collection and Preprocessing in PHP](/series/ai-ml-php-deve
 
 You'll build on the normalization and feature extraction techniques from this chapter, learning production-ready approaches for messy, real-world data.
 
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="03-core-machine-learning-concepts-and-terminology" />
+
 ## Further Reading
 
 To deepen your understanding of the concepts covered in this chapter:

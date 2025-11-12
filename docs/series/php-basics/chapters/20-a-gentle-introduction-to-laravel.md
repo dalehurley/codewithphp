@@ -964,6 +964,8 @@ Exercise solutions from this chapter are available in:
 **Note**: These are Laravel-specific Blade template examples. The main code for this chapter is your Laravel application created with `composer create-project laravel/laravel blog`.
 :::
 
+<ChapterCheckbox seriesId="php-basics" chapterId="20-a-gentle-introduction-to-laravel" />
+
 ## Further Reading
 
 - [Official Laravel Documentation](https://laravel.com/docs) — Comprehensive and well-written

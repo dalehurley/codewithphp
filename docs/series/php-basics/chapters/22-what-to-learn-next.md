@@ -665,6 +665,8 @@ Keep building. Keep learning. Stay curious. And remember: every expert developer
 
 ---
 
+<ChapterCheckbox seriesId="php-basics" chapterId="22-what-to-learn-next" />
+
 ## Further Reading
 
 - [PHP: The Right Way](https://phptherightway.com/) — Modern PHP best practices

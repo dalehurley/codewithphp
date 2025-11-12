@@ -932,6 +932,8 @@ More importantly, you've learned that you don't need to memorize hundreds of for
 
 In the next chapter, we'll start putting all these pieces together by designing and building a basic HTTP router, the entry point for modern web applications.
 
+<ChapterCheckbox seriesId="php-basics" chapterId="16-writing-better-code-with-psr-1-and-psr-12" />
+
 ## Further Reading
 
 **Official Specifications**:

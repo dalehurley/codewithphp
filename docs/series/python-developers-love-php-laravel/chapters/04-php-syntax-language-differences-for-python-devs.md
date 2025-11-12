@@ -2081,6 +2081,8 @@ All code examples from this chapter are available in the [`code/chapter-04/`](ht
 
 See the [README.md](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-04/README.md) for detailed instructions on running each example.
 
+<ChapterCheckbox seriesId="python-developers-love-php-laravel" chapterId="04-php-syntax-language-differences-for-python-devs" />
+
 ## Further Reading
 
 - [PHP Manual: Language Reference](https://www.php.net/manual/en/langref.php) — Complete PHP syntax reference

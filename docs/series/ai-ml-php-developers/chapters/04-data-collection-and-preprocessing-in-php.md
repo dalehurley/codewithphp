@@ -2103,6 +2103,8 @@ function batchNormalize(array $records, array $params): array {
 }
 ```
 
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="04-data-collection-and-preprocessing-in-php" />
+
 ## Further Reading
 
 ### Core Concepts

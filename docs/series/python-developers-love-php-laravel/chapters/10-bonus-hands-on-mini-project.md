@@ -2707,7 +2707,9 @@ You now have a solid foundation in Laravel. Consider exploring:
 - **Laravel Nova** — Admin panel for your applications
 - **Laravel Vapor** — Serverless deployment platform
 
-### Further Reading
+<ChapterCheckbox seriesId="python-developers-love-php-laravel" chapterId="10-bonus-hands-on-mini-project" />
+
+## Further Reading
 
 - [Laravel Documentation](https://laravel.com/docs) — Comprehensive Laravel reference
 - [Laravel Sanctum Documentation](https://laravel.com/docs/sanctum) — API authentication guide

@@ -763,6 +763,8 @@ Complete, runnable examples from this chapter are available in:
 - `solutions/` - Solutions to chapter exercises
   :::
 
+<ChapterCheckbox seriesId="php-basics" chapterId="02-variables-data-types-and-constants" />
+
 ## Further Reading
 
 - [PHP Manual: Variables](https://www.php.net/manual/en/language.variables.php) — Official PHP documentation on variables

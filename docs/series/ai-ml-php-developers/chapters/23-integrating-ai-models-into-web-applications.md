@@ -1217,6 +1217,8 @@ Include:
 - Deploy to staging environment and monitor real-world performance
 - Read Chapter 24 for advanced topics: distributed ML inference, model serving frameworks, and scaling strategies
 
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="23-integrating-ai-models-into-web-applications" />
+
 ## Resources
 
 - [Laravel Service Container](https://laravel.com/docs/12.x/container)

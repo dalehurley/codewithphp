@@ -394,6 +394,8 @@ Test your understanding of the key concepts from this introduction:
   ]"
 />
 
+<ChapterCheckbox seriesId="python-developers-love-php-laravel" chapterId="00-introduction-why-look-at-php-laravel" />
+
 ## Further Reading
 
 To deepen your understanding before continuing:

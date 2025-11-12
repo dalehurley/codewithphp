@@ -873,6 +873,8 @@ options: [
 ]"
 />
 
+<ChapterCheckbox seriesId="php-basics" chapterId="18-project-structuring-a-simple-application" />
+
 ## Further Reading
 
 - [MVC Pattern Explained](https://www.php.net/manual/en/tutorial.php) - PHP manual on basic architecture

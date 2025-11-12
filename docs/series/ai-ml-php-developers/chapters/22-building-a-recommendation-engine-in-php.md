@@ -2760,6 +2760,8 @@ You now have production-ready recommendation code that you can adapt for:
 
 In [Chapter 23](/series/ai-ml-php-developers/chapters/23-integrating-ai-models-into-web-applications), you'll learn how to integrate this recommender (and other AI models) into live web applications, handling user requests, caching strategies, and scaling for production traffic.
 
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="22-building-a-recommendation-engine-in-php" />
+
 ## Further Reading
 
 - [Recommender Systems Handbook](https://www.springer.com/gp/book/9780387858203) — Comprehensive academic text

@@ -3471,6 +3471,8 @@ To solidify your object detection mastery:
 
 You now have production-ready object detection capabilities in your PHP toolkit. Use them to build intelligent features that understand visual content!
 
+<ChapterCheckbox seriesId="ai-ml-php-developers" chapterId="18-object-detection-and-recognition-in-php-applications" />
+
 ## Further Reading
 
 ### Official Documentation

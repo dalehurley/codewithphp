@@ -877,6 +877,8 @@ All code examples from this chapter are available in the [`code/chapter-01/`](ht
 
 See the [README.md](https://github.com/dalehurley/codewithphp/blob/main/docs/series/python-developers-love-php-laravel/code/chapter-01/README.md) for detailed instructions on running each example.
 
+<ChapterCheckbox seriesId="python-developers-love-php-laravel" chapterId="01-mapping-concepts-python-web-frameworks-vs-laravel" />
+
 ## Further Reading
 
 To deepen your understanding:
