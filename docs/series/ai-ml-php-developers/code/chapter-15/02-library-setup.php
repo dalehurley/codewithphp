@@ -31,7 +31,7 @@ echo "Generating response using OpenAI PHP library...\n\n";
 
 try {
     $response = $client->chat()->create([
-        'model' => 'gpt-3.5-turbo',
+        'model' => 'gpt-4.1',
         'messages' => [
             ['role' => 'system', 'content' => 'You are a PHP expert who writes clear, concise explanations.'],
             ['role' => 'user', 'content' => 'What are the benefits of using Composer for dependency management?'],

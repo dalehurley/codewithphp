@@ -8,7 +8,17 @@ prerequisites:
   ["Basic computer literacy", "Text editor familiarity", "Willingness to learn"]
 ---
 
-# PHP Basics
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/#choose-your-learning-path">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>PHP Basics</span>
+</div>
+
+![PHP Basics](/images/php-basics/chapter-00-series-index-hero-full.webp)
+
+# PHP Basics <span class="difficulty-badge difficulty-beginner">Beginner</span>
 
 ## Overview
 
@@ -63,6 +73,8 @@ For the best experience and to future-proof your skills, install PHP 8.4.
 - No prior programming knowledge required
 
 ## What You'll Build
+
+<ProgressTracker seriesId="php-basics" :totalChapters="25" title="Your Progress" />
 
 By working through this series, you will create:
 
@@ -189,79 +201,217 @@ If you got an error, don't worry—[Chapter 00](/series/php-basics/chapters/00-s
 
 Set up your environment and write your first working PHP script.
 
-- [**00 — Setting Up Your Development Environment**](/series/php-basics/chapters/00-setting-up-your-development-environment)  
-  Install PHP 8.4, configure your editor, and verify your setup
-- [**01 — Your First PHP Script**](/series/php-basics/chapters/01-your-first-php-script)  
-  Write "Hello, World!" and understand how PHP executes
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-basics/chapter-00-setting-up-development-environment-hero-thumbnail.webp" alt="Chapter 00 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-basics/chapters/00-setting-up-your-development-environment">00 — Setting Up Your Development Environment</a></h4>
+    <p style="margin-bottom: 0;">Install PHP 8.4, configure your editor, and verify your setup. This chapter walks you through installing PHP on macOS, Linux, and Windows, choosing a text editor or IDE, and running your first verification script to ensure everything works correctly.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-basics/chapter-01-first-php-script-hero-thumbnail.webp" alt="Chapter 01 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-basics/chapters/01-your-first-php-script">01 — Your First PHP Script</a></h4>
+    <p style="margin-bottom: 0;">Write "Hello, World!" and understand how PHP executes. Learn about PHP tags, how to run scripts from the command line, basic output with echo and print, and get comfortable with PHP syntax from the very first line of code.</p>
+  </div>
+</div>
 
 ### Part 2: Core Language Fundamentals (Chapters 02–07)
 
 Master the building blocks: variables, control flow, functions, arrays, and strings.
 
-- [**02 — Variables, Data Types, and Constants**](/series/php-basics/chapters/02-variables-data-types-and-constants)  
-  Learn PHP's type system and how to store data
-- [**03 — Control Structures**](/series/php-basics/chapters/03-control-structures)  
-  Make decisions with if/else, switch, and loops
-- [**04 — Understanding and Using Functions**](/series/php-basics/chapters/04-understanding-and-using-functions)  
-  Write reusable, modular code with functions
-- [**05 — Handling HTML Forms and User Input**](/series/php-basics/chapters/05-handling-html-forms-and-user-input)  
-  Process GET/POST requests and sanitize user data
-- [**06 — Deep Dive into Arrays**](/series/php-basics/chapters/06-deep-dive-into-arrays)  
-  Work with indexed and associative arrays, plus powerful array functions
-- [**07 — Mastering String Manipulation**](/series/php-basics/chapters/07-mastering-string-manipulation)  
-  Format, search, and transform text efficiently
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-basics/chapter-02-variables-data-types-hero-thumbnail.webp" alt="Chapter 02 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-basics/chapters/02-variables-data-types-and-constants">02 — Variables, Data Types, and Constants</a></h4>
+    <p style="margin-bottom: 0;">Learn PHP's type system and how to store data. Understand strings, integers, floats, booleans, arrays, and objects. Master variable naming conventions, type juggling, strict typing, and when to use constants versus variables.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-basics/chapter-03-control-structures-hero-thumbnail.webp" alt="Chapter 03 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-basics/chapters/03-control-structures">03 — Control Structures</a></h4>
+    <p style="margin-bottom: 0;">Make decisions with if/else, switch, and loops. Learn to control program flow with conditional statements, comparison and logical operators, switch statements for multiple conditions, and loops (for, foreach, while, do-while) for repetitive tasks.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-basics/chapter-04-understanding-functions-hero-thumbnail.webp" alt="Chapter 04 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-basics/chapters/04-understanding-and-using-functions">04 — Understanding and Using Functions</a></h4>
+    <p style="margin-bottom: 0;">Write reusable, modular code with functions. Master function syntax, parameters and arguments, return values, variable scope, type declarations, default parameters, variadic functions, and arrow functions for concise code.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-basics/chapter-05-handling-html-forms-hero-thumbnail.webp" alt="Chapter 05 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-basics/chapters/05-handling-html-forms-and-user-input">05 — Handling HTML Forms and User Input</a></h4>
+    <p style="margin-bottom: 0;">Process GET/POST requests and sanitize user data. Learn how PHP receives form data, the difference between GET and POST methods, how to validate and sanitize user input, and basic security practices to prevent common vulnerabilities.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-basics/chapter-06-deep-dive-arrays-hero-thumbnail.webp" alt="Chapter 06 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-basics/chapters/06-deep-dive-into-arrays">06 — Deep Dive into Arrays</a></h4>
+    <p style="margin-bottom: 0;">Work with indexed and associative arrays, plus powerful array functions. Master array creation, accessing and modifying elements, multidimensional arrays, array iteration, and essential functions like array_map, array_filter, array_reduce, and array manipulation.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-basics/chapter-07-mastering-string-manipulation-hero-thumbnail.webp" alt="Chapter 07 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-basics/chapters/07-mastering-string-manipulation">07 — Mastering String Manipulation</a></h4>
+    <p style="margin-bottom: 0;">Format, search, and transform text efficiently. Learn string concatenation, interpolation, escaping, searching and replacing, substring extraction, string formatting, case conversion, and working with multibyte strings for international applications.</p>
+  </div>
+</div>
 
 ### Part 3: Object-Oriented Programming (Chapters 08–10)
 
 Learn modern OOP principles that power professional PHP applications.
 
-- [**08 — Introduction to Object-Oriented Programming**](/series/php-basics/chapters/08-introduction-to-object-oriented-programming)  
-  Classes, objects, properties, methods, and encapsulation
-- [**09 — OOP: Inheritance, Abstract Classes, and Interfaces**](/series/php-basics/chapters/09-oop-inheritance-abstract-classes-and-interfaces)  
-  Build flexible, extensible class hierarchies
-- [**10 — OOP: Traits and Namespaces**](/series/php-basics/chapters/10-oop-traits-and-namespaces)  
-  Code reuse with traits and organize with namespaces
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-basics/chapter-08-introduction-oop-hero-thumbnail.webp" alt="Chapter 08 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-basics/chapters/08-introduction-to-object-oriented-programming">08 — Introduction to Object-Oriented Programming</a></h4>
+    <p style="margin-bottom: 0;">Classes, objects, properties, methods, and encapsulation. Learn how to define classes, create objects, use constructors and destructors, understand visibility (public/private/protected), implement static methods and properties, and leverage PHP 8.4's property hooks and asymmetric visibility.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-basics/chapter-09-oop-inheritance-abstract-interfaces-hero-thumbnail.webp" alt="Chapter 09 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-basics/chapters/09-oop-inheritance-abstract-classes-and-interfaces">09 — OOP: Inheritance, Abstract Classes, and Interfaces</a></h4>
+    <p style="margin-bottom: 0;">Build flexible, extensible class hierarchies. Understand inheritance and method overriding, abstract classes for partial implementations, interfaces for contracts, polymorphism for flexible code, type hinting with interfaces, and when to use each approach.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-basics/chapter-10-oop-traits-namespaces-hero-thumbnail.webp" alt="Chapter 10 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-basics/chapters/10-oop-traits-and-namespaces">10 — OOP: Traits and Namespaces</a></h4>
+    <p style="margin-bottom: 0;">Code reuse with traits and organize with namespaces. Learn how traits enable horizontal code reuse, resolve trait conflicts, use namespaces to organize code and prevent naming collisions, import classes with use statements, and follow PSR-4 autoloading standards.</p>
+  </div>
+</div>
 
 ### Part 4: Professional PHP Development (Chapters 11–16)
 
 Essential skills for production applications: error handling, dependencies, files, databases, and standards.
 
-- [**11 — Error and Exception Handling**](/series/php-basics/chapters/11-error-and-exception-handling)  
-  Handle failures gracefully and debug effectively
-- [**12 — Dependency Management with Composer**](/series/php-basics/chapters/12-dependency-management-with-composer)  
-  Use Composer to manage packages and autoloading
-- [**13 — Working with the Filesystem**](/series/php-basics/chapters/13-working-with-the-filesystem)  
-  Read, write, and manage files and directories safely
-- [**14 — Interacting with Databases using PDO**](/series/php-basics/chapters/14-interacting-with-databases-using-pdo)  
-  Connect to databases and run secure queries with prepared statements
-- [**15 — Managing State with Sessions and Cookies**](/series/php-basics/chapters/15-managing-state-with-sessions-and-cookies)  
-  Track users across requests and build authentication
-- [**16 — Writing Better Code with PSR-1 and PSR-12**](/series/php-basics/chapters/16-writing-better-code-with-psr-1-and-psr-12)  
-  Follow industry coding standards for readable, maintainable code
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-basics/chapter-11-error-exception-handling-hero-thumbnail.webp" alt="Chapter 11 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-basics/chapters/11-error-and-exception-handling">11 — Error and Exception Handling</a></h4>
+    <p style="margin-bottom: 0;">Handle failures gracefully and debug effectively. Learn the difference between errors and exceptions, how to throw and catch exceptions, create custom exception classes, implement try-catch-finally blocks, and build robust error handling for production applications.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-basics/chapter-12-dependency-management-composer-hero-thumbnail.webp" alt="Chapter 12 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-basics/chapters/12-dependency-management-with-composer">12 — Dependency Management with Composer</a></h4>
+    <p style="margin-bottom: 0;">Use Composer to manage packages and autoloading. Master installing third-party packages from Packagist, managing dependencies with composer.json, autoloading classes with PSR-4, semantic versioning, and keeping dependencies up to date.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-basics/chapter-13-working-filesystem-hero-thumbnail.webp" alt="Chapter 13 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-basics/chapters/13-working-with-the-filesystem">13 — Working with the Filesystem</a></h4>
+    <p style="margin-bottom: 0;">Read, write, and manage files and directories safely. Learn to read and write files, check file existence and permissions, work with directories, handle file uploads securely, use file locking for concurrent access, and implement proper error handling.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-basics/chapter-14-interacting-databases-pdo-hero-thumbnail.webp" alt="Chapter 14 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-basics/chapters/14-interacting-with-databases-using-pdo">14 — Interacting with Databases using PDO</a></h4>
+    <p style="margin-bottom: 0;">Connect to databases and run secure queries with prepared statements. Master PDO for database abstraction, execute queries safely with prepared statements to prevent SQL injection, handle transactions, fetch results in various formats, and implement error handling.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-basics/chapter-15-managing-state-sessions-cookies-hero-thumbnail.webp" alt="Chapter 15 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-basics/chapters/15-managing-state-with-sessions-and-cookies">15 — Managing State with Sessions and Cookies</a></h4>
+    <p style="margin-bottom: 0;">Track users across requests and build authentication. Understand HTTP's stateless nature, use sessions to maintain user state across page requests, work with cookies for persistent data, implement user authentication and authorization, and secure session data.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-basics/chapter-16-writing-better-code-psr-hero-thumbnail.webp" alt="Chapter 16 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-basics/chapters/16-writing-better-code-with-psr-1-and-psr-12">16 — Writing Better Code with PSR-1 and PSR-12</a></h4>
+    <p style="margin-bottom: 0;">Follow industry coding standards for readable, maintainable code. Learn PSR-1 basic coding standards, PSR-12 extended coding style guide, naming conventions, file structure best practices, and how to use PHP_CodeSniffer to enforce standards automatically.</p>
+  </div>
+</div>
 
 ### Part 5: Building Real Applications (Chapters 17–19)
 
 Put it all together: build a router, structure an app, and create a complete blog.
 
-- [**17 — Building a Basic HTTP Router**](/series/php-basics/chapters/17-building-a-basic-http-router)  
-  Create your own router to handle URLs and requests
-- [**18 — Project: Structuring a Simple Application**](/series/php-basics/chapters/18-project-structuring-a-simple-application)  
-  Design a clean MVC architecture from scratch
-- [**19 — Project: Building a Simple Blog**](/series/php-basics/chapters/19-project-building-a-simple-blog)  
-  Build a full CRUD application with authentication and database
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-basics/chapter-17-building-basic-http-router-hero-thumbnail.webp" alt="Chapter 17 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-basics/chapters/17-building-a-basic-http-router">17 — Building a Basic HTTP Router</a></h4>
+    <p style="margin-bottom: 0;">Create your own router to handle URLs and requests. Learn how routers work by building one from scratch. Understand URL parsing, route matching, HTTP methods (GET, POST, PUT, DELETE), route parameters, middleware concepts, and request/response handling.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-basics/chapter-18-project-structuring-application-hero-thumbnail.webp" alt="Chapter 18 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-basics/chapters/18-project-structuring-a-simple-application">18 — Project: Structuring a Simple Application</a></h4>
+    <p style="margin-bottom: 0;">Design a clean MVC architecture from scratch. Learn how to organize a real application with Models (business logic and data), Views (presentation), Controllers (request handling), proper directory structure, configuration management, and separation of concerns.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-basics/chapter-19-project-building-simple-blog-hero-thumbnail.webp" alt="Chapter 19 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-basics/chapters/19-project-building-a-simple-blog">19 — Project: Building a Simple Blog</a></h4>
+    <p style="margin-bottom: 0;">Build a full CRUD application with authentication and database. Bring everything together in a complete blog application: user registration and login, creating/editing/deleting posts, comment system, file uploads, security best practices, and deployment preparation.</p>
+  </div>
+</div>
 
 ### Part 6: Frameworks & Beyond (Chapters 20–23)
 
 Graduate to modern frameworks and master essential web technologies.
 
-- [**20 — A Gentle Introduction to Laravel**](/series/php-basics/chapters/20-a-gentle-introduction-to-laravel)
-  Get started with the world's most popular PHP framework
-- [**21 — A Gentle Introduction to Symfony**](/series/php-basics/chapters/21-a-gentle-introduction-to-symfony)
-  Explore Symfony's powerful component architecture
-- [**22 — What to Learn Next**](/series/php-basics/chapters/22-what-to-learn-next)
-  Continue your PHP journey with advanced topics and resources
-- [**23 — Working with JSON and APIs**](/series/php-basics/chapters/23-working-with-json-and-apis)
-  Master JSON handling and consume RESTful APIs
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-basics/chapter-20-gentle-introduction-laravel-hero-thumbnail.webp" alt="Chapter 20 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-basics/chapters/20-a-gentle-introduction-to-laravel">20 — A Gentle Introduction to Laravel</a></h4>
+    <p style="margin-bottom: 0;">Get started with the world's most popular PHP framework. Install Laravel, understand its elegant syntax, explore Artisan commands, work with Eloquent ORM, create routes and controllers, and see how Laravel simplifies everything you've learned.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-basics/chapter-21-gentle-introduction-symfony-hero-thumbnail.webp" alt="Chapter 21 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-basics/chapters/21-a-gentle-introduction-to-symfony">21 — A Gentle Introduction to Symfony</a></h4>
+    <p style="margin-bottom: 0;">Explore Symfony's powerful component architecture. Install Symfony, understand its bundle system, work with Doctrine ORM, create routes and controllers, use Twig templates, and discover how Symfony's flexibility supports enterprise applications.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-basics/chapter-22-what-to-learn-next-hero-thumbnail.webp" alt="Chapter 22 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-basics/chapters/22-what-to-learn-next">22 — What to Learn Next</a></h4>
+    <p style="margin-bottom: 0;">Continue your PHP journey with advanced topics and resources. Explore testing with PHPUnit, caching strategies, queues and async processing, package development, API development, security best practices, performance optimization, and career paths in PHP development.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-basics/chapter-23-json-apis-hero-thumbnail.webp" alt="Chapter 23 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-basics/chapters/23-working-with-json-and-apis">23 — Working with JSON and APIs</a></h4>
+    <p style="margin-bottom: 0;">Master JSON handling and consume RESTful APIs. Learn to encode and decode JSON, make HTTP requests with cURL, consume third-party APIs, handle API authentication, build your own RESTful API endpoints, and implement proper error handling and rate limiting.</p>
+  </div>
+</div>
 
 ---
 
@@ -317,3 +467,62 @@ Want to dive deeper? These resources complement the series:
 ::: tip Ready to Start?
 Head to [Chapter 00: Setting Up Your Development Environment](/series/php-basics/chapters/00-setting-up-your-development-environment) to begin your journey!
 :::
+
+---
+
+## Continue Your Learning
+
+Finished this series? Take your skills further:
+
+**→ [AI/ML for PHP Developers](/series/ai-ml-php-developers/)** — Add intelligent features to your PHP applications  
+**→ [Python to Laravel](/series/python-developers-love-php-laravel/)** — Explore Laravel if you know Python
+
+<style>
+:root {
+  --primary-teal: #0d9488;
+  --primary-teal-dark: #0f766e;
+  --php-amber: #f59e0b;
+  --php-orange: #ea580c;
+  --ai-purple: #7c3aed;
+  --ai-violet: #8b5cf6;
+  --python-blue: #0ea5e9;
+  --python-cyan: #06b6d4;
+  --neutral-gray: #64748b;
+  --bg-light: #f8fafc;
+}
+
+/* Chapter card enhancements */
+div[style*="display: flex"][style*="align-items: flex-start"] {
+  transition: all 0.3s ease;
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid var(--php-amber);
+}
+
+div[style*="display: flex"][style*="align-items: flex-start"]:hover {
+  background: var(--bg-light);
+  transform: translateX(4px);
+  box-shadow: 0 2px 12px rgba(245, 158, 11, 0.15);
+  border-left-color: var(--php-orange);
+}
+
+/* Image styling */
+div[style*="display: flex"] img[style*="width: 180px"] {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+div[style*="display: flex"]:hover img[style*="width: 180px"] {
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+}
+
+/* Link styling */
+div[style*="display: flex"] h4 a {
+  color: var(--php-amber);
+  transition: color 0.2s ease;
+}
+
+div[style*="display: flex"] h4 a:hover {
+  color: var(--php-orange);
+}
+</style>

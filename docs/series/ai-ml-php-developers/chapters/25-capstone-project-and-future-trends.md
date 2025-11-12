@@ -806,6 +806,7 @@ pkill -f "php artisan queue:work"
 ```
 
 **Prerequisites for each test**:
+
 - **Chatbot**: Requires valid `OPENAI_API_KEY` in `.env`
 - **Recommendations**: Requires database seeding with user/product interactions
 - **Forecasting**: Self-contained, generates synthetic data
@@ -861,7 +862,7 @@ final class ChatbotService
 
     private const TOKEN_COSTS = [
         'gpt-4' => ['prompt' => 0.03 / 1000, 'completion' => 0.06 / 1000],
-        'gpt-3.5-turbo' => ['prompt' => 0.0015 / 1000, 'completion' => 0.002 / 1000],
+        'gpt-4.1' => ['prompt' => 0.0015 / 1000, 'completion' => 0.002 / 1000],
     ];
 
     /**
@@ -1040,7 +1041,7 @@ final class ChatbotService
      */
     private function calculateCost(int $promptTokens, int $completionTokens, string $model): float
     {
-        $costs = self::TOKEN_COSTS[$model] ?? self::TOKEN_COSTS['gpt-3.5-turbo'];
+        $costs = self::TOKEN_COSTS[$model] ?? self::TOKEN_COSTS['gpt-4.1'];
 
         return ($promptTokens * $costs['prompt']) + ($completionTokens * $costs['completion']);
     }
@@ -1153,11 +1154,11 @@ The ChatbotService encapsulates all chatbot logic in a reusable, testable servic
 
 - **Error: "API key not configured"** — Verify `OPENAI_API_KEY` in `.env` is set correctly
 - **Error: "Insufficient quota"** — Add credits to your OpenAI account at platform.openai.com/account/billing
-- **Timeout errors** — Increase `max_tokens` or use `gpt-3.5-turbo` for faster responses
+- **Timeout errors** — Increase `max_tokens` or use `gpt-4.1` for faster responses
 - **Empty responses** — Check Laravel logs: `tail -f storage/logs/laravel.log`
 
 ::: tip Cost Optimization
-Use `gpt-3.5-turbo` instead of `gpt-4` for 10x cost savings (~$0.002 vs ~$0.03 per conversation). GPT-3.5 is sufficient for most customer support scenarios.
+Use `gpt-4.1` instead of `gpt-4` for 10x cost savings (~$0.002 vs ~$0.03 per conversation). GPT-3.5 is sufficient for most customer support scenarios.
 :::
 
 ## Step 4: Recommendation Engine (~25 min)
@@ -2738,7 +2739,7 @@ Before implementing rate limiting, create the configuration file:
 return [
     'daily_budget' => (float) env('AI_DAILY_BUDGET', 10.00),
     'chatbot' => [
-        'model' => env('OPENAI_MODEL', 'gpt-3.5-turbo'),
+        'model' => env('OPENAI_MODEL', 'gpt-4.1'),
         'max_tokens' => (int) env('OPENAI_MAX_TOKENS', 500),
         'temperature' => (float) env('OPENAI_TEMPERATURE', 0.7),
         'cache_ttl' => (int) env('AI_CACHE_TTL', 3600),
@@ -2962,12 +2963,12 @@ $description = OpenAI::vision()->describe(
 // Train custom model on your data
 OpenAI::fineTuning()->create(
     training_file: 'conversations.jsonl',
-    base_model: 'gpt-3.5-turbo'
+    base_model: 'gpt-4.1'
 );
 
 // Use fine-tuned model
 $response = OpenAI::chat()->create([
-    'model' => 'ft:gpt-3.5-turbo:your-org::abc123',
+    'model' => 'ft:gpt-4.1:your-org::abc123',
     'messages' => $messages,
 ]);
 ```
@@ -3003,7 +3004,7 @@ if ($recommendationsDemographics['diversity_score'] < 0.7) {
 **Strategies**:
 
 1. **Batch requests**: Send 100 images at once to Vision API instead of one-by-one (20% discount)
-2. **Use cheaper models**: GPT-3.5-turbo costs 1/15th of GPT-4 for many tasks
+2. **Use cheaper models**: gpt-4.1 costs 1/15th of GPT-4 for many tasks
 3. **Cache aggressively**: Identical questions shouldn't hit API twice (80% cost reduction)
 4. **Fall back to local**: Use ONNX for 80% of cases, cloud API for edge cases
 5. **Set budget alerts**: Monitor spending, pause expensive operations if over quota
@@ -3286,7 +3287,7 @@ Use scrubbing to remove sensitive data:
 # In your services
 Log::info('API call made', [
     'endpoint' => 'openai.chat',
-    'model' => 'gpt-3.5-turbo',
+    'model' => 'gpt-4.1',
     // Never log: 'api_key', 'full_message', 'user_email'
 ]);
 ```

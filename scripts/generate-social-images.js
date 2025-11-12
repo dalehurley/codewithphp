@@ -71,6 +71,12 @@ const SERIES_COLORS = {
     secondary: '#2E5C8A',
     text: '#FFFFFF',
     overlay: 'rgba(46, 92, 138, 0.7)'
+  },
+  'python-developers-love-php-laravel': {
+    primary: '#FF6B35',
+    secondary: '#C44536',
+    text: '#FFFFFF',
+    overlay: 'rgba(196, 69, 54, 0.7)'
   }
 }
 
@@ -553,7 +559,11 @@ function createTextLayer(title, series, chapterNum, codeSnippet = null) {
   const titleStartY = topMargin
   
   const colors = SERIES_COLORS[series] || SERIES_COLORS['php-basics']
-  const seriesLabel = series === 'php-basics' ? 'PHP Basics' : 'AI/ML for PHP Developers'
+  const seriesLabel = series === 'php-basics' 
+    ? 'PHP Basics' 
+    : series === 'ai-ml-php-developers'
+    ? 'AI/ML for PHP Developers'
+    : 'Python → Laravel'
   const chapterLabel = chapterNum !== null ? `Chapter ${chapterNum}` : ''
   
   // Build text elements (left-aligned)

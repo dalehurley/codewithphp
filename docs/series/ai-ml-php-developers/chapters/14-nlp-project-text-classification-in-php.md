@@ -10,6 +10,8 @@ prerequisites:
   - "08"
 ---
 
+![NLP Project: Text Classification in PHP](/images/ai-ml-php-developers/chapter-14-text-classification-hero-full.webp)
+
 # Chapter 14: NLP Project: Text Classification in PHP
 
 ## Overview

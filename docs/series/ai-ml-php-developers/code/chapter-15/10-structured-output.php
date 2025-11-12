@@ -41,7 +41,7 @@ $extractionPrompt = "Extract contact information from this text and return it as
 
 try {
     $response = $client->chat()->create([
-        'model' => 'gpt-3.5-turbo-1106', // Model that supports JSON mode
+        'model' => 'gpt-4.1-1106', // Model that supports JSON mode
         'messages' => [
             ['role' => 'system', 'content' => 'You extract structured data and respond in JSON format.'],
             ['role' => 'user', 'content' => $extractionPrompt],
@@ -72,7 +72,7 @@ $reviewPrompt = "Analyze this product review and return JSON with: sentiment (po
 
 try {
     $response = $client->chat()->create([
-        'model' => 'gpt-3.5-turbo-1106',
+        'model' => 'gpt-4.1-1106',
         'messages' => [
             ['role' => 'system', 'content' => 'You analyze product reviews and return structured JSON.'],
             ['role' => 'user', 'content' => $reviewPrompt],
@@ -99,7 +99,7 @@ $dataPrompt = "Generate 3 sample user records in JSON format with fields: id (nu
 
 try {
     $response = $client->chat()->create([
-        'model' => 'gpt-3.5-turbo-1106',
+        'model' => 'gpt-4.1-1106',
         'messages' => [
             ['role' => 'system', 'content' => 'You generate realistic mock data in JSON format.'],
             ['role' => 'user', 'content' => $dataPrompt],
@@ -135,7 +135,7 @@ final class FormValidator
             "Rules: " . json_encode($rules);
 
         $response = $this->client->chat()->create([
-            'model' => 'gpt-3.5-turbo-1106',
+            'model' => 'gpt-4.1-1106',
             'messages' => [
                 ['role' => 'system', 'content' => 'You validate form data and provide helpful suggestions.'],
                 ['role' => 'user', 'content' => $prompt],

@@ -8,7 +8,7 @@ Create a `.env` file in this directory with the following content:
 OPENAI_API_KEY=sk-your-actual-api-key-here
 
 # Model Configuration
-OPENAI_MODEL=gpt-3.5-turbo
+OPENAI_MODEL=gpt-4.1
 OPENAI_MAX_TOKENS=500
 OPENAI_TEMPERATURE=0.7
 

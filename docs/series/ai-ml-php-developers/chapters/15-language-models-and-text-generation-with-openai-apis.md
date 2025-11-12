@@ -103,7 +103,7 @@ Want to see AI text generation in action right now? Here's a 5-minute example (r
 declare(strict_types=1);
 
 // Quick demo: Generate text with OpenAI GPT
-// Cost: ~$0.001 per run (about 50 tokens with gpt-3.5-turbo)
+// Cost: ~$0.001 per run (about 50 tokens with gpt-4.1)
 
 $apiKey = getenv('OPENAI_API_KEY');
 if (!$apiKey) {
@@ -120,7 +120,7 @@ curl_setopt_array($ch, [
         'Authorization: Bearer ' . $apiKey,
     ],
     CURLOPT_POSTFIELDS => json_encode([
-        'model' => 'gpt-3.5-turbo',
+        'model' => 'gpt-4.1',
         'messages' => [
             ['role' => 'user', 'content' => 'Write a haiku about PHP programming']
         ],
@@ -204,13 +204,13 @@ OpenAI's API charges by **tokens**, not words. A token is roughly a piece of a w
 - "Hello, world!" = 4 tokens (Hello, ,, world, !)
 - "understanding" = 2-3 tokens depending on model
 
-As a rule of thumb: 1 token ≈ 4 characters or ≈ 0.75 words in English. The model has a **context window** (e.g., 4,096 tokens for gpt-3.5-turbo, 8,192 for gpt-4, 128,000 for gpt-4-turbo) which limits how much text you can include in a single request (prompt + completion combined).
+As a rule of thumb: 1 token ≈ 4 characters or ≈ 0.75 words in English. The model has a **context window** (e.g., 4,096 tokens for gpt-4.1, 8,192 for gpt-4, 128,000 for gpt-4-turbo) which limits how much text you can include in a single request (prompt + completion combined).
 
 **3. Key Parameters**
 
 When calling the API, you'll configure these parameters:
 
-- **model**: Which GPT version to use (`gpt-3.5-turbo`, `gpt-4`, etc.)
+- **model**: Which GPT version to use (`gpt-4.1`, `gpt-4`, etc.)
 - **messages**: Array of conversation turns with `role` (system/user/assistant) and `content`
 - **temperature**: Randomness (0.0 = deterministic, 2.0 = very creative). Use 0.3 for factual tasks, 0.7-1.0 for creative writing
 - **max_tokens**: Maximum length of the generated response
@@ -254,7 +254,7 @@ Token-based billing exists because model inference cost is proportional to the a
 
 - **When to use system vs. user messages?** — System messages set persistent behavior ("You are a technical writer who explains concepts clearly"), while user messages are actual inputs. System messages are optional but highly recommended for consistent behavior.
 
-- **Which model should I use?** — Start with `gpt-3.5-turbo` (fast, cheap: $0.002/1K tokens). Upgrade to `gpt-4` or `gpt-4-turbo` when you need better reasoning, accuracy, or longer context ($0.01-0.03/1K tokens).
+- **Which model should I use?** — Start with `gpt-4.1` (fast, cheap: $0.002/1K tokens). Upgrade to `gpt-4` or `gpt-4-turbo` when you need better reasoning, accuracy, or longer context ($0.01-0.03/1K tokens).
 
 ## Step 2: Setting Up OpenAI API Access (~15 min)
 
@@ -304,7 +304,7 @@ Add your key to `.env`:
 ```
 # OpenAI API Configuration
 OPENAI_API_KEY=sk-your-actual-key-here
-OPENAI_MODEL=gpt-3.5-turbo
+OPENAI_MODEL=gpt-4.1
 OPENAI_MAX_TOKENS=500
 OPENAI_TEMPERATURE=0.7
 ```
@@ -321,7 +321,7 @@ echo ".env" >> .gitignore
 ```bash
 # OpenAI API Configuration
 OPENAI_API_KEY=sk-your-key-here
-OPENAI_MODEL=gpt-3.5-turbo
+OPENAI_MODEL=gpt-4.1
 OPENAI_MAX_TOKENS=500
 OPENAI_TEMPERATURE=0.7
 ```
@@ -388,7 +388,7 @@ declare(strict_types=1);
  * This demonstrates the low-level API interaction without libraries.
  * Understanding this helps debug issues and work with any HTTP client.
  *
- * Cost: ~$0.001 per run (approximately 100 tokens with gpt-3.5-turbo)
+ * Cost: ~$0.001 per run (approximately 100 tokens with gpt-4.1)
  */
 
 // Load API key from environment
@@ -400,7 +400,7 @@ if (!$apiKey) {
 
 // Prepare the request payload
 $requestData = [
-    'model' => 'gpt-3.5-turbo',
+    'model' => 'gpt-4.1',
     'messages' => [
         [
             'role' => 'system',
@@ -472,7 +472,7 @@ echo "  Prompt: {$promptTokens} tokens\n";
 echo "  Completion: {$completionTokens} tokens\n";
 echo "  Total: {$tokensUsed} tokens\n\n";
 
-// Calculate approximate cost (gpt-3.5-turbo pricing)
+// Calculate approximate cost (gpt-4.1 pricing)
 $costPerToken = 0.002 / 1000;  // $0.002 per 1K tokens
 $estimatedCost = $tokensUsed * $costPerToken;
 echo "Estimated cost: $" . number_format($estimatedCost, 6) . "\n";
@@ -592,7 +592,7 @@ echo "Generating response using OpenAI PHP library...\n\n";
 
 try {
     $response = $client->chat()->create([
-        'model' => 'gpt-3.5-turbo',
+        'model' => 'gpt-4.1',
         'messages' => [
             ['role' => 'system', 'content' => 'You are a PHP expert who writes clear, concise explanations.'],
             ['role' => 'user', 'content' => 'What are the benefits of using Composer for dependency management?'],
@@ -719,7 +719,7 @@ final class TextGenerator
 {
     public function __construct(
         private readonly \OpenAI\Client $client,
-        private readonly string $model = 'gpt-3.5-turbo',
+        private readonly string $model = 'gpt-4.1',
     ) {}
 
     /**
@@ -755,7 +755,7 @@ final class TextGenerator
             'temperature' => $temperature,
         ]);
 
-        // Calculate cost (approximate for gpt-3.5-turbo)
+        // Calculate cost (approximate for gpt-4.1)
         $costPerThousandTokens = 0.002;
         $cost = ($response->usage->totalTokens / 1000) * $costPerThousandTokens;
 
@@ -994,7 +994,7 @@ final class Summarizer
 
     public function __construct(
         private readonly \OpenAI\Client $client,
-        private readonly string $model = 'gpt-3.5-turbo',
+        private readonly string $model = 'gpt-4.1',
     ) {}
 
     /**
@@ -1289,7 +1289,7 @@ The `match` expression cleanly handles different summarization styles. Token est
 
 ### Troubleshooting
 
-- **Summary misses key points** — Try `style: 'detailed'` or increase `max_tokens`. For very important documents, use `gpt-4` instead of `gpt-3.5-turbo` for better comprehension.
+- **Summary misses key points** — Try `style: 'detailed'` or increase `max_tokens`. For very important documents, use `gpt-4` instead of `gpt-4.1` for better comprehension.
 
 - **Summary is too long or too short** — The model treats word counts as suggestions, not hard limits. Adjust `maxWords` and `max_tokens` proportionally. Add "exactly" to prompts for stricter adherence.
 
@@ -1375,7 +1375,7 @@ while (true) {
     try {
         // Get AI response
         $response = $client->chat()->create([
-            'model' => 'gpt-3.5-turbo',
+            'model' => 'gpt-4.1',
             'messages' => $messages,
             'max_tokens' => 300,
             'temperature' => 0.7,
@@ -1438,7 +1438,7 @@ class SimpleChatbot
     public function __construct(
         private readonly \OpenAI\Client $client,
         private readonly string $systemPrompt,
-        private readonly string $model = 'gpt-3.5-turbo',
+        private readonly string $model = 'gpt-4.1',
     ) {
         $this->messages[] = ['role' => 'system', 'content' => $systemPrompt];
     }
@@ -1646,7 +1646,7 @@ The truncation strategy keeps the system message (which sets behavior) and the 1
 
 - **"Context length exceeded" error** — Conversation is too long. Implement history truncation (shown in example 2) or increase `MAX_HISTORY_TOKENS`. For very long conversations, consider summarizing old messages instead of discarding them.
 
-- **Responses are slow** — Large message histories take longer to process. Truncate more aggressively or summarize old messages. Consider using `gpt-3.5-turbo` instead of `gpt-4` for faster responses.
+- **Responses are slow** — Large message histories take longer to process. Truncate more aggressively or summarize old messages. Consider using `gpt-4.1` instead of `gpt-4` for faster responses.
 
 - **Cost growing rapidly** — Each exchange processes the entire history. Long conversations become expensive. Truncate aggressively (keep 5-8 messages max) or switch to a cheaper model.
 
@@ -1666,7 +1666,7 @@ These implementations are fully documented in the code files `07-streaming-chatb
 
 **Error Handling**: Production systems need retry logic with exponential backoff for transient failures, graceful degradation when the API is unavailable, and clear error messages for users.
 
-**Cost Optimization**: Track token usage per user/session, cache frequent responses, use appropriate models (gpt-3.5-turbo vs gpt-4), and implement conversation summarization for long chats.
+**Cost Optimization**: Track token usage per user/session, cache frequent responses, use appropriate models (gpt-4.1 vs gpt-4), and implement conversation summarization for long chats.
 
 Refer to the code files and README in `/code/chapter-15/` for complete implementations and usage examples.
 
@@ -1905,7 +1905,7 @@ Or switch to a model with larger context (gpt-4-turbo: 128K tokens).
 1. **Temperature too high**: Reduce from 1.0 to 0.3-0.5 for factual tasks
 2. **Vague prompts**: Be more specific about desired output format and content
 3. **Missing system prompt**: Add system message defining role and behavior
-4. **Wrong model**: Use gpt-4 for complex reasoning; gpt-3.5-turbo for simple tasks
+4. **Wrong model**: Use gpt-4 for complex reasoning; gpt-4.1 for simple tasks
 
 ```php
 // Before: Vague prompt

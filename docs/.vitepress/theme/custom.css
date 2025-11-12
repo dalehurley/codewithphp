@@ -1,13 +1,42 @@
 /**
- * Custom styles for PHP From Scratch
+ * Custom styles for Code with PHP
+ * Modern color scheme with unified design system
  */
 
+/* Remove default borders from all headings in VitePress */
+.vp-doc h1,
+.vp-doc h2,
+.vp-doc h3,
+.vp-doc h4,
+.vp-doc h5,
+.vp-doc h6 {
+  border-top: none !important;
+  padding-top: 0 !important;
+}
+
 :root {
-  --vp-c-brand: #777bb3;
-  --vp-c-brand-light: #8892bf;
-  --vp-c-brand-lighter: #9da5ca;
-  --vp-c-brand-dark: #666a9a;
-  --vp-c-brand-darker: #565983;
+  /* Primary brand colors - Modern Teal */
+  --vp-c-brand: #0d9488;
+  --vp-c-brand-light: #14b8a6;
+  --vp-c-brand-lighter: #2dd4bf;
+  --vp-c-brand-dark: #0f766e;
+  --vp-c-brand-darker: #115e59;
+  
+  /* Extended color palette for series identity */
+  --primary-teal: #0d9488;
+  --primary-teal-dark: #0f766e;
+  --php-amber: #f59e0b;
+  --php-orange: #ea580c;
+  --ai-purple: #7c3aed;
+  --ai-violet: #8b5cf6;
+  --python-blue: #0ea5e9;
+  --python-cyan: #06b6d4;
+  --neutral-gray: #64748b;
+  --bg-light: #f8fafc;
+  
+  /* Soft background variants for components */
+  --vp-c-brand-soft: rgba(13, 148, 136, 0.14);
+  --vp-c-brand-softer: rgba(13, 148, 136, 0.08);
 }
 
 /* Code block enhancements */
@@ -118,3 +147,329 @@
   margin: 24px 0;
 }
 
+/* Enhanced link styling */
+.vp-doc a {
+  color: var(--vp-c-brand);
+  transition: color 0.2s ease;
+}
+
+.vp-doc a:hover {
+  color: var(--vp-c-brand-light);
+}
+
+/* Series-specific accent colors */
+.series-php-basics a:not(.vp-button) {
+  color: var(--php-amber);
+}
+
+.series-php-basics a:not(.vp-button):hover {
+  color: var(--php-orange);
+}
+
+.series-ai-ml a:not(.vp-button) {
+  color: var(--ai-purple);
+}
+
+.series-ai-ml a:not(.vp-button):hover {
+  color: var(--ai-violet);
+}
+
+.series-python a:not(.vp-button) {
+  color: var(--python-blue);
+}
+
+.series-python a:not(.vp-button):hover {
+  color: var(--python-cyan);
+}
+
+/* Enhanced card hover effects */
+.vp-doc div[style*="display: flex"][style*="align-items: flex-start"] {
+  transition: all 0.3s ease;
+}
+
+.vp-doc div[style*="display: flex"][style*="align-items: flex-start"]:hover {
+  transform: translateX(4px);
+}
+
+/* Image enhancement for thumbnails */
+.vp-doc img[style*="width: 180px"] {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border-radius: 4px;
+}
+
+.vp-doc img[style*="width: 180px"]:hover {
+  box-shadow: 0 4px 16px rgba(13, 148, 136, 0.2);
+}
+
+/* Custom button enhancements */
+.vp-button {
+  transition: all 0.3s ease;
+}
+
+.vp-button.brand {
+  background: linear-gradient(135deg, var(--vp-c-brand) 0%, var(--vp-c-brand-dark) 100%);
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);
+}
+
+.vp-button.brand:hover {
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Callout/info box enhancements */
+.custom-block.tip {
+  border-color: var(--vp-c-brand);
+}
+
+.custom-block.warning {
+  border-color: var(--php-orange);
+}
+
+.custom-block.info {
+  border-color: var(--python-blue);
+}
+
+/* Code block accent */
+div[class*="language-"] {
+  border-left: 3px solid var(--vp-c-brand);
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ====================================
+   Content Enhancements
+   ==================================== */
+
+/* Difficulty badges */
+.difficulty-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-left: 0.5rem;
+}
+
+.difficulty-beginner {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.difficulty-intermediate {
+  background: linear-gradient(135deg, var(--php-amber) 0%, var(--php-orange) 100%);
+  color: white;
+}
+
+.difficulty-advanced {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+}
+
+/* Breadcrumbs */
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 0;
+  font-size: 0.9rem;
+  color: var(--neutral-gray);
+  margin-bottom: 1rem;
+}
+
+.breadcrumbs a {
+  color: var(--vp-c-brand);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.breadcrumbs a:hover {
+  color: var(--vp-c-brand-light);
+}
+
+.breadcrumbs-separator {
+  color: var(--neutral-gray);
+  opacity: 0.5;
+}
+
+/* Sticky CTA for mobile */
+.sticky-cta {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  display: none;
+  transition: transform 0.3s ease;
+}
+
+.sticky-cta.visible {
+  display: block;
+}
+
+.sticky-cta.hidden {
+  transform: translateY(100%);
+}
+
+.sticky-cta a {
+  display: block;
+  padding: 0.75rem 2rem;
+  background: linear-gradient(135deg, var(--php-amber) 0%, var(--php-orange) 100%);
+  color: white;
+  text-align: center;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+/* Progress indicator */
+.progress-container {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, var(--bg-light) 0%, #ffffff 100%);
+  border-radius: 8px;
+  border-left: 4px solid var(--vp-c-brand);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 1rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(135deg, var(--vp-c-brand) 0%, var(--vp-c-brand-light) 100%);
+  transition: width 0.3s ease;
+}
+
+/* Chapter card enhancements */
+.chapter-summary {
+  font-size: 0.9rem;
+  color: var(--neutral-gray);
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+/* Feedback prompt */
+.feedback-prompt {
+  margin: 3rem 0;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);
+  border-radius: 8px;
+  border-left: 4px solid var(--python-blue);
+  text-align: center;
+}
+
+.feedback-prompt h4 {
+  margin-top: 0;
+  color: var(--python-blue);
+}
+
+.feedback-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.feedback-buttons button {
+  padding: 0.5rem 1.5rem;
+  border: 2px solid var(--python-blue);
+  background: white;
+  color: var(--python-blue);
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.feedback-buttons button:hover {
+  background: var(--python-blue);
+  color: white;
+}
+
+/* Dark mode improvements */
+.dark {
+  --bg-light: #1e293b;
+  --neutral-gray: #94a3b8;
+}
+
+.dark .quiz-container,
+.dark .progress-container,
+.dark .feedback-prompt {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+}
+
+.dark .sticky-cta {
+  background: rgba(15, 23, 42, 0.95);
+}
+
+.dark .comparison-table table {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+}
+
+.dark .feature-card,
+.dark .different-card,
+.dark .build-card,
+.dark .step-card,
+.dark .stat-card {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+}
+
+/* Lazy loading placeholder */
+img[loading="lazy"] {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s ease-in-out infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.dark img[loading="lazy"] {
+  background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+  background-size: 200% 100%;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .sticky-cta {
+    display: block;
+  }
+  
+  .breadcrumbs {
+    font-size: 0.8rem;
+    flex-wrap: wrap;
+  }
+  
+  .difficulty-badge {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+  }
+  
+  .feedback-buttons {
+    flex-direction: column;
+  }
+  
+  .feedback-buttons button {
+    width: 100%;
+  }
+}

@@ -67,7 +67,7 @@ while (true) {
     try {
         // Get AI response
         $response = $client->chat()->create([
-            'model' => 'gpt-3.5-turbo',
+            'model' => 'gpt-4.1',
             'messages' => $messages,
             'max_tokens' => 300,
             'temperature' => 0.7,

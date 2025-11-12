@@ -1,0 +1,11 @@
+# filename: Procfile
+# Python Heroku/Railway Procfile example
+
+web: gunicorn app:app --bind 0.0.0.0:$PORT
+
+# Or for Django
+# web: gunicorn myproject.wsgi:application --bind 0.0.0.0:$PORT
+
+# Or for Railway
+# CMD: gunicorn app:app --bind 0.0.0.0:$PORT
+

@@ -177,7 +177,7 @@ foreach ($queries as $i => $query) {
     try {
         // Initial request with function definitions
         $response = $client->chat()->create([
-            'model' => 'gpt-3.5-turbo',
+            'model' => 'gpt-4.1',
             'messages' => $messages,
             'tools' => $tools,
             'tool_choice' => 'auto', // Let GPT decide when to use functions
@@ -228,7 +228,7 @@ foreach ($queries as $i => $query) {
 
             // Get final response from GPT with function results
             $finalResponse = $client->chat()->create([
-                'model' => 'gpt-3.5-turbo',
+                'model' => 'gpt-4.1',
                 'messages' => $messages,
             ]);
 

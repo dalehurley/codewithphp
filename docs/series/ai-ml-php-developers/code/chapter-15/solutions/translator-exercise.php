@@ -23,7 +23,7 @@ final class Translator
 {
     public function __construct(
         private readonly \OpenAI\Client $client,
-        private readonly string $model = 'gpt-3.5-turbo',
+        private readonly string $model = 'gpt-4.1',
     ) {}
 
     /**
@@ -71,7 +71,7 @@ final class Translator
 
         $translation = trim($response->choices[0]->message->content);
         $tokens = $response->usage->totalTokens;
-        $cost = ($tokens / 1000) * 0.002;  // gpt-3.5-turbo pricing
+        $cost = ($tokens / 1000) * 0.002;  // gpt-4.1 pricing
 
         // If source language wasn't specified, we could try to detect it
         // (this is a simplified approach - production would use language detection)

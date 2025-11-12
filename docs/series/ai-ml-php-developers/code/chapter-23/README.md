@@ -318,7 +318,7 @@ ML_FALLBACK_ENABLED=true
 
 # OpenAI (optional - for chatbot features)
 OPENAI_API_KEY=sk-...
-OPENAI_MODEL=gpt-3.5-turbo
+OPENAI_MODEL=gpt-4.1
 ```
 
 ## Testing
