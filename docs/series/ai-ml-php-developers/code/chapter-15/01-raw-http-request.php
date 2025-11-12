@@ -12,7 +12,7 @@ declare(strict_types=1);
  * - Set OPENAI_API_KEY environment variable
  * - PHP 8.4+ with cURL extension
  *
- * Cost: ~$0.001 per run (approximately 100 tokens with gpt-3.5-turbo)
+ * Cost: ~$0.001 per run (approximately 100 tokens with gpt-4.1)
  */
 
 // Load API key from environment
@@ -24,7 +24,7 @@ if (!$apiKey) {
 
 // Prepare the request payload
 $requestData = [
-    'model' => 'gpt-3.5-turbo',
+    'model' => 'gpt-4.1',
     'messages' => [
         [
             'role' => 'system',
@@ -96,7 +96,7 @@ echo "  Prompt: {$promptTokens} tokens\n";
 echo "  Completion: {$completionTokens} tokens\n";
 echo "  Total: {$tokensUsed} tokens\n\n";
 
-// Calculate approximate cost (gpt-3.5-turbo pricing)
+// Calculate approximate cost (gpt-4.1 pricing)
 $costPerToken = 0.002 / 1000;  // $0.002 per 1K tokens
 $estimatedCost = $tokensUsed * $costPerToken;
 echo "Estimated cost: $" . number_format($estimatedCost, 6) . "\n";

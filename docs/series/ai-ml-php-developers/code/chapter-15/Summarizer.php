@@ -19,7 +19,7 @@ final class Summarizer
 
     public function __construct(
         private readonly \OpenAI\Client $client,
-        private readonly string $model = 'gpt-3.5-turbo',
+        private readonly string $model = 'gpt-4.1',
     ) {}
 
     /**
@@ -209,7 +209,7 @@ final class Summarizer
         return match ($this->model) {
             'gpt-4' => 0.03,
             'gpt-4-turbo', 'gpt-4-turbo-preview' => 0.01,
-            'gpt-3.5-turbo', 'gpt-3.5-turbo-16k' => 0.002,
+            'gpt-4.1', 'gpt-4.1-16k' => 0.002,
             default => 0.002,
         };
     }

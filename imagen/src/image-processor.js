@@ -31,10 +31,12 @@ export class ImageProcessor {
     try {
       const { width, height } = sizeConfig;
       
-      // Process image with sharp
+      // Process image with sharp - use 'cover' to fill canvas while maintaining aspect ratio
+      // Prompts are designed to generate edge-to-edge compositions, so 'cover' ensures
+      // full canvas coverage without distortion
       const processed = await sharp(imageBuffer)
         .resize(width, height, {
-          fit: 'cover',
+          fit: 'cover', // Fill entire canvas while maintaining aspect ratio (no distortion)
           position: 'center'
         })
         .webp({ quality: this.quality })
@@ -72,7 +74,8 @@ export class ImageProcessor {
 
     for (const sizeName of sizes) {
       try {
-        console.log(`Processing ${sizeName} size...`);
+        // Log to stderr to avoid breaking MCP JSON-RPC protocol (stdout is for JSON only)
+        console.error(`Processing ${sizeName} size...`);
         
         const processed = await this.processImage(imageBuffer, sizeName);
         
@@ -86,7 +89,8 @@ export class ImageProcessor {
         // Save to disk
         await fs.writeFile(fullPath, processed.buffer);
         
-        console.log(`Saved ${sizeName}: ${filename} (${Math.round(processed.size / 1024)}KB)`);
+        // Log to stderr to avoid breaking MCP JSON-RPC protocol
+        console.error(`Saved ${sizeName}: ${filename} (${Math.round(processed.size / 1024)}KB)`);
         
         results.push({
           size: sizeName,

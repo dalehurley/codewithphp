@@ -206,6 +206,20 @@ function getSeriesData(seriesSlug: string): {
       ],
       audienceType: 'Intermediate PHP developers, developers learning AI/ML',
       keywords: ['PHP', 'machine learning', 'artificial intelligence', 'AI', 'ML', 'NLP', 'computer vision']
+    },
+    'python-developers-love-php-laravel': {
+      level: 'Intermediate',
+      workload: 'PT18H',
+      teaches: [
+        'PHP and Laravel fundamentals',
+        'Mapping Python concepts to PHP/Laravel',
+        'Eloquent ORM vs Django ORM',
+        'Laravel routing and Blade templates',
+        'REST API development in Laravel',
+        'Modern PHP 8.4 features'
+      ],
+      audienceType: 'Python developers transitioning to PHP/Laravel',
+      keywords: ['PHP', 'Laravel', 'Python', 'Django', 'Flask', 'web development', 'framework comparison']
     }
   }
   
@@ -218,7 +232,8 @@ function getSeriesData(seriesSlug: string): {
 function getSeriesDisplayName(seriesSlug: string): string {
   const names: Record<string, string> = {
     'php-basics': 'PHP Basics',
-    'ai-ml-php-developers': 'AI/ML for PHP Developers'
+    'ai-ml-php-developers': 'AI/ML for PHP Developers',
+    'python-developers-love-php-laravel': 'Why Python Developers Will Love PHP and Laravel'
   }
   return names[seriesSlug] || seriesSlug
 }

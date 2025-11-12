@@ -113,7 +113,9 @@ Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_
 
 #### Tool Schema
 
-When configured, LLMs can call the `generate_image` tool:
+When configured, LLMs can call two tools:
+
+**1. `generate_image`** - Generate a single image:
 
 ```json
 {
@@ -129,18 +131,140 @@ When configured, LLMs can call the `generate_image` tool:
 }
 ```
 
-**Parameters:**
+**2. `generate_image_series`** - Generate multiple images with consistent theme:
+
+```json
+{
+  "name": "generate_image_series",
+  "arguments": {
+    "series": "python-developers-love-php-laravel",
+    "theme": "comic book superhero",
+    "chapters": [
+      {
+        "chapter": "00",
+        "slug": "introduction-hero",
+        "title": "Introduction: Why Look at PHP & Laravel",
+        "description": "Discover why modern PHP and Laravel deserve your attention"
+      }
+    ],
+    "consistencyOptions": {
+      "maintainCharacter": true,
+      "maintainColorPalette": true,
+      "maintainStyle": true
+    },
+    "creative_mode": true
+  }
+}
+```
+
+**Parameters for `generate_image`:**
 
 - `prompt` (string, required) - Image generation prompt
-- `series` (enum, required) - Tutorial series: `php-basics` or `ai-ml-php-developers`
+- `series` (enum, required) - Tutorial series: `php-basics`, `ai-ml-php-developers`, or `python-developers-love-php-laravel`
 - `chapter` (string, required) - Chapter number (e.g., "01", "15b")
 - `slug` (string, required) - Image identifier (e.g., "hero", "diagram")
 - `creative_mode` (boolean, default: false) - Use creative meta-prompt generator
 - `title` (string, optional) - Blog post title (for creative mode)
 - `content` (string, optional) - Blog post content (for creative mode)
-- `style` (string, optional) - Style descriptor (e.g., "photorealistic", "illustration")
+- `style` (string, optional) - Visual style name or custom description. See [Available Styles](#available-visual-styles) section for complete list.
 - `sizes` (array, default: ["full", "thumbnail"]) - Image sizes to generate
 - `count` (number, default: 1, max: 4) - Number of variations
+
+**Parameters for `generate_image_series`:**
+
+- `series` (enum, required) - Tutorial series
+- `theme` (string, required) - Consistent theme (e.g., "comic book superhero", "vintage poster")
+- `chapters` (array, required) - Array of chapter objects with `chapter`, `slug`, `title`, `description`, `prompt` (optional)
+- `consistencyOptions` (object, optional) - Options for maintaining visual consistency:
+  - `maintainCharacter` (boolean, default: true) - Use same character
+  - `maintainColorPalette` (boolean, default: true) - Use same colors
+  - `maintainStyle` (boolean, default: true) - Use same style
+  - `characterDescription` (string, optional) - Specific character description
+  - `colorPalette` (string, optional) - Specific color palette
+  - `styleDescription` (string, optional) - Specific style name or description. See [Available Styles](#available-visual-styles) section for complete list.
+- `creative_mode` (boolean, default: true) - Use creative meta-prompt generator
+- `sizes` (array, default: ["full", "thumbnail"]) - Image sizes to generate
+
+See [SERIES-GENERATION.md](./SERIES-GENERATION.md) for detailed documentation on series generation.
+
+## Available Visual Styles
+
+The imagen tool supports a comprehensive range of visual styles. You can use style names directly or provide custom style descriptions.
+
+### 🎨 Artistic & Aesthetic Styles
+
+- **realistic** / **photorealistic** - Lifelike details, true-to-life textures
+- **impressionist** - Soft, blurred edges, visible brush strokes (Monet-like)
+- **abstract** - Non-representational shapes, color, and form
+- **surreal** - Dreamlike, strange, or fantastical (e.g., Salvador Dalí)
+- **minimalist** - Clean lines, limited colors, lots of negative space
+- **popArt** - Bold colors, mass culture imagery (Warhol-style)
+- **cubist** - Geometric forms and fragmented perspectives
+- **graffiti** / **streetArt** - Bold outlines, spray-paint texture, urban vibe
+
+### 🧸 Cute, Fun, and Playful Themes
+
+- **kawaii** - Japanese cute style; big eyes, pastel colors, round shapes
+- **chibi** - Tiny, exaggerated versions of characters
+- **cartoon** - Bold outlines, simplified forms, colorful and expressive
+- **comicBook** - Panel layouts, halftone dots, speech bubbles
+- **manga** / **anime** - Stylized Japanese comic or animation aesthetics
+- **whimsical** - Playful, fantastical, often slightly surreal
+
+### 🧠 Conceptual & Mood-Based Themes
+
+- **cyberpunk** - Neon lights, dystopian tech cityscapes
+- **steampunk** - Victorian style mixed with retro-futuristic machinery
+- **fantasy** - Dragons, magic, mythical settings
+- **sciFi** - Futuristic tech, outer space, advanced civilizations
+- **noir** - Moody, high-contrast black-and-white, mysterious atmosphere
+- **romantic** - Soft light, warm tones, emotional imagery
+- **gothic** - Dramatic lighting, dark tones, macabre mood
+
+### 🌍 Cultural & Design-Influenced Themes
+
+- **ukiyoe** - Traditional Japanese woodblock print style
+- **boho** / **bohemian** - Earthy tones, eclectic patterns, vintage vibe
+- **retro** / **vintage** - Nostalgic colors and design (1950s–1990s)
+- **artDeco** - Elegant geometric patterns, golds, and blacks
+- **psychedelic** - Vivid colors, fluid patterns, surreal imagery
+- **propaganda** - Bold typography, strong imagery, persuasive composition
+- **pinUp** - Vintage glamour, playful poses, retro aesthetic
+
+### 📸 Photography Styles
+
+- **portrait** - Focus on faces or expressions
+- **landscape** - Nature or scenery shots
+- **street** - Candid urban moments
+- **macro** - Extreme close-ups
+- **cinematic** - Wide aspect ratio, dramatic lighting, movie-like tone
+
+### 🔧 Technical & Diagram Styles
+
+- **diagram** - Clean, structured, informational graphics
+- **infographic** - Data visualization, charts, and information design
+- **blueprint** - Technical drawings, architectural plans
+- **isometric** - 3D isometric projection, technical illustration
+
+### Usage Examples
+
+```bash
+# Use a predefined style
+node src/cli.js generate "PHP developer coding" \
+  --style cyberpunk \
+  --series php-basics \
+  --chapter 01 \
+  --slug hero
+
+# Use custom style description
+node src/cli.js generate "Database schema" \
+  --style "clean technical diagram with blue accents" \
+  --series php-basics \
+  --chapter 15 \
+  --slug schema-diagram
+```
+
+Styles are automatically resolved and enhanced with relevant keywords and descriptions when using the styles system. Custom style descriptions are also supported for maximum flexibility.
 
 ## Output Structure
 

@@ -153,7 +153,7 @@ echo "Cost: $" . number_format($result['cost'], 6) . "\n";
 
 ### Estimating Costs
 
-- **gpt-3.5-turbo**: $0.002 per 1,000 tokens (~$0.001 per typical request)
+- **gpt-4.1**: $0.002 per 1,000 tokens (~$0.001 per typical request)
 - **gpt-4**: $0.03 per 1,000 tokens (~$0.015 per typical request)
 - **gpt-4-turbo**: $0.01 per 1,000 tokens (~$0.005 per typical request)
 
@@ -166,7 +166,7 @@ echo "Cost: $" . number_format($result['cost'], 6) . "\n";
 
 ### Reducing Costs
 
-1. **Use gpt-3.5-turbo** for most tasks (15x cheaper than gpt-4)
+1. **Use gpt-4.1** for most tasks (15x cheaper than gpt-4)
 2. **Set max_tokens** limits to prevent unexpectedly long responses
 3. **Cache responses** when the same prompt is used repeatedly
 4. **Truncate conversation history** in chatbots after 10-15 exchanges

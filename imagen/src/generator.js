@@ -36,7 +36,8 @@ export class ImageGenerator {
     } = options;
 
     try {
-      console.log(`Generating ${numberOfImages} image(s) with prompt: "${prompt.substring(0, 100)}..."`);
+      // Log to stderr to avoid breaking MCP JSON-RPC protocol (stdout is for JSON only)
+      console.error(`Generating ${numberOfImages} image(s) with prompt: "${prompt.substring(0, 100)}..."`);
       
       // Use generateContent with IMAGE response modality for Gemini 2.5 Flash Image
       const response = await this.client.models.generateContent({
@@ -79,7 +80,8 @@ export class ImageGenerator {
         throw new Error('No images were generated in response');
       }
 
-      console.log(`Successfully generated ${images.length} image(s)`);
+      // Log to stderr to avoid breaking MCP JSON-RPC protocol
+      console.error(`Successfully generated ${images.length} image(s)`);
       return images;
       
     } catch (error) {

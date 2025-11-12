@@ -36,7 +36,7 @@ echo "Response: ";
 try {
     // Create streaming request
     $stream = $client->chat()->createStreamed([
-        'model' => 'gpt-3.5-turbo',
+        'model' => 'gpt-4.1',
         'messages' => [
             ['role' => 'system', 'content' => 'You are a helpful PHP programming assistant.'],
             ['role' => 'user', 'content' => 'Explain dependency injection in PHP in simple terms.'],
@@ -96,7 +96,7 @@ while (true) {
 
     try {
         $stream = $client->chat()->createStreamed([
-            'model' => 'gpt-3.5-turbo',
+            'model' => 'gpt-4.1',
             'messages' => $messages,
             'max_tokens' => 300,
             'temperature' => 0.7,

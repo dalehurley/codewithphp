@@ -221,7 +221,7 @@ The implementation uses the official @google/genai SDK with:
 
 ```javascript
 const response = await client.models.generateContent({
-  model: "gemini-2.5-flash-image",
+  model: "gemini-2.5-flash",
   contents: [
     {
       role: "user",

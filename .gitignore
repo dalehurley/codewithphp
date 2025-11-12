@@ -20,3 +20,5 @@ composer.lock
 
 # Documentation files
 GITHUB-PAGES-SETUP.md
+
+.notepads/

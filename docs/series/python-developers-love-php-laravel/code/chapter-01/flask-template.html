@@ -1,0 +1,19 @@
+<!-- filename: templates/post_list.html -->
+<!-- Flask/Jinja2 Template Example -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Posts</title>
+</head>
+<body>
+    <h1>Blog Posts</h1>
+    {% for post in posts %}
+        <article>
+            <h2>{{ post.title }}</h2>
+            <p>{{ post.content|truncate(30) }}</p>
+            <p>Published: {{ post.published_at.strftime('%B %d, %Y') }}</p>
+        </article>
+    {% endfor %}
+</body>
+</html>
+

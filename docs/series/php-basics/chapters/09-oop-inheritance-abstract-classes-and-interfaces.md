@@ -9,7 +9,7 @@ prerequisites:
   - "/series/php-basics/chapters/08-introduction-to-object-oriented-programming"
 ---
 
-![OOP: Inheritance, Abstract Classes, and Interfaces](/images/php-basics/chapter-09-oop-inheritance-hero-full.webp)
+![OOP: Inheritance, Abstract Classes, and Interfaces](/images/php-basics/chapter-09-oop-inheritance-abstract-interfaces-hero-full.webp)
 
 # Chapter 09: OOP: Inheritance, Abstract Classes, and Interfaces
 

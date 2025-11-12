@@ -17,7 +17,7 @@ final class TextGenerator
 {
     public function __construct(
         private readonly \OpenAI\Client $client,
-        private readonly string $model = 'gpt-3.5-turbo',
+        private readonly string $model = 'gpt-4.1',
     ) {}
 
     /**
@@ -53,7 +53,7 @@ final class TextGenerator
             'temperature' => $temperature,
         ]);
 
-        // Calculate cost (approximate for gpt-3.5-turbo)
+        // Calculate cost (approximate for gpt-4.1)
         $costPerThousandTokens = $this->getCostPerThousandTokens();
         $cost = ($response->usage->totalTokens / 1000) * $costPerThousandTokens;
 
@@ -189,8 +189,8 @@ final class TextGenerator
         return match ($this->model) {
             'gpt-4' => 0.03,
             'gpt-4-turbo', 'gpt-4-turbo-preview' => 0.01,
-            'gpt-3.5-turbo', 'gpt-3.5-turbo-16k' => 0.002,
-            default => 0.002,  // Default to gpt-3.5-turbo pricing
+            'gpt-4.1', 'gpt-4.1-16k' => 0.002,
+            default => 0.002,  // Default to gpt-4.1 pricing
         };
     }
 }

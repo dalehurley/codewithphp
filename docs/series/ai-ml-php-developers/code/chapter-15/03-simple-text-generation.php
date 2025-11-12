@@ -16,7 +16,7 @@ use Dotenv\Dotenv;
  * - Run: composer install
  * - Create .env file with OPENAI_API_KEY
  * 
- * Cost: ~$0.003 per run (3 API calls with gpt-3.5-turbo)
+ * Cost: ~$0.003 per run (3 API calls with gpt-4.1)
  */
 
 // Load environment variables
