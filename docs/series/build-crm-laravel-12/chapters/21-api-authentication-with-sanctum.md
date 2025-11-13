@@ -9,7 +9,7 @@ prerequisites:
   - "/series/build-crm-laravel-12/chapters/20-api-authentication-with-sanctum"
 ---
 
-![api-authentication-with-sanctum](/images/build-crm-laravel-12/chapter-21-api-authentication-with-sanctum-hero-full.webp)
+![api-authentication-with-sanctum](/images/build-crm-laravel-12/chapter-21-api-authentication-sanctum-hero-full.webp)
 
 # Chapter 21: API Authentication with Sanctum
 

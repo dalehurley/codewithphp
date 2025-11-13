@@ -9,7 +9,7 @@ prerequisites:
   - "/series/build-crm-laravel-12/chapters/33-ai-assisted-development-with-laravel-boost"
 ---
 
-![ai-assisted-development-with-laravel-boost](/images/build-crm-laravel-12/chapter-34-ai-assisted-development-with-laravel-boost-hero-full.webp)
+![ai-assisted-development-with-laravel-boost](/images/build-crm-laravel-12/chapter-34-ai-assisted-development-boost-hero-full.webp)
 
 # Chapter 34: AI-Assisted Development with Laravel Boost
 

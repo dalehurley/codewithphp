@@ -9,7 +9,7 @@ prerequisites:
   - "/series/build-crm-laravel-12/chapters/32-feature-flags-with-laravel-pennant"
 ---
 
-![feature-flags-with-laravel-pennant](/images/build-crm-laravel-12/chapter-33-feature-flags-with-laravel-pennant-hero-full.webp)
+![feature-flags-with-laravel-pennant](/images/build-crm-laravel-12/chapter-33-feature-flags-pennant-hero-full.webp)
 
 # Chapter 33: Feature Flags with Laravel Pennant
 

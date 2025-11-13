@@ -9,7 +9,7 @@ prerequisites:
   - "/series/build-crm-laravel-12/chapters/22-social-logins-with-laravel-socialite"
 ---
 
-![social-logins-with-laravel-socialite](/images/build-crm-laravel-12/chapter-23-social-logins-with-laravel-socialite-hero-full.webp)
+![social-logins-with-laravel-socialite](/images/build-crm-laravel-12/chapter-23-social-logins-socialite-hero-full.webp)
 
 # Chapter 23: Social Logins with Laravel Socialite
 

@@ -9,7 +9,7 @@ prerequisites:
   - "/series/build-crm-laravel-12/chapters/29-monitoring-queues-with-laravel-horizon"
 ---
 
-![monitoring-queues-with-laravel-horizon](/images/build-crm-laravel-12/chapter-30-monitoring-queues-with-laravel-horizon-hero-full.webp)
+![monitoring-queues-with-laravel-horizon](/images/build-crm-laravel-12/chapter-30-monitoring-queues-horizon-hero-full.webp)
 
 # Chapter 30: Monitoring Queues with Laravel Horizon
 

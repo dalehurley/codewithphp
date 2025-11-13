@@ -9,7 +9,7 @@ prerequisites:
   - "/series/build-crm-laravel-12/chapters/23-subscription-billing-with-laravel-cashier"
 ---
 
-![subscription-billing-with-laravel-cashier](/images/build-crm-laravel-12/chapter-24-subscription-billing-with-laravel-cashier-hero-full.webp)
+![subscription-billing-with-laravel-cashier](/images/build-crm-laravel-12/chapter-24-subscription-billing-cashier-hero-full.webp)
 
 # Chapter 24: Subscription Billing with Laravel Cashier
 
