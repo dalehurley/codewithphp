@@ -373,6 +373,14 @@ export default withMermaid(
               {
                 text: '03 — OOP Basics',
                 link: '/series/php-for-java-developers/chapters/03-oop-basics'
+              },
+              {
+                text: '04 — Classes & Inheritance',
+                link: '/series/php-for-java-developers/chapters/04-classes-and-inheritance'
+              },
+              {
+                text: '05 — Interfaces & Traits',
+                link: '/series/php-for-java-developers/chapters/05-interfaces-and-traits'
               }
             ]
           }
