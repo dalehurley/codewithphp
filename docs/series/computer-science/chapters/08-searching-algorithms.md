@@ -25,6 +25,33 @@ In this chapter, you'll learn:
 
 Check each element sequentially until found.
 
+```mermaid
+graph LR
+    subgraph "Linear Search for target = 22"
+        S0["Start:<br/>[64,34,25,12,22,11,90]<br/>Check index 0"]
+        S1["64 ≠ 22<br/>Next →"]
+        S2["34 ≠ 22<br/>Next →"]
+        S3["25 ≠ 22<br/>Next →"]
+        S4["12 ≠ 22<br/>Next →"]
+        S5["22 = 22<br/>✓ Found!"]
+
+        S0 --> S1
+        S1 --> S2
+        S2 --> S3
+        S3 --> S4
+        S4 --> S5
+    end
+
+    style S0 fill:#2196F3,color:#fff
+    style S1 fill:#FF6B6B,color:#fff
+    style S2 fill:#FF6B6B,color:#fff
+    style S3 fill:#FF6B6B,color:#fff
+    style S4 fill:#FF6B6B,color:#fff
+    style S5 fill:#4CAF50
+```
+
+**How it works**: Check every element one by one. Simple but slow for large datasets.
+
 ```php
 <?php
 
@@ -47,6 +74,36 @@ $index = linearSearch($numbers, 22); // 4
 ## Binary Search — O(log n)
 
 Repeatedly divide sorted array in half.
+
+```mermaid
+graph TB
+    subgraph "Binary Search for target = 25"
+        B0["Sorted: [11,12,22,25,34,64,90]<br/>left=0, right=6, mid=3"]
+        B1["arr[3]=25<br/>25 = 25<br/>✓ Found at index 3!"]
+
+        B0 --> B1
+    end
+
+    subgraph "Binary Search for target = 64"
+        C0["[11,12,22,25,34,64,90]<br/>left=0, right=6, mid=3"]
+        C1["arr[3]=25<br/>64 > 25<br/>Search right half →"]
+        C2["[34,64,90]<br/>left=4, right=6, mid=5"]
+        C3["arr[5]=64<br/>64 = 64<br/>✓ Found at index 5!"]
+
+        C0 --> C1
+        C1 --> C2
+        C2 --> C3
+    end
+
+    style B0 fill:#2196F3,color:#fff
+    style B1 fill:#4CAF50
+    style C0 fill:#2196F3,color:#fff
+    style C1 fill:#FFA500
+    style C2 fill:#FFD700
+    style C3 fill:#4CAF50
+```
+
+**How it works**: Eliminate half the elements in each step. O(log n) — incredibly fast!
 
 ```php
 <?php
@@ -109,6 +166,26 @@ function binarySearchRecursive(
 ```
 
 ## Binary Search Variations
+
+```mermaid
+graph TB
+    subgraph "Finding First and Last Occurrence of 2"
+        V0["Array: [1, 2, 2, 2, 3, 4, 5]<br/>Target: 2"]
+        V1["First: Keep searching LEFT<br/>after finding target"]
+        V2["Last: Keep searching RIGHT<br/>after finding target"]
+        V3["Result:<br/>First = index 1<br/>Last = index 3"]
+
+        V0 --> V1
+        V0 --> V2
+        V1 --> V3
+        V2 --> V3
+    end
+
+    style V0 fill:#2196F3,color:#fff
+    style V1 fill:#FFA500
+    style V2 fill:#FF9800
+    style V3 fill:#4CAF50
+```
 
 ### 1. Find First Occurrence
 
@@ -230,6 +307,27 @@ echo findPeakElement($numbers); // 2 (value 3 is peak)
 
 ## Search in Rotated Sorted Array
 
+```mermaid
+graph TB
+    subgraph "Rotated Sorted Array: [4,5,6,7,0,1,2] Target = 0"
+        R0["Original sorted: [0,1,2,3,4,5,6,7]<br/>Rotated at pivot: [4,5,6,7,0,1,2]"]
+        R1["Find sorted half<br/>then decide which half to search"]
+        R2["Left half [4,5,6,7] is sorted<br/>Target 0 not in range"]
+        R3["Search right half [0,1,2]<br/>✓ Found at index 4!"]
+
+        R0 --> R1
+        R1 --> R2
+        R2 --> R3
+    end
+
+    style R0 fill:#2196F3,color:#fff
+    style R1 fill:#FFA500
+    style R2 fill:#FFD700
+    style R3 fill:#4CAF50
+```
+
+**How it works**: Determine which half is sorted, then decide where target could be.
+
 ```php
 <?php
 
@@ -348,6 +446,30 @@ function exponentialSearch(array $arr, $target): ?int {
 
 Jump ahead by fixed steps, then linear search.
 
+```mermaid
+graph LR
+    subgraph "Jump Search: Array of size 16, jump √16 = 4"
+        J0["[1,2,3,4|5,6,7,8|9,10,11,12|13,14,15,16]<br/>Target: 11"]
+        J1["Jump to 4: 4 < 11<br/>Continue →"]
+        J2["Jump to 8: 8 < 11<br/>Continue →"]
+        J3["Jump to 12: 12 > 11<br/>Search block [9-11]"]
+        J4["Linear search:<br/>9,10,11 ✓ Found!"]
+
+        J0 --> J1
+        J1 --> J2
+        J2 --> J3
+        J3 --> J4
+    end
+
+    style J0 fill:#2196F3,color:#fff
+    style J1 fill:#FFA500
+    style J2 fill:#FFD700
+    style J3 fill:#90EE90
+    style J4 fill:#4CAF50
+```
+
+**How it works**: Jump √n steps, find block, then linear search within block. O(√n) complexity!
+
 ```php
 <?php
 
@@ -429,6 +551,38 @@ $age = $hashtable['bob'] ?? null; // O(1) average
 
 ## When to Use Each Search
 
+```mermaid
+graph TB
+    START["Which search<br/>algorithm?"]
+    Q1{"Is data<br/>sorted?"}
+    Q2{"Need O(1)<br/>lookup?"}
+    Q3{"Data uniformly<br/>distributed?"}
+    Q4{"Multiple<br/>searches?"}
+    Q5{"Array<br/>unbounded?"}
+
+    START --> Q1
+    Q1 -->|"No"| Q2
+    Q2 -->|"Yes"| HASH["Hash Table<br/>O(1) - Best!"]
+    Q2 -->|"No"| LIN["Linear Search<br/>O(n) - Simple"]
+
+    Q1 -->|"Yes"| Q3
+    Q3 -->|"Yes"| INT["Interpolation<br/>O(log log n)"]
+    Q3 -->|"No"| Q5
+    Q5 -->|"Yes"| EXP["Exponential<br/>O(log n)"]
+    Q5 -->|"No"| Q4
+    Q4 -->|"Yes"| BIN["Binary Search<br/>O(log n) - Standard"]
+    Q4 -->|"No"| JMP["Jump Search<br/>O(√n)"]
+
+    style START fill:#2196F3,color:#fff
+    style HASH fill:#9C27B0,color:#fff
+    style LIN fill:#FF6B6B,color:#fff
+    style INT fill:#4CAF50
+    style EXP fill:#FFD700
+    style BIN fill:#4CAF50
+    style JMP fill:#FF9800
+```
+
+**Quick Selection Guide**:
 - **Linear**: Unsorted data, small datasets
 - **Binary**: Sorted data, repeated searches
 - **Interpolation**: Uniformly distributed sorted data
