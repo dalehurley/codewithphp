@@ -1,0 +1,1352 @@
+---
+title: "Modern PHP: What's Changed"
+description: Discover how PHP 8.4 has evolved into a modern, type-safe language that Ruby developers will appreciate.
+series: rails-developers-love-laravel
+chapter: 2
+difficulty: Beginner
+tags: ["php", "modern-php", "php-8.4", "language-features", "performance"]
+---
+
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/#choose-your-learning-path">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/rails-developers-love-laravel/">Rails to Laravel</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 02</span>
+</div>
+
+![Modern PHP: What's Changed](/images/rails-developers-love-laravel/chapter-02-modern-php-whats-changed-hero-full.webp)
+
+# Chapter 02: Modern PHP: What's Changed <span class="difficulty-badge difficulty-beginner">Beginner</span>
+
+## Overview
+
+If your last encounter with PHP was years ago, prepare to be pleasantly surprised. Modern PHP (8.0+) has undergone a dramatic transformation that brings it closer to Ruby in expressiveness while adding powerful features of its own.
+
+This chapter explores how PHP has evolved from a loosely-typed scripting language into a modern, performant language with sophisticated type systems, elegant syntax, and developer-friendly features that Ruby developers will appreciate.
+
+## What You'll Learn
+
+- How PHP 8.x transformed the language
+- Modern PHP features that rival Ruby's elegance
+- Type safety improvements and strict typing
+- Performance enhancements with JIT compilation
+- New syntax features in PHP 8.4
+- Why modern PHP feels nothing like old PHP
+- Side-by-side Ruby vs PHP comparisons
+
+## The PHP Renaissance
+
+PHP has undergone a renaissance since version 7.0 (2015) and especially with the 8.x series:
+
+**PHP 7.0-7.4** (2015-2019):
+- Type declarations
+- Return types
+- Scalar type hints
+- Anonymous classes
+- Null coalescing operator
+- 2x performance improvement
+
+**PHP 8.0** (2020):
+- JIT compilation
+- Named arguments
+- Attributes (like Ruby decorators)
+- Union types
+- Match expressions
+- Constructor property promotion
+
+**PHP 8.1** (2021):
+- Enums
+- Readonly properties
+- Fibers (like Ruby Fibers)
+- First-class callables
+
+**PHP 8.2** (2022):
+- Readonly classes
+- DNF types
+- True/false/null standalone types
+
+**PHP 8.3** (2023):
+- Typed class constants
+- Dynamic properties deprecation
+- JSON validation
+
+**PHP 8.4** (2024):
+- Property hooks
+- Asymmetric visibility
+- New array functions
+- HTML5 support
+
+Each version added features that make PHP more elegant, type-safe, and performant.
+
+## Type System: From Loose to Strict
+
+### The Old Way (PHP 5.x)
+
+```php
+<?php
+// Old PHP - no type safety
+function getUser($id) {
+    $user = User::find($id);
+    if ($user == null) {  // Weak comparison
+        return null;
+    }
+    return $user->name;
+}
+
+// Called with anything
+getUser("hello");  // No error!
+getUser([1, 2, 3]);  // Still no error!
+```
+
+This is the PHP that gave the language a bad reputation.
+
+### The Modern Way (PHP 8.4)
+
+```php
+<?php
+// Modern PHP - strict types
+declare(strict_types=1);
+
+function getUser(int $id): ?string
+{
+    return User::find($id)?->name;
+}
+
+// Type errors caught immediately
+getUser("hello");    // TypeError!
+getUser([1, 2, 3]);  // TypeError!
+```
+
+### Ruby Comparison
+
+```ruby
+# Ruby - duck typing with optional type checking (Sorbet/RBS)
+def get_user(id)
+  User.find(id)&.name
+end
+
+# With Sorbet type annotations
+sig { params(id: Integer).returns(T.nilable(String)) }
+def get_user(id)
+  User.find(id)&.name
+end
+```
+
+Modern PHP's type system is **more strict by default** than Ruby, which can prevent entire classes of bugs.
+
+## Modern Syntax: Null Safety
+
+### Null Coalescing
+
+**Ruby:**
+```ruby
+# Ruby
+name = user.name || "Guest"
+name = user&.name || "Guest"
+```
+
+**PHP:**
+```php
+<?php
+// PHP 7.0+ - Null coalescing operator
+$name = $user->name ?? "Guest";
+
+// PHP 8.0+ - Null-safe operator
+$name = $user?->profile?->name ?? "Guest";
+```
+
+Nearly identical to Ruby's safe navigation operator!
+
+### Null Coalescing Assignment
+
+**Ruby:**
+```ruby
+# Ruby
+@cache ||= []
+@cache ||= expensive_operation()
+```
+
+**PHP:**
+```php
+<?php
+// PHP 7.4+ - Null coalescing assignment
+$this->cache ??= [];
+$this->cache ??= expensive_operation();
+```
+
+Same pattern, different syntax.
+
+## Constructor Property Promotion
+
+One of PHP 8.0's best features eliminates boilerplate:
+
+### Before PHP 8.0
+
+```php
+<?php
+class User
+{
+    private string $name;
+    private string $email;
+    private int $age;
+
+    public function __construct(string $name, string $email, int $age)
+    {
+        $this->name = $name;
+        $this->email = $email;
+        $this->age = $age;
+    }
+}
+```
+
+### PHP 8.0+
+
+```php
+<?php
+class User
+{
+    public function __construct(
+        private string $name,
+        private string $email,
+        private int $age,
+    ) {}
+}
+```
+
+Much cleaner! Compare to Ruby:
+
+```ruby
+# Ruby
+class User
+  attr_reader :name, :email, :age
+
+  def initialize(name, email, age)
+    @name = name
+    @email = email
+    @age = age
+  end
+end
+```
+
+PHP's version is even more concise.
+
+## Property Hooks (PHP 8.4)
+
+PHP 8.4 introduced property hooks—a game-changing feature that rivals Ruby's elegance:
+
+### Ruby Properties
+
+```ruby
+# Ruby - automatic getters/setters
+class User
+  attr_accessor :name
+
+  # Custom setter with logic
+  def name=(value)
+    @name = value.strip.capitalize
+  end
+
+  def name
+    @name
+  end
+end
+
+user = User.new
+user.name = "  john  "
+puts user.name  # "John"
+```
+
+### PHP 8.4 Property Hooks
+
+```php
+<?php
+class User
+{
+    // Property hook with automatic backing field
+    public string $name {
+        set(string $value) {
+            $this->name = trim(ucfirst($value));
+        }
+    }
+
+    // Computed property (no backing field)
+    public string $fullName {
+        get => "{$this->firstName} {$this->lastName}";
+    }
+
+    // Asymmetric visibility (new in 8.4!)
+    public private(set) int $id;
+}
+
+$user = new User();
+$user->name = "  john  ";
+echo $user->name;  // "John"
+echo $user->fullName;  // Computed on access
+
+$user->id = 5;  // Error! Can only set internally
+```
+
+This is **incredibly elegant** and rivals or exceeds Ruby's property capabilities.
+
+### Lazy Loading with Property Hooks
+
+```php
+<?php
+class Post
+{
+    private ?Collection $comments = null;
+
+    public Collection $comments {
+        get {
+            $this->comments ??= $this->loadComments();
+            return $this->comments;
+        }
+    }
+
+    private function loadComments(): Collection
+    {
+        return Comment::where('post_id', $this->id)->get();
+    }
+}
+
+$post = Post::find(1);
+// Comments only loaded when accessed
+$comments = $post->comments;
+```
+
+Compare to Ruby:
+
+```ruby
+# Ruby
+class Post
+  def comments
+    @comments ||= load_comments
+  end
+
+  private
+
+  def load_comments
+    Comment.where(post_id: id)
+  end
+end
+```
+
+Both achieve lazy loading elegantly.
+
+## Enums: Type-Safe Constants
+
+### Ruby Approach
+
+```ruby
+# Ruby - typically uses symbols or constants
+class Status
+  DRAFT = "draft"
+  PUBLISHED = "published"
+  ARCHIVED = "archived"
+end
+
+post.status = Status::DRAFT
+
+# Or with gems
+class Status < T::Enum
+  enums do
+    Draft = new
+    Published = new
+    Archived = new
+  end
+end
+```
+
+### PHP 8.1+ Enums
+
+```php
+<?php
+enum Status: string
+{
+    case Draft = 'draft';
+    case Published = 'published';
+    case Archived = 'archived';
+
+    // Enums can have methods!
+    public function color(): string
+    {
+        return match($this) {
+            self::Draft => 'yellow',
+            self::Published => 'green',
+            self::Archived => 'gray',
+        };
+    }
+
+    public function isPublic(): bool
+    {
+        return $this === self::Published;
+    }
+}
+
+// Usage
+$status = Status::Published;
+echo $status->value;      // "published"
+echo $status->color();    // "green"
+echo $status->isPublic(); // true
+
+// Type safety
+function setStatus(Status $status): void {
+    // Only valid Status enums accepted
+}
+
+setStatus(Status::Draft);    // ✓
+setStatus("draft");          // ✗ TypeError!
+```
+
+PHP's enums are **first-class language features** with full type safety.
+
+## Match Expressions: Better Switch
+
+### Ruby Case
+
+```ruby
+# Ruby case statement
+status = case role
+         when "admin"
+           "full_access"
+         when "editor"
+           "edit_access"
+         when "viewer"
+           "read_access"
+         else
+           "no_access"
+         end
+```
+
+### PHP 8.0 Match
+
+```php
+<?php
+// PHP 8.0+ match expression
+$status = match($role) {
+    'admin' => 'full_access',
+    'editor' => 'edit_access',
+    'viewer' => 'read_access',
+    default => 'no_access',
+};
+
+// Match is an expression (returns value)
+// Strict comparison (===)
+// No fallthrough
+// Exhaustive checking with enums
+
+$color = match($status) {
+    Status::Draft => 'yellow',
+    Status::Published => 'green',
+    Status::Archived => 'gray',
+    // Error if any case is missing!
+};
+```
+
+Match expressions are more concise and type-safe than traditional switch statements.
+
+## Named Arguments
+
+### Ruby Keyword Arguments
+
+```ruby
+# Ruby - keyword arguments
+def create_user(name:, email:, age: 18, active: true)
+  # ...
+end
+
+create_user(
+  name: "John",
+  email: "john@example.com",
+  age: 25
+)
+
+# Can reorder arguments
+create_user(
+  email: "john@example.com",
+  name: "John"
+)
+```
+
+### PHP 8.0+ Named Arguments
+
+```php
+<?php
+// PHP 8.0+ - named arguments
+function createUser(
+    string $name,
+    string $email,
+    int $age = 18,
+    bool $active = true
+): User {
+    // ...
+}
+
+createUser(
+    name: "John",
+    email: "john@example.com",
+    age: 25
+);
+
+// Can reorder arguments
+createUser(
+    email: "john@example.com",
+    name: "John"
+);
+
+// Skip optional arguments
+createUser(
+    name: "John",
+    email: "john@example.com",
+    active: false  // Skip $age, use its default
+);
+```
+
+PHP now has the same flexibility as Ruby's keyword arguments!
+
+## Union Types and Type Safety
+
+### Ruby Type Annotations (with Sorbet)
+
+```ruby
+# Ruby with Sorbet
+sig { params(id: T.any(Integer, String)).returns(T.nilable(User)) }
+def find_user(id)
+  User.find(id)
+end
+```
+
+### PHP 8.0+ Union Types
+
+```php
+<?php
+// PHP 8.0+ - union types
+function findUser(int|string $id): ?User
+{
+    return User::find($id);
+}
+
+// PHP 8.2+ - DNF types (Disjunctive Normal Form)
+function process((Stringable&JsonSerializable)|string $data): void
+{
+    // Accepts: (Stringable AND JsonSerializable) OR string
+}
+
+// PHP 8.2+ - standalone types
+function getValue(): true|false|null
+{
+    // Explicit true/false/null types
+}
+```
+
+PHP's union types are **built into the language**, not a third-party tool.
+
+## Attributes: Metadata That Matters
+
+### Ruby Decorators (via gems)
+
+```ruby
+# Ruby - typically requires gems
+class User < ApplicationRecord
+  # Using custom decorators/concerns
+  include Cacheable
+
+  cached(:ttl => 3600)
+  def expensive_operation
+    # ...
+  end
+end
+```
+
+### PHP 8.0+ Attributes
+
+```php
+<?php
+// PHP 8.0+ - built-in attributes
+#[Route('/users/{id}', methods: ['GET'])]
+#[Cache(ttl: 3600)]
+#[Authorize(role: 'admin')]
+class UserController
+{
+    #[Validate(['id' => 'integer|min:1'])]
+    public function show(int $id): JsonResponse
+    {
+        // Attributes processed by framework
+        return response()->json(User::find($id));
+    }
+}
+
+// Laravel uses attributes extensively
+#[AsController]
+class PostController extends Controller
+{
+    #[Get('/posts')]
+    public function index(): View
+    {
+        return view('posts.index');
+    }
+}
+```
+
+Attributes provide clean, declarative metadata without decorators or mixins.
+
+## Arrow Functions and Closures
+
+### Ruby Blocks and Lambdas
+
+```ruby
+# Ruby - multiple syntaxes
+numbers = [1, 2, 3, 4, 5]
+
+# Block syntax
+doubled = numbers.map { |n| n * 2 }
+
+# Lambda/proc
+multiply = ->(x, y) { x * y }
+result = multiply.call(3, 4)
+
+# Block with do/end
+numbers.each do |n|
+  puts n
+end
+```
+
+### PHP Arrow Functions
+
+```php
+<?php
+// PHP 7.4+ - arrow functions (short closures)
+$numbers = [1, 2, 3, 4, 5];
+
+// Arrow function - auto-captures variables
+$doubled = array_map(fn($n) => $n * 2, $numbers);
+
+$multiplier = 3;
+$tripled = array_map(fn($n) => $n * $multiplier, $numbers);
+
+// PHP 8.0+ - traditional closure with shorthand
+$multiply = fn($x, $y) => $x * $y;
+
+// Multi-line closure
+$process = function($n) use ($multiplier) {
+    echo $n * $multiplier;
+    return $n * $multiplier;
+};
+```
+
+Arrow functions make PHP feel more functional, like Ruby.
+
+## First-Class Callables
+
+### Ruby Method References
+
+```ruby
+# Ruby - symbols as method references
+numbers = ["1", "2", "3"]
+integers = numbers.map(&:to_i)
+
+# Method objects
+method = User.method(:find)
+user = method.call(1)
+```
+
+### PHP 8.1+ First-Class Callables
+
+```php
+<?php
+// PHP 8.1+ - first-class callable syntax
+$numbers = ["1", "2", "3"];
+$integers = array_map(intval(...), $numbers);
+
+// Method references
+$finder = User::find(...);
+$user = $finder(1);
+
+// Instance methods
+$user = new User();
+$getName = $user->getName(...);
+echo $getName();  // Calls $user->getName()
+
+// Static methods
+$validator = Validator::make(...);
+$validator(['email' => 'required']);
+```
+
+The `...` syntax creates clean callable references.
+
+## Collections and Functional Programming
+
+### Ruby Enumerables
+
+```ruby
+# Ruby - rich enumerable methods
+users = User.all
+
+result = users
+  .select { |u| u.active? }
+  .map { |u| u.name.upcase }
+  .sort
+  .take(10)
+
+# Ruby's lazy enumerables
+result = (1..Float::INFINITY)
+  .lazy
+  .select { |n| n.even? }
+  .take(10)
+  .to_a
+```
+
+### Laravel Collections
+
+```php
+<?php
+// Laravel Collections - Ruby-inspired
+$users = User::all();
+
+$result = $users
+    ->filter(fn($u) => $u->active)
+    ->map(fn($u) => strtoupper($u->name))
+    ->sort()
+    ->take(10);
+
+// Lazy collections (PHP 8.x)
+$result = LazyCollection::make(function() {
+    yield from range(1, INF);
+})
+    ->filter(fn($n) => $n % 2 === 0)
+    ->take(10)
+    ->all();
+
+// Rich collection methods (150+ methods!)
+$collection = collect([1, 2, 3, 4, 5]);
+
+$collection->sum();
+$collection->avg();
+$collection->chunk(2);
+$collection->groupBy('status');
+$collection->pluck('name', 'id');
+$collection->pipe(fn($c) => $c->sum() * 2);
+```
+
+Laravel's Collections API is **directly inspired by Ruby's Enumerable**.
+
+## Performance: JIT Compilation
+
+One area where modern PHP pulls ahead is performance.
+
+### PHP 8.0+ JIT Compiler
+
+PHP 8.0 introduced Just-In-Time compilation:
+
+```php
+<?php
+// JIT automatically optimizes hot code paths
+function fibonacci(int $n): int
+{
+    if ($n <= 1) return $n;
+    return fibonacci($n - 1) + fibonacci($n - 2);
+}
+
+// JIT identifies this as hot code and compiles to machine code
+for ($i = 0; $i < 100000; $i++) {
+    fibonacci(20);
+}
+```
+
+**Benchmarks (approximate):**
+- PHP 7.4 (no JIT): 100ms
+- PHP 8.4 (with JIT): 30-40ms
+- Ruby 3.3 (YJIT): 80-100ms
+
+PHP's JIT provides **2-3x performance improvement** in CPU-intensive tasks.
+
+### Real-World Performance
+
+**Web Request Handling:**
+- PHP 8.4: ~15,000 req/sec (simple JSON response)
+- Ruby 3.3 + Rails: ~3,000-5,000 req/sec
+
+**Database Operations:**
+- Similar performance (database is bottleneck)
+
+**JSON Parsing:**
+- PHP: Significantly faster (native C implementation)
+- Ruby: Slower but acceptable for most use cases
+
+PHP's performance advantage matters for:
+- High-traffic applications
+- API-heavy workloads
+- Real-time processing
+- Cost optimization (fewer servers needed)
+
+## Fibers: Lightweight Concurrency
+
+### Ruby Fibers
+
+```ruby
+# Ruby Fiber
+fiber = Fiber.new do
+  puts "Fiber started"
+  Fiber.yield "intermediate result"
+  puts "Fiber resumed"
+  "final result"
+end
+
+puts fiber.resume  # "intermediate result"
+puts fiber.resume  # "final result"
+```
+
+### PHP 8.1+ Fibers
+
+```php
+<?php
+// PHP 8.1+ Fiber
+$fiber = new Fiber(function(): void {
+    echo "Fiber started\n";
+    Fiber::suspend("intermediate result");
+    echo "Fiber resumed\n";
+});
+
+echo $fiber->start();  // "intermediate result"
+echo $fiber->resume("final result");
+```
+
+Both languages support cooperative multitasking with similar APIs.
+
+## Readonly Classes
+
+### Ruby Frozen Objects
+
+```ruby
+# Ruby - freeze objects
+class Point
+  attr_reader :x, :y
+
+  def initialize(x, y)
+    @x = x
+    @y = y
+    freeze  # Make immutable
+  end
+end
+
+point = Point.new(10, 20)
+point.x = 30  # Error! Frozen object
+```
+
+### PHP 8.2+ Readonly Classes
+
+```php
+<?php
+// PHP 8.2+ - readonly classes
+readonly class Point
+{
+    public function __construct(
+        public int $x,
+        public int $y,
+    ) {}
+}
+
+$point = new Point(10, 20);
+$point->x = 30;  // Error! Readonly property
+
+// All properties are automatically readonly
+// Can only be initialized in constructor
+```
+
+PHP's readonly classes provide **compile-time immutability guarantees**.
+
+## Array Improvements
+
+### Ruby Arrays
+
+```ruby
+# Ruby arrays
+arr = [1, 2, 3, 4, 5]
+
+arr.first       # 1
+arr.last        # 5
+arr.first(3)    # [1, 2, 3]
+arr.last(2)     # [4, 5]
+
+# Functional operations
+arr.any? { |n| n > 3 }
+arr.all? { |n| n > 0 }
+arr.find { |n| n > 3 }
+```
+
+### PHP 8.4 Array Functions
+
+```php
+<?php
+// PHP 8.4+ - new array functions
+$arr = [1, 2, 3, 4, 5];
+
+array_first($arr);              // 1
+array_last($arr);               // 5
+array_find($arr, fn($n) => $n > 3);     // 4
+array_find_key($arr, fn($n) => $n > 3); // 3
+array_any($arr, fn($n) => $n > 3);      // true
+array_all($arr, fn($n) => $n > 0);      // true
+
+// Previous versions required Collection or custom functions
+```
+
+PHP is catching up to Ruby's array convenience methods!
+
+## Comparing Language Evolution
+
+### Ruby's Strengths
+
+**What Ruby Still Does Better:**
+- More elegant syntax (no semicolons, less punctuation)
+- Better metaprogramming (method_missing, define_method)
+- More mature block syntax
+- Cleaner module system
+- Better REPL (IRB)
+
+**Ruby Example:**
+```ruby
+# Ruby's elegant syntax
+class User < ApplicationRecord
+  has_many :posts
+
+  scope :active, -> { where(active: true) }
+
+  def full_name
+    "#{first_name} #{last_name}"
+  end
+end
+
+user = User.find(1)
+puts user.full_name if user.active?
+```
+
+### PHP's Strengths
+
+**What PHP Does Better:**
+- Stricter type system (compile-time checking)
+- Better performance (JIT compilation)
+- Simpler deployment (no application server)
+- Ubiquitous hosting support
+- Lower memory usage
+- Property hooks (8.4)
+- First-class enums
+
+**PHP Example:**
+```php
+<?php
+declare(strict_types=1);
+
+class User extends Model
+{
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function scopeActive(Builder $query): void
+    {
+        $query->where('active', true);
+    }
+
+    // Property hook (8.4)
+    public string $fullName {
+        get => "{$this->firstName} {$this->lastName}";
+    }
+}
+
+$user = User::find(1);
+if ($user->active) {
+    echo $user->fullName;
+}
+```
+
+Both achieve the same result with different trade-offs.
+
+## Modern PHP Developer Experience
+
+### Package Management
+
+**Ruby:**
+```bash
+# Gemfile
+gem 'rails', '~> 7.0'
+gem 'pg'
+
+bundle install
+```
+
+**PHP:**
+```bash
+# composer.json
+"require": {
+    "laravel/framework": "^11.0",
+    "doctrine/dbal": "^3.0"
+}
+
+composer install
+```
+
+Composer and Bundler are nearly identical in functionality.
+
+### Interactive Console
+
+**Ruby:**
+```bash
+rails console
+
+> user = User.first
+> user.posts.count
+```
+
+**PHP:**
+```bash
+php artisan tinker
+
+>>> $user = User::first()
+>>> $user->posts->count()
+```
+
+Laravel's Tinker provides the same REPL experience.
+
+### Code Generation
+
+**Ruby:**
+```bash
+rails generate model User name:string email:string
+rails generate controller Users index show
+```
+
+**PHP:**
+```bash
+php artisan make:model User -m
+php artisan make:controller UserController --resource
+```
+
+Same philosophy, different commands.
+
+## The Bottom Line
+
+Modern PHP (8.4) is a **fundamentally different language** than PHP 5.x:
+
+### What Changed
+
+✅ **Type Safety**: Strict types, union types, generics-like features
+✅ **Performance**: JIT compilation, 2-3x faster
+✅ **Syntax**: Null safety, arrow functions, match expressions
+✅ **OOP**: Constructor promotion, property hooks, readonly
+✅ **Functional**: First-class callables, collections API
+✅ **Tooling**: Better IDEs, static analysis, great ecosystem
+
+### What's the Same
+
+❌ **Syntax**: Still uses `$`, `->`, semicolons
+❌ **Legacy**: Backwards compatibility can be messy
+❌ **Reputation**: PHP's bad reputation persists
+
+## Practical Example: Side-by-Side
+
+Let's build a simple User service in both languages:
+
+### Ruby Version
+
+```ruby
+class UserService
+  attr_reader :repository, :mailer
+
+  def initialize(repository:, mailer:)
+    @repository = repository
+    @mailer = mailer
+  end
+
+  def create_user(name:, email:, role: :user)
+    user = repository.create(
+      name: name.strip,
+      email: email.downcase,
+      role: role
+    )
+
+    mailer.send_welcome(user) if user.persisted?
+
+    user
+  end
+
+  def active_users
+    repository
+      .where(active: true)
+      .order(created_at: :desc)
+  end
+end
+```
+
+### PHP 8.4 Version
+
+```php
+<?php
+declare(strict_types=1);
+
+class UserService
+{
+    public function __construct(
+        private UserRepository $repository,
+        private Mailer $mailer,
+    ) {}
+
+    public function createUser(
+        string $name,
+        string $email,
+        Role $role = Role::User,
+    ): User {
+        $user = $this->repository->create([
+            'name' => trim($name),
+            'email' => strtolower($email),
+            'role' => $role,
+        ]);
+
+        if ($user->exists) {
+            $this->mailer->sendWelcome($user);
+        }
+
+        return $user;
+    }
+
+    public function activeUsers(): Collection
+    {
+        return $this->repository
+            ->where('active', true)
+            ->orderBy('created_at', 'desc')
+            ->get();
+    }
+}
+```
+
+**Key Differences:**
+1. PHP has explicit type declarations
+2. PHP uses enums for role (type-safe)
+3. PHP has constructor promotion (less boilerplate)
+4. Both achieve the same result
+5. PHP catches more errors at compile-time
+
+## Should Ruby Developers Learn Modern PHP?
+
+**Yes, if you want to:**
+- ✅ Expand your toolkit with a faster, type-safe language
+- ✅ Work with Laravel (excellent framework)
+- ✅ Take advantage of ubiquitous PHP hosting
+- ✅ Reduce infrastructure costs with better performance
+- ✅ Learn from a different approach to web development
+
+**No, if you:**
+- ❌ Strongly prefer Ruby's syntax aesthetics
+- ❌ Are perfectly productive with Rails
+- ❌ Don't want to learn new patterns
+- ❌ Have no business reason to switch
+
+**The Reality:**
+Learning modern PHP and Laravel **makes you a better developer** by exposing you to different solutions to the same problems. Many patterns transfer back to Ruby!
+
+## Practice Exercises
+
+### Exercise 1: Type Safety
+Convert this Ruby code to modern PHP with full type safety:
+
+```ruby
+def calculate_total(items, discount = 0, tax_rate = 0.1)
+  subtotal = items.sum { |item| item[:price] * item[:quantity] }
+  after_discount = subtotal * (1 - discount)
+  after_discount * (1 + tax_rate)
+end
+```
+
+<details>
+<summary>Solution</summary>
+
+```php
+<?php
+declare(strict_types=1);
+
+function calculateTotal(
+    array $items,
+    float $discount = 0.0,
+    float $taxRate = 0.1,
+): float {
+    $subtotal = array_reduce(
+        $items,
+        fn($sum, $item) => $sum + ($item['price'] * $item['quantity']),
+        0.0
+    );
+
+    $afterDiscount = $subtotal * (1 - $discount);
+    return $afterDiscount * (1 + $taxRate);
+}
+
+// Or with PHP 8.4 array functions
+function calculateTotal(
+    array $items,
+    float $discount = 0.0,
+    float $taxRate = 0.1,
+): float {
+    $subtotal = collect($items)
+        ->sum(fn($item) => $item['price'] * $item['quantity']);
+
+    $afterDiscount = $subtotal * (1 - $discount);
+    return $afterDiscount * (1 + $taxRate);
+}
+```
+</details>
+
+### Exercise 2: Property Hooks
+Create a User class with property hooks that:
+- Capitalizes name on set
+- Lowercases email on set
+- Has a computed `fullName` property
+
+<details>
+<summary>Solution</summary>
+
+```php
+<?php
+class User
+{
+    public string $firstName {
+        set(string $value) {
+            $this->firstName = ucfirst(strtolower(trim($value)));
+        }
+    }
+
+    public string $lastName {
+        set(string $value) {
+            $this->lastName = ucfirst(strtolower(trim($value)));
+        }
+    }
+
+    public string $email {
+        set(string $value) {
+            $this->email = strtolower(trim($value));
+        }
+    }
+
+    public string $fullName {
+        get => "{$this->firstName} {$this->lastName}";
+    }
+}
+
+$user = new User();
+$user->firstName = "  JOHN  ";
+$user->lastName = "  DOE  ";
+$user->email = "  John.Doe@EXAMPLE.com  ";
+
+echo $user->fullName;  // "John Doe"
+echo $user->email;     // "john.doe@example.com"
+```
+</details>
+
+### Exercise 3: Enums with Methods
+Create a Status enum with colors and a method to check if public:
+
+<details>
+<summary>Solution</summary>
+
+```php
+<?php
+enum Status: string
+{
+    case Draft = 'draft';
+    case Published = 'published';
+    case Archived = 'archived';
+
+    public function color(): string
+    {
+        return match($this) {
+            self::Draft => 'yellow',
+            self::Published => 'green',
+            self::Archived => 'gray',
+        };
+    }
+
+    public function isPublic(): bool
+    {
+        return $this === self::Published;
+    }
+
+    public static function fromString(string $value): self
+    {
+        return match(strtolower($value)) {
+            'draft' => self::Draft,
+            'published' => self::Published,
+            'archived' => self::Archived,
+            default => throw new \ValueError("Invalid status: $value"),
+        };
+    }
+}
+
+// Usage
+$status = Status::Published;
+echo $status->color();      // "green"
+echo $status->isPublic();   // true
+
+$status2 = Status::fromString('draft');
+echo $status2->value;       // "draft"
+```
+</details>
+
+## Key Takeaways
+
+1. **Modern PHP is Nothing Like Old PHP** — PHP 8.4 is a modern, type-safe language
+2. **Type Safety Built-In** — Strict types catch errors at compile-time
+3. **Performance Matters** — JIT compilation provides 2-3x speed improvements
+4. **Ruby-Inspired Features** — Collections, conventions, developer happiness
+5. **Unique Innovations** — Property hooks, enums, attributes go beyond Ruby
+6. **Deployment Simplicity** — No application server needed
+7. **Cost Effective** — Better performance = fewer servers = lower costs
+
+## What's Next?
+
+Now that you understand modern PHP's capabilities, we'll dive into Laravel's developer experience in the next chapter. You'll discover how Laravel takes these modern PHP features and builds an incredibly productive framework on top of them.
+
+---
+
+::: tip Continue Learning
+Move on to [Chapter 03: Laravel Developer Experience](/series/rails-developers-love-laravel/chapters/03-laravel-developer-experience) to explore Artisan, Tinker, and Laravel's productivity tools.
+:::
+
+<ProgressTracker seriesId="rails-developers-love-laravel" :totalChapters="11" title="Your Progress" />
+
+<style>
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+
+.comparison-table th,
+.comparison-table td {
+  border: 1px solid #e5e7eb;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.comparison-table th {
+  background: #f9fafb;
+  font-weight: 600;
+}
+
+.feature-box {
+  background: #f0fdf4;
+  border-left: 4px solid #10b981;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 4px;
+}
+
+.performance-box {
+  background: #eff6ff;
+  border-left: 4px solid #3b82f6;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 4px;
+}
+</style>
