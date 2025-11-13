@@ -1002,16 +1002,143 @@ print_r($doubled->all()); // [2, 4, 6, 8]
 ```
 </details>
 
+## Common OOP Pitfalls
+
+### Pitfall 1: Forgetting `parent::__construct()`
+
+```php
+<?php
+class Animal {
+    public function __construct(
+        protected string $name
+    ) {}
+}
+
+// ❌ BAD: Doesn't call parent constructor
+class Dog extends Animal {
+    public function __construct(
+        string $name,
+        private string $breed
+    ) {
+        $this->breed = $breed; // ⚠️ $name never set!
+    }
+}
+
+// ✅ GOOD: Calls parent constructor
+class Dog extends Animal {
+    public function __construct(
+        string $name,
+        private string $breed
+    ) {
+        parent::__construct($name);
+    }
+}
+```
+
+### Pitfall 2: Trait Method Conflicts
+
+```php
+<?php
+trait A {
+    public function test() { return "A"; }
+}
+
+trait B {
+    public function test() { return "B"; }
+}
+
+// ❌ ERROR: Method conflict
+class MyClass {
+    use A, B; // Fatal error: Trait method conflict
+}
+
+// ✅ SOLUTION: Resolve explicitly
+class MyClass {
+    use A, B {
+        A::test insteadof B;  // Use A's test
+        B::test as testB;      // Alias B's test
+    }
+}
+```
+
+### Pitfall 3: Interface Properties
+
+```typescript
+// ✅ TypeScript: Interfaces can have properties
+interface User {
+  name: string;
+  age: number;
+}
+```
+
+```php
+<?php
+// ❌ PHP: Interfaces cannot have properties
+interface User {
+    public string $name; // Parse error!
+}
+
+// ✅ PHP: Use getters/setters
+interface User {
+    public function getName(): string;
+    public function getAge(): int;
+}
+```
+
+### Pitfall 4: Visibility in Interfaces
+
+```php
+<?php
+// ❌ BAD: Interface methods must be public
+interface MyInterface {
+    private function test(): void; // Parse error!
+    protected function foo(): void; // Parse error!
+}
+
+// ✅ GOOD: Only public methods allowed
+interface MyInterface {
+    public function test(): void;
+    public function foo(): void;
+}
+```
+
+### Pitfall 5: Static vs Instance Context
+
+```php
+<?php
+class Counter {
+    private static int $count = 0;
+    private int $instanceCount = 0;
+
+    public function increment(): void {
+        self::$count++;      // ✅ Static property
+        $this->instanceCount++; // ✅ Instance property
+
+        // ❌ WRONG: Can't use $this for static
+        // $this->count++; // Error!
+
+        // ❌ WRONG: Can't use self:: for instance
+        // self::$instanceCount++; // Error!
+    }
+}
+```
+
 ## Key Takeaways
 
-1. **Constructor promotion** makes PHP classes as concise as TypeScript
+1. **Constructor promotion** (PHP 8.0+) makes classes as concise as TypeScript
 2. **Nominal typing** in PHP requires explicit `implements` (unlike TS structural typing)
-3. **Interfaces** can only define methods, not properties
-4. **Traits** provide mixin-like functionality for code reuse
+3. **Interfaces** can only define public methods, not properties
+4. **Traits** provide mixin-like functionality without inheritance limitations
 5. **Abstract classes** work identically in both languages
-6. **Generics** require PHPStan/Psalm docblock annotations
-7. **Magic methods** (`__get`, `__set`, `__toString`, etc.) provide dynamic behavior
+6. **Generics** require PHPStan/Psalm docblock annotations (`@template`)
+7. **Magic methods** (`__get`, `__set`, `__toString`) provide dynamic behavior
 8. **Readonly properties** (PHP 8.1+) work like TypeScript's `readonly`
+9. **Always call `parent::__construct()`** when extending classes with constructors
+10. **Resolve trait conflicts explicitly** using `insteadof` and `as`
+11. **Static context** uses `self::` or `static::`, instance context uses `$this->`
+12. **Visibility inheritance** rules: child methods can be more permissive, not less
+13. **Type covariance** for return types and **contravariance** for parameters (PHP 7.4+)
+14. **Final classes/methods** prevent extension/overriding
 
 ## Comparison Table
 
