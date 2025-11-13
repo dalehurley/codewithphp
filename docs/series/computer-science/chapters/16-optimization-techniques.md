@@ -192,6 +192,54 @@ $result = implode('', $parts);
 
 ## Time vs. Space Trade-offs
 
+```mermaid
+graph TB
+    subgraph "Common Optimization Trade-offs"
+        TRADEOFF["Optimization<br/>Trade-offs"]
+
+        subgraph "Time for Space"
+            T1["Memoization/Caching<br/>Store results → Faster lookups"]
+            T2["Hash Tables<br/>Extra memory → O(1) lookups"]
+            T3["Precomputation<br/>Store results → Instant access"]
+        end
+
+        subgraph "Space for Time"
+            S1["In-place Algorithms<br/>No extra memory → Slower"]
+            S2["Streaming Processing<br/>Small memory → Multiple passes"]
+            S3["Compression<br/>Less storage → CPU overhead"]
+        end
+
+        subgraph "Complexity Trade-offs"
+            C1["Simple & Slow<br/>O(n²) bubble sort<br/>Easy to understand"]
+            C2["Complex & Fast<br/>O(n log n) merge sort<br/>More code"]
+        end
+
+        TRADEOFF --> T1
+        TRADEOFF --> T2
+        TRADEOFF --> T3
+        TRADEOFF --> S1
+        TRADEOFF --> S2
+        TRADEOFF --> S3
+        TRADEOFF --> C1
+        TRADEOFF --> C2
+    end
+
+    DECISION["Decision Factors:<br/>• Data size<br/>• Memory limits<br/>• Speed requirements<br/>• Code maintainability"]
+
+    style TRADEOFF fill:#2196F3,color:#fff
+    style T1 fill:#4CAF50
+    style T2 fill:#4CAF50
+    style T3 fill:#4CAF50
+    style S1 fill:#FF9800
+    style S2 fill:#FF9800
+    style S3 fill:#FF9800
+    style C1 fill:#FFD700
+    style C2 fill:#9C27B0,color:#fff
+    style DECISION fill:#F44336,color:#fff
+```
+
+**Key Principle**: There's no free lunch - every optimization has a cost!
+
 ### Example 1: Two Sum
 
 ```php
