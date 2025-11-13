@@ -23,6 +23,51 @@ In this chapter, you'll learn:
 
 ## CS in the Request-Response Cycle
 
+```mermaid
+graph TB
+    CLIENT["Client Browser"]
+
+    subgraph "Web Server Layer"
+        ROUTER["Router (Trie Tree)<br/>O(L) route matching<br/>L = URL length"]
+        SESSION["Session Storage<br/>(Hash Table)<br/>O(1) get/set"]
+        CONTROLLER["Controller Logic"]
+    end
+
+    subgraph "Application Layer"
+        CACHE["Cache Layer<br/>(Hash Table + LRU)<br/>O(1) lookups"]
+        QUEUE["Job Queue<br/>(Queue/Priority Queue)<br/>FIFO/Priority processing"]
+        SEARCH["Search Service<br/>(Binary Search/Full-text)<br/>O(log n) or O(1)"]
+    end
+
+    subgraph "Data Layer"
+        INDEX["Database Indexes<br/>(B-Tree)<br/>O(log n) lookups"]
+        PRIMARY["Primary Keys<br/>(Hash Table)<br/>O(1) lookups"]
+        RELATIONS["Relationships<br/>(Graph)<br/>BFS/DFS traversal"]
+    end
+
+    CLIENT -->|"HTTP Request"| ROUTER
+    ROUTER --> SESSION
+    SESSION --> CONTROLLER
+    CONTROLLER --> CACHE
+    CONTROLLER --> QUEUE
+    CONTROLLER --> SEARCH
+    CONTROLLER --> INDEX
+    CONTROLLER --> PRIMARY
+    CONTROLLER --> RELATIONS
+
+    style CLIENT fill:#2196F3,color:#fff
+    style ROUTER fill:#4CAF50
+    style SESSION fill:#4CAF50
+    style CACHE fill:#FF9800
+    style QUEUE fill:#FF9800
+    style SEARCH fill:#FF9800
+    style INDEX fill:#9C27B0,color:#fff
+    style PRIMARY fill:#9C27B0,color:#fff
+    style RELATIONS fill:#9C27B0,color:#fff
+```
+
+**Every layer uses CS concepts**: Routing uses tries, sessions use hash tables, queues process jobs, databases use B-trees and graphs!
+
 ### Hash Tables → Session Storage
 
 ```php
@@ -83,6 +128,53 @@ $router->get('/users/:id/posts', 'PostController@index');
 ```
 
 ## Data Structures in Databases
+
+```mermaid
+graph TB
+    subgraph "Database Index Structures"
+        QUERY["SQL Query"]
+
+        subgraph "B-Tree Index (ORDER BY, RANGE)"
+            BT_ROOT["Root Node<br/>[50]"]
+            BT_L["[10, 25]"]
+            BT_R["[75, 90]"]
+            BT_DATA1["Records 1-20"]
+            BT_DATA2["Records 21-40"]
+            BT_DATA3["Records 61-80"]
+            BT_DATA4["Records 81-100"]
+
+            BT_ROOT --> BT_L
+            BT_ROOT --> BT_R
+            BT_L --> BT_DATA1
+            BT_L --> BT_DATA2
+            BT_R --> BT_DATA3
+            BT_R --> BT_DATA4
+        end
+
+        subgraph "Hash Index (PRIMARY KEY, UNIQUE)"
+            HT["Hash Function<br/>h(key) = index"]
+            HT_0["Bucket 0<br/>id: 5 → Record"]
+            HT_1["Bucket 1<br/>id: 123 → Record"]
+            HT_2["Bucket 2<br/>id: 47 → Record"]
+
+            HT --> HT_0
+            HT --> HT_1
+            HT --> HT_2
+        end
+
+        QUERY -->|"Range queries<br/>WHERE age BETWEEN 20 AND 30"| BT_ROOT
+        QUERY -->|"Exact lookups<br/>WHERE id = 123"| HT
+    end
+
+    COMPARISON["Comparison:<br/>• B-Tree: O(log n), supports ranges<br/>• Hash: O(1), exact matches only<br/>• B-Tree: Disk-optimized (few seeks)<br/>• Hash: Memory-optimized"]
+
+    style QUERY fill:#2196F3,color:#fff
+    style BT_ROOT fill:#4CAF50
+    style HT fill:#FF9800
+    style COMPARISON fill:#FFD700
+```
+
+**Index Selection**: B-trees for ranges and sorting, hash tables for exact lookups!
 
 ### B-Trees → Database Indexes
 
@@ -214,6 +306,53 @@ function suggestFriends(int $userId): array {
 
 ## Design Patterns in Frameworks
 
+```mermaid
+graph TB
+    REQUEST["HTTP Request"]
+
+    subgraph "Laravel Design Patterns in Action"
+        FACADE["Facade Pattern<br/>Cache::put()<br/>Simple interface to complex system"]
+
+        SINGLETON["Singleton Pattern<br/>DB Connection<br/>One instance across app"]
+
+        FACTORY["Factory Pattern<br/>Cache::driver('redis')<br/>Creates different implementations"]
+
+        REPOSITORY["Repository Pattern<br/>UserRepository<br/>Data access abstraction"]
+
+        OBSERVER["Observer Pattern<br/>Event System<br/>UserRegistered → SendEmail"]
+
+        STRATEGY["Strategy Pattern<br/>Cache Drivers<br/>Different algorithms, same interface"]
+
+        DECORATOR["Decorator Pattern<br/>Middleware<br/>Add behavior to request handling"]
+    end
+
+    RESPONSE["HTTP Response"]
+
+    REQUEST --> DECORATOR
+    DECORATOR --> FACADE
+    FACADE --> SINGLETON
+    FACADE --> FACTORY
+    FACTORY --> STRATEGY
+    FACADE --> REPOSITORY
+    REPOSITORY --> OBSERVER
+    OBSERVER --> RESPONSE
+
+    LEGEND["Pattern Usage:<br/>• Facade = Simplified API<br/>• Singleton = Shared resources<br/>• Factory = Object creation<br/>• Repository = Data layer<br/>• Observer = Event handling<br/>• Strategy = Interchangeable algorithms<br/>• Decorator = Middleware layers"]
+
+    style REQUEST fill:#2196F3,color:#fff
+    style FACADE fill:#4CAF50
+    style SINGLETON fill:#FF9800
+    style FACTORY fill:#FFD700
+    style REPOSITORY fill:#9C27B0,color:#fff
+    style OBSERVER fill:#E91E63,color:#fff
+    style STRATEGY fill:#00BCD4
+    style DECORATOR fill:#8BC34A
+    style RESPONSE fill:#4CAF50
+    style LEGEND fill:#607D8B,color:#fff
+```
+
+**Framework Architecture**: Laravel combines multiple design patterns to create clean, maintainable code!
+
 ### Laravel Uses Many Patterns
 
 #### 1. Facade Pattern
@@ -279,6 +418,96 @@ Cache::driver('file')->put('key', 'value');
 ```
 
 ## Performance Optimization with CS
+
+```mermaid
+graph TB
+    START["Performance Problem?"]
+
+    Q1{"What's slow?"}
+
+    DATABASE["Database Queries<br/>Slow"]
+    COMPUTATION["Repeated Calculations<br/>Expensive"]
+    MEMORY["Too Much Memory<br/>Usage"]
+    LOADING["Loading Too Much<br/>Data"]
+
+    subgraph "Database Optimizations"
+        INDEX_OPT["Add Indexes<br/>O(n) → O(log n)"]
+        EAGER["Eager Loading<br/>N+1 → 2 queries"]
+        QUERY_OPT["Query Optimization<br/>Reduce JOINs"]
+    end
+
+    subgraph "Computation Optimizations"
+        CACHE_OPT["Add Caching<br/>Store results, O(1) retrieval"]
+        MEMO["Memoization<br/>Cache function results"]
+        PRECOMP["Precompute<br/>Calculate once, use many"]
+    end
+
+    subgraph "Memory Optimizations"
+        PAGINATION["Pagination<br/>Load in chunks"]
+        STREAMING["Stream Processing<br/>Process incrementally"]
+        LAZY["Lazy Loading<br/>Load on demand"]
+    end
+
+    subgraph "Data Loading Optimizations"
+        CURSOR["Cursor Pagination<br/>Better than offset"]
+        SELECT["Select Specific Fields<br/>Not SELECT *"]
+        BATCH["Batch Operations<br/>Reduce round trips"]
+    end
+
+    MEASURE["Measure Results<br/>Profile again"]
+    DONE["✓ Optimized!"]
+
+    START --> Q1
+    Q1 -->|"Database"| DATABASE
+    Q1 -->|"Computation"| COMPUTATION
+    Q1 -->|"Memory"| MEMORY
+    Q1 -->|"Data Loading"| LOADING
+
+    DATABASE --> INDEX_OPT
+    DATABASE --> EAGER
+    DATABASE --> QUERY_OPT
+
+    COMPUTATION --> CACHE_OPT
+    COMPUTATION --> MEMO
+    COMPUTATION --> PRECOMP
+
+    MEMORY --> PAGINATION
+    MEMORY --> STREAMING
+    MEMORY --> LAZY
+
+    LOADING --> CURSOR
+    LOADING --> SELECT
+    LOADING --> BATCH
+
+    INDEX_OPT --> MEASURE
+    EAGER --> MEASURE
+    QUERY_OPT --> MEASURE
+    CACHE_OPT --> MEASURE
+    MEMO --> MEASURE
+    PRECOMP --> MEASURE
+    PAGINATION --> MEASURE
+    STREAMING --> MEASURE
+    LAZY --> MEASURE
+    CURSOR --> MEASURE
+    SELECT --> MEASURE
+    BATCH --> MEASURE
+
+    MEASURE --> DONE
+
+    style START fill:#2196F3,color:#fff
+    style DATABASE fill:#F44336,color:#fff
+    style COMPUTATION fill:#FF9800
+    style MEMORY fill:#9C27B0,color:#fff
+    style LOADING fill:#E91E63,color:#fff
+    style INDEX_OPT fill:#4CAF50
+    style CACHE_OPT fill:#4CAF50
+    style PAGINATION fill:#4CAF50
+    style CURSOR fill:#4CAF50
+    style MEASURE fill:#FFD700
+    style DONE fill:#4CAF50
+```
+
+**Optimization Strategy**: Identify bottleneck → Apply CS technique → Measure improvement!
 
 ### Caching (Memoization)
 
@@ -447,21 +676,64 @@ class ShoppingCart {
 
 ## The Big Picture
 
-Every line of code you write sits on top of CS fundamentals:
+```mermaid
+graph TB
+    subgraph "Technology Stack: CS at Every Layer"
+        APP["Your PHP Application<br/>E-commerce, CMS, API"]
 
+        FRAMEWORK["Framework Layer<br/>Laravel/Symfony"]
+        FW_PATTERNS["Design Patterns:<br/>• Facade, Factory, Observer<br/>• Repository, Strategy<br/>• Dependency Injection"]
+
+        LANGUAGE["PHP Language Runtime"]
+        LANG_DS["Data Structures:<br/>• Arrays (Hash Tables)<br/>• SPL Collections<br/>• Iterators"]
+        LANG_ALGO["Algorithms:<br/>• array_merge (merge sort)<br/>• usort (Timsort)<br/>• in_array (linear search)"]
+
+        DATABASE["Database System<br/>MySQL/PostgreSQL"]
+        DB_DS["Data Structures:<br/>• B-Trees (indexes)<br/>• Hash Tables (primary keys)<br/>• Graphs (foreign keys)"]
+        DB_ALGO["Algorithms:<br/>• Query optimization<br/>• Join algorithms<br/>• Transaction isolation"]
+
+        OS["Operating System<br/>Linux/Windows"]
+        OS_CONCEPTS["CS Concepts:<br/>• Process scheduling<br/>• Memory management<br/>• File systems (trees)"]
+
+        HARDWARE["Computer Hardware"]
+        HW_CONCEPTS["Fundamentals:<br/>• Binary operations<br/>• Cache hierarchies<br/>• CPU architecture"]
+    end
+
+    CS["Computer Science Fundamentals<br/>The Foundation of Everything"]
+
+    APP --> FRAMEWORK
+    FRAMEWORK --> FW_PATTERNS
+    FW_PATTERNS --> LANGUAGE
+    LANGUAGE --> LANG_DS
+    LANGUAGE --> LANG_ALGO
+    LANG_DS --> DATABASE
+    LANG_ALGO --> DATABASE
+    DATABASE --> DB_DS
+    DATABASE --> DB_ALGO
+    DB_DS --> OS
+    DB_ALGO --> OS
+    OS --> OS_CONCEPTS
+    OS_CONCEPTS --> HARDWARE
+    HARDWARE --> HW_CONCEPTS
+    HW_CONCEPTS --> CS
+
+    style APP fill:#2196F3,color:#fff
+    style FRAMEWORK fill:#4CAF50
+    style FW_PATTERNS fill:#8BC34A
+    style LANGUAGE fill:#FF9800
+    style LANG_DS fill:#FFB74D
+    style LANG_ALGO fill:#FFB74D
+    style DATABASE fill:#9C27B0,color:#fff
+    style DB_DS fill:#BA68C8
+    style DB_ALGO fill:#BA68C8
+    style OS fill:#F44336,color:#fff
+    style OS_CONCEPTS fill:#E57373
+    style HARDWARE fill:#607D8B,color:#fff
+    style HW_CONCEPTS fill:#90A4AE
+    style CS fill:#FFD700
 ```
-Your PHP Code
-    ↓
-Laravel/Symfony Framework (Design Patterns)
-    ↓
-PHP Language (Algorithms & Data Structures)
-    ↓
-Database (B-trees, Hash Tables, Query Optimization)
-    ↓
-Operating System (Scheduling, Memory Management)
-    ↓
-Computer Science Fundamentals
-```
+
+**Every layer relies on CS**: Understanding these fundamentals makes you a better developer at every level!
 
 Understanding these layers makes you a better developer.
 
