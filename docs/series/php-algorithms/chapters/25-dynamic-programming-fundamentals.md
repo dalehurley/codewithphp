@@ -91,6 +91,340 @@ print_r($fib->getMemo());
 // Time: O(n), Space: O(n)
 ```
 
+## DP State Transition Visualization
+
+Understanding how dynamic programming builds solutions:
+
+```php
+<?php
+
+class DPStateVisualizer
+{
+    // Visualize Fibonacci DP state transitions
+    public function visualizeFibonacci(int $n): void
+    {
+        echo "=== Fibonacci DP State Transitions ===\n\n";
+        echo "Computing fib($n)\n\n";
+
+        // Show naive recursive approach
+        echo "Without DP (Exponential - many repeated calculations):\n";
+        echo "fib($n)\n";
+        if ($n >= 2) {
+            echo "├─ fib(" . ($n-1) . ")\n";
+            echo "│  ├─ fib(" . ($n-2) . ") [REPEATED]\n";
+            echo "│  └─ fib(" . ($n-3) . ")\n";
+            echo "└─ fib(" . ($n-2) . ") [REPEATED]\n";
+            echo "   ├─ fib(" . ($n-3) . ") [REPEATED]\n";
+            echo "   └─ fib(" . ($n-4) . ")\n";
+        }
+        echo "\nWith DP (Linear - each value computed once):\n";
+
+        $dp = [];
+        for ($i = 0; $i <= $n; $i++) {
+            if ($i <= 1) {
+                $dp[$i] = $i;
+                echo "dp[$i] = $i (base case)\n";
+            } else {
+                $dp[$i] = $dp[$i-1] + $dp[$i-2];
+                echo "dp[$i] = dp[" . ($i-1) . "] + dp[" . ($i-2) . "] = {$dp[$i-1]} + {$dp[$i-2]} = {$dp[$i]}\n";
+            }
+        }
+
+        echo "\nFinal answer: fib($n) = {$dp[$n]}\n";
+        echo "DP table: [" . implode(', ', $dp) . "]\n";
+    }
+
+    // Visualize coin change DP table construction
+    public function visualizeCoinChange(array $coins, int $amount): void
+    {
+        echo "\n=== Coin Change DP Table Construction ===\n\n";
+        echo "Coins: [" . implode(', ', $coins) . "], Amount: $amount\n\n";
+
+        $dp = array_fill(0, $amount + 1, PHP_INT_MAX);
+        $dp[0] = 0;
+
+        echo "Initial: dp[0] = 0 (0 coins needed for amount 0)\n";
+        echo "All others: ∞ (impossible initially)\n\n";
+
+        for ($i = 1; $i <= $amount; $i++) {
+            echo "Computing dp[$i] (minimum coins for amount $i):\n";
+
+            foreach ($coins as $coin) {
+                if ($coin <= $i && $dp[$i - $coin] !== PHP_INT_MAX) {
+                    $newValue = $dp[$i - $coin] + 1;
+                    echo "  Try coin $coin: dp[$i - $coin] + 1 = {$dp[$i - $coin]} + 1 = $newValue\n";
+
+                    if ($newValue < $dp[$i]) {
+                        $dp[$i] = $newValue;
+                        echo "    → Update dp[$i] = $newValue\n";
+                    }
+                }
+            }
+
+            $result = $dp[$i] === PHP_INT_MAX ? '∞' : $dp[$i];
+            echo "  Final: dp[$i] = $result\n\n";
+        }
+
+        echo "Complete DP table:\n";
+        echo "Amount: ";
+        for ($i = 0; $i <= $amount; $i++) {
+            printf("%4d", $i);
+        }
+        echo "\nCoins:  ";
+        for ($i = 0; $i <= $amount; $i++) {
+            $val = $dp[$i] === PHP_INT_MAX ? '∞' : $dp[$i];
+            printf("%4s", $val);
+        }
+        echo "\n";
+    }
+
+    // Visualize LCS DP table
+    public function visualizeLCS(string $text1, string $text2): void
+    {
+        echo "\n=== Longest Common Subsequence DP Table ===\n\n";
+        echo "Text1: \"$text1\"\n";
+        echo "Text2: \"$text2\"\n\n";
+
+        $m = strlen($text1);
+        $n = strlen($text2);
+        $dp = array_fill(0, $m + 1, array_fill(0, $n + 1, 0));
+
+        // Build DP table
+        for ($i = 1; $i <= $m; $i++) {
+            for ($j = 1; $j <= $n; $j++) {
+                if ($text1[$i - 1] === $text2[$j - 1]) {
+                    $dp[$i][$j] = $dp[$i - 1][$j - 1] + 1;
+                } else {
+                    $dp[$i][$j] = max($dp[$i - 1][$j], $dp[$i][$j - 1]);
+                }
+            }
+        }
+
+        // Print DP table
+        echo "DP Table (dp[i][j] = LCS length of text1[0..i-1] and text2[0..j-1]):\n\n";
+        echo "      ";
+        for ($j = 0; $j < $n; $j++) {
+            echo "  " . $text2[$j];
+        }
+        echo "\n";
+
+        for ($i = 0; $i <= $m; $i++) {
+            if ($i === 0) {
+                echo "  ";
+            } else {
+                echo $text1[$i - 1] . " ";
+            }
+
+            for ($j = 0; $j <= $n; $j++) {
+                printf("%3d", $dp[$i][$j]);
+            }
+            echo "\n";
+        }
+
+        echo "\nLCS Length: {$dp[$m][$n]}\n";
+
+        // Show how to trace back
+        echo "\nTraceback (how we got the answer):\n";
+        $i = $m;
+        $j = $n;
+        $lcs = '';
+
+        while ($i > 0 && $j > 0) {
+            if ($text1[$i - 1] === $text2[$j - 1]) {
+                $lcs = $text1[$i - 1] . $lcs;
+                echo "  Match '{$text1[$i-1]}' at ($i,$j) → move diagonal\n";
+                $i--;
+                $j--;
+            } elseif ($dp[$i - 1][$j] > $dp[$i][$j - 1]) {
+                echo "  At ($i,$j): up ({$dp[$i-1][$j]}) > left ({$dp[$i][$j-1]}) → move up\n";
+                $i--;
+            } else {
+                echo "  At ($i,$j): left ({$dp[$i][$j-1]}) >= up ({$dp[$i-1][$j]}) → move left\n";
+                $j--;
+            }
+        }
+
+        echo "\nLCS: \"$lcs\"\n";
+    }
+}
+
+// Example visualizations
+$visualizer = new DPStateVisualizer();
+
+$visualizer->visualizeFibonacci(7);
+/*
+=== Fibonacci DP State Transitions ===
+
+Computing fib(7)
+
+Without DP (Exponential - many repeated calculations):
+fib(7)
+├─ fib(6)
+│  ├─ fib(5) [REPEATED]
+│  └─ fib(4)
+└─ fib(5) [REPEATED]
+   ├─ fib(4) [REPEATED]
+   └─ fib(3)
+
+With DP (Linear - each value computed once):
+dp[0] = 0 (base case)
+dp[1] = 1 (base case)
+dp[2] = dp[1] + dp[0] = 1 + 0 = 1
+dp[3] = dp[2] + dp[1] = 1 + 1 = 2
+dp[4] = dp[3] + dp[2] = 2 + 1 = 3
+dp[5] = dp[4] + dp[3] = 3 + 2 = 5
+dp[6] = dp[5] + dp[4] = 5 + 3 = 8
+dp[7] = dp[6] + dp[5] = 8 + 5 = 13
+
+Final answer: fib(7) = 13
+DP table: [0, 1, 1, 2, 3, 5, 8, 13]
+*/
+
+$visualizer->visualizeCoinChange([1, 5, 10], 12);
+
+$visualizer->visualizeLCS("AGGTAB", "GXTXAYB");
+```
+
+## Memoization vs Tabulation Detailed Comparison
+
+Understanding the tradeoffs between top-down and bottom-up DP:
+
+```php
+<?php
+
+class MemoizationVsTabulation
+{
+    // Memoization (Top-Down) - with call tracking
+    public function fibMemo(int $n, array &$callCount = []): int
+    {
+        static $memo = [];
+        static $calls = 0;
+
+        $calls++;
+        $callCount['total'] = ($callCount['total'] ?? 0) + 1;
+
+        if ($n <= 1) {
+            return $n;
+        }
+
+        if (!isset($memo[$n])) {
+            $callCount['computed'] = ($callCount['computed'] ?? 0) + 1;
+            $memo[$n] = $this->fibMemo($n - 1, $callCount) + $this->fibMemo($n - 2, $callCount);
+        } else {
+            $callCount['cached'] = ($callCount['cached'] ?? 0) + 1;
+        }
+
+        return $memo[$n];
+    }
+
+    // Tabulation (Bottom-Up)
+    public function fibTab(int $n, array &$stats = []): int
+    {
+        if ($n <= 1) {
+            return $n;
+        }
+
+        $dp = [0, 1];
+        $stats['iterations'] = 0;
+
+        for ($i = 2; $i <= $n; $i++) {
+            $dp[$i] = $dp[$i - 1] + $dp[$i - 2];
+            $stats['iterations']++;
+        }
+
+        $stats['space_used'] = count($dp);
+
+        return $dp[$n];
+    }
+
+    // Comparison
+    public function compare(int $n): void
+    {
+        echo "=== Memoization vs Tabulation Comparison (n=$n) ===\n\n";
+
+        // Memoization
+        $memoCallCount = [];
+        $memoStart = microtime(true);
+        $memoResult = $this->fibMemo($n, $memoCallCount);
+        $memoTime = microtime(true) - $memoStart;
+
+        echo "MEMOIZATION (Top-Down):\n";
+        echo "  Result: $memoResult\n";
+        echo "  Time: " . round($memoTime * 1000, 4) . " ms\n";
+        echo "  Function calls: {$memoCallCount['total']}\n";
+        echo "  Computed: " . ($memoCallCount['computed'] ?? 0) . "\n";
+        echo "  From cache: " . ($memoCallCount['cached'] ?? 0) . "\n";
+        echo "  Approach: Recursive (uses call stack)\n";
+        echo "  When to use: When you don't need all subproblems\n\n";
+
+        // Tabulation
+        $tabStats = [];
+        $tabStart = microtime(true);
+        $tabResult = $this->fibTab($n, $tabStats);
+        $tabTime = microtime(true) - $tabStart;
+
+        echo "TABULATION (Bottom-Up):\n";
+        echo "  Result: $tabResult\n";
+        echo "  Time: " . round($tabTime * 1000, 4) . " ms\n";
+        echo "  Iterations: {$tabStats['iterations']}\n";
+        echo "  Array size: {$tabStats['space_used']} elements\n";
+        echo "  Approach: Iterative (no recursion)\n";
+        echo "  When to use: When you need all subproblems\n\n";
+
+        echo "COMPARISON:\n";
+        echo "  Speed: Tabulation is typically faster (no function call overhead)\n";
+        echo "  Space: Memoization may use less (only computes needed values)\n";
+        echo "  Clarity: Memoization often more intuitive (follows recursive logic)\n";
+        echo "  Stack safety: Tabulation avoids stack overflow for large n\n";
+    }
+
+    // Show execution patterns
+    public function visualizeExecutionPatterns(): void
+    {
+        echo "\n=== Execution Pattern Visualization ===\n\n";
+
+        echo "MEMOIZATION (Fibonacci n=5):\n";
+        echo "Call tree:\n";
+        echo "fib(5)\n";
+        echo "├─ fib(4)       [compute]\n";
+        echo "│  ├─ fib(3)    [compute]\n";
+        echo "│  │  ├─ fib(2) [compute]\n";
+        echo "│  │  │  ├─ fib(1) = 1\n";
+        echo "│  │  │  └─ fib(0) = 0\n";
+        echo "│  │  └─ fib(1) = 1\n";
+        echo "│  └─ fib(2)    [from cache!]\n";
+        echo "└─ fib(3)       [from cache!]\n\n";
+
+        echo "TABULATION (Fibonacci n=5):\n";
+        echo "Builds table iteratively:\n";
+        echo "dp[0] = 0\n";
+        echo "dp[1] = 1\n";
+        echo "dp[2] = dp[1] + dp[0] = 1\n";
+        echo "dp[3] = dp[2] + dp[1] = 2\n";
+        echo "dp[4] = dp[3] + dp[2] = 3\n";
+        echo "dp[5] = dp[4] + dp[3] = 5\n";
+        echo "Direct access to result: dp[5] = 5\n\n";
+
+        echo "KEY DIFFERENCES:\n";
+        echo "1. Direction:\n";
+        echo "   Memoization: Top-down (starts from problem, breaks down)\n";
+        echo "   Tabulation:  Bottom-up (starts from base cases, builds up)\n\n";
+
+        echo "2. Order of computation:\n";
+        echo "   Memoization: Computes as needed (lazy evaluation)\n";
+        echo "   Tabulation:  Computes all states in order (eager evaluation)\n\n";
+
+        echo "3. Implementation style:\n";
+        echo "   Memoization: Recursive + cache (natural for many problems)\n";
+        echo "   Tabulation:  Iterative loops (better performance)\n\n";
+    }
+}
+
+$comparator = new MemoizationVsTabulation();
+$comparator->compare(30);
+$comparator->visualizeExecutionPatterns();
+```
+
 ### Generic Memoization Wrapper
 
 ```php
