@@ -77,6 +77,12 @@ const SERIES_COLORS = {
     secondary: '#C44536',
     text: '#FFFFFF',
     overlay: 'rgba(196, 69, 54, 0.7)'
+  },
+  'rails-developers-love-laravel': {
+    primary: '#DC2626',
+    secondary: '#991B1B',
+    text: '#FFFFFF',
+    overlay: 'rgba(153, 27, 27, 0.7)'
   }
 }
 

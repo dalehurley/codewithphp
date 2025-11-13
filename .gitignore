@@ -22,3 +22,5 @@ composer.lock
 GITHUB-PAGES-SETUP.md
 
 .notepads/
+
+.env
