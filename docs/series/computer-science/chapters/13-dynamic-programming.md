@@ -82,6 +82,41 @@ function fibOptimized(int $n): int {
 
 ## Memoization vs. Tabulation
 
+```mermaid
+graph LR
+    subgraph "Memoization (Top-Down)"
+        M1["Start with<br/>original problem"]
+        M2["Recursively<br/>solve subproblems"]
+        M3["Cache results<br/>in memo table"]
+        M4["Return cached<br/>if available"]
+
+        M1 --> M2
+        M2 --> M3
+        M3 --> M4
+        M4 -.->|"Recursive calls"| M2
+    end
+
+    subgraph "Tabulation (Bottom-Up)"
+        T1["Start with<br/>base cases"]
+        T2["Iteratively build<br/>table from bottom"]
+        T3["Fill table using<br/>previous results"]
+        T4["Return final<br/>table value"]
+
+        T1 --> T2
+        T2 --> T3
+        T3 --> T4
+    end
+
+    style M1 fill:#2196F3,color:#fff
+    style M2 fill:#4CAF50
+    style M3 fill:#FFD700
+    style M4 fill:#9C27B0,color:#fff
+    style T1 fill:#FF9800
+    style T2 fill:#4CAF50
+    style T3 fill:#FFD700
+    style T4 fill:#9C27B0,color:#fff
+```
+
 | Approach | Direction | Implementation | Space | When to Use |
 |----------|-----------|----------------|-------|-------------|
 | **Memoization** | Top-down | Recursive + cache | O(n) + recursion stack | Natural recursion, not all subproblems needed |
@@ -142,6 +177,28 @@ echo knapsack($weights, $values, 5); // 22
 ```
 
 ### 3. Longest Common Subsequence (LCS)
+
+```mermaid
+graph TB
+    subgraph "LCS DP Table: 'ACE' vs 'ABCDE'"
+        TABLE["
+        <br/>    '' A  B  C  D  E
+        <br/>''   0  0  0  0  0  0
+        <br/>A    0  1  1  1  1  1
+        <br/>C    0  1  1  2  2  2
+        <br/>E    0  1  1  2  2  3
+        <br/>
+        <br/>LCS length = 3 ('ACE')
+        "]
+
+        RULE["Rules:<br/>• Match: dp[i][j] = 1 + dp[i-1][j-1]<br/>• No match: max(dp[i-1][j], dp[i][j-1])"]
+    end
+
+    style TABLE fill:#4CAF50
+    style RULE fill:#2196F3,color:#fff
+```
+
+**How it works**: Build table comparing each character. Bottom-right = answer!
 
 ```php
 <?php
