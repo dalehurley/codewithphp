@@ -152,6 +152,7 @@ export default withMermaid(
           text: 'Series',
           items: [
             { text: 'PHP Basics', link: '/series/php-basics/' },
+            { text: 'Computer Science Fundamentals', link: '/series/computer-science/' },
             { text: 'AI/ML for PHP Developers', link: '/series/ai-ml-php-developers/' },
             { text: 'Why Python Developers Will Love PHP and Laravel', link: '/series/python-developers-love-php-laravel/' },
           ]
@@ -348,6 +349,36 @@ export default withMermaid(
                 text: '10 — Bonus: Hands-On Mini Project',
                 link: '/series/python-developers-love-php-laravel/chapters/10-bonus-hands-on-mini-project'
               }
+            ]
+          }
+        ],
+
+        '/series/computer-science/': [
+          { text: 'Overview', link: '/series/computer-science/' },
+          {
+            text: 'Chapters',
+            items: [
+              { text: '00 — Computational Thinking and Problem Solving', link: '/series/computer-science/chapters/00-computational-thinking' },
+              { text: '01 — Algorithm Analysis and Big O Notation', link: '/series/computer-science/chapters/01-algorithm-analysis-big-o' },
+              { text: '02 — Arrays and Dynamic Lists', link: '/series/computer-science/chapters/02-arrays-and-lists' },
+              { text: '03 — Stacks and Queues', link: '/series/computer-science/chapters/03-stacks-and-queues' },
+              { text: '04 — Linked Lists', link: '/series/computer-science/chapters/04-linked-lists' },
+              { text: '05 — Trees and Binary Search Trees', link: '/series/computer-science/chapters/05-trees-and-binary-trees' },
+              { text: '06 — Hash Tables and Hash Functions', link: '/series/computer-science/chapters/06-hash-tables' },
+              { text: '07 — Sorting Algorithms', link: '/series/computer-science/chapters/07-sorting-algorithms' },
+              { text: '08 — Searching Algorithms', link: '/series/computer-science/chapters/08-searching-algorithms' },
+              { text: '09 — Recursion and Recursive Thinking', link: '/series/computer-science/chapters/09-recursion' },
+              { text: '10 — Graph Algorithms', link: '/series/computer-science/chapters/10-graph-algorithms' },
+              { text: '11 — Greedy Algorithms', link: '/series/computer-science/chapters/11-greedy-algorithms' },
+              { text: '12 — Backtracking and Constraint Satisfaction', link: '/series/computer-science/chapters/12-backtracking' },
+              { text: '13 — Dynamic Programming', link: '/series/computer-science/chapters/13-dynamic-programming' },
+              { text: '14 — Design Patterns in PHP', link: '/series/computer-science/chapters/14-design-patterns' },
+              { text: '15 — Computational Complexity and P vs NP', link: '/series/computer-science/chapters/15-computational-complexity' },
+              { text: '16 — Optimization Techniques and Trade-offs', link: '/series/computer-science/chapters/16-optimization-techniques' },
+              { text: '17 — System Design Basics', link: '/series/computer-science/chapters/17-system-design-basics' },
+              { text: '18 — Problem Solving Strategies', link: '/series/computer-science/chapters/18-problem-solving-strategies' },
+              { text: '19 — Technical Interview Preparation', link: '/series/computer-science/chapters/19-technical-interview-preparation' },
+              { text: '20 — Computer Science in Modern Web Development', link: '/series/computer-science/chapters/20-cs-in-web-development' }
             ]
           }
         ],
