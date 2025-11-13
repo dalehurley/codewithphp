@@ -595,6 +595,552 @@ for ($i = 0; $i < 1000; $i++) {
 $result = implode(',', $parts);
 ```
 
+## Professional Profiling Tools
+
+While our custom benchmark class is useful, production applications benefit from professional tools.
+
+### Xdebug Profiler
+
+Xdebug provides detailed profiling with function call traces:
+
+```php
+// Enable in php.ini
+// xdebug.mode = profile
+// xdebug.output_dir = /tmp/xdebug
+// xdebug.profiler_output_name = cachegrind.out.%p
+
+function complexOperation(): void
+{
+    // Your code here
+    processData();
+    queryDatabase();
+    renderTemplate();
+}
+
+// Generates cachegrind.out file
+// Analyze with: qcachegrind cachegrind.out.12345
+```
+
+**Xdebug provides:**
+- Function call times
+- Memory usage per function
+- Call graphs
+- Number of invocations
+
+### Blackfire.io
+
+Professional PHP profiler with beautiful visualizations:
+
+```php
+// Install Blackfire probe and CLI
+// Then profile any script:
+
+// blackfire run php your-script.php
+
+// Or profile web requests via browser extension
+// Provides: flame graphs, call graphs, recommendations
+```
+
+**Blackfire features:**
+- Comparison between profiles
+- Automated performance testing
+- Production-safe profiling
+- SQL query analysis
+
+### Tideways / XHProf
+
+Lightweight profilers suitable for production:
+
+```php
+// Start profiling
+xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
+
+// Your application code
+yourApplication();
+
+// Stop profiling and get data
+$xhprof_data = xhprof_disable();
+
+// Save or display results
+print_r($xhprof_data);
+```
+
+## Profiling in Production
+
+### Safe Production Profiling
+
+```php
+class ProductionProfiler
+{
+    private float $sampleRate = 0.01; // Profile 1% of requests
+
+    public function shouldProfile(): bool
+    {
+        // Only profile a small percentage
+        return (mt_rand() / mt_getrandmax()) < $this->sampleRate;
+    }
+
+    public function profileRequest(callable $handler): mixed
+    {
+        if (!$this->shouldProfile()) {
+            return $handler();
+        }
+
+        // Profile this request
+        $start = hrtime(true);
+        $startMemory = memory_get_usage();
+
+        try {
+            $result = $handler();
+        } finally {
+            $duration = (hrtime(true) - $start) / 1_000_000; // ms
+            $memoryUsed = memory_get_usage() - $startMemory;
+
+            $this->logMetrics([
+                'duration_ms' => $duration,
+                'memory_bytes' => $memoryUsed,
+                'endpoint' => $_SERVER['REQUEST_URI'] ?? 'cli',
+                'timestamp' => time(),
+            ]);
+        }
+
+        return $result;
+    }
+
+    private function logMetrics(array $metrics): void
+    {
+        // Send to logging service (e.g., CloudWatch, Datadog)
+        error_log(json_encode($metrics));
+    }
+}
+
+// Usage in your application
+$profiler = new ProductionProfiler();
+$response = $profiler->profileRequest(function() {
+    return handleRequest();
+});
+```
+
+### Application Performance Monitoring (APM)
+
+Integrate with APM tools for continuous monitoring:
+
+```php
+// New Relic integration example
+class NewRelicMonitor
+{
+    public function trackTransaction(string $name, callable $callback): mixed
+    {
+        if (extension_loaded('newrelic')) {
+            newrelic_name_transaction($name);
+            $startTime = microtime(true);
+        }
+
+        try {
+            return $callback();
+        } finally {
+            if (extension_loaded('newrelic')) {
+                $duration = microtime(true) - $startTime;
+                newrelic_custom_metric('Custom/TransactionTime', $duration);
+            }
+        }
+    }
+
+    public function trackError(\Throwable $e): void
+    {
+        if (extension_loaded('newrelic')) {
+            newrelic_notice_error($e->getMessage(), $e);
+        }
+    }
+}
+```
+
+## Database Query Profiling
+
+Database queries are often the biggest bottleneck:
+
+```php
+class QueryProfiler
+{
+    private array $queries = [];
+
+    public function profile(PDO $pdo, string $sql, array $params = []): mixed
+    {
+        $start = hrtime(true);
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+        $result = $stmt->fetchAll();
+
+        $duration = (hrtime(true) - $start) / 1_000_000; // ms
+
+        $this->queries[] = [
+            'sql' => $sql,
+            'duration' => $duration,
+            'rows' => count($result),
+            'params' => $params,
+        ];
+
+        // Warn on slow queries
+        if ($duration > 100) { // > 100ms
+            error_log("Slow query ({$duration}ms): {$sql}");
+        }
+
+        return $result;
+    }
+
+    public function getReport(): array
+    {
+        $total = array_sum(array_column($this->queries, 'duration'));
+        $slowest = max(array_column($this->queries, 'duration'));
+        $count = count($this->queries);
+
+        return [
+            'query_count' => $count,
+            'total_time' => $total,
+            'average_time' => $count > 0 ? $total / $count : 0,
+            'slowest_query' => $slowest,
+            'queries' => $this->queries,
+        ];
+    }
+
+    public function printReport(): void
+    {
+        $report = $this->getReport();
+
+        echo "\nDatabase Query Report:\n";
+        echo str_repeat('=', 60) . "\n";
+        printf("Total Queries: %d\n", $report['query_count']);
+        printf("Total Time: %.2f ms\n", $report['total_time']);
+        printf("Average Time: %.2f ms\n", $report['average_time']);
+        printf("Slowest Query: %.2f ms\n", $report['slowest_query']);
+        echo str_repeat('=', 60) . "\n\n";
+
+        echo "Individual Queries:\n";
+        foreach ($report['queries'] as $i => $query) {
+            printf(
+                "%d. [%.2f ms] [%d rows] %s\n",
+                $i + 1,
+                $query['duration'],
+                $query['rows'],
+                substr($query['sql'], 0, 80)
+            );
+        }
+    }
+}
+
+// Usage
+$profiler = new QueryProfiler();
+$profiler->profile($pdo, "SELECT * FROM users WHERE active = ?", [1]);
+$profiler->profile($pdo, "SELECT * FROM posts WHERE user_id = ?", [123]);
+$profiler->printReport();
+```
+
+### Detecting N+1 Query Problems
+
+```php
+class N1QueryDetector
+{
+    private array $queryHashes = [];
+    private int $threshold = 10;
+
+    public function logQuery(string $sql): void
+    {
+        // Normalize SQL (remove specific values)
+        $normalized = preg_replace('/\d+/', '?', $sql);
+        $hash = md5($normalized);
+
+        if (!isset($this->queryHashes[$hash])) {
+            $this->queryHashes[$hash] = [
+                'sql' => $normalized,
+                'count' => 0,
+            ];
+        }
+
+        $this->queryHashes[$hash]['count']++;
+
+        // Alert on repeated similar queries
+        if ($this->queryHashes[$hash]['count'] === $this->threshold) {
+            trigger_error(
+                "Potential N+1 query detected: {$normalized} executed {$this->threshold} times",
+                E_USER_WARNING
+            );
+        }
+    }
+}
+```
+
+## Memory Leak Detection
+
+Detect and prevent memory leaks in long-running processes:
+
+```php
+class MemoryLeakDetector
+{
+    private int $baseline;
+    private int $threshold;
+
+    public function __construct(int $thresholdMB = 50)
+    {
+        $this->baseline = memory_get_usage(true);
+        $this->threshold = $thresholdMB * 1024 * 1024;
+    }
+
+    public function check(string $context = ''): void
+    {
+        $current = memory_get_usage(true);
+        $increase = $current - $this->baseline;
+
+        if ($increase > $this->threshold) {
+            $mb = round($increase / 1024 / 1024, 2);
+            trigger_error(
+                "Possible memory leak detected{$context}: {$mb} MB increase",
+                E_USER_WARNING
+            );
+
+            // Optional: dump memory info
+            if (function_exists('memory_get_peak_usage')) {
+                $peak = memory_get_peak_usage(true) / 1024 / 1024;
+                error_log("Peak memory: {$peak} MB");
+            }
+        }
+    }
+
+    public function reset(): void
+    {
+        gc_collect_cycles();
+        $this->baseline = memory_get_usage(true);
+    }
+}
+
+// Usage in long-running script
+$detector = new MemoryLeakDetector(50); // 50 MB threshold
+
+for ($i = 0; $i < 10000; $i++) {
+    processItem($i);
+
+    if ($i % 1000 === 0) {
+        $detector->check(" at iteration {$i}");
+        $detector->reset(); // Reset baseline periodically
+    }
+}
+```
+
+## CI/CD Integration
+
+Automate performance testing in your deployment pipeline:
+
+### GitHub Actions Example
+
+```yaml
+# .github/workflows/performance.yml
+name: Performance Tests
+
+on: [pull_request]
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: xdebug
+
+      - name: Install Dependencies
+        run: composer install
+
+      - name: Run Benchmarks
+        run: php tests/benchmarks/run-all.php --output=json > results.json
+
+      - name: Compare with Baseline
+        run: php tests/benchmarks/compare.php results.json baseline.json
+
+      - name: Comment on PR
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const results = JSON.parse(fs.readFileSync('results.json'));
+            // Post results as PR comment
+```
+
+### Automated Benchmark Script
+
+```php
+// tests/benchmarks/run-all.php
+class BenchmarkRunner
+{
+    private array $results = [];
+
+    public function runAll(): void
+    {
+        $this->results['sorting'] = $this->benchmarkSorting();
+        $this->results['searching'] = $this->benchmarkSearching();
+        $this->results['database'] = $this->benchmarkDatabase();
+    }
+
+    private function benchmarkSorting(): array
+    {
+        $bench = new Benchmark();
+        $data = $this->generateTestData(1000);
+
+        return [
+            'bubble_sort' => $bench->run('bubble', fn() => bubbleSort($data), 10),
+            'quick_sort' => $bench->run('quick', fn() => quickSort($data), 10),
+            'php_sort' => $bench->run('native', function() use ($data) {
+                sort($data);
+                return $data;
+            }, 10),
+        ];
+    }
+
+    public function compareWithBaseline(array $baseline): array
+    {
+        $regressions = [];
+
+        foreach ($this->results as $category => $tests) {
+            foreach ($tests as $test => $time) {
+                $baselineTime = $baseline[$category][$test] ?? null;
+
+                if ($baselineTime && $time > $baselineTime * 1.1) {
+                    $increase = (($time / $baselineTime) - 1) * 100;
+                    $regressions[] = [
+                        'test' => "{$category}.{$test}",
+                        'baseline' => $baselineTime,
+                        'current' => $time,
+                        'increase' => $increase,
+                    ];
+                }
+            }
+        }
+
+        return $regressions;
+    }
+
+    public function outputJSON(): void
+    {
+        echo json_encode($this->results, JSON_PRETTY_PRINT);
+    }
+
+    private function generateTestData(int $size): array
+    {
+        $data = range(1, $size);
+        shuffle($data);
+        return $data;
+    }
+}
+
+// Run benchmarks
+$runner = new BenchmarkRunner();
+$runner->runAll();
+$runner->outputJSON();
+```
+
+### Performance Regression Detection
+
+```php
+class PerformanceGuard
+{
+    private float $maxRegression = 0.10; // 10% slower is a failure
+
+    public function assertPerformance(
+        callable $function,
+        float $baselineMs,
+        string $name = 'test'
+    ): void {
+        $bench = new Benchmark();
+        $actual = $bench->run($name, $function, 100);
+
+        $ratio = $actual / $baselineMs;
+
+        if ($ratio > (1 + $this->maxRegression)) {
+            $increase = ($ratio - 1) * 100;
+            throw new Exception(
+                "{$name} performance regression: {$increase}% slower than baseline"
+            );
+        }
+
+        echo "✓ {$name} passed: {$actual}ms (baseline: {$baselineMs}ms)\n";
+    }
+}
+
+// Usage in tests
+$guard = new PerformanceGuard();
+$guard->assertPerformance(
+    fn() => bubbleSort(range(1, 100)),
+    5.0, // baseline: 5ms
+    'bubble_sort_100'
+);
+```
+
+## Load Testing
+
+Test performance under concurrent load:
+
+```php
+// Simple parallel request simulator
+class LoadTester
+{
+    public function test(string $url, int $requests, int $concurrency): array
+    {
+        $results = [];
+        $batches = ceil($requests / $concurrency);
+
+        for ($batch = 0; $batch < $batches; $batch++) {
+            $start = hrtime(true);
+
+            // Simulate concurrent requests (in reality, use tools like Apache Bench)
+            $batchResults = $this->runBatch($url, min($concurrency, $requests - ($batch * $concurrency)));
+
+            $duration = (hrtime(true) - $start) / 1_000_000_000; // seconds
+            $results = array_merge($results, $batchResults);
+
+            echo "Batch " . ($batch + 1) . " completed: {$duration}s\n";
+        }
+
+        return $this->analyzeResults($results);
+    }
+
+    private function runBatch(string $url, int $count): array
+    {
+        $results = [];
+
+        // In reality, use curl_multi for true parallelism
+        for ($i = 0; $i < $count; $i++) {
+            $start = microtime(true);
+            file_get_contents($url);
+            $duration = microtime(true) - $start;
+            $results[] = $duration;
+        }
+
+        return $results;
+    }
+
+    private function analyzeResults(array $results): array
+    {
+        sort($results);
+        $count = count($results);
+
+        return [
+            'total_requests' => $count,
+            'min' => min($results),
+            'max' => max($results),
+            'mean' => array_sum($results) / $count,
+            'median' => $results[(int)($count / 2)],
+            'p95' => $results[(int)($count * 0.95)],
+            'p99' => $results[(int)($count * 0.99)],
+        ];
+    }
+}
+
+// Better: Use Apache Bench from command line
+// ab -n 1000 -c 10 http://localhost/api/endpoint
+```
+
 ## Practice Exercises
 
 ### Exercise 1: Benchmark Array Functions
@@ -667,6 +1213,45 @@ function processUsers(array $users): array
 <summary>Hint</summary>
 Use benchmarking to isolate each part: email validation, database queries, and counting. The database query in the loop is likely the bottleneck (N+1 query problem).
 </details>
+
+### Exercise 3: Create a Memory Profiler
+
+Build a profiler that tracks memory usage across different operations:
+
+```php
+class MemoryBenchmark
+{
+    // Your implementation here
+    public function profile(string $name, callable $fn): void
+    {
+        // Track memory before and after
+        // Store results
+    }
+
+    public function getResults(): array
+    {
+        // Return all profiled operations
+    }
+}
+
+// Test it on operations that use different amounts of memory
+```
+
+### Exercise 4: Detect Performance Regression
+
+Write a test that fails if performance regresses more than 20%:
+
+```php
+function testSortPerformance(): void
+{
+    $baseline = 10.5; // ms (from previous run)
+
+    // Your code here to:
+    // 1. Benchmark current performance
+    // 2. Compare to baseline
+    // 3. Fail test if >20% slower
+}
+```
 
 ## Key Takeaways
 
