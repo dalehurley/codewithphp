@@ -25,6 +25,30 @@ In this chapter, you'll learn:
 
 **Design patterns**: Proven solutions to recurring design problems.
 
+```mermaid
+graph TB
+    subgraph "Design Pattern Categories"
+        ROOT["Design Patterns<br/>(23 GoF Patterns)"]
+
+        CREATIONAL["Creational Patterns<br/>(Object Creation)"]
+        STRUCTURAL["Structural Patterns<br/>(Object Composition)"]
+        BEHAVIORAL["Behavioral Patterns<br/>(Object Interaction)"]
+
+        ROOT --> CREATIONAL
+        ROOT --> STRUCTURAL
+        ROOT --> BEHAVIORAL
+
+        CREATIONAL --> C1["• Singleton<br/>• Factory<br/>• Builder<br/>• Prototype"]
+        STRUCTURAL --> S1["• Adapter<br/>• Decorator<br/>• Facade<br/>• Proxy"]
+        BEHAVIORAL --> B1["• Observer<br/>• Strategy<br/>• Command<br/>• Iterator"]
+    end
+
+    style ROOT fill:#2196F3,color:#fff
+    style CREATIONAL fill:#4CAF50
+    style STRUCTURAL fill:#FF9800
+    style BEHAVIORAL fill:#9C27B0,color:#fff
+```
+
 **Benefits**:
 - Provide tested solutions
 - Improve code readability
