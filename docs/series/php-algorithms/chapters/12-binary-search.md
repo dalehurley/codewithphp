@@ -11,9 +11,39 @@ prerequisites:
   - "Understanding of sorted arrays"
 ---
 
-# Binary Search
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 12</span>
+</div>
+
+# Binary Search <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
 
 Binary search is one of the most important algorithms every developer should know. It's a fast, elegant algorithm that searches sorted data by repeatedly dividing the search space in half. In this chapter, we'll master binary search and its many variations.
+
+## What You'll Learn
+
+**Estimated time:** 50 minutes
+
+By the end of this chapter, you will:
+
+- Implement binary search achieving O(log n) complexity on sorted arrays
+- Master both iterative and recursive binary search implementations
+- Learn binary search variants: finding first/last occurrence, insertion point, and range queries
+- Understand edge cases and common pitfalls (off-by-one errors, integer overflow)
+- Apply binary search beyond arrays to solve optimization and decision problems
+
+## Prerequisites
+
+Before starting this chapter, ensure you have:
+
+- ✓ Understanding of Big O notation *(60 mins from Chapter 1 if not done)*
+- ✓ Familiarity with recursion *(70 mins from Chapter 3 if not done)*
+- ✓ Understanding of sorted arrays *(basic concept)*
 
 ## The Problem with Linear Search
 

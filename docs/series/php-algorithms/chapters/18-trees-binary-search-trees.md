@@ -11,9 +11,38 @@ prerequisites:
   - "Completion of Chapters 15-17"
 ---
 
-# Trees & Binary Search Trees
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/#choose-your-learning-path">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms/">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 18</span>
+</div>
 
-Trees are hierarchical data structures fundamental to computer science. From file systems to database indexes, trees power many core technologies. In this chapter, we'll explore tree concepts and implement Binary Search Trees (BSTs), one of the most important tree variants.
+# Trees & Binary Search Trees <span class="difficulty-badge difficulty-advanced">Advanced</span>
+
+## What You'll Learn
+
+- Understand tree terminology and hierarchical structures
+- Implement a complete Binary Search Tree (BST) from scratch
+- Master insertion, search, and deletion operations with recursion
+- Analyze BST complexity in best, average, and worst cases
+- Apply BSTs to solve practical problems like range queries and sorting
+
+**Estimated Time**: ~60 minutes
+
+## Prerequisites
+
+Before starting this chapter, you should have:
+
+- ✓ Strong understanding of recursion (covered in Chapter 3)
+- ✓ Familiarity with linked structures from Chapter 16
+- ✓ Completion of Chapters 15-17 (data structures)
+- ✓ Comfort with node-based data structures
+
+Trees are hierarchical data structures fundamental to computer science. From file systems to database indexes, trees power many core technologies. In this chapter, we'll explore tree concepts and implement Binary Search Trees (BSTs), one of the most important tree variants that enables efficient O(log n) searching, insertion, and deletion.
 
 ## What Is a Tree?
 

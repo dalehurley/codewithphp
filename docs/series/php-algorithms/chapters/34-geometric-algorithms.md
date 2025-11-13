@@ -8,11 +8,44 @@ difficulty: "advanced"
 prerequisites: ["Mathematics", "2D Geometry", "Data Structures"]
 ---
 
-# Chapter 34: Geometric Algorithms
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/#choose-your-learning-path">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms/">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 34</span>
+</div>
+
+# Geometric Algorithms <span class="difficulty-badge difficulty-advanced">Advanced</span>
+
+## What You'll Learn
+
+Enter the fascinating world of computational geometry where algorithms solve spatial problems for graphics, games, robotics, and GIS applications. These techniques power everything from collision detection in games to route planning in navigation apps.
+
+- Master fundamental geometric primitives: points, vectors, lines, and polygons
+- Implement collision detection algorithms for game development and physics engines
+- Build convex hull algorithms for shape analysis and pattern recognition
+- Apply spatial indexing techniques for efficient geometric queries
+- Solve real-world problems in mapping, computer graphics, and robotics
+
+**Estimated Time**: ~50 minutes
+
+## Prerequisites
+
+Geometric algorithms blend math and code. You'll need:
+
+- [ ] **Basic geometry** - Understanding of points, lines, angles, and coordinate systems
+- [ ] **Vector mathematics** - Dot product, cross product, and vector operations
+- [ ] **2D coordinate geometry** - Comfort with Cartesian coordinates and transformations
+- [ ] **Data structures** - Arrays, sets, and spatial organization concepts
+
+Ready to solve spatial problems with elegant algorithms? Let's explore computational geometry!
 
 ## Introduction
 
-Computational geometry algorithms solve problems involving geometric objects like points, lines, and polygons. These algorithms are essential for graphics, mapping, CAD, robotics, and game development.
+Computational geometry algorithms solve problems involving geometric objects like points, lines, and polygons. These algorithms are essential for graphics, mapping, CAD, robotics, and game development. They transform abstract geometric problems into efficient, practical solutions that run in real-time applications.
 
 ## Basic Geometric Primitives
 

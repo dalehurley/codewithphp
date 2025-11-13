@@ -8,11 +8,44 @@ difficulty: "advanced"
 prerequisites: ["Hash Functions", "Data Structures", "Statistical Concepts"]
 ---
 
-# Chapter 32: Probabilistic Algorithms
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/#choose-your-learning-path">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms/">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 32</span>
+</div>
+
+# Probabilistic Algorithms <span class="difficulty-badge difficulty-advanced">Advanced</span>
+
+## What You'll Learn
+
+Discover the magic of probabilistic algorithms that achieve the impossible - handling billions of elements with minimal memory by trading perfect accuracy for blazing speed and tiny footprints. These are the secret weapons of big data systems.
+
+- Master space-efficient data structures like Bloom filters and HyperLogLog
+- Implement streaming algorithms that process unlimited data with constant memory
+- Apply Count-Min Sketch for frequency estimation in massive datasets
+- Use probabilistic techniques in production systems handling big data
+- Understand and control the accuracy/efficiency trade-offs in your applications
+
+**Estimated Time**: ~50 minutes
+
+## Prerequisites
+
+This advanced chapter combines multiple concepts. You'll need:
+
+- [ ] **Hash functions understanding** - How hashing works and its properties (Chapter on Hash Tables)
+- [ ] **Data structures foundations** - Arrays, sets, and their operations
+- [ ] **Statistical concepts** - Basic probability and error rates
+- [ ] **Big data awareness** - Understanding of challenges with massive datasets
+
+Ready to handle billions of data points with kilobytes of memory? Let's explore probabilistic algorithms!
 
 ## Introduction
 
-Probabilistic algorithms trade perfect accuracy for dramatic improvements in space and time efficiency. These algorithms are essential for handling massive datasets where exact solutions are impractical or impossible.
+Probabilistic algorithms trade perfect accuracy for dramatic improvements in space and time efficiency. These algorithms are essential for handling massive datasets where exact solutions are impractical or impossible. Instead of guaranteeing 100% accuracy, they provide answers with a controlled error rate - and that's often exactly what you need in production systems dealing with big data.
 
 ## Understanding Probabilistic Data Structures
 

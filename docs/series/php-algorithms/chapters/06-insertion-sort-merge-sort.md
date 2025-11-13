@@ -11,9 +11,51 @@ prerequisites:
   - "Familiarity with recursion"
 ---
 
-# Insertion Sort & Merge Sort
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 06</span>
+</div>
+
+# Insertion Sort & Merge Sort <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
 
 In this chapter, we'll explore two more sorting algorithms: **Insertion Sort**, which is simple and efficient for small arrays, and **Merge Sort**, our first O(n log n) sorting algorithm using divide-and-conquer.
+
+## What You'll Learn
+
+**Estimated time:** 60 minutes
+
+By the end of this chapter, you will:
+
+- Implement Insertion Sort and understand its O(n²) worst case but O(n) best case performance
+- Master the divide-and-conquer strategy with Merge Sort achieving O(n log n) complexity
+- Understand stable sorting and why it matters for maintaining relative order
+- Learn when Insertion Sort outperforms advanced algorithms (small or nearly-sorted arrays)
+- Implement the merge operation efficiently with minimal memory overhead
+
+## Prerequisites
+
+Before starting this chapter, ensure you have:
+
+- ✓ Understanding of Big O notation *(60 mins from Chapter 1 if not done)*
+- ✓ Completion of Chapter 05 (Bubble & Selection Sort) *(55 mins if not done)*
+- ✓ Familiarity with recursion *(70 mins from Chapter 3 if not done)*
+
+## Quick Checklist
+
+Complete these hands-on tasks as you work through the chapter:
+
+- [ ] Implement Insertion Sort with proper shifting of elements
+- [ ] Test Insertion Sort on nearly-sorted data to observe O(n) best-case performance
+- [ ] Implement Merge Sort using recursive divide-and-conquer approach
+- [ ] Write the merge() helper function to combine two sorted arrays
+- [ ] Benchmark Insertion Sort vs Merge Sort on various dataset sizes (100, 1000, 10000)
+- [ ] Verify stable sorting property by sorting objects with equal keys
+- [ ] (Optional) Implement iterative (bottom-up) Merge Sort
 
 ## Insertion Sort
 

@@ -8,13 +8,46 @@ difficulty: "advanced"
 prerequisites: ["Security Basics", "Hash Functions", "Number Theory"]
 ---
 
-# Chapter 35: Cryptographic Algorithms
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/#choose-your-learning-path">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms/">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 35</span>
+</div>
+
+# Cryptographic Algorithms <span class="difficulty-badge difficulty-advanced">Advanced</span>
+
+## What You'll Learn
+
+Understand the cryptographic algorithms that keep data safe in our digital world. Learn the theory behind encryption, hashing, and signatures while discovering how to use PHP's built-in tools correctly to build secure applications.
+
+- Master cryptographic hash functions and their applications (SHA-256, HMAC)
+- Implement secure password hashing with modern algorithms (Argon2, bcrypt)
+- Understand encryption fundamentals and when to use symmetric vs asymmetric encryption
+- Apply digital signatures and message authentication for data integrity
+- Avoid common cryptographic mistakes that lead to security breaches
+
+**Estimated Time**: ~55 minutes
+
+**IMPORTANT**: This chapter is educational. For production systems, always use well-tested cryptographic libraries like `libsodium` or PHP's built-in functions. Never roll your own crypto!
+
+## Prerequisites
+
+Cryptography combines multiple disciplines. You should have:
+
+- [ ] **Security basics** - Understanding of threats, attacks, and security principles
+- [ ] **Hash functions** - Knowledge of hashing concepts and properties
+- [ ] **Number theory basics** - Familiarity with modular arithmetic and prime numbers
+- [ ] **PHP security awareness** - Understanding of common web vulnerabilities
+
+Ready to learn how cryptography protects our digital world? Let's explore these essential algorithms!
 
 ## Introduction
 
-Cryptographic algorithms protect data confidentiality, integrity, and authenticity. This chapter covers cryptographic fundamentals essential for secure application development in PHP.
-
-**IMPORTANT**: This chapter is educational. For production systems, always use well-tested cryptographic libraries like `libsodium` or PHP's built-in functions.
+Cryptographic algorithms protect data confidentiality, integrity, and authenticity. This chapter covers cryptographic fundamentals essential for secure application development in PHP. You'll learn what these algorithms do, when to use them, and most importantly - how to use PHP's battle-tested implementations correctly.
 
 ## Cryptographic Hash Functions
 

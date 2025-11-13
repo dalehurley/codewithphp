@@ -8,9 +8,42 @@ difficulty: "intermediate"
 prerequisites: ["All previous chapters"]
 ---
 
-# Algorithm Selection Guide
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/#choose-your-learning-path">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms/">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 28</span>
+</div>
 
-Choosing the right algorithm is crucial for application performance. This chapter provides decision trees and guidelines for selecting appropriate algorithms based on problem characteristics.
+# Algorithm Selection Guide <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
+
+## What You'll Learn
+
+Knowing algorithms is one thing - knowing which one to use is what separates great developers from average ones. This chapter gives you the decision-making framework to confidently choose the perfect algorithm for any situation.
+
+- Apply systematic decision trees to select optimal algorithms for your use cases
+- Match algorithms to data characteristics (size, distribution, constraints)
+- Balance trade-offs between time complexity, space complexity, and code simplicity
+- Recognize problem patterns and instantly know which algorithm family applies
+- Make informed choices that dramatically improve application performance
+
+**Estimated Time**: ~40 minutes
+
+## Prerequisites
+
+This chapter synthesizes knowledge from throughout the series. You should have:
+
+- [ ] **Completed previous chapters** - Familiarity with sorting, searching, and data structure algorithms
+- [ ] **Big O notation understanding** - Ability to analyze and compare algorithm complexity
+- [ ] **Problem-solving experience** - Have implemented multiple algorithms in practice
+- [ ] **Production context awareness** - Understanding of real-world constraints and requirements
+
+Ready to develop your algorithm selection intuition? Let's build your decision-making framework!
+
+Choosing the right algorithm is crucial for application performance and can mean the difference between a snappy user experience and frustrated users. This chapter provides decision trees, guidelines, and practical wisdom for selecting appropriate algorithms based on problem characteristics, data size, and performance requirements.
 
 ## Sorting Algorithm Selection
 

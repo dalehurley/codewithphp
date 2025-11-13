@@ -8,9 +8,42 @@ difficulty: "advanced"
 prerequisites: ["Algorithm Selection Guide", "Benchmarking & Performance Testing"]
 ---
 
-# Performance Optimization
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/#choose-your-learning-path">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms/">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 29</span>
+</div>
 
-Performance optimization is about making code run faster and use less memory. This chapter covers profiling, benchmarking, and PHP-specific optimization techniques.
+# Performance Optimization <span class="difficulty-badge difficulty-advanced">Advanced</span>
+
+## What You'll Learn
+
+Transform slow, resource-hungry code into lean, mean, performance machines. This chapter reveals the profiling and optimization techniques that top PHP developers use to build lightning-fast applications at scale.
+
+- Master profiling tools to identify bottlenecks scientifically, not by guessing
+- Apply benchmarking methodologies to measure improvements objectively
+- Leverage PHP-specific optimizations including OPcache, JIT, and memory management
+- Optimize algorithms for both speed and memory efficiency simultaneously
+- Implement production-grade performance monitoring and optimization workflows
+
+**Estimated Time**: ~55 minutes
+
+## Prerequisites
+
+This advanced chapter requires both knowledge and experience. Ensure you have:
+
+- [ ] **Algorithm selection skills** - Understanding when to use which algorithms (Chapter 28)
+- [ ] **Benchmarking basics** - Experience measuring code performance
+- [ ] **PHP internals awareness** - Familiarity with how PHP executes code
+- [ ] **Production experience** - Understanding of real-world performance requirements
+
+Let's master the art and science of making PHP applications blazing fast!
+
+Performance optimization is about making code run faster and use less memory while maintaining correctness and readability. This chapter covers profiling, benchmarking, and PHP-specific optimization techniques that can achieve 10x or even 100x performance improvements when applied correctly.
 
 ## Profiling and Measurement
 

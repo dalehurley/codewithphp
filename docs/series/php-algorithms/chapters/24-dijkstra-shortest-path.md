@@ -8,9 +8,38 @@ difficulty: "advanced"
 prerequisites: ["Graph Representations", "Breadth-First Search", "Priority Queues"]
 ---
 
-# Dijkstra's Shortest Path Algorithm
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/#choose-your-learning-path">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms/">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 24</span>
+</div>
 
-Dijkstra's algorithm finds the shortest path from a source vertex to all other vertices in a weighted graph with non-negative edge weights. It's a fundamental algorithm for routing and navigation systems.
+# Dijkstra's Shortest Path Algorithm <span class="difficulty-badge difficulty-advanced">Advanced</span>
+
+## What You'll Learn
+
+- Master Dijkstra's algorithm for shortest path finding in weighted graphs
+- Implement efficient priority queue-based solutions
+- Understand greedy algorithm design and optimality proofs
+- Build practical applications: GPS routing, network optimization
+- Analyze time complexity with different data structure choices
+
+**Estimated Time**: ~65 minutes
+
+## Prerequisites
+
+Before starting this chapter, you should have:
+
+- ✓ Complete understanding of graph representations (Chapter 21)
+- ✓ Mastery of BFS for unweighted shortest paths (Chapter 23)
+- ✓ Knowledge of priority queues and heaps (Chapter 8)
+- ✓ Understanding of greedy algorithm principles
+
+Dijkstra's algorithm finds the shortest path from a source vertex to all other vertices in a weighted graph with non-negative edge weights. Think of it as BFS's smarter cousin that handles weighted edges—it powers GPS navigation, network routing protocols, and game pathfinding. It's a fundamental algorithm for routing and navigation systems that every developer should know.
 
 ## How Dijkstra's Algorithm Works
 

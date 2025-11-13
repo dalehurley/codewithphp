@@ -8,9 +8,38 @@ difficulty: "intermediate"
 prerequisites: ["Arrays & Dynamic Arrays", "Hash Tables & Hash Functions"]
 ---
 
-# Graph Representations
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/#choose-your-learning-path">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms/">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 21</span>
+</div>
 
-Graphs are powerful data structures that model relationships between objects. Understanding how to represent graphs efficiently is fundamental to implementing graph algorithms.
+# Graph Representations <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
+
+## What You'll Learn
+
+- Understand graph terminology (vertices, edges, directed, weighted)
+- Implement adjacency matrix representation for dense graphs
+- Build adjacency list representation for sparse graphs
+- Use edge list representation for simple graph operations
+- Choose the right representation for your specific use case
+
+**Estimated Time**: ~45 minutes
+
+## Prerequisites
+
+Before starting this chapter, you should have:
+
+- ✓ Strong understanding of arrays (Chapter 15)
+- ✓ Knowledge of hash tables (Chapter 13)
+- ✓ Familiarity with object-oriented PHP
+- ✓ Basic understanding of graph concepts
+
+Graphs are powerful data structures that model relationships between objects—from social networks to road maps, from web page links to dependency trees. Understanding how to represent graphs efficiently is fundamental to implementing graph algorithms. The representation you choose can mean the difference between an algorithm that runs in seconds versus one that takes hours!
 
 ## What is a Graph?
 

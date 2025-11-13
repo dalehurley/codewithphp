@@ -8,9 +8,38 @@ difficulty: "intermediate"
 prerequisites: ["Graph Representations", "Recursion Fundamentals", "Stacks & Queues"]
 ---
 
-# Depth-First Search (DFS)
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/#choose-your-learning-path">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms/">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 22</span>
+</div>
 
-Depth-First Search is a fundamental graph traversal algorithm that explores as far as possible along each branch before backtracking. It's the foundation for many graph algorithms.
+# Depth-First Search (DFS) <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
+
+## What You'll Learn
+
+- Master the depth-first search algorithm for graph traversal
+- Implement both recursive and iterative DFS versions
+- Apply DFS to solve cycle detection, path finding, and connected components
+- Understand topological sorting with DFS
+- Build a maze solver using depth-first exploration
+
+**Estimated Time**: ~55 minutes
+
+## Prerequisites
+
+Before starting this chapter, you should have:
+
+- ✓ Complete understanding of graph representations (Chapter 21)
+- ✓ Strong recursion skills (Chapter 3)
+- ✓ Knowledge of stacks and queues (Chapter 17)
+- ✓ Familiarity with visited/seen tracking patterns
+
+Depth-First Search is a fundamental graph traversal algorithm that explores as far as possible along each branch before backtracking—like exploring a maze by always taking the left-most unexplored path until you hit a dead end, then backtracking to try the next option. It's the foundation for many powerful graph algorithms and surprisingly elegant in its simplicity.
 
 ## How DFS Works
 

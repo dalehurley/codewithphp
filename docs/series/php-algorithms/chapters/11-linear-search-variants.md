@@ -11,9 +11,39 @@ prerequisites:
   - "Completion of foundation chapters"
 ---
 
-# Linear Search & Variants
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 11</span>
+</div>
+
+# Linear Search & Variants <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
 
 Linear search is the simplest and most intuitive search algorithm. While it's O(n) and slower than binary search, it's essential to understand and has important use cases. In this chapter, we'll master linear search and explore its variants and optimizations.
+
+## What You'll Learn
+
+**Estimated time:** 45 minutes
+
+By the end of this chapter, you will:
+
+- Master linear search and understand its O(n) complexity for unsorted arrays
+- Learn optimization variants including sentinel search, bidirectional search, and move-to-front
+- Implement recursive and iterative linear search approaches
+- Understand when linear search is the optimal choice despite being "simple"
+- Apply linear search to real-world scenarios including filtering and finding all occurrences
+
+## Prerequisites
+
+Before starting this chapter, ensure you have:
+
+- ✓ Understanding of arrays and loops *(10 mins review if needed)*
+- ✓ Familiarity with Big O notation *(60 mins from Chapter 1 if not done)*
+- ✓ Completion of foundation chapters *(review if needed)*
 
 ## Basic Linear Search
 

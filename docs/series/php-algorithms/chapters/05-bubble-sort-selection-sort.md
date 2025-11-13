@@ -11,11 +11,52 @@ prerequisites:
   - "Completion of Chapters 0-2"
 ---
 
-# Bubble Sort & Selection Sort
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 05</span>
+</div>
+
+# Bubble Sort & Selection Sort <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
 
 Now that we understand algorithm complexity and how to benchmark performance, let's dive into our first sorting algorithms. We'll start with two simple but inefficient sorting algorithms: **Bubble Sort** and **Selection Sort**.
 
 While these algorithms aren't practical for large datasets, they're excellent learning tools that introduce fundamental sorting concepts.
+
+## What You'll Learn
+
+**Estimated time:** 55 minutes
+
+By the end of this chapter, you will:
+
+- Implement Bubble Sort and Selection Sort from scratch in PHP
+- Understand O(n²) time complexity and why it matters for sorting
+- Learn optimization techniques like early termination for nearly-sorted data
+- Benchmark these algorithms against various dataset sizes to validate complexity analysis
+- Recognize when simple sorting algorithms are appropriate vs when to use advanced alternatives
+
+## Prerequisites
+
+Before starting this chapter, ensure you have:
+
+- ✓ Understanding of Big O notation *(60 mins from Chapter 1 if not done)*
+- ✓ Familiarity with arrays and loops *(10 mins review if needed)*
+- ✓ Completion of Chapters 0-2 *(180 mins if not done)*
+
+## Quick Checklist
+
+Complete these hands-on tasks as you work through the chapter:
+
+- [ ] Implement basic Bubble Sort with nested loops
+- [ ] Add optimization flag to detect if array is already sorted (early termination)
+- [ ] Implement Selection Sort by finding minimum element in each pass
+- [ ] Benchmark both algorithms with different array sizes (100, 500, 1000 items)
+- [ ] Compare performance: random, sorted, and reverse-sorted arrays
+- [ ] (Optional) Implement bidirectional Bubble Sort (Cocktail Shaker Sort)
 
 ## Why Learn "Slow" Algorithms?
 

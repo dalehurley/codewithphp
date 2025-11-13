@@ -11,9 +11,51 @@ prerequisites:
   - "Completion of Chapters 0-1"
 ---
 
-# Benchmarking & Performance Testing
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 02</span>
+</div>
+
+# Benchmarking & Performance Testing <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
 
 In the previous chapter, we learned that some algorithms are theoretically faster than others. But how do we **prove** it? How do we measure actual performance in PHP? In this chapter, we'll build a benchmarking framework to test our algorithms and validate our complexity analysis.
+
+## What You'll Learn
+
+**Estimated time:** 75 minutes
+
+By the end of this chapter, you will:
+
+- Build a custom benchmarking framework to measure algorithm performance with nanosecond precision
+- Learn to profile code execution time and memory usage using PHP's built-in tools
+- Understand statistical analysis of benchmark results (min/max/avg/median/stddev) and growth rate patterns
+- Master professional profiling tools like Xdebug, Blackfire, and APM solutions for production use
+- Implement automated performance testing and regression detection in CI/CD pipelines
+
+## Prerequisites
+
+Before starting this chapter, ensure you have:
+
+- ✓ Understanding of Big O notation *(60 mins from Chapter 1 if not done)*
+- ✓ Familiarity with PHP classes *(15 mins review if needed)*
+- ✓ Completion of Chapters 0-1 *(105 mins if not done)*
+
+## Quick Checklist
+
+Complete these hands-on tasks as you work through the chapter:
+
+- [ ] Build the basic `Benchmark` class with `hrtime()` for high-resolution timing
+- [ ] Create `MemoryProfiler` to track memory usage before and after operations
+- [ ] Implement `StatisticalBenchmark` with min/max/avg/median/stddev calculations
+- [ ] Benchmark sorting and searching algorithms with different input sizes
+- [ ] Set up `QueryProfiler` for database query profiling and N+1 detection
+- [ ] Create automated performance tests for CI/CD integration
+- [ ] (Optional) Integrate with Xdebug or Blackfire for advanced profiling
 
 ## Why Benchmark?
 

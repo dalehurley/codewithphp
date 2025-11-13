@@ -11,9 +11,51 @@ prerequisites:
   - "Completion of Chapters 05-06"
 ---
 
-# Quick Sort & Pivot Strategies
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 07</span>
+</div>
+
+# Quick Sort & Pivot Strategies <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
 
 Quick Sort is one of the most important and widely used sorting algorithms. Despite having O(n²) worst-case complexity, it's typically faster than other O(n log n) algorithms in practice due to excellent cache locality and low overhead. In this chapter, we'll master Quick Sort and learn how to optimize it with smart pivot selection.
+
+## What You'll Learn
+
+**Estimated time:** 65 minutes
+
+By the end of this chapter, you will:
+
+- Implement Quick Sort using the divide-and-conquer partitioning approach
+- Master different pivot selection strategies (first, last, middle, random, median-of-three)
+- Understand Quick Sort's O(n log n) average case and O(n²) worst case scenarios
+- Learn optimization techniques including tail recursion and hybrid approaches
+- Apply Quick Sort to real-world scenarios and understand why it's often faster than Merge Sort
+
+## Prerequisites
+
+Before starting this chapter, ensure you have:
+
+- ✓ Understanding of recursion *(70 mins from Chapter 3 if not done)*
+- ✓ Understanding of Big O notation *(60 mins from Chapter 1 if not done)*
+- ✓ Completion of Chapters 05-06 *(115 mins if not done)*
+
+## Quick Checklist
+
+Complete these hands-on tasks as you work through the chapter:
+
+- [ ] Implement basic Quick Sort with the partition function
+- [ ] Try different pivot strategies: first element, last element, middle element
+- [ ] Implement median-of-three pivot selection for better performance
+- [ ] Add random pivot selection to avoid worst-case scenarios
+- [ ] Benchmark Quick Sort against Merge Sort on various datasets
+- [ ] Implement hybrid Quick Sort that switches to Insertion Sort for small subarrays
+- [ ] (Optional) Implement three-way partitioning for handling duplicate elements
 
 ## How Quick Sort Works
 

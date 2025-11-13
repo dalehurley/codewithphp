@@ -8,9 +8,35 @@ difficulty: "beginner"
 prerequisites: []
 ---
 
-# Quick Start Guide
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Quick Start Guide</span>
+</div>
+
+# Quick Start Guide <span class="difficulty-badge difficulty-beginner">Beginner</span>
 
 **Got 5 minutes?** This guide gets you from zero to productive fast. Skip the theory and jump straight to practical solutions.
+
+## What You'll Learn
+
+**Estimated time:** 15 minutes
+
+By the end of this quick start guide, you will:
+
+- Get productive with algorithms immediately using copy-paste ready solutions
+- Learn which algorithm to use for common scenarios (sorting, searching, caching, path-finding)
+- Master the decision tree for algorithm selection based on your data and use case
+- Discover quick performance wins that can 10x your application speed
+- Access framework-specific optimizations for Laravel and Symfony
+
+## Prerequisites
+
+**No prerequisites required** - dive right in! This guide is designed for PHP developers of all levels who want practical solutions now.
 
 ## 🎯 "I Need To..."
 

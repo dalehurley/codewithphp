@@ -11,9 +11,39 @@ prerequisites:
   - "Completion of Chapters 0-3"
 ---
 
-# Problem-Solving Strategies
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 04</span>
+</div>
+
+# Problem-Solving Strategies <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
 
 Now that you understand algorithms, complexity analysis, benchmarking, and recursion, it's time to develop systematic problem-solving strategies. This chapter teaches you how to approach any algorithmic problem with confidence.
+
+## What You'll Learn
+
+**Estimated time:** 65 minutes
+
+By the end of this chapter, you will:
+
+- Master a systematic problem-solving framework for any algorithmic challenge
+- Learn common patterns: two pointers, sliding window, divide-and-conquer, and greedy algorithms
+- Understand when to apply brute force vs optimized solutions based on constraints
+- Develop strategies for breaking down complex problems into manageable sub-problems
+- Apply problem-solving techniques to real-world scenarios with practical PHP examples
+
+## Prerequisites
+
+Before starting this chapter, ensure you have:
+
+- ✓ Understanding of Big O notation *(60 mins from Chapter 1 if not done)*
+- ✓ Familiarity with recursion *(70 mins from Chapter 3 if not done)*
+- ✓ Completion of Chapters 0-3 *(250 mins if not done)*
 
 ## The Problem-Solving Framework
 

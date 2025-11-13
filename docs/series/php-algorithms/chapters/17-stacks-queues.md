@@ -11,9 +11,38 @@ prerequisites:
   - "Completion of Chapter 15"
 ---
 
-# Stacks & Queues
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/#choose-your-learning-path">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms/">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 17</span>
+</div>
 
-Stacks and queues are fundamental linear data structures with restricted access patterns. While they may seem simple, they're incredibly powerful and used everywhere—from function call management to task scheduling. In this chapter, we'll implement both structures and build practical applications.
+# Stacks & Queues <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
+
+## What You'll Learn
+
+- Master the Stack (LIFO) data structure for last-in-first-out operations
+- Implement the Queue (FIFO) data structure for first-in-first-out operations
+- Build practical applications: expression evaluator, undo/redo, task scheduler
+- Understand when to use stacks vs. queues in real-world scenarios
+- Implement both structures using arrays and linked lists
+
+**Estimated Time**: ~45 minutes
+
+## Prerequisites
+
+Before starting this chapter, you should have:
+
+- ✓ Understanding of arrays and their operations
+- ✓ Familiarity with linked lists from Chapter 16
+- ✓ Completion of Chapter 15 (Arrays & Dynamic Arrays)
+- ✓ Basic knowledge of recursion concepts
+
+Stacks and queues are fundamental linear data structures with restricted access patterns. While they may seem simple, they're incredibly powerful and used everywhere—from function call management to task scheduling, browser history to print spoolers. In this chapter, we'll implement both structures and build practical applications that demonstrate their real-world utility.
 
 ## Visual Step-by-Step: Stack Operations
 
