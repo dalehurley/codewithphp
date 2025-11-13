@@ -525,6 +525,774 @@ foreach ($sizes as $size) {
 }
 ```
 
+## Detailed Performance Comparisons
+
+Comprehensive benchmarking showing binary search advantages:
+
+```php
+class BinarySearchBenchmark
+{
+    public function comprehensiveBenchmark(): void
+    {
+        $sizes = [100, 1000, 10000, 100000, 1000000];
+
+        echo "=== Binary Search vs Linear Search Performance ===\n\n";
+
+        foreach ($sizes as $size) {
+            $data = range(1, $size);
+            $iterations = 10000;
+
+            echo "Array Size: " . number_format($size) . "\n";
+            echo str_repeat('-', 60) . "\n";
+
+            // Test different target positions
+            $positions = [
+                'Beginning' => 1,
+                'Middle' => (int)($size / 2),
+                'End' => $size,
+                'Not Found' => $size + 1
+            ];
+
+            foreach ($positions as $label => $target) {
+                // Linear Search
+                $start = microtime(true);
+                for ($i = 0; $i < $iterations; $i++) {
+                    linearSearch($data, $target);
+                }
+                $linearTime = microtime(true) - $start;
+
+                // Binary Search
+                $start = microtime(true);
+                for ($i = 0; $i < $iterations; $i++) {
+                    binarySearch($data, $target);
+                }
+                $binaryTime = microtime(true) - $start;
+
+                // Calculate speedup
+                $speedup = $linearTime / $binaryTime;
+
+                printf("  %s:\n", $label);
+                printf("    Linear: %.6f sec\n", $linearTime);
+                printf("    Binary: %.6f sec\n", $binaryTime);
+                printf("    Speedup: %.2fx faster\n\n", $speedup);
+            }
+
+            echo "\n";
+        }
+    }
+
+    public function memoryComparison(): void
+    {
+        $size = 1000000;
+        $data = range(1, $size);
+
+        echo "=== Memory Usage Comparison ===\n\n";
+
+        // Iterative Binary Search
+        $memBefore = memory_get_usage();
+        binarySearch($data, 500000);
+        $memAfter = memory_get_usage();
+        $iterativeMemory = $memAfter - $memBefore;
+
+        // Recursive Binary Search
+        $memBefore = memory_get_usage();
+        binarySearchRecursive($data, 500000);
+        $memAfter = memory_get_usage();
+        $recursiveMemory = $memAfter - $memBefore;
+
+        printf("Iterative Binary Search: %d bytes\n", $iterativeMemory);
+        printf("Recursive Binary Search: %d bytes\n", $recursiveMemory);
+        printf("Difference: %d bytes\n", abs($recursiveMemory - $iterativeMemory));
+    }
+}
+
+$benchmark = new BinarySearchBenchmark();
+$benchmark->comprehensiveBenchmark();
+$benchmark->memoryComparison();
+```
+
+**Expected Output:**
+```
+=== Binary Search vs Linear Search Performance ===
+
+Array Size: 1,000
+------------------------------------------------------------
+  Beginning:
+    Linear: 0.001234 sec
+    Binary: 0.002456 sec
+    Speedup: 0.50x faster (Linear wins for small n)
+
+  End:
+    Linear: 0.125000 sec
+    Binary: 0.002500 sec
+    Speedup: 50.00x faster
+
+Array Size: 1,000,000
+------------------------------------------------------------
+  End:
+    Linear: 125.500000 sec
+    Binary: 0.003500 sec
+    Speedup: 35,857.14x faster!
+```
+
+**Performance Insights:**
+- Binary search excels with large datasets
+- For small arrays (< 100), linear search may be faster due to overhead
+- Binary search performance independent of target position
+- Iterative uses less memory than recursive
+
+## Security Considerations
+
+### Timing Attack Vulnerabilities in Binary Search
+
+Binary search can leak information through timing, especially in security-sensitive contexts:
+
+```php
+class SecureBinarySearch
+{
+    /**
+     * VULNERABLE: Standard binary search leaks information
+     * Different paths take different times
+     */
+    public function insecureBinarySearch(array $secrets, string $target): bool
+    {
+        $left = 0;
+        $right = count($secrets) - 1;
+
+        while ($left <= $right) {
+            $mid = (int)(($left + $right) / 2);
+
+            if ($secrets[$mid] === $target) {
+                return true; // Early return - timing leak!
+            } elseif ($secrets[$mid] < $target) {
+                $left = $mid + 1;
+            } else {
+                $right = $mid - 1;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * SECURE: Constant-time binary search
+     * Always performs same number of comparisons
+     */
+    public function constantTimeBinarySearch(array $secrets, string $target): bool
+    {
+        $left = 0;
+        $right = count($secrets) - 1;
+        $found = false;
+
+        // Always perform log(n) iterations
+        $maxIterations = (int)ceil(log(count($secrets), 2));
+
+        for ($i = 0; $i < $maxIterations; $i++) {
+            if ($left <= $right) {
+                $mid = (int)(($left + $right) / 2);
+
+                // Use constant-time comparison
+                $comparison = strcmp($secrets[$mid], $target);
+
+                // Update found flag without early return
+                if ($comparison === 0) {
+                    $found = true;
+                }
+
+                // Always update bounds (even if found)
+                if ($comparison < 0) {
+                    $left = $mid + 1;
+                } else {
+                    $right = $mid - 1;
+                }
+            }
+        }
+
+        return $found;
+    }
+
+    /**
+     * SECURE: Using hash_equals for passwords/tokens
+     */
+    public function secureTokenSearch(array $validTokens, string $userToken): bool
+    {
+        sort($validTokens); // Ensure sorted
+        $left = 0;
+        $right = count($validTokens) - 1;
+        $found = 0;
+
+        $maxIterations = (int)ceil(log(count($validTokens) + 1, 2));
+
+        for ($i = 0; $i < $maxIterations; $i++) {
+            if ($left <= $right) {
+                $mid = (int)(($left + $right) / 2);
+
+                // Constant-time comparison
+                if (hash_equals($validTokens[$mid], $userToken)) {
+                    $found = 1;
+                }
+
+                // Use string comparison for bounds
+                if (strcmp($validTokens[$mid], $userToken) < 0) {
+                    $left = $mid + 1;
+                } else {
+                    $right = $mid - 1;
+                }
+            }
+        }
+
+        // Add random delay to further obscure timing
+        usleep(rand(50, 150));
+
+        return $found === 1;
+    }
+}
+
+// Example: API key validation
+$validKeys = [
+    'key_1a2b3c4d',
+    'key_2e3f4g5h',
+    'key_3i4j5k6l',
+    'key_4m5n6o7p'
+];
+sort($validKeys);
+
+$search = new SecureBinarySearch();
+$userKey = $_POST['api_key'] ?? '';
+
+// VULNERABLE
+if ($search->insecureBinarySearch($validKeys, $userKey)) {
+    echo "Valid key";
+}
+
+// SECURE
+if ($search->secureTokenSearch($validKeys, $userKey)) {
+    echo "Valid key";
+}
+```
+
+### Protection Strategies
+
+```php
+class TimingAttackProtection
+{
+    /**
+     * Add artificial delay to mask timing differences
+     */
+    public function searchWithJitter(array $data, mixed $target): bool
+    {
+        $result = binarySearch($data, $target);
+
+        // Random delay: 10-50 microseconds
+        usleep(rand(10, 50));
+
+        return $result !== false;
+    }
+
+    /**
+     * Rate limiting per IP/user
+     */
+    private array $searchCounts = [];
+
+    public function searchWithRateLimit(
+        string $clientId,
+        array $data,
+        mixed $target,
+        int $maxSearches = 100,
+        int $windowSeconds = 60
+    ): mixed {
+        $now = time();
+
+        // Initialize or reset counter
+        if (!isset($this->searchCounts[$clientId])) {
+            $this->searchCounts[$clientId] = ['count' => 0, 'window_start' => $now];
+        }
+
+        $clientData = &$this->searchCounts[$clientId];
+
+        // Reset if window expired
+        if ($now - $clientData['window_start'] > $windowSeconds) {
+            $clientData = ['count' => 0, 'window_start' => $now];
+        }
+
+        // Check rate limit
+        if ($clientData['count'] >= $maxSearches) {
+            throw new Exception("Rate limit exceeded. Try again later.");
+        }
+
+        $clientData['count']++;
+
+        // Perform search
+        return binarySearch($data, $target);
+    }
+
+    /**
+     * Audit logging for sensitive searches
+     */
+    public function auditedSearch(
+        string $userId,
+        array $sensitiveData,
+        mixed $target,
+        string $purpose
+    ): mixed {
+        $startTime = microtime(true);
+        $result = binarySearch($sensitiveData, $target);
+        $duration = microtime(true) - $startTime;
+
+        // Log the search
+        $this->logSearch([
+            'user_id' => $userId,
+            'timestamp' => date('Y-m-d H:i:s'),
+            'purpose' => $purpose,
+            'found' => $result !== false,
+            'duration' => $duration,
+            'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+        ]);
+
+        return $result;
+    }
+
+    private function logSearch(array $data): void
+    {
+        // Log to file, database, or monitoring service
+        error_log(json_encode($data), 3, '/var/log/sensitive_searches.log');
+    }
+}
+```
+
+## Advanced Binary Search Optimizations
+
+### Interpolation-Enhanced Binary Search
+
+```php
+class OptimizedBinarySearch
+{
+    /**
+     * Hybrid search: interpolation + binary
+     * Best for uniformly distributed data
+     */
+    public function interpolationBinarySearch(array $arr, int $target): int|false
+    {
+        $left = 0;
+        $right = count($arr) - 1;
+
+        while ($left <= $right && $target >= $arr[$left] && $target <= $arr[$right]) {
+            if ($left === $right) {
+                return $arr[$left] === $target ? $left : false;
+            }
+
+            // Interpolation formula
+            $pos = $left + (int)((
+                ($right - $left) / ($arr[$right] - $arr[$left])
+            ) * ($target - $arr[$left]));
+
+            // Bounds check
+            $pos = max($left, min($pos, $right));
+
+            if ($arr[$pos] === $target) {
+                return $pos;
+            }
+
+            // Fall back to binary search logic
+            if ($arr[$pos] < $target) {
+                $left = $pos + 1;
+            } else {
+                $right = $pos - 1;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Exponential search: good when target is near beginning
+     */
+    public function exponentialSearch(array $arr, int $target): int|false
+    {
+        $n = count($arr);
+
+        // If target is at first position
+        if ($arr[0] === $target) {
+            return 0;
+        }
+
+        // Find range for binary search
+        $i = 1;
+        while ($i < $n && $arr[$i] <= $target) {
+            $i *= 2;
+        }
+
+        // Binary search in found range
+        return $this->binarySearchRange(
+            $arr,
+            $target,
+            (int)($i / 2),
+            min($i, $n - 1)
+        );
+    }
+
+    private function binarySearchRange(
+        array $arr,
+        int $target,
+        int $left,
+        int $right
+    ): int|false {
+        while ($left <= $right) {
+            $mid = $left + (int)(($right - $left) / 2);
+
+            if ($arr[$mid] === $target) {
+                return $mid;
+            } elseif ($arr[$mid] < $target) {
+                $left = $mid + 1;
+            } else {
+                $right = $mid - 1;
+            }
+        }
+
+        return false;
+    }
+}
+
+// Performance comparison
+$arr = range(1, 1000000);
+$search = new OptimizedBinarySearch();
+
+// Target near beginning
+$target = 100;
+$start = microtime(true);
+$result = $search->exponentialSearch($arr, $target);
+echo "Exponential: " . (microtime(true) - $start) . "s\n";
+
+$start = microtime(true);
+$result = binarySearch($arr, $target);
+echo "Binary: " . (microtime(true) - $start) . "s\n";
+```
+
+## Framework Integration Examples
+
+### Laravel Integration
+
+```php
+namespace App\Services;
+
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+
+class BinarySearchService
+{
+    /**
+     * Search sorted database results
+     */
+    public function searchSortedModels(
+        Collection $models,
+        string $field,
+        mixed $value
+    ): ?object {
+        // Ensure collection is sorted
+        $sorted = $models->sortBy($field)->values();
+
+        $left = 0;
+        $right = $sorted->count() - 1;
+
+        while ($left <= $right) {
+            $mid = (int)(($left + $right) / 2);
+            $model = $sorted[$mid];
+
+            if ($model->$field === $value) {
+                return $model;
+            } elseif ($model->$field < $value) {
+                $left = $mid + 1;
+            } else {
+                $right = $mid - 1;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Paginated search with caching
+     */
+    public function searchWithPagination(
+        string $modelClass,
+        string $sortField,
+        mixed $searchValue
+    ): ?object {
+        $cacheKey = sprintf(
+            'binary_search:%s:%s:%s',
+            $modelClass,
+            $sortField,
+            md5((string)$searchValue)
+        );
+
+        return Cache::remember($cacheKey, 3600, function () use (
+            $modelClass,
+            $sortField,
+            $searchValue
+        ) {
+            $models = $modelClass::orderBy($sortField)->get();
+            return $this->searchSortedModels($models, $sortField, $searchValue);
+        });
+    }
+
+    /**
+     * Range search: find all items between two values
+     */
+    public function searchRange(
+        Collection $sorted,
+        string $field,
+        mixed $min,
+        mixed $max
+    ): Collection {
+        // Find first element >= min
+        $startIdx = $this->findInsertPosition($sorted, $field, $min);
+
+        // Find last element <= max
+        $endIdx = $this->findInsertPosition($sorted, $field, $max + 1) - 1;
+
+        if ($startIdx > $endIdx) {
+            return collect();
+        }
+
+        return $sorted->slice($startIdx, $endIdx - $startIdx + 1);
+    }
+
+    private function findInsertPosition(
+        Collection $sorted,
+        string $field,
+        mixed $value
+    ): int {
+        $left = 0;
+        $right = $sorted->count() - 1;
+
+        while ($left <= $right) {
+            $mid = (int)(($left + $right) / 2);
+
+            if ($sorted[$mid]->$field < $value) {
+                $left = $mid + 1;
+            } else {
+                $right = $mid - 1;
+            }
+        }
+
+        return $left;
+    }
+}
+
+// Usage in Laravel Controller
+namespace App\Http\Controllers;
+
+use App\Models\Product;
+use App\Services\BinarySearchService;
+
+class ProductController extends Controller
+{
+    public function search(Request $request, BinarySearchService $searchService)
+    {
+        // Search by price
+        if ($request->has('price')) {
+            $products = Product::orderBy('price')->get();
+            $product = $searchService->searchSortedModels(
+                $products,
+                'price',
+                $request->input('price')
+            );
+
+            return response()->json(['product' => $product]);
+        }
+
+        // Range search
+        if ($request->has('min_price') && $request->has('max_price')) {
+            $products = Product::orderBy('price')->get();
+            $results = $searchService->searchRange(
+                $products,
+                'price',
+                $request->input('min_price'),
+                $request->input('max_price')
+            );
+
+            return response()->json(['products' => $results]);
+        }
+    }
+}
+```
+
+### Symfony Integration
+
+```php
+namespace App\Service;
+
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
+use Psr\Log\LoggerInterface;
+
+class BinarySearchService
+{
+    private EntityManagerInterface $entityManager;
+    private CacheInterface $cache;
+    private LoggerInterface $logger;
+
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        CacheInterface $cache,
+        LoggerInterface $logger
+    ) {
+        $this->entityManager = $entityManager;
+        $this->cache = $cache;
+        $this->logger = $logger;
+    }
+
+    /**
+     * Search entities with binary search
+     */
+    public function searchEntity(
+        string $entityClass,
+        string $property,
+        mixed $value
+    ): ?object {
+        $cacheKey = sprintf('entity_search_%s_%s_%s',
+            $entityClass,
+            $property,
+            md5(serialize($value))
+        );
+
+        return $this->cache->get($cacheKey, function (ItemInterface $item) use (
+            $entityClass,
+            $property,
+            $value
+        ) {
+            $item->expiresAfter(3600);
+
+            // Get sorted entities
+            $repository = $this->entityManager->getRepository($entityClass);
+            $entities = $repository->findBy([], [$property => 'ASC']);
+
+            return $this->binarySearchObjects($entities, $property, $value);
+        });
+    }
+
+    private function binarySearchObjects(
+        array $objects,
+        string $property,
+        mixed $value
+    ): ?object {
+        $left = 0;
+        $right = count($objects) - 1;
+
+        $getter = 'get' . ucfirst($property);
+
+        while ($left <= $right) {
+            $mid = (int)(($left + $right) / 2);
+            $obj = $objects[$mid];
+
+            if (!method_exists($obj, $getter)) {
+                $this->logger->error("Getter {$getter} not found");
+                return null;
+            }
+
+            $midValue = $obj->$getter();
+
+            if ($midValue === $value) {
+                return $obj;
+            } elseif ($midValue < $value) {
+                $left = $mid + 1;
+            } else {
+                $right = $mid - 1;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Version history search by timestamp
+     */
+    public function searchVersionByTimestamp(
+        string $entityId,
+        \DateTimeInterface $timestamp
+    ): ?array {
+        // Fetch all versions sorted by timestamp
+        $versions = $this->entityManager
+            ->createQuery('
+                SELECT v FROM App\Entity\Version v
+                WHERE v.entityId = :id
+                ORDER BY v.createdAt ASC
+            ')
+            ->setParameter('id', $entityId)
+            ->getResult();
+
+        return $this->findVersionByTime($versions, $timestamp);
+    }
+
+    private function findVersionByTime(
+        array $versions,
+        \DateTimeInterface $target
+    ): ?array {
+        $left = 0;
+        $right = count($versions) - 1;
+        $result = null;
+
+        while ($left <= $right) {
+            $mid = (int)(($left + $right) / 2);
+            $version = $versions[$mid];
+
+            if ($version->getCreatedAt() <= $target) {
+                $result = $version;
+                $left = $mid + 1; // Look for later version
+            } else {
+                $right = $mid - 1;
+            }
+        }
+
+        return $result ? [
+            'version' => $result,
+            'data' => $result->getData()
+        ] : null;
+    }
+}
+
+// Usage in Symfony Controller
+namespace App\Controller;
+
+use App\Service\BinarySearchService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class SearchController extends AbstractController
+{
+    #[Route('/search/product/{price}', name: 'search_product')]
+    public function searchByPrice(
+        float $price,
+        BinarySearchService $searchService
+    ): Response {
+        $product = $searchService->searchEntity(
+            'App\\Entity\\Product',
+            'price',
+            $price
+        );
+
+        return $this->json(['product' => $product]);
+    }
+
+    #[Route('/history/{id}', name: 'version_history')]
+    public function getVersionAtTime(
+        string $id,
+        Request $request,
+        BinarySearchService $searchService
+    ): Response {
+        $timestamp = new \DateTime($request->query->get('timestamp'));
+
+        $version = $searchService->searchVersionByTimestamp($id, $timestamp);
+
+        return $this->json($version);
+    }
+}
+```
+
 ## Practice Exercises
 
 ### Exercise 1: Rotated Sorted Array

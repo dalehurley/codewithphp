@@ -754,6 +754,710 @@ function findDuplicates(array $nums): array
 }
 ```
 
+## Linked List Variants
+
+While the chapter focuses on arrays, understanding linked lists helps appreciate array trade-offs:
+
+### Singly Linked List
+
+```php
+class SinglyLinkedListNode
+{
+    public function __construct(
+        public mixed $data,
+        public ?SinglyLinkedListNode $next = null
+    ) {}
+}
+
+class SinglyLinkedList
+{
+    private ?SinglyLinkedListNode $head = null;
+    private int $size = 0;
+
+    // Insert at beginning - O(1)
+    public function prepend(mixed $data): void
+    {
+        $newNode = new SinglyLinkedListNode($data, $this->head);
+        $this->head = $newNode;
+        $this->size++;
+    }
+
+    // Insert at end - O(n) without tail pointer
+    public function append(mixed $data): void
+    {
+        $newNode = new SinglyLinkedListNode($data);
+
+        if ($this->head === null) {
+            $this->head = $newNode;
+        } else {
+            $current = $this->head;
+            while ($current->next !== null) {
+                $current = $current->next;
+            }
+            $current->next = $newNode;
+        }
+
+        $this->size++;
+    }
+
+    // Search - O(n)
+    public function search(mixed $data): ?SinglyLinkedListNode
+    {
+        $current = $this->head;
+
+        while ($current !== null) {
+            if ($current->data === $data) {
+                return $current;
+            }
+            $current = $current->next;
+        }
+
+        return null;
+    }
+
+    // Delete - O(n)
+    public function delete(mixed $data): bool
+    {
+        if ($this->head === null) {
+            return false;
+        }
+
+        if ($this->head->data === $data) {
+            $this->head = $this->head->next;
+            $this->size--;
+            return true;
+        }
+
+        $current = $this->head;
+        while ($current->next !== null) {
+            if ($current->next->data === $data) {
+                $current->next = $current->next->next;
+                $this->size--;
+                return true;
+            }
+            $current = $current->next;
+        }
+
+        return false;
+    }
+
+    public function toArray(): array
+    {
+        $result = [];
+        $current = $this->head;
+
+        while ($current !== null) {
+            $result[] = $current->data;
+            $current = $current->next;
+        }
+
+        return $result;
+    }
+
+    public function size(): int
+    {
+        return $this->size;
+    }
+}
+```
+
+### Doubly Linked List
+
+```php
+class DoublyLinkedListNode
+{
+    public function __construct(
+        public mixed $data,
+        public ?DoublyLinkedListNode $next = null,
+        public ?DoublyLinkedListNode $prev = null
+    ) {}
+}
+
+class DoublyLinkedList
+{
+    private ?DoublyLinkedListNode $head = null;
+    private ?DoublyLinkedListNode $tail = null;
+    private int $size = 0;
+
+    // Insert at beginning - O(1)
+    public function prepend(mixed $data): void
+    {
+        $newNode = new DoublyLinkedListNode($data);
+
+        if ($this->head === null) {
+            $this->head = $this->tail = $newNode;
+        } else {
+            $newNode->next = $this->head;
+            $this->head->prev = $newNode;
+            $this->head = $newNode;
+        }
+
+        $this->size++;
+    }
+
+    // Insert at end - O(1) with tail pointer
+    public function append(mixed $data): void
+    {
+        $newNode = new DoublyLinkedListNode($data);
+
+        if ($this->tail === null) {
+            $this->head = $this->tail = $newNode;
+        } else {
+            $newNode->prev = $this->tail;
+            $this->tail->next = $newNode;
+            $this->tail = $newNode;
+        }
+
+        $this->size++;
+    }
+
+    // Insert after specific node - O(1)
+    public function insertAfter(DoublyLinkedListNode $node, mixed $data): void
+    {
+        $newNode = new DoublyLinkedListNode($data);
+
+        $newNode->next = $node->next;
+        $newNode->prev = $node;
+
+        if ($node->next !== null) {
+            $node->next->prev = $newNode;
+        } else {
+            $this->tail = $newNode;
+        }
+
+        $node->next = $newNode;
+        $this->size++;
+    }
+
+    // Delete node - O(1) if node reference known
+    public function deleteNode(DoublyLinkedListNode $node): void
+    {
+        if ($node->prev !== null) {
+            $node->prev->next = $node->next;
+        } else {
+            $this->head = $node->next;
+        }
+
+        if ($node->next !== null) {
+            $node->next->prev = $node->prev;
+        } else {
+            $this->tail = $node->prev;
+        }
+
+        $this->size--;
+    }
+
+    // Traverse backward
+    public function toArrayReverse(): array
+    {
+        $result = [];
+        $current = $this->tail;
+
+        while ($current !== null) {
+            $result[] = $current->data;
+            $current = $current->prev;
+        }
+
+        return $result;
+    }
+}
+```
+
+### Circular Linked List
+
+```php
+class CircularLinkedListNode
+{
+    public function __construct(
+        public mixed $data,
+        public ?CircularLinkedListNode $next = null
+    ) {}
+}
+
+class CircularLinkedList
+{
+    private ?CircularLinkedListNode $head = null;
+    private int $size = 0;
+
+    public function append(mixed $data): void
+    {
+        $newNode = new CircularLinkedListNode($data);
+
+        if ($this->head === null) {
+            $this->head = $newNode;
+            $newNode->next = $newNode; // Points to itself
+        } else {
+            // Find last node (the one pointing to head)
+            $current = $this->head;
+            while ($current->next !== $this->head) {
+                $current = $current->next;
+            }
+
+            $current->next = $newNode;
+            $newNode->next = $this->head;
+        }
+
+        $this->size++;
+    }
+
+    public function traverse(int $rounds = 1): array
+    {
+        if ($this->head === null) {
+            return [];
+        }
+
+        $result = [];
+        $current = $this->head;
+        $count = 0;
+        $maxItems = $this->size * $rounds;
+
+        do {
+            $result[] = $current->data;
+            $current = $current->next;
+            $count++;
+        } while ($current !== $this->head && $count < $maxItems);
+
+        return $result;
+    }
+
+    // Josephus problem solver
+    public function josephus(int $k): mixed
+    {
+        if ($this->head === null) {
+            return null;
+        }
+
+        $current = $this->head;
+
+        while ($current->next !== $current) {
+            // Skip k-1 nodes
+            for ($i = 0; $i < $k - 1; $i++) {
+                $current = $current->next;
+            }
+
+            // Remove next node
+            $current->next = $current->next->next;
+        }
+
+        return $current->data;
+    }
+}
+```
+
+## Array vs Linked List Performance Comparison
+
+```php
+class DataStructureComparison
+{
+    public function compareOperations(): void
+    {
+        $sizes = [1000, 10000, 50000];
+
+        echo "=== Array vs Linked List Performance ===\n\n";
+
+        foreach ($sizes as $size) {
+            echo "Size: " . number_format($size) . "\n";
+            echo str_repeat('-', 60) . "\n";
+
+            // Setup
+            $array = range(1, $size);
+            $linkedList = new DoublyLinkedList();
+            for ($i = 1; $i <= $size; $i++) {
+                $linkedList->append($i);
+            }
+
+            // Test: Prepend
+            $start = microtime(true);
+            for ($i = 0; $i < 1000; $i++) {
+                array_unshift($array, $i);
+                array_shift($array); // Remove to maintain size
+            }
+            $arrayPrepend = microtime(true) - $start;
+
+            $start = microtime(true);
+            for ($i = 0; $i < 1000; $i++) {
+                $linkedList->prepend($i);
+                // Would need to remove first for fair comparison
+            }
+            $listPrepend = microtime(true) - $start;
+
+            printf("Prepend 1000 items:\n");
+            printf("  Array:       %.6f sec\n", $arrayPrepend);
+            printf("  Linked List: %.6f sec (%.2fx faster)\n\n",
+                $listPrepend, $arrayPrepend / $listPrepend);
+
+            // Test: Random Access
+            $indices = array_rand(range(0, $size - 1), min(1000, $size));
+
+            $start = microtime(true);
+            foreach ($indices as $idx) {
+                $val = $array[$idx];
+            }
+            $arrayAccess = microtime(true) - $start;
+
+            printf("Random access 1000 times:\n");
+            printf("  Array:       %.6f sec\n", $arrayAccess);
+            printf("  Linked List: O(n) - impractical\n\n");
+
+            // Test: Iteration
+            $start = microtime(true);
+            foreach ($array as $val) {
+                // Iterate
+            }
+            $arrayIter = microtime(true) - $start;
+
+            printf("Full iteration:\n");
+            printf("  Array:       %.6f sec\n", $arrayIter);
+            printf("  Both: Similar O(n) performance\n\n");
+
+            echo "\n";
+        }
+    }
+
+    public function memoryComparison(): void
+    {
+        echo "=== Memory Usage Comparison ===\n\n";
+
+        $size = 10000;
+
+        // Array
+        $memBefore = memory_get_usage();
+        $array = range(1, $size);
+        $arrayMem = memory_get_usage() - $memBefore;
+
+        // Singly Linked List
+        $memBefore = memory_get_usage();
+        $sll = new SinglyLinkedList();
+        for ($i = 1; $i <= $size; $i++) {
+            $sll->append($i);
+        }
+        $sllMem = memory_get_usage() - $memBefore;
+
+        // Doubly Linked List
+        $memBefore = memory_get_usage();
+        $dll = new DoublyLinkedList();
+        for ($i = 1; $i <= $size; $i++) {
+            $dll->append($i);
+        }
+        $dllMem = memory_get_usage() - $memBefore;
+
+        printf("For %s elements:\n", number_format($size));
+        printf("Array:               %s\n", $this->formatBytes($arrayMem));
+        printf("Singly Linked List:  %s (%.2fx more than array)\n",
+            $this->formatBytes($sllMem), $sllMem / $arrayMem);
+        printf("Doubly Linked List:  %s (%.2fx more than array)\n",
+            $this->formatBytes($dllMem), $dllMem / $arrayMem);
+    }
+
+    private function formatBytes(int $bytes): string
+    {
+        $units = ['B', 'KB', 'MB'];
+        $i = 0;
+        while ($bytes >= 1024 && $i < count($units) - 1) {
+            $bytes /= 1024;
+            $i++;
+        }
+        return round($bytes, 2) . ' ' . $units[$i];
+    }
+}
+
+$comparison = new DataStructureComparison();
+$comparison->compareOperations();
+$comparison->memoryComparison();
+```
+
+## Array Operation Performance Tips
+
+### Efficient Array Manipulation
+
+```php
+class ArrayOptimizationTips
+{
+    /**
+     * TIP 1: Preallocate when size is known
+     */
+    public function preallocateExample(): void
+    {
+        $size = 100000;
+
+        // Slow: Growing array
+        $start = microtime(true);
+        $arr1 = [];
+        for ($i = 0; $i < $size; $i++) {
+            $arr1[] = $i;
+        }
+        $slowTime = microtime(true) - $start;
+
+        // Faster: Preallocated (using range)
+        $start = microtime(true);
+        $arr2 = range(0, $size - 1);
+        $fastTime = microtime(true) - $start;
+
+        printf("Preallocate speedup: %.2fx faster\n", $slowTime / $fastTime);
+    }
+
+    /**
+     * TIP 2: Use array_push for multiple items
+     */
+    public function bulkInsertExample(): void
+    {
+        $arr = range(1, 10000);
+
+        // Slower: Multiple individual pushes
+        $start = microtime(true);
+        $test1 = $arr;
+        for ($i = 0; $i < 1000; $i++) {
+            $test1[] = $i;
+        }
+        $slow = microtime(true) - $start;
+
+        // Faster: Bulk push
+        $start = microtime(true);
+        $test2 = $arr;
+        array_push($test2, ...range(0, 999));
+        $fast = microtime(true) - $start;
+
+        printf("Bulk push speedup: %.2fx faster\n", $slow / $fast);
+    }
+
+    /**
+     * TIP 3: Avoid array_shift/unshift for large arrays
+     */
+    public function shiftVsArraySlice(): void
+    {
+        $size = 50000;
+        $arr = range(1, $size);
+
+        // Slow: array_shift (O(n))
+        $start = microtime(true);
+        $test1 = $arr;
+        for ($i = 0; $i < 100; $i++) {
+            array_shift($test1);
+        }
+        $shiftTime = microtime(true) - $start;
+
+        // Faster: array_slice
+        $start = microtime(true);
+        $test2 = $arr;
+        $test2 = array_slice($test2, 100);
+        $sliceTime = microtime(true) - $start;
+
+        printf("array_shift: %.6f sec\n", $shiftTime);
+        printf("array_slice: %.6f sec (%.2fx faster)\n",
+            $sliceTime, $shiftTime / $sliceTime);
+    }
+
+    /**
+     * TIP 4: Use isset() instead of array_key_exists() when possible
+     */
+    public function issetVsArrayKeyExists(): void
+    {
+        $arr = array_fill_keys(range(1, 10000), 'value');
+
+        $start = microtime(true);
+        for ($i = 0; $i < 10000; $i++) {
+            $exists = array_key_exists($i, $arr);
+        }
+        $akeTime = microtime(true) - $start;
+
+        $start = microtime(true);
+        for ($i = 0; $i < 10000; $i++) {
+            $exists = isset($arr[$i]);
+        }
+        $issetTime = microtime(true) - $start;
+
+        printf("array_key_exists: %.6f sec\n", $akeTime);
+        printf("isset:            %.6f sec (%.2fx faster)\n",
+            $issetTime, $akeTime / $issetTime);
+    }
+
+    /**
+     * TIP 5: Use array_map/array_filter instead of loops
+     */
+    public function functionalVsLoop(): void
+    {
+        $arr = range(1, 100000);
+
+        // Traditional loop
+        $start = microtime(true);
+        $result1 = [];
+        foreach ($arr as $val) {
+            $result1[] = $val * 2;
+        }
+        $loopTime = microtime(true) - $start;
+
+        // array_map
+        $start = microtime(true);
+        $result2 = array_map(fn($x) => $x * 2, $arr);
+        $mapTime = microtime(true) - $start;
+
+        printf("Loop:       %.6f sec\n", $loopTime);
+        printf("array_map:  %.6f sec (%.2fx faster)\n",
+            $mapTime, $loopTime / $mapTime);
+    }
+}
+
+$tips = new ArrayOptimizationTips();
+$tips->preallocateExample();
+$tips->bulkInsertExample();
+$tips->shiftVsArraySlice();
+$tips->issetVsArrayKeyExists();
+$tips->functionalVsLoop();
+```
+
+## Advanced PHP SPL Usage
+
+### Using SPL Data Structures
+
+```php
+class SPLDataStructureExamples
+{
+    /**
+     * SplDoublyLinkedList - More efficient than custom implementation
+     */
+    public function splDoublyLinkedList(): void
+    {
+        $list = new SplDoublyLinkedList();
+
+        // Push operations
+        $list->push('a');
+        $list->push('b');
+        $list->push('c');
+
+        // Unshift (prepend)
+        $list->unshift('z');
+
+        // Access by index
+        echo $list[0]; // z
+
+        // Iterate
+        foreach ($list as $item) {
+            echo "$item ";
+        }
+
+        // Use as stack
+        $list->setIteratorMode(SplDoublyLinkedList::IT_MODE_LIFO);
+
+        // Use as queue
+        $list->setIteratorMode(SplDoublyLinkedList::IT_MODE_FIFO);
+    }
+
+    /**
+     * SplQueue - FIFO queue
+     */
+    public function splQueue(): void
+    {
+        $queue = new SplQueue();
+
+        $queue->enqueue('first');
+        $queue->enqueue('second');
+        $queue->enqueue('third');
+
+        echo $queue->dequeue(); // first
+        echo $queue->dequeue(); // second
+    }
+
+    /**
+     * SplStack - LIFO stack
+     */
+    public function splStack(): void
+    {
+        $stack = new SplStack();
+
+        $stack->push('a');
+        $stack->push('b');
+        $stack->push('c');
+
+        echo $stack->pop(); // c
+        echo $stack->pop(); // b
+    }
+
+    /**
+     * SplPriorityQueue - Priority queue
+     */
+    public function splPriorityQueue(): void
+    {
+        $pq = new SplPriorityQueue();
+
+        $pq->insert('low priority task', 1);
+        $pq->insert('high priority task', 10);
+        $pq->insert('medium priority task', 5);
+
+        // Extracts in priority order
+        while (!$pq->isEmpty()) {
+            echo $pq->extract() . "\n";
+        }
+        // Output:
+        // high priority task
+        // medium priority task
+        // low priority task
+    }
+
+    /**
+     * Performance comparison: SPL vs Custom
+     */
+    public function compareSPLvsCustom(): void
+    {
+        $size = 100000;
+
+        // Custom doubly linked list
+        $start = microtime(true);
+        $custom = new DoublyLinkedList();
+        for ($i = 0; $i < $size; $i++) {
+            $custom->append($i);
+        }
+        $customTime = microtime(true) - $start;
+
+        // SPL doubly linked list
+        $start = microtime(true);
+        $spl = new SplDoublyLinkedList();
+        for ($i = 0; $i < $size; $i++) {
+            $spl->push($i);
+        }
+        $splTime = microtime(true) - $start;
+
+        printf("Custom implementation: %.6f sec\n", $customTime);
+        printf("SPL implementation:    %.6f sec (%.2fx faster)\n",
+            $splTime, $customTime / $splTime);
+    }
+}
+```
+
+## When to Use Each Data Structure
+
+| Operation | Array | Singly Linked List | Doubly Linked List | PHP Array (Hash Table) |
+|-----------|-------|--------------------|--------------------|------------------------|
+| Access by index | O(1) | O(n) | O(n) | O(1) |
+| Prepend | O(n) | O(1) | O(1) | O(1) |
+| Append | O(1)* | O(n) or O(1)** | O(1)*** | O(1) |
+| Insert middle | O(n) | O(n) | O(1)**** | O(n) |
+| Delete | O(n) | O(n) | O(1)**** | O(1) |
+| Search | O(n) | O(n) | O(n) | O(1) avg |
+| Memory | Low | Medium | High | Very High |
+
+* Amortized
+** O(n) without tail pointer, O(1) with tail pointer
+*** With tail pointer
+**** If node reference is known
+
+**Use Arrays when:**
+- Random access is frequent
+- Memory is limited
+- Size is relatively stable
+- Cache performance matters
+
+**Use Linked Lists when:**
+- Frequent insertions/deletions at beginning
+- Size changes dramatically
+- Don't need random access
+- Implementing queues/stacks
+
+**Use PHP Arrays when:**
+- Need key-value pairs
+- Don't care about memory overhead
+- Want built-in functions
+- Most general-purpose use cases
+
 ## Key Takeaways
 
 - **Arrays** provide O(1) random access via contiguous memory
@@ -762,7 +1466,10 @@ function findDuplicates(array $nums): array
 - **PHP arrays** are hash tables, not traditional arrays
 - **Common patterns**: two pointers, sliding window, prefix sum
 - **Memory layout** affects cache performance
+- **Linked lists** excel at insertions/deletions but poor at random access
+- **SPL data structures** are optimized C implementations
 - Understanding internals helps choose the right data structure
+- **Trade-offs**: memory vs speed, access patterns matter
 
 ## What's Next
 
