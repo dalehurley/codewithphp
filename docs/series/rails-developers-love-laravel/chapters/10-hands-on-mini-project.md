@@ -1204,6 +1204,158 @@ server {
 }
 ```
 
+## Troubleshooting Common Issues
+
+### Issue #1: Sanctum 401 Unauthorized
+
+**Problem:**
+```bash
+curl -H "Authorization: Bearer YOUR_TOKEN" http://localhost:8000/api/tasks
+# 401 Unauthorized
+```
+
+**Solutions:**
+```bash
+# 1. Check Sanctum is installed
+composer require laravel/sanctum
+
+# 2. Publish Sanctum config
+php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+
+# 3. Run migrations
+php artisan migrate
+
+# 4. Add Sanctum middleware to api in bootstrap/app.php or Kernel.php
+```
+
+### Issue #2: CORS Errors
+
+**Problem:**
+```
+Access to XMLHttpRequest blocked by CORS policy
+```
+
+**Solution:**
+```php
+<?php
+// config/cors.php
+return [
+    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+    'allowed_methods' => ['*'],
+    'allowed_origins' => ['http://localhost:3000'], // Your frontend URL
+    'allowed_headers' => ['*'],
+    'supports_credentials' => true,
+];
+```
+
+### Issue #3: Validation Not Working
+
+**Problem:**
+```bash
+# Sending invalid data but no errors returned
+```
+
+**Solution:**
+```php
+<?php
+// Make sure FormRequest returns JSON for API
+// app/Http/Requests/StoreTaskRequest.php
+protected function failedValidation(Validator $validator)
+{
+    throw new HttpResponseException(
+        response()->json([
+            'message' => 'Validation failed',
+            'errors' => $validator->errors()
+        ], 422)
+    );
+}
+```
+
+### Issue #4: Relationship Not Loading
+
+**Problem:**
+```php
+<?php
+$task = Task::find(1);
+$task->categories; // Returns null or empty
+```
+
+**Solution:**
+```bash
+# Check pivot table exists and has data
+php artisan tinker
+>>> Task::find(1)->categories()->count()
+
+# Eager load relationships
+$tasks = Task::with(['categories', 'tags', 'user'])->get();
+```
+
+### Issue #5: Tests Failing
+
+**Problem:**
+```bash
+php artisan test
+# Tests fail with database errors
+```
+
+**Solution:**
+```php
+<?php
+// Use RefreshDatabase trait
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+class TaskTest extends TestCase
+{
+    use RefreshDatabase; // Migrates database before each test
+
+    public function test_can_create_task(): void
+    {
+        $user = User::factory()->create();
+        // Test code...
+    }
+}
+```
+
+::: tip Pro Tip: Use Laravel Tinker for Debugging
+```bash
+php artisan tinker
+
+# Test your models
+>>> $user = User::first()
+>>> $user->tasks
+>>> $user->tasks()->where('status', 'completed')->get()
+
+# Test factories
+>>> Task::factory()->count(5)->create()
+
+# Test relationships
+>>> Task::with('categories')->first()
+```
+:::
+
+::: warning Common Mistake: Forgetting to Hash Passwords
+```php
+<?php
+// ❌ WRONG - Password stored in plain text!
+User::create([
+    'password' => $request->password
+]);
+
+// ✅ CORRECT - Always hash passwords
+use Illuminate\Support\Facades\Hash;
+
+User::create([
+    'password' => Hash::make($request->password)
+]);
+
+// Or use model casting
+// app/Models/User.php
+protected $casts = [
+    'password' => 'hashed', // Automatically hashes
+];
+```
+:::
+
 ## What You've Built
 
 Congratulations! You've built a complete task management application with:
