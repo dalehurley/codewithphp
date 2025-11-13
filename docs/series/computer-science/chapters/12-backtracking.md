@@ -23,6 +23,41 @@ In this chapter, you'll learn:
 
 ## The Backtracking Pattern
 
+```mermaid
+graph TB
+    START["Start with<br/>empty state"]
+    CHECK{"Is solution<br/>complete?"}
+    SAVE["Save solution"]
+    LOOP["For each<br/>possible choice"]
+    VALID{"Is choice<br/>valid?"}
+    MAKE["Make choice"]
+    RECURSE["Recurse with<br/>new state"]
+    UNDO["Undo choice<br/>(Backtrack)"]
+    END["Done"]
+
+    START --> CHECK
+    CHECK -->|"Yes"| SAVE
+    SAVE --> END
+    CHECK -->|"No"| LOOP
+    LOOP --> VALID
+    VALID -->|"No"| LOOP
+    VALID -->|"Yes"| MAKE
+    MAKE --> RECURSE
+    RECURSE --> UNDO
+    UNDO --> LOOP
+    LOOP -->|"No more choices"| END
+
+    style START fill:#4CAF50
+    style CHECK fill:#2196F3,color:#fff
+    style VALID fill:#FFA500
+    style MAKE fill:#FFD700
+    style RECURSE fill:#90EE90
+    style UNDO fill:#FF6B6B,color:#fff
+    style SAVE fill:#9C27B0,color:#fff
+```
+
+**Key insight**: Try → Recurse → Undo (if fails) → Try next option
+
 ```php
 <?php
 
@@ -179,6 +214,57 @@ function isValidSudoku(array $board, int $row, int $col, string $num): bool {
 ```
 
 ### 3. Generate Permutations
+
+```mermaid
+graph TB
+    ROOT["[ ]<br/>Choices: [1,2,3]"]
+
+    L1A["[1]<br/>Choices: [2,3]"]
+    L1B["[2]<br/>Choices: [1,3]"]
+    L1C["[3]<br/>Choices: [1,2]"]
+
+    L2A1["[1,2]<br/>Choice: [3]"]
+    L2A2["[1,3]<br/>Choice: [2]"]
+    L2B1["[2,1]<br/>Choice: [3]"]
+    L2B2["[2,3]<br/>Choice: [1]"]
+    L2C1["[3,1]<br/>Choice: [2]"]
+    L2C2["[3,2]<br/>Choice: [1]"]
+
+    LEAF1["[1,2,3] ✓"]
+    LEAF2["[1,3,2] ✓"]
+    LEAF3["[2,1,3] ✓"]
+    LEAF4["[2,3,1] ✓"]
+    LEAF5["[3,1,2] ✓"]
+    LEAF6["[3,2,1] ✓"]
+
+    ROOT --> L1A
+    ROOT --> L1B
+    ROOT --> L1C
+
+    L1A --> L2A1
+    L1A --> L2A2
+    L1B --> L2B1
+    L1B --> L2B2
+    L1C --> L2C1
+    L1C --> L2C2
+
+    L2A1 --> LEAF1
+    L2A2 --> LEAF2
+    L2B1 --> LEAF3
+    L2B2 --> LEAF4
+    L2C1 --> LEAF5
+    L2C2 --> LEAF6
+
+    style ROOT fill:#2196F3,color:#fff
+    style LEAF1 fill:#4CAF50
+    style LEAF2 fill:#4CAF50
+    style LEAF3 fill:#4CAF50
+    style LEAF4 fill:#4CAF50
+    style LEAF5 fill:#4CAF50
+    style LEAF6 fill:#4CAF50
+```
+
+**Decision tree**: Explore all paths, backtrack after each leaf. 3! = 6 permutations.
 
 ```php
 <?php
