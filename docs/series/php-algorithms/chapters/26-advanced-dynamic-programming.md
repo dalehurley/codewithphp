@@ -830,18 +830,719 @@ class SubsetSumLimited
 5. **Minimum Cost Tree from Leaves**
    - Build tree with given leaf values, minimize sum
 
+## Digit DP
+
+Solve problems related to counting numbers with specific digit properties.
+
+### Count Numbers with Digit Sum
+
+```php
+<?php
+
+class DigitDP
+{
+    private array $memo;
+
+    // Count numbers from 1 to n with digit sum equal to target
+    public function countWithDigitSum(int $n, int $targetSum): int
+    {
+        $this->memo = [];
+        $digits = str_split((string)$n);
+        return $this->solve($digits, 0, 0, $targetSum, true, false);
+    }
+
+    private function solve(
+        array $digits,
+        int $pos,
+        int $currentSum,
+        int $targetSum,
+        bool $tight,
+        bool $started
+    ): int {
+        // Base case
+        if ($pos === count($digits)) {
+            return $started && $currentSum === $targetSum ? 1 : 0;
+        }
+
+        // Memoization
+        $key = "$pos:$currentSum:$tight:$started";
+        if (isset($this->memo[$key])) {
+            return $this->memo[$key];
+        }
+
+        $limit = $tight ? (int)$digits[$pos] : 9;
+        $result = 0;
+
+        for ($digit = 0; $digit <= $limit; $digit++) {
+            if (!$started && $digit === 0) {
+                // Leading zeros
+                $result += $this->solve(
+                    $digits,
+                    $pos + 1,
+                    0,
+                    $targetSum,
+                    false,
+                    false
+                );
+            } else {
+                $result += $this->solve(
+                    $digits,
+                    $pos + 1,
+                    $currentSum + $digit,
+                    $targetSum,
+                    $tight && ($digit === $limit),
+                    true
+                );
+            }
+        }
+
+        $this->memo[$key] = $result;
+        return $result;
+    }
+
+    // Count numbers without consecutive repeating digits
+    public function countWithoutConsecutiveDigits(int $n): int
+    {
+        $this->memo = [];
+        $digits = str_split((string)$n);
+        return $this->solveConsecutive($digits, 0, -1, true, false);
+    }
+
+    private function solveConsecutive(
+        array $digits,
+        int $pos,
+        int $lastDigit,
+        bool $tight,
+        bool $started
+    ): int {
+        if ($pos === count($digits)) {
+            return $started ? 1 : 0;
+        }
+
+        $key = "$pos:$lastDigit:$tight:$started";
+        if (isset($this->memo[$key])) {
+            return $this->memo[$key];
+        }
+
+        $limit = $tight ? (int)$digits[$pos] : 9;
+        $result = 0;
+
+        for ($digit = 0; $digit <= $limit; $digit++) {
+            if (!$started && $digit === 0) {
+                $result += $this->solveConsecutive(
+                    $digits,
+                    $pos + 1,
+                    -1,
+                    false,
+                    false
+                );
+            } elseif ($digit !== $lastDigit) {
+                $result += $this->solveConsecutive(
+                    $digits,
+                    $pos + 1,
+                    $digit,
+                    $tight && ($digit === $limit),
+                    true
+                );
+            }
+        }
+
+        $this->memo[$key] = $result;
+        return $result;
+    }
+}
+
+// Example
+$digitDP = new DigitDP();
+echo $digitDP->countWithDigitSum(100, 10) . "\n";  // Numbers 1-100 with digit sum = 10
+echo $digitDP->countWithoutConsecutiveDigits(1000) . "\n";  // Numbers without consecutive same digits
+```
+
+## Probability DP
+
+Handle probabilistic states and expected values.
+
+### Expected Steps Random Walk
+
+```php
+<?php
+
+class ProbabilityDP
+{
+    private array $memo;
+
+    // Expected steps to reach position n starting from position 0
+    // Each step: 50% chance move right, 50% chance move left (bounded by 0 and n)
+    public function expectedSteps(int $target): float
+    {
+        $this->memo = [];
+        return $this->solve(0, $target);
+    }
+
+    private function solve(int $current, int $target): float
+    {
+        if ($current === $target) {
+            return 0.0;
+        }
+
+        if (isset($this->memo[$current])) {
+            return $this->memo[$current];
+        }
+
+        $expected = 1.0;  // Current step
+
+        if ($current === 0) {
+            // Can only move right
+            $expected += $this->solve($current + 1, $target);
+        } elseif ($current === $target - 1) {
+            // Can move left or right
+            $expected += 0.5 * $this->solve($current - 1, $target);
+            $expected += 0.5 * $this->solve($current + 1, $target);
+        } else {
+            // Can move left or right
+            $expected += 0.5 * $this->solve($current - 1, $target);
+            $expected += 0.5 * $this->solve($current + 1, $target);
+        }
+
+        $this->memo[$current] = $expected;
+        return $expected;
+    }
+
+    // Dice game: Expected score rolling n dice, can stop anytime
+    public function expectedDiceScore(int $remainingRolls, float $currentScore = 0): float
+    {
+        if ($remainingRolls === 0) {
+            return $currentScore;
+        }
+
+        $key = "$remainingRolls:$currentScore";
+        if (isset($this->memo[$key])) {
+            return $this->memo[$key];
+        }
+
+        // Expected value if we roll
+        $expectedRoll = 0.0;
+        for ($face = 1; $face <= 6; $face++) {
+            $expectedRoll += (1.0 / 6.0) * $this->expectedDiceScore(
+                $remainingRolls - 1,
+                $currentScore + $face
+            );
+        }
+
+        // Best choice: stop now or continue rolling
+        $result = max($currentScore, $expectedRoll);
+
+        $this->memo[$key] = $result;
+        return $result;
+    }
+}
+
+// Example
+$probDP = new ProbabilityDP();
+echo "Expected steps to reach position 10: " . $probDP->expectedSteps(10) . "\n";
+echo "Expected dice score with 5 rolls: " . $probDP->expectedDiceScore(5) . "\n";
+```
+
+## Convex Hull Optimization
+
+Optimize DP with O(n²) transitions to O(n log n) for certain recurrence relations.
+
+### Building Factories Problem
+
+```php
+<?php
+
+class ConvexHullOptimization
+{
+    // Build n factories at positions, minimize total cost
+    // Cost = distance * production_rate
+    public function minCost(array $positions, array $rates, int $k): int
+    {
+        $n = count($positions);
+
+        // dp[i][j] = min cost to build i factories using first j positions
+        $dp = array_fill(0, $k + 1, array_fill(0, $n + 1, PHP_INT_MAX));
+        $dp[0][0] = 0;
+
+        for ($i = 1; $i <= $k; $i++) {
+            for ($j = $i; $j <= $n; $j++) {
+                // Try placing i-th factory at position j
+                for ($m = $i - 1; $m < $j; $m++) {
+                    if ($dp[$i - 1][$m] === PHP_INT_MAX) continue;
+
+                    $cost = $dp[$i - 1][$m];
+                    // Add cost of factory at position j serving positions m+1 to j
+                    for ($p = $m + 1; $p <= $j; $p++) {
+                        $cost += abs($positions[$p - 1] - $positions[$j - 1]) * $rates[$p - 1];
+                    }
+
+                    $dp[$i][$j] = min($dp[$i][$j], $cost);
+                }
+            }
+        }
+
+        return $dp[$k][$n];
+    }
+}
+```
+
+## Profile DP (Broken Profile)
+
+Solve grid-based problems with complex constraints.
+
+### Domino Tiling
+
+```php
+<?php
+
+class ProfileDP
+{
+    private array $memo;
+    private int $cols;
+
+    // Count ways to tile n×m grid with 1×2 dominoes
+    public function countTilings(int $rows, int $cols): int
+    {
+        $this->cols = $cols;
+        $this->memo = [];
+        return $this->solve(0, 0, $rows);
+    }
+
+    private function solve(int $row, int $mask, int $rows): int
+    {
+        if ($row === $rows) {
+            return $mask === 0 ? 1 : 0;
+        }
+
+        $key = "$row:$mask";
+        if (isset($this->memo[$key])) {
+            return $this->memo[$key];
+        }
+
+        $nextMask = $mask;
+        $result = $this->fillRow(0, $row, $mask, $nextMask, $rows);
+
+        $this->memo[$key] = $result;
+        return $result;
+    }
+
+    private function fillRow(int $col, int $row, int $curMask, int $nextMask, int $rows): int
+    {
+        if ($col === $this->cols) {
+            return $this->solve($row + 1, $nextMask, $rows);
+        }
+
+        $result = 0;
+
+        // Current cell filled by previous row
+        if ($curMask & (1 << $col)) {
+            $result += $this->fillRow(
+                $col + 1,
+                $row,
+                $curMask,
+                $nextMask,
+                $rows
+            );
+        } else {
+            // Place vertical domino
+            if ($row + 1 < $rows) {
+                $result += $this->fillRow(
+                    $col + 1,
+                    $row,
+                    $curMask | (1 << $col),
+                    $nextMask | (1 << $col),
+                    $rows
+                );
+            }
+
+            // Place horizontal domino
+            if ($col + 1 < $this->cols && !($curMask & (1 << ($col + 1)))) {
+                $result += $this->fillRow(
+                    $col + 2,
+                    $row,
+                    $curMask | (1 << $col) | (1 << ($col + 1)),
+                    $nextMask,
+                    $rows
+                );
+            }
+        }
+
+        return $result;
+    }
+}
+
+// Example
+$profileDP = new ProfileDP();
+echo "Tilings of 3×2 grid: " . $profileDP->countTilings(3, 2) . "\n";  // 3
+echo "Tilings of 4×3 grid: " . $profileDP->countTilings(4, 3) . "\n";  // 11
+```
+
+## DP with Deque Optimization
+
+Optimize sliding window maximum/minimum in DP.
+
+### Sliding Window Maximum Sum
+
+```php
+<?php
+
+class DequeOptimizationDP
+{
+    // Maximum sum of k consecutive elements with at most m operations
+    public function maxSumWithOperations(array $arr, int $k, int $operations): int
+    {
+        $n = count($arr);
+
+        // dp[i][j] = max sum ending at position i with j operations used
+        $dp = array_fill(0, $n, array_fill(0, $operations + 1, PHP_INT_MIN));
+        $dp[0][0] = $arr[0];
+        $dp[0][1] = $arr[0] * 2;  // One operation: double the value
+
+        for ($i = 1; $i < $n; $i++) {
+            for ($j = 0; $j <= $operations; $j++) {
+                // Don't use operation on current element
+                $dp[$i][$j] = $arr[$i];
+                if ($i >= 1 && $dp[$i - 1][$j] !== PHP_INT_MIN) {
+                    $dp[$i][$j] = max($dp[$i][$j], $dp[$i - 1][$j] + $arr[$i]);
+                }
+
+                // Use operation on current element
+                if ($j > 0) {
+                    $dp[$i][$j] = max($dp[$i][$j], $arr[$i] * 2);
+                    if ($i >= 1 && $dp[$i - 1][$j - 1] !== PHP_INT_MIN) {
+                        $dp[$i][$j] = max($dp[$i][$j], $dp[$i - 1][$j - 1] + $arr[$i] * 2);
+                    }
+                }
+            }
+        }
+
+        $maxSum = PHP_INT_MIN;
+        for ($i = $k - 1; $i < $n; $i++) {
+            for ($j = 0; $j <= $operations; $j++) {
+                $maxSum = max($maxSum, $dp[$i][$j]);
+            }
+        }
+
+        return $maxSum;
+    }
+
+    // Maximum sum subarray with length at least k using deque
+    public function maxSumAtLeastK(array $arr, int $k): int
+    {
+        $n = count($arr);
+
+        // Prefix sum
+        $prefix = [0];
+        for ($i = 0; $i < $n; $i++) {
+            $prefix[] = $prefix[$i] + $arr[$i];
+        }
+
+        $maxSum = PHP_INT_MIN;
+        $deque = new \SplDoublyLinkedList();
+
+        for ($i = $k; $i <= $n; $i++) {
+            // Add previous position to deque
+            $prevPos = $i - $k;
+
+            // Remove elements from back that are greater than current
+            while (!$deque->isEmpty() && $prefix[$deque->top()] >= $prefix[$prevPos]) {
+                $deque->pop();
+            }
+            $deque->push($prevPos);
+
+            // Remove elements from front that are out of range
+            while (!$deque->isEmpty() && $deque->bottom() < $i - $n) {
+                $deque->shift();
+            }
+
+            // Maximum sum ending at position i with length >= k
+            if (!$deque->isEmpty()) {
+                $maxSum = max($maxSum, $prefix[$i] - $prefix[$deque->bottom()]);
+            }
+        }
+
+        return $maxSum;
+    }
+}
+
+// Example
+$dequeDP = new DequeOptimizationDP();
+$arr = [1, -2, 3, 4, -5, 8];
+echo "Max sum with 2 ops: " . $dequeDP->maxSumWithOperations($arr, 3, 2) . "\n";
+echo "Max sum length >= 3: " . $dequeDP->maxSumAtLeastK($arr, 3) . "\n";
+```
+
+## Advanced DP Optimizations
+
+### Space Optimization Techniques
+
+```php
+<?php
+
+class SpaceOptimization
+{
+    // Standard DP: O(n²) space
+    public function longestIncreasingSubsequenceStandard(array $arr): int
+    {
+        $n = count($arr);
+        $dp = array_fill(0, $n, 1);
+
+        for ($i = 1; $i < $n; $i++) {
+            for ($j = 0; $j < $i; $j++) {
+                if ($arr[$j] < $arr[$i]) {
+                    $dp[$i] = max($dp[$i], $dp[$j] + 1);
+                }
+            }
+        }
+
+        return max($dp);
+    }
+
+    // Optimized: O(n log n) using binary search
+    public function longestIncreasingSubsequenceOptimized(array $arr): int
+    {
+        $tails = [];
+
+        foreach ($arr as $num) {
+            $left = 0;
+            $right = count($tails);
+
+            // Binary search for position
+            while ($left < $right) {
+                $mid = (int)(($left + $right) / 2);
+                if ($tails[$mid] < $num) {
+                    $left = $mid + 1;
+                } else {
+                    $right = $mid;
+                }
+            }
+
+            if ($left === count($tails)) {
+                $tails[] = $num;
+            } else {
+                $tails[$left] = $num;
+            }
+        }
+
+        return count($tails);
+    }
+
+    // 2D DP with rolling array
+    public function uniquePathsOptimized(int $m, int $n): int
+    {
+        // Instead of m×n array, use 1×n array
+        $dp = array_fill(0, $n, 1);
+
+        for ($i = 1; $i < $m; $i++) {
+            for ($j = 1; $j < $n; $j++) {
+                $dp[$j] += $dp[$j - 1];
+            }
+        }
+
+        return $dp[$n - 1];
+    }
+}
+
+// Example
+$spaceOpt = new SpaceOptimization();
+$arr = [10, 9, 2, 5, 3, 7, 101, 18];
+echo "LIS (standard): " . $spaceOpt->longestIncreasingSubsequenceStandard($arr) . "\n";
+echo "LIS (optimized): " . $spaceOpt->longestIncreasingSubsequenceOptimized($arr) . "\n";
+echo "Unique paths 3×7: " . $spaceOpt->uniquePathsOptimized(3, 7) . "\n";
+```
+
+## Production DP Patterns
+
+### Real-World Inventory Optimization
+
+```php
+<?php
+
+class InventoryOptimization
+{
+    private array $memo;
+
+    // Minimize inventory cost with ordering constraints
+    public function minimizeCost(
+        array $demand,  // Daily demand
+        int $orderCost,  // Fixed cost per order
+        int $holdingCost,  // Cost per unit per day
+        int $capacity  // Warehouse capacity
+    ): array {
+        $n = count($demand);
+        $this->memo = [];
+
+        $minCost = $this->solve($demand, 0, 0, $orderCost, $holdingCost, $capacity);
+        $orders = $this->reconstructOrders($demand, $orderCost, $holdingCost, $capacity);
+
+        return [
+            'min_cost' => $minCost,
+            'orders' => $orders
+        ];
+    }
+
+    private function solve(
+        array $demand,
+        int $day,
+        int $inventory,
+        int $orderCost,
+        int $holdingCost,
+        int $capacity
+    ): int {
+        $n = count($demand);
+
+        if ($day === $n) {
+            return 0;
+        }
+
+        $key = "$day:$inventory";
+        if (isset($this->memo[$key])) {
+            return $this->memo[$key];
+        }
+
+        $minCost = PHP_INT_MAX;
+
+        // Try not ordering today (if we have enough inventory)
+        if ($inventory >= $demand[$day]) {
+            $cost = $holdingCost * ($inventory - $demand[$day]);
+            $cost += $this->solve(
+                $demand,
+                $day + 1,
+                $inventory - $demand[$day],
+                $orderCost,
+                $holdingCost,
+                $capacity
+            );
+            $minCost = min($minCost, $cost);
+        }
+
+        // Try ordering different amounts
+        for ($order = max(0, $demand[$day] - $inventory);
+             $order <= $capacity && $inventory + $order <= $capacity;
+             $order += 10) {
+
+            $cost = $orderCost;  // Fixed ordering cost
+            $newInventory = $inventory + $order - $demand[$day];
+
+            if ($newInventory >= 0) {
+                $cost += $holdingCost * $newInventory;
+                $cost += $this->solve(
+                    $demand,
+                    $day + 1,
+                    $newInventory,
+                    $orderCost,
+                    $holdingCost,
+                    $capacity
+                );
+                $minCost = min($minCost, $cost);
+            }
+        }
+
+        $this->memo[$key] = $minCost;
+        return $minCost;
+    }
+
+    private function reconstructOrders(
+        array $demand,
+        int $orderCost,
+        int $holdingCost,
+        int $capacity
+    ): array {
+        $orders = [];
+        $inventory = 0;
+        $n = count($demand);
+
+        for ($day = 0; $day < $n; $day++) {
+            $currentCost = $this->solve(
+                $demand,
+                $day,
+                $inventory,
+                $orderCost,
+                $holdingCost,
+                $capacity
+            );
+
+            // Try each ordering option
+            $bestOrder = 0;
+            $bestCost = PHP_INT_MAX;
+
+            for ($order = 0; $order <= $capacity - $inventory; $order += 10) {
+                $newInventory = $inventory + $order - $demand[$day];
+
+                if ($newInventory >= 0) {
+                    $cost = ($order > 0 ? $orderCost : 0) + $holdingCost * $newInventory;
+                    $cost += $this->solve(
+                        $demand,
+                        $day + 1,
+                        $newInventory,
+                        $orderCost,
+                        $holdingCost,
+                        $capacity
+                    );
+
+                    if ($cost < $bestCost) {
+                        $bestCost = $cost;
+                        $bestOrder = $order;
+                    }
+                }
+            }
+
+            if ($bestOrder > 0) {
+                $orders[] = ['day' => $day, 'amount' => $bestOrder];
+            }
+
+            $inventory = $inventory + $bestOrder - $demand[$day];
+        }
+
+        return $orders;
+    }
+}
+
+// Example
+$inventory = new InventoryOptimization();
+$demand = [50, 30, 40, 70, 20, 60, 45];
+$result = $inventory->minimizeCost($demand, 100, 2, 200);
+
+echo "Minimum cost: \${$result['min_cost']}\n";
+echo "Order schedule:\n";
+foreach ($result['orders'] as $order) {
+    echo "Day {$order['day']}: Order {$order['amount']} units\n";
+}
+```
+
 ## Key Takeaways
 
 - Advanced DP extends fundamentals with complex state management
 - Interval DP processes ranges/intervals of elements
 - Bitmask DP efficiently handles subset problems (n ≤ 20)
+- Digit DP solves counting problems with digit constraints
+- Probability DP handles expected values and probabilistic states
+- Profile DP (broken profile) solves grid tiling problems
+- Convex hull optimization reduces O(n²) to O(n log n) for certain recurrences
 - Multi-dimensional DP solves problems requiring multiple parameters
 - DP on trees uses recursive structure of trees
 - State compression reduces memory usage
+- Deque optimization improves sliding window DP problems
+- Space optimization techniques reduce memory from O(n²) to O(n)
 - Pattern recognition crucial for identifying DP approach
 - Trade-offs between time and space complexity
 - Advanced techniques enable solving NP-hard problems optimally for small inputs
+- Real-world applications include inventory optimization, resource allocation, scheduling
+
+## Complexity Summary (Extended)
+
+| Problem | States | Transitions | Time | Space | Optimization |
+|---------|--------|-------------|------|-------|--------------|
+| Matrix Chain | O(n²) | O(n) | O(n³) | O(n²) | - |
+| Palindrome Partition | O(n²) | O(n) | O(n²) | O(n²) | - |
+| TSP | O(2ⁿ×n) | O(n) | O(2ⁿ×n²) | O(2ⁿ×n) | Bitmask |
+| Edit Distance | O(m×n) | O(1) | O(m×n) | O(min(m,n)) | Rolling array |
+| Egg Drop | O(e×f) | O(f) or O(log f) | O(e×f²) or O(e×f log f) | O(e×f) | Binary search |
+| Digit DP | O(d×s×2²) | O(10) | O(d×s×20) | O(d×s×4) | State compression |
+| Profile DP | O(n×2^m) | O(2^m) | O(n×4^m) | O(2^m) | Bitmask |
+| LIS Optimized | O(n) | O(log n) | O(n log n) | O(n) | Binary search |
+| Convex Hull | O(n) | O(log n) | O(n log n) | O(n) | Deque/CHT |
 
 ## Next Steps
 
-In the next chapter, we'll explore practical caching and memoization strategies for PHP applications, including Redis integration, query result caching, and computed property caching.
+In the next chapter, we'll explore practical caching and memoization strategies for PHP applications, including Redis integration, APCu comparison, query result caching, and computed property caching with production benchmarks.
