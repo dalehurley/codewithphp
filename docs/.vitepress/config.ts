@@ -153,6 +153,7 @@ export default withMermaid(
           items: [
             { text: 'PHP Basics', link: '/series/php-basics/' },
             { text: 'AI/ML for PHP Developers', link: '/series/ai-ml-php-developers/' },
+            { text: 'PHP for TypeScript Developers', link: '/series/php-typescript-developers/' },
             { text: 'Why Python Developers Will Love PHP and Laravel', link: '/series/python-developers-love-php-laravel/' },
           ]
         },
@@ -348,6 +349,30 @@ export default withMermaid(
                 text: '10 — Bonus: Hands-On Mini Project',
                 link: '/series/python-developers-love-php-laravel/chapters/10-bonus-hands-on-mini-project'
               }
+            ]
+          }
+        ],
+
+        '/series/php-typescript-developers/': [
+          { text: 'Overview', link: '/series/php-typescript-developers/' },
+          {
+            text: 'Chapters',
+            items: [
+              { text: '01 — TypeScript to PHP: Type Systems Compared', link: '/series/php-typescript-developers/chapters/01-type-systems-compared' },
+              { text: '02 — Modern PHP Syntax for TS Developers', link: '/series/php-typescript-developers/chapters/02-modern-php-syntax' },
+              { text: '03 — Functions & Closures: From JS to PHP', link: '/series/php-typescript-developers/chapters/03-functions-and-closures' },
+              { text: '04 — OOP: Classes, Interfaces & Generics', link: '/series/php-typescript-developers/chapters/04-oop-classes-interfaces' },
+              { text: '05 — Error Handling: Try/Catch & Type Safety', link: '/series/php-typescript-developers/chapters/05-error-handling' },
+              { text: '06 — Package Management: npm vs Composer', link: '/series/php-typescript-developers/chapters/06-package-management' },
+              { text: '07 — Testing: Jest Patterns in PHPUnit', link: '/series/php-typescript-developers/chapters/07-testing' },
+              { text: '08 — Code Quality: ESLint meets PHP_CodeSniffer', link: '/series/php-typescript-developers/chapters/08-code-quality' },
+              { text: '09 — Build Tools: TypeScript Compiler vs PHP', link: '/series/php-typescript-developers/chapters/09-build-tools' },
+              { text: '10 — Debugging: Node Inspector vs Xdebug', link: '/series/php-typescript-developers/chapters/10-debugging' },
+              { text: '11 — Async in PHP: Promises vs Fibers', link: '/series/php-typescript-developers/chapters/11-async-in-php' },
+              { text: '12 — REST APIs: Express.js vs PHP Native', link: '/series/php-typescript-developers/chapters/12-rest-apis' },
+              { text: '13 — Laravel Foundations: The PHP Framework', link: '/series/php-typescript-developers/chapters/13-laravel-foundations' },
+              { text: '14 — Database & ORMs: TypeORM meets Eloquent', link: '/series/php-typescript-developers/chapters/14-database-and-orms' },
+              { text: '15 — Full-Stack: Inertia.js (React/Vue + Laravel)', link: '/series/php-typescript-developers/chapters/15-full-stack-inertia' }
             ]
           }
         ],
