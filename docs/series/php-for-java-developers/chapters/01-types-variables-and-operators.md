@@ -388,6 +388,89 @@ var_dump("10" === 10); // bool(false) ✅
 4. `!==` instead of `!=` (strict inequality)
 :::
 
+### Type Coercion Reference Table
+
+Here's a quick reference for how PHP converts types in weak mode (avoid these scenarios by using strict types):
+
+| Expression | Weak Mode Result | Strict Mode Result | Explanation |
+|-----------|-----------------|-------------------|-------------|
+| `"5" + 3` | `8` (int) | TypeError | String "5" coerced to int 5 |
+| `"10 apples" + 5` | `15` (int) | TypeError | String parsed to 10, rest ignored |
+| `true + true` | `2` (int) | TypeError | true = 1, false = 0 |
+| `"hello" + 5` | `5` (int) | TypeError | Non-numeric string = 0 |
+| `null + 5` | `5` (int) | TypeError | null = 0 in arithmetic |
+| `[] + []` | `[]` (array) | `[]` (array) | Array union (empty result) |
+| `0 == ""` | `true` | `false` with `===` | Both are falsy |
+| `"0" == 0` | `true` | `false` with `===` | String coerced to int |
+| `"00" == 0` | `true` | `false` with `===` | String coerced to int |
+| `false == ""` | `true` | `false` with `===` | Both are falsy |
+
+::: danger Common Pitfall
+```php
+// Without strict types
+function calculateDiscount($price, $percent) {
+    return $price - ($price * $percent / 100);
+}
+
+calculateDiscount("100", "10");  // Works but wrong!
+calculateDiscount("100 dollars", "10%");  // Returns 90 (silently ignores text!)
+```
+
+**Solution:** Always use strict types!
+```php
+declare(strict_types=1);
+
+function calculateDiscount(float $price, float $percent): float {
+    return $price - ($price * $percent / 100);
+}
+
+calculateDiscount("100", "10");  // TypeError - caught immediately! ✅
+```
+:::
+
+### Type Demonstration Script
+
+Here's a script to see type behavior in action:
+
+```php
+<?php
+
+echo "=== WITHOUT strict_types ===\n\n";
+
+function addWeak($a, $b) {
+    return $a + $b;
+}
+
+echo "addWeak(5, 3): " . addWeak(5, 3) . "\n";
+echo "addWeak(5, '3'): " . addWeak(5, "3") . "\n";
+echo "addWeak('5', '3'): " . addWeak("5", "3") . "\n";
+echo "addWeak(5, '3 apples'): " . addWeak(5, "3 apples") . " ⚠️\n\n";
+
+echo "=== WITH strict_types ===\n\n";
+
+// In a separate file with declare(strict_types=1);
+declare(strict_types=1);
+
+function addStrict(int $a, int $b): int {
+    return $a + $b;
+}
+
+try {
+    echo "addStrict(5, 3): " . addStrict(5, 3) . " ✅\n";
+} catch (TypeError $e) {
+    echo "Error: {$e->getMessage()}\n";
+}
+
+try {
+    echo "addStrict(5, '3'): ";
+    echo addStrict(5, "3");  // This will throw TypeError
+} catch (TypeError $e) {
+    echo "TypeError - Caught as expected! ✅\n";
+}
+
+echo "\nConclusion: Always use strict_types!\n";
+```
+
 ---
 
 ## Section 4: Compound Types
@@ -470,6 +553,64 @@ List<Integer> evens = numbers.stream()
     .collect(Collectors.toList());
 int sum = numbers.stream()
     .reduce(0, Integer::sum);
+```
+
+:::
+
+### Array Functions vs Java Streams Comparison
+
+For Java developers familiar with Stream API, here's how PHP array functions map:
+
+| Java Stream Operation | PHP Array Function | Example |
+|----------------------|-------------------|---------|
+| `.map(x -> x * 2)` | `array_map(fn($x) => $x * 2, $arr)` | Transform each element |
+| `.filter(x -> x > 0)` | `array_filter($arr, fn($x) => $x > 0)` | Keep matching elements |
+| `.reduce(0, (a,b) -> a+b)` | `array_reduce($arr, fn($a,$b) => $a+$b, 0)` | Combine into single value |
+| `.forEach(x -> print(x))` | `array_walk($arr, fn($x) => print($x))` | Side effects on each element |
+| `.anyMatch(x -> x > 0)` | `array_any($arr, fn($x) => $x > 0)` | Check if any match (PHP 8.4+) |
+| `.allMatch(x -> x > 0)` | `array_all($arr, fn($x) => $x > 0)` | Check if all match (PHP 8.4+) |
+| `.findFirst()` | `array_find($arr, fn($x) => condition)` | Find first matching (PHP 8.4+) |
+| `.collect(toList())` | Return value (already array) | No collection needed |
+| `.count()` | `count($arr)` | Get size |
+| `.sorted()` | `sort($arr)` or `usort()` | Sort elements |
+| `.distinct()` | `array_unique($arr)` | Remove duplicates |
+| `.skip(n)` | `array_slice($arr, $n)` | Skip first n elements |
+| `.limit(n)` | `array_slice($arr, 0, $n)` | Take first n elements |
+| `.flatMap()` | `array_merge(...array_map())` | Flatten and map |
+
+**Example comparison:**
+
+::: code-group
+
+```php [PHP]
+<?php
+
+declare(strict_types=1);
+
+$numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+// Chain operations
+$result = array_reduce(
+    array_map(
+        fn($n) => $n ** 2,
+        array_filter($numbers, fn($n) => $n % 2 === 0)
+    ),
+    fn($acc, $n) => $acc + $n,
+    0
+);
+
+echo "Sum of squares of evens: $result\n";  // 220
+```
+
+```java [Java]
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+int result = numbers.stream()
+    .filter(n -> n % 2 == 0)
+    .map(n -> n * n)
+    .reduce(0, Integer::sum);
+
+System.out.println("Sum of squares of evens: " + result);  // 220
 ```
 
 :::
@@ -738,6 +879,66 @@ var_dump($a xor $b);  // true (true if exactly one is true)
 **Recommendation:** Always use `&&`, `||`, `!` for consistency with Java.
 :::
 
+### Operator Precedence
+
+Like Java, PHP has operator precedence rules (higher precedence = evaluated first):
+
+| Precedence | Operator | Description | Example |
+|-----------|----------|-------------|---------|
+| Highest | `()` | Parentheses | `(5 + 3) * 2` |
+| | `**` | Exponentiation | `2 ** 3` = 8 |
+| | `++`, `--`, `!` | Increment, decrement, not | `!$flag`, `$i++` |
+| | `*`, `/`, `%` | Multiplication, division, modulo | `5 * 3 / 2` |
+| | `+`, `-`, `.` | Addition, subtraction, concatenation | `5 + 3`, `"a" . "b"` |
+| | `<`, `<=`, `>`, `>=` | Comparison | `5 < 10` |
+| | `==`, `===`, `!=`, `!==` | Equality | `5 === 5` |
+| | `&&` | Logical AND | `$a && $b` |
+| | `\|\|` | Logical OR | `$a \|\| $b` |
+| | `??` | Null coalescing | `$a ?? $b` |
+| | `? :` | Ternary | `$x ? $y : $z` |
+| | `=`, `+=`, `-=`, etc. | Assignment | `$a = 5` |
+| Lowest | `and`, `or`, `xor` | Low-precedence logical | `$a and $b` |
+
+**Important differences from Java:**
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// String concatenation has higher precedence than addition
+echo "Total: " . 5 + 3;  // ⚠️ "Total: 5" + 3 = 3 (confusing!)
+echo "Total: " . (5 + 3);  // ✅ "Total: 8"
+
+// Null coalescing vs ternary
+$value = $data['key'] ?? 'default';  // Checks if key exists and not null
+$value = $data['key'] ?: 'default';  // Checks if value is truthy (avoid!)
+
+// Logical operator precedence trap
+$result = true or false && false;  // true (because 'or' is low precedence)
+$result = true || false && false;  // true (&& evaluated first)
+
+echo $result = 5 + 3;  // ⚠️ Assignment has low precedence, echoes 8
+echo ($result = 5 + 3);  // ✅ Explicit with parentheses
+```
+
+::: tip Best Practice
+**Always use parentheses** when mixing operators to make precedence explicit:
+```php
+// Unclear
+$result = $a + $b * $c;
+
+// Clear
+$result = $a + ($b * $c);
+
+// Unclear
+if ($isValid && $isActive || $isAdmin)
+
+// Clear
+if (($isValid && $isActive) || $isAdmin)
+```
+:::
+
 ---
 
 ## Section 6: Type Casting and Conversion
@@ -855,7 +1056,324 @@ if ("0" !== "") {
 
 ---
 
-## Section 7: Building a Type-Safe Validator
+## Section 7: Nullable Types and Modern Type Features
+
+### Goal
+
+Understand PHP 8+ nullable types, union types, and special types.
+
+### Nullable Types (Like Java Optional)
+
+::: code-group
+
+```php [PHP Nullable Types]
+<?php
+
+declare(strict_types=1);
+
+// Nullable type with ?
+function findUser(int $id): ?User
+{
+    // Returns User or null
+    $user = $this->repository->find($id);
+    return $user;  // Can be null
+}
+
+// Using nullable parameters
+function greet(?string $name): string
+{
+    if ($name === null) {
+        return "Hello, Guest!";
+    }
+    return "Hello, $name!";
+}
+
+// Nullable with null coalescing
+$user = findUser(123);
+$userName = $user?->getName() ?? "Unknown";  // Null-safe operator
+
+// Old style (still valid)
+function oldStyleNullable($value = null): void
+{
+    // $value can be any type or null
+}
+```
+
+```java [Java Optional]
+// Java Optional pattern
+public Optional<User> findUser(int id) {
+    User user = repository.find(id);
+    return Optional.ofNullable(user);
+}
+
+// Using Optional
+Optional<User> userOpt = findUser(123);
+String userName = userOpt
+    .map(User::getName)
+    .orElse("Unknown");
+
+// Java 8+ method reference
+public String greet(String name) {
+    return Optional.ofNullable(name)
+        .map(n -> "Hello, " + n + "!")
+        .orElse("Hello, Guest!");
+}
+```
+
+:::
+
+::: tip Null-safe Operator (PHP 8.0+)
+The `?->` operator is like Java's Optional.map():
+```php
+// PHP
+$email = $user?->getProfile()?->getEmail() ?? 'no-email@example.com';
+
+// Java equivalent
+String email = Optional.ofNullable(user)
+    .flatMap(u -> Optional.ofNullable(u.getProfile()))
+    .map(Profile::getEmail)
+    .orElse("no-email@example.com");
+```
+:::
+
+### Union Types (PHP 8.0+)
+
+Union types allow a value to be one of several types:
+
+::: code-group
+
+```php [PHP Union Types]
+<?php
+
+declare(strict_types=1);
+
+// Union type: int OR float
+function processNumber(int|float $value): int|float
+{
+    return $value * 2;
+}
+
+echo processNumber(5);      // 10
+echo processNumber(5.5);    // 11.0
+
+// Union with null (alternative to ?)
+function findUser(int $id): User|null
+{
+    // Same as: ?User
+    return $this->repository->find($id);
+}
+
+// Multiple types in union
+function formatValue(int|float|string|bool $value): string
+{
+    return match (true) {
+        is_int($value) => "Integer: $value",
+        is_float($value) => "Float: $value",
+        is_string($value) => "String: $value",
+        is_bool($value) => "Boolean: " . ($value ? 'true' : 'false'),
+    };
+}
+
+// Union types in properties (PHP 8.0+)
+class Payment
+{
+    public function __construct(
+        public int|float $amount,
+        public string|null $currency = null
+    ) {}
+}
+```
+
+```java [Java (No Direct Equivalent)]
+// Java doesn't have union types
+// You'd use method overloading or common interface
+
+public String formatValue(int value) {
+    return "Integer: " + value;
+}
+
+public String formatValue(double value) {
+    return "Float: " + value;
+}
+
+public String formatValue(String value) {
+    return "String: " + value;
+}
+
+public String formatValue(boolean value) {
+    return "Boolean: " + value;
+}
+
+// Or use generics with bounded types
+public <T extends Number> T processNumber(T value) {
+    // Limited compared to PHP union types
+    return value;
+}
+```
+
+:::
+
+### Mixed Type (PHP 8.0+)
+
+The `mixed` type accepts any type (like Java's `Object`):
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// Mixed type - accepts anything
+function processData(mixed $data): mixed
+{
+    return match (true) {
+        is_array($data) => count($data),
+        is_string($data) => strlen($data),
+        is_int($data) => $data * 2,
+        default => null
+    };
+}
+
+echo processData([1, 2, 3]);    // 3
+echo processData("hello");       // 5
+echo processData(10);            // 20
+```
+
+**Java equivalent:**
+```java
+public Object processData(Object data) {
+    if (data instanceof int[]) {
+        return ((int[])data).length;
+    } else if (data instanceof String) {
+        return ((String)data).length();
+    } else if (data instanceof Integer) {
+        return (Integer)data * 2;
+    }
+    return null;
+}
+```
+
+### Intersection Types (PHP 8.1+)
+
+Intersection types require a value to implement multiple interfaces:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+interface Loggable {
+    public function log(): void;
+}
+
+interface Cacheable {
+    public function cache(): void;
+}
+
+// Must implement BOTH interfaces
+function process(Loggable&Cacheable $object): void
+{
+    $object->log();
+    $object->cache();
+}
+
+class User implements Loggable, Cacheable
+{
+    public function log(): void { /* ... */ }
+    public function cache(): void { /* ... */ }
+}
+
+$user = new User();
+process($user);  // ✅ Implements both interfaces
+```
+
+**Java equivalent:**
+```java
+// Java uses extends for multiple interfaces
+public <T extends Loggable & Cacheable> void process(T object) {
+    object.log();
+    object.cache();
+}
+```
+
+### Never Type (PHP 8.1+)
+
+The `never` type indicates a function never returns (like Java's void for exceptions):
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// Never returns normally (always throws or exits)
+function fail(string $message): never
+{
+    throw new Exception($message);
+}
+
+function redirect(string $url): never
+{
+    header("Location: $url");
+    exit;
+}
+
+// Usage
+function processUser(int $id): User
+{
+    $user = findUser($id);
+
+    if ($user === null) {
+        fail("User not found");  // Never returns
+    }
+
+    return $user;  // Type checker knows $user is not null here
+}
+```
+
+### Void Type (PHP 7.1+)
+
+Like Java's `void`, indicates no return value:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+function logMessage(string $message): void
+{
+    echo $message . "\n";
+    // No return statement, or return with no value
+}
+
+function saveUser(User $user): void
+{
+    $this->repository->save($user);
+    return;  // Optional
+}
+```
+
+### Type System Summary
+
+| PHP Type | Java Equivalent | Description |
+|----------|----------------|-------------|
+| `int` | `int` | Integer number |
+| `float` | `double` | Floating point |
+| `string` | `String` | Text data |
+| `bool` | `boolean` | True/false |
+| `array` | `List`, `Map` | Array/associative array |
+| `object` | `Object` | Any object |
+| `callable` | Functional interface | Function reference |
+| `iterable` | `Iterable` | Array or Traversable |
+| `mixed` | `Object` | Any type (PHP 8.0+) |
+| `never` | Void (for exceptions) | Never returns (PHP 8.1+) |
+| `void` | `void` | No return value |
+| `?Type` | `Optional<Type>` | Nullable type |
+| `Type1\|Type2` | No equivalent | Union type (PHP 8.0+) |
+| `Type1&Type2` | `<T extends A & B>` | Intersection (PHP 8.1+) |
+| `null` | `null` | Null value |
+
+---
+
+## Section 8: Building a Type-Safe Validator
 
 ### Goal
 
@@ -1237,6 +1755,11 @@ Before moving to the next chapter, ensure you can:
 - [ ] Leverage PHPDoc annotations for complex types
 - [ ] Understand string interpolation with double quotes
 - [ ] Use the null coalescing operator `??`
+- [ ] Use nullable types (`?Type`) and understand null-safe operator (`?->`)
+- [ ] Apply union types (`Type1|Type2`) in PHP 8.0+
+- [ ] Understand operator precedence and use parentheses for clarity
+- [ ] Know the type coercion rules and avoid them with strict types
+- [ ] Map Java Stream operations to PHP array functions
 
 ::: tip Ready for More?
 In [Chapter 2: Control Flow & Functions](/series/php-for-java-developers/chapters/02-control-flow-and-functions), we'll dive into control structures, functions, and closures, comparing them to Java equivalents.

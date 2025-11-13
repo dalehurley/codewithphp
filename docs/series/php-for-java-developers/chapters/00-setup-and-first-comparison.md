@@ -219,6 +219,237 @@ PHP's installation includes:
 
 ---
 
+## Section 2.5: Docker Installation (Alternative)
+
+### Goal
+
+Use Docker for a consistent PHP environment across all platforms.
+
+### Why Docker?
+
+As a Java developer, you might already be familiar with Docker. Using Docker for PHP provides:
+- **Consistency**: Same environment on all machines
+- **Isolation**: No conflicts with system PHP
+- **Easy version switching**: Run multiple PHP versions
+- **Pre-configured**: Many images include common extensions
+
+### Quick Docker Setup
+
+```bash
+# Pull official PHP image
+docker pull php:8.3-cli
+
+# Run PHP in Docker
+docker run --rm php:8.3-cli php --version
+
+# Run a PHP script
+docker run --rm -v $(pwd):/app php:8.3-cli php /app/hello.php
+
+# Interactive PHP shell
+docker run --rm -it php:8.3-cli php -a
+```
+
+### Docker Compose for Development
+
+Create `docker-compose.yml`:
+
+```yaml
+version: '3.8'
+services:
+  php:
+    image: php:8.3-apache
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www/html
+    environment:
+      - PHP_INI_SCAN_DIR=/usr/local/etc/php/conf.d
+```
+
+Run with:
+```bash
+docker-compose up
+# Access at http://localhost:8000
+```
+
+::: tip Docker vs Native
+**Use Docker if:**
+- You want isolated environments
+- You switch between PHP versions often
+- You work on multiple machines
+
+**Use Native if:**
+- You prefer direct system integration
+- You want IDE autocomplete to work seamlessly
+- You're doing performance-critical development
+:::
+
+---
+
+## Section 2.6: Installing Composer
+
+### Goal
+
+Install Composer, PHP's dependency manager (like Maven/Gradle).
+
+### Installation
+
+::: code-group
+
+```bash [macOS/Linux]
+# Download and install globally
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+php composer-setup.php
+php -r "unlink('composer-setup.php');"
+sudo mv composer.phar /usr/local/bin/composer
+
+# Verify installation
+composer --version
+```
+
+```bash [Windows]
+# Download and run Composer-Setup.exe from:
+# https://getcomposer.org/Composer-Setup.exe
+
+# After installation, verify:
+composer --version
+```
+
+```bash [Docker]
+# Use Composer Docker image
+docker run --rm -v $(pwd):/app composer:latest --version
+
+# Alias for convenience (add to ~/.bashrc or ~/.zshrc)
+alias composer='docker run --rm -v $(pwd):/app composer:latest'
+```
+
+:::
+
+### Why Composer?
+
+| Java Tool | PHP Equivalent | Purpose |
+|-----------|----------------|---------|
+| Maven | Composer | Dependency management |
+| pom.xml | composer.json | Project configuration |
+| mvn install | composer install | Install dependencies |
+| .m2/repository | vendor/ | Dependencies location |
+
+### Test Composer
+
+```bash
+# Create a test project
+composer init --name=myapp --no-interaction
+
+# Install a package
+composer require monolog/monolog
+
+# Verify
+ls vendor/  # Should see monolog and other dependencies
+```
+
+---
+
+## Section 2.7: PHP Extensions Overview
+
+### Goal
+
+Understand essential PHP extensions for development.
+
+### Core Extensions (Usually Pre-installed)
+
+These come with PHP but you should verify:
+
+```bash
+# Check installed extensions
+php -m
+
+# Common extensions you'll need:
+```
+
+| Extension | Purpose | Java Equivalent |
+|-----------|---------|-----------------|
+| **json** | JSON encoding/decoding | Jackson, Gson |
+| **mbstring** | Multi-byte string handling | Built into Java |
+| **xml** | XML processing | JAXB, DOM Parser |
+| **curl** | HTTP client | HttpClient, OkHttp |
+| **pdo** | Database abstraction | JDBC |
+| **zip** | ZIP file handling | java.util.zip |
+| **openssl** | Cryptography | java.security |
+
+### Installing Additional Extensions
+
+::: code-group
+
+```bash [Ubuntu/Debian]
+# Database drivers
+sudo apt install php8.3-mysql php8.3-pgsql php8.3-sqlite3
+
+# Web development
+sudo apt install php8.3-curl php8.3-gd php8.3-xml
+
+# Performance
+sudo apt install php8.3-opcache php8.3-apcu
+
+# Verify
+php -m | grep -i mysql
+```
+
+```bash [macOS]
+# Most extensions included with Homebrew PHP
+# For additional ones:
+pecl install apcu
+pecl install redis
+```
+
+```bash [Windows]
+# Edit php.ini and uncomment extensions:
+extension=curl
+extension=mbstring
+extension=pdo_mysql
+
+# Restart web server after changes
+```
+
+:::
+
+### Verification Script
+
+Create `check-extensions.php`:
+
+```php
+<?php
+
+$required = ['json', 'mbstring', 'xml', 'curl', 'pdo', 'openssl'];
+$missing = [];
+
+foreach ($required as $ext) {
+    if (!extension_loaded($ext)) {
+        $missing[] = $ext;
+    }
+}
+
+if (empty($missing)) {
+    echo "✅ All required extensions are installed!\n";
+    echo "\nInstalled extensions:\n";
+    foreach ($required as $ext) {
+        echo "  - $ext\n";
+    }
+} else {
+    echo "❌ Missing extensions:\n";
+    foreach ($missing as $ext) {
+        echo "  - $ext\n";
+    }
+    exit(1);
+}
+```
+
+Run it:
+```bash
+php check-extensions.php
+```
+
+---
+
 ## Section 3: Hello World Comparison
 
 ### Goal
