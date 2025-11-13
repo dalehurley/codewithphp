@@ -473,6 +473,384 @@ $city = $user?->profile?->address?->city;
 
 **Identical behavior!** Returns `null` if any property in the chain is `null`.
 
+## First-Class Callable Syntax (PHP 8.1+)
+
+### TypeScript
+
+```typescript
+class Calculator {
+  add(a: number, b: number): number {
+    return a + b;
+  }
+}
+
+const calc = new Calculator();
+const addFn = calc.add.bind(calc);
+const result = addFn(5, 10); // 15
+
+// Or with arrow function
+const addFn2 = (a: number, b: number) => calc.add(a, b);
+```
+
+### PHP (8.1+)
+
+```php
+<?php
+declare(strict_types=1);
+
+class Calculator {
+    public function add(int $a, int $b): int {
+        return $a + $b;
+    }
+}
+
+$calc = new Calculator();
+
+// OLD way (verbose)
+$addFn = fn($a, $b) => $calc->add($a, $b);
+
+// NEW way (PHP 8.1+): First-class callable
+$addFn = $calc->add(...);
+$result = $addFn(5, 10); // 15
+
+// Also works with built-in functions
+$upperFn = strtoupper(...);
+echo $upperFn('hello'); // "HELLO"
+
+// Static methods
+$jsonDecodeFn = json_decode(...);
+```
+
+**Benefits:**
+- ✅ Cleaner syntax
+- ✅ Works with methods, functions, and static methods
+- ✅ Proper type checking
+
+## Array Functions Comparison
+
+TypeScript developers coming to PHP often miss familiar array methods. Here's how they translate:
+
+### TypeScript Array Methods
+
+```typescript
+const numbers = [1, 2, 3, 4, 5];
+
+// map
+const doubled = numbers.map(x => x * 2);
+
+// filter
+const evens = numbers.filter(x => x % 2 === 0);
+
+// reduce
+const sum = numbers.reduce((acc, x) => acc + x, 0);
+
+// find
+const firstEven = numbers.find(x => x % 2 === 0);
+
+// some
+const hasEven = numbers.some(x => x % 2 === 0);
+
+// every
+const allPositive = numbers.every(x => x > 0);
+
+// includes
+const hasThree = numbers.includes(3);
+
+// forEach
+numbers.forEach(x => console.log(x));
+```
+
+### PHP Array Functions
+
+```php
+<?php
+$numbers = [1, 2, 3, 4, 5];
+
+// map
+$doubled = array_map(fn($x) => $x * 2, $numbers);
+
+// filter
+$evens = array_filter($numbers, fn($x) => $x % 2 === 0);
+
+// reduce
+$sum = array_reduce($numbers, fn($acc, $x) => $acc + $x, 0);
+
+// find (first match) - no direct equivalent, use loop or array_filter
+$firstEven = current(array_filter($numbers, fn($x) => $x % 2 === 0)) ?: null;
+
+// some - no direct equivalent, use loop
+$hasEven = count(array_filter($numbers, fn($x) => $x % 2 === 0)) > 0;
+
+// every - no direct equivalent
+$allPositive = count(array_filter($numbers, fn($x) => $x > 0)) === count($numbers);
+
+// includes
+$hasThree = in_array(3, $numbers, true); // Third param = strict comparison
+
+// forEach
+array_walk($numbers, fn($x) => print($x . "\n"));
+// Or use regular foreach loop (more idiomatic)
+foreach ($numbers as $x) {
+    echo $x . "\n";
+}
+```
+
+**Important Differences:**
+- PHP's `array_map` has parameters reversed: `array_map(callback, array)`
+- Use `in_array()` for checking existence (with `strict: true` for type-safe)
+- No direct `find()`, `some()`, `every()` equivalents—use `array_filter()` with additional logic
+- PHP prefers `foreach` loops over `forEach()` method
+
+### Modern PHP Array Helper (Custom)
+
+You can create TypeScript-like helpers:
+
+```php
+<?php
+declare(strict_types=1);
+
+class Arr {
+    /**
+     * @template T
+     * @param array<T> $array
+     * @param callable(T): bool $callback
+     * @return T|null
+     */
+    public static function find(array $array, callable $callback): mixed {
+        foreach ($array as $item) {
+            if ($callback($item)) {
+                return $item;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @template T
+     * @param array<T> $array
+     * @param callable(T): bool $callback
+     */
+    public static function some(array $array, callable $callback): bool {
+        foreach ($array as $item) {
+            if ($callback($item)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @template T
+     * @param array<T> $array
+     * @param callable(T): bool $callback
+     */
+    public static function every(array $array, callable $callback): bool {
+        foreach ($array as $item) {
+            if (!$callback($item)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+// Usage
+$numbers = [1, 2, 3, 4, 5];
+$firstEven = Arr::find($numbers, fn($x) => $x % 2 === 0); // 2
+$hasEven = Arr::some($numbers, fn($x) => $x % 2 === 0);   // true
+$allPositive = Arr::every($numbers, fn($x) => $x > 0);    // true
+```
+
+## Attributes vs Decorators
+
+### TypeScript Decorators
+
+```typescript
+// TypeScript decorators (experimental)
+function log(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  const original = descriptor.value;
+  descriptor.value = function(...args: any[]) {
+    console.log(`Calling ${propertyKey} with`, args);
+    return original.apply(this, args);
+  };
+}
+
+class Calculator {
+  @log
+  add(a: number, b: number): number {
+    return a + b;
+  }
+}
+```
+
+### PHP Attributes (8.0+)
+
+```php
+<?php
+declare(strict_types=1);
+
+// Define attribute
+#[Attribute]
+class Route {
+    public function __construct(
+        public string $path,
+        public string $method = 'GET'
+    ) {}
+}
+
+// Use attribute
+class UserController {
+    #[Route('/users', 'GET')]
+    public function index(): array {
+        return ['users' => []];
+    }
+
+    #[Route('/users', 'POST')]
+    public function store(): array {
+        return ['created' => true];
+    }
+}
+
+// Read attributes via reflection
+$reflection = new ReflectionClass(UserController::class);
+foreach ($reflection->getMethods() as $method) {
+    $attributes = $method->getAttributes(Route::class);
+    foreach ($attributes as $attribute) {
+        $route = $attribute->newInstance();
+        echo "{$route->method} {$route->path} -> {$method->getName()}\n";
+    }
+}
+```
+
+**Differences:**
+- TypeScript decorators modify behavior at runtime (when supported)
+- PHP attributes are **metadata only**—they don't change behavior automatically
+- PHP requires reflection to read attributes
+- Common PHP use cases: routing, validation, ORM mapping
+
+## Looping Constructs
+
+### TypeScript Loops
+
+```typescript
+const items = ['a', 'b', 'c'];
+
+// for...of (values)
+for (const item of items) {
+  console.log(item);
+}
+
+// for...in (keys)
+for (const key in items) {
+  console.log(key); // "0", "1", "2"
+}
+
+// forEach
+items.forEach((item, index) => {
+  console.log(index, item);
+});
+
+// Classic for
+for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);
+}
+```
+
+### PHP Loops
+
+```php
+<?php
+$items = ['a', 'b', 'c'];
+
+// foreach (most common)
+foreach ($items as $item) {
+    echo $item . "\n";
+}
+
+// foreach with index
+foreach ($items as $index => $item) {
+    echo "{$index}: {$item}\n";
+}
+
+// Classic for
+for ($i = 0; $i < count($items); $i++) {
+    echo $items[$i] . "\n";
+}
+
+// while
+$i = 0;
+while ($i < count($items)) {
+    echo $items[$i] . "\n";
+    $i++;
+}
+```
+
+**Associative Arrays (like Objects):**
+
+```typescript
+// TypeScript
+const user = { name: "Alice", age: 30 };
+for (const [key, value] of Object.entries(user)) {
+  console.log(`${key}: ${value}`);
+}
+```
+
+```php
+<?php
+// PHP
+$user = ['name' => 'Alice', 'age' => 30];
+foreach ($user as $key => $value) {
+    echo "{$key}: {$value}\n";
+}
+```
+
+## Union Types in Practice
+
+### TypeScript
+
+```typescript
+function format(value: string | number | boolean): string {
+  if (typeof value === "string") {
+    return value.toUpperCase();
+  }
+  if (typeof value === "number") {
+    return value.toFixed(2);
+  }
+  return value ? "Yes" : "No";
+}
+```
+
+### PHP (8.0+)
+
+```php
+<?php
+declare(strict_types=1);
+
+function format(string|int|float|bool $value): string {
+    return match(true) {
+        is_string($value) => strtoupper($value),
+        is_int($value) || is_float($value) => number_format($value, 2),
+        is_bool($value) => $value ? "Yes" : "No",
+    };
+}
+
+// Or with if/elseif
+function formatAlt(string|int|float|bool $value): string {
+    if (is_string($value)) {
+        return strtoupper($value);
+    }
+    if (is_int($value) || is_float($value)) {
+        return number_format($value, 2);
+    }
+    return $value ? "Yes" : "No";
+}
+```
+
+**Match with Truthiness:**
+- `match(true)` allows conditional expressions as cases
+- More elegant than long if/elseif chains
+- Exhaustive by default (must handle all cases)
+
 ## Practical Comparison Example
 
 Let's build a simple user validator in both languages:
@@ -681,14 +1059,20 @@ echo "Sum: {$result['sum']}, Avg: {$result['avg']}" . PHP_EOL;
 
 ## Key Takeaways
 
-1. **Arrow functions** in PHP use `fn` keyword and support only single expressions
-2. **Null coalescing** (`??`, `??=`) works identically to TypeScript
-3. **Nullsafe operator** (`?->`) is PHP's version of optional chaining
-4. **Match expressions** are superior to switch statements
-5. **Named arguments** (PHP 8.0+) provide similar flexibility to object parameters in TS
-6. **Property promotion** makes class constructors as concise as TypeScript
-7. **String interpolation** uses double quotes instead of backticks
-8. **Spread operator** works for arrays, limited support for associative arrays
+1. **Arrow functions** (`fn`) support only single expressions; use traditional closures for multi-line
+2. **Null coalescing** (`??`, `??=`) works identically to TypeScript's nullish coalescing
+3. **Nullsafe operator** (`?->`) is PHP's version of optional chaining (objects only, not arrays)
+4. **Match expressions** are superior to switch: return values, strict comparison, no fall-through
+5. **Named arguments** (PHP 8.0+) allow skipping optional parameters and reordering
+6. **Property promotion** (PHP 8.0+) makes constructors as concise as TypeScript
+7. **String interpolation** uses double quotes `"{$var}"` instead of backticks `` `${var}` ``
+8. **Spread operator** works for arrays; associative array spread requires PHP 8.1+
+9. **First-class callables** (PHP 8.1+): Use `fn(...)` syntax for cleaner function references
+10. **Array functions** differ: `array_map(callback, array)` has reversed parameter order vs JS
+11. **PHP lacks** `array.find()`, `array.some()`, `array.every()`—use `array_filter()` or custom helpers
+12. **Attributes** (PHP 8.0+) are metadata-only, unlike TypeScript decorators that modify behavior
+13. **`foreach` is idiomatic** in PHP; prefer it over `array_walk()` for most iterations
+14. **Union types** work great with `match(true)` for elegant type-based logic
 
 ## Syntax Cheat Sheet
 

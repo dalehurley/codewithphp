@@ -454,21 +454,607 @@ $user->name = "Bob"; // ✅ OK
 $user->id = 2;       // ❌ Fatal error: Cannot modify readonly property
 ```
 
+## Type Juggling and Coercion
+
+One of the biggest differences between TypeScript and PHP is how they handle type coercion.
+
+### TypeScript Type Coercion
+
+```typescript
+// JavaScript's loose typing (TypeScript allows this)
+let value: any = "42";
+let doubled = value * 2; // 84 (string coerced to number)
+
+// TypeScript with proper types prevents this
+let typedValue: string = "42";
+let doubled2 = typedValue * 2; // ❌ Error: The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type
+```
+
+### PHP Type Juggling (Without Strict Types)
+
+```php
+<?php
+// Without strict_types, PHP aggressively coerces types
+function add(int $a, int $b): int {
+    return $a + $b;
+}
+
+echo add("10", "20");    // ✅ 30 (strings → ints)
+echo add("10.5", "20");  // ✅ 30 (floats truncated to ints)
+echo add("10", 2.5);     // ✅ 12 (float truncated to int)
+echo add("hello", "5");  // ⚠️  5 (non-numeric string → 0)
+```
+
+### PHP with Strict Types
+
+```php
+<?php
+declare(strict_types=1);
+
+function add(int $a, int $b): int {
+    return $a + $b;
+}
+
+echo add(10, 20);      // ✅ 30
+echo add("10", "20");  // ❌ Fatal error: Argument must be of type int, string given
+echo add(10, 2.5);     // ❌ Fatal error: Argument must be of type int, float given
+```
+
+**Key Insight:** Without `declare(strict_types=1)`, PHP's type system behaves more like JavaScript with implicit coercion. Always enable strict types for TypeScript-like behavior.
+
+## Mixed and Never Types Explained
+
+### The `mixed` Type
+
+**TypeScript's `any`:**
+```typescript
+let value: any = "hello";
+value = 42;           // ✅ OK
+value = true;         // ✅ OK
+value.anyMethod();    // ✅ TypeScript allows (runtime error possible)
+```
+
+**PHP's `mixed`:**
+```php
+<?php
+declare(strict_types=1);
+
+function process(mixed $value): mixed {
+    // $value can be any type
+    if (is_string($value)) {
+        return strtoupper($value);
+    }
+    if (is_int($value)) {
+        return $value * 2;
+    }
+    return $value;
+}
+
+echo process("hello"); // "HELLO"
+echo process(42);      // 84
+echo process(true);    // 1 (true converted to string)
+```
+
+**Differences from `any`:**
+- PHP's `mixed` is type-safe at boundaries (function signatures)
+- You must use type guards (`is_string()`, `is_int()`) to narrow types
+- Unlike TypeScript's `any`, `mixed` doesn't disable type checking
+
+### The `never` Type
+
+**TypeScript:**
+```typescript
+// Function that never returns (throws or infinite loop)
+function throwError(message: string): never {
+  throw new Error(message);
+}
+
+function infiniteLoop(): never {
+  while (true) {
+    // Never exits
+  }
+}
+```
+
+**PHP (8.1+):**
+```php
+<?php
+declare(strict_types=1);
+
+// Function that always throws
+function throwError(string $message): never {
+    throw new Exception($message);
+}
+
+// Function that exits
+function terminate(string $message): never {
+    echo $message;
+    exit(1);
+}
+
+// ❌ This would be a type error:
+function invalid(): never {
+    return 42; // Error: never type cannot return a value
+}
+```
+
+**Use Cases:**
+- Functions that always throw exceptions
+- Functions that call `exit()` or `die()`
+- Exhaustiveness checking in match expressions
+
+## Literal Types
+
+### TypeScript Literal Types
+
+```typescript
+type Status = "pending" | "approved" | "rejected";
+type Port = 3000 | 8080 | 9000;
+
+function setStatus(status: Status): void {
+  console.log(`Status: ${status}`);
+}
+
+setStatus("approved");   // ✅ OK
+setStatus("invalid");    // ❌ Error
+```
+
+### PHP Literal Types (Limited)
+
+PHP doesn't have literal types for primitives, but you can achieve similar results with enums:
+
+```php
+<?php
+declare(strict_types=1);
+
+enum Status: string {
+    case Pending = 'pending';
+    case Approved = 'approved';
+    case Rejected = 'rejected';
+}
+
+function setStatus(Status $status): void {
+    echo "Status: {$status->value}\n";
+}
+
+setStatus(Status::Approved);  // ✅ OK
+setStatus('invalid');         // ❌ Fatal error: must be of type Status
+
+// Enum with methods (PHP advantage!)
+enum Status: string {
+    case Pending = 'pending';
+    case Approved = 'approved';
+    case Rejected = 'rejected';
+
+    public function isComplete(): bool {
+        return $this === self::Approved || $this === self::Rejected;
+    }
+
+    public function color(): string {
+        return match($this) {
+            self::Pending => 'yellow',
+            self::Approved => 'green',
+            self::Rejected => 'red',
+        };
+    }
+}
+
+$status = Status::Approved;
+echo $status->isComplete(); // true
+echo $status->color();      // "green"
+```
+
+## Callable Types and Function Signatures
+
+### TypeScript Function Types
+
+```typescript
+// Function type annotation
+type MathOperation = (a: number, b: number) => number;
+
+const add: MathOperation = (a, b) => a + b;
+const multiply: MathOperation = (a, b) => a * b;
+
+// Callback parameter
+function calculate(a: number, b: number, operation: MathOperation): number {
+  return operation(a, b);
+}
+
+calculate(5, 10, add);      // 15
+calculate(5, 10, multiply); // 50
+```
+
+### PHP Callable Types
+
+```php
+<?php
+declare(strict_types=1);
+
+// PHP uses 'callable' type
+function calculate(int $a, int $b, callable $operation): int {
+    return $operation($a, $b);
+}
+
+$add = fn(int $a, int $b): int => $a + $b;
+$multiply = fn(int $a, int $b): int => $a * $b;
+
+echo calculate(5, 10, $add);      // 15
+echo calculate(5, 10, $multiply); // 50
+
+// More specific with PHPStan/Psalm annotations
+/**
+ * @param callable(int, int): int $operation
+ */
+function calculateTyped(int $a, int $b, callable $operation): int {
+    return $operation($a, $b);
+}
+```
+
+**PHP 8.2+ First-Class Callable Syntax:**
+```php
+<?php
+class Calculator {
+    public function add(int $a, int $b): int {
+        return $a + $b;
+    }
+}
+
+$calc = new Calculator();
+$addFunction = $calc->add(...); // First-class callable
+echo $addFunction(5, 10); // 15
+```
+
+## Type Guards and Narrowing
+
+### TypeScript Type Guards
+
+```typescript
+function process(value: string | number): string {
+  // Type guard with typeof
+  if (typeof value === "number") {
+    return value.toFixed(2); // TypeScript knows it's a number
+  }
+  return value.toUpperCase(); // TypeScript knows it's a string
+}
+
+// User-defined type guard
+interface Dog {
+  bark(): void;
+}
+
+interface Cat {
+  meow(): void;
+}
+
+function isDog(animal: Dog | Cat): animal is Dog {
+  return (animal as Dog).bark !== undefined;
+}
+
+function makeSound(animal: Dog | Cat): void {
+  if (isDog(animal)) {
+    animal.bark(); // TypeScript knows it's a Dog
+  } else {
+    animal.meow(); // TypeScript knows it's a Cat
+  }
+}
+```
+
+### PHP Type Guards
+
+```php
+<?php
+declare(strict_types=1);
+
+function process(string|int $value): string {
+    // Type guard with is_*() functions
+    if (is_int($value)) {
+        return number_format($value, 2);
+    }
+    return strtoupper($value);
+}
+
+// Interface-based type checking
+interface Dog {
+    public function bark(): void;
+}
+
+interface Cat {
+    public function meow(): void;
+}
+
+function makeSound(Dog|Cat $animal): void {
+    // Use instanceof for object types
+    if ($animal instanceof Dog) {
+        $animal->bark();
+    } else {
+        $animal->meow();
+    }
+}
+```
+
+**PHP Type Check Functions:**
+- `is_int()`, `is_float()`, `is_string()`, `is_bool()`, `is_array()`
+- `is_null()`, `is_object()`, `is_resource()`, `is_callable()`
+- `instanceof` for class/interface type checking
+
 ## Practical Comparison
 
 | Feature | TypeScript | PHP |
 |---------|------------|-----|
 | **Type Checking** | Compile-time | Runtime |
+| **Type Coercion** | Moderate | Aggressive (without strict types) |
 | **Nullability** | `T \| null` | `?T` |
 | **Union Types** | `string \| number` | `string\|int\|float` |
-| **Generics** | `Array<T>` | Docblock only (`@param array<T>`) |
+| **Intersection Types** | `A & B` | No native support |
+| **Literal Types** | `"pending" \| "approved"` | Use enums instead |
+| **Generics** | `Array<T>`, `Promise<T>` | Docblock only (`@param array<T>`) |
 | **Interfaces** | Structural | Nominal (method contracts) |
-| **Enums** | ✅ (ES3+) | ✅ (PHP 8.1+) |
+| **Enums** | ✅ (ES3+) | ✅ (PHP 8.1+, more powerful) |
 | **Readonly** | ✅ | ✅ (PHP 8.1+) |
 | **Type Inference** | Strong | Limited |
 | **Any Type** | `any` | `mixed` |
 | **Never Type** | `never` | `never` (PHP 8.1+) |
+| **Type Guards** | `typeof`, custom guards | `is_*()`, `instanceof` |
+| **Callable Types** | `(a: T) => R` | `callable` + docblocks |
 | **Strict Mode** | `tsconfig.json` | `declare(strict_types=1)` |
+
+## Common Pitfalls and Gotchas
+
+### Pitfall 1: Forgetting `declare(strict_types=1)`
+
+```php
+<?php
+// ❌ BAD: No strict types
+function greet(string $name): string {
+    return "Hello, {$name}!";
+}
+
+greet(123); // Silently converts 123 to "123" 🐛
+```
+
+```php
+<?php
+// ✅ GOOD: Always use strict types
+declare(strict_types=1);
+
+function greet(string $name): string {
+    return "Hello, {$name}!";
+}
+
+greet(123); // Fatal error: must be of type string
+```
+
+### Pitfall 2: Array Type Hints Are Not Generic
+
+```typescript
+// TypeScript: Type-safe arrays
+function processStrings(items: string[]): void {
+  items.forEach(item => console.log(item.toUpperCase()));
+}
+
+processStrings([1, 2, 3]); // ❌ Error: Type 'number' is not assignable to type 'string'
+```
+
+```php
+<?php
+declare(strict_types=1);
+
+// PHP: array type hint accepts ANY array
+function processStrings(array $items): void {
+    foreach ($items as $item) {
+        echo strtoupper($item); // Runtime error if $item is not a string!
+    }
+}
+
+processStrings([1, 2, 3]); // ✅ Compiles, ❌ Runtime error
+```
+
+**Solution:** Use PHPStan annotations:
+```php
+<?php
+/**
+ * @param array<string> $items
+ */
+function processStrings(array $items): void {
+    foreach ($items as $item) {
+        echo strtoupper($item);
+    }
+}
+// PHPStan will catch type errors during static analysis
+```
+
+### Pitfall 3: Float vs Int Distinction
+
+```typescript
+// TypeScript: One numeric type
+function double(n: number): number {
+  return n * 2;
+}
+
+double(5);    // ✅ 10
+double(5.5);  // ✅ 11
+```
+
+```php
+<?php
+declare(strict_types=1);
+
+function double(int $n): int {
+    return $n * 2;
+}
+
+double(5);    // ✅ 10
+double(5.5);  // ❌ Fatal error: must be of type int, float given
+```
+
+**Solution:** Use union types for numeric flexibility:
+```php
+<?php
+function double(int|float $n): int|float {
+    return $n * 2;
+}
+
+double(5);    // ✅ 10
+double(5.5);  // ✅ 11.0
+```
+
+### Pitfall 4: Nullable Return Types Must Be Explicit
+
+```typescript
+// TypeScript: Return type inferred as User | undefined
+function findUser(id: number) {
+  return users.find(u => u.id === id);
+}
+```
+
+```php
+<?php
+declare(strict_types=1);
+
+// ❌ BAD: Missing nullable return type
+function findUser(int $id): User {
+    return $users[$id] ?? null; // Runtime error if null returned!
+}
+
+// ✅ GOOD: Explicit nullable return
+function findUser(int $id): ?User {
+    return $users[$id] ?? null;
+}
+```
+
+### Pitfall 5: Property Type Must Match Constructor Assignment
+
+```typescript
+// TypeScript: No issue
+class User {
+  name: string;
+
+  constructor(name: string | null) {
+    this.name = name ?? "Anonymous";
+  }
+}
+```
+
+```php
+<?php
+// ❌ BAD: Type mismatch
+class User {
+    public string $name;
+
+    public function __construct(?string $name) {
+        $this->name = $name ?? "Anonymous"; // OK
+        $this->name = null; // Fatal error: Cannot assign null to string
+    }
+}
+
+// ✅ GOOD: Matching types
+class User {
+    public function __construct(
+        public string $name = "Anonymous"
+    ) {}
+}
+```
+
+### Pitfall 6: Void Functions Can Return Null
+
+```typescript
+// TypeScript: void means no return value
+function log(message: string): void {
+  console.log(message);
+  return null; // ❌ Error: Type 'null' is not assignable to type 'void'
+}
+```
+
+```php
+<?php
+declare(strict_types=1);
+
+// PHP: void allows explicit 'return;' or 'return null;'
+function log(string $message): void {
+    echo $message;
+    return null; // ✅ OK (but unnecessary)
+}
+
+function logBetter(string $message): void {
+    echo $message;
+    return; // ✅ Better style
+}
+
+function logBest(string $message): void {
+    echo $message;
+    // ✅ No return statement needed
+}
+```
+
+### Pitfall 7: Properties Without Defaults Must Be Initialized
+
+```typescript
+// TypeScript: Properties can be undefined
+class User {
+  name: string;
+  email?: string; // Optional
+}
+
+let user = new User(); // OK, name is undefined
+```
+
+```php
+<?php
+// ❌ BAD: Uninitialized typed property
+class User {
+    public string $name;
+    public string $email;
+}
+
+$user = new User(); // Fatal error: Typed property must not be accessed before initialization
+
+// ✅ GOOD: Initialize in constructor or provide defaults
+class User {
+    public function __construct(
+        public string $name = "",
+        public ?string $email = null
+    ) {}
+}
+
+$user = new User(); // ✅ OK
+```
+
+### Pitfall 8: Type Declarations Are Per-File
+
+```php
+<?php
+// file1.php
+declare(strict_types=1);
+
+function add(int $a, int $b): int {
+    return $a + $b;
+}
+```
+
+```php
+<?php
+// file2.php
+// ❌ No declare(strict_types=1)
+
+require 'file1.php';
+
+add("5", "10"); // ✅ Works! Coercion happens based on CALLER's strict_types
+```
+
+**Key Insight:** `declare(strict_types=1)` affects how the CURRENT file calls functions, not how functions in OTHER files behave. Always declare it in every file!
+
+## Best Practices for TypeScript Developers
+
+1. **Always use `declare(strict_types=1)`** - First line after `<?php` in every file
+2. **Use PHPStan or Psalm** - Get compile-time-like type checking for arrays and generics
+3. **Prefer explicit nullable types** - `?Type` over implicit null returns
+4. **Use union types liberally** - `int|float` instead of just `float` when both should work
+5. **Leverage enums for literal types** - More powerful than TypeScript enums
+6. **Document array types** - Use `@param array<Type>` in docblocks
+7. **Use readonly for immutability** - Equivalent to TypeScript's `readonly`
+8. **Avoid `mixed` when possible** - Be specific with union types instead
+9. **Use `never` for functions that throw** - Helps with exhaustiveness checks
+10. **Initialize all typed properties** - No implicit `undefined` like TypeScript
 
 ## Hands-On Exercise
 
@@ -578,13 +1164,19 @@ echo double("5"); // Fatal error: Argument #1 must be of type int, string given
 ## Key Takeaways
 
 1. **PHP's type system is runtime-checked**, unlike TypeScript's compile-time checks
-2. Use `declare(strict_types=1)` to enable strict type checking (recommended)
-3. **Nullable types:** `?Type` in PHP = `Type | null` in TypeScript
-4. **Union types:** `string|int` in PHP = `string | number` in TypeScript
-5. **No native generics** in PHP; use PHPStan/Psalm docblocks for static analysis
-6. PHP interfaces are nominal (name-based), TypeScript interfaces are structural (shape-based)
-7. PHP enums (8.1+) are similar to TypeScript enums but more powerful
-8. PHP has **limited type inference** compared to TypeScript
+2. **Always use `declare(strict_types=1)`** - Without it, PHP behaves like JavaScript with aggressive type coercion
+3. **Type coercion without strict types is dangerous** - `add("10", "20")` works but leads to bugs
+4. **Nullable types:** `?Type` in PHP = `Type | null` in TypeScript
+5. **Union types:** `string|int` in PHP = `string | number` in TypeScript (but PHP distinguishes int/float)
+6. **No native generics** in PHP; use PHPStan/Psalm `@param array<Type>` docblocks for type-safe arrays
+7. **PHP interfaces are nominal** (name-based), TypeScript interfaces are structural (shape-based)
+8. **PHP enums (8.1+)** can have methods, making them more powerful than TypeScript enums
+9. **`mixed` vs `any`**: PHP's `mixed` is type-safe at boundaries, unlike TypeScript's `any`
+10. **Type guards**: Use `is_int()`, `is_string()`, `instanceof` in PHP vs `typeof` in TypeScript
+11. **Callable types**: PHP uses `callable` keyword; use docblocks for precise signatures
+12. **All typed properties must be initialized** - No implicit `undefined` like TypeScript
+13. **`strict_types` is per-file** - Must declare in every file, not just once per project
+14. **Use PHPStan/Psalm** - Essential for catching type errors before runtime (like tsc for TypeScript)
 
 ## Next Steps
 
