@@ -480,6 +480,403 @@ echo factorial(5); // 120
 
 PHP does **not** optimize tail calls, so deep recursion can cause stack overflow. Use iteration or trampolining for deep recursion.
 
+## Currying and Partial Application
+
+### TypeScript Currying
+
+```typescript
+// Curried function
+const add = (a: number) => (b: number) => a + b;
+
+const add5 = add(5);
+console.log(add5(10)); // 15
+
+// Generic curry helper
+function curry<A, B, C>(fn: (a: A, b: B) => C) {
+  return (a: A) => (b: B) => fn(a, b);
+}
+
+const multiply = (a: number, b: number) => a * b;
+const curriedMultiply = curry(multiply);
+const double = curriedMultiply(2);
+console.log(double(10)); // 20
+```
+
+### PHP Currying
+
+```php
+<?php
+declare(strict_types=1);
+
+// Curried function
+$add = fn(int $a): callable => fn(int $b): int => $a + $b;
+
+$add5 = $add(5);
+echo $add5(10); // 15
+
+// Generic curry helper
+function curry(callable $fn): callable {
+    return function(...$args) use ($fn): callable {
+        return function(...$moreArgs) use ($fn, $args): mixed {
+            return $fn(...array_merge($args, $moreArgs));
+        };
+    };
+}
+
+$multiply = fn(int $a, int $b): int => $a * $b;
+$curriedMultiply = curry($multiply);
+$double = $curriedMultiply(2);
+echo $double(10); // 20
+```
+
+### Partial Application
+
+**TypeScript:**
+```typescript
+const greet = (greeting: string, name: string) => `${greeting}, ${name}!`;
+
+const sayHello = (name: string) => greet("Hello", name);
+const sayHi = (name: string) => greet("Hi", name);
+
+console.log(sayHello("Alice")); // "Hello, Alice!"
+console.log(sayHi("Bob"));      // "Hi, Bob!"
+```
+
+**PHP:**
+```php
+<?php
+declare(strict_types=1);
+
+$greet = fn(string $greeting, string $name): string => "{$greeting}, {$name}!";
+
+// Partial application with arrow functions
+$sayHello = fn(string $name): string => $greet("Hello", $name);
+$sayHi = fn(string $name): string => $greet("Hi", $name);
+
+echo $sayHello("Alice"); // "Hello, Alice!"
+echo $sayHi("Bob");      // "Hi, Bob!"
+
+// Or with traditional closures for clarity
+$sayHello = function(string $name) use ($greet): string {
+    return $greet("Hello", $name);
+};
+```
+
+## Memoization Pattern
+
+### TypeScript Memoization
+
+```typescript
+function memoize<T extends (...args: any[]) => any>(fn: T): T {
+  const cache = new Map();
+
+  return ((...args: any[]) => {
+    const key = JSON.stringify(args);
+    if (cache.has(key)) {
+      return cache.get(key);
+    }
+    const result = fn(...args);
+    cache.set(key, result);
+    return result;
+  }) as T;
+}
+
+const expensiveOperation = (n: number): number => {
+  console.log(`Computing ${n}...`);
+  return n * n;
+};
+
+const memoized = memoize(expensiveOperation);
+console.log(memoized(5)); // "Computing 5..." -> 25
+console.log(memoized(5)); // 25 (cached, no log)
+```
+
+### PHP Memoization
+
+```php
+<?php
+declare(strict_types=1);
+
+function memoize(callable $fn): callable {
+    $cache = [];
+
+    return function(...$args) use ($fn, &$cache): mixed {
+        $key = json_encode($args);
+
+        if (!isset($cache[$key])) {
+            $cache[$key] = $fn(...$args);
+        }
+
+        return $cache[$key];
+    };
+}
+
+$expensiveOperation = function(int $n): int {
+    echo "Computing {$n}...\n";
+    return $n * $n;
+};
+
+$memoized = memoize($expensiveOperation);
+echo $memoized(5) . PHP_EOL; // "Computing 5..." -> 25
+echo $memoized(5) . PHP_EOL; // 25 (cached, no log)
+echo $memoized(10) . PHP_EOL; // "Computing 10..." -> 100
+```
+
+**Key Point:** PHP requires `&$cache` to modify the cache array across calls.
+
+## Common Closure Pitfalls
+
+### Pitfall 1: Forgetting to Capture Variables
+
+```php
+<?php
+$multiplier = 10;
+
+// ❌ BAD: Closure doesn't capture $multiplier
+$double = function(int $x): int {
+    return $x * $multiplier; // Error: Undefined variable
+};
+
+// ✅ GOOD: Explicit capture
+$double = function(int $x) use ($multiplier): int {
+    return $x * $multiplier;
+};
+
+// ✅ BETTER: Use arrow function for auto-capture
+$double = fn(int $x): int => $x * $multiplier;
+```
+
+### Pitfall 2: Capturing by Value vs Reference
+
+```php
+<?php
+$counter = 0;
+
+// ❌ WRONG: Captures by value (doesn't mutate outer)
+$increment = function() use ($counter): void {
+    $counter++; // Only modifies local copy
+};
+
+$increment();
+echo $counter; // Still 0
+
+// ✅ CORRECT: Capture by reference
+$counter = 0;
+$increment = function() use (&$counter): void {
+    $counter++; // Modifies outer variable
+};
+
+$increment();
+echo $counter; // 1
+```
+
+### Pitfall 3: Late Binding in Loops
+
+**TypeScript:**
+```typescript
+const callbacks: (() => void)[] = [];
+
+for (let i = 0; i < 3; i++) {
+  callbacks.push(() => console.log(i)); // ✅ Each closure captures its own i
+}
+
+callbacks.forEach(cb => cb()); // 0, 1, 2
+```
+
+**PHP (Problematic):**
+```php
+<?php
+$callbacks = [];
+
+// ❌ WRONG: All closures share same $i reference
+for ($i = 0; $i < 3; $i++) {
+    $callbacks[] = function() use ($i) {
+        echo $i . PHP_EOL;
+    };
+}
+
+foreach ($callbacks as $cb) {
+    $cb(); // 2, 2, 2 (all capture final value)
+}
+
+// ✅ CORRECT: Capture by value explicitly
+$callbacks = [];
+for ($i = 0; $i < 3; $i++) {
+    $callbacks[] = function() use ($i) { // Captures current value
+        echo $i . PHP_EOL;
+    };
+}
+
+foreach ($callbacks as $cb) {
+    $cb(); // 0, 1, 2
+}
+
+// ✅ ALTERNATIVE: Use arrow function
+$callbacks = [];
+for ($i = 0; $i < 3; $i++) {
+    $callbacks[] = fn() => print($i . PHP_EOL);
+}
+```
+
+**Explanation:** In the first example, if you use `use (&$i)` (reference), all closures point to the same variable, which ends at 2. Using `use ($i)` (value) captures the value at creation time.
+
+### Pitfall 4: Arrow Functions Can't Modify Captured Variables
+
+```php
+<?php
+$count = 0;
+
+// ❌ Arrow functions can't modify captured variables
+$increment = fn() => $count++; // Modifies local copy, not outer
+
+$increment();
+echo $count; // Still 0
+
+// ✅ Use traditional closure with reference
+$increment = function() use (&$count): void {
+    $count++;
+};
+
+$increment();
+echo $count; // 1
+```
+
+### Pitfall 5: Closure Serialization
+
+```php
+<?php
+// ❌ Closures cannot be serialized
+$fn = fn($x) => $x * 2;
+$serialized = serialize($fn); // Error: Serialization of 'Closure' is not allowed
+
+// ✅ Use named functions or Opis/Closure library
+function double(int $x): int {
+    return $x * 2;
+}
+
+$serialized = serialize('double'); // OK
+$fn = unserialize($serialized);
+echo $fn(5); // 10
+```
+
+## Function Composition
+
+### TypeScript Compose
+
+```typescript
+const compose = <T>(...fns: Array<(arg: T) => T>) => {
+  return (value: T): T => {
+    return fns.reduceRight((acc, fn) => fn(acc), value);
+  };
+};
+
+const add2 = (x: number) => x + 2;
+const multiply3 = (x: number) => x * 3;
+const square = (x: number) => x ** 2;
+
+const compute = compose(square, multiply3, add2);
+console.log(compute(5)); // square(multiply3(add2(5))) = square(21) = 441
+```
+
+### PHP Compose
+
+```php
+<?php
+declare(strict_types=1);
+
+function compose(callable ...$functions): callable {
+    return function(mixed $value) use ($functions): mixed {
+        return array_reduce(
+            array_reverse($functions),
+            fn($carry, $fn) => $fn($carry),
+            $value
+        );
+    };
+}
+
+$add2 = fn(int $x): int => $x + 2;
+$multiply3 = fn(int $x): int => $x * 3;
+$square = fn(int $x): int => $x ** 2;
+
+$compute = compose($square, $multiply3, $add2);
+echo $compute(5); // 441
+```
+
+## Closure Binding and `$this` Context
+
+### TypeScript `this` Binding
+
+```typescript
+class Counter {
+  private count = 0;
+
+  // Arrow function preserves this
+  increment = () => {
+    this.count++;
+  };
+
+  // Regular method needs binding
+  incrementMethod() {
+    this.count++;
+  }
+
+  getCount() {
+    return this.count;
+  }
+}
+
+const counter = new Counter();
+const inc = counter.increment;
+inc(); // ✅ Works (arrow function bound to instance)
+
+const incMethod = counter.incrementMethod;
+incMethod(); // ❌ Error: this is undefined
+```
+
+### PHP Closure Binding
+
+```php
+<?php
+declare(strict_types=1);
+
+class Counter {
+    private int $count = 0;
+
+    public function increment(): void {
+        $this->count++;
+    }
+
+    public function getCount(): int {
+        return $this->count;
+    }
+
+    public function getIncrementer(): callable {
+        // Closure has access to $this automatically
+        return function(): void {
+            $this->count++; // ✅ Works
+        };
+    }
+
+    public function getArrowIncrementer(): callable {
+        // Arrow function also has $this access
+        return fn() => $this->count++;
+    }
+}
+
+$counter = new Counter();
+$inc = $counter->getIncrementer();
+$inc();
+echo $counter->getCount(); // 1
+
+// Rebinding closure to different object
+$counter2 = new Counter();
+$boundInc = $inc->bindTo($counter2);
+$boundInc();
+echo $counter2->getCount(); // 1
+```
+
+**Key Difference:** PHP closures defined inside methods automatically have access to `$this`, unlike JavaScript where you need arrow functions or explicit binding.
+
 ## Practical Example: Event Emitter
 
 Let's build a simple event emitter in both languages:
@@ -721,11 +1118,19 @@ $logMessage("Again"); // Prints (after 1s)
 
 1. **Closures require explicit variable capture** with `use` clause (except arrow functions)
 2. **Arrow functions** (`fn`) automatically capture variables but only support single expressions
-3. **Variable capture by reference** requires `&` in `use (&$var)`
-4. **Callable type** accepts functions, closures, and method references
-5. **First-class callable syntax** (`fn(...)`) available in PHP 8.1+
-6. **Generators** work identically to TypeScript/JavaScript
-7. **No tail-call optimization** in PHP—use iteration for deep recursion
+3. **Variable capture by reference** requires `&` in `use (&$var)` for mutation
+4. **Arrow functions can't modify** captured variables—use traditional closures with `&` for that
+5. **Callable type** accepts functions, closures, method references, and string function names
+6. **First-class callable syntax** (`fn(...)`) available in PHP 8.1+ for cleaner references
+7. **Generators** work identically to TypeScript/JavaScript for lazy evaluation
+8. **No tail-call optimization** in PHP—use iteration for deep recursion
+9. **Currying and partial application** possible but require manual implementation
+10. **Memoization requires** `&$cache` reference to persist cache across invocations
+11. **Loop variable capture** behaves differently—use by-value `use ($i)` to capture current iteration
+12. **Closures cannot be serialized**—use named functions or external libraries
+13. **Function composition** can be implemented with `array_reduce` and `array_reverse`
+14. **PHP closures in methods** automatically have access to `$this` (no need for binding like JS)
+15. **`bindTo()` method** allows rebinding closures to different object instances
 
 ## Comparison Table
 
