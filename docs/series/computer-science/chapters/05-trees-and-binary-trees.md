@@ -24,21 +24,38 @@ In this chapter, you'll learn:
 
 ## Tree Terminology
 
-```
-        1         ← root
-       / \
-      2   3       ← level 1 (children of root)
-     / \   \
-    4   5   6     ← level 2 (leaves)
+```mermaid
+graph TD
+    R["1<br/>(root)"] --> L1A["2<br/>(parent)"]
+    R --> L1B["3<br/>(parent)"]
+    L1A --> L2A["4<br/>(leaf)"]
+    L1A --> L2B["5<br/>(leaf)"]
+    L1B --> L2C["6<br/>(leaf)"]
+
+    style R fill:#FF6B6B,color:#fff
+    style L1A fill:#4ECDC4
+    style L1B fill:#4ECDC4
+    style L2A fill:#95E1D3
+    style L2B fill:#95E1D3
+    style L2C fill:#95E1D3
 ```
 
-- **Root**: The topmost node
-- **Parent**: Node with children
-- **Child**: Node connected below a parent
-- **Leaf**: Node with no children
-- **Sibling**: Nodes with the same parent
-- **Depth**: Distance from root to a node
-- **Height**: Distance from a node to its deepest leaf
+```
+        1         ← root (depth: 0, height: 2)
+       / \
+      2   3       ← level 1 (depth: 1, height: 1)
+     / \   \
+    4   5   6     ← level 2 (depth: 2, height: 0) - leaves
+```
+
+**Key Terms:**
+- **Root**: The topmost node (1)
+- **Parent**: Node with children (1, 2, 3)
+- **Child**: Node connected below a parent (2 and 3 are children of 1)
+- **Leaf**: Node with no children (4, 5, 6)
+- **Sibling**: Nodes with the same parent (2 and 3 are siblings)
+- **Depth**: Distance from root to a node (node 4 has depth 2)
+- **Height**: Distance from a node to its deepest leaf (root has height 2)
 - **Subtree**: A tree formed by a node and its descendants
 
 ## Binary Trees
@@ -74,10 +91,43 @@ $root->right->right = new TreeNode(8);
 
 ### Types of Binary Trees
 
-1. **Full Binary Tree**: Every node has 0 or 2 children
+```mermaid
+graph TD
+    subgraph "Full Binary Tree"
+        F1[1] --> F2[2]
+        F1 --> F3[3]
+        F2 --> F4[4]
+        F2 --> F5[5]
+        F3 --> F6[6]
+        F3 --> F7[7]
+    end
+
+    subgraph "Complete Binary Tree"
+        C1[1] --> C2[2]
+        C1 --> C3[3]
+        C2 --> C4[4]
+        C2 --> C5[5]
+        C3 --> C6[6]
+    end
+
+    subgraph "Perfect Binary Tree"
+        P1[1] --> P2[2]
+        P1 --> P3[3]
+        P2 --> P4[4]
+        P2 --> P5[5]
+        P3 --> P6[6]
+        P3 --> P7[7]
+    end
+
+    style F1 fill:#4CAF50
+    style C1 fill:#2196F3
+    style P1 fill:#FF9800
+```
+
+1. **Full Binary Tree**: Every node has 0 or 2 children (no node has only 1 child)
 2. **Complete Binary Tree**: All levels filled except possibly the last, filled left to right
-3. **Perfect Binary Tree**: All internal nodes have 2 children, all leaves at same level
-4. **Balanced Binary Tree**: Height difference between left and right subtrees ≤ 1
+3. **Perfect Binary Tree**: All internal nodes have 2 children, all leaves at same level (height h has 2^h - 1 nodes)
+4. **Balanced Binary Tree**: Height difference between left and right subtrees ≤ 1 for every node
 
 ## Tree Traversal Algorithms
 
@@ -187,18 +237,41 @@ $result = levelOrderTraversal($root);
 
 ## Binary Search Tree (BST)
 
-A **Binary Search Tree** is a binary tree with the property:
+A **Binary Search Tree** is a binary tree with the **BST property**:
 - All nodes in the **left subtree** are **less than** the root
 - All nodes in the **right subtree** are **greater than** the root
 - This property applies recursively to all subtrees
 
+```mermaid
+graph TD
+    R[5<br/>root] --> L[3<br/>left < 5]
+    R --> RN[7<br/>right > 5]
+    L --> LL[2<br/>< 3]
+    L --> LR[4<br/>> 3]
+    RN --> RR[8<br/>right > 7]
+
+    style R fill:#FF6B6B,color:#fff
+    style L fill:#4ECDC4
+    style RN fill:#95E1D3
+    style LL fill:#F7DC6F
+    style LR fill:#F7DC6F
+    style RR fill:#BB8FCE
 ```
-        5
+
+```
+        5           ← root
        / \
-      3   7
+      3   7         ← 3 < 5 < 7  ✓
      / \   \
-    2   4   8
+    2   4   8       ← 2 < 3 < 4 < 5 < 7 < 8  ✓
+
+Inorder traversal gives sorted sequence: [2, 3, 4, 5, 7, 8]
 ```
+
+**Why BST is useful:**
+- **Efficient search**: O(log n) average case (balanced tree)
+- **Sorted iteration**: Inorder traversal gives elements in sorted order
+- **Dynamic**: Easy insertion and deletion compared to sorted arrays
 
 ### BST Implementation
 
