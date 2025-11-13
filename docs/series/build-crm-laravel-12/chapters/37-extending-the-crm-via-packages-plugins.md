@@ -9,7 +9,7 @@ prerequisites:
   - "/series/build-crm-laravel-12/chapters/36-extending-the-crm-via-packages-plugins"
 ---
 
-![extending-the-crm-via-packages-plugins](/images/build-crm-laravel-12/chapter-37-extending-the-crm-via-packages-plugins-hero-full.webp)
+![extending-the-crm-via-packages-plugins](/images/build-crm-laravel-12/chapter-37-extending-crm-packages-plugins-hero-full.webp)
 
 # Chapter 37: Extending the CRM via Packages & Plugins
 
