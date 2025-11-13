@@ -155,6 +155,7 @@ export default withMermaid(
             { text: 'AI/ML for PHP Developers', link: '/series/ai-ml-php-developers/' },
             { text: 'Why Python Developers Will Love PHP and Laravel', link: '/series/python-developers-love-php-laravel/' },
             { text: 'Build a CRM with Laravel 12', link: '/series/build-crm-laravel-12/' },
+            { text: 'Why Ruby on Rails Developers Will Love Laravel', link: '/series/rails-developers-love-laravel/' },
           ]
         },
         { text: 'GitHub', link: 'https://github.com/dalehurley/codewithphp' }
@@ -352,6 +353,7 @@ export default withMermaid(
             ]
           }
         ],
+
         '/series/build-crm-laravel-12/': [
           { text: 'Overview', link: '/series/build-crm-laravel-12/' },
           {
@@ -554,6 +556,59 @@ export default withMermaid(
               },
             ]
           },
+        ],
+
+        '/series/rails-developers-love-laravel/': [
+          { text: 'Overview', link: '/series/rails-developers-love-laravel/' },
+          {
+            text: 'Chapters',
+            items: [
+              {
+                text: '00 — Introduction: Why Look at Laravel',
+                link: '/series/rails-developers-love-laravel/chapters/00-introduction-why-look-at-laravel'
+              },
+              {
+                text: '01 — Mapping Concepts: Rails vs Laravel',
+                link: '/series/rails-developers-love-laravel/chapters/01-mapping-concepts-rails-vs-laravel'
+              },
+              {
+                text: '02 — Modern PHP: What\'s Changed',
+                link: '/series/rails-developers-love-laravel/chapters/02-modern-php-whats-changed'
+              },
+              {
+                text: '03 — Laravel\'s Developer Experience',
+                link: '/series/rails-developers-love-laravel/chapters/03-laravel-developer-experience'
+              },
+              {
+                text: '04 — PHP Syntax & Language Differences for Rails Devs',
+                link: '/series/rails-developers-love-laravel/chapters/04-php-syntax-for-rails-devs'
+              },
+              {
+                text: '05 — Working with Data: Eloquent ORM & Database Workflow',
+                link: '/series/rails-developers-love-laravel/chapters/05-eloquent-orm'
+              },
+              {
+                text: '06 — Building REST APIs: From Rails to Laravel',
+                link: '/series/rails-developers-love-laravel/chapters/06-building-rest-apis'
+              },
+              {
+                text: '07 — Testing, Deployment, DevOps: Best Practices',
+                link: '/series/rails-developers-love-laravel/chapters/07-testing-deployment-devops'
+              },
+              {
+                text: '08 — Ecosystem, Community, Packages & Where Laravel Excels',
+                link: '/series/rails-developers-love-laravel/chapters/08-ecosystem-community-packages'
+              },
+              {
+                text: '09 — When to Use Laravel (and When Rails Still Makes Sense)',
+                link: '/series/rails-developers-love-laravel/chapters/09-when-to-use-laravel-vs-rails'
+              },
+              {
+                text: '10 — Bonus: Hands-On Mini Project',
+                link: '/series/rails-developers-love-laravel/chapters/10-hands-on-mini-project'
+              }
+            ]
+          }
         ],
       },
       socialLinks: [
