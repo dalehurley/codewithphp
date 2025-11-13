@@ -226,6 +226,115 @@ String message = switch (method) {
 4. **Match throws error**: If no case matches and no default (safer!)
 :::
 
+### Alternative Syntax for Templates
+
+PHP offers alternative syntax for control structures, useful in template files:
+
+::: code-group
+
+```php [Standard Syntax]
+<?php if ($user->isLoggedIn()): ?>
+    <div class="welcome">
+        Welcome, <?= $user->getName() ?>!
+    </div>
+<?php else: ?>
+    <div class="login">
+        Please log in
+    </div>
+<?php endif; ?>
+
+<?php foreach ($items as $item): ?>
+    <li><?= $item ?></li>
+<?php endforeach; ?>
+
+<?php while ($row = $result->fetch()): ?>
+    <tr><td><?= $row['name'] ?></td></tr>
+<?php endwhile; ?>
+
+<?php switch ($status): ?>
+    <?php case 'active': ?>
+        <span class="badge-success">Active</span>
+        <?php break; ?>
+    <?php case 'inactive': ?>
+        <span class="badge-warning">Inactive</span>
+        <?php break; ?>
+    <?php default: ?>
+        <span class="badge-default">Unknown</span>
+<?php endswitch; ?>
+```
+
+```php [With Braces (Less Clean in Templates)]
+<?php if ($user->isLoggedIn()) { ?>
+    <div class="welcome">
+        Welcome, <?= $user->getName() ?>!
+    </div>
+<?php } else { ?>
+    <div class="login">
+        Please log in
+    </div>
+<?php } ?>
+```
+
+:::
+
+::: tip Template Syntax Benefits
+- **Cleaner HTML mixing**: No braces in template files
+- **Better readability**: Clear start/end markers
+- **Editor support**: Easier to match opening/closing tags
+- **Common in frameworks**: Laravel Blade uses similar syntax
+:::
+
+### Match vs Switch: Detailed Comparison
+
+| Feature | Switch | Match (PHP 8.0+) |
+|---------|--------|------------------|
+| **Comparison** | `==` (loose, unless strict_types) | `===` (always strict) |
+| **Fall-through** | Yes (needs `break`) | No (each arm independent) |
+| **Returns value** | No (needs assignment) | Yes (expression) |
+| **Multiple conditions** | Multiple `case` statements | Comma-separated values |
+| **Default required** | No (optional) | No, but throws if no match |
+| **Complex expressions** | Only in conditions | In arms too |
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// Switch issues:
+$value = "1";
+switch ($value) {
+    case 1:
+        $result = "Integer one";  // ⚠️ Matches with weak comparison
+        break;
+    case "1":
+        $result = "String one";
+        break;
+}
+
+// Match advantages:
+$value = "1";
+$result = match ($value) {
+    1 => "Integer one",     // Doesn't match
+    "1" => "String one",    // ✅ Matches (strict)
+};
+
+// Match with complex expressions
+$statusCode = 404;
+$message = match (true) {
+    $statusCode >= 200 && $statusCode < 300 => "Success",
+    $statusCode >= 300 && $statusCode < 400 => "Redirect",
+    $statusCode >= 400 && $statusCode < 500 => "Client Error",
+    $statusCode >= 500 => "Server Error",
+};
+
+// Match with multiple values
+$day = 'Saturday';
+$type = match ($day) {
+    'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday' => 'Weekday',
+    'Saturday', 'Sunday' => 'Weekend',
+};
+```
+
 ---
 
 ## Section 2: Loops
@@ -470,6 +579,74 @@ for ($i = 0; $i < 3; $i++) {
     }
 }
 ```
+
+### Loop Performance and Usage Guide
+
+Choosing the right loop can impact both readability and performance:
+
+| Loop Type | Best For | Performance | Java Equivalent |
+|-----------|----------|-------------|-----------------|
+| `foreach` | Arrays/iterables | Fast ⚡ | Enhanced for loop |
+| `for` | Counter-based iteration | Fast ⚡ | Standard for loop |
+| `while` | Unknown iteration count | Fast ⚡ | while loop |
+| `do-while` | At least one iteration | Fast ⚡ | do-while loop |
+| `array_map()` | Transforming arrays | Fast ⚡ | Stream.map() |
+| `array_filter()` | Filtering arrays | Fast ⚡ | Stream.filter() |
+| `array_walk()` | Side effects on arrays | Medium | forEach() |
+
+```php
+<?php
+
+declare(strict_types=1);
+
+$data = range(1, 1000000);
+
+// ✅ Best: foreach for iteration
+foreach ($data as $value) {
+    // Process value
+}
+
+// ✅ Best: array functions for transformation
+$doubled = array_map(fn($n) => $n * 2, $data);
+
+// ❌ Avoid: for with count() in condition (recalculated each iteration)
+for ($i = 0; $i < count($data); $i++) {
+    // Process $data[$i]
+}
+
+// ✅ Better: Cache count
+$length = count($data);
+for ($i = 0; $i < $length; $i++) {
+    // Process $data[$i]
+}
+
+// ✅ Best for index access: foreach with key
+foreach ($data as $index => $value) {
+    // Have both index and value
+}
+```
+
+::: tip Loop Selection Guidelines
+**Use `foreach` when:**
+- Iterating over all elements
+- Don't need counter manipulation
+- Working with associative arrays
+
+**Use `for` when:**
+- Need precise control over counter
+- Iterating with step > 1
+- Need to modify counter inside loop
+
+**Use `while` when:**
+- Iteration count unknown
+- Condition-based iteration
+- Reading from file/stream
+
+**Use array functions when:**
+- Transforming/filtering data
+- Want functional style
+- Chaining multiple operations
+:::
 
 ---
 
@@ -763,9 +940,388 @@ List<String> items = Arrays.asList("red", "green", "blue");
 
 :::
 
+### First-Class Callable Syntax (PHP 8.1+)
+
+PHP 8.1 introduced a cleaner syntax for creating callables from functions and methods:
+
+::: code-group
+
+```php [PHP 8.1+ First-Class Callables]
+<?php
+
+declare(strict_types=1);
+
+class StringUtils
+{
+    public static function uppercase(string $str): string
+    {
+        return strtoupper($str);
+    }
+
+    public function lowercase(string $str): string
+    {
+        return strtolower($str);
+    }
+}
+
+// Old way: string references (still works)
+$upper1 = 'strtoupper';
+$upper2 = 'StringUtils::uppercase';
+$upper3 = [new StringUtils(), 'lowercase'];
+
+// New way: First-class callable syntax (PHP 8.1+)
+$upper1 = strtoupper(...);  // Built-in function
+$upper2 = StringUtils::uppercase(...);  // Static method
+$utils = new StringUtils();
+$upper3 = $utils->lowercase(...);  // Instance method
+
+// Usage
+$strings = ['hello', 'world'];
+$result = array_map($upper1, $strings);
+// ['HELLO', 'WORLD']
+
+// Passing to higher-order functions
+$names = ['alice', 'bob', 'charlie'];
+$uppercase = array_map(strtoupper(...), $names);
+$trimmed = array_map(trim(...), $names);
+
+// With type hints (cleaner than before)
+function processStrings(array $strings, callable $processor): array
+{
+    return array_map($processor, $strings);
+}
+
+$result = processStrings($names, strtoupper(...));
+```
+
+```java [Java Method References]
+// Java has method references (Java 8+)
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+List<String> strings = Arrays.asList("hello", "world");
+
+// Method references
+List<String> upper = strings.stream()
+    .map(String::toUpperCase)
+    .collect(Collectors.toList());
+
+// Static method reference
+List<String> trimmed = strings.stream()
+    .map(String::trim)
+    .collect(Collectors.toList());
+
+// Instance method reference
+class StringUtils {
+    public String lowercase(String str) {
+        return str.toLowerCase();
+    }
+}
+
+StringUtils utils = new StringUtils();
+List<String> lower = strings.stream()
+    .map(utils::lowercase)
+    .collect(Collectors.toList());
+```
+
+:::
+
+::: tip First-Class Callables vs Old Syntax
+**Old way:**
+```php
+array_map('strtoupper', $strings);
+array_map([$obj, 'method'], $strings);
+```
+
+**New way (PHP 8.1+):**
+```php
+array_map(strtoupper(...), $strings);
+array_map($obj->method(...), $strings);
+```
+
+**Benefits:**
+- Type-checked at parse time
+- IDE autocomplete support
+- Clearer intent
+- Closer to Java's method references
+:::
+
 ---
 
-## Section 4: Closures and Anonymous Functions
+## Section 4: Generator Functions
+
+### Goal
+
+Learn PHP's generator functions with `yield` - a powerful feature for memory-efficient iteration.
+
+### Understanding Generators
+
+Generators allow you to create iterators without loading all data into memory:
+
+::: code-group
+
+```php [PHP Generators]
+<?php
+
+declare(strict_types=1);
+
+// Regular function - loads everything into memory
+function getAllNumbers(): array
+{
+    $numbers = [];
+    for ($i = 0; $i < 1000000; $i++) {
+        $numbers[] = $i;
+    }
+    return $numbers;  // ⚠️ Uses ~50MB memory
+}
+
+// Generator - yields values one at a time
+function generateNumbers(): Generator
+{
+    for ($i = 0; $i < 1000000; $i++) {
+        yield $i;  // ✅ Uses minimal memory
+    }
+}
+
+// Usage is identical
+foreach (generateNumbers() as $number) {
+    echo $number . "\n";
+    if ($number >= 10) break;  // Can stop early
+}
+
+// Generator with keys
+function generateKeyValue(): Generator
+{
+    yield 'name' => 'Alice';
+    yield 'age' => 30;
+    yield 'email' => 'alice@example.com';
+}
+
+foreach (generateKeyValue() as $key => $value) {
+    echo "$key: $value\n";
+}
+
+// Generator that yields from another generator
+function numbers(): Generator
+{
+    yield 1;
+    yield 2;
+    yield from otherNumbers();  // Delegate to another generator
+    yield 5;
+}
+
+function otherNumbers(): Generator
+{
+    yield 3;
+    yield 4;
+}
+
+// Output: 1, 2, 3, 4, 5
+foreach (numbers() as $num) {
+    echo "$num\n";
+}
+```
+
+```java [Java - No Direct Equivalent]
+// Java doesn't have generators
+// Closest: Stream API or custom Iterator
+
+// Stream approach (not the same - evaluates differently)
+import java.util.stream.IntStream;
+
+IntStream numbers = IntStream.range(0, 1000000);
+numbers.limit(10).forEach(System.out::println);
+
+// Custom Iterator (more verbose)
+import java.util.Iterator;
+
+class NumberIterator implements Iterator<Integer> {
+    private int current = 0;
+    private int max;
+
+    public NumberIterator(int max) {
+        this.max = max;
+    }
+
+    public boolean hasNext() {
+        return current < max;
+    }
+
+    public Integer next() {
+        return current++;
+    }
+}
+
+// Usage
+Iterator<Integer> iter = new NumberIterator(1000000);
+while (iter.hasNext() && iter.next() < 10) {
+    System.out.println(iter.next());
+}
+```
+
+:::
+
+### Practical Generator Examples
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// Read large file line by line (memory efficient)
+function readLargeFile(string $filename): Generator
+{
+    $handle = fopen($filename, 'r');
+    if ($handle === false) {
+        return;
+    }
+
+    try {
+        while (($line = fgets($handle)) !== false) {
+            yield trim($line);
+        }
+    } finally {
+        fclose($handle);
+    }
+}
+
+// Process without loading entire file into memory
+foreach (readLargeFile('/var/log/access.log') as $line) {
+    // Process each line
+    if (str_contains($line, 'ERROR')) {
+        echo $line . "\n";
+    }
+}
+
+// Fibonacci sequence generator
+function fibonacci(): Generator
+{
+    $a = 0;
+    $b = 1;
+
+    yield $a;
+    yield $b;
+
+    while (true) {
+        $next = $a + $b;
+        yield $next;
+        $a = $b;
+        $b = $next;
+    }
+}
+
+// Get first 10 Fibonacci numbers
+$count = 0;
+foreach (fibonacci() as $fib) {
+    echo "$fib\n";
+    if (++$count >= 10) break;
+}
+
+// Paginated API calls generator
+function fetchAllUsers(int $perPage = 100): Generator
+{
+    $page = 1;
+
+    do {
+        $response = fetchUsersPage($page, $perPage);
+        $users = $response['users'];
+
+        foreach ($users as $user) {
+            yield $user;
+        }
+
+        $page++;
+    } while (!empty($users));
+}
+
+// Process all users without loading everything
+foreach (fetchAllUsers() as $user) {
+    processUser($user);
+}
+
+// Generator with two-way communication
+function counter(): Generator
+{
+    $count = 0;
+
+    while (true) {
+        // Receive value sent to generator
+        $increment = yield $count;
+
+        if ($increment !== null) {
+            $count += $increment;
+        } else {
+            $count++;
+        }
+    }
+}
+
+$gen = counter();
+echo $gen->current() . "\n";  // 0
+$gen->next();
+echo $gen->current() . "\n";  // 1
+$gen->send(10);  // Send value to generator
+echo $gen->current() . "\n";  // 11
+```
+
+::: tip When to Use Generators
+**Use generators when:**
+- Processing large datasets (files, database results)
+- Creating infinite sequences (Fibonacci, primes, etc.)
+- Memory is a concern
+- Don't need random access to elements
+- Want lazy evaluation
+
+**Don't use generators when:**
+- Need to access elements multiple times (generators are one-time use)
+- Need random access by index
+- Dataset is small enough to fit in memory
+- Need to count elements before processing
+:::
+
+### Generator Methods
+
+```php
+<?php
+
+declare(strict_types=1);
+
+function myGenerator(): Generator
+{
+    yield 'a';
+    yield 'b';
+    yield 'c';
+}
+
+$gen = myGenerator();
+
+// Get current value
+echo $gen->current();  // 'a'
+
+// Get current key
+echo $gen->key();  // 0
+
+// Move to next value
+$gen->next();
+echo $gen->current();  // 'b'
+
+// Check if generator is still valid
+var_dump($gen->valid());  // true
+
+// Rewind (throws exception - generators can't rewind!)
+// $gen->rewind();  // ❌ Exception
+
+// Send value to generator
+$gen->send('value');
+
+// Throw exception into generator
+// $gen->throw(new Exception('Error'));
+```
+
+---
+
+## Section 5: Closures and Anonymous Functions
 
 ### Goal
 
@@ -915,7 +1471,7 @@ $names = array_map(fn($u) => $u['name'], $adults);
 
 ---
 
-## Section 5: Include and Require
+## Section 6: Include and Require
 
 ### Goal
 
@@ -987,7 +1543,7 @@ Don't use `include`/`require` manually in modern PHP. Use Composer's autoloader 
 
 ---
 
-## Section 6: Practical Example - Request Router
+## Section 7: Practical Example - Request Router
 
 ### Goal
 
@@ -1255,9 +1811,14 @@ Before moving to the next chapter, ensure you can:
 - [ ] Write if/else statements and understand PHP's `??` operator
 - [ ] Use switch statements and PHP 8's match expressions
 - [ ] Master all loop types, especially foreach
+- [ ] Understand alternative syntax for templates (endif, endforeach, etc.)
+- [ ] Choose the right loop type for performance and readability
 - [ ] Write functions with type hints and return types
 - [ ] Use default parameters and named arguments
 - [ ] Create variadic functions and unpack arrays
+- [ ] Use first-class callable syntax (PHP 8.1+) for cleaner code
+- [ ] Create and use generator functions with yield
+- [ ] Understand when generators are more efficient than arrays
 - [ ] Write arrow functions and regular closures
 - [ ] Understand the difference between include and require
 - [ ] Know when to use `require_once` vs autoloading
