@@ -953,6 +953,24 @@ echo reorganizeString('aab'); // Should output: 'aba' or 'baa'
 
 In the next chapter, we'll **Compare All Sorting Algorithms** we've learned, benchmark them against each other, and learn when to use each one.
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 08 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-08)**
+
+Files included:
+- `01-heap-sort.php` - Heap sort algorithm with visualization and performance analysis
+- `02-priority-queue.php` - Max heap-based priority queue for task scheduling and prioritization
+- `README.md` - Complete documentation and usage guide
+
+Clone the repository to run the examples locally:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-08
+php 01-heap-sort.php
+```
+
 ---
 
 Continue to [Chapter 09: Comparing Sorting Algorithms](/series/php-algorithms/chapters/09-comparing-sorting-algorithms).

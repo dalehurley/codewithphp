@@ -1623,6 +1623,19 @@ print_r($order);
 - Foundation for advanced algorithms like strongly connected components
 - Natural choice for problems requiring exhaustive exploration or backtracking
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 22 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-22)**
+
+Clone the repository to run examples:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-22
+php 01-*.php
+```
+
 ## Next Steps
 
 In the next chapter, we'll explore Breadth-First Search (BFS), which explores level by level and is optimal for finding shortest paths in unweighted graphs.

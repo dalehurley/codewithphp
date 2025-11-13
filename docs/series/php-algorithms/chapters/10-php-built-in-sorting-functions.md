@@ -842,6 +842,24 @@ function sortVersions(array $versions): array
 
 Congratulations! You've completed the sorting algorithms section. In the next chapter, we'll move on to **Searching Algorithms**, starting with **Linear Search & Variants**.
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 10 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-10)**
+
+Files included:
+- `01-basic-sorting-functions.php` - Demonstrates sort(), rsort(), asort(), arsort(), ksort(), krsort(), and natsort()
+- `02-custom-sorting-usort.php` - Custom comparators with usort(), uasort(), uksort() and best practices
+- `README.md` - Complete documentation and usage guide
+
+Clone the repository to run the examples locally:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-10
+php 01-basic-sorting-functions.php
+```
+
 ---
 
 Continue to [Chapter 11: Linear Search & Variants](/series/php-algorithms/chapters/11-linear-search-variants).

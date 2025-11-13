@@ -1108,6 +1108,19 @@ Where:
 - Pattern recognition helps identify DP problems
 - Start simple, optimize later (recursion → memoization → tabulation → space optimization)
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 25 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-25)**
+
+Clone the repository to run examples:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-25
+php 01-*.php
+```
+
 ## Next Steps
 
 In the next chapter, we'll explore advanced dynamic programming techniques including state compression, bitmask DP, digit DP, and DP on trees and graphs.

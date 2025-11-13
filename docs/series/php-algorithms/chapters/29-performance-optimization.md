@@ -1690,6 +1690,19 @@ echo $workflow->generateReport();
 - Continuous monitoring prevents performance regressions
 - 80/20 rule: Focus on optimizing the 20% of code causing 80% of issues
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 29 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-29)**
+
+Clone the repository to run examples:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-29
+php 01-*.php
+```
+
 ## Next Steps
 
 In the final chapter, we'll explore real-world case studies demonstrating these algorithms and optimization techniques in practical PHP applications with before/after metrics.

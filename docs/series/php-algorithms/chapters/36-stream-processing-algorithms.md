@@ -951,6 +951,19 @@ Stream processing algorithms enable real-time data analysis:
 - **Chapter 31: Concurrent Algorithms** - Parallel stream processing
 - **Chapter 29: Performance Optimization** - Optimize stream processing
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 36 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-36)**
+
+Clone the repository to run examples:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-36
+php 01-*.php
+```
+
 ## Practice Exercises
 
 1. Implement a trending topics detector for social media

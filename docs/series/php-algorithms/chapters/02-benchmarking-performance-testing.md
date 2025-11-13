@@ -1267,6 +1267,23 @@ function testSortPerformance(): void
 
 In the next chapter, we'll dive deep into **Recursion Fundamentals**, learning to write elegant recursive solutions and understanding their performance characteristics.
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 02 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-02)**
+
+Files included:
+- `01-benchmark-framework.php` - Complete benchmarking system with memory profiler, statistical analysis, and comparison tools
+- `README.md` - Complete documentation and usage guide
+
+Clone the repository to run the examples locally:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-02
+php 01-benchmark-framework.php
+```
+
 ---
 
 Continue to [Chapter 03: Recursion Fundamentals](/series/php-algorithms/chapters/03-recursion-fundamentals).

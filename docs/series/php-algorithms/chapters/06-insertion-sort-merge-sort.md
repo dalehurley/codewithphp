@@ -796,6 +796,27 @@ function sortList(?ListNode $head): ?ListNode
 
 In the next chapter, we'll explore **Quick Sort**, one of the fastest sorting algorithms in practice, along with pivot selection strategies.
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 06 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-06)**
+
+Files included:
+- `01-insertion-sort.php` - Complete insertion sort implementation with visualization and analysis
+- `02-merge-sort.php` - Complete merge sort implementation with divide-and-conquer visualization
+- `03-insertion-sort-practical.php` - Real-world applications where insertion sort excels
+- `04-merge-sort-optimized.php` - Optimized merge sort with hybrid approach
+- `05-comparison-demo.php` - Direct head-to-head comparison of insertion vs merge sort
+- `README.md` - Complete documentation and usage guide
+
+Clone the repository to run the examples locally:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-06
+php 01-insertion-sort.php
+```
+
 ---
 
 Continue to [Chapter 07: Quick Sort & Pivot Strategies](/series/php-algorithms/chapters/07-quick-sort-pivot-strategies).

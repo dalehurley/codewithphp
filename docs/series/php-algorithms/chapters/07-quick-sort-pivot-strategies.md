@@ -849,6 +849,26 @@ function wiggleSort(array &$nums): void
 
 In the next chapter, we'll explore **Heap Sort & Priority Queues**, learning about the heap data structure and how to use it for efficient sorting and priority management.
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 07 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-07)**
+
+Files included:
+- `01-quick-sort-basic.php` - Basic quick sort implementation with visualization and performance analysis
+- `02-pivot-strategies.php` - Comparison of pivot selection strategies (last element, random, median-of-three)
+- `03-quick-sort-optimized.php` - Optimized quick sort with 3-way partitioning and hybrid approach
+- `04-quick-select.php` - QuickSelect algorithm for finding kth smallest element
+- `README.md` - Complete documentation and usage guide
+
+Clone the repository to run the examples locally:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-07
+php 01-quick-sort-basic.php
+```
+
 ---
 
 Continue to [Chapter 08: Heap Sort & Priority Queues](/series/php-algorithms/chapters/08-heap-sort-priority-queues).

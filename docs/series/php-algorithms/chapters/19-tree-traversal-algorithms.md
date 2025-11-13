@@ -1035,6 +1035,19 @@ class DOMTraversal
 - Choose traversal based on the problem: sorted output (in-order), copying (pre-order), deletion (post-order), level processing (level-order)
 - Understanding traversal is fundamental for tree algorithms
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 19 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-19)**
+
+Clone the repository to run examples:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-19
+php 01-*.php
+```
+
 ## Next Steps
 
 In the next chapter, we'll explore balanced trees including AVL trees and Red-Black trees, which maintain logarithmic height for optimal operation performance.

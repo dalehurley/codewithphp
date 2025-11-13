@@ -1747,6 +1747,19 @@ class CityRouter
 - Can start from multiple sources simultaneously
 - Mark vertices as visited when enqueued, not when dequeued
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 23 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-23)**
+
+Clone the repository to run examples:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-23
+php 01-*.php
+```
+
 ## Next Steps
 
 In the next chapter, we'll explore Dijkstra's algorithm, which extends BFS to find shortest paths in weighted graphs where edges have different costs.

@@ -1313,6 +1313,19 @@ class DijkstraLimitations
 - Fundamental algorithm for routing, navigation, and network optimization
 - Many real-world applications: GPS, networking, games, logistics
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 24 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-24)**
+
+Clone the repository to run examples:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-24
+php 01-*.php
+```
+
 ## Next Steps
 
 In the next section, we'll explore Dynamic Programming, starting with understanding overlapping subproblems and optimal substructure, the foundations of dynamic programming techniques.

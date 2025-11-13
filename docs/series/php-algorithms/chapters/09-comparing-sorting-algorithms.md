@@ -809,6 +809,23 @@ class CustomBenchmark
 
 In the next chapter, we'll explore **PHP's Built-in Sorting Functions** and learn how to use them effectively with custom comparators and different data types.
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 09 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-09)**
+
+Files included:
+- `01-sorting-benchmark.php` - Side-by-side performance comparison of all sorting algorithms on different data patterns
+- `README.md` - Complete documentation and usage guide
+
+Clone the repository to run the examples locally:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-09
+php 01-sorting-benchmark.php
+```
+
 ---
 
 Continue to [Chapter 10: PHP's Built-in Sorting Functions](/series/php-algorithms/chapters/10-php-built-in-sorting-functions).

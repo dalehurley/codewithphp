@@ -873,6 +873,19 @@ Geometric algorithms solve spatial problems efficiently:
 - **Chapter 20: Advanced Graph Algorithms** - Network flow problems
 - **Chapter 31: Concurrent Algorithms** - Parallel geometric processing
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 34 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-34)**
+
+Clone the repository to run examples:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-34
+php 01-*.php
+```
+
 ## Practice Exercises
 
 1. Implement a line simplification algorithm (Ramer-Douglas-Peucker)

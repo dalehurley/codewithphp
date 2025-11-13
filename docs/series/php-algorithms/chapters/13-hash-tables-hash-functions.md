@@ -1543,6 +1543,19 @@ class LRUCache
 
 In the next chapter, we'll explore **String Search Algorithms**, learning pattern matching techniques like naive search, KMP, and Boyer-Moore.
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 13 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-13)**
+
+Clone the repository to run examples:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-13
+php 01-*.php
+```
+
 ---
 
 Continue to [Chapter 14: String Search Algorithms](/series/php-algorithms/chapters/14-string-search-algorithms).

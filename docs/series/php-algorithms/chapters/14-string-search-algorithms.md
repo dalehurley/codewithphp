@@ -1477,6 +1477,19 @@ print_r(findAnagrams("cbaebabacd", "abc"));
 
 Congratulations on completing the Searching Algorithms section! In the next chapter, we'll begin exploring **Data Structures**, starting with **Arrays & Dynamic Arrays**.
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 14 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-14)**
+
+Clone the repository to run examples:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-14
+php 01-*.php
+```
+
 ---
 
 Continue to [Chapter 15: Arrays & Dynamic Arrays](/series/php-algorithms/chapters/15-arrays-dynamic-arrays).

@@ -1298,4 +1298,17 @@ From the case studies in this series:
 
 Thank you for completing this series! The combination of solid algorithm knowledge and practical optimization skills will serve you well throughout your career. Remember: **measure first, optimize second, and always prioritize code that's maintainable over code that's clever**.
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 30 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-30)**
+
+Clone the repository to run examples:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-30
+php 01-*.php
+```
+
 Happy coding, and may your algorithms always run in O(1)!

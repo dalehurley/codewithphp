@@ -705,6 +705,19 @@ class ProblemDecisionTree
 - Complexity guide helps estimate feasibility
 - Know when brute force is acceptable
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 28 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-28)**
+
+Clone the repository to run examples:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-28
+php 01-*.php
+```
+
 ## Next Steps
 
 In the next chapter, we'll explore performance optimization techniques including profiling, benchmarking, and optimization strategies specific to PHP.

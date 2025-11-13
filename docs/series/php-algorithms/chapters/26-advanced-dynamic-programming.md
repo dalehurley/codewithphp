@@ -1543,6 +1543,19 @@ foreach ($result['orders'] as $order) {
 | LIS Optimized | O(n) | O(log n) | O(n log n) | O(n) | Binary search |
 | Convex Hull | O(n) | O(log n) | O(n log n) | O(n) | Deque/CHT |
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 26 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-26)**
+
+Clone the repository to run examples:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-26
+php 01-*.php
+```
+
 ## Next Steps
 
 In the next chapter, we'll explore practical caching and memoization strategies for PHP applications, including Redis integration, APCu comparison, query result caching, and computed property caching with production benchmarks.

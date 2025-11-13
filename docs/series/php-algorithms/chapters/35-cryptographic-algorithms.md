@@ -900,6 +900,19 @@ Cryptographic algorithms provide essential security:
 - **Chapter 29: Performance Optimization** - Efficient crypto implementation
 - **Chapter 30: Real-World Case Studies** - Production security patterns
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 35 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-35)**
+
+Clone the repository to run examples:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-35
+php 01-*.php
+```
+
 ## Practice Exercises
 
 1. Implement encrypted file storage system

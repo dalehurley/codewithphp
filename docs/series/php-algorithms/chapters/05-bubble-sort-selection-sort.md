@@ -1033,6 +1033,23 @@ function findKthSmallest(array $arr, int $k): int
 
 These simple sorts taught us the basics, but they're too slow for real-world use. In the next chapter, we'll learn **Insertion Sort and Merge Sort**—algorithms that are actually practical for larger datasets.
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 05 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-05)**
+
+Files included:
+- `01-sorting-algorithms.php` - Complete sorting implementations including Bubble Sort (basic and optimized), Selection Sort, Cocktail Shaker Sort, visualizations, and performance benchmarks
+- `README.md` - Complete documentation and usage guide
+
+Clone the repository to run the examples locally:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-05
+php 01-sorting-algorithms.php
+```
+
 ---
 
 Continue to [Chapter 06: Insertion Sort & Merge Sort](/series/php-algorithms/chapters/06-insertion-sort-merge-sort).

@@ -1905,6 +1905,19 @@ echo "Concurrent: {$concurrentTime}s\n";   // ~1 second
 echo "Speedup: " . ($sequentialTime / $concurrentTime) . "x\n";  // ~20x
 ```
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 31 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-31)**
+
+Clone the repository to run examples:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-31
+php 01-*.php
+```
+
 ## Practice Exercises
 
 1. **Concurrent Download Manager**: Build a system that downloads files with progress tracking, pause/resume support, and bandwidth limiting

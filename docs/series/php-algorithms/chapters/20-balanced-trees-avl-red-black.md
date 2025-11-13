@@ -1094,6 +1094,19 @@ class UpdatablePriorityQueue
 - PHP doesn't have built-in balanced trees, but concepts apply to many data structures
 - Understanding balanced trees is essential for database internals and system programming
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 20 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-20)**
+
+Clone the repository to run examples:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-20
+php 01-*.php
+```
+
 ## Next Steps
 
 In the next section, we'll explore graph algorithms, starting with graph representations and fundamental traversal algorithms like BFS and DFS applied to graphs.

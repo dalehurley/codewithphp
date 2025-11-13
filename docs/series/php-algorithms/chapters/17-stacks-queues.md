@@ -1948,6 +1948,19 @@ print_r(slidingWindowMax([1,3,-1,-3,5,3,6,7], 3));
 
 In the next chapter, we'll explore **Trees & Binary Search Trees**, learning hierarchical data structures and their operations.
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 17 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-17)**
+
+Clone the repository to run examples:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-17
+php 01-*.php
+```
+
 ---
 
 Continue to [Chapter 18: Trees & Binary Search Trees](/series/php-algorithms/chapters/18-trees-binary-search-trees).

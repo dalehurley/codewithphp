@@ -1302,6 +1302,23 @@ function flatten(array $arr): array
 
 In the next chapter, we'll explore **Problem-Solving Strategies** that combine recursion with other techniques like divide-and-conquer, backtracking, and dynamic programming.
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 03 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-03)**
+
+Files included:
+- `01-recursion-basics.php` - Complete recursion examples including basic recursion, Fibonacci (naive, memoized, iterative), recursive data structures, divide and conquer, and backtracking
+- `README.md` - Complete documentation and usage guide
+
+Clone the repository to run the examples locally:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-03
+php 01-recursion-basics.php
+```
+
 ---
 
 Continue to [Chapter 04: Problem-Solving Strategies](/series/php-algorithms/chapters/04-problem-solving-strategies).
