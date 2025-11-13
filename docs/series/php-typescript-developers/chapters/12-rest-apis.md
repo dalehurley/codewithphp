@@ -799,13 +799,18 @@ $app->run();
 
 ## Key Takeaways
 
-1. **PHP can build REST APIs** just like Express.js
-2. **Slim Framework** is PHP's Express equivalent
-3. **Routing patterns** are nearly identical
-4. **Middleware** works the same way
-5. **PSR-7** provides standard request/response objects
-6. **Native PHP** is verbose but gives full control
-7. **For production**, use Laravel or Symfony
+1. **PHP can build REST APIs** just like Express.js with similar patterns
+2. **Slim Framework** is PHP's Express equivalent - lightweight and minimal
+3. **Routing patterns** are nearly identical (verb + path + handler)
+4. **Middleware** works the same way (request → middleware chain → response)
+5. **PSR-7** provides standard request/response objects across frameworks
+6. **Native PHP** is verbose but gives full control without framework overhead
+7. **For production**, use Laravel or Symfony for full-featured APIs
+8. **Laravel API resources** transform models to JSON (like Express serializers)
+9. **Route model binding** automatically injects models by ID (Laravel feature)
+10. **API versioning** typically done via URL prefix (`/api/v1/`) or headers
+11. **CORS middleware** needed for frontend consumption - built into most frameworks
+12. **Use `apiResource`** in Laravel for instant RESTful routes (index, store, show, update, destroy)
 
 ## Comparison Summary
 

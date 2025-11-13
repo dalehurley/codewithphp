@@ -676,13 +676,18 @@ $taggedPosts = Tag::find(1)->posts;
 
 ## Key Takeaways
 
-1. **Eloquent is more concise** than TypeORM
-2. **Active Record pattern** feels more natural
-3. **Migrations are cleaner** with Blueprint
-4. **Relationships are simpler** to define
-5. **Factories & seeders** built-in
-6. **Query builder** is intuitive and fluent
-7. **Soft deletes** trivial to implement
+1. **Eloquent is more concise** than TypeORM - fewer lines, clearer intent
+2. **Active Record pattern** feels more natural than TypeORM's Data Mapper
+3. **Migrations are cleaner** with Blueprint DSL - no verbose table definitions
+4. **Relationships are simpler** to define - just method definitions, no decorators
+5. **Factories & seeders** built-in - no external library needed
+6. **Query builder** is intuitive and fluent - chains naturally like Eloquent
+7. **Soft deletes** trivial to implement - one trait, one column
+8. **Eager loading with `with()`** prevents N+1 queries automatically
+9. **Convention over configuration** - table names, foreign keys inferred automatically
+10. **Accessors and mutators** provide clean data transformation (getters/setters on steroids)
+11. **Model events** (creating, created, updating, etc.) for lifecycle hooks
+12. **Query scopes** allow reusable query logic - like TypeORM's query builder methods but cleaner
 
 ## Comparison Summary
 

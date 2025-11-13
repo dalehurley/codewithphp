@@ -552,13 +552,18 @@ php artisan test
 
 ## Key Takeaways
 
-1. **Laravel ≈ Nest.js** - Full-featured, opinionated frameworks
-2. **Routing** is clean and expressive
-3. **Dependency injection** works automatically via type hints
-4. **Eloquent ORM** is incredibly elegant
-5. **Artisan CLI** generates boilerplate
-6. **Middleware** pipeline like Express/Nest
-7. **Testing** is built-in and powerful
+1. **Laravel ≈ Nest.js** - Both are full-featured, opinionated frameworks with rich ecosystems
+2. **Routing** is clean and expressive with multiple definition styles
+3. **Dependency injection** works automatically via type hints (no manual binding needed)
+4. **Eloquent ORM** is incredibly elegant - Active Record pattern beats TypeORM's Data Mapper
+5. **Artisan CLI** generates boilerplate (controllers, models, migrations, tests, etc.)
+6. **Middleware** pipeline like Express/Nest for request/response modification
+7. **Testing** is built-in and powerful with PHPUnit integration
+8. **Service container** resolves dependencies automatically - just type-hint in constructors
+9. **Form request validation** provides clean, reusable validation logic
+10. **Route model binding** automatically injects models - no manual `findOrFail()`
+11. **API resources** provide consistent JSON transformation layer
+12. **Laravel ecosystem** rivals Node.js: Forge (deployment), Vapor (serverless), Nova (admin panel)
 
 ## Laravel vs Nest.js
 
