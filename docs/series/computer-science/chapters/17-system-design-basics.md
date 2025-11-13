@@ -57,6 +57,64 @@ $db = new PDO("mysql:host=$server");
 
 ## Key System Components
 
+```mermaid
+graph TB
+    subgraph "Scalable Web Application Architecture"
+        CLIENT["Client Browsers<br/>(Users)"]
+        CDN["CDN<br/>(Static Assets)"]
+        LB["Load Balancer<br/>(Nginx/HAProxy)"]
+
+        WEB1["Web Server 1"]
+        WEB2["Web Server 2"]
+        WEB3["Web Server 3"]
+
+        CACHE["Cache Layer<br/>(Redis/Memcached)"]
+
+        DB_PRIMARY["Primary DB<br/>(Write)"]
+        DB_REPLICA1["Replica DB 1<br/>(Read)"]
+        DB_REPLICA2["Replica DB 2<br/>(Read)"]
+
+        QUEUE["Message Queue<br/>(RabbitMQ/Redis)"]
+        WORKER["Background Workers"]
+
+        SEARCH["Search Service<br/>(Elasticsearch)"]
+        STORAGE["Object Storage<br/>(S3/MinIO)"]
+
+        CLIENT -->|"HTTP/HTTPS"| CDN
+        CLIENT -->|"API Requests"| LB
+        LB --> WEB1
+        LB --> WEB2
+        LB --> WEB3
+
+        WEB1 --> CACHE
+        WEB2 --> CACHE
+        WEB3 --> CACHE
+
+        WEB1 --> DB_PRIMARY
+        WEB1 --> DB_REPLICA1
+        WEB2 --> DB_REPLICA2
+        WEB3 --> DB_REPLICA1
+
+        DB_PRIMARY -.->|"Replication"| DB_REPLICA1
+        DB_PRIMARY -.->|"Replication"| DB_REPLICA2
+
+        WEB1 --> QUEUE
+        QUEUE --> WORKER
+
+        WEB2 --> SEARCH
+        WEB3 --> STORAGE
+    end
+
+    style CLIENT fill:#2196F3,color:#fff
+    style CDN fill:#4CAF50
+    style LB fill:#FF9800
+    style CACHE fill:#9C27B0,color:#fff
+    style DB_PRIMARY fill:#F44336,color:#fff
+    style QUEUE fill:#FFD700
+```
+
+**Key Principles**: Horizontal scaling, redundancy, caching, async processing
+
 ### Load Balancer
 
 Distributes traffic across servers.
@@ -89,6 +147,55 @@ class LoadBalancer {
 ### Caching Layer
 
 Store frequently accessed data in memory.
+
+```mermaid
+graph TB
+    subgraph "Caching Strategies Comparison"
+        subgraph "1. Cache-Aside (Lazy Loading)"
+            CA_APP["Application"]
+            CA_CACHE["Cache"]
+            CA_DB["Database"]
+
+            CA_APP -->|"1. Check"| CA_CACHE
+            CA_CACHE -.->|"2. Miss"| CA_APP
+            CA_APP -->|"3. Query"| CA_DB
+            CA_DB -->|"4. Return"| CA_APP
+            CA_APP -->|"5. Store"| CA_CACHE
+        end
+
+        subgraph "2. Write-Through"
+            WT_APP["Application"]
+            WT_CACHE["Cache"]
+            WT_DB["Database"]
+
+            WT_APP -->|"1. Write"| WT_CACHE
+            WT_CACHE -->|"2. Write"| WT_DB
+            WT_DB -->|"3. ACK"| WT_CACHE
+            WT_CACHE -->|"4. ACK"| WT_APP
+        end
+
+        subgraph "3. Write-Behind (Write-Back)"
+            WB_APP["Application"]
+            WB_CACHE["Cache"]
+            WB_DB["Database"]
+
+            WB_APP -->|"1. Write"| WB_CACHE
+            WB_CACHE -.->|"2. Async Write"| WB_DB
+            WB_CACHE -->|"Immediate ACK"| WB_APP
+        end
+    end
+
+    COMPARE["
+    Cache-Aside: Best for read-heavy<br/>
+    Write-Through: Consistency guaranteed<br/>
+    Write-Behind: Fastest writes, risk of data loss
+    "]
+
+    style CA_CACHE fill:#4CAF50
+    style WT_CACHE fill:#2196F3
+    style WB_CACHE fill:#FF9800
+    style COMPARE fill:#9C27B0,color:#fff
+```
 
 **Strategies**:
 1. **Cache-aside**: App checks cache, then DB
