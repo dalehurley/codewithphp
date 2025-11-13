@@ -333,6 +333,181 @@ class FileStorage implements Storage
 }
 ```
 
+### Interface Segregation Principle (ISP)
+
+The Interface Segregation Principle states: **"No client should be forced to depend on methods it does not use."**
+
+In other words: **Make interfaces small and focused**.
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// ❌ BAD: Fat interface - forces implementation of unused methods
+interface Worker
+{
+    public function work(): void;
+    public function eat(): void;
+    public function sleep(): void;
+    public function getSalary(): float;
+    public function takeVacation(int $days): void;
+}
+
+class Employee implements Worker
+{
+    public function work(): void {
+        echo "Working...\n";
+    }
+
+    public function eat(): void {
+        echo "Eating lunch\n";
+    }
+
+    public function sleep(): void {
+        echo "Sleeping\n";
+    }
+
+    public function getSalary(): float {
+        return 50000.0;
+    }
+
+    public function takeVacation(int $days): void {
+        echo "Taking $days days vacation\n";
+    }
+}
+
+class Robot implements Worker
+{
+    public function work(): void {
+        echo "Robot working...\n";
+    }
+
+    // ❌ Robots don't eat, sleep, or take vacation!
+    public function eat(): void {
+        // Meaningless for robots
+    }
+
+    public function sleep(): void {
+        // Meaningless for robots
+    }
+
+    public function getSalary(): float {
+        return 0.0;  // Robots don't get paid
+    }
+
+    public function takeVacation(int $days): void {
+        // Meaningless for robots
+    }
+}
+
+// ✅ GOOD: Segregated interfaces
+interface Workable
+{
+    public function work(): void;
+}
+
+interface Eatable
+{
+    public function eat(): void;
+}
+
+interface Sleepable
+{
+    public function sleep(): void;
+}
+
+interface Payable
+{
+    public function getSalary(): float;
+}
+
+interface Vacationable
+{
+    public function takeVacation(int $days): void;
+}
+
+// Human implements all biological and employment interfaces
+class Human implements Workable, Eatable, Sleepable, Payable, Vacationable
+{
+    public function work(): void {
+        echo "Human working...\n";
+    }
+
+    public function eat(): void {
+        echo "Human eating...\n";
+    }
+
+    public function sleep(): void {
+        echo "Human sleeping...\n";
+    }
+
+    public function getSalary(): float {
+        return 50000.0;
+    }
+
+    public function takeVacation(int $days): void {
+        echo "Taking $days days vacation\n";
+    }
+}
+
+// Robot only implements what it needs
+class AutomatedRobot implements Workable
+{
+    public function work(): void {
+        echo "Robot working 24/7...\n";
+    }
+}
+
+// Contractor might not get vacation
+class Contractor implements Workable, Payable
+{
+    public function work(): void {
+        echo "Contractor working...\n";
+    }
+
+    public function getSalary(): float {
+        return 75000.0;
+    }
+}
+
+// Functions can require only what they need
+function performWork(Workable $worker): void
+{
+    $worker->work();
+}
+
+function processPayroll(Payable $employee): void
+{
+    echo "Processing payment: $" . $employee->getSalary() . "\n";
+}
+
+// All types can work
+performWork(new Human());
+performWork(new AutomatedRobot());
+performWork(new Contractor());
+
+// Only payable types get paid
+processPayroll(new Human());
+processPayroll(new Contractor());
+// processPayroll(new AutomatedRobot());  // Won't compile - robot isn't Payable
+```
+
+::: tip ISP Benefits
+**Benefits of Interface Segregation:**
+1. **Flexibility**: Classes implement only what they need
+2. **Easier maintenance**: Small interfaces are easier to understand
+3. **Better composition**: Mix and match interfaces as needed
+4. **Reduced coupling**: Clients depend on minimal interfaces
+5. **Clearer intent**: Interface names describe specific capabilities
+
+**Guidelines:**
+- Keep interfaces small and focused
+- Name interfaces by capability (Readable, Writable, Closeable)
+- Prefer many specific interfaces over one general interface
+- Clients should depend on the smallest interface possible
+:::
+
 ---
 
 ## Section 2: Introduction to Traits
@@ -847,6 +1022,329 @@ $doc->delete();
 print_r($doc->getAuditLog());
 echo "Deleted: " . ($doc->isDeleted() ? 'Yes' : 'No') . "\n";
 ```
+
+### Trait Constants (PHP 8.2+)
+
+PHP 8.2 introduced constants in traits:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+trait MathOperations
+{
+    // PHP 8.2+: Constants in traits
+    public const PI = 3.14159;
+    public const E = 2.71828;
+    private const MAX_ITERATIONS = 1000;
+
+    public function circleArea(float $radius): float
+    {
+        return self::PI * $radius ** 2;
+    }
+
+    public function exponential(float $x): float
+    {
+        // Use private constant
+        $result = 1;
+        for ($i = 0; $i < self::MAX_ITERATIONS && $i < 10; $i++) {
+            $result += pow($x, $i) / $this->factorial($i);
+        }
+        return $result;
+    }
+
+    private function factorial(int $n): int
+    {
+        return $n <= 1 ? 1 : $n * $this->factorial($n - 1);
+    }
+}
+
+class Calculator
+{
+    use MathOperations;
+}
+
+$calc = new Calculator();
+echo Calculator::PI;  // Access constant through class
+echo $calc->circleArea(5);
+```
+
+### Practical Trait Examples
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// Sluggable - Convert titles to URL-friendly slugs
+trait Sluggable
+{
+    protected ?string $slug = null;
+
+    public function generateSlug(string $text): string
+    {
+        // Convert to lowercase
+        $slug = strtolower($text);
+
+        // Replace non-alphanumeric with hyphens
+        $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
+
+        // Remove leading/trailing hyphens
+        $slug = trim($slug, '-');
+
+        $this->slug = $slug;
+        return $slug;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): void
+    {
+        $this->slug = $slug;
+    }
+}
+
+// Sortable - Add sorting capabilities
+trait Sortable
+{
+    protected int $sortOrder = 0;
+
+    public function setSortOrder(int $order): void
+    {
+        $this->sortOrder = $order;
+    }
+
+    public function getSortOrder(): int
+    {
+        return $this->sortOrder;
+    }
+
+    public static function sortByOrder(self $a, self $b): int
+    {
+        return $a->sortOrder <=> $b->sortOrder;
+    }
+}
+
+// Uuidable - Add UUID support
+trait Uuidable
+{
+    protected ?string $uuid = null;
+
+    protected function generateUuid(): string
+    {
+        // Simple UUID v4 generation (use ramsey/uuid in production)
+        $data = random_bytes(16);
+        $data[6] = chr(ord($data[6]) & 0x0f | 0x40); // Version 4
+        $data[8] = chr(ord($data[8]) & 0x3f | 0x80); // Variant
+
+        $this->uuid = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+        return $this->uuid;
+    }
+
+    public function getUuid(): ?string
+    {
+        return $this->uuid;
+    }
+}
+
+// Hydrat able - Fill object from array
+trait Hydratable
+{
+    public function hydrate(array $data): self
+    {
+        foreach ($data as $key => $value) {
+            $method = 'set' . str_replace('_', '', ucwords($key, '_'));
+
+            if (method_exists($this, $method)) {
+                $this->$method($value);
+            } elseif (property_exists($this, $key)) {
+                $this->$key = $value;
+            }
+        }
+
+        return $this;
+    }
+
+    public function toArray(): array
+    {
+        $data = [];
+
+        foreach (get_object_vars($this) as $key => $value) {
+            // Skip private/protected traits properties if needed
+            $data[$key] = $value;
+        }
+
+        return $data;
+    }
+}
+
+// Using multiple practical traits
+class BlogPost
+{
+    use Sluggable, Sortable, Uuidable, Hydratable;
+
+    public function __construct(
+        private string $title = '',
+        private string $content = ''
+    ) {
+        $this->generateUuid();
+        if ($title) {
+            $this->generateSlug($title);
+        }
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): void
+    {
+        $this->title = $title;
+        $this->generateSlug($title);
+    }
+
+    public function getContent(): string
+    {
+        return $this->content;
+    }
+
+    public function setContent(string $content): void
+    {
+        $this->content = $content;
+    }
+}
+
+// Usage
+$post = new BlogPost("Hello World! This is a Test", "Content here");
+echo "UUID: " . $post->getUuid() . "\n";
+echo "Slug: " . $post->getSlug() . "\n";  // "hello-world-this-is-a-test"
+
+// Hydration
+$post2 = (new BlogPost())->hydrate([
+    'title' => 'Another Post',
+    'content' => 'More content',
+    'sort_order' => 10
+]);
+
+echo "Title: " . $post2->getTitle() . "\n";
+echo "Sort Order: " . $post2->getSortOrder() . "\n";
+
+// Sorting
+$posts = [$post, $post2];
+$post->setSortOrder(5);
+$post2->setSortOrder(1);
+
+usort($posts, [BlogPost::class, 'sortByOrder']);
+echo "First post: " . $posts[0]->getTitle() . "\n";  // Another Post (order: 1)
+```
+
+### Abstract Methods in Traits
+
+Traits can declare abstract methods that implementing classes must define:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+trait Repository
+{
+    protected array $items = [];
+
+    // Force implementing class to provide table name
+    abstract protected function getTableName(): string;
+
+    // Force implementing class to provide primary key
+    abstract protected function getPrimaryKey(): string;
+
+    public function find(int $id): ?array
+    {
+        $table = $this->getTableName();
+        $pk = $this->getPrimaryKey();
+
+        echo "SELECT * FROM {$table} WHERE {$pk} = {$id}\n";
+
+        return $this->items[$id] ?? null;
+    }
+
+    public function all(): array
+    {
+        $table = $this->getTableName();
+        echo "SELECT * FROM {$table}\n";
+
+        return $this->items;
+    }
+
+    public function save(array $data): void
+    {
+        $table = $this->getTableName();
+        echo "INSERT INTO {$table} ...\n";
+
+        $this->items[] = $data;
+    }
+}
+
+class UserRepository
+{
+    use Repository;
+
+    // Must implement abstract methods from trait
+    protected function getTableName(): string
+    {
+        return 'users';
+    }
+
+    protected function getPrimaryKey(): string
+    {
+        return 'id';
+    }
+}
+
+class ProductRepository
+{
+    use Repository;
+
+    protected function getTableName(): string
+    {
+        return 'products';
+    }
+
+    protected function getPrimaryKey(): string
+    {
+        return 'product_id';  // Different primary key
+    }
+}
+
+$userRepo = new UserRepository();
+$userRepo->find(1);  // SELECT * FROM users WHERE id = 1
+
+$productRepo = new ProductRepository();
+$productRepo->find(5);  // SELECT * FROM products WHERE product_id = 5
+```
+
+::: tip Practical Traits Tips
+**Common useful traits:**
+- **Sluggable**: URL-friendly slugs from titles
+- **Timestampable**: created_at, updated_at tracking
+- **Sortable**: Ordering capabilities
+- **Uuidable**: UUID generation
+- **Hydratable**: Fill from arrays
+- **Loggable**: Activity logging
+- **Cacheable**: Simple caching layer
+- **Validatable**: Validation rules
+
+**Best practices:**
+- Keep traits focused (single responsibility)
+- Document required properties/methods
+- Use abstract methods to enforce requirements
+- Prefix trait-specific properties to avoid conflicts
+- Consider composition when traits get complex
+:::
 
 ---
 
