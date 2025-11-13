@@ -155,6 +155,8 @@ export default withMermaid(
             { text: 'Algorithms for PHP Developers', link: '/series/php-algorithms/' },
             { text: 'AI/ML for PHP Developers', link: '/series/ai-ml-php-developers/' },
             { text: 'Why Python Developers Will Love PHP and Laravel', link: '/series/python-developers-love-php-laravel/' },
+            { text: 'Build a CRM with Laravel 12', link: '/series/build-crm-laravel-12/' },
+            { text: 'Why Ruby on Rails Developers Will Love Laravel', link: '/series/rails-developers-love-laravel/' },
           ]
         },
         { text: 'GitHub', link: 'https://github.com/dalehurley/codewithphp' }
@@ -359,8 +361,8 @@ export default withMermaid(
             text: 'Part 1: Foundation',
             items: [
               {
-                text: '00 — Introduction to Algorithms',
-                link: '/series/php-algorithms/chapters/00-introduction-to-algorithms'
+                text: '00 — Quick Start Guide',
+                link: '/series/php-algorithms/chapters/00-quick-start-guide'
               },
               {
                 text: '01 — Algorithm Complexity & Big O Notation',
@@ -468,15 +470,15 @@ export default withMermaid(
               },
               {
                 text: '22 — Depth-First Search (DFS)',
-                link: '/series/php-algorithms/chapters/22-depth-first-search-dfs'
+                link: '/series/php-algorithms/chapters/22-depth-first-search'
               },
               {
                 text: '23 — Breadth-First Search (BFS)',
-                link: '/series/php-algorithms/chapters/23-breadth-first-search-bfs'
+                link: '/series/php-algorithms/chapters/23-breadth-first-search'
               },
               {
-                text: '24 — Dijkstra\'s Algorithm',
-                link: '/series/php-algorithms/chapters/24-dijkstra-algorithm'
+                text: '24 — Dijkstra\'s Shortest Path',
+                link: '/series/php-algorithms/chapters/24-dijkstra-shortest-path'
               }
             ]
           },
@@ -484,12 +486,12 @@ export default withMermaid(
             text: 'Part 6: Dynamic Programming',
             items: [
               {
-                text: '25 — Introduction to Dynamic Programming',
-                link: '/series/php-algorithms/chapters/25-introduction-dynamic-programming'
+                text: '25 — Dynamic Programming Fundamentals',
+                link: '/series/php-algorithms/chapters/25-dynamic-programming-fundamentals'
               },
               {
-                text: '26 — Classic DP Problems',
-                link: '/series/php-algorithms/chapters/26-classic-dp-problems'
+                text: '26 — Advanced Dynamic Programming',
+                link: '/series/php-algorithms/chapters/26-advanced-dynamic-programming'
               }
             ]
           },
@@ -497,20 +499,327 @@ export default withMermaid(
             text: 'Part 7: Practical Applications',
             items: [
               {
-                text: '27 — Caching Strategies & LRU Cache',
-                link: '/series/php-algorithms/chapters/27-caching-strategies-lru-cache'
+                text: '27 — Caching & Memoization Strategies',
+                link: '/series/php-algorithms/chapters/27-caching-memoization-strategies'
               },
               {
-                text: '28 — Rate Limiting Algorithms',
-                link: '/series/php-algorithms/chapters/28-rate-limiting-algorithms'
+                text: '28 — Algorithm Selection Guide',
+                link: '/series/php-algorithms/chapters/28-algorithm-selection-guide'
               },
               {
-                text: '29 — Database Query Optimization',
-                link: '/series/php-algorithms/chapters/29-database-query-optimization'
+                text: '29 — Performance Optimization',
+                link: '/series/php-algorithms/chapters/29-performance-optimization'
               },
               {
-                text: '30 — Putting It All Together',
-                link: '/series/php-algorithms/chapters/30-putting-it-all-together'
+                text: '30 — Real-World Case Studies',
+                link: '/series/php-algorithms/chapters/30-real-world-case-studies'
+              }
+            ]
+          },
+          {
+            text: 'Part 8: Advanced Topics',
+            items: [
+              {
+                text: '31 — Concurrent Algorithms',
+                link: '/series/php-algorithms/chapters/31-concurrent-algorithms'
+              },
+              {
+                text: '32 — Probabilistic Algorithms',
+                link: '/series/php-algorithms/chapters/32-probabilistic-algorithms'
+              },
+              {
+                text: '33 — String Algorithms Deep Dive',
+                link: '/series/php-algorithms/chapters/33-string-algorithms-deep-dive'
+              },
+              {
+                text: '34 — Geometric Algorithms',
+                link: '/series/php-algorithms/chapters/34-geometric-algorithms'
+              },
+              {
+                text: '35 — Cryptographic Algorithms',
+                link: '/series/php-algorithms/chapters/35-cryptographic-algorithms'
+              },
+              {
+                text: '36 — Stream Processing Algorithms',
+                link: '/series/php-algorithms/chapters/36-stream-processing-algorithms'
+              }
+            ]
+          },
+          {
+            text: 'Appendices',
+            items: [
+              {
+                text: 'Appendix A — Complexity Cheat Sheet',
+                link: '/series/php-algorithms/appendices/appendix-a-complexity-cheat-sheet'
+              },
+              {
+                text: 'Appendix B — PHP Performance Tips',
+                link: '/series/php-algorithms/appendices/appendix-b-php-performance-tips'
+              },
+              {
+                text: 'Appendix C — Glossary',
+                link: '/series/php-algorithms/appendices/appendix-c-glossary'
+              },
+              {
+                text: 'Appendix D — Further Reading',
+                link: '/series/php-algorithms/appendices/appendix-d-further-reading'
+              }
+            ]
+          }
+        ],
+
+        '/series/build-crm-laravel-12/': [
+          { text: 'Overview', link: '/series/build-crm-laravel-12/' },
+          {
+            text: 'Part 1: Core Setup',
+            items: [
+              {
+                text: '01 — Introduction & Series Overview',
+                link: '/series/build-crm-laravel-12/chapters/01-introduction-series-overview'
+              },
+              {
+                text: '02 — Setting Up Laravel 12 Project & Dev Environment',
+                link: '/series/build-crm-laravel-12/chapters/02-setting-up-laravel-12-project-dev-environment'
+              },
+              {
+                text: '03 — Laravel 12 Fundamentals & Project Structure',
+                link: '/series/build-crm-laravel-12/chapters/03-laravel-12-fundamentals-project-structure'
+              },
+            ]
+          },
+          {
+            text: 'Part 2: Database & Foundation',
+            items: [
+              {
+                text: '04 — Planning Application Architecture & Data Modeling',
+                link: '/series/build-crm-laravel-12/chapters/04-planning-application-architecture-data-modeling'
+              },
+              {
+                text: '05 — Database Migrations & Schema Design',
+                link: '/series/build-crm-laravel-12/chapters/05-database-migrations-schema-design'
+              },
+              {
+                text: '06 — Eloquent Models & Relationships',
+                link: '/series/build-crm-laravel-12/chapters/06-eloquent-models-relationships'
+              },
+              {
+                text: '07 — User Authentication with React Starter Kit',
+                link: '/series/build-crm-laravel-12/chapters/07-user-authentication-react-starter-kit'
+              },
+              {
+                text: '08 — Team Management & User Roles',
+                link: '/series/build-crm-laravel-12/chapters/08-team-management-user-roles'
+              },
+              {
+                text: '09 — Authorization & Access Control',
+                link: '/series/build-crm-laravel-12/chapters/09-authorization-access-control'
+              },
+              {
+                text: '10 — Layout and UI Design Customization',
+                link: '/series/build-crm-laravel-12/chapters/10-layout-ui-design-customization'
+              },
+            ]
+          },
+          {
+            text: 'Part 3: Core CRM Modules',
+            items: [
+              {
+                text: '11 — Contacts Module – Database & Model',
+                link: '/series/build-crm-laravel-12/chapters/11-contacts-module-database-model'
+              },
+              {
+                text: '12 — Contacts Module – CRUD Operations',
+                link: '/series/build-crm-laravel-12/chapters/12-contacts-module-crud-operations'
+              },
+              {
+                text: '13 — Companies Module – Database & Model',
+                link: '/series/build-crm-laravel-12/chapters/13-companies-module-database-model'
+              },
+              {
+                text: '14 — Companies Module – CRUD Operations',
+                link: '/series/build-crm-laravel-12/chapters/14-companies-module-crud-operations'
+              },
+              {
+                text: '15 — Deals Module – Database & Pipeline Design',
+                link: '/series/build-crm-laravel-12/chapters/15-deals-module-database-pipeline-design'
+              },
+              {
+                text: '16 — Deals Module – CRUD & Pipeline Interface',
+                link: '/series/build-crm-laravel-12/chapters/16-deals-module-crud-pipeline-interface'
+              },
+              {
+                text: '17 — Tasks Module – Database & Model',
+                link: '/series/build-crm-laravel-12/chapters/17-tasks-module-database-model'
+              },
+              {
+                text: '18 — Tasks Module – CRUD & Task Scheduling',
+                link: '/series/build-crm-laravel-12/chapters/18-tasks-module-crud-task-scheduling'
+              },
+            ]
+          },
+          {
+            text: 'Part 4: Communication & API',
+            items: [
+              {
+                text: '19 — Notifications & Email Integration',
+                link: '/series/build-crm-laravel-12/chapters/19-notifications-email-integration'
+              },
+              {
+                text: '20 — Building a RESTful API for the CRM',
+                link: '/series/build-crm-laravel-12/chapters/20-building-restful-api-crm'
+              },
+              {
+                text: '21 — API Authentication with Sanctum',
+                link: '/series/build-crm-laravel-12/chapters/21-api-authentication-sanctum'
+              },
+              {
+                text: '22 — OAuth2 with Laravel Passport (Bonus)',
+                link: '/series/build-crm-laravel-12/chapters/22-oauth2-laravel-passport'
+              },
+              {
+                text: '23 — Social Logins with Laravel Socialite (Bonus)',
+                link: '/series/build-crm-laravel-12/chapters/23-social-logins-socialite'
+              },
+            ]
+          },
+          {
+            text: 'Part 5: Business Features',
+            items: [
+              {
+                text: '24 — Subscription Billing with Laravel Cashier',
+                link: '/series/build-crm-laravel-12/chapters/24-subscription-billing-cashier'
+              },
+              {
+                text: '25 — Advanced Search with Laravel Scout (Bonus)',
+                link: '/series/build-crm-laravel-12/chapters/25-advanced-search-scout'
+              },
+              {
+                text: '26 — Real-Time Events with Laravel Reverb & Echo (Bonus)',
+                link: '/series/build-crm-laravel-12/chapters/26-realtime-events-reverb-echo'
+              },
+              {
+                text: '27 — Performance Optimization & Monitoring',
+                link: '/series/build-crm-laravel-12/chapters/27-performance-optimization-monitoring'
+              },
+              {
+                text: '28 — High-Performance Tuning with Laravel Octane (Bonus)',
+                link: '/series/build-crm-laravel-12/chapters/28-high-performance-octane'
+              },
+            ]
+          },
+          {
+            text: 'Part 6: Background Processing',
+            items: [
+              {
+                text: '29 — Queues & Background Jobs',
+                link: '/series/build-crm-laravel-12/chapters/29-queues-background-jobs'
+              },
+              {
+                text: '30 — Monitoring Queues with Laravel Horizon (Bonus)',
+                link: '/series/build-crm-laravel-12/chapters/30-monitoring-queues-horizon'
+              },
+            ]
+          },
+          {
+            text: 'Part 7: Testing & Production',
+            items: [
+              {
+                text: '31 — Automated Browser Testing with Laravel Dusk (Bonus)',
+                link: '/series/build-crm-laravel-12/chapters/31-browser-testing-dusk'
+              },
+              {
+                text: '32 — Debugging & Monitoring with Laravel Telescope (Bonus)',
+                link: '/series/build-crm-laravel-12/chapters/32-debugging-monitoring-telescope'
+              },
+              {
+                text: '33 — Feature Flags with Laravel Pennant (Bonus)',
+                link: '/series/build-crm-laravel-12/chapters/33-feature-flags-pennant'
+              },
+              {
+                text: '34 — AI-Assisted Development with Laravel Boost (Bonus)',
+                link: '/series/build-crm-laravel-12/chapters/34-ai-assisted-development-boost'
+              },
+              {
+                text: '35 — Mobile & PWA Support (Bonus)',
+                link: '/series/build-crm-laravel-12/chapters/35-mobile-pwa-support'
+              },
+              {
+                text: '36 — Multi-Tenancy & Tenant Management (Bonus)',
+                link: '/series/build-crm-laravel-12/chapters/36-multi-tenancy-tenant-management'
+              },
+              {
+                text: '37 — Extending the CRM via Packages & Plugins (Bonus)',
+                link: '/series/build-crm-laravel-12/chapters/37-extending-crm-packages-plugins'
+              },
+              {
+                text: '38 — Deployment & DevOps',
+                link: '/series/build-crm-laravel-12/chapters/38-deployment-devops'
+              },
+              {
+                text: '39 — Best Practices & Conclusion',
+                link: '/series/build-crm-laravel-12/chapters/39-best-practices-conclusion'
+              },
+            ]
+          },
+          {
+            text: 'Bonus Chapter',
+            items: [
+              {
+                text: '40 — Jetstream Alternative — Team Management & Authentication (Bonus)',
+                link: '/series/build-crm-laravel-12/chapters/40-bonus-jetstream-alternative-authentication'
+              },
+            ]
+          },
+        ],
+
+        '/series/rails-developers-love-laravel/': [
+          { text: 'Overview', link: '/series/rails-developers-love-laravel/' },
+          {
+            text: 'Chapters',
+            items: [
+              {
+                text: '00 — Introduction: Why Look at Laravel',
+                link: '/series/rails-developers-love-laravel/chapters/00-introduction-why-look-at-laravel'
+              },
+              {
+                text: '01 — Mapping Concepts: Rails vs Laravel',
+                link: '/series/rails-developers-love-laravel/chapters/01-mapping-concepts-rails-vs-laravel'
+              },
+              {
+                text: '02 — Modern PHP: What\'s Changed',
+                link: '/series/rails-developers-love-laravel/chapters/02-modern-php-whats-changed'
+              },
+              {
+                text: '03 — Laravel\'s Developer Experience',
+                link: '/series/rails-developers-love-laravel/chapters/03-laravel-developer-experience'
+              },
+              {
+                text: '04 — PHP Syntax & Language Differences for Rails Devs',
+                link: '/series/rails-developers-love-laravel/chapters/04-php-syntax-for-rails-devs'
+              },
+              {
+                text: '05 — Working with Data: Eloquent ORM & Database Workflow',
+                link: '/series/rails-developers-love-laravel/chapters/05-eloquent-orm'
+              },
+              {
+                text: '06 — Building REST APIs: From Rails to Laravel',
+                link: '/series/rails-developers-love-laravel/chapters/06-building-rest-apis'
+              },
+              {
+                text: '07 — Testing, Deployment, DevOps: Best Practices',
+                link: '/series/rails-developers-love-laravel/chapters/07-testing-deployment-devops'
+              },
+              {
+                text: '08 — Ecosystem, Community, Packages & Where Laravel Excels',
+                link: '/series/rails-developers-love-laravel/chapters/08-ecosystem-community-packages'
+              },
+              {
+                text: '09 — When to Use Laravel (and When Rails Still Makes Sense)',
+                link: '/series/rails-developers-love-laravel/chapters/09-when-to-use-laravel-vs-rails'
+              },
+              {
+                text: '10 — Bonus: Hands-On Mini Project',
+                link: '/series/rails-developers-love-laravel/chapters/10-hands-on-mini-project'
               }
             ]
           }

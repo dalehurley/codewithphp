@@ -1,0 +1,549 @@
+---
+globs: docs/series/**/chapters/*.md
+description: Chapter Checkbox Integration - Adding progress tracking to tutorial chapters
+---
+
+# Chapter Checkbox Integration Guide
+
+This rule provides guidelines for integrating the `ChapterCheckbox` Vue component into tutorial chapters to enable reader progress tracking.
+
+## Overview
+
+The `ChapterCheckbox` component allows readers to:
+- **Mark chapters as complete** with a single click
+- **Auto-complete** chapters by scrolling to the bottom
+- **Track progress locally** (saved in browser localStorage)
+- **See visual feedback** with animations and confirmations
+
+## Component Features
+
+### ChapterCheckbox.vue (`docs/.vitepress/theme/components/ChapterCheckbox.vue`)
+
+**Purpose**: Provides an interactive progress tracking component for each chapter
+
+**Key Features**:
+- ✅ **Manual completion**: Click checkbox to mark chapter complete
+- ✅ **Auto-completion**: Chapter auto-marks when scrolled to bottom
+- ✅ **Local storage**: Progress persists across sessions
+- ✅ **Visual feedback**: Animations, icons, and confirmation messages
+- ✅ **Responsive design**: Works on desktop, tablet, and mobile
+- ✅ **Dark mode support**: Styled for both light and dark themes
+- ✅ **Accessibility**: Proper ARIA labels and semantic HTML
+
+### Props
+
+```typescript
+interface ChapterCheckboxProps {
+  seriesId: string        // Series identifier (e.g., "php-basics")
+  chapterId: string       // Chapter identifier (e.g., "01")
+  label?: string          // Custom label (default: "Mark this chapter as complete")
+}
+```
+
+### Component Behavior
+
+#### Manual Completion
+1. User clicks checkbox
+2. State updates and saves to localStorage
+3. Confirmation message displays for 2 seconds
+4. Icon changes from book to trophy
+
+#### Auto-Completion
+1. User scrolls component into view (95% visible)
+2. System waits 1.5 seconds to confirm intentional viewing
+3. If still in view, auto-marks as complete
+4. Celebration animation plays
+5. Confirmation shows "🎉 Chapter auto-completed!"
+6. Progress saved to localStorage
+
+#### Visual States
+
+**Uncompleted**:
+- Book icon in teal circle
+- Pulse border animation
+- Hover effect on interaction
+- Hint: "Check the box when you've finished reading..."
+
+**Completed**:
+- Trophy icon in gold
+- Green accent color
+- Different pulse animation
+- Hint: "✓ Completed — Great work! Your progress is saved locally."
+
+**Auto-Completed**:
+- Same as completed
+- Celebration animation on first viewing
+- Different hint text
+- "🎉 Chapter auto-completed!"
+
+## Integration Guide
+
+### Step 1: Add Component to Chapter
+
+Add the `<ChapterCheckbox>` component at the **bottom of each chapter** (before the "Further Reading" section):
+
+```vue
+---
+title: "NN: Chapter Title"
+description: "..."
+---
+
+![Chapter Hero](/images/...)
+
+# NN: Chapter Title
+
+## Overview
+
+Your chapter content here...
+
+<ChapterCheckbox 
+  seriesId="build-crm-laravel-12"
+  chapterId="01"
+  label="Mark Introduction & Series Overview as complete"
+/>
+
+## Further Reading
+
+- [Link 1](url)
+- [Link 2](url)
+```
+
+### Step 2: Series-Specific Configuration
+
+For each series, use the series directory name as `seriesId`:
+
+**PHP Basics**:
+```vue
+<ChapterCheckbox 
+  seriesId="php-basics"
+  chapterId="01"
+/>
+```
+
+**AI/ML Series**:
+```vue
+<ChapterCheckbox 
+  seriesId="ai-ml-php-developers"
+  chapterId="05"
+/>
+```
+
+**Build CRM Laravel**:
+```vue
+<ChapterCheckbox 
+  seriesId="build-crm-laravel-12"
+  chapterId="12"
+/>
+```
+
+**Python Developers Love PHP/Laravel**:
+```vue
+<ChapterCheckbox 
+  seriesId="python-developers-love-php-laravel"
+  chapterId="03"
+/>
+```
+
+### Step 3: Custom Labels (Optional)
+
+Provide meaningful, action-oriented labels:
+
+```vue
+<!-- Good: Specific and encouraging -->
+<ChapterCheckbox 
+  seriesId="php-basics"
+  chapterId="01"
+  label="You've mastered your first PHP script!"
+/>
+
+<!-- Good: Descriptive -->
+<ChapterCheckbox 
+  seriesId="build-crm-laravel-12"
+  chapterId="15"
+  label="Completed the Deals Pipeline design"
+/>
+
+<!-- Acceptable: Default label used -->
+<ChapterCheckbox 
+  seriesId="php-basics"
+  chapterId="02"
+/>
+```
+
+## Progress Storage
+
+### LocalStorage Structure
+
+Progress is stored in the browser's localStorage under the key: `codewithphp_progress`
+
+```javascript
+// Structure
+{
+  "php-basics": {
+    "01": true,
+    "02": true,
+    "05": false,
+    ...
+  },
+  "build-crm-laravel-12": {
+    "01": true,
+    "12": false,
+    ...
+  }
+}
+```
+
+### Composable: `useProgress`
+
+The component uses the `useProgress()` composable (`docs/.vitepress/theme/composables/useProgress.ts`):
+
+```typescript
+// Available methods
+const { 
+  isChapterComplete,      // (seriesId, chapterId) => boolean
+  toggleChapterCompletion, // (seriesId, chapterId) => void
+  loadProgress,            // () => void
+  getAllProgress,          // () => Progress object
+  clearProgress,           // () => void
+} = useProgress()
+```
+
+### Readers can clear progress
+Users can clear their progress by:
+1. Opening browser DevTools
+2. Going to Application → LocalStorage
+3. Finding `codewithphp_progress` and deleting it
+4. Refreshing the page
+
+## Styling & Appearance
+
+### Colors (Teal/Green Theme)
+
+**Uncompleted**:
+- Border: `rgba(13, 148, 136, 0.3)` (teal)
+- Icon: Teal book icon
+- Text: Default text color
+- Background: Teal gradient (10% opacity)
+
+**Completed**:
+- Border: `rgba(16, 185, 129, 0.4)` (green)
+- Icon: Gold trophy icon
+- Text: Green text for hint
+- Background: Green gradient (15% opacity)
+
+### Responsive Behavior
+
+**Desktop (768px+)**:
+- Full styling with shadows
+- Confirmation message on right side
+- Larger icons (48px)
+
+**Tablet (768px)**:
+- Slightly reduced padding
+- Smaller icons (42px)
+- Same layout
+
+**Mobile (640px)**:
+- Compact padding (1.25rem)
+- Smaller icons (38px)
+- Confirmation message below (static position)
+- Better touch targets
+
+### Dark Mode
+
+Component automatically adapts:
+- Darker backgrounds
+- Adjusted opacity for readability
+- Subtle shadows
+- Same color scheme, adjusted brightness
+
+## Animations
+
+### Key Animations
+
+**pulse-border**: Constant gentle pulse on uncompleted checkbox (3s)
+- Border color oscillation
+- Shadow expansion
+
+**pulse-complete**: Different pulse on completed checkbox (2s)
+- Slightly different timing
+- Green color pulse
+
+**icon-spin**: Trophy icon spin on completion (0.6s)
+- Rotation + scale animation
+- 360° rotation with bounce
+
+**checkmark**: Checkmark appear animation (0.4s)
+- Scale from 0 with rotation
+- Bounce effect
+
+**celebrate**: Auto-completion celebration (0.6s)
+- Quick scale bounce
+
+**trophy-shine**: Constant gold shine on trophy (2s)
+- Drop shadow pulsing
+
+## Best Practices
+
+### Placement
+
+✅ **Good**:
+```vue
+## Wrap-up
+
+You've completed this chapter...
+
+<ChapterCheckbox ... />
+
+## Further Reading
+
+- [Link 1](url)
+```
+
+❌ **Avoid**:
+```vue
+# Chapter NN: Title
+
+![Hero](/images/...)
+
+<ChapterCheckbox ... />  <!-- Too early, should be at bottom -->
+
+## Overview
+```
+
+### Naming Conventions
+
+- `seriesId`: Use exact directory name in lowercase with hyphens
+- `chapterId`: Use zero-padded number matching filename (e.g., "01", "15b")
+- `label`: Use action-oriented, encouraging language
+
+### Consistency
+
+- One checkbox per chapter
+- Always place near beginning
+- Consistent label style across series
+- Match chapter numbering exactly
+
+## Troubleshooting
+
+### Component Not Showing
+
+**Problem**: Checkbox doesn't appear
+**Solutions**:
+1. Verify VitePress can import Vue components (check vitepress config)
+2. Check component path: `docs/.vitepress/theme/components/ChapterCheckbox.vue`
+3. Ensure component is globally registered (check theme setup)
+4. Check browser console for errors
+
+### Progress Not Saving
+
+**Problem**: Marked chapters don't persist
+**Solutions**:
+1. Check if localStorage is enabled in browser
+2. Verify localStorage quota not exceeded
+3. Check browser privacy settings (private mode disables localStorage)
+4. Clear cache and try again
+
+### Auto-Complete Not Triggering
+
+**Problem**: Chapter doesn't auto-mark when scrolled
+**Solutions**:
+1. Scroll to ensure component is 95% visible
+2. Wait 1.5 seconds for system to detect
+3. Check browser console for JavaScript errors
+4. Verify IntersectionObserver is supported (modern browsers)
+
+### Styling Issues
+
+**Problem**: Component looks wrong or unstyled
+**Solutions**:
+1. Hard refresh browser (Ctrl+Shift+R or Cmd+Shift+R)
+2. Clear CSS cache
+3. Check dark mode is working correctly
+4. Verify CSS variables are defined in theme
+
+## Global Component Registration
+
+For the component to work in markdown, it must be globally registered:
+
+**Location**: `docs/.vitepress/theme/index.ts`
+
+```typescript
+import { defineTheme } from 'vitepress'
+import ChapterCheckbox from './components/ChapterCheckbox.vue'
+
+export default defineTheme({
+  enhanceApp({ app }) {
+    app.component('ChapterCheckbox', ChapterCheckbox)
+  }
+})
+```
+
+## Composable Implementation
+
+**Location**: `docs/.vitepress/theme/composables/useProgress.ts`
+
+```typescript
+import { ref, readonly } from 'vue'
+
+interface Progress {
+  [seriesId: string]: {
+    [chapterId: string]: boolean
+  }
+}
+
+const STORAGE_KEY = 'codewithphp_progress'
+const progress = ref<Progress>({})
+
+export function useProgress() {
+  const loadProgress = () => {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    progress.value = stored ? JSON.parse(stored) : {}
+  }
+
+  const saveProgress = () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress.value))
+  }
+
+  const isChapterComplete = (seriesId: string, chapterId: string): boolean => {
+    return progress.value[seriesId]?.[chapterId] ?? false
+  }
+
+  const toggleChapterCompletion = (seriesId: string, chapterId: string) => {
+    if (!progress.value[seriesId]) {
+      progress.value[seriesId] = {}
+    }
+    progress.value[seriesId][chapterId] = !isChapterComplete(seriesId, chapterId)
+    saveProgress()
+  }
+
+  return {
+    isChapterComplete,
+    toggleChapterCompletion,
+    loadProgress,
+  }
+}
+```
+
+## Analytics & Tracking
+
+### Optional: Send Progress to Server
+
+To track reader progress:
+
+```typescript
+// In useProgress composable, add:
+const trackProgress = async (seriesId: string, chapterId: string) => {
+  await fetch('/api/progress', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      series: seriesId,
+      chapter: chapterId,
+      completed: true,
+      timestamp: new Date().toISOString()
+    })
+  })
+}
+```
+
+## Accessibility
+
+### ARIA Labels
+
+Component uses semantic HTML:
+- Native `<input type="checkbox">` for accessibility
+- Proper `<label>` association
+- Color not the only indicator (includes text and icons)
+- Sufficient contrast for readability
+
+### Keyboard Navigation
+
+- Tab to focus checkbox
+- Space/Enter to toggle
+- Confirmation message announced via screen reader
+
+### Screen Reader Text
+
+- "Mark this chapter as complete" (default label)
+- "✓ Completed — Great work!" (completion state)
+- Hint text provides context
+
+## Testing Checklist
+
+Before deploying ChapterCheckbox to chapters:
+
+- [ ] Component displays correctly
+- [ ] Manual toggle works
+- [ ] Progress saves to localStorage
+- [ ] Page refresh maintains progress
+- [ ] Auto-complete triggers when scrolling
+- [ ] Confirmation messages appear
+- [ ] Animations are smooth
+- [ ] Responsive design works on mobile
+- [ ] Dark mode displays correctly
+- [ ] Keyboard navigation works
+- [ ] Browser DevTools show no errors
+- [ ] All series IDs match directory names
+- [ ] All chapter IDs match filenames
+- [ ] Custom labels are encouraging
+- [ ] Component placed consistently across chapters
+
+## Examples by Series
+
+### PHP Basics Series
+
+```vue
+<ChapterCheckbox 
+  seriesId="php-basics"
+  chapterId="01"
+  label="Your first PHP script is complete!"
+/>
+```
+
+### AI/ML Series
+
+```vue
+<ChapterCheckbox 
+  seriesId="ai-ml-php-developers"
+  chapterId="05"
+  label="Completed your first machine learning model!"
+/>
+```
+
+### Build CRM Laravel 12 Series
+
+```vue
+<ChapterCheckbox 
+  seriesId="build-crm-laravel-12"
+  chapterId="12"
+  label="Contacts module CRUD complete!"
+/>
+```
+
+### Python Developers Love PHP/Laravel
+
+```vue
+<ChapterCheckbox 
+  seriesId="python-developers-love-php-laravel"
+  chapterId="03"
+  label="Modern PHP essentials mastered!"
+/>
+```
+
+## Related Files
+
+- **Component**: `docs/.vitepress/theme/components/ChapterCheckbox.vue`
+- **Composable**: `docs/.vitepress/theme/composables/useProgress.ts`
+- **Theme Config**: `docs/.vitepress/config.ts`
+- **Authoring Guide**: `.cursor/rules/authoring-guidelines.mdc`
+- **Chapter Validation**: `.cursor/rules/chapter-validation.mdc`
+
+## Support & Feedback
+
+For issues or improvements:
+1. Check browser console for JavaScript errors
+2. Verify localStorage is enabled
+3. Test in incognito/private mode
+4. Check component file hasn't been modified
+5. Review GitHub issues for similar problems
