@@ -817,12 +817,16 @@ try {
 
 1. **Try/catch/finally** syntax is nearly identical between TS and PHP
 2. **PHP has two base types**: `Exception` (recoverable) and `Error` (serious)
-3. **Type hints required** in catch blocks: `catch (Exception $e)`
-4. **Rich exception hierarchy** in PHP with specific exception types
+3. **Type hints required** in catch blocks: `catch (Exception $e)` - cannot catch without type
+4. **Rich exception hierarchy** in PHP with specific exception types (InvalidArgumentException, RuntimeException, etc.)
 5. **Union catch** (PHP 8.0+) handles multiple exception types: `catch (A | B $e)`
-6. **Exception chaining** via `$previous` parameter for context
-7. **Result type pattern** provides functional error handling alternative
-8. **Custom exceptions** should extend appropriate base class and add context
+6. **Exception chaining** via `$previous` parameter preserves context across layers
+7. **Result type pattern** provides functional error handling alternative to exceptions
+8. **Custom exceptions** should extend appropriate base class and add domain-specific context
+9. **`catch (Throwable $e)`** catches everything (both Exception and Error)
+10. **Set exception/error handlers** globally with `set_exception_handler()` and `set_error_handler()`
+11. **Never catch `Error`** in application code - indicates serious problems
+12. **Always include exception message** when rethrowing for debugging context
 
 ## Comparison Table
 
