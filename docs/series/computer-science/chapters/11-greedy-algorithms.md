@@ -28,6 +28,31 @@ In this chapter, you'll learn:
 2. Never reconsider previous choices
 3. Hope that local optimums lead to global optimum
 
+```mermaid
+graph LR
+    subgraph "Greedy Strategy Pattern"
+        S0["Problem"]
+        S1["Make locally<br/>optimal choice"]
+        S2["Update state"]
+        S3{"Problem<br/>solved?"}
+        S4["Solution"]
+
+        S0 --> S1
+        S1 --> S2
+        S2 --> S3
+        S3 -->|"No"| S1
+        S3 -->|"Yes"| S4
+    end
+
+    style S0 fill:#2196F3,color:#fff
+    style S1 fill:#4CAF50
+    style S2 fill:#FFD700
+    style S3 fill:#FF9800
+    style S4 fill:#9C27B0,color:#fff
+```
+
+**Key**: Never backtrack—once a choice is made, it's final!
+
 ### Example: Coin Change
 
 ```php
@@ -66,6 +91,21 @@ greedyCoinChange(30, $coins); // [25, 1, 1, 1, 1, 1] - 6 coins
 ### 1. Activity Selection
 
 Select maximum number of non-overlapping activities.
+
+```mermaid
+gantt
+    title Activity Selection: Pick Non-Overlapping Activities
+    dateFormat  HH
+    section Activities
+    Activity A (1-4)     :done, 01, 4h
+    Activity B (3-5)     :crit, 03, 2h
+    Activity C (0-6)     :crit, 00, 6h
+    Activity D (5-7)     :done, 05, 2h
+    Activity E (8-9)     :done, 08, 1h
+    Activity F (5-9)     :crit, 05, 4h
+```
+
+**Greedy choice**: Select activity ending earliest! Result: A, D, E (3 activities).
 
 ```php
 <?php
