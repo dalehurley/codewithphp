@@ -604,13 +604,18 @@ npm run dev
 
 ## Key Takeaways
 
-1. **PHP is interpreted** - No compilation step required
-2. **Frontend assets still need bundling** - Use Vite/Webpack
-3. **PHAR files** package PHP apps (like bundled JS)
-4. **OPcache** is PHP's runtime optimization
-5. **Deployment is simpler** - Deploy source code directly
-6. **Composer optimization** replaces some build steps
-7. **Docker works differently** - No `npm run build` in Dockerfile
+1. **PHP is interpreted** - No compilation/transpilation step required (unlike TypeScript)
+2. **Frontend assets still need bundling** - Use Vite/Webpack for JS/CSS
+3. **PHAR files** package PHP apps into single executable (like bundled JS)
+4. **OPcache** is PHP's runtime optimization (bytecode cache, not build step)
+5. **Deployment is simpler** - Deploy source code directly, no build artifacts
+6. **Composer optimization** replaces some build steps (`composer install --optimize-autoloader`)
+7. **Docker works differently** - No `npm run build` in Dockerfile, just `composer install`
+8. **Laravel Mix/Vite** handle frontend assets in full-stack PHP apps
+9. **No source maps needed** for PHP - errors show actual source lines
+10. **`composer dump-autoload`** is closest to "rebuild" - regenerates autoloader
+11. **Production optimization** via OPcache config, not build tooling
+12. **Monorepo tools** less common - PHP projects often self-contained
 
 ## Comparison Table
 
