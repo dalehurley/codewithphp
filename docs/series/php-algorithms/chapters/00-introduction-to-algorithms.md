@@ -514,6 +514,25 @@ function countVowels(string $str): int
 - [Introduction to Algorithms](https://mitpress.mit.edu/books/introduction-algorithms) by CLRS
 - [Algorithm Complexity Cheat Sheet](https://www.bigocheatsheet.com/)
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 00 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-00)**
+
+Files included:
+- `01-quick-start-examples.php` - Collection of essential algorithm patterns ready to use
+- `02-common-patterns.php` - Fundamental algorithm patterns (two pointers, sliding window, hash maps)
+- `03-performance-tips.php` - Practical optimization techniques with benchmarks
+- `README.md` - Complete documentation and usage guide
+
+Clone the repository to run the examples locally:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-00
+php 01-quick-start-examples.php
+```
+
 ---
 
 Ready to analyze algorithm efficiency? Continue to [Chapter 01: Algorithm Complexity & Big O Notation](/series/php-algorithms/chapters/01-algorithm-complexity-big-o-notation).

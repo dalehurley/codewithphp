@@ -1357,6 +1357,25 @@ echo searchMatrix($matrix, 3) ? 'Found' : 'Not found';
 
 In the next chapter, we'll explore **Hash Tables & Hash Functions**, learning about O(1) lookups and collision handling strategies.
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 12 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-12)**
+
+Files included:
+- `01-basic-binary-search.php` - Iterative and recursive implementations with visualized search process
+- `02-binary-search-variants.php` - Find first/last occurrence, insertion position, and count occurrences
+- `03-advanced-applications.php` - Integer square root, peak element finding, and answer space search
+- `README.md` - Complete documentation and usage guide
+
+Clone the repository to run the examples locally:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-12
+php 01-basic-binary-search.php
+```
+
 ---
 
 Continue to [Chapter 13: Hash Tables & Hash Functions](/series/php-algorithms/chapters/13-hash-tables-hash-functions).

@@ -1613,6 +1613,19 @@ echo "symfony/http-kernel is depended on by: " .
 - Choose representation based on graph density and required operations
 - Sparse graphs are most common in practice, making adjacency lists popular
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 21 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-21)**
+
+Clone the repository to run examples:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-21
+php 01-*.php
+```
+
 ## Next Steps
 
 In the next chapter, we'll explore Depth-First Search (DFS), a fundamental graph traversal algorithm used for connectivity, cycle detection, topological sorting, and more.

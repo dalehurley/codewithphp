@@ -1474,6 +1474,27 @@ print_r(twoSum([2, 7, 11, 15], 9)); // Should output: [0, 1]
 
 In the next chapter, we'll explore **Binary Search**, a much faster O(log n) algorithm that works on sorted data.
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 11 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-11)**
+
+Files included:
+- `01-basic-linear-search.php` - Basic linear search implementation with multiple implementations and use cases
+- `02-search-variants.php` - Advanced search variants including sentinel search, jump search, and interpolation search
+- `03-search-with-conditions.php` - Search with conditions and callbacks including findIndex(), findAll(), and predicates
+- `04-object-search.php` - Searching in objects, associative arrays, and nested structures
+- `05-practical-applications.php` - Practical real-world applications including grep, autocomplete, and validation
+- `README.md` - Complete documentation and usage guide
+
+Clone the repository to run the examples locally:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-11
+php 01-basic-linear-search.php
+```
+
 ---
 
 Continue to [Chapter 12: Binary Search](/series/php-algorithms/chapters/12-binary-search).

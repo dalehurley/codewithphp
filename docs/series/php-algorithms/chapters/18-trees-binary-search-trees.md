@@ -1860,6 +1860,19 @@ function mergeBSTs(TreeNode $root1, TreeNode $root2): TreeNode
 
 In the next chapter, we'll explore **Tree Traversal Algorithms**, learning different ways to visit all nodes in a tree systematically.
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 18 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-18)**
+
+Clone the repository to run examples:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-18
+php 01-*.php
+```
+
 ---
 
 Continue to [Chapter 19: Tree Traversal Algorithms](/series/php-algorithms/chapters/19-tree-traversal-algorithms).

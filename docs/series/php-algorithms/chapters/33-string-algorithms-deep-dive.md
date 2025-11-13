@@ -1415,6 +1415,19 @@ $pattern = '/^(?>a+)+$/';
 preg_match($pattern, $text);  // Fast failure
 ```
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 33 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-33)**
+
+Clone the repository to run examples:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-33
+php 01-*.php
+```
+
 ## Practice Exercises
 
 1. **Plagiarism Detector**: Implement a system using suffix arrays to detect similar text passages

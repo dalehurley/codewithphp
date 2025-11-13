@@ -1632,6 +1632,19 @@ Based on real-world implementations:
 - Monitor cache metrics to optimize configuration (aim for 85%+ hit rate)
 - Always use OPcache in production (free 2-3x performance boost)
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 27 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-27)**
+
+Clone the repository to run examples:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-27
+php 01-*.php
+```
+
 ## Next Steps
 
 In the next chapter, we'll create an algorithm selection guide to help you choose the right algorithm for different problem types and constraints.

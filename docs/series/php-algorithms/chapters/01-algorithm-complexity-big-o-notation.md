@@ -1086,6 +1086,24 @@ function removeDuplicates(array $arr): array
 
 In the next chapter, we'll build a **benchmarking framework** to actually measure algorithm performance in PHP. You'll learn to validate your complexity analysis with real data.
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 01 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-01)**
+
+Files included:
+- `01-complexity-examples.php` - Demonstrates all major time complexity classes with working code
+- `02-space-complexity.php` - Shows memory usage patterns and space complexity analysis
+- `README.md` - Complete documentation and usage guide
+
+Clone the repository to run the examples locally:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-01
+php 01-complexity-examples.php
+```
+
 ---
 
 Continue to [Chapter 02: Benchmarking & Performance Testing](/series/php-algorithms/chapters/02-benchmarking-performance-testing).

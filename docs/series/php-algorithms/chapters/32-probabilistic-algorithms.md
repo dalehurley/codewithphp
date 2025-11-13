@@ -1766,6 +1766,19 @@ Probabilistic algorithms enable processing of massive datasets that would be imp
 - **Chapter 36: Stream Processing Algorithms** - Real-time data processing
 - **Chapter 26: Approximate Algorithms** - More approximation techniques
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 32 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-32)**
+
+Clone the repository to run examples:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-32
+php 01-*.php
+```
+
 ## Practice Exercises
 
 1. **Web Crawler Deduplicator**: Implement a Bloom filter-based URL deduplicator that handles 1 billion URLs

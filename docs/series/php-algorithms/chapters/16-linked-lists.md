@@ -1619,6 +1619,19 @@ function removeDuplicates(LinkedList $list): void
 
 In the next chapter, we'll explore **Stacks & Queues**, specialized data structures built on top of linked lists and arrays.
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 16 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-16)**
+
+Clone the repository to run examples:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-16
+php 01-*.php
+```
+
 ---
 
 Continue to [Chapter 17: Stacks & Queues](/series/php-algorithms/chapters/17-stacks-queues).

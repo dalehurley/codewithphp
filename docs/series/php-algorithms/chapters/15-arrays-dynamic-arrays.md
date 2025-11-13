@@ -1475,6 +1475,19 @@ class SPLDataStructureExamples
 
 In the next chapter, we'll explore **Linked Lists**, learning when pointer-based structures are better than arrays.
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 15 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-15)**
+
+Clone the repository to run examples:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-15
+php 01-*.php
+```
+
 ---
 
 Continue to [Chapter 16: Linked Lists](/series/php-algorithms/chapters/16-linked-lists).

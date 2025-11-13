@@ -1117,6 +1117,23 @@ echo $cache->get(2); // -1 (not found)
 
 Now that you have problem-solving strategies, we'll apply them to sorting algorithms, starting with **Bubble Sort and Selection Sort** in the next chapter.
 
+## 💻 Code Samples
+
+All code examples from this chapter are available in the GitHub repository:
+
+**[View Chapter 04 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-04)**
+
+Files included:
+- `01-problem-solving-patterns.php` - All major problem-solving patterns including two pointers, sliding window, hash maps, divide and conquer, greedy algorithms, and backtracking
+- `README.md` - Complete documentation and usage guide
+
+Clone the repository to run the examples locally:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code-samples/php-algorithms/chapter-04
+php 01-problem-solving-patterns.php
+```
+
 ---
 
 Continue to [Chapter 05: Bubble Sort & Selection Sort](/series/php-algorithms/chapters/05-bubble-sort-selection-sort).
