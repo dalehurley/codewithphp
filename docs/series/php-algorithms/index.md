@@ -546,7 +546,7 @@ Complete all chapters in order from 0-36, including all appendices.
 <div class="chapter-grid">
 
 <div class="chapter-card">
-  <div class="chapter-number">26</div>
+  <div class="chapter-number">25</div>
   <div class="chapter-content">
     <h3>Dynamic Programming Fundamentals</h3>
     <p>Learn memoization and tabulation. Solve fibonacci, coin change, and knapsack problems efficiently.</p>
@@ -558,7 +558,7 @@ Complete all chapters in order from 0-36, including all appendices.
 </div>
 
 <div class="chapter-card">
-  <div class="chapter-number">27</div>
+  <div class="chapter-number">26</div>
   <div class="chapter-content">
     <h3>Advanced Dynamic Programming</h3>
     <p>Master interval DP, bitmask DP, and multi-dimensional optimization. Solve TSP, edit distance, and matrix chain multiplication.</p>
@@ -576,7 +576,7 @@ Complete all chapters in order from 0-36, including all appendices.
 <div class="chapter-grid">
 
 <div class="chapter-card">
-  <div class="chapter-number">28</div>
+  <div class="chapter-number">27</div>
   <div class="chapter-content">
     <h3>Caching & Memoization Strategies</h3>
     <p>Implement LRU cache, TTL cache, and Redis integration. Apply caching strategies to real PHP applications.</p>
@@ -588,7 +588,7 @@ Complete all chapters in order from 0-36, including all appendices.
 </div>
 
 <div class="chapter-card">
-  <div class="chapter-number">29</div>
+  <div class="chapter-number">28</div>
   <div class="chapter-content">
     <h3>Algorithm Selection Guide</h3>
     <p>Decision trees for choosing algorithms. Pattern recognition and complexity constraints for real problems.</p>
@@ -600,7 +600,7 @@ Complete all chapters in order from 0-36, including all appendices.
 </div>
 
 <div class="chapter-card">
-  <div class="chapter-number">30</div>
+  <div class="chapter-number">29</div>
   <div class="chapter-content">
     <h3>Performance Optimization</h3>
     <p>Profiling, benchmarking, memory optimization, and PHP-specific performance techniques.</p>
@@ -612,7 +612,7 @@ Complete all chapters in order from 0-36, including all appendices.
 </div>
 
 <div class="chapter-card">
-  <div class="chapter-number">31</div>
+  <div class="chapter-number">30</div>
   <div class="chapter-content">
     <h3>Real-World Case Studies</h3>
     <p>E-commerce recommendations, social feed ranking, search engines, and data pipelines with complete implementations.</p>
@@ -630,7 +630,7 @@ Complete all chapters in order from 0-36, including all appendices.
 <div class="chapter-grid">
 
 <div class="chapter-card">
-  <div class="chapter-number">32</div>
+  <div class="chapter-number">31</div>
   <div class="chapter-content">
     <h3>Concurrent Algorithms</h3>
     <p><strong>NEW!</strong> Async/await patterns, parallel processing, worker pools, and concurrent data structures in PHP.</p>
@@ -642,7 +642,7 @@ Complete all chapters in order from 0-36, including all appendices.
 </div>
 
 <div class="chapter-card">
-  <div class="chapter-number">33</div>
+  <div class="chapter-number">32</div>
   <div class="chapter-content">
     <h3>Probabilistic Algorithms</h3>
     <p><strong>NEW!</strong> Bloom filters, HyperLogLog, count-min sketch, and probabilistic data structures.</p>
@@ -654,7 +654,7 @@ Complete all chapters in order from 0-36, including all appendices.
 </div>
 
 <div class="chapter-card">
-  <div class="chapter-number">34</div>
+  <div class="chapter-number">33</div>
   <div class="chapter-content">
     <h3>String Algorithms Deep Dive</h3>
     <p><strong>NEW!</strong> Aho-Corasick, suffix trees, suffix arrays, and advanced string matching techniques.</p>
@@ -666,7 +666,7 @@ Complete all chapters in order from 0-36, including all appendices.
 </div>
 
 <div class="chapter-card">
-  <div class="chapter-number">35</div>
+  <div class="chapter-number">34</div>
   <div class="chapter-content">
     <h3>Geometric Algorithms</h3>
     <p><strong>NEW!</strong> Convex hull, line intersection, point in polygon, and computational geometry basics.</p>
@@ -678,7 +678,7 @@ Complete all chapters in order from 0-36, including all appendices.
 </div>
 
 <div class="chapter-card">
-  <div class="chapter-number">36</div>
+  <div class="chapter-number">35</div>
   <div class="chapter-content">
     <h3>Cryptographic Algorithms</h3>
     <p><strong>NEW!</strong> Hashing, encryption basics, secure random number generation, and cryptographic primitives.</p>
@@ -690,7 +690,7 @@ Complete all chapters in order from 0-36, including all appendices.
 </div>
 
 <div class="chapter-card">
-  <div class="chapter-number">37</div>
+  <div class="chapter-number">36</div>
   <div class="chapter-content">
     <h3>Stream Processing Algorithms</h3>
     <p><strong>NEW!</strong> Sliding windows, reservoir sampling, approximate counting, and real-time data processing.</p>
