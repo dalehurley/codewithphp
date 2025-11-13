@@ -26,14 +26,55 @@ In this chapter, you'll learn:
 
 A **hash table** (or hash map) stores key-value pairs using a **hash function** to compute an index where the value should be stored:
 
+```mermaid
+graph LR
+    K1["Key: 'alice'"] --> H1[Hash Function]
+    H1 --> I1["Index: 3"]
+    I1 --> V1["Value: 30"]
+
+    K2["Key: 'bob'"] --> H2[Hash Function]
+    H2 --> I2["Index: 7"]
+    I2 --> V2["Value: 25"]
+
+    style K1 fill:#4CAF50
+    style K2 fill:#2196F3
+    style V1 fill:#FF9800
+    style V2 fill:#9C27B0
+```
+
 ```
 Key → Hash Function → Index → Value
 
 "alice" → hash("alice") → 3 → 30
 "bob"   → hash("bob")   → 7 → 25
+
+Formula: index = hash(key) % table_size
 ```
 
 ### Hash Table Structure
+
+```mermaid
+graph TD
+    subgraph "Hash Table (size: 8)"
+        I0["Index 0<br/>[empty]"]
+        I1["Index 1<br/>[empty]"]
+        I2["Index 2<br/>charlie → 35"]
+        I3["Index 3<br/>alice → 30"]
+        I4["Index 4<br/>[empty]"]
+        I5["Index 5<br/>[empty]"]
+        I6["Index 6<br/>[empty]"]
+        I7["Index 7<br/>bob → 25"]
+    end
+
+    style I2 fill:#4CAF50
+    style I3 fill:#2196F3
+    style I7 fill:#FF9800
+    style I0 fill:#eee
+    style I1 fill:#eee
+    style I4 fill:#eee
+    style I5 fill:#eee
+    style I6 fill:#eee
+```
 
 ```
 Index   Bucket
@@ -45,6 +86,8 @@ Index   Bucket
   5  →  [empty]
   6  →  [empty]
   7  →  ["bob" => 25]
+
+Average O(1) lookup: Direct index access!
 ```
 
 ## Hash Functions
@@ -106,9 +149,39 @@ hash("clara") → 3  ← Collision!
 
 Store a linked list at each index:
 
+```mermaid
+graph TD
+    subgraph "Hash Table with Chaining"
+        I0["Index 0<br/>[empty]"]
+        I1["Index 1<br/>[empty]"]
+        I2["Index 2<br/>[empty]"]
+        I3["Index 3"]
+        I4["Index 4<br/>[empty]"]
+    end
+
+    I3 --> N1["alice → 30"]
+    N1 --> N2["clara → 28"]
+    N2 --> N3[null]
+
+    style I3 fill:#FF6B6B,color:#fff
+    style N1 fill:#4CAF50
+    style N2 fill:#2196F3
+    style I0 fill:#eee
+    style I1 fill:#eee
+    style I2 fill:#eee
+    style I4 fill:#eee
+```
+
 ```
 Index   Bucket (linked list)
-  3  →  [alice=>30] → [clara=>28] → null
+  0  →  null
+  1  →  null
+  2  →  null
+  3  →  [alice=>30] → [clara=>28] → null  ← Chain of collisions
+  4  →  null
+
+Chaining: Each bucket holds a linked list
+Time: O(1) average, O(n) worst (if all keys collide)
 ```
 
 ```php
@@ -224,8 +297,43 @@ Store all elements in the table itself. When collision occurs, probe for the nex
 
 #### Linear Probing
 
+```mermaid
+graph TD
+    subgraph "Open Addressing - Linear Probing"
+        direction LR
+        I0["Index 0<br/>[empty]"]
+        I1["Index 1<br/>[empty]"]
+        I2["Index 2<br/>[empty]"]
+        I3["Index 3<br/>alice → 30"]
+        I4["Index 4<br/>clara → 28"]
+        I5["Index 5<br/>[empty]"]
+    end
+
+    K1["Key: 'alice'<br/>hash = 3"] -.->|"Insert at 3"| I3
+    K2["Key: 'clara'<br/>hash = 3"] -.->|"Collision!"| I3
+    I3 -.->|"Try 3+1=4"| I4
+    K2 -.->|"Insert at 4"| I4
+
+    style I3 fill:#4CAF50
+    style I4 fill:#2196F3
+    style K1 fill:#FFD700
+    style K2 fill:#FF6B6B,color:#fff
+    style I0 fill:#eee
+    style I1 fill:#eee
+    style I2 fill:#eee
+    style I5 fill:#eee
 ```
-If index is occupied, try index+1, index+2, ...
+
+```
+Linear Probing: If index is occupied, try index+1, index+2, ...
+
+Example:
+1. Insert "alice" → hash(alice) = 3 → Store at index 3 ✓
+2. Insert "clara" → hash(clara) = 3 → Collision!
+3. Probe: try index 4 → Empty ✓ → Store at index 4
+
+Advantages: Better cache locality
+Disadvantages: Primary clustering
 ```
 
 ```php
@@ -328,14 +436,42 @@ class HashTableOpenAddressing {
 
 **Load factor** = Number of entries / Table size
 
-```php
-Load factor = 7 entries / 10 slots = 0.7
+```mermaid
+graph TB
+    subgraph "Load Factor Impact"
+        L1["Load Factor < 0.5<br/>Too sparse<br/>Wasted memory"]
+        L2["Load Factor 0.5-0.7<br/>Optimal<br/>Good performance"]
+        L3["Load Factor > 0.7<br/>Too dense<br/>Many collisions"]
+    end
+
+    style L1 fill:#FFA500
+    style L2 fill:#4CAF50
+    style L3 fill:#FF6B6B,color:#fff
 ```
 
-- **Low load factor** (< 0.5): Wasted space
-- **High load factor** (> 0.7): More collisions
+```php
+Load factor = 7 entries / 10 slots = 0.7
+
+Resizing Strategy:
+- Monitor: load_factor = count / size
+- Trigger: When load_factor > 0.7
+- Action: Create new table with 2x size
+- Rehash: Insert all entries into new table
+```
+
+- **Low load factor** (< 0.5): Wasted space, but fewer collisions
+- **Optimal** (0.5 - 0.7): Good balance of speed and space
+- **High load factor** (> 0.7): More collisions, slower operations
 
 **Best practice**: Resize (usually double) when load factor > 0.7
+
+**Resizing Process:**
+1. Create new table with 2× capacity
+2. Rehash all existing entries
+3. Insert into new table
+4. Replace old table
+
+Time: O(n) for resize, but amortized O(1) per insert
 
 ## Hash Table Performance
 
