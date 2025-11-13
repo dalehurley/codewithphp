@@ -152,6 +152,7 @@ export default withMermaid(
           text: 'Series',
           items: [
             { text: 'PHP Basics', link: '/series/php-basics/' },
+            { text: 'PHP for Java Developers', link: '/series/php-for-java-developers/' },
             { text: 'AI/ML for PHP Developers', link: '/series/ai-ml-php-developers/' },
             { text: 'Why Python Developers Will Love PHP and Laravel', link: '/series/python-developers-love-php-laravel/' },
           ]
@@ -347,6 +348,23 @@ export default withMermaid(
               {
                 text: '10 — Bonus: Hands-On Mini Project',
                 link: '/series/python-developers-love-php-laravel/chapters/10-bonus-hands-on-mini-project'
+              }
+            ]
+          }
+        ],
+
+        '/series/php-for-java-developers/': [
+          { text: 'Overview', link: '/series/php-for-java-developers/' },
+          {
+            text: 'Chapters',
+            items: [
+              {
+                text: '00 — Setup & First Comparison',
+                link: '/series/php-for-java-developers/chapters/00-setup-and-first-comparison'
+              },
+              {
+                text: '01 — Types, Variables & Operators',
+                link: '/series/php-for-java-developers/chapters/01-types-variables-and-operators'
               }
             ]
           }
