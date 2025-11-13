@@ -64,6 +64,44 @@ Result: "Fixed the bug, added tests, no recurrence in 6 months..."
 
 ## The Interview Process
 
+```mermaid
+graph TB
+    START["Problem Given"]
+    LISTEN["1. LISTEN & CLARIFY<br/>• Take notes<br/>• Ask questions<br/>• Restate problem"]
+    EXAMPLES["2. WORK THROUGH EXAMPLES<br/>• Simple case<br/>• Edge cases<br/>• Invalid inputs"]
+    APPROACH["3. DISCUSS APPROACH<br/>• Brute force first<br/>• Optimize<br/>• State complexity"]
+    APPROVE{"Interviewer<br/>approves?"}
+    CODE["4. WRITE CODE<br/>• Think aloud<br/>• Clean syntax<br/>• Handle edge cases"]
+    TEST["5. TEST CODE<br/>• Walk through examples<br/>• Check edge cases<br/>• Trace execution"]
+    BUGS{"Found bugs?"}
+    FIX["Fix bugs"]
+    OPTIMIZE["6. OPTIMIZE<br/>• Discuss trade-offs<br/>• Alternative approaches<br/>• Follow-up questions"]
+    DONE["✓ Complete!"]
+
+    START --> LISTEN
+    LISTEN --> EXAMPLES
+    EXAMPLES --> APPROACH
+    APPROACH --> APPROVE
+    APPROVE -->|"Yes"| CODE
+    APPROVE -->|"No"| APPROACH
+    CODE --> TEST
+    TEST --> BUGS
+    BUGS -->|"Yes"| FIX
+    FIX --> TEST
+    BUGS -->|"No"| OPTIMIZE
+    OPTIMIZE --> DONE
+
+    style START fill:#2196F3,color:#fff
+    style LISTEN fill:#4CAF50
+    style APPROACH fill:#FFD700
+    style CODE fill:#FF9800
+    style TEST fill:#9C27B0,color:#fff
+    style BUGS fill:#F44336,color:#fff
+    style DONE fill:#4CAF50
+```
+
+**Remember**: Communication > Code quality. Talk through your thinking!
+
 ### Step 1: Listen Carefully
 
 - Take notes
