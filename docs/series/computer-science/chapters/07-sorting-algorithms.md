@@ -35,6 +35,28 @@ Sorted data enables:
 
 Repeatedly swap adjacent elements if they're in the wrong order.
 
+```mermaid
+graph TB
+    subgraph "Bubble Sort Example: [5, 2, 8, 1]"
+        direction LR
+        P1["Pass 1:<br/>[5,2,8,1]<br/>↓<br/>[2,5,8,1]<br/>↓<br/>[2,5,1,8]"]
+        P2["Pass 2:<br/>[2,5,1,8]<br/>↓<br/>[2,1,5,8]"]
+        P3["Pass 3:<br/>[2,1,5,8]<br/>↓<br/>[1,2,5,8]"]
+        P4["✓ Sorted:<br/>[1,2,5,8]"]
+
+        P1 --> P2
+        P2 --> P3
+        P3 --> P4
+    end
+
+    style P1 fill:#FF9800
+    style P2 fill:#FFA726
+    style P3 fill:#FFB74D
+    style P4 fill:#4CAF50
+```
+
+**How it works**: Largest elements "bubble up" to the end in each pass.
+
 ```php
 <?php
 
@@ -72,6 +94,30 @@ print_r(bubbleSort($numbers));
 
 Find the minimum element and place it at the beginning.
 
+```mermaid
+graph TB
+    subgraph "Selection Sort Example: [64, 25, 12, 22, 11]"
+        S0["Initial:<br/>[64, 25, 12, 22, 11]"]
+        S1["Find min (11):<br/>[11, 25, 12, 22, 64]"]
+        S2["Find min (12):<br/>[11, 12, 25, 22, 64]"]
+        S3["Find min (22):<br/>[11, 12, 22, 25, 64]"]
+        S4["✓ Sorted:<br/>[11, 12, 22, 25, 64]"]
+
+        S0 --> S1
+        S1 --> S2
+        S2 --> S3
+        S3 --> S4
+    end
+
+    style S0 fill:#FF6B6B,color:#fff
+    style S1 fill:#FFA500
+    style S2 fill:#FFD700
+    style S3 fill:#90EE90
+    style S4 fill:#4CAF50
+```
+
+**How it works**: Select minimum from unsorted portion, swap with first unsorted element.
+
 ```php
 <?php
 
@@ -106,6 +152,33 @@ function selectionSort(array $arr): array {
 
 Build sorted array one element at a time.
 
+```mermaid
+graph TB
+    subgraph "Insertion Sort Example: [5, 2, 4, 6, 1, 3]"
+        I0["Initial:<br/>[5 | 2, 4, 6, 1, 3]<br/>sorted | unsorted"]
+        I1["Insert 2:<br/>[2, 5 | 4, 6, 1, 3]"]
+        I2["Insert 4:<br/>[2, 4, 5 | 6, 1, 3]"]
+        I3["Insert 6:<br/>[2, 4, 5, 6 | 1, 3]"]
+        I4["Insert 1:<br/>[1, 2, 4, 5, 6 | 3]"]
+        I5["Insert 3:<br/>[1, 2, 3, 4, 5, 6]"]
+
+        I0 --> I1
+        I1 --> I2
+        I2 --> I3
+        I3 --> I4
+        I4 --> I5
+    end
+
+    style I0 fill:#FF6B6B,color:#fff
+    style I1 fill:#FF8C00
+    style I2 fill:#FFA500
+    style I3 fill:#FFD700
+    style I4 fill:#90EE90
+    style I5 fill:#4CAF50
+```
+
+**How it works**: Pick each element and insert it into its correct position in the sorted portion.
+
 ```php
 <?php
 
@@ -136,6 +209,46 @@ function insertionSort(array $arr): array {
 ### 4. Merge Sort — O(n log n)
 
 Divide array in half, sort each half, merge them.
+
+```mermaid
+graph TB
+    subgraph "Merge Sort: Divide and Conquer"
+        M0["[38, 27, 43, 3]"]
+        M1["[38, 27]"]
+        M2["[43, 3]"]
+        M3["[38]"]
+        M4["[27]"]
+        M5["[43]"]
+        M6["[3]"]
+        M7["[27, 38]"]
+        M8["[3, 43]"]
+        M9["[3, 27, 38, 43]"]
+
+        M0 -->|"Divide"| M1
+        M0 -->|"Divide"| M2
+        M1 -->|"Divide"| M3
+        M1 -->|"Divide"| M4
+        M2 -->|"Divide"| M5
+        M2 -->|"Divide"| M6
+        M3 -->|"Merge"| M7
+        M4 -->|"Merge"| M7
+        M5 -->|"Merge"| M8
+        M6 -->|"Merge"| M8
+        M7 -->|"Merge"| M9
+        M8 -->|"Merge"| M9
+    end
+
+    style M0 fill:#FF6B6B,color:#fff
+    style M3 fill:#90EE90
+    style M4 fill:#90EE90
+    style M5 fill:#90EE90
+    style M6 fill:#90EE90
+    style M7 fill:#FFD700
+    style M8 fill:#FFD700
+    style M9 fill:#4CAF50
+```
+
+**How it works**: Recursively divide, then merge sorted halves. O(n log n) guaranteed!
 
 ```php
 <?php
@@ -186,6 +299,27 @@ print_r(mergeSort($numbers));
 ### 5. Quick Sort — O(n log n) average
 
 Choose a pivot, partition array around it, recursively sort partitions.
+
+```mermaid
+graph TB
+    subgraph "Quick Sort: Partition Around Pivot"
+        Q0["[7, 2, 1, 6, 8, 5, 3]<br/>Pivot: 3"]
+        Q1["[2, 1, 3] | [6, 8, 5, 7]<br/>Partition: < 3 | > 3"]
+        Q2["[1, 2] | [3] | [5, 6, 7, 8]<br/>Recursively sort"]
+        Q3["[1, 2, 3, 5, 6, 7, 8]<br/>✓ Sorted"]
+
+        Q0 -->|"Partition"| Q1
+        Q1 -->|"Recurse"| Q2
+        Q2 -->|"Combine"| Q3
+    end
+
+    style Q0 fill:#FF6B6B,color:#fff
+    style Q1 fill:#FFA500
+    style Q2 fill:#FFD700
+    style Q3 fill:#4CAF50
+```
+
+**How it works**: Pick pivot, partition into smaller/larger, recursively sort both sides.
 
 ```php
 <?php
@@ -251,6 +385,36 @@ print_r(quickSort($numbers));
 
 Build a max heap, repeatedly extract maximum.
 
+```mermaid
+graph TB
+    subgraph "Heap Sort: Max Heap Structure"
+        H0["Build Max Heap:<br/>[4,10,3,5,1]"]
+        H1["Max Heap:<br/>[10,5,3,4,1]"]
+        H2["Extract 10:<br/>[5,4,3,1] + [10]"]
+        H3["Extract 5:<br/>[4,1,3] + [5,10]"]
+        H4["Extract 4:<br/>[3,1] + [4,5,10]"]
+        H5["Extract 3:<br/>[1] + [3,4,5,10]"]
+        H6["✓ Sorted:<br/>[1,3,4,5,10]"]
+
+        H0 --> H1
+        H1 --> H2
+        H2 --> H3
+        H3 --> H4
+        H4 --> H5
+        H5 --> H6
+    end
+
+    style H0 fill:#FF6B6B,color:#fff
+    style H1 fill:#FFA500
+    style H2 fill:#FFD700
+    style H3 fill:#FFE082
+    style H4 fill:#C5E1A5
+    style H5 fill:#90EE90
+    style H6 fill:#4CAF50
+```
+
+**How it works**: Build max heap, repeatedly extract max (root) and heapify. O(1) space!
+
 ```php
 <?php
 
@@ -303,6 +467,27 @@ function heapify(array &$arr, int $n, int $i): void {
 ### Counting Sort — O(n + k)
 
 Count occurrences of each value.
+
+```mermaid
+graph TB
+    subgraph "Counting Sort Example: [4, 2, 2, 8, 3, 3, 1]"
+        C0["Input:<br/>[4, 2, 2, 8, 3, 3, 1]"]
+        C1["Count array:<br/>1→1, 2→2, 3→2, 4→1, 8→1"]
+        C2["Build output:<br/>[1] + [2,2] + [3,3] + [4] + [8]"]
+        C3["✓ Sorted:<br/>[1, 2, 2, 3, 3, 4, 8]"]
+
+        C0 -->|"Count"| C1
+        C1 -->|"Reconstruct"| C2
+        C2 --> C3
+    end
+
+    style C0 fill:#FF6B6B,color:#fff
+    style C1 fill:#FFA500
+    style C2 fill:#FFD700
+    style C3 fill:#4CAF50
+```
+
+**How it works**: Count frequency of each value, reconstruct sorted array. O(n+k) where k is range!
 
 ```php
 <?php
@@ -377,6 +562,37 @@ PHP uses **Timsort** (hybrid of merge sort and insertion sort) for its sorting f
 
 ## When to Use Each Algorithm
 
+```mermaid
+graph TB
+    START["Which sorting<br/>algorithm?"]
+    Q1{"Dataset size?"}
+    Q2{"Stability<br/>required?"}
+    Q3{"Memory<br/>constrained?"}
+    Q4{"Integer data<br/>with small range?"}
+    Q5{"Linked list?"}
+
+    START --> Q1
+    Q1 -->|"< 50 elements"| INS["Insertion Sort<br/>O(n²) - Simple"]
+    Q1 -->|"> 50 elements"| Q4
+    Q4 -->|"Yes"| CNT["Counting Sort<br/>O(n+k) - Fast!"]
+    Q4 -->|"No"| Q2
+    Q2 -->|"Yes"| Q5
+    Q5 -->|"Yes"| MRG["Merge Sort<br/>O(n log n) - Stable"]
+    Q5 -->|"No"| MRG2["Merge Sort<br/>or Timsort"]
+    Q2 -->|"No"| Q3
+    Q3 -->|"Yes"| HEP["Heap Sort<br/>O(n log n) - O(1) space"]
+    Q3 -->|"No"| QCK["Quick Sort<br/>O(n log n) avg - Fast"]
+
+    style START fill:#2196F3,color:#fff
+    style INS fill:#4CAF50
+    style CNT fill:#9C27B0,color:#fff
+    style MRG fill:#FF9800
+    style MRG2 fill:#FF9800
+    style HEP fill:#F44336,color:#fff
+    style QCK fill:#FFD700
+```
+
+**Quick Selection Guide**:
 - **Bubble/Selection/Insertion**: Small datasets (< 50 elements), educational
 - **Merge Sort**: Stable sort needed, linked lists, external sorting
 - **Quick Sort**: General purpose, average case important
