@@ -26,12 +26,27 @@ In this chapter, you'll learn:
 
 A **graph** is a collection of **nodes** (vertices) connected by **edges**.
 
+```mermaid
+graph LR
+    subgraph "Example Graph"
+        A((A))
+        B((B))
+        C((C))
+        D((D))
+
+        A --- B
+        A --- C
+        B --- D
+        C --- D
+    end
+
+    style A fill:#4CAF50
+    style B fill:#2196F3
+    style C fill:#FF9800
+    style D fill:#9C27B0,color:#fff
 ```
-    A ---  B
-    |  \   |
-    |   \  |
-    C --- D
-```
+
+**Visualization**: 4 vertices (nodes) connected by edges forming relationships.
 
 ### Graph Terminology
 
@@ -46,6 +61,28 @@ A **graph** is a collection of **nodes** (vertices) connected by **edges**.
 - **Undirected**: Edges are bidirectional
 
 ## Graph Representations
+
+```mermaid
+graph TB
+    subgraph "Graph Representation Comparison"
+        G["Graph:<br/>A-B, A-C, B-D, C-D"]
+        M["Adjacency Matrix<br/>(2D Array)<br/>O(V²) space"]
+        L["Adjacency List<br/>(Array of Lists)<br/>O(V+E) space"]
+
+        G --> M
+        G --> L
+
+        M -.-> M1["Fast edge lookup:<br/>O(1)"]
+        M -.-> M2["Dense graphs"]
+
+        L -.-> L1["Fast neighbor iteration"]
+        L -.-> L2["Sparse graphs<br/>(most real-world)"]
+    end
+
+    style G fill:#2196F3,color:#fff
+    style M fill:#FF9800
+    style L fill:#4CAF50
+```
 
 ### 1. Adjacency Matrix
 
@@ -152,6 +189,34 @@ $graph->display();
 
 Visit all neighbors before going deeper. Uses a queue.
 
+```mermaid
+graph TB
+    subgraph "BFS: Level-by-Level Traversal"
+        direction LR
+        START["Start: A<br/>Queue: [A]"]
+        L1["Level 1:<br/>Visit A<br/>Queue: [B, C]"]
+        L2["Level 2:<br/>Visit B<br/>Queue: [C, D]"]
+        L3["Level 2:<br/>Visit C<br/>Queue: [D]"]
+        L4["Level 3:<br/>Visit D<br/>Queue: []"]
+        DONE["✓ Order: A, B, C, D"]
+
+        START --> L1
+        L1 --> L2
+        L2 --> L3
+        L3 --> L4
+        L4 --> DONE
+    end
+
+    style START fill:#2196F3,color:#fff
+    style L1 fill:#4CAF50
+    style L2 fill:#FFD700
+    style L3 fill:#FFD700
+    style L4 fill:#FF9800
+    style DONE fill:#9C27B0,color:#fff
+```
+
+**How it works**: Use queue (FIFO) to visit neighbors level by level. Perfect for shortest paths!
+
 ```php
 <?php
 
@@ -192,6 +257,34 @@ print_r(bfs($graph, 'A')); // [A, B, C, D]
 ### Depth-First Search (DFS)
 
 Explore as deep as possible before backtracking. Uses a stack (or recursion).
+
+```mermaid
+graph TB
+    subgraph "DFS: Go Deep First"
+        direction LR
+        START["Start: A<br/>Stack: [A]"]
+        D1["Visit A<br/>→ Go to B<br/>Stack: [B]"]
+        D2["Visit B<br/>→ Go to D<br/>Stack: [D]"]
+        D3["Visit D<br/>Backtrack<br/>Stack: []"]
+        D4["Visit C<br/>(from A)<br/>Stack: [C]"]
+        DONE["✓ Order: A, B, D, C"]
+
+        START --> D1
+        D1 --> D2
+        D2 --> D3
+        D3 --> D4
+        D4 --> DONE
+    end
+
+    style START fill:#2196F3,color:#fff
+    style D1 fill:#4CAF50
+    style D2 fill:#FFD700
+    style D3 fill:#FF9800
+    style D4 fill:#90EE90
+    style DONE fill:#9C27B0,color:#fff
+```
+
+**How it works**: Use stack (LIFO) or recursion to go deep, then backtrack. Great for mazes!
 
 ```php
 <?php
@@ -245,6 +338,35 @@ print_r(dfs($graph, 'A')); // [A, B, D, C]
 ### Dijkstra's Algorithm
 
 Find shortest path from source to all other vertices (non-negative weights).
+
+```mermaid
+graph LR
+    subgraph "Dijkstra's Shortest Path from A"
+        A["A (dist: 0)"]
+        B["B (dist: 4)"]
+        C["C (dist: 2)"]
+        D["D (dist: 9)"]
+        E["E (dist: 11)"]
+
+        A -->|"4"| B
+        A -->|"2"| C
+        B -->|"5"| D
+        C -->|"8"| D
+        D -->|"2"| E
+        C -->|"10"| E
+
+        PATH["Shortest path A→E:<br/>A → C → D → E<br/>Cost: 2+8+2 = 12? NO!<br/>A → B → D → E<br/>Cost: 4+5+2 = 11 ✓"]
+    end
+
+    style A fill:#4CAF50
+    style B fill:#2196F3
+    style C fill:#FFD700
+    style D fill:#FF9800
+    style E fill:#9C27B0,color:#fff
+    style PATH fill:#FFA500
+```
+
+**How it works**: Greedily select nearest unvisited vertex, update distances to neighbors.
 
 ```php
 <?php
@@ -310,6 +432,31 @@ print_r($result['distances']);
 **Use**: GPS navigation, network routing
 
 ## Cycle Detection
+
+```mermaid
+graph LR
+    subgraph "Cycle Detection Example"
+        A1((A))
+        B1((B))
+        C1((C))
+        D1((D))
+
+        A1 --- B1
+        B1 --- C1
+        C1 --- D1
+        D1 --- A1
+
+        RESULT["Cycle found!<br/>A → B → C → D → A"]
+    end
+
+    style A1 fill:#FF6B6B,color:#fff
+    style B1 fill:#FF6B6B,color:#fff
+    style C1 fill:#FF6B6B,color:#fff
+    style D1 fill:#FF6B6B,color:#fff
+    style RESULT fill:#FFA500
+```
+
+**Detection**: During DFS, if we visit a node already in the current path, there's a cycle!
 
 ### Undirected Graph
 
@@ -402,6 +549,33 @@ function hasCycleDirectedDFS(
 ## Topological Sort
 
 Order vertices in directed acyclic graph (DAG) so all edges point forward.
+
+```mermaid
+graph TD
+    subgraph "Course Prerequisites"
+        INTRO["Intro to CS"]
+        DS["Data Structures"]
+        DISC["Discrete Math"]
+        ALG["Algorithms"]
+
+        INTRO --> DS
+        INTRO --> DISC
+        DS --> ALG
+        DISC --> ALG
+    end
+
+    subgraph "Topological Order"
+        ORDER["1. Intro to CS<br/>2. Discrete Math<br/>3. Data Structures<br/>4. Algorithms"]
+    end
+
+    style INTRO fill:#4CAF50
+    style DS fill:#2196F3
+    style DISC fill:#FFD700
+    style ALG fill:#9C27B0,color:#fff
+    style ORDER fill:#FF9800
+```
+
+**Result**: Valid order where all prerequisites come before dependent courses!
 
 ```php
 <?php
