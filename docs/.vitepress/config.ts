@@ -154,6 +154,7 @@ export default withMermaid(
             { text: 'PHP Basics', link: '/series/php-basics/' },
             { text: 'AI/ML for PHP Developers', link: '/series/ai-ml-php-developers/' },
             { text: 'Why Python Developers Will Love PHP and Laravel', link: '/series/python-developers-love-php-laravel/' },
+            { text: 'Build a CRM with Laravel 12', link: '/series/build-crm-laravel-12/' },
           ]
         },
         { text: 'GitHub', link: 'https://github.com/dalehurley/codewithphp' }
@@ -350,6 +351,209 @@ export default withMermaid(
               }
             ]
           }
+        ],
+        '/series/build-crm-laravel-12/': [
+          { text: 'Overview', link: '/series/build-crm-laravel-12/' },
+          {
+            text: 'Part 1: Core Setup',
+            items: [
+              {
+                text: '01 — Introduction & Series Overview',
+                link: '/series/build-crm-laravel-12/chapters/01-introduction-series-overview'
+              },
+              {
+                text: '02 — Setting Up Laravel 12 Project & Dev Environment',
+                link: '/series/build-crm-laravel-12/chapters/02-setting-up-laravel-12-project-dev-environment'
+              },
+              {
+                text: '03 — Laravel 12 Fundamentals & Project Structure',
+                link: '/series/build-crm-laravel-12/chapters/03-laravel-12-fundamentals-project-structure'
+              },
+            ]
+          },
+          {
+            text: 'Part 2: Database & Foundation',
+            items: [
+              {
+                text: '04 — Planning Application Architecture & Data Modeling',
+                link: '/series/build-crm-laravel-12/chapters/04-planning-application-architecture-data-modeling'
+              },
+              {
+                text: '05 — Database Migrations & Schema Design',
+                link: '/series/build-crm-laravel-12/chapters/05-database-migrations-schema-design'
+              },
+              {
+                text: '06 — Eloquent Models & Relationships',
+                link: '/series/build-crm-laravel-12/chapters/06-eloquent-models-relationships'
+              },
+              {
+                text: '07 — User Authentication with React Starter Kit',
+                link: '/series/build-crm-laravel-12/chapters/07-user-authentication-react-starter-kit'
+              },
+              {
+                text: '08 — Team Management & User Roles',
+                link: '/series/build-crm-laravel-12/chapters/08-team-management-user-roles'
+              },
+              {
+                text: '09 — Authorization & Access Control',
+                link: '/series/build-crm-laravel-12/chapters/09-authorization-access-control'
+              },
+              {
+                text: '10 — Layout and UI Design Customization',
+                link: '/series/build-crm-laravel-12/chapters/10-layout-ui-design-customization'
+              },
+            ]
+          },
+          {
+            text: 'Part 3: Core CRM Modules',
+            items: [
+              {
+                text: '11 — Contacts Module – Database & Model',
+                link: '/series/build-crm-laravel-12/chapters/11-contacts-module-database-model'
+              },
+              {
+                text: '12 — Contacts Module – CRUD Operations',
+                link: '/series/build-crm-laravel-12/chapters/12-contacts-module-crud-operations'
+              },
+              {
+                text: '13 — Companies Module – Database & Model',
+                link: '/series/build-crm-laravel-12/chapters/13-companies-module-database-model'
+              },
+              {
+                text: '14 — Companies Module – CRUD Operations',
+                link: '/series/build-crm-laravel-12/chapters/14-companies-module-crud-operations'
+              },
+              {
+                text: '15 — Deals Module – Database & Pipeline Design',
+                link: '/series/build-crm-laravel-12/chapters/15-deals-module-database-pipeline-design'
+              },
+              {
+                text: '16 — Deals Module – CRUD & Pipeline Interface',
+                link: '/series/build-crm-laravel-12/chapters/16-deals-module-crud-pipeline-interface'
+              },
+              {
+                text: '17 — Tasks Module – Database & Model',
+                link: '/series/build-crm-laravel-12/chapters/17-tasks-module-database-model'
+              },
+              {
+                text: '18 — Tasks Module – CRUD & Task Scheduling',
+                link: '/series/build-crm-laravel-12/chapters/18-tasks-module-crud-task-scheduling'
+              },
+            ]
+          },
+          {
+            text: 'Part 4: Communication & API',
+            items: [
+              {
+                text: '19 — Notifications & Email Integration',
+                link: '/series/build-crm-laravel-12/chapters/19-notifications-email-integration'
+              },
+              {
+                text: '20 — Building a RESTful API for the CRM',
+                link: '/series/build-crm-laravel-12/chapters/20-building-restful-api-crm'
+              },
+              {
+                text: '21 — API Authentication with Sanctum',
+                link: '/series/build-crm-laravel-12/chapters/21-api-authentication-sanctum'
+              },
+              {
+                text: '22 — OAuth2 with Laravel Passport (Bonus)',
+                link: '/series/build-crm-laravel-12/chapters/22-oauth2-laravel-passport'
+              },
+              {
+                text: '23 — Social Logins with Laravel Socialite (Bonus)',
+                link: '/series/build-crm-laravel-12/chapters/23-social-logins-socialite'
+              },
+            ]
+          },
+          {
+            text: 'Part 5: Business Features',
+            items: [
+              {
+                text: '24 — Subscription Billing with Laravel Cashier',
+                link: '/series/build-crm-laravel-12/chapters/24-subscription-billing-cashier'
+              },
+              {
+                text: '25 — Advanced Search with Laravel Scout (Bonus)',
+                link: '/series/build-crm-laravel-12/chapters/25-advanced-search-scout'
+              },
+              {
+                text: '26 — Real-Time Events with Laravel Reverb & Echo (Bonus)',
+                link: '/series/build-crm-laravel-12/chapters/26-realtime-events-reverb-echo'
+              },
+              {
+                text: '27 — Performance Optimization & Monitoring',
+                link: '/series/build-crm-laravel-12/chapters/27-performance-optimization-monitoring'
+              },
+              {
+                text: '28 — High-Performance Tuning with Laravel Octane (Bonus)',
+                link: '/series/build-crm-laravel-12/chapters/28-high-performance-octane'
+              },
+            ]
+          },
+          {
+            text: 'Part 6: Background Processing',
+            items: [
+              {
+                text: '29 — Queues & Background Jobs',
+                link: '/series/build-crm-laravel-12/chapters/29-queues-background-jobs'
+              },
+              {
+                text: '30 — Monitoring Queues with Laravel Horizon (Bonus)',
+                link: '/series/build-crm-laravel-12/chapters/30-monitoring-queues-horizon'
+              },
+            ]
+          },
+          {
+            text: 'Part 7: Testing & Production',
+            items: [
+              {
+                text: '31 — Automated Browser Testing with Laravel Dusk (Bonus)',
+                link: '/series/build-crm-laravel-12/chapters/31-browser-testing-dusk'
+              },
+              {
+                text: '32 — Debugging & Monitoring with Laravel Telescope (Bonus)',
+                link: '/series/build-crm-laravel-12/chapters/32-debugging-monitoring-telescope'
+              },
+              {
+                text: '33 — Feature Flags with Laravel Pennant (Bonus)',
+                link: '/series/build-crm-laravel-12/chapters/33-feature-flags-pennant'
+              },
+              {
+                text: '34 — AI-Assisted Development with Laravel Boost (Bonus)',
+                link: '/series/build-crm-laravel-12/chapters/34-ai-assisted-development-boost'
+              },
+              {
+                text: '35 — Mobile & PWA Support (Bonus)',
+                link: '/series/build-crm-laravel-12/chapters/35-mobile-pwa-support'
+              },
+              {
+                text: '36 — Multi-Tenancy & Tenant Management (Bonus)',
+                link: '/series/build-crm-laravel-12/chapters/36-multi-tenancy-tenant-management'
+              },
+              {
+                text: '37 — Extending the CRM via Packages & Plugins (Bonus)',
+                link: '/series/build-crm-laravel-12/chapters/37-extending-crm-packages-plugins'
+              },
+              {
+                text: '38 — Deployment & DevOps',
+                link: '/series/build-crm-laravel-12/chapters/38-deployment-devops'
+              },
+              {
+                text: '39 — Best Practices & Conclusion',
+                link: '/series/build-crm-laravel-12/chapters/39-best-practices-conclusion'
+              },
+            ]
+          },
+          {
+            text: 'Bonus Chapter',
+            items: [
+              {
+                text: '40 — Jetstream Alternative — Team Management & Authentication (Bonus)',
+                link: '/series/build-crm-laravel-12/chapters/40-bonus-jetstream-alternative-authentication'
+              },
+            ]
+          },
         ],
       },
       socialLinks: [
