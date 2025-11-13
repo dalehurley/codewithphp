@@ -1,3 +1,13 @@
+---
+title: "Probabilistic Algorithms"
+description: "Master space-efficient probabilistic data structures including Bloom filters, HyperLogLog, Count-Min Sketch, and streaming algorithms for big data processing"
+series: "php-algorithms"
+chapter: 32
+order: 32
+difficulty: "advanced"
+prerequisites: ["Hash Functions", "Data Structures", "Statistical Concepts"]
+---
+
 # Chapter 32: Probabilistic Algorithms
 
 ## Introduction
@@ -978,17 +988,777 @@ class SmartCache {
 }
 ```
 
+## Advanced Use Cases for Bloom Filters
+
+### 1. Distributed Cache Layer
+
+```php
+class BloomFilterCache {
+    private BloomFilter $localBloom;
+    private BloomFilter $remoteBloom;
+    private array $localCache = [];
+    private CacheInterface $remoteCache;
+
+    public function __construct(CacheInterface $remoteCache, int $capacity = 100000) {
+        $this->remoteCache = $remoteCache;
+        $this->localBloom = new BloomFilter($capacity / 10, 0.01);  // Local: 10% capacity
+        $this->remoteBloom = new BloomFilter($capacity, 0.001);      // Remote: full capacity
+    }
+
+    public function get(string $key) {
+        // Check local cache first
+        if ($this->localBloom->contains($key)) {
+            if (isset($this->localCache[$key])) {
+                return $this->localCache[$key];
+            }
+        }
+
+        // Check remote cache
+        if ($this->remoteBloom->contains($key)) {
+            $value = $this->remoteCache->get($key);
+
+            if ($value !== null) {
+                // Populate local cache
+                $this->set($key, $value, $local = true);
+                return $value;
+            }
+        }
+
+        return null;  // Definitely not in cache
+    }
+
+    public function set(string $key, $value, bool $local = false): void {
+        if ($local) {
+            $this->localCache[$key] = $value;
+            $this->localBloom->add($key);
+        } else {
+            $this->remoteCache->set($key, $value);
+            $this->remoteBloom->add($key);
+        }
+    }
+}
+```
+
+### 2. Database Query Optimization
+
+```php
+class QueryBloomOptimizer {
+    private array $tableBloomFilters = [];
+    private PDO $db;
+
+    public function __construct(PDO $db) {
+        $this->db = $db;
+    }
+
+    public function buildIndex(string $table, string $column): void {
+        echo "Building Bloom filter for $table.$column...\n";
+
+        $stmt = $this->db->query("SELECT DISTINCT $column FROM $table");
+        $values = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        $bloom = new BloomFilter(count($values), 0.01);
+
+        foreach ($values as $value) {
+            $bloom->add($value);
+        }
+
+        $this->tableBloomFilters["$table.$column"] = $bloom;
+
+        echo "Indexed " . count($values) . " unique values\n";
+    }
+
+    public function mayExist(string $table, string $column, string $value): bool {
+        $key = "$table.$column";
+
+        if (!isset($this->tableBloomFilters[$key])) {
+            return true;  // No index, assume exists
+        }
+
+        return $this->tableBloomFilters[$key]->contains($value);
+    }
+
+    public function optimizeQuery(string $table, string $column, array $values): array {
+        $likelyExists = [];
+
+        foreach ($values as $value) {
+            if ($this->mayExist($table, $column, $value)) {
+                $likelyExists[] = $value;
+            }
+        }
+
+        $filtered = count($values) - count($likelyExists);
+        echo "Filtered out $filtered values using Bloom filter\n";
+
+        return $likelyExists;
+    }
+}
+
+// Usage
+$optimizer = new QueryBloomOptimizer($pdo);
+
+// Build indexes
+$optimizer->buildIndex('users', 'email');
+$optimizer->buildIndex('products', 'sku');
+
+// Optimize bulk query
+$emails = ['user1@example.com', 'user2@example.com', /* ...1000 more */];
+$candidateEmails = $optimizer->optimizeQuery('users', 'email', $emails);
+
+// Only query for candidates
+if (!empty($candidateEmails)) {
+    $placeholders = implode(',', array_fill(0, count($candidateEmails), '?'));
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE email IN ($placeholders)");
+    $stmt->execute($candidateEmails);
+}
+```
+
+### 3. Malicious IP Detection
+
+```php
+class IPBlacklistFilter {
+    private BloomFilter $blacklist;
+    private BloomFilter $whitelist;
+    private int $blockCount = 0;
+
+    public function __construct() {
+        $this->blacklist = new BloomFilter(1000000, 0.001);
+        $this->whitelist = new BloomFilter(10000, 0.0001);
+    }
+
+    public function loadBlacklist(string $filename): void {
+        $handle = fopen($filename, 'r');
+
+        while (($ip = fgets($handle)) !== false) {
+            $this->blacklist->add(trim($ip));
+        }
+
+        fclose($handle);
+    }
+
+    public function addToWhitelist(string $ip): void {
+        $this->whitelist->add($ip);
+    }
+
+    public function isAllowed(string $ip): bool {
+        // Whitelist takes precedence
+        if ($this->whitelist->contains($ip)) {
+            return true;
+        }
+
+        // Check blacklist
+        if ($this->blacklist->contains($ip)) {
+            $this->blockCount++;
+            return false;
+        }
+
+        return true;
+    }
+
+    public function getStats(): array {
+        return [
+            'blocks' => $this->blockCount,
+            'blacklist_fpr' => $this->blacklist->getFalsePositiveRate(),
+            'blacklist_memory' => $this->blacklist->getMemoryUsage()
+        ];
+    }
+}
+```
+
+## Space-Accuracy Trade-offs
+
+### Bloom Filter Trade-off Analysis
+
+```php
+class BloomFilterAnalyzer {
+    public static function analyzeTradeoffs(int $numItems, array $fpRates): array {
+        $results = [];
+
+        foreach ($fpRates as $fpr) {
+            $bloom = new BloomFilter($numItems, $fpr);
+
+            $results[] = [
+                'fpr' => $fpr,
+                'size_bytes' => $bloom->getMemoryUsage(),
+                'size_mb' => round($bloom->getMemoryUsage() / 1024 / 1024, 2),
+                'hash_functions' => $bloom->getHashCount(),
+                'bits_per_item' => $bloom->getMemoryUsage() * 8 / $numItems
+            ];
+        }
+
+        return $results;
+    }
+
+    public static function printAnalysis(int $numItems): void {
+        $fpRates = [0.1, 0.01, 0.001, 0.0001];
+        $results = self::analyzeTradeoffs($numItems, $fpRates);
+
+        echo "Bloom Filter Trade-offs for $numItems items:\n";
+        echo str_repeat('=', 70) . "\n";
+        printf("%-10s %-15s %-15s %-15s\n", "FP Rate", "Memory (MB)", "Hash Funcs", "Bits/Item");
+        echo str_repeat('-', 70) . "\n";
+
+        foreach ($results as $result) {
+            printf(
+                "%-10s %-15s %-15d %-15.2f\n",
+                number_format($result['fpr'] * 100, 2) . '%',
+                $result['size_mb'],
+                $result['hash_functions'],
+                $result['bits_per_item']
+            );
+        }
+
+        echo "\nKey Insights:\n";
+        echo "- 10x reduction in FP rate ≈ 4.8x increase in memory\n";
+        echo "- Optimal bits/item: ~10 for 1% FPR, ~15 for 0.1% FPR\n";
+        echo "- More hash functions = slower but more accurate\n";
+    }
+}
+
+// Usage
+BloomFilterAnalyzer::printAnalysis(10000000);  // 10 million items
+
+/*
+Output:
+Bloom Filter Trade-offs for 10000000 items:
+======================================================================
+FP Rate    Memory (MB)     Hash Funcs      Bits/Item
+----------------------------------------------------------------------
+10.00%     5.74            3               4.79
+1.00%      11.42           7               9.58
+0.10%      17.11           10              14.36
+0.01%      22.79           14              19.15
+*/
+```
+
+### HyperLogLog Precision vs Memory
+
+```php
+class HyperLogLogAnalyzer {
+    public static function analyzePrecisions(int $numItems): array {
+        $precisions = [10, 12, 14, 16];
+        $results = [];
+
+        foreach ($precisions as $precision) {
+            $hll = new HyperLogLog($precision);
+
+            // Add items
+            for ($i = 0; $i < $numItems; $i++) {
+                $hll->add("item_$i");
+            }
+
+            $estimated = $hll->count();
+            $error = abs($estimated - $numItems) / $numItems * 100;
+
+            $results[] = [
+                'precision' => $precision,
+                'registers' => 1 << $precision,
+                'memory_bytes' => $hll->getMemoryUsage(),
+                'memory_kb' => round($hll->getMemoryUsage() / 1024, 2),
+                'estimated' => $estimated,
+                'actual' => $numItems,
+                'error_pct' => round($error, 2),
+                'theoretical_error' => round(1.04 / sqrt(1 << $precision) * 100, 2)
+            ];
+        }
+
+        return $results;
+    }
+
+    public static function printAnalysis(int $numItems): void {
+        $results = self::analyzePrecisions($numItems);
+
+        echo "HyperLogLog Precision Analysis ($numItems items):\n";
+        echo str_repeat('=', 90) . "\n";
+        printf("%-10s %-12s %-12s %-15s %-15s\n", "Precision", "Memory (KB)", "Actual Err%", "Theory Err%", "Estimated");
+        echo str_repeat('-', 90) . "\n";
+
+        foreach ($results as $result) {
+            printf(
+                "%-10d %-12s %-12s %-15s %-15d\n",
+                $result['precision'],
+                $result['memory_kb'],
+                $result['error_pct'] . '%',
+                $result['theoretical_error'] . '%',
+                $result['estimated']
+            );
+        }
+
+        echo "\nKey Insights:\n";
+        echo "- Precision 14 (16KB): ~0.81% error - best for most applications\n";
+        echo "- Precision 16 (64KB): ~0.41% error - high accuracy needs\n";
+        echo "- Doubling registers reduces error by ~1.4x\n";
+    }
+}
+
+// Usage
+HyperLogLogAnalyzer::printAnalysis(1000000);
+```
+
+## Advanced Streaming Algorithms
+
+### 1. Sliding Window Heavy Hitters
+
+```php
+class SlidingWindowHeavyHitters {
+    private array $windows = [];
+    private int $windowSize;
+    private int $numWindows;
+    private CountMinSketch $globalCMS;
+    private array $windowCMS = [];
+
+    public function __construct(int $windowSize, int $numWindows = 5) {
+        $this->windowSize = $windowSize;
+        $this->numWindows = $numWindows;
+        $this->globalCMS = new CountMinSketch(0.001, 0.01);
+
+        for ($i = 0; $i < $numWindows; $i++) {
+            $this->windowCMS[$i] = new CountMinSketch(0.001, 0.01);
+            $this->windows[$i] = [];
+        }
+    }
+
+    public function add(string $item): void {
+        $currentWindow = (int)(time() / $this->windowSize) % $this->numWindows;
+
+        // Check if we need to rotate windows
+        if (count($this->windows[$currentWindow]) >= $this->windowSize) {
+            $this->rotateWindow($currentWindow);
+        }
+
+        $this->windows[$currentWindow][] = $item;
+        $this->windowCMS[$currentWindow]->add($item);
+        $this->globalCMS->add($item);
+    }
+
+    private function rotateWindow(int $windowIndex): void {
+        // Clear oldest window
+        $this->windows[$windowIndex] = [];
+        $this->windowCMS[$windowIndex] = new CountMinSketch(0.001, 0.01);
+    }
+
+    public function getTopK(int $k, bool $globalOnly = false): array {
+        $counts = [];
+
+        if ($globalOnly) {
+            // Use global CMS (all-time heavy hitters)
+            foreach (array_merge(...$this->windows) as $item) {
+                $counts[$item] = $this->globalCMS->estimate($item);
+            }
+        } else {
+            // Use window CMS (recent heavy hitters)
+            foreach ($this->windows as $windowItems) {
+                foreach ($windowItems as $item) {
+                    if (!isset($counts[$item])) {
+                        $counts[$item] = 0;
+                    }
+
+                    foreach ($this->windowCMS as $cms) {
+                        $counts[$item] += $cms->estimate($item);
+                    }
+                }
+            }
+        }
+
+        arsort($counts);
+        return array_slice($counts, 0, $k, true);
+    }
+}
+
+// Usage: Track trending hashtags
+$tracker = new SlidingWindowHeavyHitters(windowSize: 300, numWindows: 12);  // 1-hour window, 5-min buckets
+
+foreach ($tweets as $tweet) {
+    preg_match_all('/#(\w+)/', $tweet, $matches);
+
+    foreach ($matches[1] as $hashtag) {
+        $tracker->add($hashtag);
+    }
+}
+
+$trending = $tracker->getTopK(10);  // Top 10 trending in last hour
+```
+
+### 2. Distinct Elements in Time Windows
+
+```php
+class TimeWindowedCardinality {
+    private array $windows = [];
+    private int $windowDuration;
+    private int $maxWindows;
+
+    public function __construct(int $windowDuration = 60, int $maxWindows = 60) {
+        $this->windowDuration = $windowDuration;
+        $this->maxWindows = $maxWindows;
+    }
+
+    public function add(string $item, ?int $timestamp = null): void {
+        $timestamp = $timestamp ?? time();
+        $windowKey = (int)($timestamp / $this->windowDuration);
+
+        if (!isset($this->windows[$windowKey])) {
+            $this->windows[$windowKey] = new HyperLogLog(14);
+            $this->cleanup($windowKey);
+        }
+
+        $this->windows[$windowKey]->add($item);
+    }
+
+    private function cleanup(int $currentWindow): void {
+        $oldestAllowed = $currentWindow - $this->maxWindows;
+
+        foreach (array_keys($this->windows) as $windowKey) {
+            if ($windowKey < $oldestAllowed) {
+                unset($this->windows[$windowKey]);
+            }
+        }
+    }
+
+    public function getCardinality(int $minutes = 5): int {
+        $now = time();
+        $startWindow = (int)(($now - $minutes * 60) / $this->windowDuration);
+        $endWindow = (int)($now / $this->windowDuration);
+
+        $merged = new HyperLogLog(14);
+
+        for ($w = $startWindow; $w <= $endWindow; $w++) {
+            if (isset($this->windows[$w])) {
+                $merged->merge($this->windows[$w]);
+            }
+        }
+
+        return $merged->count();
+    }
+
+    public function getCardinalityTimeSeries(int $hours = 1): array {
+        $series = [];
+        $now = time();
+        $windowsPerHour = 3600 / $this->windowDuration;
+        $numWindows = $hours * $windowsPerHour;
+
+        for ($i = 0; $i < $numWindows; $i++) {
+            $windowTime = $now - ($i * $this->windowDuration);
+            $windowKey = (int)($windowTime / $this->windowDuration);
+
+            $count = isset($this->windows[$windowKey])
+                ? $this->windows[$windowKey]->count()
+                : 0;
+
+            $series[date('Y-m-d H:i', $windowTime)] = $count;
+        }
+
+        return array_reverse($series);
+    }
+}
+
+// Usage: Unique visitors per time window
+$tracker = new TimeWindowedCardinality(windowDuration: 60);  // 1-minute windows
+
+// Track visitors
+$tracker->add('user_123', time());
+$tracker->add('user_456', time());
+$tracker->add('user_123', time() + 30);  // Same user, same window
+
+echo "Unique visitors (last 5 min): " . $tracker->getCardinality(5) . "\n";
+echo "Unique visitors (last 1 hour): " . $tracker->getCardinality(60) . "\n";
+
+// Get time series
+$series = $tracker->getCardinalityTimeSeries(hours: 1);
+foreach ($series as $time => $count) {
+    echo "$time: $count unique visitors\n";
+}
+```
+
+### 3. Frequency Estimation with Decay
+
+```php
+class DecayingCountMinSketch {
+    private CountMinSketch $cms;
+    private array $timestamps = [];
+    private float $decayFactor;
+    private int $decayInterval;
+
+    public function __construct(float $decayFactor = 0.9, int $decayInterval = 3600) {
+        $this->cms = new CountMinSketch(0.001, 0.01);
+        $this->decayFactor = $decayFactor;
+        $this->decayInterval = $decayInterval;
+    }
+
+    public function add(string $item, int $count = 1, ?int $timestamp = null): void {
+        $timestamp = $timestamp ?? time();
+
+        // Apply decay if needed
+        $this->applyDecay($timestamp);
+
+        $this->cms->add($item, $count);
+        $this->timestamps[$item] = $timestamp;
+    }
+
+    private function applyDecay(int $currentTime): void {
+        // Check if decay period has passed
+        static $lastDecay = 0;
+
+        if ($currentTime - $lastDecay < $this->decayInterval) {
+            return;
+        }
+
+        $lastDecay = $currentTime;
+
+        // Decay all counts (simplified - in practice, rebuild CMS)
+        // This is conceptual; actual implementation would be more complex
+        echo "Applying decay factor: {$this->decayFactor}\n";
+    }
+
+    public function estimate(string $item): float {
+        $baseCount = $this->cms->estimate($item);
+
+        if (!isset($this->timestamps[$item])) {
+            return 0;
+        }
+
+        // Apply time-based decay
+        $age = time() - $this->timestamps[$item];
+        $decayPeriods = $age / $this->decayInterval;
+
+        return $baseCount * pow($this->decayFactor, $decayPeriods);
+    }
+
+    public function getTopKRecent(int $k): array {
+        // Implementation would return top K items with decay applied
+        return [];
+    }
+}
+```
+
+## Common Pitfalls
+
+### 1. Incorrect Bloom Filter Sizing
+
+```php
+// ❌ BAD: Underestimating expected items
+$bloom = new BloomFilter(1000, 0.01);  // Sized for 1K items
+
+for ($i = 0; $i < 100000; $i++) {  // But adding 100K!
+    $bloom->add("item_$i");
+}
+
+$actualFPR = $bloom->getFalsePositiveRate();
+echo "Expected 1% FPR, got: " . ($actualFPR * 100) . "%\n";  // Much higher!
+
+// ✅ GOOD: Size appropriately with buffer
+$expectedItems = 100000;
+$bufferMultiplier = 1.2;  // 20% buffer
+$bloom = new BloomFilter($expectedItems * $bufferMultiplier, 0.01);
+```
+
+### 2. Forgetting HyperLogLog Merge Semantics
+
+```php
+// ❌ BAD: Merging then adding same items
+$hll1 = new HyperLogLog(14);
+$hll2 = new HyperLogLog(14);
+
+$hll1->add('item1');
+$hll1->add('item2');
+
+$hll2->add('item2');  // Duplicate!
+$hll2->add('item3');
+
+$hll1->merge($hll2);
+$count = $hll1->count();  // Will count ~3, not 3 exactly
+
+// ✅ GOOD: Use HLL for disjoint sets or understand overlap
+$hll1 = new HyperLogLog(14);
+$hll2 = new HyperLogLog(14);
+
+foreach ($setA as $item) $hll1->add($item);
+foreach ($setB as $item) $hll2->add($item);
+
+$unionHLL = clone $hll1;
+$unionHLL->merge($hll2);
+$unionCount = $unionHLL->count();  // Approximate |A ∪ B|
+```
+
+### 3. Count-Min Sketch Over-Estimation
+
+```php
+// ❌ BAD: Assuming exact counts
+$cms = new CountMinSketch(0.01, 0.01);
+
+$cms->add('popular', 1000);
+$cms->add('rare', 1);
+
+$rareCount = $cms->estimate('rare');
+echo "Rare count: $rareCount\n";  // May be > 1 due to hash collisions!
+
+// ✅ GOOD: Account for over-estimation
+class BoundedCountMinSketch extends CountMinSketch {
+    private array $exactCounts = [];
+    private int $exactCountThreshold;
+
+    public function __construct(float $epsilon, float $delta, int $exactCountThreshold = 10) {
+        parent::__construct($epsilon, $delta);
+        $this->exactCountThreshold = $exactCountThreshold;
+    }
+
+    public function add(string $item, int $count = 1): void {
+        parent::add($item, $count);
+
+        // Keep exact counts for rare items
+        if (!isset($this->exactCounts[$item])) {
+            $this->exactCounts[$item] = 0;
+        }
+
+        $this->exactCounts[$item] += $count;
+
+        // Remove from exact tracking if it becomes popular
+        if ($this->exactCounts[$item] > $this->exactCountThreshold) {
+            unset($this->exactCounts[$item]);
+        }
+    }
+
+    public function estimate(string $item): int {
+        // Use exact count if available
+        if (isset($this->exactCounts[$item])) {
+            return $this->exactCounts[$item];
+        }
+
+        return parent::estimate($item);
+    }
+}
+```
+
+### 4. Memory Management with Large Structures
+
+```php
+// ❌ BAD: Creating too many large structures
+$filters = [];
+for ($i = 0; $i < 1000; $i++) {
+    $filters[$i] = new BloomFilter(1000000, 0.001);  // 1.7MB each = 1.7GB total!
+}
+
+// ✅ GOOD: Use scalable structures or shared filters
+class BloomFilterPool {
+    private array $filters = [];
+    private int $maxFilters;
+    private int $itemsPerFilter;
+
+    public function __construct(int $maxFilters = 10, int $itemsPerFilter = 100000) {
+        $this->maxFilters = $maxFilters;
+        $this->itemsPerFilter = $itemsPerFilter;
+    }
+
+    public function getFilter(string $namespace): BloomFilter {
+        if (!isset($this->filters[$namespace])) {
+            if (count($this->filters) >= $this->maxFilters) {
+                // Evict least recently used
+                array_shift($this->filters);
+            }
+
+            $this->filters[$namespace] = new BloomFilter($this->itemsPerFilter, 0.01);
+        }
+
+        return $this->filters[$namespace];
+    }
+}
+```
+
+## Performance Benchmarks
+
+```php
+class ProbabilisticBenchmarks {
+    public static function benchmarkBloomFilter(): void {
+        $sizes = [10000, 100000, 1000000];
+
+        echo "Bloom Filter Performance:\n";
+        echo str_repeat('=', 60) . "\n";
+
+        foreach ($sizes as $size) {
+            $bloom = new BloomFilter($size, 0.01);
+
+            // Benchmark additions
+            $start = microtime(true);
+            for ($i = 0; $i < $size; $i++) {
+                $bloom->add("item_$i");
+            }
+            $addTime = microtime(true) - $start;
+
+            // Benchmark lookups
+            $start = microtime(true);
+            for ($i = 0; $i < $size; $i++) {
+                $bloom->contains("item_$i");
+            }
+            $lookupTime = microtime(true) - $start;
+
+            printf(
+                "%d items: Add=%.3fs (%.0f ops/s), Lookup=%.3fs (%.0f ops/s), Memory=%.2fMB\n",
+                $size,
+                $addTime,
+                $size / $addTime,
+                $lookupTime,
+                $size / $lookupTime,
+                $bloom->getMemoryUsage() / 1024 / 1024
+            );
+        }
+    }
+
+    public static function benchmarkHyperLogLog(): void {
+        $sizes = [10000, 100000, 1000000];
+
+        echo "\nHyperLogLog Performance:\n";
+        echo str_repeat('=', 60) . "\n";
+
+        foreach ($sizes as $size) {
+            $hll = new HyperLogLog(14);
+
+            $start = microtime(true);
+            for ($i = 0; $i < $size; $i++) {
+                $hll->add("item_$i");
+            }
+            $addTime = microtime(true) - $start;
+
+            $start = microtime(true);
+            $count = $hll->count();
+            $countTime = microtime(true) - $start;
+
+            $error = abs($count - $size) / $size * 100;
+
+            printf(
+                "%d items: Add=%.3fs (%.0f ops/s), Count=%.6fs, Error=%.2f%%, Memory=16KB\n",
+                $size,
+                $addTime,
+                $size / $addTime,
+                $countTime,
+                $error
+            );
+        }
+    }
+}
+
+// Run benchmarks
+ProbabilisticBenchmarks::benchmarkBloomFilter();
+ProbabilisticBenchmarks::benchmarkHyperLogLog();
+```
+
 ## Summary
 
 Probabilistic algorithms enable processing of massive datasets that would be impossible with exact algorithms:
 
-- **Bloom Filters**: Fast membership testing with minimal memory
-- **HyperLogLog**: Count unique items with 0.81% error in ~16KB
-- **Count-Min Sketch**: Track frequencies with bounded error
-- **Reservoir Sampling**: Maintain random samples from streams
-- **Morris Counter**: Count in logarithmic space
+- **Bloom Filters**: Fast membership testing with minimal memory (use cases: cache layers, database optimization, blacklists)
+- **HyperLogLog**: Count unique items with 0.81% error in ~16KB (use cases: analytics, unique visitors, cardinality estimation)
+- **Count-Min Sketch**: Track frequencies with bounded error (use cases: heavy hitters, trending topics, frequency queries)
+- **Reservoir Sampling**: Maintain random samples from streams (use cases: sampling, statistics, monitoring)
+- **Morris Counter**: Count in logarithmic space (use cases: large counters, space-constrained environments)
 
-**Trade-off**: Acceptable error rate for massive space/time savings
+**Key Trade-offs**:
+- Accuracy vs. Memory: 10x accuracy improvement ≈ 4-5x memory increase
+- False Positives vs. Space: Bloom filters never have false negatives, only false positives
+- Estimation Error vs. Computation: More precise structures = more computation
+
+**When to Use**:
+- Dataset too large for exact algorithms
+- Approximate results acceptable
+- Real-time processing required
+- Space/time constraints critical
 
 ## Next Steps
 
@@ -998,8 +1768,13 @@ Probabilistic algorithms enable processing of massive datasets that would be imp
 
 ## Practice Exercises
 
-1. Implement a Bloom filter-based URL deduplicator for web crawler
-2. Build a HyperLogLog-based analytics system for unique visitors
-3. Create a Count-Min Sketch-based trending topics detector
-4. Implement weighted reservoir sampling for recommendation system
-5. Build a distributed cardinality estimator using HyperLogLog merge
+1. **Web Crawler Deduplicator**: Implement a Bloom filter-based URL deduplicator that handles 1 billion URLs
+2. **Analytics Dashboard**: Build a HyperLogLog-based system for tracking unique visitors across multiple time windows
+3. **Trending Topics Detector**: Create a Count-Min Sketch system that identifies trending topics on social media
+4. **Recommendation Sampler**: Implement weighted reservoir sampling for a recommendation system with user preferences
+5. **Distributed Cardinality**: Build a distributed cardinality estimator using HyperLogLog merge operations
+6. **Cache Pre-warmer**: Design a system using Bloom filters to predict which cache entries to preload
+7. **Fraud Detection**: Implement a probabilistic fraud detection system using multiple probabilistic structures
+8. **Time-Series Analytics**: Build a time-windowed cardinality tracker for monitoring unique events
+9. **Query Optimizer**: Create a database query optimizer using Bloom filter indexes
+10. **Rate Limiter**: Implement a space-efficient rate limiter using Count-Min Sketch

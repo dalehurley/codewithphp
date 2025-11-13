@@ -1,3 +1,13 @@
+---
+title: "Cryptographic Algorithms"
+description: "Essential cryptographic algorithms for secure PHP applications including hashing, encryption, digital signatures, and key management"
+series: "php-algorithms"
+chapter: 35
+order: 35
+difficulty: "advanced"
+prerequisites: ["Security Basics", "Hash Functions", "Number Theory"]
+---
+
 # Chapter 35: Cryptographic Algorithms
 
 ## Introduction

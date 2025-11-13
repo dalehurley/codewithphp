@@ -1,3 +1,13 @@
+---
+title: "String Algorithms Deep Dive"
+description: "Advanced string algorithms including Aho-Corasick, suffix trees/arrays, pattern matching, and text processing for search engines and bioinformatics"
+series: "php-algorithms"
+chapter: 33
+order: 33
+difficulty: "advanced"
+prerequisites: ["Strings", "Trees", "Hash Functions", "Dynamic Programming"]
+---
+
 # Chapter 33: String Algorithms Deep Dive
 
 ## Introduction
@@ -990,10 +1000,430 @@ Advanced string algorithms provide efficient solutions for:
 - **Chapter 23: Dynamic Programming** - Edit distance, pattern matching
 - **Chapter 26: Approximate Algorithms** - Fuzzy string matching
 
+## Unicode and Multibyte String Handling
+
+### UTF-8 String Processing
+
+```php
+class UnicodeStringProcessor {
+    public static function length(string $str): int {
+        return mb_strlen($str, 'UTF-8');
+    }
+
+    public static function substring(string $str, int $start, ?int $length = null): string {
+        return mb_substr($str, $start, $length, 'UTF-8');
+    }
+
+    public static function position(string $haystack, string $needle, int $offset = 0): int|false {
+        return mb_strpos($haystack, $needle, $offset, 'UTF-8');
+    }
+
+    public static function split(string $str): array {
+        return preg_split('//u', $str, -1, PREG_SPLIT_NO_EMPTY);
+    }
+
+    public static function toLowerCase(string $str): string {
+        return mb_strtolower($str, 'UTF-8');
+    }
+
+    public static function toUpperCase(string $str): string {
+        return mb_strtoupper($str, 'UTF-8');
+    }
+
+    // Normalize Unicode (NFC, NFD, NFKC, NFKD)
+    public static function normalize(string $str, int $form = Normalizer::FORM_C): string {
+        return normalizer_normalize($str, $form);
+    }
+
+    // Count grapheme clusters (visual characters)
+    public static function graphemeLength(string $str): int {
+        return grapheme_strlen($str);
+    }
+
+    // Extract graphemes
+    public static function graphemeSubstring(string $str, int $start, ?int $length = null): string {
+        return grapheme_substr($str, $start, $length);
+    }
+}
+
+// Usage
+$text = "Hello, 世界! 👋🌍";
+
+echo "Byte length: " . strlen($text) . "\n";                    // 23
+echo "Character length: " . UnicodeStringProcessor::length($text) . "\n";  // 15
+echo "Grapheme length: " . UnicodeStringProcessor::graphemeLength($text) . "\n";  // 13
+
+// Extract emoji
+$chars = UnicodeStringProcessor::split($text);
+foreach ($chars as $char) {
+    echo "[$char] ";
+}
+```
+
+### International Pattern Matching
+
+```php
+class InternationalPatternMatcher {
+    public static function caseInsensitiveSearch(string $text, string $pattern): array {
+        $pattern = mb_strtolower($pattern, 'UTF-8');
+        $text = mb_strtolower($text, 'UTF-8');
+
+        $positions = [];
+        $offset = 0;
+
+        while (($pos = mb_strpos($text, $pattern, $offset, 'UTF-8')) !== false) {
+            $positions[] = $pos;
+            $offset = $pos + 1;
+        }
+
+        return $positions;
+    }
+
+    public static function accentInsensitiveSearch(string $text, string $pattern): array {
+        // Remove accents by decomposing and removing combining marks
+        $removeAccents = function($str) {
+            $str = normalizer_normalize($str, Normalizer::FORM_D);
+            return preg_replace('/\p{Mn}/u', '', $str);
+        };
+
+        $normalizedText = $removeAccents(mb_strtolower($text, 'UTF-8'));
+        $normalizedPattern = $removeAccents(mb_strtolower($pattern, 'UTF-8'));
+
+        $positions = [];
+        $offset = 0;
+
+        while (($pos = mb_strpos($normalizedText, $normalizedPattern, $offset, 'UTF-8')) !== false) {
+            $positions[] = $pos;
+            $offset = $pos + 1;
+        }
+
+        return $positions;
+    }
+
+    public static function fuzzyMatch(string $text, string $pattern, int $maxDistance = 2): array {
+        // Simplified fuzzy matching with Levenshtein distance
+        $results = [];
+        $patternLen = mb_strlen($pattern, 'UTF-8');
+        $textLen = mb_strlen($text, 'UTF-8');
+
+        for ($i = 0; $i <= $textLen - $patternLen; $i++) {
+            $substring = mb_substr($text, $i, $patternLen, 'UTF-8');
+            $distance = levenshtein($pattern, $substring);
+
+            if ($distance <= $maxDistance) {
+                $results[] = [
+                    'position' => $i,
+                    'match' => $substring,
+                    'distance' => $distance
+                ];
+            }
+        }
+
+        return $results;
+    }
+}
+
+// Usage
+$text = "Café résumé naïve";
+
+// Case-insensitive
+$positions = InternationalPatternMatcher::caseInsensitiveSearch($text, "café");
+print_r($positions);
+
+// Accent-insensitive (finds "Café" when searching for "cafe")
+$positions = InternationalPatternMatcher::accentInsensitiveSearch($text, "cafe");
+print_r($positions);
+
+// Fuzzy matching
+$fuzzy = InternationalPatternMatcher::fuzzyMatch($text, "resume", 2);
+print_r($fuzzy);  // Finds "résumé"
+```
+
+## Advanced Text Processing Examples
+
+### 1. Sentence Segmentation
+
+```php
+class SentenceSegmenter {
+    private array $abbreviations = ['Dr', 'Mr', 'Mrs', 'Ms', 'Prof', 'Inc', 'Ltd', 'etc'];
+
+    public function segment(string $text): array {
+        $sentences = [];
+        $current = '';
+
+        $tokens = preg_split('/([.!?]+\s+)/', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+
+        for ($i = 0; $i < count($tokens); $i += 2) {
+            $current .= $tokens[$i];
+
+            if (isset($tokens[$i + 1])) {
+                $delimiter = $tokens[$i + 1];
+
+                // Check if it's an abbreviation
+                if ($this->isAbbreviation($current)) {
+                    $current .= $delimiter;
+                } else {
+                    $sentences[] = trim($current);
+                    $current = '';
+                }
+            }
+        }
+
+        if (!empty($current)) {
+            $sentences[] = trim($current);
+        }
+
+        return $sentences;
+    }
+
+    private function isAbbreviation(string $text): bool {
+        $words = preg_split('/\s+/', trim($text));
+        $lastWord = end($words);
+
+        return in_array(rtrim($lastWord, '.'), $this->abbreviations);
+    }
+}
+
+// Usage
+$text = "Dr. Smith works at Inc. Corp. He is very professional. Isn't he?";
+$segmenter = new SentenceSegmenter();
+$sentences = $segmenter->segment($text);
+
+foreach ($sentences as $i => $sentence) {
+    echo ($i + 1) . ". $sentence\n";
+}
+```
+
+### 2. Word Tokenization with Stemming
+
+```php
+class TextTokenizer {
+    public function tokenize(string $text, bool $lowercase = true, bool $removeStopWords = true): array {
+        // Split on whitespace and punctuation
+        $tokens = preg_split('/[\s\p{P}]+/u', $text, -1, PREG_SPLIT_NO_EMPTY);
+
+        if ($lowercase) {
+            $tokens = array_map(fn($t) => mb_strtolower($t, 'UTF-8'), $tokens);
+        }
+
+        if ($removeStopWords) {
+            $stopWords = ['the', 'is', 'at', 'which', 'on', 'a', 'an', 'and', 'or', 'but'];
+            $tokens = array_filter($tokens, fn($t) => !in_array($t, $stopWords));
+        }
+
+        return array_values($tokens);
+    }
+
+    public function stem(string $word): string {
+        // Simplified Porter stemmer
+        $word = mb_strtolower($word, 'UTF-8');
+
+        // Remove common suffixes
+        $suffixes = ['ing', 'ed', 'ly', 'ness', 'ment', 'ful', 'less', 's'];
+
+        foreach ($suffixes as $suffix) {
+            if (mb_substr($word, -mb_strlen($suffix)) === $suffix) {
+                return mb_substr($word, 0, -mb_strlen($suffix));
+            }
+        }
+
+        return $word;
+    }
+
+    public function tokenizeAndStem(string $text): array {
+        $tokens = $this->tokenize($text);
+        return array_map([$this, 'stem'], $tokens);
+    }
+
+    public function getWordFrequency(string $text): array {
+        $tokens = $this->tokenizeAndStem($text);
+        $frequency = array_count_values($tokens);
+        arsort($frequency);
+
+        return $frequency;
+    }
+}
+
+// Usage
+$text = "The running dogs were running quickly. They ran and ran.";
+$tokenizer = new TextTokenizer();
+
+$tokens = $tokenizer->tokenize($text);
+echo "Tokens: " . implode(', ', $tokens) . "\n";
+
+$stemmed = $tokenizer->tokenizeAndStem($text);
+echo "Stemmed: " . implode(', ', $stemmed) . "\n";
+
+$frequency = $tokenizer->getWordFrequency($text);
+print_r($frequency);
+```
+
+### 3. Text Similarity and Comparison
+
+```php
+class TextSimilarity {
+    public static function jaccardSimilarity(string $text1, string $text2): float {
+        $tokenizer = new TextTokenizer();
+
+        $tokens1 = array_unique($tokenizer->tokenize($text1));
+        $tokens2 = array_unique($tokenizer->tokenize($text2));
+
+        $intersection = count(array_intersect($tokens1, $tokens2));
+        $union = count(array_unique(array_merge($tokens1, $tokens2)));
+
+        return $union > 0 ? $intersection / $union : 0;
+    }
+
+    public static function cosineSimilarity(string $text1, string $text2): float {
+        $tokenizer = new TextTokenizer();
+
+        $freq1 = $tokenizer->getWordFrequency($text1);
+        $freq2 = $tokenizer->getWordFrequency($text2);
+
+        $allWords = array_unique(array_merge(array_keys($freq1), array_keys($freq2)));
+
+        $vec1 = [];
+        $vec2 = [];
+
+        foreach ($allWords as $word) {
+            $vec1[] = $freq1[$word] ?? 0;
+            $vec2[] = $freq2[$word] ?? 0;
+        }
+
+        $dotProduct = array_sum(array_map(fn($a, $b) => $a * $b, $vec1, $vec2));
+        $magnitude1 = sqrt(array_sum(array_map(fn($x) => $x * $x, $vec1)));
+        $magnitude2 = sqrt(array_sum(array_map(fn($x) => $x * $x, $vec2)));
+
+        return ($magnitude1 * $magnitude2) > 0 ? $dotProduct / ($magnitude1 * $magnitude2) : 0;
+    }
+
+    public static function levenshteinSimilarity(string $text1, string $text2): float {
+        $distance = levenshtein($text1, $text2);
+        $maxLength = max(strlen($text1), strlen($text2));
+
+        return $maxLength > 0 ? 1 - ($distance / $maxLength) : 1;
+    }
+}
+
+// Usage
+$text1 = "The quick brown fox jumps over the lazy dog";
+$text2 = "A quick brown dog jumps over a lazy fox";
+
+echo "Jaccard: " . TextSimilarity::jaccardSimilarity($text1, $text2) . "\n";
+echo "Cosine: " . TextSimilarity::cosineSimilarity($text1, $text2) . "\n";
+echo "Levenshtein: " . TextSimilarity::levenshteinSimilarity($text1, $text2) . "\n";
+```
+
+## Performance Benchmarks
+
+```php
+class StringAlgorithmBenchmarks {
+    public static function benchmarkPatternMatching(): void {
+        $text = str_repeat("abcdefghijklmnopqrstuvwxyz", 10000);  // 260K characters
+        $pattern = "xyz";
+
+        // Native strpos
+        $start = microtime(true);
+        $pos = strpos($text, $pattern);
+        $native = microtime(true) - $start;
+
+        // KMP
+        $start = microtime(true);
+        $kmp = KMPAlgorithm::search($text, $pattern);
+        $kmpTime = microtime(true) - $start;
+
+        // Z-Algorithm
+        $start = microtime(true);
+        $z = ZAlgorithm::search($text, $pattern);
+        $zTime = microtime(true) - $start;
+
+        echo "Pattern Matching Benchmarks (text: 260K chars):\n";
+        printf("strpos: %.6fs\n", $native);
+        printf("KMP: %.6fs (%.2fx slower)\n", $kmpTime, $kmpTime / $native);
+        printf("Z-Algorithm: %.6fs (%.2fx slower)\n", $zTime, $zTime / $native);
+    }
+
+    public static function benchmarkMultipattern(): void {
+        $text = file_get_contents('large_document.txt');  // Assume large file
+        $patterns = ['error', 'warning', 'critical', 'debug', 'info'];
+
+        // Sequential search
+        $start = microtime(true);
+        foreach ($patterns as $pattern) {
+            strpos($text, $pattern);
+        }
+        $sequential = microtime(true) - $start;
+
+        // Aho-Corasick
+        $ac = new AhoCorasick();
+        foreach ($patterns as $pattern) {
+            $ac->addPattern($pattern);
+        }
+        $ac->build();
+
+        $start = microtime(true);
+        $ac->search($text);
+        $acTime = microtime(true) - $start;
+
+        echo "\nMulti-pattern Matching:\n";
+        printf("Sequential: %.6fs\n", $sequential);
+        printf("Aho-Corasick: %.6fs (%.2fx faster)\n", $acTime, $sequential / $acTime);
+    }
+}
+
+// Run benchmarks
+StringAlgorithmBenchmarks::benchmarkPatternMatching();
+StringAlgorithmBenchmarks::benchmarkMultipattern();
+```
+
+## Common Pitfalls
+
+### 1. Byte vs Character Indexing
+
+```php
+// ❌ BAD: Using byte-based functions with UTF-8
+$text = "Hello, 世界!";
+$char = $text[7];  // Gets byte, not character!
+echo $char;  // Garbled output
+
+// ✅ GOOD: Use multibyte functions
+$char = mb_substr($text, 7, 1, 'UTF-8');
+echo $char;  // Correct: '世'
+```
+
+### 2. Case-Insensitive Comparison Issues
+
+```php
+// ❌ BAD: ASCII-only case conversion
+$text = "CAFÉ";
+$lower = strtolower($text);  // "cafÉ" - 'É' not converted!
+
+// ✅ GOOD: Multibyte case conversion
+$lower = mb_strtolower($text, 'UTF-8');  // "café"
+```
+
+### 3. Regular Expression Performance
+
+```php
+// ❌ BAD: Catastrophic backtracking
+$pattern = '/^(a+)+$/';
+$text = str_repeat('a', 20) . 'b';
+preg_match($pattern, $text);  // Hangs!
+
+// ✅ GOOD: Atomic grouping or possessive quantifiers
+$pattern = '/^(?>a+)+$/';
+preg_match($pattern, $text);  // Fast failure
+```
+
 ## Practice Exercises
 
-1. Implement plagiarism detection using suffix arrays
-2. Build an autocomplete system using suffix trees
-3. Create DNA sequence matcher with Aho-Corasick
-4. Implement diff tool using LCS
-5. Build palindrome detector for large texts
+1. **Plagiarism Detector**: Implement a system using suffix arrays to detect similar text passages
+2. **Autocomplete Engine**: Build an autocomplete system using suffix trees or tries with ranking
+3. **DNA Sequence Matcher**: Create a DNA sequence matcher with Aho-Corasick for multiple patterns
+4. **Diff Tool**: Implement a diff tool using LCS algorithm with contextual display
+5. **Palindrome Finder**: Build a palindrome detector for large texts using Manacher's algorithm
+6. **Spell Checker**: Create a spell checker with fuzzy matching and suggestions
+7. **Text Summarizer**: Implement extractive text summarization using sentence ranking
+8. **Language Detector**: Build a language detection system using n-grams and statistical analysis
+9. **Code Syntax Highlighter**: Create a syntax highlighter using pattern matching
+10. **Search Engine Indexer**: Build an inverted index for full-text search with ranking

@@ -1,3 +1,13 @@
+---
+title: "Geometric Algorithms"
+description: "Computational geometry algorithms for graphics, GIS, and robotics including convex hull, collision detection, and spatial queries"
+series: "php-algorithms"
+chapter: 34
+order: 34
+difficulty: "advanced"
+prerequisites: ["Mathematics", "2D Geometry", "Data Structures"]
+---
+
 # Chapter 34: Geometric Algorithms
 
 ## Introduction
