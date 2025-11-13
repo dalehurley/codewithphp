@@ -253,6 +253,66 @@ Unlike Java, PHP does NOT automatically call the parent constructor. You must ex
 **PHP**: Must call `parent::__construct()` explicitly
 :::
 
+### Constructor Property Promotion with Inheritance
+
+PHP 8's constructor property promotion works with inheritance:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// Parent with promoted properties
+class Person
+{
+    public function __construct(
+        protected string $name,
+        protected int $age
+    ) {}
+
+    public function introduce(): string
+    {
+        return "I'm {$this->name}, {$this->age} years old";
+    }
+}
+
+// Child adds more promoted properties
+class Employee extends Person
+{
+    public function __construct(
+        string $name,
+        int $age,
+        protected string $employeeId,
+        protected float $salary
+    ) {
+        parent::__construct($name, $age);
+    }
+
+    public function introduce(): string
+    {
+        return parent::introduce() . " and work here as #{$this->employeeId}";
+    }
+
+    public function getSalary(): float
+    {
+        return $this->salary;
+    }
+}
+
+// Usage
+$employee = new Employee("Alice", 30, "EMP001", 75000);
+echo $employee->introduce();  // "I'm Alice, 30 years old and work here as #EMP001"
+echo $employee->getSalary();  // 75000
+```
+
+::: tip Best Practice
+When using constructor promotion with inheritance:
+1. **Parent properties** - Use promoted properties in the parent for clean code
+2. **Child-specific** - Add child-specific promoted properties in child constructor
+3. **Call parent first** - Always call `parent::__construct()` at the beginning
+4. **Keep it simple** - Don't mix promoted and non-promoted properties unnecessarily
+:::
+
 ---
 
 ## Section 2: Abstract Classes
@@ -988,7 +1048,574 @@ var_dump($cc instanceof PayPalPayment);      // false
 
 ---
 
-## Section 7: Practical Example - Employee System
+## Section 7: Liskov Substitution Principle (LSP)
+
+### Goal
+
+Understand the Liskov Substitution Principle and how to apply it in PHP.
+
+### What is LSP?
+
+The Liskov Substitution Principle states: **"Objects of a superclass should be replaceable with objects of a subclass without breaking the application."**
+
+In simpler terms: If class `B` extends class `A`, you should be able to use `B` anywhere you use `A` without unexpected behavior.
+
+### LSP Violations
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// ❌ BAD: Violates LSP
+class Rectangle
+{
+    protected float $width;
+    protected float $height;
+
+    public function setWidth(float $width): void
+    {
+        $this->width = $width;
+    }
+
+    public function setHeight(float $height): void
+    {
+        $this->height = $height;
+    }
+
+    public function getArea(): float
+    {
+        return $this->width * $this->height;
+    }
+}
+
+class Square extends Rectangle
+{
+    // Problem: Square changes behavior of Rectangle
+    public function setWidth(float $width): void
+    {
+        $this->width = $width;
+        $this->height = $width;  // Square must have equal sides
+    }
+
+    public function setHeight(float $height): void
+    {
+        $this->width = $height;
+        $this->height = $height;  // Square must have equal sides
+    }
+}
+
+// This function works with Rectangle
+function resizeRectangle(Rectangle $rect): void
+{
+    $rect->setWidth(5);
+    $rect->setHeight(10);
+    // Expects area = 50
+}
+
+$rectangle = new Rectangle();
+resizeRectangle($rectangle);
+echo $rectangle->getArea();  // 50 ✅ correct
+
+$square = new Square();
+resizeRectangle($square);
+echo $square->getArea();  // 100 ❌ unexpected! (should be 50)
+// LSP violated: Square can't be used where Rectangle is expected
+```
+
+### LSP Compliant Design
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// ✅ GOOD: LSP compliant
+interface Shape
+{
+    public function getArea(): float;
+    public function getPerimeter(): float;
+}
+
+class Rectangle implements Shape
+{
+    public function __construct(
+        private float $width,
+        private float $height
+    ) {}
+
+    public function setWidth(float $width): void
+    {
+        $this->width = $width;
+    }
+
+    public function setHeight(float $height): void
+    {
+        $this->height = $height;
+    }
+
+    public function getArea(): float
+    {
+        return $this->width * $this->height;
+    }
+
+    public function getPerimeter(): float
+    {
+        return 2 * ($this->width + $this->height);
+    }
+}
+
+class Square implements Shape
+{
+    public function __construct(
+        private float $side
+    ) {}
+
+    public function setSide(float $side): void
+    {
+        $this->side = $side;
+    }
+
+    public function getArea(): float
+    {
+        return $this->side ** 2;
+    }
+
+    public function getPerimeter(): float
+    {
+        return 4 * $this->side;
+    }
+}
+
+// Now both work independently without inheritance issues
+function printArea(Shape $shape): void
+{
+    echo "Area: {$shape->getArea()}\n";
+}
+
+printArea(new Rectangle(5, 10));  // 50
+printArea(new Square(7));         // 49
+```
+
+### LSP Guidelines
+
+::: tip Follow LSP
+**Do:**
+- Subclass should fulfill parent's contract
+- Preserve expected behavior
+- Don't strengthen preconditions (input requirements)
+- Don't weaken postconditions (output guarantees)
+- Subclass should be truly "is-a" relationship
+
+**Don't:**
+- Change expected behavior
+- Throw new exceptions not in parent
+- Require more than parent requires
+- Promise less than parent promises
+:::
+
+---
+
+## Section 8: Template Method Pattern
+
+### Goal
+
+Learn the Template Method pattern using abstract classes.
+
+### Template Method Pattern
+
+The Template Method pattern defines the skeleton of an algorithm in a base class, letting subclasses override specific steps:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+abstract class DataImporter
+{
+    // Template method - defines the algorithm structure
+    final public function import(string $source): void
+    {
+        echo "Starting import from: $source\n";
+
+        $this->validateSource($source);
+        $data = $this->readData($source);
+        $processed = $this->processData($data);
+        $this->saveData($processed);
+        $this->sendNotification();
+
+        echo "Import complete!\n";
+    }
+
+    // Hook method - can be overridden but has default
+    protected function validateSource(string $source): void
+    {
+        if (empty($source)) {
+            throw new InvalidArgumentException("Source cannot be empty");
+        }
+    }
+
+    // Abstract steps - must be implemented
+    abstract protected function readData(string $source): array;
+    abstract protected function processData(array $data): array;
+    abstract protected function saveData(array $data): void;
+
+    // Hook method with default implementation
+    protected function sendNotification(): void
+    {
+        echo "Sending default notification\n";
+    }
+}
+
+class CSVImporter extends DataImporter
+{
+    protected function readData(string $source): array
+    {
+        echo "Reading CSV from $source\n";
+        // Simulate CSV reading
+        return [
+            ['name' => 'Alice', 'email' => 'alice@example.com'],
+            ['name' => 'Bob', 'email' => 'bob@example.com']
+        ];
+    }
+
+    protected function processData(array $data): array
+    {
+        echo "Processing CSV data\n";
+        // Transform data
+        return array_map(function($row) {
+            return [
+                'name' => strtoupper($row['name']),
+                'email' => strtolower($row['email'])
+            ];
+        }, $data);
+    }
+
+    protected function saveData(array $data): void
+    {
+        echo "Saving " . count($data) . " records to database\n";
+        // Simulate save
+    }
+}
+
+class JSONImporter extends DataImporter
+{
+    protected function readData(string $source): array
+    {
+        echo "Reading JSON from $source\n";
+        // Simulate JSON reading
+        return json_decode('[{"name":"Charlie","email":"charlie@example.com"}]', true);
+    }
+
+    protected function processData(array $data): array
+    {
+        echo "Processing JSON data\n";
+        return $data;  // No transformation needed
+    }
+
+    protected function saveData(array $data): void
+    {
+        echo "Saving " . count($data) . " JSON records\n";
+    }
+
+    // Override hook to customize behavior
+    protected function sendNotification(): void
+    {
+        echo "Sending custom JSON import notification via Slack\n";
+    }
+}
+
+class XMLImporter extends DataImporter
+{
+    // More strict validation
+    protected function validateSource(string $source): void
+    {
+        parent::validateSource($source);
+
+        if (!str_ends_with($source, '.xml')) {
+            throw new InvalidArgumentException("Source must be an XML file");
+        }
+    }
+
+    protected function readData(string $source): array
+    {
+        echo "Reading XML from $source\n";
+        return [['name' => 'Diana', 'email' => 'diana@example.com']];
+    }
+
+    protected function processData(array $data): array
+    {
+        echo "Processing XML data\n";
+        return $data;
+    }
+
+    protected function saveData(array $data): void
+    {
+        echo "Saving XML data\n";
+    }
+}
+
+// Usage
+$csvImporter = new CSVImporter();
+$csvImporter->import("users.csv");
+
+echo "\n";
+
+$jsonImporter = new JSONImporter();
+$jsonImporter->import("users.json");
+
+echo "\n";
+
+$xmlImporter = new XMLImporter();
+$xmlImporter->import("users.xml");
+```
+
+::: tip Template Method Benefits
+**Advantages:**
+- Code reuse: Common algorithm in base class
+- Flexibility: Subclasses customize specific steps
+- Control: Base class controls the algorithm flow
+- Extension points: Clear places for customization
+
+**When to use:**
+- Multiple classes with similar algorithms
+- Want to avoid code duplication
+- Need controlled extension points
+- Algorithm steps are well-defined
+:::
+
+---
+
+## Section 9: Composition vs Inheritance
+
+### Goal
+
+Understand when to use composition instead of inheritance.
+
+### The Problem with Deep Inheritance
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// ❌ BAD: Deep inheritance hierarchy
+class Animal {
+    public function eat(): void {
+        echo "Eating...\n";
+    }
+}
+
+class Mammal extends Animal {
+    public function breathe(): void {
+        echo "Breathing...\n";
+    }
+}
+
+class Dog extends Mammal {
+    public function bark(): void {
+        echo "Woof!\n";
+    }
+}
+
+class Bird extends Animal {
+    public function fly(): void {
+        echo "Flying...\n";
+    }
+}
+
+// Problem: What about a Penguin? It's a bird that can't fly!
+// Problem: What about a Bat? It's a mammal that can fly!
+// Inheritance becomes problematic
+```
+
+### Composition Over Inheritance
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// ✅ GOOD: Use composition
+interface Eatable {
+    public function eat(): void;
+}
+
+interface Swimmable {
+    public function swim(): void;
+}
+
+interface Flyable {
+    public function fly(): void;
+}
+
+class Dog implements Eatable, Swimmable
+{
+    public function eat(): void {
+        echo "Dog is eating\n";
+    }
+
+    public function swim(): void {
+        echo "Dog is swimming\n";
+    }
+
+    public function bark(): void {
+        echo "Woof!\n";
+    }
+}
+
+class Penguin implements Eatable, Swimmable
+{
+    public function eat(): void {
+        echo "Penguin is eating fish\n";
+    }
+
+    public function swim(): void {
+        echo "Penguin is swimming\n";
+    }
+
+    // Note: No fly method - penguins can't fly!
+}
+
+class Eagle implements Eatable, Flyable
+{
+    public function eat(): void {
+        echo "Eagle is eating\n";
+    }
+
+    public function fly(): void {
+        echo "Eagle is flying high\n";
+    }
+}
+
+class Bat implements Eatable, Flyable
+{
+    public function eat(): void {
+        echo "Bat is eating insects\n";
+    }
+
+    public function fly(): void {
+        echo "Bat is flying at night\n";
+    }
+}
+```
+
+### Real-World Example: Logger with Composition
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// Instead of inheritance hierarchy, use composition
+
+interface LogWriter
+{
+    public function write(string $message): void;
+}
+
+class FileLogWriter implements LogWriter
+{
+    public function __construct(
+        private string $filename
+    ) {}
+
+    public function write(string $message): void
+    {
+        echo "Writing to file {$this->filename}: $message\n";
+    }
+}
+
+class DatabaseLogWriter implements LogWriter
+{
+    public function write(string $message): void
+    {
+        echo "Writing to database: $message\n";
+    }
+}
+
+class CloudLogWriter implements LogWriter
+{
+    public function write(string $message): void
+    {
+        echo "Sending to cloud: $message\n";
+    }
+}
+
+// Logger uses composition, not inheritance
+class Logger
+{
+    /** @var LogWriter[] */
+    private array $writers = [];
+
+    public function addWriter(LogWriter $writer): void
+    {
+        $this->writers[] = $writer;
+    }
+
+    public function log(string $level, string $message): void
+    {
+        $formatted = "[" . date('Y-m-d H:i:s') . "] [$level] $message";
+
+        foreach ($this->writers as $writer) {
+            $writer->write($formatted);
+        }
+    }
+
+    public function info(string $message): void
+    {
+        $this->log('INFO', $message);
+    }
+
+    public function error(string $message): void
+    {
+        $this->log('ERROR', $message);
+    }
+}
+
+// Usage: Flexible composition
+$logger = new Logger();
+$logger->addWriter(new FileLogWriter('/var/log/app.log'));
+$logger->addWriter(new DatabaseLogWriter());
+$logger->addWriter(new CloudLogWriter());
+
+$logger->info("Application started");
+$logger->error("Something went wrong");
+
+// Can easily change behavior at runtime
+$logger2 = new Logger();
+$logger2->addWriter(new FileLogWriter('/var/log/debug.log'));
+$logger2->info("Debug mode");
+```
+
+### When to Use Each
+
+| Use Inheritance When | Use Composition When |
+|---------------------|---------------------|
+| True "is-a" relationship | "has-a" or "uses-a" relationship |
+| Subclass is a specialized version | Need flexible behavior changes |
+| Shared implementation needed | Want to combine multiple behaviors |
+| Polymorphism is essential | Prefer runtime flexibility |
+| Hierarchy is stable | Requirements may change |
+
+::: tip Favor Composition Over Inheritance
+**"Favor composition over inheritance"** is a famous design principle because:
+
+1. **Flexibility**: Easy to change behavior at runtime
+2. **Less coupling**: Components are independent
+3. **Easier testing**: Mock individual components
+4. **Avoid fragile base class**: Changes to parent don't break children
+5. **Multiple behaviors**: Combine features from multiple sources
+
+**Use inheritance when:**
+- True "is-a" relationship exists
+- Polymorphism is needed
+- Shared behavior is core to the abstraction
+:::
+
+---
+
+## Section 10: Practical Example - Employee System
 
 ### Goal
 

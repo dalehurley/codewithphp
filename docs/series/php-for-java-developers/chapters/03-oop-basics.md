@@ -255,7 +255,241 @@ public record Product(
 
 ---
 
-## Section 3: Visibility Modifiers
+## Section 3: Named Constructors & Readonly Properties
+
+### Goal
+
+Learn advanced constructor patterns and immutability with readonly properties.
+
+### Named Constructors (Static Factory Methods)
+
+PHP allows static factory methods as alternative constructors, just like Java:
+
+::: code-group
+
+```php [PHP Named Constructors]
+<?php
+
+declare(strict_types=1);
+
+class Money
+{
+    private function __construct(
+        private float $amount,
+        private string $currency
+    ) {}
+
+    // Named constructor: create from dollars
+    public static function fromDollars(float $amount): self
+    {
+        return new self($amount, 'USD');
+    }
+
+    // Named constructor: create from euros
+    public static function fromEuros(float $amount): self
+    {
+        return new self($amount, 'EUR');
+    }
+
+    // Named constructor: parse from string
+    public static function parse(string $money): self
+    {
+        // Parse "$100.00" or "€50.00"
+        preg_match('/^([$€])(\d+(?:\.\d{2})?)$/', $money, $matches);
+
+        if (empty($matches)) {
+            throw new InvalidArgumentException("Invalid money format: $money");
+        }
+
+        $currency = $matches[1] === '$' ? 'USD' : 'EUR';
+        $amount = (float) $matches[2];
+
+        return new self($amount, $currency);
+    }
+
+    // Named constructor: create zero amount
+    public static function zero(string $currency = 'USD'): self
+    {
+        return new self(0.0, $currency);
+    }
+
+    public function format(): string
+    {
+        $symbol = $this->currency === 'USD' ? '$' : '€';
+        return sprintf('%s%.2f', $symbol, $this->amount);
+    }
+}
+
+// Usage - much more readable than constructor!
+$price1 = Money::fromDollars(100.50);
+$price2 = Money::fromEuros(85.00);
+$price3 = Money::parse('$42.99');
+$price4 = Money::zero('EUR');
+
+echo $price1->format();  // $100.50
+echo $price3->format();  // $42.99
+```
+
+```java [Java Named Constructors]
+public class Money {
+    private final double amount;
+    private final String currency;
+
+    private Money(double amount, String currency) {
+        this.amount = amount;
+        this.currency = currency;
+    }
+
+    // Static factory methods
+    public static Money fromDollars(double amount) {
+        return new Money(amount, "USD");
+    }
+
+    public static Money fromEuros(double amount) {
+        return new Money(amount, "EUR");
+    }
+
+    public static Money parse(String money) {
+        // Parse "$100.00" or "€50.00"
+        String currency = money.startsWith("$") ? "USD" : "EUR";
+        double amount = Double.parseDouble(money.substring(1));
+        return new Money(amount, currency);
+    }
+
+    public static Money zero(String currency) {
+        return new Money(0.0, currency);
+    }
+
+    public String format() {
+        String symbol = currency.equals("USD") ? "$" : "€";
+        return String.format("%s%.2f", symbol, amount);
+    }
+}
+
+// Usage
+Money price1 = Money.fromDollars(100.50);
+Money price2 = Money.fromEuros(85.00);
+Money price3 = Money.parse("$42.99");
+```
+
+:::
+
+::: tip Named Constructor Benefits
+1. **Descriptive names**: `Money::fromDollars()` is clearer than `new Money(100, 'USD')`
+2. **Multiple ways to create**: Different static methods for different input types
+3. **Validation**: Centralized in factory methods
+4. **Flexibility**: Can return cached instances or subclasses
+5. **Private constructor**: Force use of factory methods
+:::
+
+### Readonly Properties (PHP 8.1+)
+
+PHP 8.1 introduced readonly properties for immutability:
+
+::: code-group
+
+```php [PHP Readonly Properties]
+<?php
+
+declare(strict_types=1);
+
+class Point
+{
+    public function __construct(
+        public readonly int $x,
+        public readonly int $y
+    ) {}
+
+    public function distanceFrom(Point $other): float
+    {
+        $dx = $this->x - $other->x;
+        $dy = $this->y - $other->y;
+        return sqrt($dx ** 2 + $dy ** 2);
+    }
+}
+
+$p1 = new Point(0, 0);
+$p2 = new Point(3, 4);
+
+echo $p1->x;  // ✅ Can read
+echo $p1->distanceFrom($p2);  // 5.0
+
+// ❌ Error: Cannot modify readonly property
+// $p1->x = 10;
+
+// To "change" a value, create new instance
+$p3 = new Point(10, $p1->y);
+```
+
+```php [PHP Readonly Class (8.2+)]
+<?php
+
+declare(strict_types=1);
+
+// PHP 8.2+: Entire class is readonly
+readonly class User
+{
+    public function __construct(
+        public string $name,
+        public string $email,
+        public int $age
+    ) {}
+
+    public function withEmail(string $newEmail): self
+    {
+        return new self($this->name, $newEmail, $this->age);
+    }
+}
+
+$user = new User("Alice", "alice@example.com", 30);
+
+// ❌ All properties are readonly
+// $user->email = "new@example.com";
+
+// ✅ Create new instance with changed value
+$updated = $user->withEmail("alice.smith@example.com");
+```
+
+```java [Java Final Fields]
+public class Point {
+    public final int x;
+    public final int y;
+
+    public Point(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public double distanceFrom(Point other) {
+        int dx = this.x - other.x;
+        int dy = this.y - other.y;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+}
+
+// Java 14+ Record (all fields final)
+public record Point(int x, int y) {
+    public double distanceFrom(Point other) {
+        int dx = this.x - other.x;
+        int dy = this.y - other.y;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+}
+```
+
+:::
+
+::: tip When to Use Readonly
+1. **Value objects**: Money, Date, Point, Color
+2. **DTOs**: Data Transfer Objects
+3. **Configuration**: Immutable settings
+4. **Thread safety**: Immutable objects are thread-safe
+5. **Predictability**: Values can't change unexpectedly
+:::
+
+---
+
+## Section 4: Visibility Modifiers
 
 ### Goal
 
@@ -608,9 +842,130 @@ class Example
 You must use `self::` or `static::` to access static members, never `$this->`.
 :::
 
+### Late Static Binding (self vs static)
+
+An important difference from Java: PHP has two ways to reference the current class in static context:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+class Animal
+{
+    protected static string $type = 'Generic Animal';
+
+    // Using self:: - early binding (resolves to Animal)
+    public static function getTypeEarly(): string
+    {
+        return self::$type;
+    }
+
+    // Using static:: - late binding (resolves to actual called class)
+    public static function getTypeLate(): string
+    {
+        return static::$type;
+    }
+
+    public static function create(): static
+    {
+        return new static();  // Creates instance of called class
+    }
+}
+
+class Dog extends Animal
+{
+    protected static string $type = 'Dog';
+}
+
+class Cat extends Animal
+{
+    protected static string $type = 'Cat';
+}
+
+// self:: resolves to the class where it's written (Animal)
+echo Animal::getTypeEarly();  // "Generic Animal"
+echo Dog::getTypeEarly();     // "Generic Animal" (uses Animal's $type)
+echo Cat::getTypeEarly();     // "Generic Animal" (uses Animal's $type)
+
+// static:: resolves to the class being called (late binding)
+echo Animal::getTypeLate();   // "Generic Animal"
+echo Dog::getTypeLate();      // "Dog" (uses Dog's $type)
+echo Cat::getTypeLate();      // "Cat" (uses Cat's $type)
+
+// Creating instances with late static binding
+$dog = Dog::create();         // Creates Dog instance
+$cat = Cat::create();         // Creates Cat instance
+var_dump($dog instanceof Dog);  // true
+var_dump($cat instanceof Cat);  // true
+```
+
+::: tip When to Use static::
+Use `static::` instead of `self::` when:
+1. You want subclasses to override the behavior
+2. Implementing factory methods that return instances of the called class
+3. Building extensible frameworks or base classes
+4. You need "runtime class resolution" behavior
+
+Use `self::` when:
+1. You specifically want the current class, not subclasses
+2. The behavior should NOT be overridden
+3. Accessing constants that shouldn't change in subclasses
+:::
+
+**Practical Example: Active Record Pattern**
+
+```php
+<?php
+
+declare(strict_types=1);
+
+abstract class Model
+{
+    protected static string $table;
+
+    public static function find(int $id): ?static
+    {
+        // static::$table resolves to the subclass's table name
+        $query = "SELECT * FROM " . static::$table . " WHERE id = ?";
+
+        // Simulate database query
+        echo "Query: $query with id=$id\n";
+
+        // Return instance of the actual called class
+        return new static();
+    }
+
+    public static function all(): array
+    {
+        $query = "SELECT * FROM " . static::$table;
+        echo "Query: $query\n";
+
+        return [new static()];
+    }
+}
+
+class User extends Model
+{
+    protected static string $table = 'users';
+}
+
+class Product extends Model
+{
+    protected static string $table = 'products';
+}
+
+// Each class uses its own table name
+$user = User::find(1);        // SELECT * FROM users WHERE id = 1
+$product = Product::find(5);  // SELECT * FROM products WHERE id = 5
+
+var_dump($user instanceof User);        // true
+var_dump($product instanceof Product);  // true
+```
+
 ---
 
-## Section 5: Class Constants and Enums
+## Section 6: Class Constants and Enums
 
 ### Goal
 
@@ -807,7 +1162,7 @@ System.out.println(status.canCancel());
 
 ---
 
-## Section 6: Magic Methods
+## Section 7: Magic Methods
 
 ### Goal
 
@@ -857,6 +1212,12 @@ class Product
         return isset($this->data[$name]);
     }
 
+    // Called when unsetting a property
+    public function __unset(string $name): void
+    {
+        unset($this->data[$name]);
+    }
+
     // Called when converting object to string
     public function __toString(): string
     {
@@ -875,6 +1236,42 @@ class Product
         // Deep copy behavior
         $this->data = array_merge([], $this->data);
     }
+
+    // Called when calling undefined method
+    public function __call(string $method, array $args): mixed
+    {
+        echo "Called undefined method: $method\n";
+        return null;
+    }
+
+    // Called when calling undefined static method
+    public static function __callStatic(string $method, array $args): mixed
+    {
+        echo "Called undefined static method: $method\n";
+        return null;
+    }
+
+    // Called by var_dump() and print_r()
+    public function __debugInfo(): array
+    {
+        return [
+            'name' => $this->data['name'],
+            'price' => $this->data['price'],
+            'formatted' => $this->__toString()
+        ];
+    }
+
+    // Called during serialization
+    public function __serialize(): array
+    {
+        return $this->data;
+    }
+
+    // Called during unserialization
+    public function __unserialize(array $data): void
+    {
+        $this->data = $data;
+    }
 }
 
 // Usage
@@ -889,14 +1286,84 @@ $product->category = "Electronics";  // calls __set
 // __isset
 var_dump(isset($product->category));  // true
 
+// __unset
+unset($product->category);
+
 // __toString
 echo $product;  // "Laptop: $999.99"
 
 // __invoke
 echo $product(5);  // 4999.95 (price * quantity)
 
+// __call
+$product->undefinedMethod();  // "Called undefined method: undefinedMethod"
+
+// __debugInfo
+var_dump($product);  // Shows customized debug output
+
+// __serialize / __unserialize
+$serialized = serialize($product);
+$unserialized = unserialize($serialized);
+
 // __clone
 $clone = clone $product;
+```
+
+### Advanced Magic Method Example: Fluent API Builder
+
+```php
+<?php
+
+declare(strict_types=1);
+
+class QueryBuilder
+{
+    private array $parts = [];
+
+    // __call for fluent methods
+    public function __call(string $method, array $args): self
+    {
+        // Support select(), where(), orderBy(), etc.
+        $this->parts[$method] = $args;
+        return $this;
+    }
+
+    // __toString to build final query
+    public function __toString(): string
+    {
+        $query = "SELECT";
+
+        if (isset($this->parts['select'])) {
+            $query .= " " . implode(', ', $this->parts['select']);
+        } else {
+            $query .= " *";
+        }
+
+        if (isset($this->parts['from'])) {
+            $query .= " FROM " . $this->parts['from'][0];
+        }
+
+        if (isset($this->parts['where'])) {
+            $query .= " WHERE " . $this->parts['where'][0];
+        }
+
+        if (isset($this->parts['orderBy'])) {
+            $query .= " ORDER BY " . $this->parts['orderBy'][0];
+        }
+
+        return $query;
+    }
+}
+
+// Fluent API usage
+$query = new QueryBuilder();
+$sql = $query
+    ->select('id', 'name', 'email')
+    ->from('users')
+    ->where('age > 18')
+    ->orderBy('name ASC');
+
+echo $sql;  // SELECT id, name, email FROM users WHERE age > 18 ORDER BY name ASC
 ```
 
 ### Useful Magic Methods
@@ -908,22 +1375,436 @@ $clone = clone $product;
 | `__toString()` | String representation | `toString()` |
 | `__get()` | Dynamic property access | No direct equivalent |
 | `__set()` | Dynamic property setting | No direct equivalent |
+| `__isset()` | Check dynamic property | No direct equivalent |
+| `__unset()` | Unset dynamic property | No direct equivalent |
 | `__call()` | Dynamic method calls | No direct equivalent |
+| `__callStatic()` | Dynamic static method calls | No direct equivalent |
 | `__invoke()` | Call object as function | Functional interface |
 | `__clone()` | Customize object cloning | `clone()` |
+| `__debugInfo()` | Customize debug output | No direct equivalent |
+| `__serialize()` | Custom serialization | `writeObject()` |
+| `__unserialize()` | Custom deserialization | `readObject()` |
 
 ::: warning Use Magic Methods Sparingly
 Magic methods are powerful but can make code harder to understand and debug. Use them when:
 - Building frameworks or ORMs
 - Creating flexible APIs
 - Implementing specific patterns (like Active Record)
+- Need dynamic behavior that can't be achieved otherwise
 
 For regular application code, prefer explicit methods and properties.
 :::
 
 ---
 
-## Section 7: Object Comparison
+## Section 8: Object Cloning
+
+### Goal
+
+Understand shallow vs deep cloning and how to customize clone behavior.
+
+### Shallow vs Deep Copy
+
+::: code-group
+
+```php [PHP Object Cloning]
+<?php
+
+declare(strict_types=1);
+
+class Address
+{
+    public function __construct(
+        public string $street,
+        public string $city
+    ) {}
+}
+
+class Person
+{
+    public function __construct(
+        public string $name,
+        public Address $address
+    ) {}
+
+    // Customize cloning behavior
+    public function __clone(): void
+    {
+        // Without this, $address would be a shallow copy (same reference)
+        // With this, we create a deep copy
+        $this->address = clone $this->address;
+    }
+}
+
+// Shallow copy (without __clone)
+$person1 = new Person("Alice", new Address("123 Main St", "NYC"));
+$person2 = clone $person1;
+
+// Without __clone, both share the same Address object
+// With __clone, each has its own Address object
+
+$person2->name = "Bob";  // Only affects person2
+$person2->address->city = "LA";  // With __clone: only affects person2
+                                  // Without __clone: affects both!
+
+echo $person1->name;  // "Alice"
+echo $person1->address->city;  // "NYC" (with __clone) or "LA" (without __clone)
+```
+
+```java [Java Object Cloning]
+class Address implements Cloneable {
+    String street;
+    String city;
+
+    Address(String street, String city) {
+        this.street = street;
+        this.city = city;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+}
+
+class Person implements Cloneable {
+    String name;
+    Address address;
+
+    Person(String name, Address address) {
+        this.name = name;
+        this.address = address;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        Person cloned = (Person) super.clone();
+        // Deep copy the address
+        cloned.address = (Address) address.clone();
+        return cloned;
+    }
+}
+```
+
+:::
+
+### Deep Clone Example: Complex Object Graph
+
+```php
+<?php
+
+declare(strict_types=1);
+
+class Order
+{
+    /** @var OrderItem[] */
+    private array $items = [];
+
+    public function __construct(
+        public string $orderNumber,
+        public Customer $customer
+    ) {}
+
+    public function addItem(OrderItem $item): void
+    {
+        $this->items[] = $item;
+    }
+
+    public function getItems(): array
+    {
+        return $this->items;
+    }
+
+    // Deep clone all nested objects
+    public function __clone(): void
+    {
+        // Clone customer
+        $this->customer = clone $this->customer;
+
+        // Clone all items in the array
+        $this->items = array_map(
+            fn(OrderItem $item) => clone $item,
+            $this->items
+        );
+    }
+}
+
+class Customer
+{
+    public function __construct(
+        public string $name,
+        public string $email
+    ) {}
+}
+
+class OrderItem
+{
+    public function __construct(
+        public string $productName,
+        public float $price,
+        public int $quantity
+    ) {}
+}
+
+// Create original order
+$order1 = new Order("ORD-001", new Customer("Alice", "alice@example.com"));
+$order1->addItem(new OrderItem("Laptop", 999.99, 1));
+$order1->addItem(new OrderItem("Mouse", 29.99, 2));
+
+// Clone the order
+$order2 = clone $order1;
+
+// Modify cloned order
+$order2->orderNumber = "ORD-002";
+$order2->customer->name = "Bob";
+$order2->getItems()[0]->quantity = 3;
+
+// Original order unchanged thanks to deep cloning
+echo $order1->orderNumber;  // "ORD-001"
+echo $order1->customer->name;  // "Alice"
+echo $order1->getItems()[0]->quantity;  // 1
+```
+
+::: tip Cloning Best Practices
+1. **Always implement __clone()** for objects containing other objects
+2. **Deep clone nested objects** to avoid shared references
+3. **Be careful with resources** (file handles, database connections) - they can't be cloned
+4. **Consider using serialization** for very complex deep clones: `unserialize(serialize($object))`
+5. **Document cloning behavior** so users know what to expect
+:::
+
+---
+
+## Section 9: Anonymous Classes
+
+### Goal
+
+Learn about PHP's anonymous classes for quick, one-off object creation.
+
+### Anonymous Class Syntax
+
+PHP 7.0+ supports anonymous classes, useful for creating objects on the fly:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// Regular named class
+class Logger
+{
+    public function log(string $message): void
+    {
+        echo "[LOG] $message\n";
+    }
+}
+
+// Anonymous class - created and used immediately
+$logger = new class {
+    public function log(string $message): void
+    {
+        echo "[ANON LOG] $message\n";
+    }
+};
+
+$logger->log("Hello from anonymous class");
+
+// Anonymous class with constructor
+$counter = new class(10) {
+    public function __construct(
+        private int $count
+    ) {}
+
+    public function increment(): void
+    {
+        $this->count++;
+    }
+
+    public function getCount(): int
+    {
+        return $this->count;
+    }
+};
+
+$counter->increment();
+echo $counter->getCount();  // 11
+
+// Anonymous class implementing interface
+interface Renderer
+{
+    public function render(string $content): string;
+}
+
+function display(Renderer $renderer): void
+{
+    echo $renderer->render("Hello World");
+}
+
+// Pass anonymous class implementing interface
+display(new class implements Renderer {
+    public function render(string $content): string
+    {
+        return "<div>$content</div>";
+    }
+});
+```
+
+### Practical Use Cases
+
+**1. Mock Objects in Tests**
+
+```php
+<?php
+
+declare(strict_types=1);
+
+interface UserRepository
+{
+    public function find(int $id): ?User;
+}
+
+class UserService
+{
+    public function __construct(
+        private UserRepository $repository
+    ) {}
+
+    public function getUserName(int $id): string
+    {
+        $user = $this->repository->find($id);
+        return $user?->name ?? 'Unknown';
+    }
+}
+
+// Quick mock for testing
+$mockRepo = new class implements UserRepository {
+    public function find(int $id): ?User
+    {
+        return new User($id, "Test User");
+    }
+};
+
+$service = new UserService($mockRepo);
+echo $service->getUserName(1);  // "Test User"
+```
+
+**2. Event Listeners**
+
+```php
+<?php
+
+declare(strict_types=1);
+
+interface EventListener
+{
+    public function handle(array $event): void;
+}
+
+class EventDispatcher
+{
+    private array $listeners = [];
+
+    public function addEventListener(EventListener $listener): void
+    {
+        $this->listeners[] = $listener;
+    }
+
+    public function dispatch(array $event): void
+    {
+        foreach ($this->listeners as $listener) {
+            $listener->handle($event);
+        }
+    }
+}
+
+$dispatcher = new EventDispatcher();
+
+// Add anonymous listener inline
+$dispatcher->addEventListener(new class implements EventListener {
+    public function handle(array $event): void
+    {
+        echo "User logged in: {$event['user']}\n";
+    }
+});
+
+$dispatcher->addEventListener(new class implements EventListener {
+    public function handle(array $event): void
+    {
+        echo "Sending welcome email to: {$event['user']}\n";
+    }
+});
+
+$dispatcher->dispatch(['user' => 'alice@example.com']);
+```
+
+**3. Strategy Pattern**
+
+```php
+<?php
+
+declare(strict_types=1);
+
+interface PaymentStrategy
+{
+    public function pay(float $amount): void;
+}
+
+class ShoppingCart
+{
+    public function checkout(float $amount, PaymentStrategy $strategy): void
+    {
+        echo "Processing payment...\n";
+        $strategy->pay($amount);
+        echo "Payment complete!\n";
+    }
+}
+
+$cart = new ShoppingCart();
+
+// Credit card payment
+$cart->checkout(100, new class implements PaymentStrategy {
+    public function pay(float $amount): void
+    {
+        echo "Charging $amount to credit card\n";
+    }
+});
+
+// PayPal payment
+$cart->checkout(50, new class implements PaymentStrategy {
+    public function pay(float $amount): void
+    {
+        echo "Processing $amount via PayPal\n";
+    }
+});
+```
+
+### Anonymous Classes vs Java
+
+| Feature | PHP | Java |
+|---------|-----|------|
+| **Syntax** | `new class { }` | `new Interface() { }` |
+| **Can extend** | Yes | Yes |
+| **Can implement** | Yes | Yes |
+| **Constructor** | Yes | No (uses initializer blocks) |
+| **Use case** | Testing, callbacks, strategy | Event handlers, comparators |
+
+::: tip When to Use Anonymous Classes
+**Good for:**
+- Quick mock objects in tests
+- One-off implementations of interfaces
+- Event listeners or callbacks
+- Simple strategy pattern implementations
+
+**Avoid for:**
+- Complex logic that needs debugging
+- Reusable code (use named classes)
+- When you need to reference the class type
+- Production code that needs maintenance
+:::
+
+---
+
+## Section 10: Object Comparison
 
 ### Goal
 
@@ -1164,11 +2045,16 @@ Before moving to the next chapter, ensure you can:
 
 - [ ] Define classes with properties and methods
 - [ ] Use constructor property promotion (PHP 8+)
+- [ ] Create named constructors (static factory methods)
+- [ ] Use readonly properties for immutability (PHP 8.1+)
 - [ ] Apply visibility modifiers correctly
 - [ ] Create and use static members
+- [ ] Understand `self::` vs `static::` (late static binding)
 - [ ] Define class constants and enums
 - [ ] Understand `$this` vs `self` vs `static`
 - [ ] Use magic methods appropriately
+- [ ] Implement proper object cloning (shallow vs deep)
+- [ ] Create anonymous classes for quick implementations
 - [ ] Compare objects with `==` and `===`
 
 ::: tip Ready for More?
