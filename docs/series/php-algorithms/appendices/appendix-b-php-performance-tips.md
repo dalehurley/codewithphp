@@ -577,6 +577,155 @@ function fetchFromDatabase() {
 }
 ```
 
+## PHP 8.1+ Performance Features
+
+### Enums (More Efficient than Constants)
+
+```php
+// ❌ OLD: Class constants
+class Status {
+    const PENDING = 'pending';
+    const ACTIVE = 'active';
+    const COMPLETED = 'completed';
+}
+
+// ✅ NEW: Native enums (PHP 8.1+)
+enum Status: string {
+    case PENDING = 'pending';
+    case ACTIVE = 'active';
+    case COMPLETED = 'completed';
+}
+
+// Benefits: Type safety, better performance, less memory
+```
+
+### Readonly Properties (Reduced Memory)
+
+```php
+// PHP 8.1+: readonly properties prevent accidental modification
+class User {
+    public function __construct(
+        public readonly int $id,
+        public readonly string $email,
+    ) {}
+}
+
+// Benefits: Immutability, potential optimization by PHP engine
+```
+
+### First-class Callable Syntax
+
+```php
+// ❌ OLD: Slower closure creation
+$mapper = function($x) { return $x * 2; };
+array_map($mapper, $array);
+
+// ✅ NEW: First-class callable (PHP 8.1+)
+$mapper = $this->double(...);
+array_map($mapper, $array);
+
+// Benefits: Slightly faster, cleaner syntax
+```
+
+### Array Unpacking with String Keys (PHP 8.1+)
+
+```php
+// PHP 8.1+: More efficient array merging
+$defaults = ['timeout' => 30, 'retries' => 3];
+$custom = ['timeout' => 60];
+
+// Efficient merge
+$config = [...$defaults, ...$custom];
+```
+
+## PHP 8.2+ Performance Features
+
+### Readonly Classes
+
+```php
+// PHP 8.2+: Entire class readonly
+readonly class Configuration {
+    public function __construct(
+        public string $apiKey,
+        public int $timeout,
+        public bool $debug,
+    ) {}
+}
+
+// Benefits: All properties automatically readonly, better optimization
+```
+
+### Standalone Null and False Types
+
+```php
+// PHP 8.2+: More precise type hints = better JIT optimization
+function findUser(int $id): User|null {
+    return $db->find($id);
+}
+
+function validateEmail(string $email): bool|string {
+    return filter_var($email, FILTER_VALIDATE_EMAIL) ?: 'Invalid';
+}
+```
+
+### Disjunctive Normal Form (DNF) Types
+
+```php
+// PHP 8.2+: Complex type unions
+function process((A&B)|null $value): void {
+    // More precise types = better optimization
+}
+```
+
+## PHP 8.3+ Performance Features
+
+### Typed Class Constants
+
+```php
+// PHP 8.3+: Type-safe constants
+class Math {
+    public const float PI = 3.14159;
+    public const int MAX_SIZE = 1000;
+}
+
+// Benefits: JIT can optimize better with known types
+```
+
+### Dynamic Class Constant Fetch
+
+```php
+// PHP 8.3+: Dynamic constant access
+$constantName = 'MAX_SIZE';
+$value = Math::{$constantName};
+
+// More flexible without performance penalty
+```
+
+### `json_validate()` Function
+
+```php
+// PHP 8.3+: Fast JSON validation without decoding
+// ❌ OLD: Decode to validate (slow, uses memory)
+$isValid = json_decode($json) !== null;
+
+// ✅ NEW: Validate without decoding
+$isValid = json_validate($json);
+
+// Much faster for large JSON strings!
+```
+
+### Override Attribute
+
+```php
+// PHP 8.3+: Catch method signature mistakes at compile time
+class Child extends Parent {
+    #[Override]
+    public function process(): void {
+        // Compile-time check = catch errors early
+    }
+}
+```
+
 ## Profiling and Monitoring
 
 ### Measure Execution Time
@@ -619,6 +768,497 @@ blackfire run php script.php
 - Lightweight profiling
 - Minimal overhead
 - Production-safe
+
+## Framework-Specific Optimizations
+
+### Laravel Performance Tips
+
+**Config Caching**:
+```bash
+# Cache all config files into single file
+php artisan config:cache
+
+# Clear config cache
+php artisan config:clear
+```
+
+**Route Caching**:
+```bash
+# Cache routes for faster lookup
+php artisan route:cache
+
+# Clear route cache
+php artisan route:clear
+```
+
+**View Compilation**:
+```bash
+# Precompile all Blade templates
+php artisan view:cache
+
+# Clear view cache
+php artisan view:clear
+```
+
+**Optimize Autoloader**:
+```bash
+# Production optimization
+composer install --optimize-autoloader --no-dev
+php artisan optimize
+```
+
+**Database Query Optimization**:
+```php
+// ❌ N+1 queries
+$users = User::all();
+foreach ($users as $user) {
+    echo $user->profile->bio;  // Query per user
+}
+
+// ✅ Eager loading
+$users = User::with('profile')->get();
+foreach ($users as $user) {
+    echo $user->profile->bio;  // No extra queries
+}
+
+// ✅ Lazy eager loading (when needed)
+$users = User::all();
+if ($needProfiles) {
+    $users->load('profile');
+}
+```
+
+**Queue Jobs for Heavy Operations**:
+```php
+// ❌ Slow: Process in web request
+public function store(Request $request) {
+    $this->processImages($request->files);
+    $this->sendNotifications($request->users);
+    return response()->json(['status' => 'success']);
+}
+
+// ✅ Fast: Queue heavy work
+public function store(Request $request) {
+    ProcessImages::dispatch($request->files);
+    SendNotifications::dispatch($request->users);
+    return response()->json(['status' => 'processing']);
+}
+```
+
+**Use Chunk for Large Datasets**:
+```php
+// ❌ Memory intensive
+$users = User::all();  // Loads all into memory
+
+// ✅ Memory efficient
+User::chunk(1000, function ($users) {
+    foreach ($users as $user) {
+        process($user);
+    }
+});
+
+// ✅ Even better: lazy collections (Laravel 6+)
+User::cursor()->each(function ($user) {
+    process($user);
+});
+```
+
+### Symfony Performance Tips
+
+**Preload Classes** (PHP 7.4+):
+```php
+// config/preload.php
+<?php
+if (file_exists(__DIR__.'/../var/cache/prod/App_KernelProdContainer.preload.php')) {
+    require __DIR__.'/../var/cache/prod/App_KernelProdContainer.preload.php';
+}
+```
+
+**Optimize Autoloader**:
+```bash
+composer dump-autoload --optimize --classmap-authoritative
+```
+
+**Doctrine Optimization**:
+```php
+// ❌ N+1 queries
+$articles = $articleRepository->findAll();
+foreach ($articles as $article) {
+    echo $article->getAuthor()->getName();
+}
+
+// ✅ JOIN fetch
+$query = $em->createQuery('
+    SELECT a, author
+    FROM App\Entity\Article a
+    JOIN a.author author
+');
+$articles = $query->getResult();
+```
+
+**Use APCu for Cache**:
+```yaml
+# config/packages/cache.yaml
+framework:
+    cache:
+        app: cache.adapter.apcu
+        default_redis_provider: redis://localhost
+```
+
+**Production Mode**:
+```bash
+# Set environment
+export APP_ENV=prod
+
+# Clear and warm cache
+php bin/console cache:clear --env=prod --no-debug
+php bin/console cache:warmup --env=prod
+```
+
+## Monitoring and Observability
+
+### Application Performance Monitoring (APM)
+
+**New Relic Integration**:
+```php
+// Install extension
+// sudo apt-get install newrelic-php5
+
+// Manual instrumentation
+if (extension_loaded('newrelic')) {
+    newrelic_name_transaction('api/users/search');
+
+    // Custom metrics
+    newrelic_custom_metric('Custom/ProcessingTime', $duration);
+
+    // Custom events
+    newrelic_record_custom_event('UserActivity', [
+        'user_id' => $userId,
+        'action' => 'purchase',
+        'amount' => $amount
+    ]);
+}
+```
+
+**Datadog APM**:
+```php
+// Install: composer require datadog/dd-trace
+
+// Auto-instrumentation (via extension)
+// Most PHP frameworks supported automatically
+
+// Manual tracing
+use DDTrace\GlobalTracer;
+
+$tracer = GlobalTracer::get();
+$span = $tracer->startActiveSpan('process.payment');
+
+try {
+    processPayment($data);
+} finally {
+    $span->getSpan()->setTag('user.id', $userId);
+    $span->getSpan()->setTag('amount', $amount);
+    $span->close();
+}
+```
+
+**Blackfire Integration**:
+```php
+// Install probe + client
+
+// Automatic profiling trigger
+if (isset($_SERVER['HTTP_X_BLACKFIRE_QUERY'])) {
+    // Blackfire is profiling this request
+}
+
+// Manual profiling in code
+$probe = \BlackfireProbe::getMainInstance();
+$probe->enable();
+
+expensiveOperation();
+
+$probe->close();
+
+// CLI profiling
+// blackfire run php script.php
+```
+
+**Tideways Integration**:
+```php
+// Install extension
+
+// Manual profiling
+\Tideways\Profiler::start([
+    'api_key' => 'your-api-key',
+]);
+
+// Add custom metrics
+\Tideways\Profiler::setCustomVariable('user_id', $userId);
+\Tideways\Profiler::setCustomVariable('cache_hit', $cacheHit);
+
+// Stop profiling
+\Tideways\Profiler::stop();
+```
+
+### Custom Metrics and Logging
+
+**Performance Metrics Collection**:
+```php
+class PerformanceMonitor {
+    private array $metrics = [];
+
+    public function startTimer(string $name): void {
+        $this->metrics[$name] = [
+            'start' => microtime(true),
+            'memory_start' => memory_get_usage()
+        ];
+    }
+
+    public function endTimer(string $name): array {
+        if (!isset($this->metrics[$name])) {
+            return [];
+        }
+
+        $start = $this->metrics[$name];
+        $result = [
+            'duration' => microtime(true) - $start['start'],
+            'memory' => memory_get_usage() - $start['memory_start'],
+            'peak_memory' => memory_get_peak_usage()
+        ];
+
+        // Send to monitoring service
+        $this->sendToMonitoring($name, $result);
+
+        return $result;
+    }
+
+    private function sendToMonitoring(string $metric, array $data): void {
+        // Send to StatsD, CloudWatch, Prometheus, etc.
+        if (extension_loaded('statsd')) {
+            statsd_gauge("app.{$metric}.duration", $data['duration']);
+            statsd_gauge("app.{$metric}.memory", $data['memory']);
+        }
+    }
+}
+
+// Usage
+$monitor = new PerformanceMonitor();
+$monitor->startTimer('user.search');
+
+$results = searchUsers($query);
+
+$metrics = $monitor->endTimer('user.search');
+```
+
+**Structured Logging**:
+```php
+// Use Monolog with processors
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+use Monolog\Processor\MemoryUsageProcessor;
+use Monolog\Processor\WebProcessor;
+
+$log = new Logger('app');
+$log->pushHandler(new StreamHandler('php://stderr', Logger::INFO));
+$log->pushProcessor(new MemoryUsageProcessor());
+$log->pushProcessor(new WebProcessor());
+
+// Log with context
+$log->info('User search performed', [
+    'query' => $query,
+    'results' => count($results),
+    'duration_ms' => $duration * 1000,
+    'cache_hit' => $cacheHit
+]);
+```
+
+**Health Check Endpoints**:
+```php
+// /health endpoint
+class HealthCheckController {
+    public function check(): JsonResponse {
+        $checks = [
+            'database' => $this->checkDatabase(),
+            'redis' => $this->checkRedis(),
+            'opcache' => $this->checkOpcache(),
+            'memory' => $this->checkMemory(),
+        ];
+
+        $healthy = !in_array(false, $checks, true);
+
+        return response()->json([
+            'status' => $healthy ? 'healthy' : 'unhealthy',
+            'checks' => $checks,
+            'timestamp' => time()
+        ], $healthy ? 200 : 503);
+    }
+
+    private function checkDatabase(): bool {
+        try {
+            DB::connection()->getPdo();
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    private function checkRedis(): bool {
+        try {
+            Redis::connection()->ping();
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    private function checkOpcache(): array {
+        if (!function_exists('opcache_get_status')) {
+            return ['enabled' => false];
+        }
+
+        $status = opcache_get_status();
+        return [
+            'enabled' => true,
+            'hit_rate' => round($status['opcache_statistics']['opcache_hit_rate'], 2),
+            'memory_usage' => round($status['memory_usage']['used_memory'] / 1024 / 1024, 2) . 'MB'
+        ];
+    }
+
+    private function checkMemory(): array {
+        return [
+            'current' => round(memory_get_usage() / 1024 / 1024, 2) . 'MB',
+            'peak' => round(memory_get_peak_usage() / 1024 / 1024, 2) . 'MB',
+            'limit' => ini_get('memory_limit')
+        ];
+    }
+}
+```
+
+### Real-time Performance Monitoring
+
+**Prometheus + Grafana**:
+```php
+// Install: composer require promphp/prometheus_client_php
+
+use Prometheus\CollectorRegistry;
+use Prometheus\Storage\APC;
+
+$registry = new CollectorRegistry(new APC());
+
+// Counter: Total requests
+$counter = $registry->getOrRegisterCounter(
+    'app',
+    'requests_total',
+    'Total number of requests',
+    ['method', 'endpoint', 'status']
+);
+$counter->inc(['GET', '/api/users', '200']);
+
+// Histogram: Response times
+$histogram = $registry->getOrRegisterHistogram(
+    'app',
+    'request_duration_seconds',
+    'Request duration in seconds',
+    ['endpoint']
+);
+$histogram->observe($duration, ['/api/users']);
+
+// Gauge: Current active connections
+$gauge = $registry->getOrRegisterGauge(
+    'app',
+    'active_connections',
+    'Current active connections'
+);
+$gauge->set(count($activeConnections));
+
+// Metrics endpoint: /metrics
+$renderer = new RenderTextFormat();
+echo $renderer->render($registry->getMetricFamilySamples());
+```
+
+## Production Deployment Best Practices
+
+### Pre-Deployment Checklist
+
+```bash
+# 1. Run tests
+vendor/bin/phpunit
+
+# 2. Static analysis
+vendor/bin/phpstan analyse
+
+# 3. Code style check
+vendor/bin/php-cs-fixer fix --dry-run
+
+# 4. Security audit
+composer audit
+
+# 5. Optimize autoloader
+composer install --no-dev --optimize-autoloader --classmap-authoritative
+
+# 6. Clear and warm caches (framework-specific)
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+
+# 7. Compile assets
+npm run production
+
+# 8. Run database migrations
+php artisan migrate --force
+
+# 9. Clear OPcache after deployment
+php -r "opcache_reset();"
+```
+
+### Zero-Downtime Deployment
+
+**Blue-Green Deployment**:
+```nginx
+# Use upstream switching
+upstream backend {
+    server backend-blue:9000;
+    # server backend-green:9000;  # Switch when ready
+}
+```
+
+**Graceful PHP-FPM Reload**:
+```bash
+# Reload PHP-FPM without dropping connections
+kill -USR2 $(cat /var/run/php-fpm.pid)
+```
+
+### Docker Production Optimization
+
+```dockerfile
+# Multi-stage build
+FROM composer:2 AS builder
+WORKDIR /app
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --optimize-autoloader --classmap-authoritative
+
+FROM php:8.3-fpm-alpine
+WORKDIR /app
+
+# Install production extensions
+RUN apk add --no-cache \
+    opcache \
+    && docker-php-ext-install opcache
+
+# Copy optimized vendor
+COPY --from=builder /app/vendor ./vendor
+COPY . .
+
+# Production PHP configuration
+COPY php.ini-production /usr/local/etc/php/php.ini
+
+# Precompile
+RUN php artisan config:cache \
+    && php artisan route:cache \
+    && php artisan view:cache
+
+CMD ["php-fpm"]
+```
 
 ## Production Best Practices
 

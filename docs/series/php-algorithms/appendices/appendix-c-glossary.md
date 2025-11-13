@@ -1,24 +1,159 @@
 # Appendix C: Glossary
 
-Comprehensive definitions of algorithm and data structure terminology used throughout this series.
+Comprehensive definitions of algorithm and data structure terminology used throughout this series. Terms include pronunciation guides where helpful and cross-references to relevant chapters.
 
 ## A
 
 **Abstract Data Type (ADT)**: A mathematical model for data types defined by behavior (operations) rather than implementation. Examples: Stack, Queue, List.
 
-**Adjacency List**: Graph representation using arrays/lists to store neighbors of each vertex. Space: O(V + E).
+```php
+// ADT: Stack (behavior defined, implementation hidden)
+interface StackInterface {
+    public function push($item): void;
+    public function pop();
+    public function top();
+    public function isEmpty(): bool;
+}
 
-**Adjacency Matrix**: Graph representation using 2D array where matrix[i][j] indicates edge from vertex i to j. Space: O(V²).
+// Implementation can vary (array, linked list, etc.)
+class ArrayStack implements StackInterface {
+    private array $items = [];
 
-**Algorithm**: A finite sequence of well-defined instructions to solve a problem or perform a computation.
+    public function push($item): void {
+        $this->items[] = $item;
+    }
 
-**Amortized Time Complexity**: Average time per operation over a sequence of operations, accounting for expensive occasional operations.
+    public function pop() {
+        return array_pop($this->items);
+    }
+
+    public function top() {
+        return end($this->items);
+    }
+
+    public function isEmpty(): bool {
+        return empty($this->items);
+    }
+}
+```
+*See: Chapter 5 (Stacks and Queues)*
+
+**Adjacency List** (pronunciation: ad-JAY-sen-see): Graph representation using arrays/lists to store neighbors of each vertex. Space: O(V + E).
+
+```php
+// Adjacency list representation
+$graph = [
+    'A' => ['B', 'C'],        // A connects to B and C
+    'B' => ['A', 'D', 'E'],   // B connects to A, D, E
+    'C' => ['A', 'F'],
+    'D' => ['B'],
+    'E' => ['B', 'F'],
+    'F' => ['C', 'E']
+];
+
+// Check neighbors: O(1) average
+$neighbors = $graph['A'];  // ['B', 'C']
+
+// Check if edge exists: O(degree(v))
+$hasEdge = in_array('B', $graph['A']);
+```
+*See: Chapter 19 (Graph Representations), Chapter 20 (Graph Algorithms)*
+
+**Adjacency Matrix** (pronunciation: ad-JAY-sen-see MAY-triks): Graph representation using 2D array where matrix[i][j] indicates edge from vertex i to j. Space: O(V²).
+
+```php
+// Adjacency matrix representation (V = 4 vertices)
+$matrix = [
+    [0, 1, 1, 0],  // Vertex 0 connects to 1, 2
+    [1, 0, 0, 1],  // Vertex 1 connects to 0, 3
+    [1, 0, 0, 1],  // Vertex 2 connects to 0, 3
+    [0, 1, 1, 0]   // Vertex 3 connects to 1, 2
+];
+
+// Check if edge exists: O(1)
+$hasEdge = $matrix[0][1] === 1;  // true
+```
+*See: Chapter 19 (Graph Representations)*
+
+**Algorithm** (pronunciation: AL-go-rith-em): A finite sequence of well-defined instructions to solve a problem or perform a computation.
+
+*See: Chapter 1 (Introduction to Algorithms)*
+
+**Amortized Time Complexity** (pronunciation: AM-or-tized): Average time per operation over a sequence of operations, accounting for expensive occasional operations.
+
+```php
+// Dynamic array (PHP array): amortized O(1) append
+$arr = [];
+for ($i = 0; $i < 1000; $i++) {
+    $arr[] = $i;  // Usually O(1), occasionally O(n) when resizing
+                  // Amortized: O(1) average over all operations
+}
+```
+*See: Chapter 2 (Time Complexity Analysis)*
 
 **Array**: Contiguous block of memory storing elements of the same type, accessible by index in O(1) time.
 
-**Asymptotic Analysis**: Study of algorithm behavior as input size approaches infinity using Big O, Omega, and Theta notation.
+```php
+// PHP array (numeric keys)
+$numbers = [10, 20, 30, 40, 50];
 
-**AVL Tree**: Self-balancing binary search tree where height difference between left and right subtrees is at most 1.
+// O(1) random access
+$value = $numbers[2];  // 30
+
+// O(1) append
+$numbers[] = 60;
+
+// O(n) insert at beginning
+array_unshift($numbers, 0);
+```
+*See: Chapter 4 (Arrays and Lists)*
+
+**Asymptotic Analysis** (pronunciation: ace-im-TOT-ik): Study of algorithm behavior as input size approaches infinity using Big O, Omega, and Theta notation.
+
+*See: Chapter 2 (Time Complexity Analysis), Appendix A (Complexity Cheat Sheet)*
+
+**AVL Tree** (pronunciation: A-V-L tree, named after inventors Adelson-Velsky and Landis): Self-balancing binary search tree where height difference between left and right subtrees is at most 1.
+
+```php
+// AVL Tree: maintains balance factor of -1, 0, or 1
+class AVLNode {
+    public $value;
+    public $left = null;
+    public $right = null;
+    public $height = 1;
+
+    public function __construct($value) {
+        $this->value = $value;
+    }
+}
+
+class AVLTree {
+    private ?AVLNode $root = null;
+
+    private function height(?AVLNode $node): int {
+        return $node ? $node->height : 0;
+    }
+
+    private function balanceFactor(AVLNode $node): int {
+        return $this->height($node->left) - $this->height($node->right);
+    }
+
+    // Rotations maintain O(log n) operations
+    private function rotateRight(AVLNode $y): AVLNode {
+        $x = $y->left;
+        $T2 = $x->right;
+
+        $x->right = $y;
+        $y->left = $T2;
+
+        $y->height = max($this->height($y->left), $this->height($y->right)) + 1;
+        $x->height = max($this->height($x->left), $this->height($x->right)) + 1;
+
+        return $x;
+    }
+}
+```
+*See: Chapter 17 (Balanced Trees)*
 
 ## B
 
@@ -432,9 +567,440 @@ while ($fast && $fast->next) {
 }
 ```
 
+## Additional Terms
+
+**Bellman-Ford Algorithm** (pronunciation: BELL-man ford): Single-source shortest path algorithm that can handle negative edge weights. Time: O(VE).
+
+```php
+function bellmanFord($graph, $V, $start) {
+    $distance = array_fill(0, $V, PHP_INT_MAX);
+    $distance[$start] = 0;
+
+    // Relax all edges V-1 times
+    for ($i = 0; $i < $V - 1; $i++) {
+        foreach ($graph as [$u, $v, $weight]) {
+            if ($distance[$u] !== PHP_INT_MAX &&
+                $distance[$u] + $weight < $distance[$v]) {
+                $distance[$v] = $distance[$u] + $weight;
+            }
+        }
+    }
+
+    // Check for negative cycles
+    foreach ($graph as [$u, $v, $weight]) {
+        if ($distance[$u] !== PHP_INT_MAX &&
+            $distance[$u] + $weight < $distance[$v]) {
+            throw new Exception("Negative cycle detected");
+        }
+    }
+
+    return $distance;
+}
+```
+*See: Chapter 22 (Dijkstra's Algorithm - comparison)*
+
+**Cache Hit/Miss**: When requested data is (hit) or isn't (miss) found in cache. High hit rate improves performance.
+
+```php
+class SimpleCache {
+    private array $cache = [];
+    private int $hits = 0;
+    private int $misses = 0;
+
+    public function get(string $key, callable $loader) {
+        if (isset($this->cache[$key])) {
+            $this->hits++;
+            return $this->cache[$key];  // Cache hit
+        }
+
+        $this->misses++;
+        $value = $loader();  // Cache miss - load data
+        $this->cache[$key] = $value;
+        return $value;
+    }
+
+    public function getHitRate(): float {
+        $total = $this->hits + $this->misses;
+        return $total > 0 ? $this->hits / $total : 0;
+    }
+}
+```
+*See: Chapter 29 (Performance Optimization), Appendix B (PHP Performance Tips)*
+
+**Fibonacci Sequence** (pronunciation: fib-oh-NAH-chee): Sequence where each number is sum of two preceding: 0, 1, 1, 2, 3, 5, 8, 13...
+
+```php
+// Naive recursive: O(2^n) - exponential!
+function fibNaive($n) {
+    if ($n <= 1) return $n;
+    return fibNaive($n - 1) + fibNaive($n - 2);
+}
+
+// Dynamic programming: O(n) - linear
+function fibDP($n) {
+    if ($n <= 1) return $n;
+
+    $dp = [0, 1];
+    for ($i = 2; $i <= $n; $i++) {
+        $dp[$i] = $dp[$i - 1] + $dp[$i - 2];
+    }
+    return $dp[$n];
+}
+
+// Space-optimized: O(n) time, O(1) space
+function fibOptimized($n) {
+    if ($n <= 1) return $n;
+
+    $prev2 = 0;
+    $prev1 = 1;
+
+    for ($i = 2; $i <= $n; $i++) {
+        $current = $prev1 + $prev2;
+        $prev2 = $prev1;
+        $prev1 = $current;
+    }
+
+    return $prev1;
+}
+```
+*See: Chapter 25 (Dynamic Programming)*
+
+**Hashing**: Process of mapping data to fixed-size values (hash codes) for fast lookup.
+
+```php
+// Hash function example
+function simpleHash(string $key, int $tableSize): int {
+    $hash = 0;
+    for ($i = 0; $i < strlen($key); $i++) {
+        $hash = ($hash * 31 + ord($key[$i])) % $tableSize;
+    }
+    return $hash;
+}
+
+// PHP built-in hash functions
+$hash1 = crc32($data);           // Fast, 32-bit
+$hash2 = md5($data);             // 128-bit
+$hash3 = sha256($data);          // 256-bit (cryptographic)
+
+// Collision resolution: chaining
+$hashTable = array_fill(0, 10, []);
+$index = simpleHash('key', 10);
+$hashTable[$index][] = ['key' => 'key', 'value' => 'value'];
+```
+*See: Chapter 6 (Hash Tables)*
+
+**Iteration vs Recursion**: Two approaches to repetition. Iteration uses loops; recursion uses function calls.
+
+```php
+// Iteration: explicit loop
+function sumIterative(array $arr): int {
+    $sum = 0;
+    foreach ($arr as $value) {
+        $sum += $value;
+    }
+    return $sum;
+}
+
+// Recursion: function calls itself
+function sumRecursive(array $arr): int {
+    if (empty($arr)) {
+        return 0;  // Base case
+    }
+    return array_shift($arr) + sumRecursive($arr);  // Recursive case
+}
+
+// Tail recursion (can be optimized)
+function sumTailRecursive(array $arr, int $acc = 0): int {
+    if (empty($arr)) {
+        return $acc;
+    }
+    return sumTailRecursive(array_slice($arr, 1), $acc + $arr[0]);
+}
+```
+*See: Chapter 24 (Recursion and Backtracking)*
+
+**Load Factor**: Ratio of elements to capacity in hash table. Affects performance of hash operations.
+
+```php
+class HashTable {
+    private array $buckets;
+    private int $size = 0;
+    private int $capacity;
+    private float $maxLoadFactor = 0.75;
+
+    public function __construct(int $capacity = 16) {
+        $this->capacity = $capacity;
+        $this->buckets = array_fill(0, $capacity, []);
+    }
+
+    public function getLoadFactor(): float {
+        return $this->size / $this->capacity;
+    }
+
+    public function insert($key, $value): void {
+        // ... insert logic ...
+        $this->size++;
+
+        // Resize if load factor too high
+        if ($this->getLoadFactor() > $this->maxLoadFactor) {
+            $this->resize();
+        }
+    }
+
+    private function resize(): void {
+        $oldBuckets = $this->buckets;
+        $this->capacity *= 2;
+        $this->buckets = array_fill(0, $this->capacity, []);
+        $this->size = 0;
+
+        // Rehash all entries
+        foreach ($oldBuckets as $bucket) {
+            foreach ($bucket as $entry) {
+                $this->insert($entry['key'], $entry['value']);
+            }
+        }
+    }
+}
+```
+*See: Chapter 6 (Hash Tables)*
+
+**Memoization** (pronunciation: mem-oh-ize-AY-shun, note: NOT "memorization"): Storing results of expensive function calls to avoid recalculation.
+
+```php
+// Without memoization: O(2^n) - recalculates many times
+function fibSlow($n) {
+    if ($n <= 1) return $n;
+    return fibSlow($n - 1) + fibSlow($n - 2);
+}
+
+// With memoization: O(n) - calculates each value once
+function fibMemo($n, &$memo = []) {
+    if ($n <= 1) return $n;
+
+    if (!isset($memo[$n])) {
+        $memo[$n] = fibMemo($n - 1, $memo) + fibMemo($n - 2, $memo);
+    }
+
+    return $memo[$n];
+}
+
+// Generic memoization wrapper
+function memoize(callable $fn): callable {
+    $cache = [];
+
+    return function(...$args) use ($fn, &$cache) {
+        $key = serialize($args);
+
+        if (!isset($cache[$key])) {
+            $cache[$key] = $fn(...$args);
+        }
+
+        return $cache[$key];
+    };
+}
+
+// Usage
+$fibMemoized = memoize(fn($n) => $n <= 1 ? $n : fibMemoized($n-1) + fibMemoized($n-2));
+```
+*See: Chapter 25 (Dynamic Programming)*
+
+**Pruning** (pronounced PROO-ning): Eliminating branches in search tree that cannot lead to solution, improving efficiency.
+
+```php
+// Backtracking with pruning
+function solveSudoku(&$board) {
+    for ($row = 0; $row < 9; $row++) {
+        for ($col = 0; $col < 9; $col++) {
+            if ($board[$row][$col] === 0) {
+                for ($num = 1; $num <= 9; $num++) {
+                    // PRUNING: Skip numbers that violate constraints
+                    if (!isValid($board, $row, $col, $num)) {
+                        continue;  // Prune this branch
+                    }
+
+                    $board[$row][$col] = $num;
+
+                    if (solveSudoku($board)) {
+                        return true;
+                    }
+
+                    $board[$row][$col] = 0;  // Backtrack
+                }
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+function isValid($board, $row, $col, $num): bool {
+    // Check row, column, and 3x3 box
+    // Returns false to prune invalid branches
+    // ... validation logic ...
+}
+```
+*See: Chapter 24 (Recursion and Backtracking)*
+
+**Sentinel Value**: Special value marking end of data structure or signaling special condition.
+
+```php
+// Sentinel in linked list (simplifies edge cases)
+class LinkedList {
+    private Node $sentinel;  // Dummy head node
+
+    public function __construct() {
+        $this->sentinel = new Node(null);  // Sentinel has no value
+    }
+
+    public function insert($value): void {
+        $newNode = new Node($value);
+        $newNode->next = $this->sentinel->next;
+        $this->sentinel->next = $newNode;
+        // No need to check if list is empty!
+    }
+
+    public function search($value): ?Node {
+        $current = $this->sentinel->next;  // Start after sentinel
+
+        while ($current !== null) {
+            if ($current->value === $value) {
+                return $current;
+            }
+            $current = $current->next;
+        }
+
+        return null;
+    }
+}
+
+// Sentinel in array processing
+function processUntilSentinel(array $arr): void {
+    $sentinel = -1;
+    $arr[] = $sentinel;  // Add sentinel at end
+
+    $i = 0;
+    while ($arr[$i] !== $sentinel) {
+        process($arr[$i]);
+        $i++;
+        // No need to check $i < count($arr) each iteration!
+    }
+}
+```
+*See: Chapter 15 (Linked Lists)*
+
+**Stability (Sorting)**: Sorting algorithm is stable if equal elements maintain their relative order.
+
+```php
+// Example: Sorting students by grade
+$students = [
+    ['name' => 'Alice', 'grade' => 85],
+    ['name' => 'Bob', 'grade' => 90],
+    ['name' => 'Charlie', 'grade' => 85],  // Same grade as Alice
+    ['name' => 'David', 'grade' => 90]     // Same grade as Bob
+];
+
+// STABLE sort: Alice stays before Charlie, Bob before David
+usort($students, fn($a, $b) => $a['grade'] <=> $b['grade']);
+// Result: Alice(85), Charlie(85), Bob(90), David(90)
+
+// UNSTABLE sort might produce: Charlie(85), Alice(85), David(90), Bob(90)
+
+// Stable sorts: Merge Sort, Insertion Sort, Bubble Sort
+// Unstable sorts: Quick Sort, Heap Sort, Selection Sort
+```
+*See: Chapter 10 (Merge Sort), Chapter 13 (Advanced Sorting)*
+
+**Time-Space Tradeoff**: Using more memory to save time, or vice versa.
+
+```php
+// More time, less space: Compute each time
+function isPrime($n): bool {
+    if ($n < 2) return false;
+    for ($i = 2; $i <= sqrt($n); $i++) {
+        if ($n % $i === 0) return false;
+    }
+    return true;
+}
+
+// More space, less time: Precompute and cache
+class PrimeChecker {
+    private static array $cache = [];
+
+    public static function isPrime($n): bool {
+        if (!isset(self::$cache[$n])) {
+            self::$cache[$n] = self::computeIsPrime($n);
+        }
+        return self::$cache[$n];
+    }
+
+    private static function computeIsPrime($n): bool {
+        if ($n < 2) return false;
+        for ($i = 2; $i <= sqrt($n); $i++) {
+            if ($n % $i === 0) return false;
+        }
+        return true;
+    }
+}
+
+// Extreme tradeoff: Sieve of Eratosthenes
+// Uses O(n) space to find all primes up to n in O(n log log n) time
+function sieveOfEratosthenes($n): array {
+    $isPrime = array_fill(0, $n + 1, true);
+    $isPrime[0] = $isPrime[1] = false;
+
+    for ($i = 2; $i * $i <= $n; $i++) {
+        if ($isPrime[$i]) {
+            for ($j = $i * $i; $j <= $n; $j += $i) {
+                $isPrime[$j] = false;
+            }
+        }
+    }
+
+    return array_keys(array_filter($isPrime));
+}
+```
+*See: Chapter 3 (Space Complexity), Chapter 29 (Performance Optimization)*
+
+## Cross-Reference Index
+
+### By Complexity Class
+- **O(1) operations**: Hash Table, Array Access, Stack Push/Pop
+- **O(log n) operations**: Binary Search, Balanced Tree Operations, Heap Operations
+- **O(n) operations**: Linear Search, Array Traversal, Hash Table Build
+- **O(n log n) operations**: Merge Sort, Quick Sort (avg), Heap Sort
+- **O(n²) operations**: Bubble Sort, Selection Sort, Insertion Sort (worst)
+
+### By Data Structure
+- **Arrays**: Chapter 4, Appendix A
+- **Linked Lists**: Chapter 15
+- **Stacks**: Chapter 5
+- **Queues**: Chapter 5
+- **Hash Tables**: Chapter 6
+- **Trees**: Chapters 16-18
+- **Graphs**: Chapters 19-22
+- **Heaps**: Chapter 14
+
+### By Algorithm Type
+- **Sorting**: Chapters 9-13, Appendix A
+- **Searching**: Chapters 7-8
+- **Graph Algorithms**: Chapters 19-22
+- **String Algorithms**: Chapter 23
+- **Dynamic Programming**: Chapter 25
+- **Greedy Algorithms**: Chapter 26
+- **Backtracking**: Chapter 24
+
+### By Performance Topic
+- **Time Complexity**: Chapter 2, Appendix A
+- **Space Complexity**: Chapter 3
+- **Optimization**: Chapter 29, Appendix B
+- **Profiling**: Appendix B
+
 ## See Also
 
-- **Appendix A**: Complexity Cheat Sheet - Detailed complexity tables
-- **Chapter 2**: Time Complexity Analysis - In-depth complexity analysis
-- **Chapter 3**: Space Complexity - Memory usage patterns
+- **Appendix A**: Complexity Cheat Sheet - Detailed complexity tables and practical examples
+- **Appendix B**: PHP Performance Tips - Optimization techniques and best practices
 - **Appendix D**: Further Reading - Books and resources for deeper understanding
+- **Chapter 1**: Introduction to Algorithms - Algorithm fundamentals
+- **Chapter 2**: Time Complexity Analysis - In-depth Big O analysis
+- **Chapter 3**: Space Complexity - Memory usage patterns
+- **Chapter 29**: Performance Optimization - Real-world optimization strategies

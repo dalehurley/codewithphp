@@ -101,14 +101,89 @@ Curated resources for deepening your understanding of algorithms, data structure
 **Master the Coding Interview (Udemy)**
 - Instructor: Andrei Neagoie
 - Level: Intermediate
+- Duration: ~20 hours
+- Updated: 2024
+- Price: ~$15-90 (frequent sales)
 - Focus: Interview preparation, practical problems
 - Topics: All major data structures and algorithms
+- Includes: 200+ coding challenges
+- Certificate: Yes
 
 **Algorithms and Data Structures (Educative)**
 - Format: Interactive coding environment
 - Level: Beginner to Advanced
+- Duration: Self-paced
+- Price: $59/month or $199/year
 - Best For: Hands-on learners
+- Features: In-browser coding, visual diagrams
 - Link: educative.io
+
+**Data Structures & Algorithms - JavaScript + PHP**
+- Platform: Udemy
+- Instructor: Various
+- Updated: 2024
+- Focus: Practical implementation in PHP
+- Price: ~$20-100
+- Certificate: Yes
+
+**Complete PHP Algorithms Course**
+- Platform: Udemy
+- Level: Intermediate
+- Topics: Sorting, searching, graphs, DP
+- PHP Version: 8.x
+- Includes: Real-world projects
+
+### Video Course Platforms (2024-2025)
+
+**freeCodeCamp YouTube Channel**
+- URL: youtube.com/@freecodecamp
+- Cost: Free
+- Content: Full algorithm courses (5-20 hours)
+- Recent: "Data Structures and Algorithms" (2024)
+- Quality: High production value
+- Best For: Complete beginners
+
+**NeetCode**
+- URL: neetcode.io & YouTube
+- Content: Algorithm explanations + LeetCode solutions
+- Format: Problem-by-problem video explanations
+- Roadmap: Structured learning path
+- Cost: Free (YouTube) + Premium ($15/month)
+- Updated: Weekly with new problems
+- Best For: Interview preparation
+
+**Coursera Plus**
+- Cost: $59/month or $399/year
+- Access: All courses from universities
+- Algorithms Courses:
+  - Stanford Algorithms Specialization
+  - Princeton Algorithms I & II
+  - UC San Diego Data Structures
+- Certificate: Yes (included)
+- Best For: Academic depth + certification
+
+**Udacity Nanodegrees**
+- Program: "Data Structures and Algorithms"
+- Duration: 4 months
+- Cost: $399/month
+- Features: Project reviews, mentorship
+- Certificate: Nanodegree certificate
+- Best For: Career changers
+
+**Frontend Masters**
+- URL: frontendmasters.com
+- Cost: $39/month or $390/year
+- Courses: "Complete Intro to Computer Science"
+- Focus: Practical implementation
+- Instructor: Industry experts
+- Best For: Working developers
+
+**LinkedIn Learning (formerly Lynda)**
+- Cost: $29.99/month or $239.88/year
+- Courses: 100+ algorithm-related courses
+- PHP Courses: Several PHP-specific courses
+- Certificate: Yes
+- Best For: Professional development
 
 ## Interactive Learning Platforms
 
@@ -202,27 +277,90 @@ Curated resources for deepening your understanding of algorithms, data structure
 - Topics: PHP internals, performance
 - Best For: Understanding PHP under the hood
 
-## YouTube Channels
+## YouTube Channels (2024-2025 Active)
+
+**NeetCode**
+- URL: youtube.com/@NeetCode
+- Subscribers: 600K+
+- Upload Frequency: Weekly
+- Topics: LeetCode solutions, algorithm patterns
+- Style: Clear explanations, visual diagrams
+- Best For: Interview prep, pattern recognition
+- Notable: 150 must-know LeetCode problems
 
 **Abdul Bari**
+- URL: youtube.com/@abdul_bari
+- Subscribers: 2M+
 - Topics: Algorithm explanations with animations
-- Style: Clear, detailed, mathematical
-- Best For: Understanding algorithm proofs
+- Style: Clear, detailed, mathematical proofs
+- Best For: Understanding algorithm theory
+- Strength: Excellent visualizations
+
+**freeCodeCamp.org**
+- URL: youtube.com/@freecodecamp
+- Subscribers: 8M+
+- Topics: Full courses on algorithms, data structures
+- Style: Long-form tutorials (5-20 hours)
+- Best For: Complete beginners
+- Recent: Multiple algorithm courses (2024)
+
+**Programming with Mosh**
+- URL: youtube.com/@programmingwithmosh
+- Subscribers: 3M+
+- Topics: Data structures, algorithms, practical coding
+- Style: Clear, production-quality
+- Best For: Beginner to intermediate
 
 **MIT OpenCourseWare**
-- Topics: Full algorithm courses
+- URL: youtube.com/@mitocw
+- Topics: Full algorithm courses (6.006, 6.046J)
 - Style: University lectures
-- Best For: Structured learning
+- Best For: Structured, academic learning
+- Free: Complete MIT courses
 
 **Back To Back SWE**
+- URL: youtube.com/@BackToBackSWE
 - Topics: Interview preparation, algorithm explanations
 - Style: Practical, interview-focused
-- Best For: Coding interviews
+- Best For: Technical interviews
+- Depth: Detailed complexity analysis
 
-**Tushar Roy**
+**Tushar Roy - Coding Made Simple**
+- URL: youtube.com/@tusharroy2525
 - Topics: Dynamic programming, graph algorithms
 - Style: Detailed problem-solving
-- Best For: DP and graphs
+- Best For: DP, graphs, advanced topics
+- Note: Archive of excellent content
+
+**William Fiset**
+- URL: youtube.com/@WilliamFiset-videos
+- Topics: Graph theory, data structures
+- Style: Clear code walkthroughs
+- Best For: Graph algorithms, advanced structures
+
+**Errichto**
+- URL: youtube.com/@Errichto
+- Topics: Competitive programming, algorithms
+- Style: Live coding, contest analysis
+- Best For: Advanced algorithms, competitive programming
+
+**Clément Mihailescu (AlgoExpert)**
+- URL: youtube.com/@clem
+- Topics: Interview prep, system design
+- Style: Whiteboard-style explanations
+- Best For: FAANG interviews
+
+**CS Dojo**
+- URL: youtube.com/@CSDojo
+- Topics: Data structures, algorithms, career advice
+- Style: Friendly, approachable
+- Best For: Career-focused learning
+
+**CodeBagel**
+- URL: youtube.com/@codebagel
+- Topics: Visual algorithm explanations
+- Style: Animated, intuitive
+- Best For: Visual learners
 
 ## Competitive Programming
 
@@ -358,17 +496,67 @@ Curated resources for deepening your understanding of algorithms, data structure
 
 ## Podcasts
 
+### Tech & Algorithms Podcasts
+
 **Software Engineering Daily**
-- Topics: Broad tech topics including algorithms
-- Best For: Current trends, applications
+- URL: softwareengineeringdaily.com
+- Frequency: Daily
+- Length: 45-60 minutes
+- Topics: Broad tech topics including algorithms, distributed systems, databases
+- Best For: Current trends, real-world applications
+- Recent Relevant Episodes: "Algorithm Optimization in Production", "Data Structures at Scale"
+
+**The Changelog**
+- URL: changelog.com/podcast
+- Frequency: Weekly
+- Topics: Open source, software development, algorithms
+- Best For: Developer culture, practical applications
+- PHP Episodes: Occasional PHP-specific content
 
 **Programming Throwdown**
-- Topics: Algorithm discussions, language comparisons
-- Best For: Casual learning
+- URL: programmingthrowdown.com
+- Frequency: Monthly
+- Topics: Algorithm discussions, language comparisons, CS fundamentals
+- Best For: Casual learning, comparing approaches across languages
 
-**Base.cs Podcast**
+**Base.cs Podcast (by CodeNewbie)**
+- URL: codenewbie.org/basecs
 - Topics: CS fundamentals explained simply
-- Best For: Beginners
+- Format: Season-based, 20-30 minutes
+- Best For: Beginners learning algorithms from scratch
+- Notable: Companion to Base.cs blog series
+
+**Developer Tea**
+- URL: developertea.com
+- Frequency: 3x weekly
+- Length: 10-15 minutes
+- Topics: Short-form developer advice, including algorithmic thinking
+- Best For: Quick learning during commute
+
+### PHP-Specific Podcasts
+
+**PHP Internals News**
+- URL: phpinternals.news
+- Host: Derick Rethans
+- Topics: PHP engine internals, performance improvements
+- Best For: Understanding PHP performance at low level
+- Recent: PHP 8.3 features, JIT improvements
+
+**The PHP Roundtable**
+- Topics: PHP development, best practices, performance
+- Format: Panel discussions
+- Best For: Advanced PHP topics
+- Note: Archive available, currently inactive
+
+**PHP Architect Podcast**
+- URL: phparch.com
+- Topics: Enterprise PHP, architecture, performance
+- Best For: Professional PHP developers
+
+**Voices of the ElePHPant**
+- URL: voicesoftheelephpant.com
+- Format: Interviews with PHP community leaders
+- Topics: PHP ecosystem, tools, best practices
 
 ## Community Resources
 
@@ -391,13 +579,94 @@ Curated resources for deepening your understanding of algorithms, data structure
 
 ### Discord/Slack Communities
 
-**PHP Community Discord**
-- Focus: PHP development
-- Best For: Real-time help
+**Official PHP Discord**
+- Invite: discord.gg/php (check PHP.net for current link)
+- Members: 20,000+
+- Channels: #general, #help, #algorithms, #performance
+- Active: 24/7 with global community
+- Best For: Quick PHP questions, peer review
 
-**Competitive Programming Discord**
-- Focus: Contest problems
-- Best For: Algorithm discussions
+**Laravel Discord**
+- Invite: discord.gg/laravel
+- Members: 50,000+
+- Channels: #performance, #database, #architecture
+- Best For: Laravel-specific optimization questions
+
+**Symfony Community**
+- Slack: symfony.com/slack
+- Channels: #performance, #best-practices
+- Active: High activity during EU/US hours
+- Best For: Symfony performance and architecture
+
+**PHP UK Discord**
+- Community: PHP developers worldwide
+- Channels: Topic-specific including algorithms
+- Best For: Professional networking
+
+**Competitive Programming Servers**
+
+**LeetCode Discord**
+- Invite: discord.gg/leetcode
+- Members: 100,000+
+- Channels: #daily-challenge, #algorithms, #data-structures
+- Best For: Interview prep, algorithm discussion
+- Note: Language-agnostic but concepts apply to PHP
+
+**Codeforces Community**
+- Platform: codeforces.com
+- Discord: Various unofficial servers
+- Best For: Competitive programming, advanced algorithms
+
+**AlgoExpert Community**
+- Platform: algoexpert.io
+- Community: Slack/Discord
+- Best For: Structured learning, interview prep
+
+### Reddit Communities
+
+**r/PHP**
+- URL: reddit.com/r/PHP
+- Subscribers: 150,000+
+- Activity: Very active daily
+- Topics: PHP development, performance, algorithms
+- Best For: News, discussions, problem-solving
+- Weekly Threads: "Help a PHPer Out"
+
+**r/algorithms**
+- URL: reddit.com/r/algorithms
+- Subscribers: 200,000+
+- Topics: Algorithm theory, implementation discussions
+- Best For: Deep algorithm discussions
+- Note: Language-agnostic
+
+**r/cscareerquestions**
+- URL: reddit.com/r/cscareerquestions
+- Topics: Interview prep, algorithm practice
+- Best For: Career advice, interview strategies
+
+**r/learnprogramming**
+- URL: reddit.com/r/learnprogramming
+- Subscribers: 4M+
+- Topics: Beginner-friendly algorithm questions
+- Best For: Starting out, basic concepts
+
+**r/datascience** & **r/MachineLearning**
+- Topics: Advanced algorithms, optimization
+- Best For: Applied algorithms, real-world problems
+
+### Stack Overflow Communities
+
+**Stack Overflow - PHP Tag**
+- URL: stackoverflow.com/questions/tagged/php
+- Questions: 1.4M+
+- Active: Extremely high
+- Best For: Specific implementation questions
+- Tags to follow: #php, #algorithm, #data-structures, #performance
+
+**Code Review Stack Exchange**
+- URL: codereview.stackexchange.com
+- Best For: Getting algorithm implementations reviewed
+- Community: Constructive feedback on working code
 
 ## Tools and Software
 
@@ -520,6 +789,184 @@ Curated resources for deepening your understanding of algorithms, data structure
 - Review week's learnings
 - Work on larger project
 - Participate in contest (optional)
+
+## Professional Certifications and Credentials
+
+### Algorithm & Data Structure Certifications
+
+**HackerRank Certifications (Free)**
+- URL: hackerrank.com/skills-verification
+- Levels: Basic, Intermediate, Advanced
+- Topics:
+  - Problem Solving (Basic/Intermediate/Advanced)
+  - Data Structures
+  - Algorithms (Advanced)
+  - PHP (Basic/Intermediate)
+- Format: Timed online test
+- Duration: 60-90 minutes
+- Validity: Lifetime
+- Recognition: Displayed on LinkedIn, GitHub
+- Cost: Free
+- Benefit: Good for portfolio, entry-level positions
+
+**LeetCode Certification**
+- Platform: leetcode.com
+- Type: Problem-solving track completion
+- Levels: Easy, Medium, Hard milestones
+- Cost: LeetCode Premium ($35/month or $159/year)
+- Recognition: Internal LeetCode badges
+- Benefit: Track your progress publicly
+
+**freeCodeCamp Certification (Free)**
+- URL: freecodecamp.org
+- Certification: "Coding Interview Prep"
+- Topics: Algorithms, data structures, coding challenges
+- Duration: ~300 hours
+- Format: Complete all challenges
+- Cost: Free
+- Certificate: Public verification
+- Benefit: Portfolio piece, shows dedication
+
+### PHP Certifications
+
+**Zend Certified PHP Engineer**
+- Provider: Zend (now Perforce)
+- URL: zend.com/training/php-certification-exam
+- Version: PHP 8
+- Topics: Performance, OOP, security, algorithms
+- Format: 70 questions, multiple choice
+- Duration: 90 minutes
+- Pass Score: 65%
+- Cost: $195 USD
+- Validity: Specific to PHP version
+- Recognition: Industry-standard PHP certification
+- Benefit: Demonstrates PHP expertise to employers
+
+**PHP Certified Developer (PCD)**
+- Provider: PHP Certification Board
+- Topics: PHP fundamentals, OOP, performance, best practices
+- Cost: Varies by region
+- Recognition: International recognition
+- Benefit: Professional credibility
+
+### University & Platform Certifications
+
+**Stanford Algorithms Specialization (Coursera)**
+- Cost: $49/month or $490/year (Coursera Plus)
+- Duration: 4 months (suggested)
+- Instructors: Tim Roughgarden
+- Certification: Yes (Coursera certificate)
+- Recognition: Stanford University credential
+- Benefit: Academic rigor + career credential
+
+**Princeton Algorithms Certificate (Coursera)**
+- Cost: $49/month
+- Duration: 6 months (Parts I & II)
+- Instructors: Robert Sedgewick, Kevin Wayne
+- Certification: Yes (Coursera certificate)
+- Recognition: Princeton University credential
+- Benefit: Highly respected in industry
+
+**MIT MicroMasters in Computer Science**
+- Provider: MIT via edX
+- Cost: ~$1,350 (for all courses)
+- Duration: 1-2 years
+- Topics: Algorithms, data structures, systems
+- Certification: MicroMasters credential
+- Recognition: MIT credential, grad school credit
+- Benefit: Pathway to MIT master's degree
+
+**Google IT Automation with Python Professional Certificate**
+- Provider: Google via Coursera
+- Includes: Data structures, algorithms in Python
+- Duration: 6 months
+- Cost: $49/month
+- Recognition: Google credential
+- Note: Concepts transferable to PHP
+
+**Meta Front-End Developer Certificate**
+- Includes: Data structures and algorithms module
+- Duration: 7 months
+- Cost: $49/month
+- Recognition: Meta (Facebook) credential
+
+### Competitive Programming Achievements
+
+**Codeforces Rating**
+- Platform: codeforces.com
+- Levels: Newbie → Pupil → Specialist → Expert → Candidate Master → Master → Grandmaster
+- Recognition: Widely recognized in competitive programming
+- Benefit: Color-coded rating on profile
+- Note: Expert+ ratings impressive for resumes
+
+**LeetCode Rating**
+- Platform: leetcode.com
+- Levels: Knight rankings based on contest performance
+- Recognition: Active contest community
+- Benefit: Shows algorithmic problem-solving ability
+
+**TopCoder Rating**
+- Platform: topcoder.com
+- Levels: Color-coded ratings
+- Recognition: Oldest competitive programming platform
+- Benefit: Historical significance, strong community
+
+### Specialized Certifications
+
+**AWS Certified Solutions Architect**
+- Relevant: Algorithm optimization, scalability
+- Topics: Performance, distributed systems
+- Recognition: Industry-standard for cloud
+- Benefit: Shows system-level algorithm knowledge
+
+**Certified Kubernetes Application Developer (CKAD)**
+- Relevant: Resource optimization, scaling algorithms
+- Topics: Performance, efficiency
+- Recognition: Cloud-native applications
+- Benefit: Modern deployment knowledge
+
+### How to Choose Certification Path
+
+**For Job Seekers (Entry-Level)**:
+1. HackerRank Certifications (Free)
+2. freeCodeCamp Algorithm Certification (Free)
+3. LeetCode practice (build portfolio)
+4. One paid certification (Coursera/Udacity)
+
+**For PHP Developers**:
+1. Zend Certified PHP Engineer ($195)
+2. HackerRank PHP Certification (Free)
+3. Coursera Algorithms Specialization ($490/year)
+4. Build open-source algorithm library in PHP
+
+**For Career Advancement (Mid-Level)**:
+1. Stanford or Princeton Algorithms (Coursera)
+2. LeetCode contest participation
+3. Contribute to open-source projects
+4. Technical blog/YouTube channel
+
+**For Senior/Architect Roles**:
+1. MIT MicroMasters or equivalent
+2. AWS/Google Cloud certifications
+3. Published papers or significant contributions
+4. Speaking at conferences
+
+### Certification ROI Analysis
+
+**High ROI (Worth the Investment)**:
+- Zend PHP Certification: $195 → Direct PHP credibility
+- Stanford/Princeton on Coursera: $490/year → University credential
+- HackerRank/freeCodeCamp: Free → Easy win for portfolio
+
+**Moderate ROI**:
+- Udacity Nanodegree: $1,600 → Includes mentorship
+- MIT MicroMasters: $1,350 → Grad school pathway
+
+**Lower ROI (Unless Employer Pays)**:
+- Vendor-specific certifications: High cost, limited scope
+- Expired version certifications: Need renewal
+
+**Best Strategy**: Mix free certifications with 1-2 paid, recognized credentials.
 
 ## Staying Current
 
