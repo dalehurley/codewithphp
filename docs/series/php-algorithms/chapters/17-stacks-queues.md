@@ -15,6 +15,66 @@ prerequisites:
 
 Stacks and queues are fundamental linear data structures with restricted access patterns. While they may seem simple, they're incredibly powerful and used everywhere—from function call management to task scheduling. In this chapter, we'll implement both structures and build practical applications.
 
+## Visual Step-by-Step: Stack Operations
+
+Let's visualize how a stack works:
+
+### Push Operations
+
+```
+Initial state:
+Stack: [empty]
+
+After push(10):
+TOP → [10]
+
+After push(20):
+TOP → [20]
+      [10]
+
+After push(30):
+TOP → [30]
+      [20]
+      [10]
+
+After push(40):
+TOP → [40]
+      [30]
+      [20]
+      [10]
+```
+
+### Pop Operation
+
+```
+Current state:
+TOP → [40]
+      [30]
+      [20]
+      [10]
+
+pop() returns 40:
+TOP → [30]
+      [20]
+      [10]
+
+pop() returns 30:
+TOP → [20]
+      [10]
+```
+
+### Peek Operation
+
+```
+Current state:
+TOP → [20]
+      [10]
+
+peek() returns 20 (no change to stack):
+TOP → [20]
+      [10]
+```
+
 ## Stack: Last-In, First-Out (LIFO)
 
 A **stack** is like a stack of plates: you add and remove from the top only.
@@ -352,6 +412,58 @@ function factorial(int $n, Stack $callStack = null): int
 }
 
 factorial(5);
+```
+
+## Visual Step-by-Step: Queue Operations
+
+Let's visualize how a queue works:
+
+### Enqueue Operations
+
+```
+Initial state:
+Queue: [empty]
+
+After enqueue(10):
+FRONT → [10] ← REAR
+
+After enqueue(20):
+FRONT → [10] [20] ← REAR
+
+After enqueue(30):
+FRONT → [10] [20] [30] ← REAR
+
+After enqueue(40):
+FRONT → [10] [20] [30] [40] ← REAR
+```
+
+### Dequeue Operation
+
+```
+Current state:
+FRONT → [10] [20] [30] [40] ← REAR
+
+dequeue() returns 10:
+FRONT → [20] [30] [40] ← REAR
+
+dequeue() returns 20:
+FRONT → [30] [40] ← REAR
+```
+
+### Combined Operations
+
+```
+Start:
+FRONT → [30] [40] ← REAR
+
+enqueue(50):
+FRONT → [30] [40] [50] ← REAR
+
+dequeue() returns 30:
+FRONT → [40] [50] ← REAR
+
+enqueue(60):
+FRONT → [40] [50] [60] ← REAR
 ```
 
 ## Queue: First-In, First-Out (FIFO)
@@ -815,6 +927,951 @@ $pq->enqueue("Medium priority task", 5);
 
 echo $pq->dequeue(); // High priority task
 echo $pq->dequeue(); // Medium priority task
+```
+
+## PHP SPL: Built-in Stack and Queue
+
+PHP's Standard PHP Library provides optimized implementations of stacks and queues.
+
+### SplStack
+
+```php
+$stack = new SplStack();
+
+// Push elements
+$stack->push(10);
+$stack->push(20);
+$stack->push(30);
+
+// Access elements
+echo $stack->top() . "\n";     // 30 (peek at top)
+echo $stack->pop() . "\n";     // 30 (remove and return)
+echo $stack->count() . "\n";   // 2
+
+// Iterate (LIFO order)
+foreach ($stack as $item) {
+    echo "$item "; // 20 10
+}
+
+// Check if empty
+if (!$stack->isEmpty()) {
+    echo "Stack has elements\n";
+}
+```
+
+### SplQueue
+
+```php
+$queue = new SplQueue();
+
+// Enqueue elements
+$queue->enqueue(10);
+$queue->enqueue(20);
+$queue->enqueue(30);
+
+// Dequeue
+echo $queue->dequeue() . "\n"; // 10 (FIFO)
+
+// Array access
+echo $queue[0] . "\n";         // 20 (front of queue)
+
+// Iterate (FIFO order)
+foreach ($queue as $item) {
+    echo "$item "; // 20 30
+}
+```
+
+### SplPriorityQueue
+
+```php
+$pq = new SplPriorityQueue();
+
+// Insert with priority
+$pq->insert('Low priority', 1);
+$pq->insert('High priority', 10);
+$pq->insert('Medium priority', 5);
+
+// Extract in priority order
+echo $pq->extract() . "\n"; // High priority
+echo $pq->extract() . "\n"; // Medium priority
+echo $pq->extract() . "\n"; // Low priority
+
+// Set extraction mode
+$pq->setExtractFlags(SplPriorityQueue::EXTR_BOTH);
+$pq->insert('Task A', 5);
+$result = $pq->extract();
+print_r($result); // ['data' => 'Task A', 'priority' => 5]
+```
+
+### SplDoublyLinkedList (Base for Stack/Queue)
+
+```php
+$list = new SplDoublyLinkedList();
+
+// Can be used as stack
+$list->setIteratorMode(SplDoublyLinkedList::IT_MODE_LIFO);
+$list->push(1);
+$list->push(2);
+$list->push(3);
+
+foreach ($list as $item) {
+    echo "$item "; // 3 2 1 (LIFO)
+}
+
+// Or as queue
+$list->setIteratorMode(SplDoublyLinkedList::IT_MODE_FIFO);
+foreach ($list as $item) {
+    echo "$item "; // 1 2 3 (FIFO)
+}
+```
+
+## Performance Benchmarks
+
+Let's measure real-world performance of different implementations:
+
+```php
+function benchmarkStackImplementations(): void
+{
+    $operations = 10000;
+
+    // Array-based Stack
+    $start = microtime(true);
+    $stack = new Stack();
+    for ($i = 0; $i < $operations; $i++) {
+        $stack->push($i);
+    }
+    for ($i = 0; $i < $operations; $i++) {
+        $stack->pop();
+    }
+    $arrayTime = microtime(true) - $start;
+
+    // SPL Stack
+    $start = microtime(true);
+    $splStack = new SplStack();
+    for ($i = 0; $i < $operations; $i++) {
+        $splStack->push($i);
+    }
+    for ($i = 0; $i < $operations; $i++) {
+        $splStack->pop();
+    }
+    $splTime = microtime(true) - $start;
+
+    // Linked List Stack
+    $start = microtime(true);
+    $linkedStack = new LinkedStack();
+    for ($i = 0; $i < $operations; $i++) {
+        $linkedStack->push($i);
+    }
+    for ($i = 0; $i < $operations; $i++) {
+        $linkedStack->pop();
+    }
+    $linkedTime = microtime(true) - $start;
+
+    echo "=== Stack Performance ({$operations} push + {$operations} pop) ===\n";
+    echo sprintf("Array-based:  %.4f seconds\n", $arrayTime);
+    echo sprintf("SPL Stack:    %.4f seconds (%.2fx)\n", $splTime, $arrayTime / $splTime);
+    echo sprintf("Linked List:  %.4f seconds (%.2fx)\n", $linkedTime, $arrayTime / $linkedTime);
+}
+
+function benchmarkQueueImplementations(): void
+{
+    $operations = 10000;
+
+    // Array-based Queue (with array_shift - slow)
+    $start = microtime(true);
+    $queue = new Queue();
+    for ($i = 0; $i < $operations; $i++) {
+        $queue->enqueue($i);
+    }
+    for ($i = 0; $i < $operations; $i++) {
+        $queue->dequeue();
+    }
+    $arrayTime = microtime(true) - $start;
+
+    // SPL Queue
+    $start = microtime(true);
+    $splQueue = new SplQueue();
+    for ($i = 0; $i < $operations; $i++) {
+        $splQueue->enqueue($i);
+    }
+    for ($i = 0; $i < $operations; $i++) {
+        $splQueue->dequeue();
+    }
+    $splTime = microtime(true) - $start;
+
+    // Linked Queue
+    $start = microtime(true);
+    $linkedQueue = new LinkedQueue();
+    for ($i = 0; $i < $operations; $i++) {
+        $linkedQueue->enqueue($i);
+    }
+    for ($i = 0; $i < $operations; $i++) {
+        $linkedQueue->dequeue();
+    }
+    $linkedTime = microtime(true) - $start;
+
+    echo "\n=== Queue Performance ({$operations} enqueue + {$operations} dequeue) ===\n";
+    echo sprintf("Array-based:  %.4f seconds\n", $arrayTime);
+    echo sprintf("SPL Queue:    %.4f seconds (%.2fx faster)\n", $splTime, $arrayTime / $splTime);
+    echo sprintf("Linked List:  %.4f seconds (%.2fx faster)\n", $linkedTime, $arrayTime / $linkedTime);
+}
+
+// Sample output:
+// === Stack Performance (10000 push + 10000 pop) ===
+// Array-based:  0.0089 seconds
+// SPL Stack:    0.0034 seconds (2.62x)
+// Linked List:  0.0156 seconds (0.57x)
+//
+// === Queue Performance (10000 enqueue + 10000 dequeue) ===
+// Array-based:  1.2345 seconds
+// SPL Queue:    0.0045 seconds (274.33x faster)
+// Linked List:  0.0198 seconds (62.35x faster)
+```
+
+### Memory Usage Analysis
+
+```php
+function analyzeMemoryUsage(): void
+{
+    $elements = 1000;
+
+    // Stack memory
+    $before = memory_get_usage();
+    $stack = new Stack();
+    for ($i = 0; $i < $elements; $i++) {
+        $stack->push($i);
+    }
+    $stackMemory = memory_get_usage() - $before;
+
+    // SPL Stack memory
+    $before = memory_get_usage();
+    $splStack = new SplStack();
+    for ($i = 0; $i < $elements; $i++) {
+        $splStack->push($i);
+    }
+    $splMemory = memory_get_usage() - $before;
+
+    // Queue memory
+    $before = memory_get_usage();
+    $queue = new Queue();
+    for ($i = 0; $i < $elements; $i++) {
+        $queue->enqueue($i);
+    }
+    $queueMemory = memory_get_usage() - $before;
+
+    echo "Memory usage for {$elements} elements:\n";
+    echo sprintf("Stack (array):    %s KB\n", number_format($stackMemory / 1024, 2));
+    echo sprintf("SPL Stack:        %s KB\n", number_format($splMemory / 1024, 2));
+    echo sprintf("Queue (array):    %s KB\n", number_format($queueMemory / 1024, 2));
+}
+
+// Sample output:
+// Memory usage for 1000 elements:
+// Stack (array):    32.45 KB
+// SPL Stack:        98.23 KB
+// Queue (array):    32.67 KB
+```
+
+**Performance Insights:**
+- **SPL implementations are fastest** (written in C)
+- **Array-based queues with array_shift are very slow** (O(n) dequeue)
+- **Linked list queues are much faster** for dequeue operations
+- **For stacks, arrays are competitive** since array_pop is O(1)
+- **SPL uses more memory** but provides better performance
+
+## Edge Cases and Error Handling
+
+Robust implementations must handle edge cases:
+
+```php
+class RobustStack
+{
+    private array $items = [];
+    private int $maxSize;
+
+    public function __construct(int $maxSize = PHP_INT_MAX)
+    {
+        if ($maxSize <= 0) {
+            throw new InvalidArgumentException("Max size must be positive");
+        }
+        $this->maxSize = $maxSize;
+    }
+
+    public function push(mixed $value): void
+    {
+        // Edge case: Stack overflow
+        if ($this->size() >= $this->maxSize) {
+            throw new OverflowException(
+                "Stack overflow: cannot push to full stack (max: {$this->maxSize})"
+            );
+        }
+
+        // Edge case: Prevent null values if desired
+        if ($value === null) {
+            throw new InvalidArgumentException("Cannot push null value");
+        }
+
+        $this->items[] = $value;
+    }
+
+    public function pop(): mixed
+    {
+        // Edge case: Stack underflow
+        if ($this->isEmpty()) {
+            throw new UnderflowException("Stack underflow: cannot pop from empty stack");
+        }
+
+        return array_pop($this->items);
+    }
+
+    public function peek(): mixed
+    {
+        // Edge case: Peek on empty stack
+        if ($this->isEmpty()) {
+            throw new UnderflowException("Cannot peek: stack is empty");
+        }
+
+        return end($this->items);
+    }
+
+    public function isEmpty(): bool
+    {
+        return empty($this->items);
+    }
+
+    public function isFull(): bool
+    {
+        return $this->size() >= $this->maxSize;
+    }
+
+    public function size(): int
+    {
+        return count($this->items);
+    }
+
+    public function clear(): void
+    {
+        $this->items = [];
+    }
+}
+
+class RobustQueue
+{
+    private array $items = [];
+    private int $maxSize;
+
+    public function __construct(int $maxSize = PHP_INT_MAX)
+    {
+        if ($maxSize <= 0) {
+            throw new InvalidArgumentException("Max size must be positive");
+        }
+        $this->maxSize = $maxSize;
+    }
+
+    public function enqueue(mixed $value): void
+    {
+        // Edge case: Queue overflow
+        if ($this->size() >= $this->maxSize) {
+            throw new OverflowException("Queue is full");
+        }
+
+        $this->items[] = $value;
+    }
+
+    public function dequeue(): mixed
+    {
+        // Edge case: Queue underflow
+        if ($this->isEmpty()) {
+            throw new UnderflowException("Queue is empty");
+        }
+
+        // Note: array_shift is O(n) - use LinkedQueue for better performance
+        return array_shift($this->items);
+    }
+
+    public function peek(): mixed
+    {
+        if ($this->isEmpty()) {
+            throw new UnderflowException("Queue is empty");
+        }
+
+        return $this->items[0];
+    }
+
+    public function isEmpty(): bool
+    {
+        return empty($this->items);
+    }
+
+    public function isFull(): bool
+    {
+        return $this->size() >= $this->maxSize;
+    }
+
+    public function size(): int
+    {
+        return count($this->items);
+    }
+}
+```
+
+### Common Edge Cases Checklist
+
+```php
+// 1. Operations on empty structures
+$stack = new RobustStack();
+try {
+    $stack->pop(); // Should throw UnderflowException
+} catch (UnderflowException $e) {
+    echo "Caught: {$e->getMessage()}\n";
+}
+
+// 2. Operations on full structures
+$stack = new RobustStack(maxSize: 3);
+$stack->push(1);
+$stack->push(2);
+$stack->push(3);
+try {
+    $stack->push(4); // Should throw OverflowException
+} catch (OverflowException $e) {
+    echo "Caught: {$e->getMessage()}\n";
+}
+
+// 3. Single element
+$stack = new RobustStack();
+$stack->push(10);
+echo $stack->peek(); // Should work
+$stack->pop();       // Should work
+echo $stack->isEmpty() ? "Empty" : "Not empty"; // Empty
+
+// 4. Alternating push/pop
+$stack = new RobustStack();
+$stack->push(1);
+$stack->pop();
+$stack->push(2);
+$stack->pop();
+echo $stack->isEmpty() ? "Empty" : "Not empty"; // Empty
+
+// 5. Type safety
+$stack = new RobustStack();
+$stack->push(42);           // int
+$stack->push("hello");      // string
+$stack->push([1, 2, 3]);    // array
+$stack->push(new stdClass); // object
+```
+
+## Framework Integration
+
+### Laravel: Queue Service with Dependency Injection
+
+```php
+// app/Services/QueueService.php
+namespace App\Services;
+
+use Illuminate\Contracts\Queue\Queue as QueueContract;
+use SplQueue;
+
+class QueueService
+{
+    private SplQueue $queue;
+
+    public function __construct()
+    {
+        $this->queue = new SplQueue();
+    }
+
+    public function enqueue(mixed $item): void
+    {
+        $this->queue->enqueue($item);
+        \Log::info('Item enqueued', ['item' => $item]);
+    }
+
+    public function dequeue(): mixed
+    {
+        if ($this->queue->isEmpty()) {
+            throw new \RuntimeException('Queue is empty');
+        }
+
+        $item = $this->queue->dequeue();
+        \Log::info('Item dequeued', ['item' => $item]);
+
+        return $item;
+    }
+
+    public function isEmpty(): bool
+    {
+        return $this->queue->isEmpty();
+    }
+
+    public function size(): int
+    {
+        return $this->queue->count();
+    }
+}
+
+// Usage in Controller
+use App\Services\QueueService;
+
+class TaskController extends Controller
+{
+    public function __construct(
+        private QueueService $queueService
+    ) {}
+
+    public function enqueue(Request $request)
+    {
+        $task = $request->input('task');
+        $this->queueService->enqueue($task);
+
+        return response()->json(['message' => 'Task queued']);
+    }
+
+    public function process()
+    {
+        if ($this->queueService->isEmpty()) {
+            return response()->json(['message' => 'No tasks to process']);
+        }
+
+        $task = $this->queueService->dequeue();
+
+        // Process task
+        ProcessTaskJob::dispatch($task);
+
+        return response()->json(['message' => 'Task processing started']);
+    }
+}
+```
+
+### Symfony: Stack-based Undo System
+
+```php
+// src/Service/UndoService.php
+namespace App\Service;
+
+use SplStack;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+
+#[Autoconfigure(shared: false)] // New instance per request
+class UndoService
+{
+    private SplStack $undoStack;
+    private SplStack $redoStack;
+
+    public function __construct()
+    {
+        $this->undoStack = new SplStack();
+        $this->redoStack = new SplStack();
+    }
+
+    public function executeCommand(CommandInterface $command): void
+    {
+        $command->execute();
+        $this->undoStack->push($command);
+
+        // Clear redo stack on new action
+        $this->redoStack = new SplStack();
+    }
+
+    public function undo(): bool
+    {
+        if ($this->undoStack->isEmpty()) {
+            return false;
+        }
+
+        $command = $this->undoStack->pop();
+        $command->undo();
+        $this->redoStack->push($command);
+
+        return true;
+    }
+
+    public function redo(): bool
+    {
+        if ($this->redoStack->isEmpty()) {
+            return false;
+        }
+
+        $command = $this->redoStack->pop();
+        $command->execute();
+        $this->undoStack->push($command);
+
+        return true;
+    }
+
+    public function canUndo(): bool
+    {
+        return !$this->undoStack->isEmpty();
+    }
+
+    public function canRedo(): bool
+    {
+        return !$this->redoStack->isEmpty();
+    }
+}
+
+// Command Interface
+interface CommandInterface
+{
+    public function execute(): void;
+    public function undo(): void;
+}
+
+// Example Command
+class UpdateTextCommand implements CommandInterface
+{
+    public function __construct(
+        private Document $document,
+        private string $newText,
+        private ?string $oldText = null
+    ) {
+        $this->oldText = $document->getText();
+    }
+
+    public function execute(): void
+    {
+        $this->document->setText($this->newText);
+    }
+
+    public function undo(): void
+    {
+        $this->document->setText($this->oldText);
+    }
+}
+```
+
+### Laravel: Rate Limiting with Queue
+
+```php
+namespace App\Services;
+
+use Illuminate\Support\Facades\Cache;
+use SplQueue;
+
+class RateLimiter
+{
+    private int $maxRequests;
+    private int $timeWindow; // in seconds
+
+    public function __construct(int $maxRequests = 100, int $timeWindow = 60)
+    {
+        $this->maxRequests = $maxRequests;
+        $this->timeWindow = $timeWindow;
+    }
+
+    public function allow(string $key): bool
+    {
+        $cacheKey = "rate_limit:{$key}";
+        $queue = Cache::get($cacheKey);
+
+        if (!$queue) {
+            $queue = new SplQueue();
+        }
+
+        $now = time();
+
+        // Remove old timestamps outside the time window
+        while (!$queue->isEmpty() && $queue->bottom() < $now - $this->timeWindow) {
+            $queue->dequeue();
+        }
+
+        // Check if limit exceeded
+        if ($queue->count() >= $this->maxRequests) {
+            return false;
+        }
+
+        // Add current timestamp
+        $queue->enqueue($now);
+
+        // Store back in cache
+        Cache::put($cacheKey, $queue, $this->timeWindow);
+
+        return true;
+    }
+
+    public function remaining(string $key): int
+    {
+        $cacheKey = "rate_limit:{$key}";
+        $queue = Cache::get($cacheKey, new SplQueue());
+
+        $now = time();
+
+        // Remove old timestamps
+        while (!$queue->isEmpty() && $queue->bottom() < $now - $this->timeWindow) {
+            $queue->dequeue();
+        }
+
+        return max(0, $this->maxRequests - $queue->count());
+    }
+}
+```
+
+## Security Considerations
+
+### 1. Prevent Stack Overflow Attacks
+
+```php
+class SecureStack
+{
+    private array $items = [];
+    private int $maxSize = 1000; // Reasonable limit
+
+    public function push(mixed $value): void
+    {
+        // Prevent unbounded growth
+        if (count($this->items) >= $this->maxSize) {
+            throw new OverflowException("Stack size limit exceeded");
+        }
+
+        // Validate input size (prevent memory exhaustion)
+        if (is_string($value) && strlen($value) > 1000000) {
+            throw new InvalidArgumentException("Value too large");
+        }
+
+        $this->items[] = $value;
+    }
+}
+```
+
+### 2. Sanitize Queue Data
+
+```php
+class SecureQueue
+{
+    private SplQueue $queue;
+
+    public function enqueue(mixed $value): void
+    {
+        // Sanitize strings
+        if (is_string($value)) {
+            $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+        }
+
+        // Prevent serialized object injection
+        if (is_string($value) && $this->isSerialized($value)) {
+            throw new InvalidArgumentException("Serialized data not allowed");
+        }
+
+        $this->queue->enqueue($value);
+    }
+
+    private function isSerialized(string $data): bool
+    {
+        return @unserialize($data) !== false || $data === 'b:0;';
+    }
+}
+```
+
+### 3. Rate Limiting to Prevent DoS
+
+```php
+class ThrottledStack
+{
+    private Stack $stack;
+    private int $operations = 0;
+    private int $maxOperationsPerSecond = 1000;
+    private float $lastReset;
+
+    public function __construct()
+    {
+        $this->stack = new Stack();
+        $this->lastReset = microtime(true);
+    }
+
+    private function checkThrottle(): void
+    {
+        $now = microtime(true);
+
+        if ($now - $this->lastReset >= 1.0) {
+            $this->operations = 0;
+            $this->lastReset = $now;
+        }
+
+        if ($this->operations >= $this->maxOperationsPerSecond) {
+            throw new RuntimeException("Rate limit exceeded");
+        }
+
+        $this->operations++;
+    }
+
+    public function push(mixed $value): void
+    {
+        $this->checkThrottle();
+        $this->stack->push($value);
+    }
+
+    public function pop(): mixed
+    {
+        $this->checkThrottle();
+        return $this->stack->pop();
+    }
+}
+```
+
+## Common Pitfalls and Solutions
+
+### Pitfall 1: Using array_shift for Queue (O(n) Performance)
+
+```php
+// BAD: Very slow for large queues
+class SlowQueue
+{
+    private array $items = [];
+
+    public function dequeue(): mixed
+    {
+        return array_shift($this->items); // O(n) - reindexes entire array!
+    }
+}
+
+// GOOD: Use SplQueue or linked list
+class FastQueue
+{
+    private SplQueue $queue;
+
+    public function __construct()
+    {
+        $this->queue = new SplQueue();
+    }
+
+    public function dequeue(): mixed
+    {
+        return $this->queue->dequeue(); // O(1)
+    }
+}
+
+// OR: Use circular queue with fixed size
+class FastCircularQueue
+{
+    private array $items;
+    private int $front = 0;
+    private int $rear = -1;
+    private int $size = 0;
+    private int $capacity;
+
+    public function dequeue(): mixed
+    {
+        // ... (O(1) with modulo arithmetic)
+    }
+}
+```
+
+### Pitfall 2: Not Checking Empty Before Pop/Dequeue
+
+```php
+// BAD: Can cause errors
+$stack = new Stack();
+$value = $stack->pop(); // Fatal error or unexpected behavior
+
+// GOOD: Always check
+$stack = new Stack();
+if (!$stack->isEmpty()) {
+    $value = $stack->pop();
+} else {
+    // Handle empty case
+}
+
+// BETTER: Use exceptions
+try {
+    $value = $stack->pop();
+} catch (UnderflowException $e) {
+    // Handle gracefully
+    error_log("Attempted to pop from empty stack");
+}
+```
+
+### Pitfall 3: Modifying Queue During Iteration
+
+```php
+// BAD: Unexpected behavior
+$queue = new SplQueue();
+$queue->enqueue(1);
+$queue->enqueue(2);
+$queue->enqueue(3);
+
+foreach ($queue as $item) {
+    $queue->dequeue(); // Don't modify while iterating!
+}
+
+// GOOD: Use while loop
+while (!$queue->isEmpty()) {
+    $item = $queue->dequeue();
+    // Process item
+}
+```
+
+### Pitfall 4: Not Clearing Redo Stack on New Action
+
+```php
+// BAD: Redo stack has invalid states
+class BadUndoRedo
+{
+    private Stack $undoStack;
+    private Stack $redoStack;
+
+    public function execute($command): void
+    {
+        $command->execute();
+        $this->undoStack->push($command);
+        // FORGOT: $this->redoStack->clear();
+    }
+}
+
+// GOOD: Clear redo on new action
+class GoodUndoRedo
+{
+    private Stack $undoStack;
+    private Stack $redoStack;
+
+    public function execute($command): void
+    {
+        $command->execute();
+        $this->undoStack->push($command);
+        $this->redoStack->clear(); // Clear redo history!
+    }
+}
+```
+
+### Pitfall 5: Memory Leaks with Large Objects
+
+```php
+// BAD: Keeps references to large objects
+class LeakyStack
+{
+    private array $items = [];
+
+    public function push($value): void
+    {
+        $this->items[] = $value; // Large objects never released
+    }
+}
+
+// GOOD: Implement proper cleanup
+class CleanStack
+{
+    private array $items = [];
+    private int $maxSize = 100;
+
+    public function push($value): void
+    {
+        // Limit size to prevent unbounded growth
+        if (count($this->items) >= $this->maxSize) {
+            array_shift($this->items); // Remove oldest
+        }
+
+        $this->items[] = $value;
+    }
+
+    public function clear(): void
+    {
+        // Explicitly clear to help garbage collection
+        $this->items = [];
+    }
+
+    public function __destruct()
+    {
+        $this->clear();
+    }
+}
 ```
 
 ## Comparison: Stack vs Queue vs Deque
