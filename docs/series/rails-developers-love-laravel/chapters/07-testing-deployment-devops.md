@@ -1334,6 +1334,198 @@ tail -f storage/logs/laravel.log
 - [ ] Verify scheduled tasks
 - [ ] Check queue workers
 
+::: tip Pro Tip: Zero-Downtime Deployment Script
+Create a deployment script that ensures zero downtime:
+
+```bash
+#!/bin/bash
+# deploy.sh - Zero-downtime Laravel deployment
+
+set -e # Exit on any error
+
+echo "🚀 Starting deployment..."
+
+# Pull latest code
+git pull origin main
+
+# Install dependencies
+composer install --no-dev --optimize-autoloader --no-interaction
+
+# Run migrations (non-blocking)
+php artisan migrate --force
+
+# Clear old caches
+php artisan cache:clear
+php artisan view:clear
+
+# Rebuild caches
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+
+# Restart queue workers
+php artisan queue:restart
+
+# Reload PHP-FPM (zero downtime!)
+sudo systemctl reload php8.4-fpm
+
+echo "✅ Deployment complete!"
+
+# Health check
+curl -f http://localhost/health || echo "⚠️  Health check failed!"
+```
+
+**Make it executable:**
+```bash
+chmod +x deploy.sh
+./deploy.sh
+```
+:::
+
+::: warning Common Deployment Gotchas
+**Issue #1: Cache Config Breaks Environment Variables**
+
+```bash
+# ❌ PROBLEM: After running config:cache, .env changes ignored
+php artisan config:cache
+
+# Why: Config is cached, .env not read anymore
+
+# ✅ SOLUTION: Clear cache when changing .env
+php artisan config:clear
+# Then update .env
+# Then cache again
+php artisan config:cache
+```
+
+**Issue #2: Migrations Fail in Production**
+
+```bash
+# ❌ PROBLEM: Migration works locally, fails in production
+php artisan migrate
+# Error: Syntax error near...
+
+# Why: Different MySQL/PostgreSQL versions
+
+# ✅ SOLUTION: Test migrations on production-like database first
+# Use Laravel's databaseRefresher in tests
+```
+
+**Issue #3: File Permissions**
+
+```bash
+# ❌ PROBLEM: 500 errors after deployment
+# storage/logs/laravel.log: Permission denied
+
+# ✅ SOLUTION: Fix permissions
+sudo chown -R www-data:www-data storage bootstrap/cache
+sudo chmod -R 775 storage bootstrap/cache
+```
+
+**Issue #4: Queue Workers Not Processing**
+
+```bash
+# ❌ PROBLEM: Jobs stuck in queue after deployment
+
+# Why: Old workers still running with old code
+
+# ✅ SOLUTION: Always restart workers after deploy
+php artisan queue:restart
+
+# Or use Supervisor to auto-restart
+# /etc/supervisor/conf.d/laravel-worker.conf
+[program:laravel-worker]
+command=php /path/to/artisan queue:work --sleep=3 --tries=3
+autostart=true
+autorestart=true
+```
+
+**Issue #5: CSS/JS Not Updating**
+
+```bash
+# ❌ PROBLEM: Users see old CSS after deployment
+
+# Why: Browser caching + no asset versioning
+
+# ✅ SOLUTION: Version assets with Laravel Mix
+// webpack.mix.js
+mix.js('resources/js/app.js', 'public/js')
+   .sass('resources/sass/app.scss', 'public/css')
+   .version(); // Adds hash to filename
+
+// In Blade:
+<link rel="stylesheet" href="{{ mix('css/app.css') }}">
+```
+
+**Issue #6: Application Key Missing**
+
+```bash
+# ❌ PROBLEM: "No application encryption key has been specified"
+
+# ✅ SOLUTION: Generate key in production
+php artisan key:generate
+
+# Or copy from .env.example and generate
+cp .env.example .env
+php artisan key:generate
+```
+:::
+
+## Troubleshooting Production Issues
+
+### Debug Mode in Production
+
+**Never enable debug in production!**
+
+```php
+<?php
+// ❌ NEVER DO THIS IN PRODUCTION
+// .env
+APP_DEBUG=true // Exposes sensitive info!
+
+// ✅ Instead, log errors
+// config/logging.php
+'channels' => [
+    'stack' => [
+        'driver' => 'stack',
+        'channels' => ['single', 'slack'], // Alert on errors
+    ],
+],
+```
+
+### Finding the Root Cause
+
+```bash
+# Check Laravel logs
+tail -f storage/logs/laravel.log
+
+# Check web server logs
+tail -f /var/log/nginx/error.log
+
+# Check PHP-FPM logs
+tail -f /var/log/php8.4-fpm.log
+
+# Check system logs
+tail -f /var/log/syslog
+```
+
+### Performance Debugging
+
+```bash
+# Enable query logging temporarily
+DB::enableQueryLog();
+// Your code
+dd(DB::getQueryLog());
+
+# Use Laravel Telescope in staging
+composer require laravel/telescope --dev
+php artisan telescope:install
+php artisan migrate
+
+# Use Laravel Debugbar in development
+composer require barryvdh/laravel-debugbar --dev
+```
+
 ## Key Takeaways
 
 1. **Testing is Similar** — PHPUnit feels like RSpec, Pest even more so
