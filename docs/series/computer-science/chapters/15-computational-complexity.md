@@ -23,6 +23,43 @@ In this chapter, you'll learn:
 
 ## Complexity Classes
 
+```mermaid
+graph TB
+    subgraph "Complexity Class Hierarchy"
+        ALL["All Problems"]
+        DECIDABLE["Decidable Problems"]
+        NPHARD["NP-Hard<br/>(At least as hard as NP-Complete)"]
+        NP["NP<br/>(Verifiable in polynomial time)"]
+        NPCOMPLETE["NP-Complete<br/>(Hardest in NP)"]
+        P["P<br/>(Solvable in polynomial time)"]
+
+        ALL --> DECIDABLE
+        DECIDABLE --> NPHARD
+        NPHARD --> NPCOMPLETE
+        DECIDABLE --> NP
+        NP --> NPCOMPLETE
+        NP --> P
+
+        P_EX["Examples:<br/>• Sorting<br/>• Binary Search<br/>• Shortest Path"]
+        NPC_EX["Examples:<br/>• TSP<br/>• Knapsack<br/>• SAT<br/>• Graph Coloring"]
+        NPH_EX["Examples:<br/>• Halting Problem<br/>• TSP (optimization)"]
+
+        P -.-> P_EX
+        NPCOMPLETE -.-> NPC_EX
+        NPHARD -.-> NPH_EX
+    end
+
+    QUESTION["P = NP?<br/>Unknown!<br/>$1M Prize"]
+
+    style ALL fill:#E0E0E0
+    style DECIDABLE fill:#BDBDBD
+    style NP fill:#64B5F6
+    style P fill:#4CAF50
+    style NPCOMPLETE fill:#FF6B6B,color:#fff
+    style NPHARD fill:#9C27B0,color:#fff
+    style QUESTION fill:#FFD700
+```
+
 ### Class P: Polynomial Time
 
 **P**: Problems solvable in polynomial time O(n^k).
@@ -143,6 +180,34 @@ P = NP?
 - Approximations and heuristics are best we can do
 
 ## Recognizing Hard Problems
+
+```mermaid
+graph TB
+    START["Is this problem<br/>NP-Hard?"]
+    Q1{"Involves finding<br/>'optimal' solution?"}
+    Q2{"Requires checking<br/>'all possible'<br/>combinations?"}
+    Q3{"Graph problem with<br/>global constraints?"}
+    Q4{"Involves<br/>partitioning/packing?"}
+    Q5{"Known polynomial<br/>algorithm exists?"}
+
+    START --> Q1
+    Q1 -->|"Yes"| Q2
+    Q1 -->|"No"| Q5
+    Q2 -->|"Yes"| HARD1["⚠️ Likely NP-Hard<br/>Use approximation"]
+    Q2 -->|"No"| Q3
+    Q3 -->|"Yes"| Q4
+    Q3 -->|"No"| Q5
+    Q4 -->|"Yes"| HARD2["⚠️ Likely NP-Hard<br/>Use heuristics"]
+    Q4 -->|"No"| Q5
+    Q5 -->|"Yes"| EASY["✓ Tractable (P)<br/>Use known algorithm"]
+    Q5 -->|"No"| RESEARCH["Research needed<br/>Check literature"]
+
+    style START fill:#2196F3,color:#fff
+    style HARD1 fill:#FF6B6B,color:#fff
+    style HARD2 fill:#FF6B6B,color:#fff
+    style EASY fill:#4CAF50
+    style RESEARCH fill:#FFA500
+```
 
 **Red flags** for NP-Hard problems:
 - "All possible..." (combinations, permutations)
