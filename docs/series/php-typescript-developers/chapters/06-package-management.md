@@ -840,13 +840,17 @@ echo $calc->multiply(4, 7) . PHP_EOL; // 28
 ## Key Takeaways
 
 1. **Composer is PHP's npm** - Nearly identical workflow and concepts
-2. **composer.json = package.json** with minor syntax differences
-3. **PSR-4 autoloading** replaces import/require statements
-4. **Packagist.org** is PHP's npm registry
-5. **composer.lock = package-lock.json** for reproducible builds
-6. **Semantic versioning** works identically in both
-7. **Scripts** work similarly with minor naming differences
-8. **No build step** required (PHP is interpreted)
+2. **composer.json = package.json** with minor syntax differences (uses `require` not `dependencies`)
+3. **PSR-4 autoloading** replaces import/require statements - maps namespaces to directories
+4. **Packagist.org** is PHP's npm registry (default, no configuration needed)
+5. **composer.lock = package-lock.json** for reproducible builds - commit this file!
+6. **Semantic versioning** works identically in both (^, ~, *, exact versions)
+7. **Scripts** work similarly with minor naming differences (use `composer run script-name`)
+8. **No build step** required (PHP is interpreted, not compiled)
+9. **`vendor/` = `node_modules/`** - add to `.gitignore`
+10. **Global packages** installed with `composer global require` (like `npm install -g`)
+11. **Platform requirements** ensure PHP version/extensions via `require.platform`
+12. **`composer dump-autoload`** regenerates autoloader (like rebuilding imports)
 
 ## Command Cheat Sheet
 

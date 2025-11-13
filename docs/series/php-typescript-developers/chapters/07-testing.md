@@ -835,14 +835,18 @@ test('should create active user by default', () => {
 
 ## Key Takeaways
 
-1. **PHPUnit ≈ Jest** - Very similar testing experience
-2. **Test methods** start with `test` prefix in PHPUnit
-3. **Assertions** are method calls in PHPUnit (`$this->assert*()`)
-4. **Mocking** uses `createMock()` instead of `jest.fn()`
-5. **Data providers** replace `test.each()` for parameterized tests
-6. **Coverage** requires Xdebug or PCOV extension
-7. **Setup/Teardown** use `setUp()`/`tearDown()` methods
-8. **Expected before actual** in PHPUnit assertions
+1. **PHPUnit ≈ Jest** - Very similar testing experience with minor syntax differences
+2. **Test methods** start with `test` prefix or use `@test` annotation
+3. **Assertions** are method calls in PHPUnit (`$this->assert*()`) not chained methods
+4. **Mocking** uses `createMock()` instead of `jest.fn()` with explicit method configuration
+5. **Data providers** replace `test.each()` for parameterized tests - more powerful
+6. **Coverage** requires Xdebug or PCOV extension (not built-in like Jest)
+7. **Setup/Teardown** use `setUp()`/`tearDown()` methods (camelCase, not snake_case)
+8. **Expected before actual** in PHPUnit assertions: `assertEquals($expected, $actual)`
+9. **Test classes extend `TestCase`** - all test classes must inherit from PHPUnit base
+10. **Use `@covers` annotation** to specify which class/method is being tested
+11. **Assertions are strict** - `assertSame()` for type-safe equality (like `toBe` in Jest)
+12. **No watch mode** by default - use PHPUnit Watcher package for auto-rerun
 
 ## Comparison Table
 
