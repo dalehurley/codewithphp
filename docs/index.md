@@ -17,10 +17,10 @@ No frameworks, no shortcuts—just deep understanding that prepares you for Lara
 
 <div class="hero-badges">
 
-✓ **100% Free**  
-✓ **Self-Paced**  
-✓ **61+ Chapters**  
-✓ **3 Complete Series**
+✓ **100% Free**
+✓ **Self-Paced**
+✓ **72+ Chapters**
+✓ **4 Series**
 
 </div>
 
@@ -46,7 +46,7 @@ No credit card • No signup • Start immediately
 
 <div class="stat-card">
 
-### 61+ Chapters
+### 72+ Chapters
 
 Complete tutorials covering everything from basics to AI/ML
 
@@ -54,9 +54,9 @@ Complete tutorials covering everything from basics to AI/ML
 
 <div class="stat-card">
 
-### 3 Series
+### 4 Series
 
-Beginner-friendly to advanced, plus Python developer transition
+From beginner basics to advanced AI/ML, plus Python & Rails transitions
 
 </div>
 
@@ -195,6 +195,7 @@ We believe in understanding the fundamentals before using abstractions. By build
 | **[PHP Basics](#php-basics)** ⭐                          | Beginner     | 25 chapters • 20–30 hrs | Build a complete blog application from scratch |
 | **[AI/ML for PHP Developers](#ai-ml-for-php-developers)** | Intermediate | 25 chapters • 40–50 hrs | Build AI-powered PHP applications              |
 | **[Python to Laravel](#python-to-laravel)**               | Intermediate | 11 chapters • 15–20 hrs | Transition confidently from Python to Laravel  |
+| **[Rails to Laravel](#rails-to-laravel)**                 | Intermediate | 11 chapters • 15–20 hrs | Transition confidently from Rails to Laravel   |
 
 </div>
 
@@ -323,10 +324,48 @@ User::where('active', true)->paginate(15);
 
 </div>
 
+<div class="series-card series-card-rails">
+
+### 💎 Rails to Laravel
+
+**For Ruby on Rails devs exploring Laravel** — Familiar patterns, new syntax
+
+Discover how your Rails skills translate beautifully to Laravel. Perfect for experienced Rails developers exploring PHP's most popular framework.
+
+**What you'll learn:**
+
+- Mapping Rails concepts to Laravel (ActiveRecord → Eloquent)
+- Modern PHP syntax and features
+- Laravel's developer experience and productivity tools
+- Building REST APIs and testing
+- When to use Laravel vs Rails
+
+**📊 Course Details:**
+
+- **11 chapters** | **15–20 hours** | **Intermediate**
+- **Prerequisites**: Ruby on Rails web development experience
+- **Outcome**: Confidently build Laravel applications
+
+**💻 What You'll Build:**
+
+```php
+// Familiar patterns, new syntax
+Route::get('/posts', [PostController::class, 'index']);
+Post::where('published', true)->orderBy('created_at')->get();
+```
+
+<div class="series-cta">
+
+[Start Rails Series →](/series/rails-developers-love-laravel/)
+
+</div>
+
+</div>
+
 </div>
 
 ::: tip Not Sure Where to Start?
-If you're completely new to programming, start with **[PHP Basics](/series/php-basics/)**. If you know Python web development, try **[Python to Laravel](/series/python-developers-love-php-laravel/)**. Each series is independent and self-contained.
+If you're completely new to programming, start with **[PHP Basics](/series/php-basics/)**. If you know Python web development, try **[Python to Laravel](/series/python-developers-love-php-laravel/)**. If you're a Rails developer, explore **[Rails to Laravel](/series/rails-developers-love-laravel/)**. Each series is independent and self-contained.
 :::
 
 ## What You'll Build
@@ -641,6 +680,8 @@ _Helping developers fall in love with PHP, one tutorial at a time._
   --ai-violet: #8b5cf6;
   --python-blue: #0ea5e9;
   --python-cyan: #06b6d4;
+  --rails-red: #dc2626;
+  --rails-ruby: #ef4444;
   --neutral-gray: #64748b;
   --bg-light: #f8fafc;
 }
@@ -863,6 +904,11 @@ _Helping developers fall in love with PHP, one tutorial at a time._
   background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);
 }
 
+.series-card-rails {
+  border: 2px solid var(--rails-red);
+  background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%);
+}
+
 .popular-badge {
   position: absolute;
   top: -12px;
@@ -920,6 +966,17 @@ _Helping developers fall in love with PHP, one tutorial at a time._
 
 .series-card-python .series-cta a:hover {
   box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+  transform: translateY(-2px);
+}
+
+.series-card-rails .series-cta a {
+  background: linear-gradient(135deg, var(--rails-red) 0%, var(--rails-ruby) 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+}
+
+.series-card-rails .series-cta a:hover {
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
   transform: translateY(-2px);
 }
 
@@ -1081,6 +1138,10 @@ h2::before {
 
 .series-card-python code {
   border-left-color: var(--python-blue);
+}
+
+.series-card-rails code {
+  border-left-color: var(--rails-red);
 }
 
 /* Testimonials styling */
