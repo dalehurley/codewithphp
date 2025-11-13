@@ -640,13 +640,18 @@ createServer(page =>
 
 ## Key Takeaways
 
-1. **Inertia bridges Laravel + React/Vue** seamlessly
-2. **No API needed** - controllers return props directly
-3. **TypeScript support** is first-class
-4. **Forms and validation** are incredibly simple
-5. **Feels like SPA** but server-side rendered
-6. **Best of both worlds** - Laravel backend power + React frontend
-7. **Perfect for TypeScript devs** who want to use Laravel
+1. **Inertia bridges Laravel + React/Vue** seamlessly - no API layer needed
+2. **No API needed** - controllers return props directly to React components
+3. **TypeScript support** is first-class with type generation from Laravel models
+4. **Forms and validation** are incredibly simple - submit to Laravel routes directly
+5. **Feels like SPA** but server-side rendered - best of both architectures
+6. **Best of both worlds** - Laravel backend power + React/Vue frontend DX
+7. **Perfect for TypeScript devs** who want Laravel without building separate API
+8. **Server-side routing** with client-side navigation - no route duplication
+9. **Ziggy** provides Laravel routes in JavaScript - type-safe route helpers
+10. **Shared data** automatically available to all pages (auth user, flash messages, etc.)
+11. **Partial reloads** only fetch changed data - efficient like GraphQL without complexity
+12. **SSR support** available via Inertia SSR - true server-side rendering for SEO
 
 ## When to Use Inertia
 

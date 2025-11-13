@@ -651,13 +651,18 @@ php artisan queue:work
 
 ## Key Takeaways
 
-1. **PHP is synchronous by default** - This is fine for most web apps
-2. **Fibers (PHP 8.1+)** enable cooperative multitasking
-3. **ReactPHP/Amp** bring Node.js-style async to PHP
-4. **Guzzle async** handles concurrent HTTP requests easily
-5. **Most PHP apps don't need async** - Laravel queues often sufficient
-6. **Async PHP is complex** - Only use when necessary
-7. **Swoole/RoadRunner** offer high-performance alternatives
+1. **PHP is synchronous by default** - This is fine for 95% of web applications
+2. **Fibers (PHP 8.1+)** enable cooperative multitasking (low-level building block)
+3. **ReactPHP/Amp** bring Node.js-style async event loops to PHP
+4. **Guzzle async** handles concurrent HTTP requests easily with promises
+5. **Most PHP apps don't need async** - Laravel queues are often sufficient alternative
+6. **Async PHP is complex** - Only use for WebSockets, high-concurrency, or microservices
+7. **Swoole/RoadRunner** offer high-performance alternatives (10-100x faster than PHP-FPM)
+8. **No automatic async** like JavaScript - must explicitly use async libraries
+9. **Use Laravel queues** for background jobs instead of in-process async
+10. **ReactPHP promises** work like JavaScript promises but with PHP syntax
+11. **Async PHP best for**: WebSocket servers, scraping, concurrent API calls, long-running daemons
+12. **Traditional PHP-FPM handles** concurrency at process level, not async level
 
 ## Practical Advice
 
