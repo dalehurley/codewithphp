@@ -1,3 +1,13 @@
+---
+title: "Stream Processing Algorithms"
+description: "Real-time stream processing algorithms for analytics, monitoring, and rate limiting including sliding windows and aggregation techniques"
+series: "php-algorithms"
+chapter: 36
+order: 36
+difficulty: "advanced"
+prerequisites: ["Data Structures", "Sliding Windows", "Real-time Systems"]
+---
+
 # Chapter 36: Stream Processing Algorithms
 
 ## Introduction
