@@ -9,7 +9,7 @@ prerequisites:
   - "/series/build-crm-laravel-12/chapters/21-oauth2-with-laravel-passport"
 ---
 
-![oauth2-with-laravel-passport](/images/build-crm-laravel-12/chapter-22-oauth2-with-laravel-passport-hero-full.webp)
+![oauth2-with-laravel-passport](/images/build-crm-laravel-12/chapter-22-oauth2-laravel-passport-hero-full.webp)
 
 # Chapter 22: OAuth2 with Laravel Passport
 

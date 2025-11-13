@@ -9,7 +9,7 @@ prerequisites:
   - "/series/build-crm-laravel-12/chapters/24-advanced-search-with-laravel-scout"
 ---
 
-![advanced-search-with-laravel-scout](/images/build-crm-laravel-12/chapter-25-advanced-search-with-laravel-scout-hero-full.webp)
+![advanced-search-with-laravel-scout](/images/build-crm-laravel-12/chapter-25-advanced-search-scout-hero-full.webp)
 
 # Chapter 25: Advanced Search with Laravel Scout
 

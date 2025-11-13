@@ -9,7 +9,7 @@ prerequisites:
   - "/series/build-crm-laravel-12/chapters/27-high-performance-tuning-with-laravel-octane"
 ---
 
-![high-performance-tuning-with-laravel-octane](/images/build-crm-laravel-12/chapter-28-high-performance-tuning-with-laravel-octane-hero-full.webp)
+![high-performance-tuning-with-laravel-octane](/images/build-crm-laravel-12/chapter-28-high-performance-octane-hero-full.webp)
 
 # Chapter 28: High-Performance Tuning with Laravel Octane
 

@@ -9,7 +9,7 @@ prerequisites:
   - "/series/build-crm-laravel-12/chapters/25-real-time-events-with-laravel-reverb-echo"
 ---
 
-![real-time-events-with-laravel-reverb-echo](/images/build-crm-laravel-12/chapter-26-real-time-events-with-laravel-reverb-echo-hero-full.webp)
+![real-time-events-with-laravel-reverb-echo](/images/build-crm-laravel-12/chapter-26-realtime-events-reverb-echo-hero-full.webp)
 
 # Chapter 26: Real-Time Events with Laravel Reverb & Echo
 

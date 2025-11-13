@@ -9,7 +9,7 @@ prerequisites:
   - "/series/build-crm-laravel-12/chapters/19-building-a-restful-api-for-the-crm"
 ---
 
-![building-a-restful-api-for-the-crm](/images/build-crm-laravel-12/chapter-20-building-a-restful-api-for-the-crm-hero-full.webp)
+![building-a-restful-api-for-the-crm](/images/build-crm-laravel-12/chapter-20-building-restful-api-hero-full.webp)
 
 # Chapter 20: Building a RESTful API for the CRM
 

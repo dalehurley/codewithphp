@@ -9,7 +9,7 @@ prerequisites:
   - "/series/build-crm-laravel-12/chapters/31-debugging-monitoring-with-laravel-telescope"
 ---
 
-![debugging-monitoring-with-laravel-telescope](/images/build-crm-laravel-12/chapter-32-debugging-monitoring-with-laravel-telescope-hero-full.webp)
+![debugging-monitoring-with-laravel-telescope](/images/build-crm-laravel-12/chapter-32-debugging-monitoring-telescope-hero-full.webp)
 
 # Chapter 32: Debugging & Monitoring with Laravel Telescope
 
