@@ -713,13 +713,18 @@ Commit configuration files:
 
 ## Key Takeaways
 
-1. **PHP_CodeSniffer (PHPCS)** = ESLint for code style
-2. **PHP-CS-Fixer / Pint** = Prettier for formatting
-3. **PHPStan / Psalm** = TypeScript compiler for static analysis
-4. **PSR-12** is the standard coding style (like Airbnb style guide)
-5. **GrumPHP** provides git hooks (like Husky)
-6. **Editor integration** improves development experience
-7. **CI/CD integration** enforces quality standards
+1. **PHP_CodeSniffer (PHPCS)** = ESLint for code style checking
+2. **PHP-CS-Fixer / Pint** = Prettier for automatic formatting
+3. **PHPStan / Psalm** = TypeScript compiler for static analysis at levels 0-9
+4. **PSR-12** is the standard coding style (like Airbnb/Standard style guide)
+5. **GrumPHP** provides git hooks (like Husky) to run checks pre-commit
+6. **Editor integration** improves development experience with real-time feedback
+7. **CI/CD integration** enforces quality standards automatically on PRs
+8. **PHPStan level 9 is strictest** - catches almost all type errors
+9. **`phpcbf` auto-fixes** code style issues found by PHPCS
+10. **Combine all three tools** for comprehensive quality: PHPCS (style), PHPStan (types), tests (behavior)
+11. **`.phpcs.xml` and `phpstan.neon`** configure rules like `.eslintrc` and `tsconfig.json`
+12. **Rector** can automatically upgrade PHP code and refactor (like jscodeshift)
 
 ## Comparison Table
 

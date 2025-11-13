@@ -684,13 +684,18 @@ if (isset($_GET['debug'])) {
 
 ## Key Takeaways
 
-1. **Xdebug = Node.js debugger** - Same features, different setup
-2. **Breakpoints work identically** - Click line numbers, set conditions
-3. **Step-through commands are the same** - F10, F11, etc.
-4. **VS Code supports both** - Consistent debugging experience
-5. **Remote debugging available** - SSH tunnels work well
-6. **Profiling included** - Xdebug profiles performance
-7. **Always disable in production** - Xdebug adds overhead
+1. **Xdebug = Node.js debugger** - Same features, requires extension installation
+2. **Breakpoints work identically** - Click line numbers, set conditions, logpoints
+3. **Step-through commands are the same** - F10 (over), F11 (into), Shift+F11 (out)
+4. **VS Code supports both** - Consistent debugging experience across languages
+5. **Remote debugging available** - SSH tunnels and Docker debugging work well
+6. **Profiling included** - Xdebug profiles performance (no separate tool needed)
+7. **Always disable in production** - Xdebug adds significant overhead (~30%)
+8. **Port 9003** is default for Xdebug 3+ (was 9000 in Xdebug 2)
+9. **`xdebug_break()`** is PHP's `debugger;` statement
+10. **Use Xdebug mode** flags to enable only what you need (debug, profile, trace)
+11. **phpdbg** is built-in alternative for CLI debugging (no extension needed)
+12. **Ray/Telescope** for Laravel - advanced debugging tools beyond Xdebug
 
 ## Comparison Table
 
