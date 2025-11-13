@@ -8,9 +8,38 @@ difficulty: "intermediate"
 prerequisites: ["Trees & Binary Search Trees"]
 ---
 
-# Tree Traversal Algorithms
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/#choose-your-learning-path">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms/">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 19</span>
+</div>
 
-Tree traversal is the process of visiting each node in a tree data structure exactly once in a systematic way. Understanding traversal algorithms is fundamental to working with trees and forms the basis for many tree-based algorithms.
+# Tree Traversal Algorithms <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
+
+## What You'll Learn
+
+- Master in-order, pre-order, and post-order depth-first traversals
+- Implement level-order (breadth-first) traversal with queues
+- Build both recursive and iterative versions of each traversal
+- Apply traversals to solve practical tree problems
+- Understand when to use each traversal strategy
+
+**Estimated Time**: ~50 minutes
+
+## Prerequisites
+
+Before starting this chapter, you should have:
+
+- ✓ Strong understanding of binary search trees (Chapter 18)
+- ✓ Familiarity with recursion (Chapter 3)
+- ✓ Knowledge of stacks and queues (Chapter 17)
+- ✓ Completion of Chapters 15-18
+
+Tree traversal is the process of visiting each node in a tree data structure exactly once in a systematic way. Think of it as taking different "tours" through your tree—each traversal strategy visits the same nodes but in a different order, making each one useful for different problems. Understanding traversal algorithms is fundamental to working with trees and forms the basis for many tree-based algorithms.
 
 ## Understanding Tree Traversal
 

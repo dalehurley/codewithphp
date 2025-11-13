@@ -8,11 +8,44 @@ difficulty: "advanced"
 prerequisites: ["Data Structures", "Sliding Windows", "Real-time Systems"]
 ---
 
-# Chapter 36: Stream Processing Algorithms
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/#choose-your-learning-path">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms/">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 36</span>
+</div>
+
+# Stream Processing Algorithms <span class="difficulty-badge difficulty-advanced">Advanced</span>
+
+## What You'll Learn
+
+Master the algorithms that power real-time analytics and monitoring systems processing millions of events per second. Stream processing is essential for building responsive applications that analyze data as it arrives, not hours later.
+
+- Implement sliding window algorithms for tracking recent events efficiently
+- Build rate limiting and throttling mechanisms for API protection
+- Apply stream aggregation techniques for real-time metrics and dashboards
+- Design time-series algorithms for monitoring and anomaly detection
+- Create memory-efficient solutions that process unlimited data streams
+
+**Estimated Time**: ~50 minutes
+
+## Prerequisites
+
+Stream processing builds on several foundations. You'll need:
+
+- [ ] **Data structures mastery** - Understanding of queues, deques, and specialized structures
+- [ ] **Sliding window concepts** - Familiarity with window-based computations
+- [ ] **Real-time systems** - Awareness of latency requirements and throughput constraints
+- [ ] **Algorithm complexity** - Ability to design O(1) space and time solutions
+
+Ready to build real-time data processing systems? Let's master stream algorithms!
 
 ## Introduction
 
-Stream processing algorithms handle continuous, potentially infinite data streams where the entire dataset cannot fit in memory. These algorithms are essential for real-time analytics, monitoring systems, and big data processing.
+Stream processing algorithms handle continuous, potentially infinite data streams where the entire dataset cannot fit in memory. These algorithms are essential for real-time analytics, monitoring systems, and big data processing. They power everything from rate limiters protecting APIs to dashboards showing live metrics for millions of users.
 
 ## Characteristics of Stream Processing
 

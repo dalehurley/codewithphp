@@ -11,9 +11,39 @@ prerequisites:
   - "Completion of Chapter 0"
 ---
 
-# Algorithm Complexity & Big O Notation
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 01</span>
+</div>
+
+# Algorithm Complexity & Big O Notation <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
 
 In the previous chapter, we saw that some algorithms are faster than others. But how do we measure and compare algorithm efficiency? Enter **Big O notation**—the language we use to describe how algorithms scale.
+
+## What You'll Learn
+
+**Estimated time:** 60 minutes
+
+By the end of this chapter, you will:
+
+- Master Big O notation to analyze algorithm efficiency mathematically
+- Understand time and space complexity with practical PHP examples and real-world scenarios
+- Learn to calculate complexity for nested loops, recursion, and built-in PHP functions
+- Recognize common complexity patterns (O(1), O(n), O(n²), etc.) and when to use each
+- Apply complexity analysis to security considerations and avoid performance pitfalls
+
+## Prerequisites
+
+Before starting this chapter, ensure you have:
+
+- ✓ Understanding of basic PHP syntax *(10 mins review if needed)*
+- ✓ Familiarity with loops and functions *(10 mins review if needed)*
+- ✓ Completion of Chapter 0 *(45 mins if not done)*
 
 ## Why Algorithm Complexity Matters
 

@@ -11,9 +11,38 @@ prerequisites:
   - "Completion of Chapters 11-12"
 ---
 
-# Hash Tables & Hash Functions
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/#choose-your-learning-path">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms/">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 13</span>
+</div>
 
-Hash tables are one of the most important data structures in computer science, providing **O(1) average-case** lookups, insertions, and deletions. In this chapter, we'll build hash tables from scratch, design hash functions, and handle collisions effectively.
+# Hash Tables & Hash Functions <span class="difficulty-badge difficulty-advanced">Advanced</span>
+
+## What You'll Learn
+
+- Build hash tables from scratch with proper hash functions
+- Implement collision handling using separate chaining and open addressing
+- Master advanced techniques like Robin Hood, Cuckoo, and Hopscotch hashing
+- Apply hash tables to solve real-world problems efficiently
+- Understand security considerations and protect against hash flooding attacks
+
+**Estimated Time**: ~60 minutes
+
+## Prerequisites
+
+Before starting this chapter, you should have:
+
+- ✓ Understanding of arrays and how they work
+- ✓ Familiarity with linked lists (covered in Chapter 16, but helpful context)
+- ✓ Completion of Chapters 11-12 (search algorithms)
+- ✓ Basic understanding of O(1) time complexity
+
+Hash tables are one of the most important data structures in computer science, providing **O(1) average-case** lookups, insertions, and deletions. Think of them as the secret sauce behind PHP's lightning-fast associative arrays! In this chapter, we'll build hash tables from scratch, design hash functions, and handle collisions effectively.
 
 ## What Is a Hash Table?
 

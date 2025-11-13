@@ -11,9 +11,51 @@ prerequisites:
   - "Completion of Chapters 05-07"
 ---
 
-# Heap Sort & Priority Queues
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 08</span>
+</div>
+
+# Heap Sort & Priority Queues <span class="difficulty-badge difficulty-advanced">Advanced</span>
 
 In this chapter, we'll explore **heaps**—a powerful tree-based data structure that enables efficient sorting and priority management. We'll build heap sort, understand heap operations, and create a priority queue for real-world applications.
+
+## What You'll Learn
+
+**Estimated time:** 75 minutes
+
+By the end of this chapter, you will:
+
+- Build a binary heap data structure from scratch and understand heap properties (max-heap and min-heap)
+- Implement heapify operations (sift-up and sift-down) for maintaining heap invariants
+- Master Heap Sort algorithm achieving O(n log n) time with O(1) space complexity
+- Understand priority queues and their real-world applications (task scheduling, Dijkstra's algorithm)
+- Compare Heap Sort with other O(n log n) algorithms and learn trade-offs
+
+## Prerequisites
+
+Before starting this chapter, ensure you have:
+
+- ✓ Understanding of trees *(basic tree concepts needed)*
+- ✓ Understanding of Big O notation *(60 mins from Chapter 1 if not done)*
+- ✓ Completion of Chapters 05-07 *(180 mins if not done)*
+
+## Quick Checklist
+
+Complete these hands-on tasks as you work through the chapter:
+
+- [ ] Implement binary heap structure with array representation
+- [ ] Write heapify-up (sift-up) and heapify-down (sift-down) operations
+- [ ] Build a max-heap from an unsorted array
+- [ ] Implement Heap Sort by building heap and extracting elements
+- [ ] Create a Priority Queue class with insert, extract-max, and peek operations
+- [ ] Benchmark Heap Sort vs Quick Sort and Merge Sort
+- [ ] (Optional) Implement min-heap and use it for finding k smallest elements
 
 ## What Is a Heap?
 

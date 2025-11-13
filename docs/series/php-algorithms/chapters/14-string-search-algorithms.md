@@ -11,9 +11,38 @@ prerequisites:
   - "Familiarity with pattern matching"
 ---
 
-# String Search Algorithms
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/#choose-your-learning-path">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms/">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 14</span>
+</div>
 
-String searching (or pattern matching) is fundamental to text processing. Whether you're implementing search in a text editor, filtering log files, or building a search engine, you need efficient string search algorithms. In this chapter, we'll explore multiple approaches from simple to sophisticated.
+# String Search Algorithms <span class="difficulty-badge difficulty-advanced">Advanced</span>
+
+## What You'll Learn
+
+- Master the naive string search algorithm and understand its limitations
+- Implement the Knuth-Morris-Pratt (KMP) algorithm for linear-time searching
+- Build the Boyer-Moore algorithm that powers real-world text editors
+- Use Rabin-Karp hashing for efficient multi-pattern matching
+- Create a practical grep-like tool for text processing
+
+**Estimated Time**: ~55 minutes
+
+## Prerequisites
+
+Before starting this chapter, you should have:
+
+- ✓ Understanding of strings and arrays
+- ✓ Completion of Chapters 11-13 (search algorithms and hash tables)
+- ✓ Familiarity with pattern matching concepts
+- ✓ Basic knowledge of time complexity analysis
+
+String searching (or pattern matching) is fundamental to text processing. Whether you're implementing search in a text editor, filtering log files, or building a search engine, you need efficient string search algorithms. In this chapter, we'll explore multiple approaches from simple to sophisticated, discovering how algorithms like KMP and Boyer-Moore achieve remarkable performance gains.
 
 ## The String Search Problem
 

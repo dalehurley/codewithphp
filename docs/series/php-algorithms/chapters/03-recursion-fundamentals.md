@@ -11,9 +11,39 @@ prerequisites:
   - "Completion of Chapters 0-2"
 ---
 
-# Recursion Fundamentals
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 03</span>
+</div>
+
+# Recursion Fundamentals <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
 
 Recursion is one of the most powerful and elegant problem-solving techniques in computer science. A **recursive function** is one that calls itself to solve smaller instances of the same problem. In this chapter, we'll master recursive thinking and learn when (and when not) to use recursion in PHP.
+
+## What You'll Learn
+
+**Estimated time:** 70 minutes
+
+By the end of this chapter, you will:
+
+- Master recursive thinking and understand how the call stack manages recursive function calls
+- Learn to write correct base cases and recursive cases that make progress toward termination
+- Understand when to use recursion vs iteration and their performance trade-offs
+- Optimize recursive functions with memoization techniques and tail recursion patterns
+- Apply recursion to real-world scenarios including tree traversal, parsing, backtracking, and divide-and-conquer
+
+## Prerequisites
+
+Before starting this chapter, ensure you have:
+
+- ✓ Understanding of functions *(10 mins review if needed)*
+- ✓ Familiarity with the call stack *(15 mins learning if needed)*
+- ✓ Completion of Chapters 0-2 *(180 mins if not done)*
 
 ## What Is Recursion?
 

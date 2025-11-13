@@ -10,9 +10,50 @@ prerequisites:
   - "Understanding of all sorting algorithms covered"
 ---
 
-# Comparing Sorting Algorithms
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 09</span>
+</div>
+
+# Comparing Sorting Algorithms <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
 
 We've learned six sorting algorithms: bubble sort, selection sort, insertion sort, merge sort, quick sort, and heap sort. In this chapter, we'll compare them comprehensively, benchmark their performance, and learn when to use each one.
+
+## What You'll Learn
+
+**Estimated time:** 50 minutes
+
+By the end of this chapter, you will:
+
+- Benchmark all six sorting algorithms across various dataset types and sizes
+- Understand time/space complexity trade-offs for each sorting algorithm
+- Learn which algorithm to choose based on data characteristics (size, order, duplicates)
+- Master the concept of stable vs unstable sorting and when stability matters
+- Create decision charts and selection guidelines for real-world sorting scenarios
+
+## Prerequisites
+
+Before starting this chapter, ensure you have:
+
+- ✓ Completion of Chapters 05-08 *(255 mins if not done)*
+- ✓ Understanding of all sorting algorithms covered *(review if needed)*
+
+## Quick Checklist
+
+Complete these hands-on tasks as you work through the chapter:
+
+- [ ] Create comprehensive benchmark suite testing all six algorithms
+- [ ] Test performance on: random, sorted, reverse-sorted, and nearly-sorted data
+- [ ] Compare memory usage (in-place vs additional space requirements)
+- [ ] Verify stability by sorting records with duplicate keys
+- [ ] Create performance comparison charts for different input sizes
+- [ ] Build a decision tree for algorithm selection based on constraints
+- [ ] (Optional) Test algorithms with real-world data (database records, file lists)
 
 ## Quick Reference Table
 

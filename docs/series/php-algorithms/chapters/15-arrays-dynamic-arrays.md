@@ -11,9 +11,38 @@ prerequisites:
   - "Completion of foundation chapters"
 ---
 
-# Arrays & Dynamic Arrays
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/#choose-your-learning-path">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms/">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 15</span>
+</div>
 
-Arrays are the most fundamental data structure in programming. While we use them constantly, understanding how they work internally—especially dynamic arrays—is crucial for writing efficient code. In this chapter, we'll explore array internals, dynamic resizing, and PHP's unique array implementation.
+# Arrays & Dynamic Arrays <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
+
+## What You'll Learn
+
+- Understand how arrays work in memory with contiguous storage
+- Implement dynamic array resizing with capacity management
+- Master PHP's unique hybrid array/hash table implementation
+- Analyze amortized time complexity for array operations
+- Build a custom dynamic array class from scratch
+
+**Estimated Time**: ~45 minutes
+
+## Prerequisites
+
+Before starting this chapter, you should have:
+
+- ✓ Understanding of basic PHP arrays and their syntax
+- ✓ Familiarity with Big O notation (covered in Chapter 1)
+- ✓ Completion of foundation chapters (1-5)
+- ✓ Basic knowledge of memory concepts
+
+Arrays are the most fundamental data structure in programming. While we use them constantly, understanding how they work internally—especially dynamic arrays—is crucial for writing efficient code. In this chapter, we'll explore array internals, dynamic resizing strategies, and PHP's unique array implementation that combines the best of both worlds.
 
 ## Static vs Dynamic Arrays
 

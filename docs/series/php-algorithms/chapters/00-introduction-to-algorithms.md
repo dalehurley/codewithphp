@@ -11,9 +11,39 @@ prerequisites:
   - "Basic understanding of functions"
 ---
 
-# Introduction to Algorithms
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 00</span>
+</div>
+
+# Introduction to Algorithms <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
 
 Welcome to **Algorithms for PHP Developers**! In this chapter, we'll explore what algorithms are, why they're essential for writing better PHP applications, and how to start thinking algorithmically.
+
+## What You'll Learn
+
+**Estimated time:** 45 minutes
+
+By the end of this chapter, you will:
+
+- Understand what algorithms are and why they're crucial for PHP developers
+- Learn to think algorithmically using a systematic problem-solving framework
+- Explore common algorithm categories including searching, sorting, and data structures
+- Develop skills to analyze algorithm efficiency and make informed design choices
+- Set up your development environment for algorithm practice and testing
+
+## Prerequisites
+
+Before starting this chapter, you should have:
+
+- ✓ Solid understanding of PHP basics *(15 mins review if needed)*
+- ✓ Familiarity with arrays and loops *(10 mins review if needed)*
+- ✓ Basic understanding of functions *(5 mins review if needed)*
 
 ## What Is an Algorithm?
 

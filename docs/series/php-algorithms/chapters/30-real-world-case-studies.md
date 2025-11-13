@@ -8,9 +8,42 @@ difficulty: "advanced"
 prerequisites: ["All previous chapters"]
 ---
 
-# Real-World Case Studies
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/#choose-your-learning-path">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms/">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 30</span>
+</div>
 
-This chapter demonstrates how algorithms covered in this series solve real-world problems in production PHP applications. Each case study includes problem analysis, algorithm selection, implementation, and optimization.
+# Real-World Case Studies <span class="difficulty-badge difficulty-advanced">Advanced</span>
+
+## What You'll Learn
+
+See algorithms in action solving real production problems. These aren't toy examples - they're battle-tested solutions from high-traffic applications serving millions of users, with measurable performance improvements and cost savings.
+
+- Analyze how algorithmic choices impact real business metrics (cost, speed, user satisfaction)
+- Apply multiple algorithms together to solve complex multi-faceted problems
+- Measure actual performance improvements with before/after benchmarks
+- Learn from production optimization case studies with millions in cost savings
+- Build complete solutions from problem analysis through deployment
+
+**Estimated Time**: ~60 minutes
+
+## Prerequisites
+
+This capstone chapter draws on everything you've learned. You should have:
+
+- [ ] **Completed all previous chapters** - Comprehensive understanding of algorithms and data structures
+- [ ] **Production development experience** - Understanding of real-world constraints and requirements
+- [ ] **System design awareness** - Ability to think about applications holistically
+- [ ] **Performance optimization skills** - Experience profiling and optimizing code
+
+Ready to see how theory becomes practice? Let's explore real-world success stories!
+
+This chapter demonstrates how algorithms covered in this series solve real-world problems in production PHP applications. Each case study includes problem analysis, algorithm selection, implementation, optimization, and measurable results. You'll see exactly how the right algorithmic choices save companies thousands of dollars and delight millions of users.
 
 ## Case Study 1: E-Commerce Product Recommendations
 

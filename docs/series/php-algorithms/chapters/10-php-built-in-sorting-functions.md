@@ -11,9 +11,51 @@ prerequisites:
   - "Familiarity with PHP arrays"
 ---
 
-# PHP's Built-in Sorting Functions
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 10</span>
+</div>
+
+# PHP's Built-in Sorting Functions <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
 
 PHP provides powerful built-in sorting functions that are highly optimized. In this chapter, we'll explore all of PHP's sorting functions, learn when to use each one, and master custom comparators for complex sorting requirements.
+
+## What You'll Learn
+
+**Estimated time:** 55 minutes
+
+By the end of this chapter, you will:
+
+- Master all PHP sorting functions: sort(), rsort(), asort(), ksort(), usort(), and more
+- Understand which underlying algorithms PHP uses (typically Quick Sort with optimizations)
+- Learn custom comparison functions with usort(), uasort(), and uksort()
+- Discover performance characteristics and when to use built-in vs custom implementations
+- Apply sorting to real-world PHP scenarios including objects, multidimensional arrays, and databases
+
+## Prerequisites
+
+Before starting this chapter, ensure you have:
+
+- ✓ Understanding of sorting algorithms *(review Chapters 05-09 if needed)*
+- ✓ Completion of Chapters 05-09 *(305 mins if not done)*
+- ✓ Familiarity with PHP arrays *(10 mins review if needed)*
+
+## Quick Checklist
+
+Complete these hands-on tasks as you work through the chapter:
+
+- [ ] Test all basic PHP sorting functions (sort, rsort, asort, arsort, ksort, krsort)
+- [ ] Implement custom comparison functions with usort() for complex sorting rules
+- [ ] Sort objects by properties using usort() and arrow functions
+- [ ] Sort multidimensional arrays with array_multisort()
+- [ ] Benchmark PHP's built-in sort() vs your custom implementations
+- [ ] Use array_column() with sorting for database-like operations
+- [ ] (Optional) Explore natsort() and natcasesort() for natural ordering
 
 ## Overview of PHP Sorting Functions
 

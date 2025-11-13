@@ -11,9 +11,38 @@ prerequisites:
   - "Completion of Chapter 15 (Arrays)"
 ---
 
-# Linked Lists
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/#choose-your-learning-path">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms/">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 16</span>
+</div>
 
-Arrays are great, but they have limitations: inserting at the beginning is O(n), and they require contiguous memory. **Linked lists** solve these problems by storing elements in nodes that point to each other. In this chapter, we'll build linked lists from scratch and master their operations.
+# Linked Lists <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
+
+## What You'll Learn
+
+- Build singly linked lists with proper node manipulation
+- Implement doubly linked lists for bidirectional traversal
+- Master insertion, deletion, and search operations
+- Solve classic linked list problems (reverse, detect cycles, merge)
+- Understand when to use linked lists vs. arrays
+
+**Estimated Time**: ~50 minutes
+
+## Prerequisites
+
+Before starting this chapter, you should have:
+
+- ✓ Understanding of PHP classes and objects
+- ✓ Familiarity with references and how they work in PHP
+- ✓ Completion of Chapter 15 (Arrays & Dynamic Arrays)
+- ✓ Basic recursion knowledge (helpful but not required)
+
+Arrays are great, but they have limitations: inserting at the beginning is O(n), and they require contiguous memory. **Linked lists** solve these problems by storing elements in nodes that point to each other. Think of them as a treasure hunt where each clue (node) points to the next location! In this chapter, we'll build linked lists from scratch and master their operations.
 
 ## What Is a Linked List?
 

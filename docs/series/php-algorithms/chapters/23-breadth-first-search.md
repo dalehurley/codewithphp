@@ -8,9 +8,38 @@ difficulty: "intermediate"
 prerequisites: ["Graph Representations", "Stacks & Queues"]
 ---
 
-# Breadth-First Search (BFS)
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/#choose-your-learning-path">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms/">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 23</span>
+</div>
 
-Breadth-First Search explores a graph level by level, visiting all neighbors of a vertex before moving to the next level. It's optimal for finding shortest paths in unweighted graphs.
+# Breadth-First Search (BFS) <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
+
+## What You'll Learn
+
+- Master breadth-first search for level-order graph traversal
+- Find shortest paths in unweighted graphs with BFS
+- Detect connected components and bipartite graphs
+- Implement BFS using queues for efficient exploration
+- Apply BFS to solve real-world problems like social network analysis
+
+**Estimated Time**: ~50 minutes
+
+## Prerequisites
+
+Before starting this chapter, you should have:
+
+- ✓ Complete understanding of graph representations (Chapter 21)
+- ✓ Strong knowledge of queues (Chapter 17)
+- ✓ Familiarity with DFS (Chapter 22) for comparison
+- ✓ Understanding of visited/distance tracking
+
+Breadth-First Search explores a graph level by level, visiting all neighbors of a vertex before moving to the next level—like ripples spreading out from a stone dropped in water. It's optimal for finding shortest paths in unweighted graphs and forms the foundation for many important algorithms in networking, social media, and AI.
 
 ## How BFS Works
 

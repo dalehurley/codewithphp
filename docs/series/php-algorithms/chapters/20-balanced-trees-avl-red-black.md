@@ -8,9 +8,38 @@ difficulty: "advanced"
 prerequisites: ["Trees & Binary Search Trees", "Tree Traversal Algorithms"]
 ---
 
-# Balanced Trees: AVL & Red-Black Trees
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/#choose-your-learning-path">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/series/php-algorithms/">PHP Algorithms</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Chapter 20</span>
+</div>
 
-Regular binary search trees can become unbalanced, degrading to O(n) time complexity in the worst case. Self-balancing trees maintain logarithmic height automatically, ensuring O(log n) performance for all operations.
+# Balanced Trees: AVL & Red-Black Trees <span class="difficulty-badge difficulty-advanced">Advanced</span>
+
+## What You'll Learn
+
+- Understand why BSTs can degrade and how self-balancing solves this
+- Implement AVL trees with rotation operations (single and double)
+- Master Red-Black tree properties and insertion rules
+- Compare AVL vs. Red-Black trees for different use cases
+- Build self-balancing trees that guarantee O(log n) operations
+
+**Estimated Time**: ~70 minutes
+
+## Prerequisites
+
+Before starting this chapter, you should have:
+
+- ✓ Complete understanding of binary search trees (Chapter 18)
+- ✓ Mastery of tree traversal algorithms (Chapter 19)
+- ✓ Strong recursion skills (Chapter 3)
+- ✓ Patience for complex rotations and rebalancing logic
+
+Regular binary search trees can become unbalanced, degrading to O(n) time complexity in the worst case. Imagine inserting sorted data—you'd end up with essentially a linked list! Self-balancing trees maintain logarithmic height automatically through clever rotations and color properties, ensuring O(log n) performance for all operations no matter the insertion order.
 
 ## The Problem with Unbalanced Trees
 
