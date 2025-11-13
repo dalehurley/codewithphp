@@ -562,6 +562,548 @@ function maxArea(array $heights): int
 Use two pointers from both ends, move the pointer with smaller height.
 </details>
 
+<details>
+<summary>Solution</summary>
+
+```php
+function maxArea(array $heights): int
+{
+    $left = 0;
+    $right = count($heights) - 1;
+    $maxArea = 0;
+
+    while ($left < $right) {
+        // Area = width × height (limited by shorter line)
+        $width = $right - $left;
+        $height = min($heights[$left], $heights[$right]);
+        $area = $width * $height;
+
+        $maxArea = max($maxArea, $area);
+
+        // Move pointer pointing to shorter line
+        if ($heights[$left] < $heights[$right]) {
+            $left++;
+        } else {
+            $right--;
+        }
+    }
+
+    return $maxArea;
+}
+```
+
+**Why this works:** Moving the shorter pointer gives us the only chance to find a larger area. Moving the taller pointer will always result in the same or smaller area.
+
+Time: O(n), Space: O(1)
+</details>
+
+## Combining Multiple Patterns
+
+Many problems require combining several strategies:
+
+### Example: Longest Substring Without Repeating Characters
+
+**Problem:** Find length of longest substring without repeating characters in "abcabcbb".
+
+**Solution combines:** Sliding Window + Hash Map
+
+```php
+function lengthOfLongestSubstring(string $s): int
+{
+    $charMap = []; // Hash map: char → last seen index
+    $maxLength = 0;
+    $start = 0; // Sliding window start
+
+    for ($end = 0; $end < strlen($s); $end++) {
+        $char = $s[$end];
+
+        // If character seen before and within current window
+        if (isset($charMap[$char]) && $charMap[$char] >= $start) {
+            // Shrink window from left
+            $start = $charMap[$char] + 1;
+        }
+
+        $charMap[$char] = $end;
+        $maxLength = max($maxLength, $end - $start + 1);
+    }
+
+    return $maxLength;
+}
+
+echo lengthOfLongestSubstring("abcabcbb"); // 3 (abc)
+echo lengthOfLongestSubstring("bbbbb");    // 1 (b)
+echo lengthOfLongestSubstring("pwwkew");   // 3 (wke)
+```
+
+**Time:** O(n) - single pass
+**Space:** O(min(n, m)) where m is character set size
+
+### Example: Top K Frequent Elements
+
+**Problem:** Given array, find K most frequent elements.
+
+**Solution combines:** Hash Map + Sorting (or Heap)
+
+```php
+function topKFrequent(array $nums, int $k): array
+{
+    // Step 1: Hash map to count frequencies
+    $freq = [];
+    foreach ($nums as $num) {
+        $freq[$num] = ($freq[$num] ?? 0) + 1;
+    }
+
+    // Step 2: Sort by frequency (descending)
+    arsort($freq);
+
+    // Step 3: Take top K
+    return array_slice(array_keys($freq), 0, $k);
+}
+
+$nums = [1, 1, 1, 2, 2, 3];
+print_r(topKFrequent($nums, 2)); // [1, 2]
+
+// Alternative: Using bucket sort for O(n) time
+function topKFrequentOptimized(array $nums, int $k): array
+{
+    $freq = [];
+    foreach ($nums as $num) {
+        $freq[$num] = ($freq[$num] ?? 0) + 1;
+    }
+
+    // Bucket sort: index = frequency, value = numbers with that frequency
+    $buckets = array_fill(0, count($nums) + 1, []);
+
+    foreach ($freq as $num => $count) {
+        $buckets[$count][] = $num;
+    }
+
+    // Collect K most frequent from highest frequency buckets
+    $result = [];
+    for ($i = count($buckets) - 1; $i >= 0 && count($result) < $k; $i--) {
+        foreach ($buckets[$i] as $num) {
+            $result[] = $num;
+            if (count($result) === $k) break 2;
+        }
+    }
+
+    return $result;
+}
+```
+
+## Advanced Problem-Solving Techniques
+
+### Technique 1: Monotonic Stack
+
+Useful for "next greater/smaller element" problems.
+
+```php
+// Find next greater element for each element
+function nextGreaterElements(array $nums): array
+{
+    $n = count($nums);
+    $result = array_fill(0, $n, -1);
+    $stack = []; // Stores indices
+
+    // Process each element
+    for ($i = 0; $i < $n; $i++) {
+        // While stack not empty and current is greater than stack top
+        while (!empty($stack) && $nums[$i] > $nums[end($stack)]) {
+            $idx = array_pop($stack);
+            $result[$idx] = $nums[$i];
+        }
+
+        $stack[] = $i;
+    }
+
+    return $result;
+}
+
+$nums = [4, 2, 1, 5, 3];
+print_r(nextGreaterElements($nums));
+// [5, 5, 5, -1, -1]
+```
+
+### Technique 2: Prefix Sum
+
+Precompute cumulative sums for O(1) range queries.
+
+```php
+class PrefixSum
+{
+    private array $prefix;
+
+    public function __construct(array $nums)
+    {
+        $this->prefix = [0]; // Start with 0 for easier calculation
+
+        foreach ($nums as $num) {
+            $this->prefix[] = end($this->prefix) + $num;
+        }
+    }
+
+    // Get sum of elements from index left to right (inclusive)
+    public function rangeSum(int $left, int $right): int
+    {
+        return $this->prefix[$right + 1] - $this->prefix[$left];
+    }
+}
+
+$nums = [1, 2, 3, 4, 5];
+$ps = new PrefixSum($nums);
+
+echo $ps->rangeSum(1, 3); // 2+3+4 = 9
+echo $ps->rangeSum(0, 4); // 1+2+3+4+5 = 15
+```
+
+### Technique 3: Binary Search on Answer
+
+When you can verify a solution quickly, binary search the answer space.
+
+```php
+// Find minimum capacity to ship packages within D days
+function shipWithinDays(array $weights, int $days): int
+{
+    // Binary search range: [max(weights), sum(weights)]
+    $left = max($weights);
+    $right = array_sum($weights);
+
+    while ($left < $right) {
+        $mid = (int)(($left + $right) / 2);
+
+        if (canShip($weights, $days, $mid)) {
+            $right = $mid; // Try smaller capacity
+        } else {
+            $left = $mid + 1; // Need larger capacity
+        }
+    }
+
+    return $left;
+}
+
+function canShip(array $weights, int $days, int $capacity): bool
+{
+    $daysNeeded = 1;
+    $currentLoad = 0;
+
+    foreach ($weights as $weight) {
+        if ($currentLoad + $weight > $capacity) {
+            $daysNeeded++;
+            $currentLoad = 0;
+        }
+        $currentLoad += $weight;
+    }
+
+    return $daysNeeded <= $days;
+}
+
+$weights = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+echo shipWithinDays($weights, 5); // 15
+```
+
+## Complete Problem Walkthroughs
+
+### Walkthrough 1: Group Anagrams
+
+**Problem:** Group strings that are anagrams of each other.
+
+Input: `["eat", "tea", "tan", "ate", "nat", "bat"]`
+Output: `[["eat","tea","ate"], ["tan","nat"], ["bat"]]`
+
+**Step-by-step solution:**
+
+```php
+function groupAnagrams(array $strs): array
+{
+    // Strategy: Use sorted string as key
+    $groups = [];
+
+    foreach ($strs as $str) {
+        // Sort characters to get canonical form
+        $chars = str_split($str);
+        sort($chars);
+        $key = implode('', $chars);
+
+        // Group by sorted form
+        if (!isset($groups[$key])) {
+            $groups[$key] = [];
+        }
+        $groups[$key][] = $str;
+    }
+
+    return array_values($groups);
+}
+
+// Alternative: Use character count as key (faster)
+function groupAnagramsOptimized(array $strs): array
+{
+    $groups = [];
+
+    foreach ($strs as $str) {
+        // Count character frequencies
+        $count = array_fill(0, 26, 0);
+
+        for ($i = 0; $i < strlen($str); $i++) {
+            $count[ord($str[$i]) - ord('a')]++;
+        }
+
+        // Use count array as key
+        $key = implode('#', $count);
+
+        if (!isset($groups[$key])) {
+            $groups[$key] = [];
+        }
+        $groups[$key][] = $str;
+    }
+
+    return array_values($groups);
+}
+```
+
+**Complexity:**
+- Sorting approach: O(n × k log k) where n = number of strings, k = max string length
+- Counting approach: O(n × k)
+
+### Walkthrough 2: Meeting Rooms II
+
+**Problem:** Given meeting time intervals, find minimum number of conference rooms required.
+
+Input: `[[0,30], [5,10], [15,20]]`
+Output: `2`
+
+```php
+function minMeetingRooms(array $intervals): int
+{
+    if (empty($intervals)) return 0;
+
+    // Separate start and end times
+    $starts = array_column($intervals, 0);
+    $ends = array_column($intervals, 1);
+
+    sort($starts);
+    sort($ends);
+
+    $rooms = 0;
+    $maxRooms = 0;
+    $endPtr = 0;
+
+    // Process each start time
+    foreach ($starts as $start) {
+        // If a meeting ended before this one starts, reuse room
+        if ($start >= $ends[$endPtr]) {
+            $rooms--;
+            $endPtr++;
+        }
+
+        $rooms++; // Allocate a room
+        $maxRooms = max($maxRooms, $rooms);
+    }
+
+    return $maxRooms;
+}
+
+$meetings = [[0, 30], [5, 10], [15, 20]];
+echo minMeetingRooms($meetings); // 2
+
+// Alternative: Using priority queue (min-heap)
+function minMeetingRoomsHeap(array $intervals): int
+{
+    if (empty($intervals)) return 0;
+
+    // Sort by start time
+    usort($intervals, fn($a, $b) => $a[0] <=> $b[0]);
+
+    $heap = new SplMinHeap(); // Stores end times
+    $heap->insert($intervals[0][1]);
+
+    for ($i = 1; $i < count($intervals); $i++) {
+        // If earliest ending meeting finishes before this starts
+        if ($intervals[$i][0] >= $heap->top()) {
+            $heap->extract(); // Reuse room
+        }
+
+        // Add current meeting's end time
+        $heap->insert($intervals[$i][1]);
+    }
+
+    return $heap->count();
+}
+```
+
+**Time:** O(n log n), **Space:** O(n)
+
+### Walkthrough 3: Trapping Rain Water
+
+**Problem:** Given heights, compute how much water can be trapped after raining.
+
+```php
+function trap(array $height): int
+{
+    if (empty($height)) return 0;
+
+    $n = count($height);
+    $water = 0;
+
+    // Two pointers approach
+    $left = 0;
+    $right = $n - 1;
+    $leftMax = 0;
+    $rightMax = 0;
+
+    while ($left < $right) {
+        if ($height[$left] < $height[$right]) {
+            // Process left side
+            if ($height[$left] >= $leftMax) {
+                $leftMax = $height[$left];
+            } else {
+                $water += $leftMax - $height[$left];
+            }
+            $left++;
+        } else {
+            // Process right side
+            if ($height[$right] >= $rightMax) {
+                $rightMax = $height[$right];
+            } else {
+                $water += $rightMax - $height[$right];
+            }
+            $right--;
+        }
+    }
+
+    return $water;
+}
+
+$height = [0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1];
+echo trap($height); // 6
+```
+
+**Visual:**
+```
+     █
+ █   ██ █   █
+_█_█_████_█_█_█_
+0 1 0 2 1 0 1 3 2 1 2 1
+Water: 1 + 2 + 1 + 2 = 6 units
+```
+
+## More Practice Problems with Solutions
+
+### Problem 4: Subarray Sum Equals K
+
+Find total number of subarrays that sum to K.
+
+```php
+function subarraySum(array $nums, int $k): int
+{
+    $count = 0;
+    $sum = 0;
+    $prefixSums = [0 => 1]; // sum => frequency
+
+    foreach ($nums as $num) {
+        $sum += $num;
+
+        // If (sum - k) exists, we found subarrays
+        if (isset($prefixSums[$sum - $k])) {
+            $count += $prefixSums[$sum - $k];
+        }
+
+        // Store current sum
+        $prefixSums[$sum] = ($prefixSums[$sum] ?? 0) + 1;
+    }
+
+    return $count;
+}
+
+echo subarraySum([1, 1, 1], 2); // 2 ([1,1], [1,1])
+echo subarraySum([1, 2, 3], 3); // 2 ([1,2], [3])
+```
+
+### Problem 5: Merge Intervals
+
+```php
+function mergeIntervals(array $intervals): array
+{
+    if (empty($intervals)) return [];
+
+    // Sort by start time
+    usort($intervals, fn($a, $b) => $a[0] <=> $b[0]);
+
+    $merged = [$intervals[0]];
+
+    for ($i = 1; $i < count($intervals); $i++) {
+        $last = &$merged[count($merged) - 1];
+
+        if ($intervals[$i][0] <= $last[1]) {
+            // Overlapping, merge
+            $last[1] = max($last[1], $intervals[$i][1]);
+        } else {
+            // Non-overlapping, add new interval
+            $merged[] = $intervals[$i];
+        }
+    }
+
+    return $merged;
+}
+
+$intervals = [[1, 3], [2, 6], [8, 10], [15, 18]];
+print_r(mergeIntervals($intervals));
+// [[1, 6], [8, 10], [15, 18]]
+```
+
+### Problem 6: Implement LRU Cache
+
+```php
+class LRUCache
+{
+    private array $cache = [];
+    private int $capacity;
+
+    public function __construct(int $capacity)
+    {
+        $this->capacity = $capacity;
+    }
+
+    public function get(int $key): int
+    {
+        if (!isset($this->cache[$key])) {
+            return -1;
+        }
+
+        // Move to end (most recently used)
+        $value = $this->cache[$key];
+        unset($this->cache[$key]);
+        $this->cache[$key] = $value;
+
+        return $value;
+    }
+
+    public function put(int $key, int $value): void
+    {
+        // Remove if exists (to update position)
+        if (isset($this->cache[$key])) {
+            unset($this->cache[$key]);
+        }
+
+        // Add to end
+        $this->cache[$key] = $value;
+
+        // Evict least recently used if over capacity
+        if (count($this->cache) > $this->capacity) {
+            reset($this->cache);
+            $lruKey = key($this->cache);
+            unset($this->cache[$lruKey]);
+        }
+    }
+}
+
+$cache = new LRUCache(2);
+$cache->put(1, 1);
+$cache->put(2, 2);
+echo $cache->get(1); // 1
+$cache->put(3, 3);   // Evicts key 2
+echo $cache->get(2); // -1 (not found)
+```
+
 ## Key Takeaways
 
 - **Understand** the problem completely before coding

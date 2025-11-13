@@ -527,6 +527,661 @@ $menu = [
 echo renderMenu($menu);
 ```
 
+## Mutual Recursion
+
+Functions can call each other recursively:
+
+```php
+// Check if a number is even/odd using mutual recursion
+function isEven(int $n): bool
+{
+    if ($n === 0) {
+        return true;
+    }
+    return isOdd($n - 1);
+}
+
+function isOdd(int $n): bool
+{
+    if ($n === 0) {
+        return false;
+    }
+    return isEven($n - 1);
+}
+
+echo isEven(4) ? 'true' : 'false'; // true
+echo isOdd(4) ? 'true' : 'false';  // false
+```
+
+**Practical example: State machine**
+
+```php
+interface State
+{
+    public function handle(string $input): ?State;
+}
+
+class ReadingState implements State
+{
+    public function handle(string $input): ?State
+    {
+        if ($input === 'START_TAG') {
+            return new TagState();
+        }
+        return $this; // Stay in reading state
+    }
+}
+
+class TagState implements State
+{
+    public function handle(string $input): ?State
+    {
+        if ($input === 'END_TAG') {
+            return new ReadingState();
+        }
+        return $this;
+    }
+}
+
+// Parser using mutually recursive states
+function parseHTML(array $tokens, State $state = null): void
+{
+    if (empty($tokens)) {
+        return;
+    }
+
+    $state = $state ?? new ReadingState();
+    $token = array_shift($tokens);
+    $newState = $state->handle($token);
+
+    parseHTML($tokens, $newState); // Recursive call with new state
+}
+```
+
+## Converting Recursion to Iteration
+
+Some recursive algorithms can be converted to iterative ones for better performance.
+
+### Technique 1: Using a Stack
+
+```php
+// Recursive: Depth-first traversal
+function dfsRecursive(TreeNode $node): void
+{
+    if ($node === null) return;
+
+    echo $node->value . " ";
+    dfsRecursive($node->left);
+    dfsRecursive($node->right);
+}
+
+// Iterative: Using explicit stack
+function dfsIterative(TreeNode $node): void
+{
+    $stack = [$node];
+
+    while (!empty($stack)) {
+        $current = array_pop($stack);
+
+        if ($current === null) continue;
+
+        echo $current->value . " ";
+
+        // Push right first so left is processed first
+        if ($current->right) $stack[] = $current->right;
+        if ($current->left) $stack[] = $current->left;
+    }
+}
+```
+
+### Technique 2: Accumulator Pattern
+
+```php
+// Recursive: Uses call stack
+function sumRecursive(array $arr): int
+{
+    if (empty($arr)) return 0;
+    return $arr[0] + sumRecursive(array_slice($arr, 1));
+}
+
+// Iterative: Uses accumulator
+function sumIterative(array $arr): int
+{
+    $sum = 0;
+    foreach ($arr as $value) {
+        $sum += $value;
+    }
+    return $sum;
+}
+
+// Tail-recursive with accumulator (still recursive but more efficient)
+function sumTailRecursive(array $arr, int $acc = 0): int
+{
+    if (empty($arr)) return $acc;
+    return sumTailRecursive(array_slice($arr, 1), $acc + $arr[0]);
+}
+```
+
+### Technique 3: Loop with State
+
+```php
+// Recursive: Factorial
+function factorialRecursive(int $n): int
+{
+    if ($n <= 1) return 1;
+    return $n * factorialRecursive($n - 1);
+}
+
+// Iterative: Loop with state
+function factorialIterative(int $n): int
+{
+    $result = 1;
+    for ($i = 2; $i <= $n; $i++) {
+        $result *= $i;
+    }
+    return $result;
+}
+
+// When to convert:
+// - Deep recursion (risk of stack overflow)
+// - Performance-critical code
+// - When iteration is equally clear
+```
+
+## Advanced Recursion Patterns
+
+### Divide and Conquer with Recursion
+
+```php
+// Binary search - divides problem in half each time
+function binarySearchRecursive(array $arr, int $target, int $left = 0, int $right = null): int
+{
+    if ($right === null) {
+        $right = count($arr) - 1;
+    }
+
+    if ($left > $right) {
+        return -1; // Not found
+    }
+
+    $mid = (int)(($left + $right) / 2);
+
+    if ($arr[$mid] === $target) {
+        return $mid;
+    } elseif ($arr[$mid] < $target) {
+        return binarySearchRecursive($arr, $target, $mid + 1, $right);
+    } else {
+        return binarySearchRecursive($arr, $target, $left, $mid - 1);
+    }
+}
+
+// Merge sort - divides, sorts, then merges
+function mergeSortRecursive(array $arr): array
+{
+    if (count($arr) <= 1) {
+        return $arr;
+    }
+
+    $mid = (int)(count($arr) / 2);
+    $left = mergeSortRecursive(array_slice($arr, 0, $mid));
+    $right = mergeSortRecursive(array_slice($arr, $mid));
+
+    return mergeArrays($left, $right);
+}
+
+function mergeArrays(array $left, array $right): array
+{
+    $result = [];
+    $i = $j = 0;
+
+    while ($i < count($left) && $j < count($right)) {
+        if ($left[$i] <= $right[$j]) {
+            $result[] = $left[$i++];
+        } else {
+            $result[] = $right[$j++];
+        }
+    }
+
+    return array_merge($result, array_slice($left, $i), array_slice($right, $j));
+}
+```
+
+### Recursion with Multiple Parameters
+
+```php
+// Longest Common Subsequence (LCS)
+function lcs(string $str1, string $str2, int $m = null, int $n = null): int
+{
+    $m = $m ?? strlen($str1);
+    $n = $n ?? strlen($str2);
+
+    // Base case: empty string
+    if ($m === 0 || $n === 0) {
+        return 0;
+    }
+
+    // If last characters match
+    if ($str1[$m - 1] === $str2[$n - 1]) {
+        return 1 + lcs($str1, $str2, $m - 1, $n - 1);
+    }
+
+    // If don't match, try both options
+    return max(
+        lcs($str1, $str2, $m - 1, $n),
+        lcs($str1, $str2, $m, $n - 1)
+    );
+}
+
+echo lcs("ABCDGH", "AEDFHR"); // 3 (ADH)
+
+// With memoization for O(m×n) instead of exponential
+function lcsMemo(string $str1, string $str2, int $m = null, int $n = null, array &$memo = []): int
+{
+    $m = $m ?? strlen($str1);
+    $n = $n ?? strlen($str2);
+
+    if ($m === 0 || $n === 0) return 0;
+
+    $key = "{$m},{$n}";
+    if (isset($memo[$key])) {
+        return $memo[$key];
+    }
+
+    if ($str1[$m - 1] === $str2[$n - 1]) {
+        $memo[$key] = 1 + lcsMemo($str1, $str2, $m - 1, $n - 1, $memo);
+    } else {
+        $memo[$key] = max(
+            lcsMemo($str1, $str2, $m - 1, $n, $memo),
+            lcsMemo($str1, $str2, $m, $n - 1, $memo)
+        );
+    }
+
+    return $memo[$key];
+}
+```
+
+## Recursion in PHP Frameworks
+
+### Laravel Collections (Recursive Operations)
+
+```php
+// Flattening nested collections
+$collection = collect([
+    'users' => [
+        ['name' => 'John', 'posts' => [1, 2, 3]],
+        ['name' => 'Jane', 'posts' => [4, 5]]
+    ]
+]);
+
+// Recursive flatten
+function flattenCollection($items): array
+{
+    $result = [];
+
+    foreach ($items as $item) {
+        if (is_array($item)) {
+            $result = array_merge($result, flattenCollection($item));
+        } else {
+            $result[] = $item;
+        }
+    }
+
+    return $result;
+}
+```
+
+### Symfony Finder (Directory Recursion)
+
+```php
+use Symfony\Component\Finder\Finder;
+
+// Built on recursive directory traversal
+$finder = new Finder();
+$finder->files()->in(__DIR__)->name('*.php');
+
+// Manual implementation of recursive file finding
+function findFiles(string $dir, string $pattern): array
+{
+    $result = [];
+    $items = scandir($dir);
+
+    foreach ($items as $item) {
+        if ($item === '.' || $item === '..') continue;
+
+        $path = $dir . '/' . $item;
+
+        if (is_dir($path)) {
+            // Recursive case: descend into directory
+            $result = array_merge($result, findFiles($path, $pattern));
+        } elseif (fnmatch($pattern, $item)) {
+            // Base case: file matches pattern
+            $result[] = $path;
+        }
+    }
+
+    return $result;
+}
+```
+
+### Doctrine ORM (Entity Loading)
+
+```php
+// Recursive relationship loading
+class Category
+{
+    private $id;
+    private $name;
+    private $parent;
+    private $children;
+
+    // Recursively get all ancestors
+    public function getAncestors(): array
+    {
+        if ($this->parent === null) {
+            return []; // Base case: no parent
+        }
+
+        // Recursive case: parent's ancestors + parent
+        return array_merge(
+            $this->parent->getAncestors(),
+            [$this->parent]
+        );
+    }
+
+    // Recursively get all descendants
+    public function getAllDescendants(): array
+    {
+        $descendants = [];
+
+        foreach ($this->children as $child) {
+            $descendants[] = $child;
+            $descendants = array_merge(
+                $descendants,
+                $child->getAllDescendants()
+            );
+        }
+
+        return $descendants;
+    }
+}
+```
+
+## Complex Real-World Examples
+
+### Expression Evaluator
+
+```php
+// Evaluate mathematical expressions recursively
+interface Expression
+{
+    public function evaluate(): float;
+}
+
+class NumberExpr implements Expression
+{
+    public function __construct(private float $value) {}
+
+    public function evaluate(): float
+    {
+        return $this->value;
+    }
+}
+
+class BinaryExpr implements Expression
+{
+    public function __construct(
+        private Expression $left,
+        private string $operator,
+        private Expression $right
+    ) {}
+
+    public function evaluate(): float
+    {
+        $left = $this->left->evaluate();  // Recursive
+        $right = $this->right->evaluate(); // Recursive
+
+        return match($this->operator) {
+            '+' => $left + $right,
+            '-' => $left - $right,
+            '*' => $left * $right,
+            '/' => $left / $right,
+            default => throw new Exception("Unknown operator"),
+        };
+    }
+}
+
+// Build: (3 + 5) * (10 - 2)
+$expr = new BinaryExpr(
+    new BinaryExpr(new NumberExpr(3), '+', new NumberExpr(5)),
+    '*',
+    new BinaryExpr(new NumberExpr(10), '-', new NumberExpr(2))
+);
+
+echo $expr->evaluate(); // 64
+```
+
+### Recursive Backtracking: Sudoku Solver
+
+```php
+class SudokuSolver
+{
+    private const SIZE = 9;
+
+    public function solve(array &$board): bool
+    {
+        $empty = $this->findEmpty($board);
+
+        if ($empty === null) {
+            return true; // Base case: puzzle solved
+        }
+
+        [$row, $col] = $empty;
+
+        for ($num = 1; $num <= 9; $num++) {
+            if ($this->isValid($board, $row, $col, $num)) {
+                $board[$row][$col] = $num;
+
+                // Recursive case: try to solve rest
+                if ($this->solve($board)) {
+                    return true;
+                }
+
+                // Backtrack
+                $board[$row][$col] = 0;
+            }
+        }
+
+        return false; // Trigger backtracking
+    }
+
+    private function findEmpty(array $board): ?array
+    {
+        for ($i = 0; $i < self::SIZE; $i++) {
+            for ($j = 0; $j < self::SIZE; $j++) {
+                if ($board[$i][$j] === 0) {
+                    return [$i, $j];
+                }
+            }
+        }
+        return null;
+    }
+
+    private function isValid(array $board, int $row, int $col, int $num): bool
+    {
+        // Check row
+        if (in_array($num, $board[$row])) {
+            return false;
+        }
+
+        // Check column
+        for ($i = 0; $i < self::SIZE; $i++) {
+            if ($board[$i][$col] === $num) {
+                return false;
+            }
+        }
+
+        // Check 3x3 box
+        $boxRow = (int)($row / 3) * 3;
+        $boxCol = (int)($col / 3) * 3;
+
+        for ($i = $boxRow; $i < $boxRow + 3; $i++) {
+            for ($j = $boxCol; $j < $boxCol + 3; $j++) {
+                if ($board[$i][$j] === $num) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+}
+```
+
+### Recursive Descent Parser
+
+```php
+// Simple arithmetic parser
+class Parser
+{
+    private array $tokens;
+    private int $pos = 0;
+
+    public function parse(string $expr): int
+    {
+        $this->tokens = str_split(str_replace(' ', '', $expr));
+        $this->pos = 0;
+        return $this->parseExpression();
+    }
+
+    private function parseExpression(): int
+    {
+        $result = $this->parseTerm();
+
+        while ($this->pos < count($this->tokens) &&
+               in_array($this->tokens[$this->pos], ['+', '-'])) {
+            $op = $this->tokens[$this->pos++];
+            $right = $this->parseTerm();
+            $result = $op === '+' ? $result + $right : $result - $right;
+        }
+
+        return $result;
+    }
+
+    private function parseTerm(): int
+    {
+        $result = $this->parseFactor();
+
+        while ($this->pos < count($this->tokens) &&
+               in_array($this->tokens[$this->pos], ['*', '/'])) {
+            $op = $this->tokens[$this->pos++];
+            $right = $this->parseFactor();
+            $result = $op === '*' ? $result * $right : (int)($result / $right);
+        }
+
+        return $result;
+    }
+
+    private function parseFactor(): int
+    {
+        if ($this->tokens[$this->pos] === '(') {
+            $this->pos++; // skip '('
+            $result = $this->parseExpression(); // Recursive!
+            $this->pos++; // skip ')'
+            return $result;
+        }
+
+        // Parse number
+        $num = '';
+        while ($this->pos < count($this->tokens) &&
+               is_numeric($this->tokens[$this->pos])) {
+            $num .= $this->tokens[$this->pos++];
+        }
+
+        return (int)$num;
+    }
+}
+
+$parser = new Parser();
+echo $parser->parse("3 + 5 * (2 + 3)"); // 28
+```
+
+## Common Pitfalls and Solutions
+
+### Pitfall 1: Forgetting Base Case
+
+```php
+// Wrong: Infinite recursion
+function countDown(int $n): void
+{
+    echo "$n ";
+    countDown($n - 1); // Never stops!
+}
+
+// Correct: Has base case
+function countDown(int $n): void
+{
+    if ($n <= 0) return; // Base case
+    echo "$n ";
+    countDown($n - 1);
+}
+```
+
+### Pitfall 2: Not Making Progress
+
+```php
+// Wrong: Doesn't get closer to base case
+function broken(int $n): int
+{
+    if ($n === 0) return 0;
+    return broken($n); // Same n, infinite loop!
+}
+
+// Correct: Makes progress
+function working(int $n): int
+{
+    if ($n === 0) return 0;
+    return broken($n - 1); // Moves toward base case
+}
+```
+
+### Pitfall 3: Inefficient Recursion
+
+```php
+// Inefficient: O(2ⁿ) - recalculates same values
+function fib(int $n): int
+{
+    if ($n <= 1) return $n;
+    return fib($n - 1) + fib($n - 2);
+}
+
+// Efficient: O(n) with memoization
+function fibMemo(int $n, array &$memo = []): int
+{
+    if ($n <= 1) return $n;
+    if (isset($memo[$n])) return $memo[$n];
+
+    $memo[$n] = fibMemo($n - 1, $memo) + fibMemo($n - 2, $memo);
+    return $memo[$n];
+}
+
+// Or iterative: O(n) time, O(1) space
+function fibIterative(int $n): int
+{
+    if ($n <= 1) return $n;
+
+    $prev = 0;
+    $curr = 1;
+
+    for ($i = 2; $i <= $n; $i++) {
+        $next = $prev + $curr;
+        $prev = $curr;
+        $curr = $next;
+    }
+
+    return $curr;
+}
+```
+
 ## Practice Exercises
 
 ### Exercise 1: Greatest Common Divisor (GCD)

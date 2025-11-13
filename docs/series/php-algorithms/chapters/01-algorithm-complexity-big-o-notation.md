@@ -540,6 +540,335 @@ function joinWithCommas(array $items): string
 }
 ```
 
+## Amortized Complexity
+
+Sometimes an operation is expensive occasionally but cheap most of the time. **Amortized analysis** considers the average cost over a sequence of operations.
+
+### Dynamic Array Example
+
+```php
+class DynamicArray
+{
+    private array $data = [];
+    private int $size = 0;
+    private int $capacity = 1;
+
+    public function append($value): void
+    {
+        // If array is full, double the capacity
+        if ($this->size === $this->capacity) {
+            $this->resize($this->capacity * 2); // Expensive O(n) operation
+        }
+
+        $this->data[$this->size++] = $value;
+    }
+
+    private function resize(int $newCapacity): void
+    {
+        $newData = [];
+        for ($i = 0; $i < $this->size; $i++) {
+            $newData[$i] = $this->data[$i];
+        }
+        $this->data = $newData;
+        $this->capacity = $newCapacity;
+    }
+}
+
+// Individual append: O(1) usually, O(n) occasionally
+// Amortized complexity: O(1) per append
+```
+
+**Why O(1) amortized?**
+- Resize happens at sizes: 1, 2, 4, 8, 16, 32...
+- For n appends, you copy: 1 + 2 + 4 + 8 + ... + n/2 = n-1 elements total
+- Average: (n-1)/n ≈ 1 copy per append → **O(1) amortized**
+
+### PHP's Array Implementation
+
+PHP arrays use this strategy internally:
+
+```php
+// PHP arrays have amortized O(1) append
+$arr = [];
+for ($i = 0; $i < 1000000; $i++) {
+    $arr[] = $i; // Amortized O(1), not O(n) each time!
+}
+```
+
+## Common Mistakes in Complexity Analysis
+
+### Mistake 1: Confusing Best, Worst, and Average Cases
+
+```php
+function findElement(array $arr, $target): bool
+{
+    foreach ($arr as $item) {
+        if ($item === $target) {
+            return true; // Might return early
+        }
+    }
+    return false;
+}
+
+// WRONG: "This is O(1) because it might find it immediately"
+// CORRECT: Worst case is O(n), which is what we report
+```
+
+**Rule:** Unless specified, always report **worst-case complexity**.
+
+### Mistake 2: Ignoring Hidden Complexity
+
+```php
+// This looks like O(n) but is actually O(n²)!
+function buildString(array $words): string
+{
+    $result = '';
+    foreach ($words as $word) {
+        $result .= $word; // String concatenation creates new string: O(n)
+    }
+    return $result;
+}
+
+// Each concatenation copies the entire string
+// Total: 0 + len(word1) + len(word1+word2) + ... = O(n²)
+```
+
+### Mistake 3: Not Considering Input Characteristics
+
+```php
+// Complexity depends on BOTH array sizes
+function findCommonElements(array $a, array $b): array
+{
+    $common = [];
+    foreach ($a as $itemA) {
+        foreach ($b as $itemB) {
+            if ($itemA === $itemB) {
+                $common[] = $itemA;
+            }
+        }
+    }
+    return $common;
+}
+
+// WRONG: O(n²)
+// CORRECT: O(a × b) where a = len($a), b = len($b)
+```
+
+### Mistake 4: Calling count() in Loops
+
+```php
+// Inefficient: count() called n times
+for ($i = 0; $i < count($arr); $i++) {
+    // If count() is O(n), this becomes O(n²)!
+}
+
+// Efficient: cache the count
+$n = count($arr);
+for ($i = 0; $i < $n; $i++) {
+    // O(n)
+}
+```
+
+**Note:** In PHP, `count()` is O(1) for regular arrays, but O(n) for some objects implementing Countable.
+
+## Security Considerations
+
+Algorithm complexity affects security, not just performance.
+
+### Algorithmic Complexity Attacks
+
+Attackers can exploit O(n²) or worse algorithms to cause denial of service:
+
+```php
+// Vulnerable to hash collision attacks
+class VulnerableCache
+{
+    private array $cache = [];
+
+    public function add(string $key, $value): void
+    {
+        // If attacker finds hash collisions, this degrades to O(n)
+        $this->cache[$key] = $value;
+    }
+
+    public function get(string $key)
+    {
+        return $this->cache[$key] ?? null;
+    }
+}
+
+// Better: Use cryptographically secure hashing or rate limiting
+```
+
+### ReDoS (Regular Expression Denial of Service)
+
+```php
+// Vulnerable: catastrophic backtracking O(2ⁿ)
+function validateEmail_VULNERABLE(string $email): bool
+{
+    // Pattern with nested quantifiers
+    return (bool)preg_match('/^([a-zA-Z0-9]+)+@[a-zA-Z]+\.com$/', $email);
+}
+
+// Attack: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!" takes exponential time
+
+// Safe: Avoid nested quantifiers
+function validateEmail_SAFE(string $email): bool
+{
+    return (bool)preg_match('/^[a-zA-Z0-9]+@[a-zA-Z]+\.com$/', $email);
+}
+```
+
+### Input Validation
+
+Always validate input size to prevent resource exhaustion:
+
+```php
+function processArray(array $data): array
+{
+    // Prevent attacks with huge inputs
+    if (count($data) > 10000) {
+        throw new InvalidArgumentException('Input too large');
+    }
+
+    // Your O(n²) algorithm is now bounded
+    return someExpensiveOperation($data);
+}
+```
+
+## Advanced PHP Performance Tips
+
+### Tip 4: Array Functions vs Loops
+
+```php
+// Benchmark reveals: loops are often faster for simple operations
+$bench = new Benchmark();
+$data = range(1, 10000);
+
+$bench->compare([
+    'array_map' => fn() => array_map(fn($x) => $x * 2, $data),
+    'foreach loop' => function() use ($data) {
+        $result = [];
+        foreach ($data as $x) {
+            $result[] = $x * 2;
+        }
+        return $result;
+    },
+], null, 100);
+
+// Loops often win for simple operations due to function call overhead
+```
+
+### Tip 5: Generator for Memory Efficiency
+
+```php
+// Memory-intensive: O(n) space
+function rangeArray(int $start, int $end): array
+{
+    $result = [];
+    for ($i = $start; $i <= $end; $i++) {
+        $result[] = $i;
+    }
+    return $result;
+}
+
+// Memory-efficient: O(1) space
+function rangeGenerator(int $start, int $end): Generator
+{
+    for ($i = $start; $i <= $end; $i++) {
+        yield $i;
+    }
+}
+
+// Process 1 million items without using 1 million items of memory
+foreach (rangeGenerator(1, 1000000) as $num) {
+    processItem($num);
+}
+```
+
+### Tip 6: Opcode Cache Impact
+
+```php
+// With OPcache enabled, code is compiled once
+// This can significantly affect benchmarks
+
+// Always benchmark with production-like settings:
+// - OPcache enabled
+// - JIT enabled (PHP 8.0+)
+// - Production error reporting levels
+```
+
+## Edge Cases to Consider
+
+### Empty Input
+
+```php
+function findMax(array $numbers): int|float
+{
+    // Bug: Crashes on empty array
+    // return max($numbers);
+
+    // Fixed: Handle edge case
+    if (empty($numbers)) {
+        throw new InvalidArgumentException('Array cannot be empty');
+    }
+    return max($numbers);
+}
+```
+
+### Single Element
+
+```php
+function binarySearch(array $arr, $target): int|false
+{
+    // Edge case: single element
+    if (count($arr) === 1) {
+        return $arr[0] === $target ? 0 : false;
+    }
+
+    // Main algorithm...
+}
+```
+
+### Very Large Numbers
+
+```php
+function factorial(int $n): int
+{
+    // Edge case: integer overflow for large n
+    if ($n > 20) {
+        throw new OverflowException('Result would overflow');
+    }
+
+    // Use GMP for arbitrary precision if needed
+    // return gmp_fact($n);
+
+    $result = 1;
+    for ($i = 2; $i <= $n; $i++) {
+        $result *= $i;
+    }
+    return $result;
+}
+```
+
+### Negative Numbers
+
+```php
+function power(int $base, int $exponent): int|float
+{
+    // Edge case: negative exponent
+    if ($exponent < 0) {
+        return 1 / power($base, -$exponent);
+    }
+
+    if ($exponent === 0) {
+        return 1;
+    }
+
+    return $base * power($base, $exponent - 1);
+}
+```
+
 ## Practice Problems
 
 ### Problem 1: Analyze This Code
@@ -606,6 +935,140 @@ function hasDuplicate(array $arr): bool
         $seen[$value] = true;
     }
     return false;
+}
+```
+</details>
+
+### Problem 3: Identify the Complexity
+
+What's the complexity of this nested loop?
+
+```php
+function printPairs(int $n): void
+{
+    for ($i = 0; $i < $n; $i++) {
+        for ($j = $i; $j < $n; $j++) {
+            echo "($i, $j) ";
+        }
+    }
+}
+```
+
+<details>
+<summary>Answer</summary>
+
+O(n²) - Even though inner loop starts at $i, total iterations:
+- i=0: n iterations
+- i=1: n-1 iterations
+- i=2: n-2 iterations
+- ...
+- Total: n + (n-1) + (n-2) + ... + 1 = n(n+1)/2 ≈ n²/2 → O(n²)
+</details>
+
+### Problem 4: Space Complexity
+
+What's the space complexity?
+
+```php
+function fibonacci(int $n, array $memo = []): int
+{
+    if ($n <= 1) return $n;
+    if (isset($memo[$n])) return $memo[$n];
+
+    $memo[$n] = fibonacci($n - 1, $memo) + fibonacci($n - 2, $memo);
+    return $memo[$n];
+}
+```
+
+<details>
+<summary>Answer</summary>
+
+O(n) space:
+- Memoization array stores n values: O(n)
+- Call stack depth: O(n)
+- Total: O(n)
+</details>
+
+### Problem 5: Real-World Optimization
+
+Optimize this function that checks if any email in a list is valid:
+
+```php
+// Current: O(n × m) where m is average email length
+function hasValidEmail(array $emails): bool
+{
+    foreach ($emails as $email) {
+        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return true;
+        }
+    }
+    return false;
+}
+```
+
+<details>
+<summary>Answer</summary>
+
+This is already optimal - O(n) in best/average case, O(n × m) in worst case where no valid email is found. The complexity is unavoidable since we must check emails until we find a valid one. However, we can add optimizations:
+
+```php
+function hasValidEmail(array $emails): bool
+{
+    // Quick check: if empty, return false
+    if (empty($emails)) {
+        return false;
+    }
+
+    // Optimization: check shorter emails first (faster validation)
+    usort($emails, fn($a, $b) => strlen($a) <=> strlen($b));
+
+    foreach ($emails as $email) {
+        // Skip obviously invalid (O(1) check before expensive validation)
+        if (strpos($email, '@') === false) {
+            continue;
+        }
+
+        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return true;
+        }
+    }
+    return false;
+}
+```
+
+Note: Sorting adds O(n log n) but can reduce average case if validation is expensive.
+</details>
+
+### Problem 6: Hidden Complexity
+
+What's wrong with this code's complexity?
+
+```php
+function removeDuplicates(array $arr): array
+{
+    $result = [];
+    foreach ($arr as $item) {
+        if (!in_array($item, $result)) {
+            $result[] = $item;
+        }
+    }
+    return $result;
+}
+```
+
+<details>
+<summary>Answer</summary>
+
+This is O(n²) because `in_array()` is O(n), called n times.
+
+Optimized O(n) solution:
+
+```php
+function removeDuplicates(array $arr): array
+{
+    return array_values(array_unique($arr));
+    // Or manually:
+    // return array_keys(array_flip($arr)); // O(n)
 }
 ```
 </details>

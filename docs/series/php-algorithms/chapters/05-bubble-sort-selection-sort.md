@@ -467,6 +467,467 @@ $arr[$j] = $temp;
 [$arr[$i], $arr[$j]] = [$arr[$j], $arr[$i]];
 ```
 
+## Cocktail Shaker Sort (Bidirectional Bubble Sort)
+
+An optimization of bubble sort that sorts in both directions:
+
+```php
+function cocktailSort(array $arr): array
+{
+    $n = count($arr);
+    $swapped = true;
+    $start = 0;
+    $end = $n - 1;
+
+    while ($swapped) {
+        $swapped = false;
+
+        // Forward pass (left to right)
+        for ($i = $start; $i < $end; $i++) {
+            if ($arr[$i] > $arr[$i + 1]) {
+                [$arr[$i], $arr[$i + 1]] = [$arr[$i + 1], $arr[$i]];
+                $swapped = true;
+            }
+        }
+
+        if (!$swapped) break;
+
+        $swapped = false;
+        $end--;
+
+        // Backward pass (right to left)
+        for ($i = $end; $i > $start; $i--) {
+            if ($arr[$i] < $arr[$i - 1]) {
+                [$arr[$i], $arr[$i - 1]] = [$arr[$i - 1], $arr[$i]];
+                $swapped = true;
+            }
+        }
+
+        $start++;
+    }
+
+    return $arr;
+}
+
+// Test
+$numbers = [5, 1, 4, 2, 8, 0, 2];
+print_r(cocktailSort($numbers));
+// Output: [0, 1, 2, 2, 4, 5, 8]
+```
+
+**Advantages over regular bubble sort:**
+- Slightly faster on some inputs
+- Better handles "turtles" (small values at the end)
+- Still O(n²) worst case but can be faster in practice
+
+### Performance Comparison
+
+```php
+require_once 'Benchmark.php';
+
+$bench = new Benchmark();
+
+// Test on different data patterns
+$patterns = [
+    'Random' => function($n) { $arr = range(1, $n); shuffle($arr); return $arr; },
+    'Nearly Sorted' => function($n) {
+        $arr = range(1, $n);
+        // Swap a few elements
+        for ($i = 0; $i < $n / 10; $i++) {
+            $j = rand(0, $n - 1);
+            $k = rand(0, $n - 1);
+            [$arr[$j], $arr[$k]] = [$arr[$k], $arr[$j]];
+        }
+        return $arr;
+    },
+    'Reversed' => function($n) { return range($n, 1); },
+];
+
+foreach ($patterns as $patternName => $generator) {
+    echo "\n{$patternName} data (n=100):\n";
+    $data = $generator(100);
+
+    $bench->compare([
+        'Bubble Sort' => fn($arr) => bubbleSort($arr),
+        'Bubble Sort (Optimized)' => fn($arr) => bubbleSortOptimized($arr),
+        'Cocktail Sort' => fn($arr) => cocktailSort($arr),
+        'Selection Sort' => fn($arr) => selectionSort($arr),
+    ], $data, iterations: 100);
+}
+```
+
+## Adaptive Bubble Sort
+
+Adaptive sort: performs better on partially sorted data.
+
+```php
+function adaptiveBubbleSort(array $arr): array
+{
+    $n = count($arr);
+    $swapped = true;
+    $passes = 0;
+
+    while ($swapped) {
+        $swapped = false;
+        $lastSwap = 0;
+
+        for ($i = 0; $i < $n - $passes - 1; $i++) {
+            if ($arr[$i] > $arr[$i + 1]) {
+                [$arr[$i], $arr[$i + 1]] = [$arr[$i + 1], $arr[$i]];
+                $swapped = true;
+                $lastSwap = $i;
+            }
+        }
+
+        // Optimize: elements after last swap are already sorted
+        $passes = $n - $lastSwap - 1;
+
+        if (!$swapped) break;
+    }
+
+    return $arr;
+}
+
+// Best for nearly sorted data
+$nearlySorted = [1, 2, 3, 5, 4, 6, 7, 8, 9, 10];
+$start = hrtime(true);
+adaptiveBubbleSort($nearlySorted);
+$time = (hrtime(true) - $start) / 1_000_000;
+echo "Time: {$time}ms\n"; // Very fast!
+```
+
+## Comb Sort (Improved Bubble Sort)
+
+Uses a gap larger than 1 and shrinks it:
+
+```php
+function combSort(array $arr): array
+{
+    $n = count($arr);
+    $gap = $n;
+    $shrink = 1.3;
+    $swapped = true;
+
+    while ($gap > 1 || $swapped) {
+        // Update gap
+        $gap = (int)($gap / $shrink);
+        if ($gap < 1) $gap = 1;
+
+        $swapped = false;
+
+        // Compare elements with current gap
+        for ($i = 0; $i + $gap < $n; $i++) {
+            if ($arr[$i] > $arr[$i + $gap]) {
+                [$arr[$i], $arr[$i + $gap]] = [$arr[$i + $gap], $arr[$i]];
+                $swapped = true;
+            }
+        }
+    }
+
+    return $arr;
+}
+
+// Significantly faster than bubble sort on large arrays
+$large = range(1, 1000);
+shuffle($large);
+
+$start = hrtime(true);
+bubbleSort($large);
+$bubbleTime = (hrtime(true) - $start) / 1_000_000;
+
+$start = hrtime(true);
+combSort($large);
+$combTime = (hrtime(true) - $start) / 1_000_000;
+
+echo "Bubble Sort: {$bubbleTime}ms\n";
+echo "Comb Sort: {$combTime}ms\n";
+echo "Speedup: " . round($bubbleTime / $combTime, 2) . "x\n";
+```
+
+## Interview Questions & Answers
+
+### Q1: When would you use bubble sort in production?
+
+**Answer:**
+- Very small datasets (< 10 elements) where code simplicity matters
+- Nearly sorted data with optimization enabled
+- Educational purposes or as a fallback
+- When memory is extremely limited (in-place, no recursion)
+- **Realistically:** Almost never. Use `sort()` or better algorithms.
+
+### Q2: What's the space complexity and why?
+
+**Answer:**
+O(1) space complexity (constant). Both bubble sort and selection sort are in-place algorithms:
+- Only use a few variables for swapping and loop counters
+- Don't create additional arrays proportional to input size
+- Compare to merge sort which needs O(n) extra space
+
+### Q3: How do you detect if an array is already sorted efficiently?
+
+**Answer:**
+```php
+function isSorted(array $arr): bool
+{
+    $n = count($arr);
+    for ($i = 0; $i < $n - 1; $i++) {
+        if ($arr[$i] > $arr[$i + 1]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Or using optimized bubble sort:
+function isSortedViaBubble(array $arr): bool
+{
+    $n = count($arr);
+    $swapped = false;
+
+    for ($i = 0; $i < $n - 1; $i++) {
+        if ($arr[$i] > $arr[$i + 1]) {
+            return false; // Early exit on first inversion
+        }
+    }
+
+    return true; // No swaps needed
+}
+```
+
+### Q4: Implement stable selection sort
+
+**Answer:**
+Regular selection sort is unstable. Make it stable by shifting instead of swapping:
+
+```php
+function stableSelectionSort(array $arr): array
+{
+    $n = count($arr);
+
+    for ($i = 0; $i < $n - 1; $i++) {
+        $minIndex = $i;
+
+        // Find minimum
+        for ($j = $i + 1; $j < $n; $j++) {
+            if ($arr[$j] < $arr[$minIndex]) {
+                $minIndex = $j;
+            }
+        }
+
+        // Instead of swapping, shift elements
+        if ($minIndex !== $i) {
+            $minValue = $arr[$minIndex];
+
+            // Shift elements right
+            for ($j = $minIndex; $j > $i; $j--) {
+                $arr[$j] = $arr[$j - 1];
+            }
+
+            $arr[$i] = $minValue;
+        }
+    }
+
+    return $arr;
+}
+
+// Test stability
+$items = [
+    ['name' => 'Alice', 'age' => 30],
+    ['name' => 'Bob', 'age' => 25],
+    ['name' => 'Charlie', 'age' => 30],
+];
+
+// Sort by age (stable)
+$sorted = stableSelectionSort($items);
+// Alice should still come before Charlie (both age 30)
+```
+
+### Q5: Optimize bubble sort for a linked list
+
+**Answer:**
+```php
+class ListNode
+{
+    public function __construct(
+        public int $value,
+        public ?ListNode $next = null
+    ) {}
+}
+
+function bubbleSortLinkedList(?ListNode $head): ?ListNode
+{
+    if ($head === null) return null;
+
+    $swapped = true;
+
+    while ($swapped) {
+        $swapped = false;
+        $current = $head;
+
+        while ($current->next !== null) {
+            if ($current->value > $current->next->value) {
+                // Swap values (easier than rewiring pointers)
+                $temp = $current->value;
+                $current->value = $current->next->value;
+                $current->next->value = $temp;
+                $swapped = true;
+            }
+
+            $current = $current->next;
+        }
+    }
+
+    return $head;
+}
+
+// Create list: 4 -> 2 -> 1 -> 3
+$head = new ListNode(4, new ListNode(2, new ListNode(1, new ListNode(3))));
+$sorted = bubbleSortLinkedList($head);
+
+// Print: 1 -> 2 -> 3 -> 4
+$current = $sorted;
+while ($current !== null) {
+    echo $current->value . " ";
+    $current = $current->next;
+}
+```
+
+### Q6: Count minimum swaps needed to sort array
+
+**Answer:**
+```php
+function minSwapsToSort(array $arr): int
+{
+    $n = count($arr);
+    $arrPos = [];
+
+    // Store value => position
+    for ($i = 0; $i < $n; $i++) {
+        $arrPos[] = [$arr[$i], $i];
+    }
+
+    // Sort by value
+    usort($arrPos, fn($a, $b) => $a[0] <=> $b[0]);
+
+    $visited = array_fill(0, $n, false);
+    $swaps = 0;
+
+    for ($i = 0; $i < $n; $i++) {
+        // Skip if already visited or in correct position
+        if ($visited[$i] || $arrPos[$i][1] === $i) {
+            continue;
+        }
+
+        // Count cycle size
+        $cycleSize = 0;
+        $j = $i;
+
+        while (!$visited[$j]) {
+            $visited[$j] = true;
+            $j = $arrPos[$j][1];
+            $cycleSize++;
+        }
+
+        // Add cycle size - 1 swaps
+        if ($cycleSize > 0) {
+            $swaps += $cycleSize - 1;
+        }
+    }
+
+    return $swaps;
+}
+
+echo minSwapsToSort([4, 3, 2, 1]); // 2
+echo minSwapsToSort([1, 5, 4, 3, 2]); // 2
+```
+
+## Comprehensive Benchmark Suite
+
+```php
+class SortingBenchmark
+{
+    private Benchmark $bench;
+    private array $results = [];
+
+    public function __construct()
+    {
+        $this->bench = new Benchmark();
+    }
+
+    public function runComprehensiveTests(): void
+    {
+        $sizes = [10, 50, 100, 500, 1000];
+        $dataTypes = [
+            'Random' => fn($n) => $this->generateRandom($n),
+            'Sorted' => fn($n) => range(1, $n),
+            'Reversed' => fn($n) => range($n, 1),
+            'Nearly Sorted' => fn($n) => $this->generateNearlySorted($n),
+            'Many Duplicates' => fn($n) => $this->generateDuplicates($n),
+        ];
+
+        foreach ($sizes as $size) {
+            echo "\n" . str_repeat('=', 60) . "\n";
+            echo "Array Size: {$size}\n";
+            echo str_repeat('=', 60) . "\n";
+
+            foreach ($dataTypes as $typeName => $generator) {
+                echo "\n{$typeName}:\n";
+                $data = $generator($size);
+
+                $this->bench->compare([
+                    'Bubble' => fn($arr) => bubbleSort($arr),
+                    'Bubble Optimized' => fn($arr) => bubbleSortOptimized($arr),
+                    'Cocktail' => fn($arr) => cocktailSort($arr),
+                    'Selection' => fn($arr) => selectionSort($arr),
+                    'Comb' => fn($arr) => combSort($arr),
+                    'PHP sort()' => function($arr) {
+                        sort($arr);
+                        return $arr;
+                    },
+                ], $data, iterations: $size > 500 ? 10 : 100);
+            }
+        }
+    }
+
+    private function generateRandom(int $n): array
+    {
+        $arr = range(1, $n);
+        shuffle($arr);
+        return $arr;
+    }
+
+    private function generateNearlySorted(int $n): array
+    {
+        $arr = range(1, $n);
+        $swaps = max(1, (int)($n / 10));
+
+        for ($i = 0; $i < $swaps; $i++) {
+            $j = rand(0, $n - 1);
+            $k = rand(0, $n - 1);
+            [$arr[$j], $arr[$k]] = [$arr[$k], $arr[$j]];
+        }
+
+        return $arr;
+    }
+
+    private function generateDuplicates(int $n): array
+    {
+        $arr = [];
+        $uniqueValues = max(1, (int)($n / 5));
+
+        for ($i = 0; $i < $n; $i++) {
+            $arr[] = rand(1, $uniqueValues);
+        }
+
+        return $arr;
+    }
+}
+
+// Run comprehensive benchmarks
+$benchmark = new SortingBenchmark();
+$benchmark->runComprehensiveTests();
+```
+
 ## Practice Exercises
 
 ### Exercise 1: Descending Bubble Sort
