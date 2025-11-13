@@ -137,6 +137,44 @@ end
 
 Modern PHP's type system is **more strict by default** than Ruby, which can prevent entire classes of bugs.
 
+::: tip Pro Tip: Enabling Strict Types
+Always start your PHP files with `declare(strict_types=1);` for maximum type safety. This catches type errors at call-time instead of silently coercing types.
+
+```php
+<?php
+declare(strict_types=1); // Always add this!
+
+// Now TypeErrors are thrown instead of silent coercion
+function add(int $a, int $b): int {
+    return $a + $b;
+}
+
+add(5, "10"); // TypeError (good!)
+// Without strict_types: silently converts "10" to 10 (bad!)
+```
+:::
+
+::: warning Common Gotcha: Strict Types Are File-Scoped
+`declare(strict_types=1)` only affects the file it's declared in, not the files you call! Each file needs its own declaration.
+
+```php
+<?php
+// File: UserService.php
+declare(strict_types=1);
+
+class UserService {
+    public function process(int $id) { ... }
+}
+
+// File: controller.php
+// NO strict_types declared here!
+$service = new UserService();
+$service->process("5"); // This STILL gets coerced to 5!
+```
+
+**Solution:** Add `declare(strict_types=1)` to every PHP file, or use PHPStan/Psalm to catch these at build time.
+:::
+
 ## Modern Syntax: Null Safety
 
 ### Null Coalescing
@@ -335,6 +373,83 @@ end
 ```
 
 Both achieve lazy loading elegantly.
+
+::: tip Pro Tip: Property Hooks vs Traditional Getters/Setters
+Property hooks are cleaner than traditional get/set methods:
+
+**Old Way (verbose):**
+```php
+<?php
+class User {
+    private string $name;
+
+    public function getName(): string {
+        return $this->name;
+    }
+
+    public function setName(string $name): void {
+        $this->name = trim(ucfirst($name));
+    }
+}
+
+$user->setName("john"); // Ugly method call
+```
+
+**New Way (elegant):**
+```php
+<?php
+class User {
+    public string $name {
+        set => trim(ucfirst($value));
+    }
+}
+
+$user->name = "john"; // Natural property access
+```
+:::
+
+::: warning Common Gotcha: Infinite Recursion with Property Hooks
+Be careful not to create infinite loops!
+
+```php
+<?php
+class User {
+    public string $name {
+        set(string $value) {
+            // ❌ WRONG - creates infinite recursion!
+            $this->name = strtoupper($value);
+        }
+    }
+}
+```
+
+**Why:** Setting `$this->name` inside the `set` hook calls the hook again!
+
+**Solution:** Use the backing field or a different property:
+```php
+<?php
+class User {
+    private string $_name; // Backing field
+
+    public string $name {
+        get => $this->_name;
+        set(string $value) {
+            $this->_name = strtoupper($value); // ✅ Correct
+        }
+    }
+}
+```
+
+**Or use the shorthand** (PHP automatically handles the backing field):
+```php
+<?php
+class User {
+    public string $name {
+        set => strtoupper($value); // ✅ Works! No recursion
+    }
+}
+```
+:::
 
 ## Enums: Type-Safe Constants
 
@@ -781,6 +896,45 @@ PHP's performance advantage matters for:
 - API-heavy workloads
 - Real-time processing
 - Cost optimization (fewer servers needed)
+
+::: tip Pro Tip: Enabling JIT in Production
+JIT is disabled by default. Enable it in `php.ini`:
+
+```ini
+; Recommended for production
+opcache.enable=1
+opcache.jit_buffer_size=100M
+opcache.jit=1255  ; tracing mode (best for web apps)
+```
+
+**JIT Modes:**
+- `1255` (tracing) - Best for web applications (default recommendation)
+- `1205` (function) - Best for CPU-intensive scripts
+- `0` (disabled) - Debugging/development
+
+**Test it:**
+```bash
+php -d opcache.jit=1255 -d opcache.jit_buffer_size=100M your-script.php
+```
+:::
+
+::: warning Common Gotcha: JIT Doesn't Help Everything
+JIT primarily helps CPU-intensive code, not I/O-bound operations:
+
+**JIT Helps:**
+- ✅ Complex calculations
+- ✅ String manipulation loops
+- ✅ Array operations
+- ✅ Recursive algorithms
+
+**JIT Doesn't Help Much:**
+- ❌ Database queries (I/O bound)
+- ❌ API calls (network bound)
+- ❌ File operations (I/O bound)
+- ❌ Most web requests (already fast)
+
+**Reality:** For typical Laravel web apps, JIT provides 5-15% improvement, not the 2-3x you see in benchmarks. Still worth enabling!
+:::
 
 ## Fibers: Lightweight Concurrency
 
