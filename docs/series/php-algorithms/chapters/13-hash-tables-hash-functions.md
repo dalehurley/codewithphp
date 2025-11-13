@@ -681,6 +681,778 @@ if (isset($ages['Alice'])) {
 - `array_key_exists()` → O(1)
 - `in_array()` → O(n) (searches values, not keys!)
 
+## Advanced Collision Handling Strategies
+
+### Robin Hood Hashing
+
+Robin Hood hashing improves on linear probing by reducing variance in probe sequence lengths:
+
+```php
+class RobinHoodHashTable
+{
+    private array $keys;
+    private array $values;
+    private array $distances; // Distance from ideal position
+    private int $size;
+    private int $count = 0;
+
+    public function __construct(int $size = 100)
+    {
+        $this->size = $size;
+        $this->keys = array_fill(0, $size, null);
+        $this->values = array_fill(0, $size, null);
+        $this->distances = array_fill(0, $size, -1);
+    }
+
+    private function hash(string $key): int
+    {
+        return abs(crc32($key) % $this->size);
+    }
+
+    public function set(string $key, mixed $value): void
+    {
+        $index = $this->hash($key);
+        $distance = 0;
+
+        while (true) {
+            // Empty slot found
+            if ($this->keys[$index] === null) {
+                $this->keys[$index] = $key;
+                $this->values[$index] = $value;
+                $this->distances[$index] = $distance;
+                $this->count++;
+                return;
+            }
+
+            // Key already exists
+            if ($this->keys[$index] === $key) {
+                $this->values[$index] = $value;
+                return;
+            }
+
+            // Robin Hood: if current item is richer (lower distance), swap
+            if ($distance > $this->distances[$index]) {
+                // Swap
+                $tempKey = $this->keys[$index];
+                $tempValue = $this->values[$index];
+                $tempDist = $this->distances[$index];
+
+                $this->keys[$index] = $key;
+                $this->values[$index] = $value;
+                $this->distances[$index] = $distance;
+
+                $key = $tempKey;
+                $value = $tempValue;
+                $distance = $tempDist;
+            }
+
+            $index = ($index + 1) % $this->size;
+            $distance++;
+        }
+    }
+
+    public function get(string $key): mixed
+    {
+        $index = $this->hash($key);
+        $distance = 0;
+
+        while ($this->keys[$index] !== null) {
+            if ($this->keys[$index] === $key) {
+                return $this->values[$index];
+            }
+
+            // If we've gone further than this key's distance, it's not here
+            if ($distance > $this->distances[$index]) {
+                return null;
+            }
+
+            $index = ($index + 1) % $this->size;
+            $distance++;
+        }
+
+        return null;
+    }
+}
+```
+
+### Cuckoo Hashing
+
+Uses two hash functions and two tables, guaranteeing O(1) lookup:
+
+```php
+class CuckooHashTable
+{
+    private array $table1;
+    private array $table2;
+    private int $size;
+    private int $count = 0;
+    private const MAX_KICKS = 100;
+
+    public function __construct(int $size = 100)
+    {
+        $this->size = $size;
+        $this->table1 = array_fill(0, $size, null);
+        $this->table2 = array_fill(0, $size, null);
+    }
+
+    private function hash1(string $key): int
+    {
+        return abs(crc32($key) % $this->size);
+    }
+
+    private function hash2(string $key): int
+    {
+        $hash = 0;
+        for ($i = 0; $i < strlen($key); $i++) {
+            $hash = ($hash * 31 + ord($key[$i])) % $this->size;
+        }
+        return abs($hash);
+    }
+
+    public function set(string $key, mixed $value): void
+    {
+        // Check if key already exists
+        $idx1 = $this->hash1($key);
+        $idx2 = $this->hash2($key);
+
+        if ($this->table1[$idx1] !== null && $this->table1[$idx1]['key'] === $key) {
+            $this->table1[$idx1]['value'] = $value;
+            return;
+        }
+
+        if ($this->table2[$idx2] !== null && $this->table2[$idx2]['key'] === $key) {
+            $this->table2[$idx2]['value'] = $value;
+            return;
+        }
+
+        // Insert new key
+        $item = ['key' => $key, 'value' => $value];
+        $currentTable = 1;
+        $kicks = 0;
+
+        while ($kicks < self::MAX_KICKS) {
+            if ($currentTable === 1) {
+                $idx = $this->hash1($item['key']);
+
+                if ($this->table1[$idx] === null) {
+                    $this->table1[$idx] = $item;
+                    $this->count++;
+                    return;
+                }
+
+                // Kick out existing item
+                $temp = $this->table1[$idx];
+                $this->table1[$idx] = $item;
+                $item = $temp;
+                $currentTable = 2;
+            } else {
+                $idx = $this->hash2($item['key']);
+
+                if ($this->table2[$idx] === null) {
+                    $this->table2[$idx] = $item;
+                    $this->count++;
+                    return;
+                }
+
+                // Kick out existing item
+                $temp = $this->table2[$idx];
+                $this->table2[$idx] = $item;
+                $item = $temp;
+                $currentTable = 1;
+            }
+
+            $kicks++;
+        }
+
+        // Rehash if too many kicks
+        $this->rehash();
+        $this->set($key, $value);
+    }
+
+    public function get(string $key): mixed
+    {
+        $idx1 = $this->hash1($key);
+        if ($this->table1[$idx1] !== null && $this->table1[$idx1]['key'] === $key) {
+            return $this->table1[$idx1]['value'];
+        }
+
+        $idx2 = $this->hash2($key);
+        if ($this->table2[$idx2] !== null && $this->table2[$idx2]['key'] === $key) {
+            return $this->table2[$idx2]['value'];
+        }
+
+        return null;
+    }
+
+    private function rehash(): void
+    {
+        $oldTable1 = $this->table1;
+        $oldTable2 = $this->table2;
+
+        $this->size *= 2;
+        $this->table1 = array_fill(0, $this->size, null);
+        $this->table2 = array_fill(0, $this->size, null);
+        $this->count = 0;
+
+        foreach ($oldTable1 as $item) {
+            if ($item !== null) {
+                $this->set($item['key'], $item['value']);
+            }
+        }
+
+        foreach ($oldTable2 as $item) {
+            if ($item !== null) {
+                $this->set($item['key'], $item['value']);
+            }
+        }
+    }
+}
+```
+
+### Hopscotch Hashing
+
+Combines benefits of chaining and open addressing:
+
+```php
+class HopscotchHashTable
+{
+    private array $table;
+    private array $hopInfo; // Bitmap of nearby items
+    private int $size;
+    private int $hopRange = 32; // Neighborhood size
+
+    public function __construct(int $size = 100)
+    {
+        $this->size = $size;
+        $this->table = array_fill(0, $size, null);
+        $this->hopInfo = array_fill(0, $size, 0);
+    }
+
+    private function hash(string $key): int
+    {
+        return abs(crc32($key) % $this->size);
+    }
+
+    public function set(string $key, mixed $value): void
+    {
+        $idx = $this->hash($key);
+
+        // Find empty slot
+        $emptyIdx = $this->findEmptySlot($idx);
+
+        if ($emptyIdx === false) {
+            // Table too full, need to resize
+            return;
+        }
+
+        // Move empty slot into hop range if needed
+        while ($emptyIdx - $idx >= $this->hopRange) {
+            $emptyIdx = $this->moveCloser($idx, $emptyIdx);
+            if ($emptyIdx === false) {
+                return;
+            }
+        }
+
+        // Insert item
+        $this->table[$emptyIdx] = ['key' => $key, 'value' => $value];
+        $this->hopInfo[$idx] |= (1 << ($emptyIdx - $idx));
+    }
+
+    private function findEmptySlot(int $start): int|false
+    {
+        for ($i = 0; $i < $this->size; $i++) {
+            $idx = ($start + $i) % $this->size;
+            if ($this->table[$idx] === null) {
+                return $idx;
+            }
+        }
+        return false;
+    }
+
+    private function moveCloser(int $target, int $empty): int|false
+    {
+        // Implementation of repositioning algorithm
+        // Simplified for brevity
+        return false;
+    }
+
+    public function get(string $key): mixed
+    {
+        $idx = $this->hash($key);
+        $hopInfo = $this->hopInfo[$idx];
+
+        // Check all positions in hop range
+        for ($i = 0; $i < $this->hopRange; $i++) {
+            if ($hopInfo & (1 << $i)) {
+                $checkIdx = ($idx + $i) % $this->size;
+                if ($this->table[$checkIdx] !== null &&
+                    $this->table[$checkIdx]['key'] === $key) {
+                    return $this->table[$checkIdx]['value'];
+                }
+            }
+        }
+
+        return null;
+    }
+}
+```
+
+## Performance Benchmarks: Collision Strategies
+
+Comparing different collision handling approaches:
+
+```php
+class CollisionBenchmark
+{
+    public function compareStrategies(): void
+    {
+        $sizes = [1000, 10000, 50000];
+        $loadFactors = [0.5, 0.75, 0.9];
+
+        foreach ($sizes as $size) {
+            echo "\n=== Testing with $size items ===\n";
+
+            foreach ($loadFactors as $loadFactor) {
+                $capacity = (int)($size / $loadFactor);
+
+                echo "\nLoad Factor: $loadFactor\n";
+                echo str_repeat('-', 50) . "\n";
+
+                // Generate test data
+                $keys = $this->generateKeys($size);
+                $values = range(1, $size);
+
+                // Test Chaining
+                $chaining = new HashTableChaining($capacity);
+                $start = microtime(true);
+                foreach ($keys as $i => $key) {
+                    $chaining->set($key, $values[$i]);
+                }
+                $chainingInsert = microtime(true) - $start;
+
+                $start = microtime(true);
+                foreach ($keys as $key) {
+                    $chaining->get($key);
+                }
+                $chainingSearch = microtime(true) - $start;
+
+                // Test Linear Probing
+                $linear = new HashTableLinearProbing($capacity);
+                $start = microtime(true);
+                foreach ($keys as $i => $key) {
+                    $linear->set($key, $values[$i]);
+                }
+                $linearInsert = microtime(true) - $start;
+
+                $start = microtime(true);
+                foreach ($keys as $key) {
+                    $linear->get($key);
+                }
+                $linearSearch = microtime(true) - $start;
+
+                // Test Robin Hood
+                $robinHood = new RobinHoodHashTable($capacity);
+                $start = microtime(true);
+                foreach ($keys as $i => $key) {
+                    $robinHood->set($key, $values[$i]);
+                }
+                $robinInsert = microtime(true) - $start;
+
+                $start = microtime(true);
+                foreach ($keys as $key) {
+                    $robinHood->get($key);
+                }
+                $robinSearch = microtime(true) - $start;
+
+                // Display results
+                printf("Chaining:      Insert: %.4fs, Search: %.4fs\n",
+                    $chainingInsert, $chainingSearch);
+                printf("Linear Probe:  Insert: %.4fs, Search: %.4fs\n",
+                    $linearInsert, $linearSearch);
+                printf("Robin Hood:    Insert: %.4fs, Search: %.4fs\n",
+                    $robinInsert, $robinSearch);
+            }
+        }
+    }
+
+    private function generateKeys(int $count): array
+    {
+        $keys = [];
+        for ($i = 0; $i < $count; $i++) {
+            $keys[] = 'key_' . bin2hex(random_bytes(8));
+        }
+        return $keys;
+    }
+
+    public function memoryComparison(): void
+    {
+        $size = 10000;
+        $keys = $this->generateKeys($size);
+
+        echo "\n=== Memory Usage Comparison ===\n\n";
+
+        // Chaining
+        $memBefore = memory_get_usage();
+        $chaining = new HashTableChaining($size);
+        foreach ($keys as $i => $key) {
+            $chaining->set($key, $i);
+        }
+        $chainingMem = memory_get_usage() - $memBefore;
+
+        // Linear Probing
+        $memBefore = memory_get_usage();
+        $linear = new HashTableLinearProbing($size);
+        foreach ($keys as $i => $key) {
+            $linear->set($key, $i);
+        }
+        $linearMem = memory_get_usage() - $memBefore;
+
+        // Robin Hood
+        $memBefore = memory_get_usage();
+        $robin = new RobinHoodHashTable($size);
+        foreach ($keys as $i => $key) {
+            $robin->set($key, $i);
+        }
+        $robinMem = memory_get_usage() - $memBefore;
+
+        printf("Chaining:     %s\n", $this->formatBytes($chainingMem));
+        printf("Linear Probe: %s\n", $this->formatBytes($linearMem));
+        printf("Robin Hood:   %s\n", $this->formatBytes($robinMem));
+    }
+
+    private function formatBytes(int $bytes): string
+    {
+        $units = ['B', 'KB', 'MB', 'GB'];
+        $i = 0;
+        while ($bytes >= 1024 && $i < count($units) - 1) {
+            $bytes /= 1024;
+            $i++;
+        }
+        return round($bytes, 2) . ' ' . $units[$i];
+    }
+}
+
+// Run benchmarks
+$benchmark = new CollisionBenchmark();
+$benchmark->compareStrategies();
+$benchmark->memoryComparison();
+```
+
+## PHP SPL Implementations
+
+### Using SplObjectStorage as Hash Table
+
+```php
+class SPLHashExamples
+{
+    /**
+     * SplObjectStorage - hash table for objects
+     */
+    public function objectHashTable(): void
+    {
+        $storage = new SplObjectStorage();
+
+        // Create objects
+        $user1 = new stdClass();
+        $user1->name = 'Alice';
+        $user1->email = 'alice@example.com';
+
+        $user2 = new stdClass();
+        $user2->name = 'Bob';
+        $user2->email = 'bob@example.com';
+
+        // Store objects with associated data
+        $storage[$user1] = ['role' => 'admin', 'lastLogin' => time()];
+        $storage[$user2] = ['role' => 'user', 'lastLogin' => time() - 3600];
+
+        // Retrieve
+        echo $storage[$user1]['role']; // admin
+
+        // Check existence
+        if ($storage->contains($user1)) {
+            echo "User exists\n";
+        }
+
+        // Iterate
+        foreach ($storage as $user) {
+            $data = $storage[$user];
+            echo "{$user->name}: {$data['role']}\n";
+        }
+    }
+
+    /**
+     * Custom hash table using SplFixedArray
+     */
+    public function fixedArrayHashTable(): void
+    {
+        $size = 1000;
+        $table = new SplFixedArray($size);
+
+        $hash = function($key) use ($size) {
+            return abs(crc32($key) % $size);
+        };
+
+        // Set value
+        $set = function($key, $value) use ($table, $hash) {
+            $idx = $hash($key);
+
+            if (!isset($table[$idx])) {
+                $table[$idx] = [];
+            }
+
+            $table[$idx][$key] = $value;
+        };
+
+        // Get value
+        $get = function($key) use ($table, $hash) {
+            $idx = $hash($key);
+
+            if (!isset($table[$idx])) {
+                return null;
+            }
+
+            return $table[$idx][$key] ?? null;
+        };
+
+        // Usage
+        $set('name', 'John');
+        $set('age', 30);
+
+        echo $get('name'); // John
+        echo $get('age');  // 30
+    }
+
+    /**
+     * Weak reference hash table
+     */
+    public function weakReferenceHash(): void
+    {
+        if (!class_exists('WeakMap')) {
+            echo "WeakMap not available (PHP 8.0+)\n";
+            return;
+        }
+
+        $map = new WeakMap();
+
+        $obj1 = new stdClass();
+        $obj2 = new stdClass();
+
+        $map[$obj1] = 'data for obj1';
+        $map[$obj2] = 'data for obj2';
+
+        echo $map[$obj1]; // 'data for obj1'
+
+        unset($obj1); // Object and its entry are garbage collected
+    }
+}
+
+$examples = new SPLHashExamples();
+$examples->objectHashTable();
+$examples->fixedArrayHashTable();
+$examples->weakReferenceHash();
+```
+
+## Security Considerations
+
+### Hash Flooding Attacks
+
+Protect against algorithmic complexity attacks:
+
+```php
+class SecureHashTable
+{
+    private array $table;
+    private int $size;
+    private string $randomSeed;
+    private int $maxChainLength = 8;
+
+    public function __construct(int $size = 100)
+    {
+        $this->size = $size;
+        $this->table = array_fill(0, $size, []);
+
+        // Random seed to prevent hash prediction
+        $this->randomSeed = bin2hex(random_bytes(16));
+    }
+
+    /**
+     * Secure hash function with random seed
+     */
+    private function hash(string $key): int
+    {
+        // Use random seed to make hash unpredictable
+        $hash = hash_hmac('sha256', $key, $this->randomSeed);
+        return abs(hexdec(substr($hash, 0, 8)) % $this->size);
+    }
+
+    public function set(string $key, mixed $value): void
+    {
+        $index = $this->hash($key);
+
+        // Check chain length to prevent DOS
+        if (count($this->table[$index]) >= $this->maxChainLength) {
+            $this->resize();
+            $index = $this->hash($key);
+        }
+
+        // Check if key exists
+        foreach ($this->table[$index] as &$pair) {
+            if ($pair['key'] === $key) {
+                $pair['value'] = $value;
+                return;
+            }
+        }
+
+        // Add new entry
+        $this->table[$index][] = ['key' => $key, 'value' => $value];
+    }
+
+    public function get(string $key): mixed
+    {
+        $index = $this->hash($key);
+
+        foreach ($this->table[$index] as $pair) {
+            if ($pair['key'] === $key) {
+                return $pair['value'];
+            }
+        }
+
+        return null;
+    }
+
+    private function resize(): void
+    {
+        $oldTable = $this->table;
+        $this->size *= 2;
+        $this->table = array_fill(0, $this->size, []);
+
+        // Rehash all entries
+        foreach ($oldTable as $bucket) {
+            foreach ($bucket as $pair) {
+                $this->set($pair['key'], $pair['value']);
+            }
+        }
+    }
+
+    /**
+     * Rate limiting for set operations
+     */
+    private array $setAttempts = [];
+
+    public function setWithRateLimit(
+        string $clientId,
+        string $key,
+        mixed $value,
+        int $maxOps = 1000,
+        int $windowSec = 60
+    ): bool {
+        $now = time();
+
+        if (!isset($this->setAttempts[$clientId])) {
+            $this->setAttempts[$clientId] = ['count' => 0, 'window' => $now];
+        }
+
+        $clientData = &$this->setAttempts[$clientId];
+
+        // Reset window if expired
+        if ($now - $clientData['window'] > $windowSec) {
+            $clientData = ['count' => 0, 'window' => $now];
+        }
+
+        // Check rate limit
+        if ($clientData['count'] >= $maxOps) {
+            throw new Exception("Rate limit exceeded for client: $clientId");
+        }
+
+        $clientData['count']++;
+        $this->set($key, $value);
+
+        return true;
+    }
+}
+```
+
+### Cryptographic Hash Functions for Sensitive Data
+
+```php
+class CryptographicHashTable
+{
+    private array $table;
+    private int $size;
+
+    public function __construct(int $size = 100)
+    {
+        $this->size = $size;
+        $this->table = array_fill(0, $size, []);
+    }
+
+    /**
+     * Use cryptographic hash for sensitive keys
+     */
+    private function hash(string $key): int
+    {
+        $hash = hash('sha256', $key);
+        return abs(hexdec(substr($hash, 0, 8)) % $this->size);
+    }
+
+    /**
+     * Store sensitive data with encryption
+     */
+    public function setSecure(string $key, string $sensitiveValue, string $encryptionKey): void
+    {
+        // Encrypt value
+        $iv = random_bytes(16);
+        $encrypted = openssl_encrypt(
+            $sensitiveValue,
+            'aes-256-cbc',
+            $encryptionKey,
+            0,
+            $iv
+        );
+
+        $index = $this->hash($key);
+
+        $this->table[$index][] = [
+            'key_hash' => hash('sha256', $key), // Don't store actual key
+            'value' => base64_encode($encrypted),
+            'iv' => base64_encode($iv)
+        ];
+    }
+
+    /**
+     * Retrieve and decrypt sensitive data
+     */
+    public function getSecure(string $key, string $encryptionKey): ?string
+    {
+        $index = $this->hash($key);
+        $keyHash = hash('sha256', $key);
+
+        foreach ($this->table[$index] as $pair) {
+            if ($pair['key_hash'] === $keyHash) {
+                $decrypted = openssl_decrypt(
+                    base64_decode($pair['value']),
+                    'aes-256-cbc',
+                    $encryptionKey,
+                    0,
+                    base64_decode($pair['iv'])
+                );
+
+                return $decrypted !== false ? $decrypted : null;
+            }
+        }
+
+        return null;
+    }
+}
+
+// Usage
+$secureTable = new CryptographicHashTable();
+$encryptionKey = hash('sha256', 'your-secret-key', true);
+
+$secureTable->setSecure('user:123:ssn', '123-45-6789', $encryptionKey);
+$ssn = $secureTable->getSecure('user:123:ssn', $encryptionKey);
+```
+
 ## Complexity Analysis
 
 | Operation | Average | Worst Case |
@@ -691,6 +1463,15 @@ if (isset($ages['Alice'])) {
 | **Space** | O(n) | O(n) |
 
 *Worst case happens with many collisions or poor hash function
+
+| Collision Strategy | Insert | Search | Delete | Memory | Best For |
+|-------------------|---------|---------|---------|---------|----------|
+| **Chaining** | O(1) avg | O(1) avg | O(1) avg | High | General use |
+| **Linear Probing** | O(1) avg | O(1) avg | O(1) avg | Low | Cache-friendly |
+| **Quadratic Probing** | O(1) avg | O(1) avg | O(1) avg | Low | Better clustering |
+| **Double Hashing** | O(1) avg | O(1) avg | O(1) avg | Low | Uniform distribution |
+| **Robin Hood** | O(1) avg | O(1) avg | O(1) avg | Low | Bounded variance |
+| **Cuckoo** | O(1) worst | O(1) | O(1) | Medium | Guaranteed O(1) lookup |
 
 ## Practice Exercises
 

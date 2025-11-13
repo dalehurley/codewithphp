@@ -618,6 +618,792 @@ $bench->compare([
 ], null, iterations: 100);
 ```
 
+## Edge Cases and Special Scenarios
+
+### Handling Edge Cases
+
+```php
+class StringSearchEdgeCases
+{
+    /**
+     * Handle empty strings
+     */
+    public function handleEmptyStrings(string $text, string $pattern): array
+    {
+        // Empty pattern - returns all positions
+        if ($pattern === '') {
+            return range(0, strlen($text));
+        }
+
+        // Empty text - no matches
+        if ($text === '') {
+            return [];
+        }
+
+        // Pattern longer than text - no matches
+        if (strlen($pattern) > strlen($text)) {
+            return [];
+        }
+
+        return naiveSearch($text, $pattern);
+    }
+
+    /**
+     * Case-insensitive search
+     */
+    public function caseInsensitiveSearch(string $text, string $pattern): array
+    {
+        $lowerText = strtolower($text);
+        $lowerPattern = strtolower($pattern);
+
+        return naiveSearch($lowerText, $lowerPattern);
+    }
+
+    /**
+     * Unicode-aware search
+     */
+    public function unicodeSearch(string $text, string $pattern): array
+    {
+        $matches = [];
+        $textLen = mb_strlen($text);
+        $patternLen = mb_strlen($pattern);
+
+        for ($i = 0; $i <= $textLen - $patternLen; $i++) {
+            $substring = mb_substr($text, $i, $patternLen);
+
+            if ($substring === $pattern) {
+                $matches[] = $i;
+            }
+        }
+
+        return $matches;
+    }
+
+    /**
+     * Search with special characters
+     */
+    public function searchWithSpecialChars(string $text, string $pattern): array
+    {
+        // Escape special regex characters if using regex
+        $escapedPattern = preg_quote($pattern, '/');
+
+        preg_match_all('/' . $escapedPattern . '/', $text, $matches, PREG_OFFSET_CAPTURE);
+
+        return array_column($matches[0], 1);
+    }
+
+    /**
+     * Overlapping matches
+     */
+    public function findOverlapping(string $text, string $pattern): array
+    {
+        $matches = [];
+        $textLen = strlen($text);
+        $patternLen = strlen($pattern);
+
+        for ($i = 0; $i <= $textLen - $patternLen; $i++) {
+            if (substr($text, $i, $patternLen) === $pattern) {
+                $matches[] = $i;
+                // Don't skip - allow overlapping
+            }
+        }
+
+        return $matches;
+    }
+
+    /**
+     * Whitespace handling
+     */
+    public function searchIgnoringWhitespace(string $text, string $pattern): array
+    {
+        // Remove all whitespace
+        $cleanText = preg_replace('/\s+/', '', $text);
+        $cleanPattern = preg_replace('/\s+/', '', $pattern);
+
+        $matches = naiveSearch($cleanText, $cleanPattern);
+
+        // Map back to original positions (approximation)
+        return $matches;
+    }
+
+    /**
+     * Null byte handling
+     */
+    public function binarySafeSearch(string $text, string $pattern): array
+    {
+        $matches = [];
+        $textLen = strlen($text);
+        $patternLen = strlen($pattern);
+
+        for ($i = 0; $i <= $textLen - $patternLen; $i++) {
+            // Use binary-safe comparison
+            if (substr_compare($text, $pattern, $i, $patternLen, false) === 0) {
+                $matches[] = $i;
+            }
+        }
+
+        return $matches;
+    }
+}
+
+// Test edge cases
+$edgeCases = new StringSearchEdgeCases();
+
+// Empty strings
+print_r($edgeCases->handleEmptyStrings("hello", "")); // All positions
+print_r($edgeCases->handleEmptyStrings("", "hello")); // Empty array
+
+// Unicode
+print_r($edgeCases->unicodeSearch("Hello 世界", "世界")); // [6]
+
+// Overlapping
+print_r($edgeCases->findOverlapping("AAAA", "AA")); // [0, 1, 2]
+```
+
+### Performance Optimization for Edge Cases
+
+```php
+class OptimizedStringSearch
+{
+    /**
+     * Quick fail for impossible matches
+     */
+    public function optimizedSearch(string $text, string $pattern): array
+    {
+        $textLen = strlen($text);
+        $patternLen = strlen($pattern);
+
+        // Quick return for edge cases
+        if ($patternLen === 0 || $patternLen > $textLen) {
+            return [];
+        }
+
+        // Single character optimization
+        if ($patternLen === 1) {
+            return $this->searchSingleChar($text, $pattern[0]);
+        }
+
+        // Use appropriate algorithm based on lengths
+        if ($patternLen <= 3) {
+            return naiveSearch($text, $pattern);
+        } elseif ($patternLen < 100) {
+            return boyerMooreSearch($text, $pattern);
+        } else {
+            return kmpSearch($text, $pattern);
+        }
+    }
+
+    private function searchSingleChar(string $text, string $char): array
+    {
+        $matches = [];
+        $pos = 0;
+
+        while (($pos = strpos($text, $char, $pos)) !== false) {
+            $matches[] = $pos;
+            $pos++;
+        }
+
+        return $matches;
+    }
+}
+```
+
+## Performance Benchmarks with Edge Cases
+
+```php
+class StringSearchBenchmark
+{
+    public function comprehensiveBenchmark(): void
+    {
+        echo "=== String Search Performance Comparison ===\n\n";
+
+        $testCases = [
+            'Small text, small pattern' => [
+                'text' => str_repeat('abc', 100),
+                'pattern' => 'abc'
+            ],
+            'Large text, small pattern' => [
+                'text' => str_repeat('lorem ipsum dolor sit amet ', 10000),
+                'pattern' => 'dolor'
+            ],
+            'Large text, large pattern' => [
+                'text' => file_get_contents('/usr/share/dict/words'),
+                'pattern' => 'internationalization'
+            ],
+            'Worst case (many mismatches)' => [
+                'text' => str_repeat('a', 10000) . 'b',
+                'pattern' => str_repeat('a', 10) . 'b'
+            ],
+            'Best case (early match)' => [
+                'text' => 'target' . str_repeat('x', 10000),
+                'pattern' => 'target'
+            ],
+            'Unicode text' => [
+                'text' => str_repeat('Hello 世界 ', 1000),
+                'pattern' => '世界'
+            ]
+        ];
+
+        foreach ($testCases as $name => $data) {
+            echo "\n$name:\n";
+            echo str_repeat('-', 60) . "\n";
+
+            $text = $data['text'];
+            $pattern = $data['pattern'];
+            $iterations = 1000;
+
+            // Naive
+            $start = microtime(true);
+            for ($i = 0; $i < $iterations; $i++) {
+                naiveSearch($text, $pattern);
+            }
+            $naiveTime = microtime(true) - $start;
+
+            // KMP
+            $start = microtime(true);
+            for ($i = 0; $i < $iterations; $i++) {
+                kmpSearch($text, $pattern);
+            }
+            $kmpTime = microtime(true) - $start;
+
+            // Boyer-Moore
+            $start = microtime(true);
+            for ($i = 0; $i < $iterations; $i++) {
+                boyerMooreSearch($text, $pattern);
+            }
+            $bmTime = microtime(true) - $start;
+
+            // Rabin-Karp
+            $rk = new RabinKarp();
+            $start = microtime(true);
+            for ($i = 0; $i < $iterations; $i++) {
+                $rk->search($text, $pattern);
+            }
+            $rkTime = microtime(true) - $start;
+
+            // PHP native
+            $start = microtime(true);
+            for ($i = 0; $i < $iterations; $i++) {
+                $pos = 0;
+                $matches = [];
+                while (($pos = strpos($text, $pattern, $pos)) !== false) {
+                    $matches[] = $pos;
+                    $pos++;
+                }
+            }
+            $nativeTime = microtime(true) - $start;
+
+            printf("Naive:       %.6f sec\n", $naiveTime);
+            printf("KMP:         %.6f sec (%.2fx vs Naive)\n",
+                $kmpTime, $naiveTime / $kmpTime);
+            printf("Boyer-Moore: %.6f sec (%.2fx vs Naive)\n",
+                $bmTime, $naiveTime / $bmTime);
+            printf("Rabin-Karp:  %.6f sec (%.2fx vs Naive)\n",
+                $rkTime, $naiveTime / $rkTime);
+            printf("PHP Native:  %.6f sec (%.2fx vs Naive)\n",
+                $nativeTime, $naiveTime / $nativeTime);
+        }
+    }
+
+    public function memoryBenchmark(): void
+    {
+        echo "\n\n=== Memory Usage Comparison ===\n\n";
+
+        $text = str_repeat('lorem ipsum ', 100000);
+        $pattern = 'ipsum';
+
+        $algorithms = [
+            'Naive' => fn() => naiveSearch($text, $pattern),
+            'KMP' => fn() => kmpSearch($text, $pattern),
+            'Boyer-Moore' => fn() => boyerMooreSearch($text, $pattern),
+            'Rabin-Karp' => fn() => (new RabinKarp())->search($text, $pattern),
+        ];
+
+        foreach ($algorithms as $name => $algorithm) {
+            $memBefore = memory_get_usage();
+            $algorithm();
+            $memAfter = memory_get_usage();
+
+            $memUsed = $memAfter - $memBefore;
+            printf("%s: %s\n", str_pad($name, 15), $this->formatBytes($memUsed));
+        }
+    }
+
+    private function formatBytes(int $bytes): string
+    {
+        if ($bytes < 1024) return "$bytes B";
+        if ($bytes < 1048576) return round($bytes / 1024, 2) . " KB";
+        return round($bytes / 1048576, 2) . " MB";
+    }
+}
+
+$benchmark = new StringSearchBenchmark();
+$benchmark->comprehensiveBenchmark();
+$benchmark->memoryBenchmark();
+```
+
+## Security Considerations
+
+### Timing Attacks on String Matching
+
+```php
+class SecureStringSearch
+{
+    /**
+     * VULNERABLE: Early termination leaks information
+     */
+    public function insecurePasswordMatch(string $input, string $stored): bool
+    {
+        return $input === $stored; // Timing attack possible!
+    }
+
+    /**
+     * SECURE: Constant-time string comparison
+     */
+    public function securePasswordMatch(string $input, string $stored): bool
+    {
+        return hash_equals($stored, $input);
+    }
+
+    /**
+     * VULNERABLE: Pattern search reveals information via timing
+     */
+    public function insecureTokenSearch(array $validTokens, string $userToken): bool
+    {
+        foreach ($validTokens as $token) {
+            if (strpos($token, $userToken) !== false) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * SECURE: Constant-time token validation
+     */
+    public function secureTokenSearch(array $validTokens, string $userToken): bool
+    {
+        $found = 0;
+
+        foreach ($validTokens as $token) {
+            if (hash_equals($token, $userToken)) {
+                $found = 1;
+            }
+        }
+
+        // Add jitter to obscure timing
+        usleep(rand(10, 50));
+
+        return $found === 1;
+    }
+
+    /**
+     * Protect against ReDoS (Regular Expression Denial of Service)
+     */
+    public function safeRegexSearch(string $text, string $pattern, int $maxTime = 1000): ?array
+    {
+        // Validate pattern first
+        if (!$this->isPatternSafe($pattern)) {
+            throw new Exception("Unsafe regex pattern detected");
+        }
+
+        // Set PCRE limits
+        ini_set('pcre.backtrack_limit', '100000');
+        ini_set('pcre.recursion_limit', '100000');
+
+        $start = microtime(true);
+
+        // Use timeout wrapper
+        $matches = [];
+        try {
+            if (preg_match_all($pattern, $text, $matches) === false) {
+                throw new Exception("Regex execution failed");
+            }
+
+            $duration = (microtime(true) - $start) * 1000;
+            if ($duration > $maxTime) {
+                throw new Exception("Regex execution timeout");
+            }
+
+            return $matches[0];
+        } catch (Exception $e) {
+            error_log("Regex error: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    private function isPatternSafe(string $pattern): bool
+    {
+        // Check for catastrophic backtracking patterns
+        $dangerous = [
+            '/(\w+\s*)+/', // Nested quantifiers
+            '/(a+)+b/',    // Exponential backtracking
+            '/(a|a)*b/',   // Overlapping alternation
+        ];
+
+        foreach ($dangerous as $danger) {
+            if (strpos($pattern, trim($danger, '/')) !== false) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
+```
+
+### Input Validation and Sanitization
+
+```php
+class SafeStringOperations
+{
+    /**
+     * Sanitize search input
+     */
+    public function sanitizeSearchInput(string $input): string
+    {
+        // Remove null bytes
+        $input = str_replace("\0", '', $input);
+
+        // Limit length
+        $input = mb_substr($input, 0, 1000);
+
+        // Remove control characters
+        $input = preg_replace('/[\x00-\x1F\x7F]/', '', $input);
+
+        return $input;
+    }
+
+    /**
+     * Safe SQL LIKE search
+     */
+    public function safeLikeSearch(string $userInput): string
+    {
+        // Escape LIKE wildcards
+        $escaped = str_replace(['%', '_'], ['\%', '\_'], $userInput);
+
+        // Also escape for SQL
+        $escaped = addslashes($escaped);
+
+        return "%$escaped%";
+    }
+
+    /**
+     * Rate limit search operations
+     */
+    private array $searchAttempts = [];
+
+    public function rateLimitedSearch(
+        string $clientId,
+        string $text,
+        string $pattern,
+        int $maxSearches = 100
+    ): ?array {
+        $now = time();
+
+        if (!isset($this->searchAttempts[$clientId])) {
+            $this->searchAttempts[$clientId] = ['count' => 0, 'time' => $now];
+        }
+
+        $client = &$this->searchAttempts[$clientId];
+
+        if ($now - $client['time'] > 60) {
+            $client = ['count' => 0, 'time' => $now];
+        }
+
+        if ($client['count'] >= $maxSearches) {
+            throw new Exception("Rate limit exceeded");
+        }
+
+        $client['count']++;
+
+        return naiveSearch($text, $pattern);
+    }
+}
+```
+
+## Framework Integration Examples
+
+### Laravel Integration
+
+```php
+namespace App\Services;
+
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+
+class StringSearchService
+{
+    /**
+     * Search with caching
+     */
+    public function cachedSearch(string $text, string $pattern): array
+    {
+        $cacheKey = 'search:' . md5($text . $pattern);
+
+        return Cache::remember($cacheKey, 3600, function () use ($text, $pattern) {
+            return kmpSearch($text, $pattern);
+        });
+    }
+
+    /**
+     * Full-text search in database
+     */
+    public function fullTextSearch(string $query, string $table = 'posts'): array
+    {
+        // Use database full-text search
+        $results = DB::table($table)
+            ->whereRaw("MATCH(title, content) AGAINST(? IN BOOLEAN MODE)", [$query])
+            ->get();
+
+        // Highlight matches
+        return $results->map(function ($item) use ($query) {
+            $item->highlighted_content = $this->highlight($item->content, $query);
+            return $item;
+        })->toArray();
+    }
+
+    /**
+     * Highlight search terms
+     */
+    public function highlight(string $text, string $pattern): string
+    {
+        $matches = $this->cachedSearch($text, $pattern);
+
+        if (empty($matches)) {
+            return $text;
+        }
+
+        $result = '';
+        $lastPos = 0;
+
+        foreach ($matches as $pos) {
+            $result .= substr($text, $lastPos, $pos - $lastPos);
+            $result .= '<mark>' . substr($text, $pos, strlen($pattern)) . '</mark>';
+            $lastPos = $pos + strlen($pattern);
+        }
+
+        $result .= substr($text, $lastPos);
+
+        return $result;
+    }
+
+    /**
+     * Autocomplete search
+     */
+    public function autocomplete(string $prefix, int $limit = 10): array
+    {
+        return Cache::remember("autocomplete:$prefix", 600, function () use ($prefix, $limit) {
+            return DB::table('search_terms')
+                ->where('term', 'LIKE', "$prefix%")
+                ->orderBy('popularity', 'desc')
+                ->limit($limit)
+                ->pluck('term')
+                ->toArray();
+        });
+    }
+
+    /**
+     * Fuzzy search
+     */
+    public function fuzzySearch(string $query, int $maxDistance = 2): array
+    {
+        $terms = DB::table('search_terms')->pluck('term');
+
+        return $terms->filter(function ($term) use ($query, $maxDistance) {
+            return levenshtein($term, $query) <= $maxDistance;
+        })->values()->toArray();
+    }
+}
+
+// Usage in Laravel Controller
+namespace App\Http\Controllers;
+
+class SearchController extends Controller
+{
+    public function search(Request $request, StringSearchService $searchService)
+    {
+        $query = $request->input('q');
+
+        // Validate and sanitize
+        $validator = Validator::make($request->all(), [
+            'q' => 'required|string|max:100|regex:/^[a-zA-Z0-9\s]+$/'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => 'Invalid search query'], 400);
+        }
+
+        // Perform search
+        $results = $searchService->fullTextSearch($query);
+
+        // Log search
+        Log::info('Search performed', [
+            'query' => $query,
+            'results_count' => count($results),
+            'user_id' => auth()->id()
+        ]);
+
+        return response()->json($results);
+    }
+
+    public function autocomplete(Request $request, StringSearchService $searchService)
+    {
+        $prefix = $request->input('q');
+
+        if (strlen($prefix) < 2) {
+            return response()->json([]);
+        }
+
+        return response()->json(
+            $searchService->autocomplete($prefix)
+        );
+    }
+}
+```
+
+### Symfony Integration
+
+```php
+namespace App\Service;
+
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
+use Psr\Log\LoggerInterface;
+
+class StringSearchService
+{
+    private CacheInterface $cache;
+    private LoggerInterface $logger;
+
+    public function __construct(CacheInterface $cache, LoggerInterface $logger)
+    {
+        $this->cache = $cache;
+        $this->logger = $logger;
+    }
+
+    /**
+     * Cached pattern matching
+     */
+    public function search(string $text, string $pattern, string $algorithm = 'kmp'): array
+    {
+        $cacheKey = sprintf('search_%s_%s_%s',
+            $algorithm,
+            md5($text),
+            md5($pattern)
+        );
+
+        return $this->cache->get($cacheKey, function (ItemInterface $item) use (
+            $text,
+            $pattern,
+            $algorithm
+        ) {
+            $item->expiresAfter(3600);
+
+            $startTime = microtime(true);
+
+            $result = match ($algorithm) {
+                'naive' => naiveSearch($text, $pattern),
+                'kmp' => kmpSearch($text, $pattern),
+                'bm' => boyerMooreSearch($text, $pattern),
+                'rk' => (new RabinKarp())->search($text, $pattern),
+                default => kmpSearch($text, $pattern)
+            };
+
+            $duration = microtime(true) - $startTime;
+
+            $this->logger->info('String search performed', [
+                'algorithm' => $algorithm,
+                'pattern_length' => strlen($pattern),
+                'text_length' => strlen($text),
+                'matches' => count($result),
+                'duration' => $duration
+            ]);
+
+            return $result;
+        });
+    }
+
+    /**
+     * Search in uploaded files
+     */
+    public function searchInFile(string $filepath, string $pattern): array
+    {
+        if (!file_exists($filepath)) {
+            throw new \Exception("File not found: $filepath");
+        }
+
+        // Check file size
+        $maxSize = 10 * 1024 * 1024; // 10 MB
+        if (filesize($filepath) > $maxSize) {
+            throw new \Exception("File too large for in-memory search");
+        }
+
+        $content = file_get_contents($filepath);
+        return $this->search($content, $pattern);
+    }
+
+    /**
+     * Multi-pattern search (Aho-Corasick style)
+     */
+    public function multiPatternSearch(string $text, array $patterns): array
+    {
+        $results = [];
+
+        foreach ($patterns as $pattern) {
+            $matches = $this->search($text, $pattern);
+            if (!empty($matches)) {
+                $results[$pattern] = $matches;
+            }
+        }
+
+        return $results;
+    }
+}
+
+// Usage in Symfony Controller
+namespace App\Controller;
+
+use App\Service\StringSearchService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class SearchController extends AbstractController
+{
+    #[Route('/search', name: 'app_search', methods: ['POST'])]
+    public function search(
+        Request $request,
+        StringSearchService $searchService
+    ): Response {
+        $query = $request->request->get('query');
+        $text = $request->request->get('text');
+
+        // Validate input
+        if (empty($query) || empty($text)) {
+            return $this->json(['error' => 'Missing parameters'], 400);
+        }
+
+        if (strlen($query) > 1000 || strlen($text) > 1000000) {
+            return $this->json(['error' => 'Input too large'], 400);
+        }
+
+        try {
+            $matches = $searchService->search($text, $query, 'kmp');
+
+            return $this->json([
+                'query' => $query,
+                'matches' => $matches,
+                'count' => count($matches)
+            ]);
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], 500);
+        }
+    }
+}
+```
+
 ## Algorithm Selection Guide
 
 | Use Case | Best Algorithm | Reason |
@@ -628,6 +1414,8 @@ $bench->compare([
 | **Guaranteed linear time** | KMP | Never backtracks |
 | **Simple implementation** | Naive or strpos() | Easy to understand/use |
 | **Pattern with wildcards** | Regular expressions | Built-in support |
+| **Unicode text** | MB functions or Regex | Proper character handling |
+| **Security-sensitive** | Constant-time comparison | Prevent timing attacks |
 
 ## Practice Exercises
 
