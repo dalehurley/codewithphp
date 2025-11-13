@@ -45,15 +45,35 @@ function factorial(int $n): int {
 echo factorial(5); // 120 (5 × 4 × 3 × 2 × 1)
 ```
 
-**Call stack**:
+**Call Stack Visualization**:
+
+```mermaid
+graph TB
+    subgraph "Call Stack: factorial(5)"
+        F5["factorial(5)<br/>5 × factorial(4)<br/>= 5 × 24 = 120"]
+        F4["factorial(4)<br/>4 × factorial(3)<br/>= 4 × 6 = 24"]
+        F3["factorial(3)<br/>3 × factorial(2)<br/>= 3 × 2 = 6"]
+        F2["factorial(2)<br/>2 × factorial(1)<br/>= 2 × 1 = 2"]
+        F1["factorial(1)<br/>Base case!<br/>= 1"]
+
+        F5 -->|"Call"| F4
+        F4 -->|"Call"| F3
+        F3 -->|"Call"| F2
+        F2 -->|"Call"| F1
+        F1 -.->|"Return 1"| F2
+        F2 -.->|"Return 2"| F3
+        F3 -.->|"Return 6"| F4
+        F4 -.->|"Return 24"| F5
+    end
+
+    style F5 fill:#2196F3,color:#fff
+    style F4 fill:#42A5F5
+    style F3 fill:#64B5F6
+    style F2 fill:#90CAF9
+    style F1 fill:#4CAF50
 ```
-factorial(5)
-  → 5 × factorial(4)
-       → 4 × factorial(3)
-            → 3 × factorial(2)
-                 → 2 × factorial(1)
-                      → 1 (base case)
-```
+
+**How it works**: Stack builds up with calls (blue), then unwinds with returns (green arrows).
 
 ## Anatomy of Recursion
 
@@ -102,6 +122,48 @@ echo fibonacci(6); // 8 (0, 1, 1, 2, 3, 5, 8)
 
 **Problem**: Exponential time! fibonacci(5) calls fibonacci(3) twice.
 
+```mermaid
+graph TB
+    subgraph "Fibonacci Tree - Redundant Calculations!"
+        F5["fib(5)"]
+        F4a["fib(4)"]
+        F3a["fib(3)"]
+        F4b["fib(3)"]
+        F3b["fib(2)"]
+        F2a["fib(2)"]
+        F2b["fib(2)"]
+        F1a["fib(1)"]
+        F1b["fib(1)"]
+        F1c["fib(1)"]
+        F0a["fib(0)"]
+        F0b["fib(0)"]
+        F0c["fib(0)"]
+
+        F5 --> F4a
+        F5 --> F4b
+        F4a --> F3a
+        F4a --> F2a
+        F3a --> F2b
+        F3a --> F1a
+        F4b --> F2b
+        F4b --> F1b
+        F2a --> F1c
+        F2a --> F0a
+        F2b --> F1a
+        F2b --> F0b
+    end
+
+    style F5 fill:#FF6B6B,color:#fff
+    style F4a fill:#FFA500
+    style F4b fill:#FFA500
+    style F3a fill:#FFD700
+    style F3b fill:#FFD700
+    style F2a fill:#90EE90
+    style F2b fill:#90EE90
+```
+
+**Notice**: fib(3) computed twice, fib(2) computed three times! Exponential waste!
+
 **Solution**: Memoization
 
 ```php
@@ -122,6 +184,34 @@ function fibonacciMemo(int $n, array &$memo = []): int {
 
 echo fibonacciMemo(50); // Fast! O(n) time
 ```
+
+```mermaid
+graph LR
+    subgraph "Memoization: Cache Results to Avoid Redundancy"
+        M0["fib(5)"]
+        M1["fib(4)<br/>Compute"]
+        M2["fib(3)<br/>Compute"]
+        M3["fib(3)<br/>✓ Cache hit!"]
+        M4["fib(2)<br/>Compute"]
+        M5["Memo table:<br/>{2→1, 3→2, 4→3, 5→5}"]
+
+        M0 --> M1
+        M0 --> M3
+        M1 --> M2
+        M1 --> M4
+        M2 --> M5
+        M3 --> M5
+    end
+
+    style M0 fill:#2196F3,color:#fff
+    style M1 fill:#FFA500
+    style M2 fill:#FFD700
+    style M3 fill:#4CAF50
+    style M4 fill:#90EE90
+    style M5 fill:#9C27B0,color:#fff
+```
+
+**Result**: O(2^n) → O(n)! From exponential to linear by caching results.
 
 ### 2. Sum of Array
 
@@ -262,6 +352,30 @@ function reverseList(?ListNode $head): ?ListNode {
 
 Recursion enables divide-and-conquer algorithms:
 
+```mermaid
+graph TB
+    subgraph "Divide and Conquer Pattern"
+        D0["Problem of size n"]
+        D1["Divide into<br/>subproblems"]
+        D2["Solve subproblems<br/>recursively"]
+        D3["Combine solutions"]
+        D4["Solution to<br/>original problem"]
+
+        D0 --> D1
+        D1 --> D2
+        D2 --> D3
+        D3 --> D4
+    end
+
+    style D0 fill:#2196F3,color:#fff
+    style D1 fill:#FFA500
+    style D2 fill:#FFD700
+    style D3 fill:#90EE90
+    style D4 fill:#4CAF50
+```
+
+**Pattern**: Divide → Conquer (recurse) → Combine
+
 ### Merge Sort
 
 ```php
@@ -382,6 +496,32 @@ function countPaths(int $x, int $y): int {
 
 ## Recursion vs. Iteration
 
+```mermaid
+graph TB
+    START["Recursion or<br/>Iteration?"]
+    Q1{"Working with<br/>trees/graphs?"}
+    Q2{"Problem naturally<br/>divides into<br/>subproblems?"}
+    Q3{"Deep recursion<br/>possible?<br/>(stack overflow risk)"}
+    Q4{"Readability<br/>vs Performance?"}
+
+    START --> Q1
+    Q1 -->|"Yes"| REC1["✓ Use Recursion<br/>Trees/graphs natural"]
+    Q1 -->|"No"| Q2
+    Q2 -->|"Yes"| Q3
+    Q2 -->|"No"| ITER1["✓ Use Iteration<br/>Simple sequential"]
+    Q3 -->|"Risk"| ITER2["✓ Use Iteration<br/>Avoid stack overflow"]
+    Q3 -->|"Safe"| Q4
+    Q4 -->|"Readability"| REC2["✓ Use Recursion<br/>Cleaner code"]
+    Q4 -->|"Performance"| ITER3["✓ Use Iteration<br/>Faster execution"]
+
+    style START fill:#2196F3,color:#fff
+    style REC1 fill:#4CAF50
+    style REC2 fill:#4CAF50
+    style ITER1 fill:#FF9800
+    style ITER2 fill:#FF9800
+    style ITER3 fill:#FF9800
+```
+
 ### When to Use Recursion
 
 **Use recursion when**:
@@ -482,6 +622,26 @@ Always check:
 - Do all paths lead to base case?
 
 ## Common Recursion Pitfalls
+
+```mermaid
+graph LR
+    subgraph "Common Pitfalls"
+        P1["❌ Missing<br/>Base Case"]
+        P2["❌ Not Making<br/>Progress"]
+        P3["❌ Redundant<br/>Computation"]
+
+        P1 -.->|"Result"| R1["Stack Overflow!"]
+        P2 -.->|"Result"| R2["Infinite Loop!"]
+        P3 -.->|"Result"| R3["O(2^n) Slow!"]
+    end
+
+    style P1 fill:#FF6B6B,color:#fff
+    style P2 fill:#FF6B6B,color:#fff
+    style P3 fill:#FF6B6B,color:#fff
+    style R1 fill:#FFA500
+    style R2 fill:#FFA500
+    style R3 fill:#FFA500
+```
 
 ### 1. Missing Base Case
 
