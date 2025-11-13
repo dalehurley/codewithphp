@@ -344,6 +344,90 @@ public function store(StorePostRequest $request): JsonResponse
 
 Both provide structured error responses automatically.
 
+::: tip Pro Tip: Advanced Validation Rules
+Laravel has powerful built-in validation rules:
+
+```php
+<?php
+public function rules(): array
+{
+    return [
+        // Conditional validation
+        'discount' => 'required_if:promo_code,null',
+
+        // Unique except current record (for updates)
+        'email' => 'required|email|unique:users,email,' . $this->user->id,
+
+        // Custom regex
+        'username' => ['required', 'regex:/^[a-zA-Z0-9_]+$/'],
+
+        // File validation
+        'avatar' => 'required|image|max:2048|dimensions:min_width=100,min_height=100',
+
+        // Date validation
+        'start_date' => 'required|date|after:today',
+        'end_date' => 'required|date|after:start_date',
+
+        // Array validation
+        'items' => 'required|array|min:1|max:10',
+        'items.*.quantity' => 'required|integer|min:1',
+        'items.*.price' => 'required|numeric|min:0',
+    ];
+}
+```
+
+**Custom validation messages per field:**
+```php
+<?php
+public function messages(): array
+{
+    return [
+        'items.*.quantity.required' => 'Each item must have a quantity',
+        'items.*.quantity.min' => 'Item quantity must be at least 1',
+    ];
+}
+```
+:::
+
+::: warning Security: Always Validate, Never Trust
+**Common API security mistakes:**
+
+```php
+<?php
+// ❌ DANGEROUS - Trusts all input
+public function store(Request $request)
+{
+    User::create($request->all()); // Can set ANY field including admin flags!
+}
+
+// ✅ SAFE - Explicit validation
+public function store(StoreUserRequest $request)
+{
+    User::create($request->validated()); // Only validated fields
+}
+```
+
+**Mass assignment protection:**
+```php
+<?php
+class User extends Model
+{
+    // Whitelist approach (recommended)
+    protected $fillable = ['name', 'email', 'password'];
+
+    // Or blacklist approach
+    protected $guarded = ['id', 'is_admin', 'created_at', 'updated_at'];
+}
+```
+
+**Always validate:**
+- File uploads (type, size, dimensions)
+- Foreign keys (use `exists:table,column`)
+- Email addresses (use `email:rfc,dns` for strict validation)
+- URLs (use `url` or `active_url`)
+- Enum values (use `Rule::in()`)
+:::
+
 ## Resource Transformations
 
 ### Rails: ActiveModel Serializers
@@ -692,6 +776,96 @@ $tokens = $user->tokens;
 ```
 
 Rails requires more setup for this functionality.
+
+::: tip Pro Tip: API Authentication Best Practices
+**Token Expiration:**
+```php
+<?php
+// Set token expiration in config/sanctum.php
+'expiration' => 60, // minutes (null = never expires)
+
+// Or per-token:
+$token = $user->createToken('mobile-app', ['*'], now()->addDays(30));
+```
+
+**Rate Limiting Per User:**
+```php
+<?php
+// Different limits based on user type
+RateLimiter::for('api', function (Request $request) {
+    return $request->user()?->isPremium()
+        ? Limit::perMinute(1000)
+        : Limit::perMinute(60);
+});
+```
+
+**Token Naming Convention:**
+```php
+<?php
+// Use descriptive names to track where tokens are used
+$user->createToken('iPhone 14 Pro')->plainTextToken;
+$user->createToken('Web Dashboard')->plainTextToken;
+$user->createToken('Android App v2.1')->plainTextToken;
+
+// Later, revoke specific device
+$user->tokens()->where('name', 'iPhone 14 Pro')->delete();
+```
+:::
+
+::: warning Security: API Authentication Pitfalls
+**Common security mistakes:**
+
+```php
+<?php
+// ❌ DON'T: Never send passwords in GET requests
+Route::get('/login', function (Request $request) {
+    // Passwords in URL = logged in server logs!
+});
+
+// ✅ DO: Always use POST for authentication
+Route::post('/login', [AuthController::class, 'login']);
+
+// ❌ DON'T: Return raw tokens in error messages
+catch (Exception $e) {
+    return response()->json(['error' => $e->getMessage()], 500);
+}
+
+// ✅ DO: Sanitize error messages
+catch (Exception $e) {
+    Log::error('Auth error', ['message' => $e->getMessage()]);
+    return response()->json(['error' => 'Authentication failed'], 401);
+}
+
+// ❌ DON'T: Use the same secret for all environments
+// .env
+APP_KEY=same_key_everywhere
+
+// ✅ DO: Different keys per environment
+// production .env: APP_KEY=random_production_key
+// staging .env: APP_KEY=random_staging_key
+```
+
+**Rate limiting is CRITICAL:**
+```php
+<?php
+// Prevent brute force attacks
+Route::middleware('throttle:5,1')->post('/login', [AuthController::class, 'login']);
+// Only 5 login attempts per minute
+```
+
+**HTTPS in production:**
+```php
+<?php
+// Force HTTPS in production
+// app/Providers/AppServiceProvider.php
+public function boot()
+{
+    if (app()->environment('production')) {
+        URL::forceScheme('https');
+    }
+}
+```
+:::
 
 ## Error Handling
 
