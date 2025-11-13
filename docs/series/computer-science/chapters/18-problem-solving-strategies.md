@@ -23,6 +23,63 @@ In this chapter, you'll learn:
 
 ## The Problem-Solving Framework
 
+```mermaid
+graph TB
+    START["Problem Given"]
+
+    UNDERSTAND["1. UNDERSTAND<br/>• Read carefully<br/>• Identify inputs/outputs<br/>• Find constraints<br/>• Ask clarifying questions"]
+
+    EXAMPLES["2. EXPLORE EXAMPLES<br/>• Simple case<br/>• Edge cases<br/>• Invalid inputs<br/>• Large inputs"]
+
+    PATTERN["3. RECOGNIZE PATTERN<br/>• Two pointers?<br/>• Sliding window?<br/>• Hash map?<br/>• Recursion/DP?<br/>• Graph traversal?"]
+
+    BREAK["4. BREAK IT DOWN<br/>• Write pseudocode<br/>• Identify steps<br/>• Consider data structures"]
+
+    SIMPLE{"Can I solve<br/>simpler version?"}
+
+    SOLVE_SIMPLE["Solve simplified<br/>version first"]
+
+    IMPLEMENT["5. IMPLEMENT<br/>• Write clean code<br/>• Add comments<br/>• Handle edge cases"]
+
+    TEST["6. TEST<br/>• Run examples<br/>• Check edge cases<br/>• Trace execution"]
+
+    BUGS{"Bugs found?"}
+
+    DEBUG["Debug & fix"]
+
+    OPTIMIZE["7. OPTIMIZE<br/>• Better algorithm?<br/>• Reduce complexity?<br/>• Trade-offs?"]
+
+    ANALYZE["8. ANALYZE<br/>• Time complexity<br/>• Space complexity<br/>• Can it be better?"]
+
+    DONE["✓ Solution Complete"]
+
+    START --> UNDERSTAND
+    UNDERSTAND --> EXAMPLES
+    EXAMPLES --> PATTERN
+    PATTERN --> BREAK
+    BREAK --> SIMPLE
+    SIMPLE -->|"Yes"| SOLVE_SIMPLE
+    SIMPLE -->|"No"| IMPLEMENT
+    SOLVE_SIMPLE --> IMPLEMENT
+    IMPLEMENT --> TEST
+    TEST --> BUGS
+    BUGS -->|"Yes"| DEBUG
+    DEBUG --> TEST
+    BUGS -->|"No"| OPTIMIZE
+    OPTIMIZE --> ANALYZE
+    ANALYZE --> DONE
+
+    style START fill:#2196F3,color:#fff
+    style UNDERSTAND fill:#4CAF50
+    style PATTERN fill:#FFD700
+    style IMPLEMENT fill:#FF9800
+    style TEST fill:#9C27B0,color:#fff
+    style BUGS fill:#F44336,color:#fff
+    style DONE fill:#4CAF50
+```
+
+**Master Framework**: 8 steps from problem to optimized solution
+
 ### Step 1: Understand the Problem
 
 **Questions to ask**:
@@ -150,6 +207,54 @@ function findDuplicateCycle(array $nums): ?int {
 ```
 
 ## Common Problem Patterns
+
+```mermaid
+graph TB
+    PROBLEM["Identify Problem Type"]
+
+    subgraph "Array/String Patterns"
+        TWO_PTR["Two Pointers<br/>• Sorted array<br/>• Palindrome<br/>• Remove duplicates"]
+        SLIDE["Sliding Window<br/>• Subarray/substring<br/>• Fixed/variable size<br/>• Max/min in window"]
+        KADANE["Kadane's Algorithm<br/>• Max subarray sum<br/>• Contiguous elements"]
+    end
+
+    subgraph "Search/Count Patterns"
+        HASH["Hash Map/Set<br/>• Count frequency<br/>• Find duplicates<br/>• Two sum"]
+        BINARY["Binary Search<br/>• Sorted data<br/>• Find target<br/>• Search space"]
+    end
+
+    subgraph "Tree/Graph Patterns"
+        DFS["DFS/Backtracking<br/>• Explore all paths<br/>• Combinations<br/>• Permutations"]
+        BFS["BFS<br/>• Shortest path<br/>• Level order<br/>• Minimum steps"]
+    end
+
+    subgraph "Dynamic Patterns"
+        DP["Dynamic Programming<br/>• Overlapping subproblems<br/>• Optimal substructure<br/>• Memoization"]
+        GREEDY["Greedy<br/>• Local optimum<br/>• No backtracking<br/>• Proof needed"]
+    end
+
+    PROBLEM --> TWO_PTR
+    PROBLEM --> SLIDE
+    PROBLEM --> KADANE
+    PROBLEM --> HASH
+    PROBLEM --> BINARY
+    PROBLEM --> DFS
+    PROBLEM --> BFS
+    PROBLEM --> DP
+    PROBLEM --> GREEDY
+
+    style PROBLEM fill:#2196F3,color:#fff
+    style TWO_PTR fill:#4CAF50
+    style SLIDE fill:#4CAF50
+    style HASH fill:#FF9800
+    style BINARY fill:#FF9800
+    style DFS fill:#9C27B0,color:#fff
+    style BFS fill:#9C27B0,color:#fff
+    style DP fill:#F44336,color:#fff
+    style GREEDY fill:#FFD700
+```
+
+**Pattern Recognition**: Identifying the right pattern solves 50% of the problem!
 
 ### 1. Two Pointers
 
