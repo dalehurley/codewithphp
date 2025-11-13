@@ -365,6 +365,14 @@ export default withMermaid(
               {
                 text: '01 — Types, Variables & Operators',
                 link: '/series/php-for-java-developers/chapters/01-types-variables-and-operators'
+              },
+              {
+                text: '02 — Control Flow & Functions',
+                link: '/series/php-for-java-developers/chapters/02-control-flow-and-functions'
+              },
+              {
+                text: '03 — OOP Basics',
+                link: '/series/php-for-java-developers/chapters/03-oop-basics'
               }
             ]
           }
