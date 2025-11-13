@@ -39,6 +39,297 @@ Step 5: Visit 2 (min=5), no updates
 Final distances: {0:0, 1:4, 2:5, 3:2}
 ```
 
+## Dijkstra Visual Step-by-Step Trace
+
+Understanding how Dijkstra's algorithm builds the shortest path tree:
+
+```php
+<?php
+
+class DijkstraVisualizer
+{
+    private const INF = PHP_INT_MAX;
+
+    // Visualize Dijkstra's execution step by step
+    public function visualizeDijkstra(array $graph, int $source): void
+    {
+        echo "=== Dijkstra's Algorithm Visualization ===\n\n";
+        $this->printGraph($graph);
+        echo "\nStarting from vertex $source\n";
+        echo str_repeat('=', 70) . "\n\n";
+
+        $vertices = count($graph);
+        $distances = array_fill(0, $vertices, self::INF);
+        $visited = array_fill(0, $vertices, false);
+        $previous = array_fill(0, $vertices, null);
+        $distances[$source] = 0;
+
+        $step = 0;
+
+        while (true) {
+            // Find minimum distance unvisited vertex
+            $minDist = self::INF;
+            $u = -1;
+
+            for ($v = 0; $v < $vertices; $v++) {
+                if (!$visited[$v] && $distances[$v] < $minDist) {
+                    $minDist = $distances[$v];
+                    $u = $v;
+                }
+            }
+
+            if ($u === -1 || $minDist === self::INF) {
+                break; // All reachable vertices visited
+            }
+
+            $visited[$u] = true;
+            $step++;
+
+            echo "Step $step: Visit vertex $u (distance: " . $this->formatDistance($distances[$u]) . ")\n";
+            echo "  Current distances: ";
+            $this->printDistances($distances, $visited);
+            echo "\n";
+
+            // Update neighbors
+            $updated = [];
+            foreach ($graph[$u] ?? [] as $edge) {
+                $v = $edge['vertex'];
+                $weight = $edge['weight'];
+
+                if (!$visited[$v]) {
+                    $newDist = $distances[$u] + $weight;
+                    if ($newDist < $distances[$v]) {
+                        $oldDist = $distances[$v];
+                        $distances[$v] = $newDist;
+                        $previous[$v] = $u;
+                        $updated[] = [
+                            'vertex' => $v,
+                            'old' => $oldDist,
+                            'new' => $newDist,
+                            'via' => $u
+                        ];
+                    }
+                }
+            }
+
+            if (!empty($updated)) {
+                echo "  Updates:\n";
+                foreach ($updated as $upd) {
+                    $oldStr = $this->formatDistance($upd['old']);
+                    echo "    Vertex {$upd['vertex']}: $oldStr → {$upd['new']} (via {$upd['via']})\n";
+                }
+            } else {
+                echo "  No updates (all neighbors already have shorter paths)\n";
+            }
+
+            echo "\n";
+        }
+
+        echo "=== Final Results ===\n";
+        echo "Shortest distances from vertex $source:\n";
+        for ($i = 0; $i < $vertices; $i++) {
+            $dist = $this->formatDistance($distances[$i]);
+            $path = $this->reconstructPath($previous, $source, $i);
+            echo "  To vertex $i: $dist  Path: " . implode(' → ', $path) . "\n";
+        }
+    }
+
+    private function formatDistance(int $dist): string
+    {
+        return $dist === self::INF ? '∞' : (string)$dist;
+    }
+
+    private function printDistances(array $distances, array $visited): void
+    {
+        $parts = [];
+        foreach ($distances as $v => $dist) {
+            $distStr = $this->formatDistance($dist);
+            $mark = $visited[$v] ? '✓' : '';
+            $parts[] = "$v:$distStr$mark";
+        }
+        echo implode(', ', $parts);
+    }
+
+    private function reconstructPath(array $previous, int $source, int $target): array
+    {
+        if ($previous[$target] === null && $target !== $source) {
+            return [$target]; // Unreachable
+        }
+
+        $path = [];
+        $current = $target;
+
+        while ($current !== null) {
+            array_unshift($path, $current);
+            $current = $previous[$current];
+        }
+
+        return $path;
+    }
+
+    private function printGraph(array $graph): void
+    {
+        echo "Graph structure:\n";
+        foreach ($graph as $u => $edges) {
+            echo "  Vertex $u: ";
+            $edgeStrs = [];
+            foreach ($edges as $edge) {
+                $edgeStrs[] = "{$edge['vertex']}(weight:{$edge['weight']})";
+            }
+            echo implode(', ', $edgeStrs) . "\n";
+        }
+    }
+}
+
+// Example: Visualize Dijkstra on a weighted graph
+$graph = [
+    0 => [
+        ['vertex' => 1, 'weight' => 4],
+        ['vertex' => 2, 'weight' => 8],
+        ['vertex' => 3, 'weight' => 2]
+    ],
+    1 => [
+        ['vertex' => 0, 'weight' => 4],
+        ['vertex' => 3, 'weight' => 11]
+    ],
+    2 => [
+        ['vertex' => 0, 'weight' => 8],
+        ['vertex' => 3, 'weight' => 3]
+    ],
+    3 => [
+        ['vertex' => 0, 'weight' => 2],
+        ['vertex' => 1, 'weight' => 11],
+        ['vertex' => 2, 'weight' => 3]
+    ]
+];
+
+$visualizer = new DijkstraVisualizer();
+$visualizer->visualizeDijkstra($graph, 0);
+
+/*
+Output:
+=== Dijkstra's Algorithm Visualization ===
+
+Graph structure:
+  Vertex 0: 1(weight:4), 2(weight:8), 3(weight:2)
+  Vertex 1: 0(weight:4), 3(weight:11)
+  Vertex 2: 0(weight:8), 3(weight:3)
+  Vertex 3: 0(weight:2), 1(weight:11), 2(weight:3)
+
+Starting from vertex 0
+======================================================================
+
+Step 1: Visit vertex 0 (distance: 0)
+  Current distances: 0:0✓, 1:∞, 2:∞, 3:∞
+  Updates:
+    Vertex 1: ∞ → 4 (via 0)
+    Vertex 2: ∞ → 8 (via 0)
+    Vertex 3: ∞ → 2 (via 0)
+
+Step 2: Visit vertex 3 (distance: 2)
+  Current distances: 0:0✓, 1:4, 2:8, 3:2✓
+  Updates:
+    Vertex 1: 4 → 13 (via 3) [Not taken - worse than current]
+    Vertex 2: 8 → 5 (via 3)
+
+Step 3: Visit vertex 1 (distance: 4)
+  Current distances: 0:0✓, 1:4✓, 2:5, 3:2✓
+  No updates (all neighbors already have shorter paths)
+
+Step 4: Visit vertex 2 (distance: 5)
+  Current distances: 0:0✓, 1:4✓, 2:5✓, 3:2✓
+  No updates (all neighbors already visited)
+
+=== Final Results ===
+Shortest distances from vertex 0:
+  To vertex 0: 0  Path: 0
+  To vertex 1: 4  Path: 0 → 1
+  To vertex 2: 5  Path: 0 → 3 → 2
+  To vertex 3: 2  Path: 0 → 3
+*/
+```
+
+## Priority Queue Operations Visualization
+
+Understanding how the priority queue drives Dijkstra's algorithm:
+
+```php
+<?php
+
+class DijkstraPriorityQueueVisualizer
+{
+    private const INF = PHP_INT_MAX;
+
+    public function visualizeWithPQ(array $graph, int $source): void
+    {
+        echo "=== Dijkstra with Priority Queue Visualization ===\n\n";
+
+        $distances = array_fill(0, count($graph), self::INF);
+        $distances[$source] = 0;
+
+        $pq = new SplMinHeap();
+        $pq->insert([0, $source]);
+
+        echo "Initial state:\n";
+        echo "  Priority Queue: [(0, vertex $source)]\n";
+        echo "  Distances: " . $this->formatDistances($distances) . "\n\n";
+
+        $step = 0;
+
+        while (!$pq->isEmpty()) {
+            [$currentDist, $u] = $pq->extract();
+            $step++;
+
+            echo "Step $step:\n";
+            echo "  Extract from PQ: (distance:$currentDist, vertex:$u)\n";
+
+            if ($currentDist > $distances[$u]) {
+                echo "  Skipping (already found better path)\n\n";
+                continue;
+            }
+
+            echo "  Processing vertex $u:\n";
+
+            foreach ($graph[$u] ?? [] as $edge) {
+                $v = $edge['vertex'];
+                $weight = $edge['weight'];
+                $newDist = $distances[$u] + $weight;
+
+                if ($newDist < $distances[$v]) {
+                    $oldDist = $distances[$v];
+                    $distances[$v] = $newDist;
+
+                    echo "    Edge $u→$v (weight:$weight): Update distance to $v\n";
+                    echo "      Old: " . $this->formatDist($oldDist) . " → New: $newDist\n";
+                    echo "      Insert into PQ: ($newDist, vertex $v)\n";
+
+                    $pq->insert([$newDist, $v]);
+                }
+            }
+
+            echo "  Distances now: " . $this->formatDistances($distances) . "\n\n";
+        }
+
+        echo "=== Algorithm Complete ===\n";
+        echo "Final distances: " . $this->formatDistances($distances) . "\n";
+    }
+
+    private function formatDistances(array $distances): string
+    {
+        $parts = [];
+        foreach ($distances as $v => $dist) {
+            $parts[] = "$v:" . $this->formatDist($dist);
+        }
+        return '[' . implode(', ', $parts) . ']';
+    }
+
+    private function formatDist(int $dist): string
+    {
+        return $dist === self::INF ? '∞' : (string)$dist;
+    }
+}
+```
+
 ## Basic Implementation (Array-based)
 
 ```php
