@@ -329,6 +329,291 @@ echo $bst->height(); // 2
 echo $bst->size(); // 6
 ```
 
+## Visual Tree Representation
+
+Let's create a helper to visualize our trees:
+
+```php
+class TreeVisualizer
+{
+    public static function display(?TreeNode $node, string $prefix = '', bool $isLeft = true): void
+    {
+        if ($node === null) {
+            return;
+        }
+
+        echo $prefix;
+        echo $isLeft ? '├── ' : '└── ';
+        echo $node->data . "\n";
+
+        if ($node->left !== null || $node->right !== null) {
+            if ($node->left !== null) {
+                self::display($node->left, $prefix . ($isLeft ? '│   ' : '    '), true);
+            } else {
+                echo $prefix . ($isLeft ? '│   ' : '    ') . "├── null\n";
+            }
+
+            if ($node->right !== null) {
+                self::display($node->right, $prefix . ($isLeft ? '│   ' : '    '), false);
+            } else {
+                echo $prefix . ($isLeft ? '│   ' : '    ') . "└── null\n";
+            }
+        }
+    }
+
+    public static function displayCompact(?TreeNode $node): void
+    {
+        if ($node === null) {
+            echo "Empty tree\n";
+            return;
+        }
+
+        $queue = new SplQueue();
+        $queue->enqueue($node);
+        $level = 0;
+
+        while (!$queue->isEmpty()) {
+            $levelSize = $queue->count();
+            echo "Level $level: ";
+
+            for ($i = 0; $i < $levelSize; $i++) {
+                $current = $queue->dequeue();
+                echo $current->data . " ";
+
+                if ($current->left !== null) {
+                    $queue->enqueue($current->left);
+                }
+                if ($current->right !== null) {
+                    $queue->enqueue($current->right);
+                }
+            }
+
+            echo "\n";
+            $level++;
+        }
+    }
+}
+
+// Usage:
+// TreeVisualizer::display($bst->getRoot());
+// TreeVisualizer::displayCompact($bst->getRoot());
+```
+
+## Visual Step-by-Step: BST Operations
+
+### Insertion Walkthrough
+
+Let's insert values [8, 3, 10, 1, 6, 14, 4, 7, 13] step by step:
+
+```
+Step 1: Insert 8 (first element becomes root)
+    8
+
+Step 2: Insert 3 (3 < 8, go left)
+    8
+   /
+  3
+
+Step 3: Insert 10 (10 > 8, go right)
+    8
+   / \
+  3   10
+
+Step 4: Insert 1 (1 < 8, go left; 1 < 3, go left)
+      8
+     / \
+    3   10
+   /
+  1
+
+Step 5: Insert 6 (6 < 8, go left; 6 > 3, go right)
+      8
+     / \
+    3   10
+   / \
+  1   6
+
+Step 6: Insert 14 (14 > 8, go right; 14 > 10, go right)
+      8
+     / \
+    3   10
+   / \    \
+  1   6   14
+
+Step 7: Insert 4 (4 < 8 → 4 > 3 → 4 < 6, go left)
+      8
+     / \
+    3   10
+   / \    \
+  1   6   14
+     /
+    4
+
+Step 8: Insert 7 (7 < 8 → 7 > 3 → 7 > 6, go right)
+      8
+     / \
+    3   10
+   / \    \
+  1   6   14
+     / \
+    4   7
+
+Step 9: Insert 13 (13 > 8 → 13 > 10 → 13 < 14, go left)
+      8
+     / \
+    3   10
+   / \    \
+  1   6   14
+     / \  /
+    4   7 13
+```
+
+### Search Walkthrough
+
+Searching for value 7 in the tree above:
+
+```
+Start at root: 8
+  7 < 8? Yes → go LEFT
+
+At node: 3
+  7 < 3? No → go RIGHT
+
+At node: 6
+  7 < 6? No → go RIGHT
+
+At node: 7
+  7 == 7? YES! FOUND!
+
+Total comparisons: 4
+Path: 8 → 3 → 6 → 7
+```
+
+Searching for value 12 (not in tree):
+
+```
+Start at root: 8
+  12 < 8? No → go RIGHT
+
+At node: 10
+  12 < 10? No → go RIGHT
+
+At node: 14
+  12 < 14? Yes → go LEFT
+
+At node: 13
+  12 < 13? Yes → go LEFT
+
+At node: null
+  NOT FOUND
+
+Total comparisons: 4
+Path: 8 → 10 → 14 → 13 → null
+```
+
+### Deletion Walkthrough
+
+**Delete node 6 (has two children):**
+
+```
+Original tree:
+      8
+     / \
+    3   10
+   / \    \
+  1   6   14
+     / \  /
+    4   7 13
+
+Step 1: Find node to delete (6)
+  Path: 8 → 3 → 6
+
+Step 2: Node has two children (4 and 7)
+  Must find inorder successor
+
+Step 3: Find minimum in right subtree
+  Start at 7 (right child)
+  Go left until null
+  Minimum = 7
+
+Step 4: Replace 6's value with 7
+      8
+     / \
+    3   10
+   / \    \
+  1   7   14
+     / \  /
+    4   X 13
+
+Step 5: Delete successor (7) from right subtree
+  (7 is a leaf, simple deletion)
+
+Final tree:
+      8
+     / \
+    3   10
+   / \    \
+  1   7   14
+     /    /
+    4    13
+```
+
+**Delete node 14 (has one child):**
+
+```
+Current tree:
+      8
+     / \
+    3   10
+   / \    \
+  1   7   14
+     /    /
+    4    13
+
+Step 1: Find node to delete (14)
+  Path: 8 → 10 → 14
+
+Step 2: Node has one child (13)
+  Simply replace node with its child
+
+Final tree:
+      8
+     / \
+    3   10
+   / \    \
+  1   7   13
+     /
+    4
+```
+
+**Delete node 1 (leaf node):**
+
+```
+Current tree:
+      8
+     / \
+    3   10
+   / \    \
+  1   7   13
+     /
+    4
+
+Step 1: Find node to delete (1)
+  Path: 8 → 3 → 1
+
+Step 2: Node is a leaf (no children)
+  Simply remove it
+
+Final tree:
+      8
+     / \
+    3   10
+     \    \
+      7   13
+     /
+    4
+```
+
 ## BST Operations Explained
 
 ### Insertion
@@ -734,6 +1019,787 @@ class FileSystem
 | **Space** | O(n) | O(n) |
 
 **Worst case** happens when tree is skewed (essentially a linked list).
+
+## Performance Benchmarks
+
+Let's compare BST against other data structures:
+
+```php
+function benchmarkDataStructures(): void
+{
+    $operations = 10000;
+    $searchCount = 1000;
+
+    echo "=== Insertion Performance ({$operations} elements) ===\n";
+
+    // BST insertion
+    $start = microtime(true);
+    $bst = new BinarySearchTree();
+    for ($i = 0; $i < $operations; $i++) {
+        $bst->insert(rand(1, 100000));
+    }
+    $bstTime = microtime(true) - $start;
+    echo sprintf("BST:          %.4f seconds\n", $bstTime);
+
+    // Array insertion (unsorted)
+    $start = microtime(true);
+    $array = [];
+    for ($i = 0; $i < $operations; $i++) {
+        $array[] = rand(1, 100000);
+    }
+    $arrayTime = microtime(true) - $start;
+    echo sprintf("Array:        %.4f seconds\n", $arrayTime);
+
+    echo "\n=== Search Performance ({$searchCount} searches) ===\n";
+
+    // BST search
+    $start = microtime(true);
+    for ($i = 0; $i < $searchCount; $i++) {
+        $bst->search(rand(1, 100000));
+    }
+    $bstSearchTime = microtime(true) - $start;
+    echo sprintf("BST:          %.4f seconds\n", $bstSearchTime);
+
+    // Array search (linear)
+    $start = microtime(true);
+    for ($i = 0; $i < $searchCount; $i++) {
+        in_array(rand(1, 100000), $array);
+    }
+    $arraySearchTime = microtime(true) - $start;
+    echo sprintf("Array:        %.4f seconds\n", $arraySearchTime);
+    echo sprintf("BST is %.2fx faster\n", $arraySearchTime / $bstSearchTime);
+
+    echo "\n=== Memory Usage ===\n";
+    echo sprintf("BST:          %s KB\n", number_format(memory_get_usage() / 1024, 2));
+}
+
+function benchmarkBalancedVsSkewed(): void
+{
+    $n = 1000;
+    $searches = 100;
+
+    echo "=== Balanced BST (from sorted array) ===\n";
+
+    // Create balanced BST
+    $sorted = range(1, $n);
+    $balancedRoot = sortedArrayToBST($sorted);
+
+    // Search in balanced tree
+    $start = microtime(true);
+    for ($i = 0; $i < $searches; $i++) {
+        searchTree($balancedRoot, rand(1, $n));
+    }
+    $balancedTime = microtime(true) - $start;
+    echo sprintf("Search time: %.4f seconds\n", $balancedTime);
+    echo sprintf("Avg height: %d (optimal: %d)\n",
+        calculateHeight($balancedRoot),
+        (int)ceil(log($n, 2))
+    );
+
+    echo "\n=== Skewed BST (sequential insertion) ===\n";
+
+    // Create skewed BST (worst case)
+    $skewedBST = new BinarySearchTree();
+    for ($i = 1; $i <= $n; $i++) {
+        $skewedBST->insert($i);
+    }
+
+    // Search in skewed tree
+    $start = microtime(true);
+    for ($i = 0; $i < $searches; $i++) {
+        $skewedBST->search(rand(1, $n));
+    }
+    $skewedTime = microtime(true) - $start;
+    echo sprintf("Search time: %.4f seconds\n", $skewedTime);
+    echo sprintf("Height: %d (worst case: %d)\n",
+        $skewedBST->height(),
+        $n
+    );
+    echo sprintf("\nBalanced is %.2fx faster\n", $skewedTime / $balancedTime);
+}
+
+// Sample output:
+// === Insertion Performance (10000 elements) ===
+// BST:          0.0234 seconds
+// Array:        0.0012 seconds
+//
+// === Search Performance (1000 searches) ===
+// BST:          0.0045 seconds
+// Array:        0.2341 seconds
+// BST is 52.02x faster
+//
+// === Balanced BST (from sorted array) ===
+// Search time: 0.0012 seconds
+// Avg height: 10 (optimal: 10)
+//
+// === Skewed BST (sequential insertion) ===
+// Search time: 0.0856 seconds
+// Height: 1000 (worst case: 1000)
+//
+// Balanced is 71.33x faster
+```
+
+## Edge Cases and Error Handling
+
+Robust BST implementations must handle edge cases:
+
+```php
+class RobustBST
+{
+    private ?TreeNode $root = null;
+    private int $maxSize = 10000;
+    private int $size = 0;
+
+    public function insert(mixed $value): void
+    {
+        // Edge case: Prevent overflow
+        if ($this->size >= $this->maxSize) {
+            throw new OverflowException(
+                "Tree size limit reached ({$this->maxSize} nodes)"
+            );
+        }
+
+        // Edge case: Validate input
+        if ($value === null) {
+            throw new InvalidArgumentException("Cannot insert null value");
+        }
+
+        if (!is_numeric($value) && !is_string($value)) {
+            throw new InvalidArgumentException(
+                "Value must be numeric or string"
+            );
+        }
+
+        $this->root = $this->insertNode($this->root, $value);
+        $this->size++;
+    }
+
+    private function insertNode(?TreeNode $node, mixed $value): TreeNode
+    {
+        if ($node === null) {
+            return new TreeNode($value);
+        }
+
+        // Handle duplicates (optional: keep, skip, or count)
+        if ($value === $node->data) {
+            // Option 1: Skip duplicates
+            $this->size--; // Compensate for size++ in insert()
+            return $node;
+
+            // Option 2: Keep count
+            // $node->count = ($node->count ?? 1) + 1;
+            // return $node;
+        }
+
+        if ($value < $node->data) {
+            $node->left = $this->insertNode($node->left, $value);
+        } else {
+            $node->right = $this->insertNode($node->right, $value);
+        }
+
+        return $node;
+    }
+
+    public function search(mixed $value): ?TreeNode
+    {
+        // Edge case: Empty tree
+        if ($this->root === null) {
+            return null;
+        }
+
+        // Edge case: Invalid value
+        if ($value === null) {
+            throw new InvalidArgumentException("Cannot search for null");
+        }
+
+        return $this->searchNode($this->root, $value);
+    }
+
+    private function searchNode(?TreeNode $node, mixed $value): ?TreeNode
+    {
+        if ($node === null || $node->data === $value) {
+            return $node;
+        }
+
+        if ($value < $node->data) {
+            return $this->searchNode($node->left, $value);
+        } else {
+            return $this->searchNode($node->right, $value);
+        }
+    }
+
+    public function delete(mixed $value): bool
+    {
+        // Edge case: Empty tree
+        if ($this->root === null) {
+            return false;
+        }
+
+        // Edge case: Invalid value
+        if ($value === null) {
+            throw new InvalidArgumentException("Cannot delete null");
+        }
+
+        $sizeBefore = $this->size;
+        $this->root = $this->deleteNode($this->root, $value);
+
+        // Check if deletion occurred
+        if ($sizeBefore === $this->size) {
+            return false; // Value not found
+        }
+
+        return true;
+    }
+
+    private function deleteNode(?TreeNode $node, mixed $value): ?TreeNode
+    {
+        if ($node === null) {
+            return null;
+        }
+
+        if ($value < $node->data) {
+            $node->left = $this->deleteNode($node->left, $value);
+        } elseif ($value > $node->data) {
+            $node->right = $this->deleteNode($node->right, $value);
+        } else {
+            $this->size--;
+
+            // Case 1: Leaf node
+            if ($node->left === null && $node->right === null) {
+                return null;
+            }
+
+            // Case 2: One child
+            if ($node->left === null) {
+                return $node->right;
+            }
+            if ($node->right === null) {
+                return $node->left;
+            }
+
+            // Case 3: Two children
+            $successor = $this->findMin($node->right);
+            $node->data = $successor->data;
+            $node->right = $this->deleteNode($node->right, $successor->data);
+            $this->size++; // Compensate for decrement above
+        }
+
+        return $node;
+    }
+
+    public function findMin(?TreeNode $node = null): ?TreeNode
+    {
+        if ($node === null) {
+            $node = $this->root;
+        }
+
+        // Edge case: Empty tree
+        if ($node === null) {
+            throw new UnderflowException("Tree is empty");
+        }
+
+        while ($node->left !== null) {
+            $node = $node->left;
+        }
+
+        return $node;
+    }
+
+    public function clear(): void
+    {
+        // Help garbage collection
+        $this->clearNode($this->root);
+        $this->root = null;
+        $this->size = 0;
+    }
+
+    private function clearNode(?TreeNode $node): void
+    {
+        if ($node === null) {
+            return;
+        }
+
+        $this->clearNode($node->left);
+        $this->clearNode($node->right);
+
+        // Break references
+        $node->left = null;
+        $node->right = null;
+    }
+}
+```
+
+## Framework Integration
+
+### Laravel: BST-based Cache Service
+
+```php
+// app/Services/TreeCacheService.php
+namespace App\Services;
+
+use Illuminate\Support\Facades\Log;
+
+class TreeCacheService
+{
+    private RobustBST $cache;
+
+    public function __construct()
+    {
+        $this->cache = new RobustBST();
+    }
+
+    public function set(string $key, mixed $value): void
+    {
+        // Create cache entry
+        $entry = new CacheEntry($key, $value, time());
+
+        try {
+            $this->cache->insert($entry);
+            Log::info("Cache set", ['key' => $key]);
+        } catch (\Exception $e) {
+            Log::error("Cache set failed", [
+                'key' => $key,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function get(string $key): mixed
+    {
+        $entry = new CacheEntry($key, null, 0);
+        $found = $this->cache->search($entry);
+
+        if ($found === null) {
+            Log::debug("Cache miss", ['key' => $key]);
+            return null;
+        }
+
+        Log::debug("Cache hit", ['key' => $key]);
+        return $found->data->value;
+    }
+
+    public function has(string $key): bool
+    {
+        $entry = new CacheEntry($key, null, 0);
+        return $this->cache->search($entry) !== null;
+    }
+
+    public function delete(string $key): bool
+    {
+        $entry = new CacheEntry($key, null, 0);
+        return $this->cache->delete($entry);
+    }
+}
+
+class CacheEntry
+{
+    public function __construct(
+        public string $key,
+        public mixed $value,
+        public int $timestamp
+    ) {}
+
+    // Implement comparison for BST
+    public function __toString(): string
+    {
+        return $this->key;
+    }
+}
+```
+
+### Symfony: BST-based Index Service
+
+```php
+// src/Service/IndexService.php
+namespace App\Service;
+
+use App\Entity\Document;
+use Doctrine\ORM\EntityManagerInterface;
+
+class IndexService
+{
+    private RobustBST $index;
+
+    public function __construct(
+        private EntityManagerInterface $em
+    ) {
+        $this->index = new RobustBST();
+        $this->buildIndex();
+    }
+
+    private function buildIndex(): void
+    {
+        $documents = $this->em
+            ->getRepository(Document::class)
+            ->findAll();
+
+        foreach ($documents as $doc) {
+            $this->index->insert($doc->getId());
+        }
+    }
+
+    public function search(int $docId): ?Document
+    {
+        $node = $this->index->search($docId);
+
+        if ($node === null) {
+            return null;
+        }
+
+        return $this->em
+            ->getRepository(Document::class)
+            ->find($docId);
+    }
+
+    public function addDocument(Document $doc): void
+    {
+        $this->em->persist($doc);
+        $this->em->flush();
+
+        $this->index->insert($doc->getId());
+    }
+
+    public function removeDocument(int $docId): void
+    {
+        $doc = $this->search($docId);
+
+        if ($doc !== null) {
+            $this->em->remove($doc);
+            $this->em->flush();
+
+            $this->index->delete($docId);
+        }
+    }
+
+    public function rebuildIndex(): void
+    {
+        $this->index->clear();
+        $this->buildIndex();
+    }
+}
+```
+
+## Security Considerations
+
+### 1. Prevent Stack Overflow from Deep Recursion
+
+```php
+class SecureBST extends RobustBST
+{
+    private int $maxDepth = 100;
+
+    private function insertNode(?TreeNode $node, mixed $value, int $depth = 0): TreeNode
+    {
+        // Prevent stack overflow
+        if ($depth > $this->maxDepth) {
+            throw new RuntimeException(
+                "Maximum tree depth exceeded. Tree may be unbalanced."
+            );
+        }
+
+        if ($node === null) {
+            return new TreeNode($value);
+        }
+
+        if ($value < $node->data) {
+            $node->left = $this->insertNode($node->left, $value, $depth + 1);
+        } elseif ($value > $node->data) {
+            $node->right = $this->insertNode($node->right, $value, $depth + 1);
+        }
+
+        return $node;
+    }
+}
+```
+
+### 2. Validate and Sanitize Input
+
+```php
+class SecureBST extends RobustBST
+{
+    public function insert(mixed $value): void
+    {
+        // Sanitize string input
+        if (is_string($value)) {
+            $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+
+            // Prevent excessively long strings
+            if (strlen($value) > 255) {
+                throw new InvalidArgumentException("Value too long (max 255 chars)");
+            }
+        }
+
+        // Prevent object injection
+        if (is_object($value)) {
+            throw new InvalidArgumentException("Cannot insert objects");
+        }
+
+        // Prevent array injection
+        if (is_array($value)) {
+            throw new InvalidArgumentException("Cannot insert arrays");
+        }
+
+        parent::insert($value);
+    }
+}
+```
+
+### 3. Rate Limiting for Operations
+
+```php
+class ThrottledBST extends RobustBST
+{
+    private int $operationCount = 0;
+    private float $lastReset;
+    private int $maxOperationsPerSecond = 10000;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->lastReset = microtime(true);
+    }
+
+    private function checkThrottle(): void
+    {
+        $now = microtime(true);
+
+        if ($now - $this->lastReset >= 1.0) {
+            $this->operationCount = 0;
+            $this->lastReset = $now;
+        }
+
+        if ($this->operationCount >= $this->maxOperationsPerSecond) {
+            throw new RuntimeException("Rate limit exceeded");
+        }
+
+        $this->operationCount++;
+    }
+
+    public function insert(mixed $value): void
+    {
+        $this->checkThrottle();
+        parent::insert($value);
+    }
+
+    public function search(mixed $value): ?TreeNode
+    {
+        $this->checkThrottle();
+        return parent::search($value);
+    }
+}
+```
+
+## Common Pitfalls and Solutions
+
+### Pitfall 1: Not Handling Duplicates
+
+```php
+// BAD: Duplicates create unexpected behavior
+class BadBST
+{
+    private function insertNode(?TreeNode $node, mixed $value): TreeNode
+    {
+        if ($node === null) {
+            return new TreeNode($value);
+        }
+
+        if ($value < $node->data) {
+            $node->left = $this->insertNode($node->left, $value);
+        } else {
+            // What if value === node->data?
+            $node->right = $this->insertNode($node->right, $value);
+        }
+
+        return $node;
+    }
+}
+
+// GOOD: Explicit duplicate handling
+class GoodBST
+{
+    private function insertNode(?TreeNode $node, mixed $value): TreeNode
+    {
+        if ($node === null) {
+            return new TreeNode($value);
+        }
+
+        if ($value === $node->data) {
+            // Option 1: Skip duplicates
+            return $node;
+
+            // Option 2: Keep count
+            // $node->count = ($node->count ?? 1) + 1;
+            // return $node;
+
+            // Option 3: Allow duplicates (use <=)
+            // $node->left = $this->insertNode($node->left, $value);
+            // return $node;
+        }
+
+        if ($value < $node->data) {
+            $node->left = $this->insertNode($node->left, $value);
+        } else {
+            $node->right = $this->insertNode($node->right, $value);
+        }
+
+        return $node;
+    }
+}
+```
+
+### Pitfall 2: Incorrect Deletion of Node with Two Children
+
+```php
+// BAD: Loses right subtree of successor
+class BadBST
+{
+    private function deleteNode(?TreeNode $node, mixed $value): ?TreeNode
+    {
+        // ... find node ...
+
+        // Two children case
+        if ($node->left !== null && $node->right !== null) {
+            $successor = $this->findMin($node->right);
+            $node->data = $successor->data;
+            // FORGOT: Delete successor from right subtree
+            return $node;
+        }
+
+        return $node;
+    }
+}
+
+// GOOD: Properly delete successor
+class GoodBST
+{
+    private function deleteNode(?TreeNode $node, mixed $value): ?TreeNode
+    {
+        // ... find node ...
+
+        // Two children case
+        if ($node->left !== null && $node->right !== null) {
+            $successor = $this->findMin($node->right);
+            $node->data = $successor->data;
+            // Recursively delete successor
+            $node->right = $this->deleteNode($node->right, $successor->data);
+            return $node;
+        }
+
+        return $node;
+    }
+}
+```
+
+### Pitfall 3: Not Returning Updated Node in Recursive Functions
+
+```php
+// BAD: Changes not propagated
+class BadBST
+{
+    private function insertNode(?TreeNode $node, mixed $value): TreeNode
+    {
+        if ($node === null) {
+            return new TreeNode($value);
+        }
+
+        if ($value < $node->data) {
+            // FORGOT: Assign return value
+            $this->insertNode($node->left, $value);
+        } else {
+            $this->insertNode($node->right, $value);
+        }
+
+        return $node;
+    }
+}
+
+// GOOD: Always assign and return
+class GoodBST
+{
+    private function insertNode(?TreeNode $node, mixed $value): TreeNode
+    {
+        if ($node === null) {
+            return new TreeNode($value);
+        }
+
+        if ($value < $node->data) {
+            $node->left = $this->insertNode($node->left, $value); // Assign!
+        } else {
+            $node->right = $this->insertNode($node->right, $value); // Assign!
+        }
+
+        return $node;
+    }
+}
+```
+
+### Pitfall 4: Creating Skewed Trees with Sequential Input
+
+```php
+// BAD: Sequential insertion creates linked list
+$bst = new BinarySearchTree();
+for ($i = 1; $i <= 1000; $i++) {
+    $bst->insert($i); // Creates skewed tree: O(n) operations!
+}
+
+// GOOD: Shuffle or use balanced insertion
+$values = range(1, 1000);
+shuffle($values); // Randomize to get better balance
+
+$bst = new BinarySearchTree();
+foreach ($values as $value) {
+    $bst->insert($value); // More balanced tree
+}
+
+// BETTER: Build balanced tree from sorted array
+$sorted = range(1, 1000);
+$balancedRoot = sortedArrayToBST($sorted); // O(log n) guaranteed
+```
+
+### Pitfall 5: Memory Leaks with Circular References
+
+```php
+// BAD: Parent pointers can create cycles
+class BadTreeNode
+{
+    public ?BadTreeNode $left = null;
+    public ?BadTreeNode $right = null;
+    public ?BadTreeNode $parent = null; // Circular reference!
+
+    public function __construct(public mixed $data) {}
+}
+
+// GOOD: Properly cleanup or avoid parent pointers
+class GoodBST
+{
+    public function clear(): void
+    {
+        $this->clearNode($this->root);
+        $this->root = null;
+    }
+
+    private function clearNode(?TreeNode $node): void
+    {
+        if ($node === null) {
+            return;
+        }
+
+        // Post-order cleanup
+        $this->clearNode($node->left);
+        $this->clearNode($node->right);
+
+        // Break all references
+        $node->left = null;
+        $node->right = null;
+        $node->parent = null; // If using parent pointers
+    }
+
+    public function __destruct()
+    {
+        $this->clear();
+    }
+}
+```
 
 ## Practice Exercises
 
