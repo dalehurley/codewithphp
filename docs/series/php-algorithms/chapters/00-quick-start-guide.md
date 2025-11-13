@@ -498,22 +498,267 @@ opcache.validate_timestamps=0  ; Production only
 
 ---
 
+## ⚠️ Common Pitfalls to Avoid
+
+### 1. Premature Optimization
+
+```php
+<?php
+// ❌ DON'T: Optimize before measuring
+// "I'll use a complex algorithm because it's O(n log n)"
+
+// ✅ DO: Profile first, then optimize
+$start = microtime(true);
+simpleAlgorithm();  // Start simple
+$time = microtime(true) - $start;
+
+if ($time > 0.1) {  // Only if it's actually slow
+    optimizedAlgorithm();
+}
+```
+
+**Rule**: Make it work, make it right, make it fast - **in that order**.
+
+### 2. Wrong Data Structure
+
+```php
+<?php
+// ❌ BAD: Using array with in_array() for lookups
+$validUsers = [1, 2, 3, 4, 5, /* ...1000 more */];
+if (in_array($userId, $validUsers)) {  // O(n) - SLOW!
+    // ...
+}
+
+// ✅ GOOD: Use associative array for O(1) lookups
+$validUsers = [1 => true, 2 => true, 3 => true, /* ... */];
+if (isset($validUsers[$userId])) {  // O(1) - FAST!
+    // ...
+}
+```
+
+### 3. Hidden N+1 Queries (Laravel)
+
+```php
+<?php
+// ❌ BAD: 1 + N queries
+$users = User::all();  // 1 query
+foreach ($users as $user) {
+    echo $user->posts->count();  // N queries - ONE PER USER!
+}
+
+// ✅ GOOD: 2 queries total
+$users = User::withCount('posts')->get();  // 2 queries with JOIN
+foreach ($users as $user) {
+    echo $user->posts_count;  // No query!
+}
+```
+
+### 4. Memory Leaks in Loops
+
+```php
+<?php
+// ❌ BAD: Memory accumulates
+$results = [];
+foreach ($hugeDataset as $item) {
+    $results[] = process($item);  // Grows without bounds
+}
+
+// ✅ GOOD: Process and discard
+foreach ($hugeDataset as $item) {
+    $result = process($item);
+    sendToOutput($result);  // Process one at a time
+    unset($result);  // Free memory
+}
+```
+
+### 5. Inefficient String Building
+
+```php
+<?php
+// ❌ BAD: O(n²) - Creates new string each time
+$html = '';
+foreach ($items as $item) {
+    $html .= "<li>$item</li>";  // SLOW for large arrays
+}
+
+// ✅ GOOD: O(n) - Build array then join
+$parts = [];
+foreach ($items as $item) {
+    $parts[] = "<li>$item</li>";
+}
+$html = implode('', $parts);
+```
+
+---
+
+## 🔒 Quick Security Tips
+
+### 1. Always Use Parameterized Queries
+
+```php
+<?php
+// ❌ DANGER: SQL injection
+$result = $db->query("SELECT * FROM users WHERE id = {$_GET['id']}");
+
+// ✅ SAFE: Prepared statements
+$stmt = $db->prepare("SELECT * FROM users WHERE id = ?");
+$stmt->execute([$_GET['id']]);
+```
+
+### 2. Avoid Timing Attacks
+
+```php
+<?php
+// ❌ BAD: Vulnerable to timing attacks
+if ($userHash === $expectedHash) {  // Character-by-character comparison
+    return true;
+}
+
+// ✅ GOOD: Constant-time comparison
+if (hash_equals($expectedHash, $userHash)) {
+    return true;
+}
+```
+
+### 3. Use Secure Random for Tokens
+
+```php
+<?php
+// ❌ BAD: Predictable
+$token = md5(time() . rand());
+
+// ✅ GOOD: Cryptographically secure
+$token = bin2hex(random_bytes(32));
+```
+
+---
+
+## 🧰 Essential Tools
+
+### Profiling & Debugging
+
+```php
+<?php
+// 1. Quick memory check
+echo "Memory: " . memory_get_usage() / 1024 / 1024 . " MB\n";
+echo "Peak: " . memory_get_peak_usage() / 1024 / 1024 . " MB\n";
+
+// 2. Query logging (Laravel)
+DB::enableQueryLog();
+// ... run queries ...
+dd(DB::getQueryLog());
+
+// 3. Execution time breakdown
+$times = [];
+$start = microtime(true);
+step1();
+$times['step1'] = microtime(true) - $start;
+
+$start = microtime(true);
+step2();
+$times['step2'] = microtime(true) - $start;
+
+print_r($times);
+```
+
+### Recommended Tools
+
+- **Xdebug**: Development profiling (slow, detailed)
+- **Blackfire**: Production profiling (fast, safe)
+- **Telescope** (Laravel): Request/query monitoring
+- **Clockwork**: Browser-based profiling
+- **New Relic/DataDog**: APM for production
+
+---
+
+## 🎯 Framework-Specific Quick Wins
+
+### Laravel
+
+```php
+<?php
+// 1. Eager loading (prevents N+1)
+$users = User::with('posts')->get();  // 2 queries instead of N+1
+
+// 2. Chunk large datasets
+User::chunk(1000, function ($users) {
+    foreach ($users as $user) {
+        // Process in batches
+    }
+});
+
+// 3. Cache query results
+$users = Cache::remember('users', 3600, function () {
+    return User::all();
+});
+
+// 4. Use whereIn instead of loop
+$userIds = [1, 2, 3, 4, 5];
+$users = User::whereIn('id', $userIds)->get();  // 1 query, not 5
+
+// 5. Select only needed columns
+$users = User::select(['id', 'name'])->get();  // Not SELECT *
+```
+
+### Symfony
+
+```php
+<?php
+// 1. Query builder for complex queries
+$qb = $entityManager->createQueryBuilder();
+$users = $qb->select('u')
+    ->from('App\Entity\User', 'u')
+    ->where('u.active = :active')
+    ->setParameter('active', true)
+    ->getQuery()
+    ->getResult();
+
+// 2. Batch processing
+$batchSize = 1000;
+$i = 0;
+foreach ($users as $user) {
+    $entityManager->persist($user);
+    if (($i % $batchSize) === 0) {
+        $entityManager->flush();
+        $entityManager->clear();
+    }
+    $i++;
+}
+
+// 3. HTTP cache
+$response->setCache([
+    'public' => true,
+    'max_age' => 3600,
+]);
+```
+
+---
+
 ## ❓ FAQs
 
 **Q: Should I always use the most efficient algorithm?**
-A: No! Use the simplest algorithm that meets your requirements. `sort()` is fine for 99% of cases.
+A: No! Use the simplest algorithm that meets your requirements. `sort()` is fine for 99% of cases. **Optimize only when you have measured performance issues.**
 
 **Q: When do I really need to know this stuff?**
-A: Job interviews, optimizing slow code, working with large datasets, understanding framework internals.
+A: Job interviews, optimizing slow code, working with large datasets, understanding framework internals, debugging production issues.
 
 **Q: Can't PHP frameworks handle this for me?**
-A: Frameworks help, but you need to understand when to use `whereIn()` vs `where()`, when to cache, when to eager load, etc.
+A: Frameworks help, but you need to understand when to use `whereIn()` vs `where()`, when to cache, when to eager load, etc. Frameworks give you tools, but you need to know when to use them.
 
 **Q: What's the #1 optimization I should know?**
-A: **Caching**. It's the biggest bang for your buck. Cache database queries, API responses, expensive calculations.
+A: **Caching**. It's the biggest bang for your buck. Cache database queries, API responses, expensive calculations. A simple cache can turn a 500ms request into a 5ms request.
+
+**Q: How do I know if my code is slow?**
+A: **Measure**! Use `microtime()`, Xdebug, or Blackfire. Never optimize without profiling first. "Premature optimization is the root of all evil."
+
+**Q: Should I learn all the algorithms in this series?**
+A: Start with the essentials (sorting, searching, hash tables, caching). Learn advanced topics (dynamic programming, graph algorithms) when you need them or for interview prep.
 
 **Q: Where do I start if I'm completely new?**
 A: [Chapter 1: Introduction](/series/php-algorithms/chapters/01-introduction-to-algorithms/) for comprehensive learning, or continue with this guide for copy-paste solutions.
+
+**Q: What about async/await in PHP?**
+A: PHP 8.1+ supports fibers, but for practical async use ReactPHP, Swoole, or Amp. See [Chapter 31: Concurrent Algorithms](/series/php-algorithms/chapters/31-concurrent-algorithms/).
 
 ---
 
