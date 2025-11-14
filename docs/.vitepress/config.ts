@@ -152,6 +152,7 @@ export default withMermaid(
           text: 'Series',
           items: [
             { text: 'PHP Basics', link: '/series/php-basics/' },
+            { text: 'Algorithms for PHP Developers', link: '/series/php-algorithms/' },
             { text: 'AI/ML for PHP Developers', link: '/series/ai-ml-php-developers/' },
             { text: 'Why Python Developers Will Love PHP and Laravel', link: '/series/python-developers-love-php-laravel/' },
             { text: 'Build a CRM with Laravel 12', link: '/series/build-crm-laravel-12/' },
@@ -349,6 +350,219 @@ export default withMermaid(
               {
                 text: '10 — Bonus: Hands-On Mini Project',
                 link: '/series/python-developers-love-php-laravel/chapters/10-bonus-hands-on-mini-project'
+              }
+            ]
+          }
+        ],
+
+        '/series/php-algorithms/': [
+          { text: 'Overview', link: '/series/php-algorithms/' },
+          {
+            text: 'Part 1: Foundation',
+            items: [
+              {
+                text: '00 — Quick Start Guide',
+                link: '/series/php-algorithms/chapters/00-quick-start-guide'
+              },
+              {
+                text: '01 — Algorithm Complexity & Big O Notation',
+                link: '/series/php-algorithms/chapters/01-algorithm-complexity-big-o-notation'
+              },
+              {
+                text: '02 — Benchmarking & Performance Testing',
+                link: '/series/php-algorithms/chapters/02-benchmarking-performance-testing'
+              },
+              {
+                text: '03 — Recursion Fundamentals',
+                link: '/series/php-algorithms/chapters/03-recursion-fundamentals'
+              },
+              {
+                text: '04 — Problem-Solving Strategies',
+                link: '/series/php-algorithms/chapters/04-problem-solving-strategies'
+              }
+            ]
+          },
+          {
+            text: 'Part 2: Sorting Algorithms',
+            items: [
+              {
+                text: '05 — Bubble Sort & Selection Sort',
+                link: '/series/php-algorithms/chapters/05-bubble-sort-selection-sort'
+              },
+              {
+                text: '06 — Insertion Sort & Merge Sort',
+                link: '/series/php-algorithms/chapters/06-insertion-sort-merge-sort'
+              },
+              {
+                text: '07 — Quick Sort & Pivot Strategies',
+                link: '/series/php-algorithms/chapters/07-quick-sort-pivot-strategies'
+              },
+              {
+                text: '08 — Heap Sort & Priority Queues',
+                link: '/series/php-algorithms/chapters/08-heap-sort-priority-queues'
+              },
+              {
+                text: '09 — Comparing Sorting Algorithms',
+                link: '/series/php-algorithms/chapters/09-comparing-sorting-algorithms'
+              },
+              {
+                text: '10 — PHP\'s Built-in Sorting Functions',
+                link: '/series/php-algorithms/chapters/10-php-built-in-sorting-functions'
+              }
+            ]
+          },
+          {
+            text: 'Part 3: Searching Algorithms',
+            items: [
+              {
+                text: '11 — Linear Search & Variants',
+                link: '/series/php-algorithms/chapters/11-linear-search-variants'
+              },
+              {
+                text: '12 — Binary Search',
+                link: '/series/php-algorithms/chapters/12-binary-search'
+              },
+              {
+                text: '13 — Hash Tables & Hash Functions',
+                link: '/series/php-algorithms/chapters/13-hash-tables-hash-functions'
+              },
+              {
+                text: '14 — String Search Algorithms',
+                link: '/series/php-algorithms/chapters/14-string-search-algorithms'
+              }
+            ]
+          },
+          {
+            text: 'Part 4: Data Structures',
+            items: [
+              {
+                text: '15 — Arrays & Dynamic Arrays',
+                link: '/series/php-algorithms/chapters/15-arrays-dynamic-arrays'
+              },
+              {
+                text: '16 — Linked Lists',
+                link: '/series/php-algorithms/chapters/16-linked-lists'
+              },
+              {
+                text: '17 — Stacks & Queues',
+                link: '/series/php-algorithms/chapters/17-stacks-queues'
+              },
+              {
+                text: '18 — Trees & Binary Search Trees',
+                link: '/series/php-algorithms/chapters/18-trees-binary-search-trees'
+              },
+              {
+                text: '19 — Tree Traversal Algorithms',
+                link: '/series/php-algorithms/chapters/19-tree-traversal-algorithms'
+              },
+              {
+                text: '20 — Balanced Trees (AVL & Red-Black)',
+                link: '/series/php-algorithms/chapters/20-balanced-trees-avl-red-black'
+              }
+            ]
+          },
+          {
+            text: 'Part 5: Graph Algorithms',
+            items: [
+              {
+                text: '21 — Graph Representations',
+                link: '/series/php-algorithms/chapters/21-graph-representations'
+              },
+              {
+                text: '22 — Depth-First Search (DFS)',
+                link: '/series/php-algorithms/chapters/22-depth-first-search'
+              },
+              {
+                text: '23 — Breadth-First Search (BFS)',
+                link: '/series/php-algorithms/chapters/23-breadth-first-search'
+              },
+              {
+                text: '24 — Dijkstra\'s Shortest Path',
+                link: '/series/php-algorithms/chapters/24-dijkstra-shortest-path'
+              }
+            ]
+          },
+          {
+            text: 'Part 6: Dynamic Programming',
+            items: [
+              {
+                text: '25 — Dynamic Programming Fundamentals',
+                link: '/series/php-algorithms/chapters/25-dynamic-programming-fundamentals'
+              },
+              {
+                text: '26 — Advanced Dynamic Programming',
+                link: '/series/php-algorithms/chapters/26-advanced-dynamic-programming'
+              }
+            ]
+          },
+          {
+            text: 'Part 7: Practical Applications',
+            items: [
+              {
+                text: '27 — Caching & Memoization Strategies',
+                link: '/series/php-algorithms/chapters/27-caching-memoization-strategies'
+              },
+              {
+                text: '28 — Algorithm Selection Guide',
+                link: '/series/php-algorithms/chapters/28-algorithm-selection-guide'
+              },
+              {
+                text: '29 — Performance Optimization',
+                link: '/series/php-algorithms/chapters/29-performance-optimization'
+              },
+              {
+                text: '30 — Real-World Case Studies',
+                link: '/series/php-algorithms/chapters/30-real-world-case-studies'
+              }
+            ]
+          },
+          {
+            text: 'Part 8: Advanced Topics',
+            items: [
+              {
+                text: '31 — Concurrent Algorithms',
+                link: '/series/php-algorithms/chapters/31-concurrent-algorithms'
+              },
+              {
+                text: '32 — Probabilistic Algorithms',
+                link: '/series/php-algorithms/chapters/32-probabilistic-algorithms'
+              },
+              {
+                text: '33 — String Algorithms Deep Dive',
+                link: '/series/php-algorithms/chapters/33-string-algorithms-deep-dive'
+              },
+              {
+                text: '34 — Geometric Algorithms',
+                link: '/series/php-algorithms/chapters/34-geometric-algorithms'
+              },
+              {
+                text: '35 — Cryptographic Algorithms',
+                link: '/series/php-algorithms/chapters/35-cryptographic-algorithms'
+              },
+              {
+                text: '36 — Stream Processing Algorithms',
+                link: '/series/php-algorithms/chapters/36-stream-processing-algorithms'
+              }
+            ]
+          },
+          {
+            text: 'Appendices',
+            items: [
+              {
+                text: 'Appendix A — Complexity Cheat Sheet',
+                link: '/series/php-algorithms/appendices/appendix-a-complexity-cheat-sheet'
+              },
+              {
+                text: 'Appendix B — PHP Performance Tips',
+                link: '/series/php-algorithms/appendices/appendix-b-php-performance-tips'
+              },
+              {
+                text: 'Appendix C — Glossary',
+                link: '/series/php-algorithms/appendices/appendix-c-glossary'
+              },
+              {
+                text: 'Appendix D — Further Reading',
+                link: '/series/php-algorithms/appendices/appendix-d-further-reading'
               }
             ]
           }
