@@ -15,6 +15,7 @@ Code with PHP is a tutorial-based learning resource featuring hands-on, reproduc
 1. **[PHP Basics](https://codewithphp.com/series/php-basics/)** — Master PHP fundamentals from zero to hero
 2. **[AI/ML for PHP Developers](https://codewithphp.com/series/ai-ml-php-developers/)** — Build machine learning applications with PHP
 3. **[Python Developers ♥ PHP & Laravel](https://codewithphp.com/series/python-developers-love-php-laravel/)** — Transition from Python to PHP/Laravel
+4. **[Ruby on Rails Developers ♥ Laravel](https://codewithphp.com/series/rails-developers-love-laravel/)** — Transition from Rails to Laravel
 
 ## 🚀 Quick Start
 
@@ -62,12 +63,14 @@ PHP-From-Scratch/
 │   └── series/             # Tutorial series content
 │       ├── php-basics/
 │       ├── ai-ml-php-developers/
-│       └── python-developers-love-php-laravel/
+│       ├── python-developers-love-php-laravel/
+│       └── rails-developers-love-laravel/
 │
 ├── code/                    # Executable code samples (organized by series)
 │   ├── php-basics/
 │   ├── ai-ml-php-developers/
-│   └── python-developers-love-php-laravel/
+│   ├── python-developers-love-php-laravel/
+│   └── rails-developers-love-laravel/
 │
 ├── testing/                 # Test infrastructure for code validation
 │   ├── test-all-samples.php
@@ -158,6 +161,7 @@ Key rules documents:
 - **PHP Basics Series:** ✅ Complete (25 chapters)
 - **AI/ML Series:** ✅ Complete (25 chapters)
 - **Python → PHP Series:** 🚧 In Progress (11 chapters)
+- **Rails → Laravel Series:** 🆕 Just Started (11 chapters planned)
 - **Code Test Coverage:** 80.7% passing (96/119 samples)
 - **Active Development:** ✅ Ongoing
 
