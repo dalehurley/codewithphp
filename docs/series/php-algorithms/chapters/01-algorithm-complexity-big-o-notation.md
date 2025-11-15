@@ -10,6 +10,8 @@ prerequisites:
   - "Familiarity with loops and functions"
   - "Completion of Chapter 0"
 ---
+![01: Algorithm Complexity & Big O Notation](/images/php-algorithms/chapter-01-complexity-big-o-hero-full.webp)
+
 
 <div class="breadcrumbs">
   <a href="/">Home</a>
@@ -1112,6 +1114,12 @@ function removeDuplicates(array $arr): array
 - **Optimize smartly**: Profile first, then optimize bottlenecks
 - **Know your tools**: Understand PHP's built-in function complexities
 
+<ChapterCheckbox 
+  seriesId="php-algorithms"
+  chapterId="01"
+  label="You've mastered Big O notation and algorithm complexity!"
+/>
+
 ## What's Next
 
 In the next chapter, we'll build a **benchmarking framework** to actually measure algorithm performance in PHP. You'll learn to validate your complexity analysis with real data.
@@ -1120,7 +1128,7 @@ In the next chapter, we'll build a **benchmarking framework** to actually measur
 
 All code examples from this chapter are available in the GitHub repository:
 
-**[View Chapter 01 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-01)**
+**[View Chapter 01 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/php-algorithms/chapter-01)**
 
 Files included:
 - `01-complexity-examples.php` - Demonstrates all major time complexity classes with working code
@@ -1130,7 +1138,7 @@ Files included:
 Clone the repository to run the examples locally:
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
-cd codewithphp/code-samples/php-algorithms/chapter-01
+cd codewithphp/code/php-algorithms/chapter-01
 php 01-complexity-examples.php
 ```
 

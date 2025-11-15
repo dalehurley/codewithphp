@@ -1,159 +1,134 @@
 <?php
-/**
- * Algorithm Complexity Examples
- *
- * Demonstrates each major time complexity class with practical examples
- * and visualizations of how they scale.
- *
- * @package PHPAlgorithms
- * @chapter 01
- */
 
 declare(strict_types=1);
 
-// ============================================================================
-// O(1) - CONSTANT TIME
-// ============================================================================
-
 /**
- * O(1) - Array access by index
- * Time stays constant regardless of array size
+ * Algorithm Complexity Examples
+ * 
+ * Demonstrates all major time complexity classes with working PHP code.
+ * Run: php 01-complexity-examples.php
+ * 
+ * Chapter 01: Algorithm Complexity & Big O Notation
+ * Series: Algorithms for PHP Developers
  */
-function getElement(array $arr, int $index): mixed
+
+echo "=== Algorithm Complexity Examples ===\n\n";
+
+// =============================================================================
+// O(1) - Constant Time
+// =============================================================================
+
+echo "--- O(1) - Constant Time ---\n";
+
+function getFirstElement(array $arr): mixed
 {
-    return $arr[$index] ?? null;
+    return $arr[0];
 }
 
-/**
- * O(1) - Hash table lookup
- * Constant time regardless of number of elements
- */
-function hashLookup(array $hashTable, string $key): mixed
+function getUserById(array $users, int $id): ?array
 {
-    return $hashTable[$key] ?? null;
+    return $users[$id] ?? null;
 }
 
-/**
- * O(1) - Simple arithmetic
- * Fixed number of operations
- */
-function calculateDiscount(float $price, float $rate): float
+function calculateDiscount(float $price): float
 {
-    return $price * (1 - $rate);
+    return $price * 0.1;
 }
 
-// ============================================================================
-// O(log n) - LOGARITHMIC TIME
-// ============================================================================
+$numbers = [10, 20, 30, 40, 50];
+echo "First element: " . getFirstElement($numbers) . "\n";
 
-/**
- * O(log n) - Binary search
- * Halves search space each iteration
- *
- * @param array<int> $arr Sorted array
- * @param int $target Value to find
- * @return int Index of target, or -1 if not found
- */
-function binarySearch(array $arr, int $target): int
+$users = [
+    1 => ['name' => 'Alice', 'email' => 'alice@example.com'],
+    2 => ['name' => 'Bob', 'email' => 'bob@example.com'],
+];
+$user = getUserById($users, 1);
+echo "User by ID: {$user['name']}\n";
+
+echo "Discount on $100: $" . calculateDiscount(100.0) . "\n\n";
+
+// =============================================================================
+// O(log n) - Logarithmic Time
+// =============================================================================
+
+echo "--- O(log n) - Logarithmic Time ---\n";
+
+function binarySearch(array $sorted, int $target): int|false
 {
     $left = 0;
-    $right = count($arr) - 1;
-    $iterations = 0;
+    $right = count($sorted) - 1;
+    $steps = 0;
 
     while ($left <= $right) {
-        $iterations++;
+        $steps++;
         $mid = (int)(($left + $right) / 2);
 
-        if ($arr[$mid] === $target) {
-            echo "   Found in {$iterations} iterations (log₂ " . count($arr) . " ≈ " . log(count($arr), 2) . ")\n";
+        if ($sorted[$mid] === $target) {
+            echo "Found $target in $steps steps\n";
             return $mid;
-        }
-
-        if ($arr[$mid] < $target) {
+        } elseif ($sorted[$mid] < $target) {
             $left = $mid + 1;
         } else {
             $right = $mid - 1;
         }
     }
 
-    echo "   Not found after {$iterations} iterations\n";
-    return -1;
+    echo "Not found after $steps steps\n";
+    return false;
 }
 
-/**
- * O(log n) - Find power using exponentiation by squaring
- */
-function power(int $base, int $exp): int
+$sortedNumbers = range(1, 1000);
+$index = binarySearch($sortedNumbers, 742);
+echo "Index of 742: " . ($index !== false ? $index : 'not found') . "\n\n";
+
+// =============================================================================
+// O(n) - Linear Time
+// =============================================================================
+
+echo "--- O(n) - Linear Time ---\n";
+
+function sum(array $numbers): int|float
 {
-    if ($exp === 0) {
-        return 1;
+    $total = 0;
+    foreach ($numbers as $number) {
+        $total += $number;
     }
-
-    if ($exp % 2 === 0) {
-        $half = power($base, $exp / 2);
-        return $half * $half;
-    }
-
-    return $base * power($base, $exp - 1);
+    return $total;
 }
 
-// ============================================================================
-// O(n) - LINEAR TIME
-// ============================================================================
-
-/**
- * O(n) - Sum all elements
- * Must visit each element once
- */
-function sumArray(array $nums): int
+function findMax(array $numbers): int|float
 {
-    $sum = 0;
-    foreach ($nums as $num) {
-        $sum += $num;
-    }
-    return $sum;
-}
-
-/**
- * O(n) - Find maximum
- * Single pass through array
- */
-function findMax(array $nums): int
-{
-    if (empty($nums)) {
-        throw new \InvalidArgumentException('Array cannot be empty');
-    }
-
-    $max = $nums[0];
-    foreach ($nums as $num) {
-        if ($num > $max) {
-            $max = $num;
+    $max = $numbers[0];
+    foreach ($numbers as $number) {
+        if ($number > $max) {
+            $max = $number;
         }
     }
     return $max;
 }
 
-/**
- * O(n) - Linear search
- */
-function linearSearch(array $arr, $target): int
+function filterEven(array $numbers): array
 {
-    foreach ($arr as $index => $value) {
-        if ($value === $target) {
-            return $index;
+    $result = [];
+    foreach ($numbers as $number) {
+        if ($number % 2 === 0) {
+            $result[] = $number;
         }
     }
-    return -1;
+    return $result;
 }
 
-// ============================================================================
-// O(n log n) - LINEARITHMIC TIME
-// ============================================================================
+$testNumbers = [3, 7, 2, 9, 1, 5, 8, 4];
+echo "Sum: " . sum($testNumbers) . "\n";
+echo "Max: " . findMax($testNumbers) . "\n";
+echo "Even numbers: " . implode(', ', filterEven($testNumbers)) . "\n\n";
 
-/**
- * O(n log n) - Merge sort
- * Divides array (log n) and merges (n) at each level
- */
+// =============================================================================
+// O(n log n) - Linearithmic Time
+// =============================================================================
+
+echo "--- O(n log n) - Linearithmic Time ---\n";
+
 function mergeSort(array $arr): array
 {
     if (count($arr) <= 1) {
@@ -183,62 +158,40 @@ function merge(array $left, array $right): array
     return array_merge($result, array_slice($left, $i), array_slice($right, $j));
 }
 
-/**
- * O(n log n) - Heap sort demonstration
- */
-function heapSort(array $arr): array
-{
-    // For demonstration, use PHP's built-in heap
-    $heap = new SplMinHeap();
+$unsorted = [64, 34, 25, 12, 22, 11, 90];
+$sorted = mergeSort($unsorted);
+echo "Merge sort result: " . implode(', ', $sorted) . "\n\n";
 
-    foreach ($arr as $value) {
-        $heap->insert($value);
-    }
+// =============================================================================
+// O(n²) - Quadratic Time
+// =============================================================================
 
-    $sorted = [];
-    while (!$heap->isEmpty()) {
-        $sorted[] = $heap->extract();
-    }
+echo "--- O(n²) - Quadratic Time ---\n";
 
-    return $sorted;
-}
-
-// ============================================================================
-// O(n²) - QUADRATIC TIME
-// ============================================================================
-
-/**
- * O(n²) - Bubble sort
- * Nested loops over same data
- */
 function bubbleSort(array $arr): array
 {
     $n = count($arr);
-    $comparisons = 0;
+    $swaps = 0;
 
     for ($i = 0; $i < $n - 1; $i++) {
         for ($j = 0; $j < $n - $i - 1; $j++) {
-            $comparisons++;
             if ($arr[$j] > $arr[$j + 1]) {
                 [$arr[$j], $arr[$j + 1]] = [$arr[$j + 1], $arr[$j]];
+                $swaps++;
             }
         }
     }
 
-    echo "   Made {$comparisons} comparisons (n² = " . ($n * $n) . ", actual ≈ n²/2)\n";
+    echo "Bubble sort swaps: $swaps\n";
     return $arr;
 }
 
-/**
- * O(n²) - Find all pairs
- */
 function findAllPairs(array $items): array
 {
     $pairs = [];
-    $n = count($items);
 
-    for ($i = 0; $i < $n; $i++) {
-        for ($j = $i + 1; $j < $n; $j++) {
+    for ($i = 0; $i < count($items); $i++) {
+        for ($j = $i + 1; $j < count($items); $j++) {
             $pairs[] = [$items[$i], $items[$j]];
         }
     }
@@ -246,272 +199,160 @@ function findAllPairs(array $items): array
     return $pairs;
 }
 
-/**
- * O(n²) - Check for duplicates (naive approach)
- */
-function hasDuplicates_Slow(array $arr): bool
-{
-    $n = count($arr);
+$toSort = [5, 2, 8, 1, 9];
+$sorted = bubbleSort($toSort);
+echo "Bubble sort result: " . implode(', ', $sorted) . "\n";
 
-    for ($i = 0; $i < $n; $i++) {
-        for ($j = $i + 1; $j < $n; $j++) {
-            if ($arr[$i] === $arr[$j]) {
-                return true;
+$items = ['A', 'B', 'C', 'D'];
+$pairs = findAllPairs($items);
+echo "Pairs from 4 items: " . count($pairs) . " pairs\n";
+echo "First 3 pairs: ";
+for ($i = 0; $i < min(3, count($pairs)); $i++) {
+    echo "[{$pairs[$i][0]}, {$pairs[$i][1]}] ";
+}
+echo "\n\n";
+
+// =============================================================================
+// O(2ⁿ) - Exponential Time
+// =============================================================================
+
+echo "--- O(2ⁿ) - Exponential Time (WARNING: SLOW!) ---\n";
+
+$fibCalls = 0;
+
+function fibonacci(int $n): int
+{
+    global $fibCalls;
+    $fibCalls++;
+
+    if ($n <= 1) {
+        return $n;
+    }
+
+    return fibonacci($n - 1) + fibonacci($n - 2);
+}
+
+echo "Computing fibonacci(10)...\n";
+$fibCalls = 0;
+$result = fibonacci(10);
+echo "Result: $result (function calls: $fibCalls)\n";
+
+echo "\nComputing fibonacci(20)...\n";
+$fibCalls = 0;
+$result = fibonacci(20);
+echo "Result: $result (function calls: $fibCalls)\n";
+
+echo "\n⚠️  Notice: fibonacci(20) requires " . number_format($fibCalls) . " function calls!\n";
+echo "fibonacci(40) would take millions of calls and several seconds.\n\n";
+
+// =============================================================================
+// Practical Comparison: Hash Lookup vs Linear Search
+// =============================================================================
+
+echo "--- Practical Comparison: O(1) vs O(n) ---\n";
+
+// Linear search - O(n)
+function findUserLinear(array $users, string $email): ?array
+{
+    foreach ($users as $user) {
+        if ($user['email'] === $email) {
+            return $user;
+        }
+    }
+    return null;
+}
+
+// Hash lookup - O(1)
+function findUserHash(array $usersByEmail, string $email): ?array
+{
+    return $usersByEmail[$email] ?? null;
+}
+
+// Create test data
+$usersArray = [];
+$usersHash = [];
+for ($i = 1; $i <= 1000; $i++) {
+    $user = ['id' => $i, 'name' => "User$i", 'email' => "user$i@example.com"];
+    $usersArray[] = $user;
+    $usersHash["user$i@example.com"] = $user;
+}
+
+$targetEmail = 'user750@example.com';
+
+// Benchmark linear search
+$start = microtime(true);
+$result = findUserLinear($usersArray, $targetEmail);
+$linearTime = microtime(true) - $start;
+
+// Benchmark hash lookup
+$start = microtime(true);
+$result = findUserHash($usersHash, $targetEmail);
+$hashTime = microtime(true) - $start;
+
+echo "Searching for '$targetEmail' in 1,000 users:\n";
+echo "Linear search (O(n)): " . number_format($linearTime * 1000000, 2) . " μs\n";
+echo "Hash lookup (O(1)): " . number_format($hashTime * 1000000, 2) . " μs\n";
+echo "Speedup: " . number_format($linearTime / $hashTime, 1) . "x faster\n\n";
+
+// =============================================================================
+// Optimizing O(n²) to O(n) using Hash Sets
+// =============================================================================
+
+echo "--- Optimizing O(n²) to O(n) with Hash Sets ---\n";
+
+// O(n²) - Nested loops
+function findCommonFriends_Slow(array $friends1, array $friends2): array
+{
+    $common = [];
+    foreach ($friends1 as $friend1) {
+        foreach ($friends2 as $friend2) {
+            if ($friend1 === $friend2) {
+                $common[] = $friend1;
             }
         }
     }
-
-    return false;
+    return $common;
 }
 
-/**
- * O(n) - Check for duplicates (optimized with hash set)
- */
-function hasDuplicates_Fast(array $arr): bool
+// O(n) - Using hash set
+function findCommonFriends_Fast(array $friends1, array $friends2): array
 {
-    $seen = [];
-
-    foreach ($arr as $value) {
-        if (isset($seen[$value])) {
-            return true;
-        }
-        $seen[$value] = true;
-    }
-
-    return false;
-}
-
-// ============================================================================
-// O(2^n) - EXPONENTIAL TIME
-// ============================================================================
-
-/**
- * O(2^n) - Fibonacci (naive recursive)
- * Each call branches into two more calls
- */
-function fibonacci_Slow(int $n): int
-{
-    if ($n <= 1) {
-        return $n;
-    }
-    return fibonacci_Slow($n - 1) + fibonacci_Slow($n - 2);
-}
-
-/**
- * O(n) - Fibonacci (with memoization)
- */
-function fibonacci_Fast(int $n, array &$memo = []): int
-{
-    if ($n <= 1) {
-        return $n;
-    }
-
-    if (isset($memo[$n])) {
-        return $memo[$n];
-    }
-
-    $memo[$n] = fibonacci_Fast($n - 1, $memo) + fibonacci_Fast($n - 2, $memo);
-    return $memo[$n];
-}
-
-/**
- * O(2^n) - Generate all subsets
- */
-function generateSubsets(array $set): array
-{
-    if (empty($set)) {
-        return [[]];
-    }
-
-    $first = array_shift($set);
-    $subsetsWithoutFirst = generateSubsets($set);
-    $subsetsWithFirst = array_map(fn($subset) => array_merge([$first], $subset), $subsetsWithoutFirst);
-
-    return array_merge($subsetsWithoutFirst, $subsetsWithFirst);
-}
-
-// ============================================================================
-// O(n!) - FACTORIAL TIME
-// ============================================================================
-
-/**
- * O(n!) - Generate all permutations
- */
-function generatePermutations(array $items): array
-{
-    if (count($items) <= 1) {
-        return [$items];
-    }
-
-    $permutations = [];
-
-    foreach ($items as $i => $item) {
-        $remaining = array_merge(
-            array_slice($items, 0, $i),
-            array_slice($items, $i + 1)
-        );
-
-        foreach (generatePermutations($remaining) as $perm) {
-            $permutations[] = array_merge([$item], $perm);
+    $friendSet = array_flip($friends1);
+    $common = [];
+    foreach ($friends2 as $friend) {
+        if (isset($friendSet[$friend])) {
+            $common[] = $friend;
         }
     }
-
-    return $permutations;
+    return $common;
 }
 
-// ============================================================================
-// COMPLEXITY GROWTH DEMONSTRATION
-// ============================================================================
+$friends1 = ['Alice', 'Bob', 'Charlie', 'David', 'Eve'];
+$friends2 = ['Bob', 'Frank', 'Charlie', 'Grace', 'David'];
 
-function demonstrateGrowth(): void
-{
-    echo "=== Complexity Growth Comparison ===\n\n";
-    echo "n      | O(1) | O(log n) | O(n) | O(n log n) | O(n²)   | O(2^n)\n";
-    echo str_repeat('-', 70) . "\n";
+$start = microtime(true);
+$commonSlow = findCommonFriends_Slow($friends1, $friends2);
+$slowTime = microtime(true) - $start;
 
-    $sizes = [1, 10, 100, 1000, 10000];
+$start = microtime(true);
+$commonFast = findCommonFriends_Fast($friends1, $friends2);
+$fastTime = microtime(true) - $start;
 
-    foreach ($sizes as $n) {
-        $o1 = 1;
-        $olog = (int)log($n, 2);
-        $on = $n;
-        $onlogn = (int)($n * log($n, 2));
-        $on2 = $n * $n;
-        $o2n = $n <= 20 ? pow(2, $n) : '∞';
+echo "Common friends: " . implode(', ', $commonFast) . "\n";
+echo "O(n²) approach: " . number_format($slowTime * 1000000, 2) . " μs\n";
+echo "O(n) approach: " . number_format($fastTime * 1000000, 2) . " μs\n";
+echo "Speedup: " . number_format($slowTime / $fastTime, 1) . "x faster\n\n";
 
-        printf(
-            "%-6d | %-4d | %-8d | %-4d | %-10d | %-7s | %s\n",
-            $n,
-            $o1,
-            $olog,
-            $on,
-            $onlogn,
-            number_format($on2),
-            is_numeric($o2n) ? number_format($o2n) : $o2n
-        );
-    }
-    echo "\n";
-}
+// =============================================================================
+// Summary
+// =============================================================================
 
-// ============================================================================
-// BENCHMARKING HELPER
-// ============================================================================
+echo "=== Summary ===\n";
+echo "✓ O(1) - Constant time: Same speed regardless of input size\n";
+echo "✓ O(log n) - Logarithmic: Doubles input → adds one step\n";
+echo "✓ O(n) - Linear: Doubles input → doubles time\n";
+echo "✓ O(n log n) - Linearithmic: Efficient sorting algorithms\n";
+echo "✓ O(n²) - Quadratic: Gets slow quickly, avoid for large data\n";
+echo "✓ O(2ⁿ) - Exponential: Only usable for tiny inputs\n\n";
 
-function benchmarkComplexity(string $name, callable $fn, array $sizes): void
-{
-    echo "{$name}:\n";
-    echo "Size   | Time (ms) | Growth\n";
-    echo str_repeat('-', 35) . "\n";
-
-    $prevTime = null;
-
-    foreach ($sizes as $size) {
-        $start = hrtime(true);
-        $fn($size);
-        $end = hrtime(true);
-
-        $time = ($end - $start) / 1_000_000;
-        $growth = $prevTime ? $time / $prevTime : 1.0;
-
-        printf("%-6d | %9.3f | %.2fx\n", $size, $time, $growth);
-        $prevTime = $time;
-    }
-
-    echo "\n";
-}
-
-// ============================================================================
-// DEMONSTRATIONS
-// ============================================================================
-
-if (php_sapi_name() === 'cli') {
-    echo "=== Algorithm Complexity Examples ===\n\n";
-
-    // O(1) Demo
-    echo "1. O(1) - Constant Time:\n";
-    $arr = range(1, 1000000);
-    $start = hrtime(true);
-    getElement($arr, 50000);
-    $time = (hrtime(true) - $start) / 1_000_000;
-    echo "   Access element in 1M array: {$time} ms (always constant)\n\n";
-
-    // O(log n) Demo
-    echo "2. O(log n) - Logarithmic Time:\n";
-    $sorted = range(1, 1000000);
-    echo "   Searching in 1,000,000 elements:\n";
-    binarySearch($sorted, 742518);
-    echo "\n";
-
-    // O(n) Demo
-    echo "3. O(n) - Linear Time:\n";
-    $nums = range(1, 1000);
-    $start = hrtime(true);
-    $sum = sumArray($nums);
-    $time = (hrtime(true) - $start) / 1_000_000;
-    echo "   Sum 1000 numbers: {$time} ms\n";
-    echo "   Result: {$sum}\n\n";
-
-    // O(n log n) Demo
-    echo "4. O(n log n) - Linearithmic Time:\n";
-    $unsorted = range(1, 100);
-    shuffle($unsorted);
-    $start = hrtime(true);
-    $sorted = mergeSort($unsorted);
-    $time = (hrtime(true) - $start) / 1_000_000;
-    echo "   Merge sort 100 elements: {$time} ms\n\n";
-
-    // O(n²) Demo
-    echo "5. O(n²) - Quadratic Time:\n";
-    $small = [64, 34, 25, 12, 22, 11, 90, 88, 45, 50];
-    bubbleSort($small);
-    echo "\n";
-
-    // Duplicate detection comparison
-    echo "6. O(n²) vs O(n) Comparison:\n";
-    $testArray = array_merge(range(1, 100), [50]); // Has duplicate
-    shuffle($testArray);
-
-    $start = hrtime(true);
-    $result1 = hasDuplicates_Slow($testArray);
-    $time1 = (hrtime(true) - $start) / 1_000_000;
-
-    $start = hrtime(true);
-    $result2 = hasDuplicates_Fast($testArray);
-    $time2 = (hrtime(true) - $start) / 1_000_000;
-
-    echo "   O(n²) approach: {$time1} ms\n";
-    echo "   O(n) approach:  {$time2} ms\n";
-    echo "   Speedup: " . round($time1 / max($time2, 0.001), 2) . "x\n\n";
-
-    // O(2^n) Demo
-    echo "7. O(2^n) - Exponential Time:\n";
-    echo "   Fibonacci comparison:\n";
-
-    for ($n = 5; $n <= 35; $n += 10) {
-        $start = hrtime(true);
-        $result1 = fibonacci_Slow($n);
-        $time1 = (hrtime(true) - $start) / 1_000_000;
-
-        $start = hrtime(true);
-        $result2 = fibonacci_Fast($n);
-        $time2 = (hrtime(true) - $start) / 1_000_000;
-
-        echo "   fib({$n}) - Slow: " . number_format($time1, 3) . " ms, ";
-        echo "Fast: " . number_format($time2, 3) . " ms ";
-        echo "(Speedup: " . round($time1 / max($time2, 0.001), 0) . "x)\n";
-    }
-    echo "\n";
-
-    // Growth comparison
-    demonstrateGrowth();
-
-    // Key takeaways
-    echo "=== Key Takeaways ===\n";
-    echo "• O(1): Best - always fast regardless of input size\n";
-    echo "• O(log n): Excellent - scales well even for huge inputs\n";
-    echo "• O(n): Good - acceptable for most applications\n";
-    echo "• O(n log n): Acceptable - best we can do for comparison sorting\n";
-    echo "• O(n²): Poor - avoid for large inputs (n > 10,000)\n";
-    echo "• O(2^n): Very Poor - only works for tiny inputs (n < 25)\n";
-    echo "• O(n!): Terrible - only works for very small inputs (n < 12)\n";
-}
+echo "Key takeaway: Choose the right algorithm for your data size!\n";

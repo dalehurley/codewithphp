@@ -1,12 +1,14 @@
 ---
-title: "Concurrent Algorithms"
+title: "31: Concurrent Algorithms"
 description: "Master concurrent and parallel algorithms in PHP using ReactPHP, Swoole, and ext-parallel for high-performance applications handling I/O-bound and CPU-intensive tasks"
 series: "php-algorithms"
 chapter: 31
 order: 31
-difficulty: "advanced"
-prerequisites: ["Data Structures", "Asynchronous Programming", "Multi-threading Concepts"]
+difficulty: "Advanced"
+prerequisites: []
 ---
+![Concurrent Algorithms](/images/php-algorithms/chapter-31-concurrent-algorithms-hero-full.webp)
+
 
 <div class="breadcrumbs">
   <a href="/">Home</a>
@@ -18,40 +20,63 @@ prerequisites: ["Data Structures", "Asynchronous Programming", "Multi-threading 
   <span>Chapter 31</span>
 </div>
 
-# Concurrent Algorithms <span class="difficulty-badge difficulty-advanced">Advanced</span>
+# 31: Concurrent Algorithms <span class="difficulty-badge difficulty-advanced">Advanced</span>
 
-## What You'll Learn
+## Overview
 
-Break free from PHP's traditional synchronous execution model and unlock massive performance gains through concurrency. Learn how to handle multiple operations simultaneously, dramatically reducing wait times for I/O and maximizing CPU utilization.
+Break free from PHP's traditional synchronous execution model and unlock massive performance gains through concurrency. This chapter teaches you how to handle multiple operations simultaneously, dramatically reducing wait times for I/O and maximizing CPU utilization.
+
+Concurrency allows multiple tasks to make progress simultaneously, dramatically improving performance for I/O-bound operations and CPU-intensive tasks. You'll discover how to transform sequential code that waits idly into concurrent code that maximizes resource utilization. We'll explore async/await patterns with ReactPHP, parallel processing with ext-parallel, and high-performance concurrent applications with Swoole coroutines.
+
+By the end of this chapter, you'll understand when and how to apply concurrent algorithms to solve real-world problems like web scraping, data processing, and high-performance web applications. You'll learn to design thread-safe concurrent data structures, avoid race conditions, and implement production-ready concurrent systems.
+
+## Prerequisites
+
+Before starting this chapter, you should have:
+
+- **Strong PHP fundamentals** - Comfortable with classes, closures, and error handling
+- **Data structures knowledge** - Understanding of queues, channels, and synchronization primitives
+- **Asynchronous concepts** - Basic understanding of non-blocking operations and callbacks
+- **Multi-threading awareness** - Familiarity with concurrency challenges and patterns
+
+**Estimated Time**: ~70 minutes
+
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- Async HTTP client with ReactPHP for concurrent API requests
+- Parallel data processor using ext-parallel for CPU-intensive tasks
+- Concurrent web scraper with rate limiting and error handling
+- Thread-safe concurrent data structures (queues, counters, hash maps)
+- Production-ready concurrent cache warmer with Swoole coroutines
+- Circuit breaker pattern implementation for resilient async operations
+- Worker pool pattern for parallel image processing
+- Deadlock detection and prevention mechanisms
+- Stress testing and property-based testing frameworks for concurrent code
+- Complete concurrent application examples with monitoring and health checks
+
+## Objectives
 
 - Master async/await patterns with ReactPHP for non-blocking I/O operations
 - Implement parallel processing with ext-parallel for CPU-intensive tasks
 - Build high-performance concurrent applications with Swoole coroutines
 - Design thread-safe concurrent data structures and avoid race conditions
+- Detect, prevent, and resolve deadlocks in concurrent systems
+- Test concurrent code effectively using stress testing and property-based testing
 - Apply concurrency patterns to real-world problems like web scraping and data processing
+- Implement production deployment strategies with monitoring and graceful shutdown
 
-**Estimated Time**: ~60 minutes
-
-## Prerequisites
-
-Concurrent programming requires solid foundations. Make sure you have:
-
-- [ ] **Strong PHP fundamentals** - Comfortable with classes, closures, and error handling
-- [ ] **Data structures knowledge** - Understanding of queues, channels, and synchronization primitives
-- [ ] **Asynchronous concepts** - Basic understanding of non-blocking operations and callbacks
-- [ ] **Multi-threading awareness** - Familiarity with concurrency challenges and patterns
-
-Ready to make your PHP applications handle 10x more work in the same time? Let's dive into concurrent programming!
-
-## Introduction
-
-Concurrency allows multiple tasks to make progress simultaneously, dramatically improving performance for I/O-bound operations and CPU-intensive tasks. This chapter explores concurrent algorithms in PHP, including async/await patterns, parallel processing, and concurrent data structures. You'll discover how to transform sequential code that waits idly into concurrent code that maximizes resource utilization.
-
-## Understanding Concurrency in PHP
+## Understanding Concurrency in PHP (~5 min)
 
 ### Traditional PHP vs. Concurrent PHP
 
 ```php
+# filename: traditional-synchronous.php
+<?php
+
+declare(strict_types=1);
+
 // Traditional synchronous approach
 function fetchMultipleUrls(array $urls): array {
     $results = [];
@@ -79,7 +104,7 @@ PHP offers several approaches:
 3. **Swoole/OpenSwoole** (coroutines)
 4. **Parallel Extension** (threading)
 
-## Async/Await with ReactPHP
+## Async/Await with ReactPHP (~15 min)
 
 ### Setting Up ReactPHP
 
@@ -90,6 +115,11 @@ composer require react/http react/promise
 ### Basic Promise Pattern
 
 ```php
+# filename: async-http.php
+<?php
+
+declare(strict_types=1);
+
 use React\EventLoop\Loop;
 use React\Promise\Promise;
 
@@ -140,6 +170,11 @@ Loop::run();
 ### Concurrent API Requests
 
 ```php
+# filename: concurrent-api-client.php
+<?php
+
+declare(strict_types=1);
+
 use React\EventLoop\Loop;
 use React\Http\Browser;
 use function React\Promise\all;
@@ -221,6 +256,11 @@ Loop::run();
 ### Advanced ReactPHP: Database Operations
 
 ```php
+# filename: async-database-client.php
+<?php
+
+declare(strict_types=1);
+
 use React\EventLoop\Loop;
 use React\MySQL\Factory;
 use React\MySQL\QueryResult;
@@ -323,6 +363,11 @@ Loop::run();
 ### Error Handling Patterns in ReactPHP
 
 ```php
+# filename: resilient-async-client.php
+<?php
+
+declare(strict_types=1);
+
 use React\EventLoop\Loop;
 use React\Promise\Promise;
 use function React\Promise\all;
@@ -418,6 +463,11 @@ Loop::run();
 ### Circuit Breaker Pattern
 
 ```php
+# filename: circuit-breaker.php
+<?php
+
+declare(strict_types=1);
+
 class CircuitBreaker {
     private const STATE_CLOSED = 'closed';
     private const STATE_OPEN = 'open';
@@ -502,7 +552,7 @@ for ($i = 0; $i < 10; $i++) {
 Loop::run();
 ```
 
-## Parallel Processing with ext-parallel
+## Parallel Processing with ext-parallel (~10 min)
 
 ### Installing Parallel Extension
 
@@ -513,6 +563,11 @@ pecl install parallel
 ### Basic Parallel Execution
 
 ```php
+# filename: parallel-processor.php
+<?php
+
+declare(strict_types=1);
+
 use parallel\{Runtime, Channel, Events};
 
 class ParallelProcessor {
@@ -585,6 +640,11 @@ echo "Sum: $sum\n";
 ### Worker Pool Pattern
 
 ```php
+# filename: worker-pool.php
+<?php
+
+declare(strict_types=1);
+
 class WorkerPool {
     private array $workers = [];
     private Channel $tasks;
@@ -693,7 +753,7 @@ while ($processed < count($images)) {
 $pool->shutdown();
 ```
 
-## Swoole Coroutines
+## Swoole Coroutines (~10 min)
 
 ### Setting Up Swoole
 
@@ -704,6 +764,11 @@ pecl install swoole
 ### Coroutine-Based Concurrency
 
 ```php
+# filename: swoole-async-client.php
+<?php
+
+declare(strict_types=1);
+
 use Swoole\Coroutine;
 use Swoole\Coroutine\Http\Client;
 
@@ -774,6 +839,11 @@ Coroutine::run(function () {
 ### Swoole Channel for Communication
 
 ```php
+# filename: producer-consumer.php
+<?php
+
+declare(strict_types=1);
+
 use Swoole\Coroutine;
 use Swoole\Coroutine\Channel;
 
@@ -835,11 +905,16 @@ Coroutine::run(function () {
 });
 ```
 
-## Concurrent Data Structures
+## Concurrent Data Structures (~5 min)
 
 ### Thread-Safe Queue
 
 ```php
+# filename: concurrent-queue.php
+<?php
+
+declare(strict_types=1);
+
 use Swoole\Coroutine\Channel;
 
 class ConcurrentQueue {
@@ -870,6 +945,11 @@ class ConcurrentQueue {
 ### Lock-Free Counter
 
 ```php
+# filename: concurrent-counter.php
+<?php
+
+declare(strict_types=1);
+
 use Swoole\Atomic;
 
 class ConcurrentCounter {
@@ -917,6 +997,11 @@ Coroutine::run(function () {
 ### Concurrent HashMap
 
 ```php
+# filename: concurrent-hashmap.php
+<?php
+
+declare(strict_types=1);
+
 use Swoole\Table;
 
 class ConcurrentHashMap {
@@ -951,11 +1036,16 @@ class ConcurrentHashMap {
 }
 ```
 
-## Real-World Examples
+## Real-World Examples (~10 min)
 
 ### 1. Concurrent Web Scraper
 
 ```php
+# filename: concurrent-scraper.php
+<?php
+
+declare(strict_types=1);
+
 use React\EventLoop\Loop;
 use React\Http\Browser;
 use function React\Promise\all;
@@ -1051,6 +1141,11 @@ Loop::run();
 ### 2. Parallel Data Processing Pipeline
 
 ```php
+# filename: parallel-pipeline.php
+<?php
+
+declare(strict_types=1);
+
 class ParallelPipeline {
     private WorkerPool $pool;
 
@@ -1119,6 +1214,11 @@ class ParallelPipeline {
 ### 3. Concurrent Cache Warmer
 
 ```php
+# filename: concurrent-cache-warmer.php
+<?php
+
+declare(strict_types=1);
+
 use Swoole\Coroutine;
 use Swoole\Coroutine\Http\Client;
 
@@ -1235,7 +1335,7 @@ echo "Speedup: " . ($sequential / $concurrent) . "x\n";
 // Speedup: 100x
 ```
 
-## Best Practices
+## Best Practices (~3 min)
 
 ### 1. Choose the Right Tool
 
@@ -1307,7 +1407,7 @@ foreach (range(1, 100) as $i) {
 }
 ```
 
-## Common Pitfalls
+## Common Pitfalls (~2 min)
 
 ### 1. Shared State
 
@@ -1361,26 +1461,699 @@ Coroutine::create(function () {
 });
 ```
 
-## Summary
+## Deadlocks: Detection and Prevention (~5 min)
 
-Concurrent algorithms dramatically improve performance for:
-- I/O-bound operations (API calls, file I/O)
-- CPU-intensive tasks (data processing, encoding)
-- Real-time applications (chat, notifications)
+Deadlocks occur when two or more processes are blocked forever, waiting for each other to release resources. Understanding deadlocks is crucial for building reliable concurrent systems.
+
+### Understanding Deadlocks
+
+A deadlock requires four conditions (Coffman conditions):
+1. **Mutual Exclusion** - Resources cannot be shared
+2. **Hold and Wait** - Process holds resources while waiting for others
+3. **No Preemption** - Resources cannot be forcibly taken
+4. **Circular Wait** - Circular chain of processes waiting for resources
+
+### Deadlock Example
+
+```php
+# filename: deadlock-example.php
+<?php
+
+declare(strict_types=1);
+
+use Swoole\Coroutine;
+use Swoole\Coroutine\Channel;
+
+class DeadlockExample {
+    private Channel $resourceA;
+    private Channel $resourceB;
+
+    public function __construct() {
+        $this->resourceA = new Channel(1);
+        $this->resourceB = new Channel(1);
+        
+        // Initialize resources
+        $this->resourceA->push('Resource A');
+        $this->resourceB->push('Resource B');
+    }
+
+    public function process1(): void {
+        Coroutine::create(function () {
+            echo "Process 1: Acquiring Resource A\n";
+            $this->resourceA->pop();  // Acquire A
+            
+            Coroutine::sleep(0.1);  // Simulate work
+            
+            echo "Process 1: Waiting for Resource B\n";
+            $this->resourceB->pop();  // Try to acquire B (DEADLOCK!)
+            
+            echo "Process 1: Got both resources\n";
+            
+            // Release resources
+            $this->resourceB->push('Resource B');
+            $this->resourceA->push('Resource A');
+        });
+    }
+
+    public function process2(): void {
+        Coroutine::create(function () {
+            echo "Process 2: Acquiring Resource B\n";
+            $this->resourceB->pop();  // Acquire B
+            
+            Coroutine::sleep(0.1);  // Simulate work
+            
+            echo "Process 2: Waiting for Resource A\n";
+            $this->resourceA->pop();  // Try to acquire A (DEADLOCK!)
+            
+            echo "Process 2: Got both resources\n";
+            
+            // Release resources
+            $this->resourceA->push('Resource A');
+            $this->resourceB->push('Resource B');
+        });
+    }
+}
+
+// This will deadlock!
+Coroutine::run(function () {
+    $example = new DeadlockExample();
+    $example->process1();
+    $example->process2();
+    
+    Coroutine::sleep(1);  // Wait - but processes are deadlocked
+});
+```
+
+### Deadlock Prevention Strategies
+
+#### 1. Lock Ordering
+
+Always acquire locks in the same order:
+
+```php
+# filename: deadlock-prevention-lock-ordering.php
+<?php
+
+declare(strict_types=1);
+
+use Swoole\Coroutine;
+use Swoole\Coroutine\Channel;
+
+class SafeResourceManager {
+    private Channel $resourceA;
+    private Channel $resourceB;
+
+    public function __construct() {
+        $this->resourceA = new Channel(1);
+        $this->resourceB = new Channel(1);
+        $this->resourceA->push('Resource A');
+        $this->resourceB->push('Resource B');
+    }
+
+    // Always acquire A before B
+    public function acquireResources(): array {
+        $a = $this->resourceA->pop();
+        $b = $this->resourceB->pop();
+        return [$a, $b];
+    }
+
+    public function releaseResources(string $a, string $b): void {
+        $this->resourceB->push($b);
+        $this->resourceA->push($a);
+    }
+}
+
+Coroutine::run(function () {
+    $manager = new SafeResourceManager();
+    
+    // Process 1: Acquires A then B
+    Coroutine::create(function () use ($manager) {
+        [$a, $b] = $manager->acquireResources();
+        echo "Process 1: Got both resources\n";
+        Coroutine::sleep(0.1);
+        $manager->releaseResources($a, $b);
+    });
+    
+    // Process 2: Also acquires A then B (same order - no deadlock!)
+    Coroutine::create(function () use ($manager) {
+        Coroutine::sleep(0.05);  // Start slightly later
+        [$a, $b] = $manager->acquireResources();
+        echo "Process 2: Got both resources\n";
+        Coroutine::sleep(0.1);
+        $manager->releaseResources($a, $b);
+    });
+    
+    Coroutine::sleep(0.5);
+});
+```
+
+#### 2. Timeout-Based Acquisition
+
+Use timeouts to detect and break potential deadlocks:
+
+```php
+# filename: deadlock-prevention-timeout.php
+<?php
+
+declare(strict_types=1);
+
+use Swoole\Coroutine;
+use Swoole\Coroutine\Channel;
+
+class TimeoutResourceManager {
+    private Channel $resourceA;
+    private Channel $resourceB;
+
+    public function __construct() {
+        $this->resourceA = new Channel(1);
+        $this->resourceB = new Channel(1);
+        $this->resourceA->push('Resource A');
+        $this->resourceB->push('Resource B');
+    }
+
+    public function acquireWithTimeout(Channel $resource, float $timeout): ?string {
+        $start = microtime(true);
+        
+        while (microtime(true) - $start < $timeout) {
+            $result = $resource->pop(0.1);  // Try with short timeout
+            if ($result !== false) {
+                return $result;
+            }
+        }
+        
+        return null;  // Timeout - potential deadlock detected
+    }
+
+    public function safeAcquire(float $timeout = 1.0): ?array {
+        $a = $this->acquireWithTimeout($this->resourceA, $timeout);
+        if ($a === null) {
+            return null;  // Failed to acquire A
+        }
+        
+        $b = $this->acquireWithTimeout($this->resourceB, $timeout);
+        if ($b === null) {
+            // Release A if we can't get B
+            $this->resourceA->push($a);
+            return null;
+        }
+        
+        return [$a, $b];
+    }
+}
+```
+
+#### 3. Single Resource Acquisition
+
+Acquire all resources atomically:
+
+```php
+# filename: deadlock-prevention-atomic.php
+<?php
+
+declare(strict_types=1);
+
+use Swoole\Coroutine;
+use Swoole\Coroutine\Channel;
+
+class AtomicResourceManager {
+    private Channel $bothResources;  // Single channel for both resources
+
+    public function __construct() {
+        $this->bothResources = new Channel(1);
+        $this->bothResources->push(['Resource A', 'Resource B']);
+    }
+
+    public function acquireBoth(): ?array {
+        return $this->bothResources->pop(1.0);  // Timeout prevents infinite wait
+    }
+
+    public function releaseBoth(array $resources): void {
+        $this->bothResources->push($resources);
+    }
+}
+```
+
+### Deadlock Detection
+
+For complex systems, implement deadlock detection:
+
+```php
+# filename: deadlock-detection.php
+<?php
+
+declare(strict_types=1);
+
+class DeadlockDetector {
+    private array $waitGraph = [];  // Process -> [Resources waiting for]
+    private array $holdGraph = [];  // Process -> [Resources holding]
+
+    public function addWait(string $process, string $resource): void {
+        if (!isset($this->waitGraph[$process])) {
+            $this->waitGraph[$process] = [];
+        }
+        $this->waitGraph[$process][] = $resource;
+    }
+
+    public function addHold(string $process, string $resource): void {
+        if (!isset($this->holdGraph[$process])) {
+            $this->holdGraph[$process] = [];
+        }
+        $this->holdGraph[$process][] = $resource;
+    }
+
+    public function detectDeadlock(): ?array {
+        // Build wait-for graph
+        $waitFor = [];
+        foreach ($this->waitGraph as $process => $waitingFor) {
+            foreach ($waitingFor as $resource) {
+                // Find who holds this resource
+                foreach ($this->holdGraph as $holder => $held) {
+                    if (in_array($resource, $held)) {
+                        if (!isset($waitFor[$process])) {
+                            $waitFor[$process] = [];
+                        }
+                        $waitFor[$process][] = $holder;
+                    }
+                }
+            }
+        }
+
+        // Detect cycles using DFS
+        return $this->findCycle($waitFor);
+    }
+
+    private function findCycle(array $graph): ?array {
+        $visited = [];
+        $recStack = [];
+
+        foreach (array_keys($graph) as $node) {
+            if (!isset($visited[$node])) {
+                $cycle = $this->dfs($graph, $node, $visited, $recStack, []);
+                if ($cycle !== null) {
+                    return $cycle;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private function dfs(array $graph, string $node, array &$visited, array &$recStack, array $path): ?array {
+        $visited[$node] = true;
+        $recStack[$node] = true;
+        $path[] = $node;
+
+        if (isset($graph[$node])) {
+            foreach ($graph[$node] as $neighbor) {
+                if (!isset($visited[$neighbor])) {
+                    $cycle = $this->dfs($graph, $neighbor, $visited, $recStack, $path);
+                    if ($cycle !== null) {
+                        return $cycle;
+                    }
+                } elseif (isset($recStack[$neighbor]) && $recStack[$neighbor]) {
+                    // Found cycle
+                    $cycleStart = array_search($neighbor, $path);
+                    return array_slice($path, $cycleStart);
+                }
+            }
+        }
+
+        $recStack[$node] = false;
+        return null;
+    }
+}
+
+// Usage
+$detector = new DeadlockDetector();
+$detector->addHold('P1', 'R1');
+$detector->addWait('P1', 'R2');
+$detector->addHold('P2', 'R2');
+$detector->addWait('P2', 'R1');
+
+$cycle = $detector->detectDeadlock();
+if ($cycle !== null) {
+    echo "Deadlock detected! Cycle: " . implode(' -> ', $cycle) . "\n";
+}
+```
+
+## Testing Concurrent Code (~5 min)
+
+Testing concurrent code is challenging because bugs are non-deterministic. Race conditions may only appear under specific timing conditions, making them hard to reproduce and fix.
+
+### Challenges in Testing Concurrent Code
+
+1. **Non-deterministic behavior** - Same test may pass or fail randomly
+2. **Timing-dependent bugs** - Bugs only appear with specific timing
+3. **Heisenbugs** - Bugs disappear when you try to observe them
+4. **Difficult reproduction** - Hard to recreate failure conditions
+
+### Stress Testing
+
+Run concurrent operations many times to increase chance of detecting race conditions:
+
+```php
+# filename: stress-test-concurrent.php
+<?php
+
+declare(strict_types=1);
+
+use Swoole\Coroutine;
+use Swoole\Atomic;
+
+class ConcurrentCounterStressTest {
+    private Atomic $counter;
+    private int $iterations;
+    private int $coroutines;
+
+    public function __construct(int $iterations = 10000, int $coroutines = 100) {
+        $this->counter = new Atomic(0);
+        $this->iterations = $iterations;
+        $this->coroutines = $coroutines;
+    }
+
+    public function run(): array {
+        $start = microtime(true);
+        $errors = [];
+
+        Coroutine::run(function () use (&$errors) {
+            for ($i = 0; $i < $this->coroutines; $i++) {
+                Coroutine::create(function () use (&$errors) {
+                    for ($j = 0; $j < $this->iterations / $this->coroutines; $j++) {
+                        $old = $this->counter->get();
+                        $this->counter->add(1);
+                        $new = $this->counter->get();
+                        
+                        // Verify atomicity
+                        if ($new !== $old + 1) {
+                            $errors[] = "Race condition detected: old=$old, new=$new";
+                        }
+                    }
+                });
+            }
+        });
+
+        $elapsed = microtime(true) - $start;
+        $final = $this->counter->get();
+        $expected = $this->iterations;
+
+        return [
+            'final_count' => $final,
+            'expected_count' => $expected,
+            'errors' => count($errors),
+            'error_messages' => array_slice($errors, 0, 10),  // First 10 errors
+            'elapsed_time' => $elapsed,
+            'success' => $final === $expected && count($errors) === 0
+        ];
+    }
+}
+
+// Run stress test
+$test = new ConcurrentCounterStressTest(100000, 100);
+$result = $test->run();
+
+echo "Stress Test Results:\n";
+echo "Final count: {$result['final_count']}\n";
+echo "Expected: {$result['expected_count']}\n";
+echo "Errors: {$result['errors']}\n";
+echo "Success: " . ($result['success'] ? 'YES' : 'NO') . "\n";
+```
+
+### Property-Based Testing
+
+Test invariants that should always hold:
+
+```php
+# filename: property-based-test.php
+<?php
+
+declare(strict_types=1);
+
+use Swoole\Coroutine;
+use Swoole\Coroutine\Channel;
+
+class ConcurrentQueuePropertyTest {
+    private Channel $queue;
+    private array $enqueued = [];
+    private array $dequeued = [];
+
+    public function __construct() {
+        $this->queue = new Channel(1000);
+    }
+
+    public function testOrdering(int $operations = 1000): bool {
+        // Property: Items dequeued should match order enqueued (FIFO)
+        
+        Coroutine::run(function () use ($operations) {
+            // Producer
+            Coroutine::create(function () use ($operations) {
+                for ($i = 0; $i < $operations; $i++) {
+                    $this->queue->push($i);
+                    $this->enqueued[] = $i;
+                }
+            });
+
+            // Consumer
+            Coroutine::create(function () use ($operations) {
+                for ($i = 0; $i < $operations; $i++) {
+                    $item = $this->queue->pop();
+                    $this->dequeued[] = $item;
+                }
+            });
+        });
+
+        Coroutine::sleep(2);  // Wait for completion
+
+        // Verify property: dequeued items match enqueued order
+        return $this->enqueued === $this->dequeued;
+    }
+
+    public function testNoLostItems(int $operations = 1000): bool {
+        // Property: All enqueued items should be dequeued
+        
+        $this->enqueued = [];
+        $this->dequeued = [];
+        
+        Coroutine::run(function () use ($operations) {
+            $producers = 10;
+            $consumers = 10;
+            
+            // Multiple producers
+            for ($p = 0; $p < $producers; $p++) {
+                Coroutine::create(function () use ($operations, $p, $producers) {
+                    $start = ($operations / $producers) * $p;
+                    $end = ($operations / $producers) * ($p + 1);
+                    
+                    for ($i = $start; $i < $end; $i++) {
+                        $this->queue->push($i);
+                        $this->enqueued[] = $i;
+                    }
+                });
+            }
+            
+            // Multiple consumers
+            for ($c = 0; $c < $consumers; $c++) {
+                Coroutine::create(function () use ($operations) {
+                    while (count($this->dequeued) < $operations) {
+                        $item = $this->queue->pop(1.0);
+                        if ($item !== false) {
+                            $this->dequeued[] = $item;
+                        }
+                    }
+                });
+            }
+        });
+
+        Coroutine::sleep(5);
+
+        // Verify property: all items accounted for
+        sort($this->enqueued);
+        sort($this->dequeued);
+        return count($this->enqueued) === count($this->dequeued) &&
+               $this->enqueued === $this->dequeued;
+    }
+}
+```
+
+### Race Condition Detection
+
+Implement checks to detect race conditions:
+
+```php
+# filename: race-condition-detector.php
+<?php
+
+declare(strict_types=1);
+
+class RaceConditionDetector {
+    private array $accessLog = [];
+    private array $violations = [];
+
+    public function logAccess(string $thread, string $resource, string $operation): void {
+        $this->accessLog[] = [
+            'thread' => $thread,
+            'resource' => $resource,
+            'operation' => $operation,
+            'time' => microtime(true)
+        ];
+    }
+
+    public function detectRaceConditions(): array {
+        // Group by resource
+        $resourceAccess = [];
+        foreach ($this->accessLog as $access) {
+            $resource = $access['resource'];
+            if (!isset($resourceAccess[$resource])) {
+                $resourceAccess[$resource] = [];
+            }
+            $resourceAccess[$resource][] = $access;
+        }
+
+        // Check for concurrent writes
+        foreach ($resourceAccess as $resource => $accesses) {
+            $writes = array_filter($accesses, fn($a) => $a['operation'] === 'write');
+            
+            if (count($writes) > 1) {
+                // Check if writes overlap in time
+                foreach ($writes as $i => $write1) {
+                    foreach (array_slice($writes, $i + 1) as $write2) {
+                        if ($this->overlaps($write1, $write2)) {
+                            $this->violations[] = [
+                                'type' => 'concurrent_write',
+                                'resource' => $resource,
+                                'thread1' => $write1['thread'],
+                                'thread2' => $write2['thread'],
+                                'time1' => $write1['time'],
+                                'time2' => $write2['time']
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+
+        return $this->violations;
+    }
+
+    private function overlaps(array $access1, array $access2): bool {
+        // Simplified: consider accesses within 1ms as overlapping
+        return abs($access1['time'] - $access2['time']) < 0.001;
+    }
+}
+
+// Usage in test
+$detector = new RaceConditionDetector();
+
+use Swoole\Coroutine;
+
+Coroutine::run(function () use ($detector) {
+    $shared = 0;
+    
+    for ($i = 0; $i < 10; $i++) {
+        Coroutine::create(function () use (&$shared, $detector, $i) {
+            $detector->logAccess("thread-$i", "shared", "read");
+            $value = $shared;
+            
+            Coroutine::sleep(0.001);
+            
+            $detector->logAccess("thread-$i", "shared", "write");
+            $shared = $value + 1;  // Race condition!
+        });
+    }
+    
+    Coroutine::sleep(0.1);
+    
+    $violations = $detector->detectRaceConditions();
+    if (count($violations) > 0) {
+        echo "Race conditions detected: " . count($violations) . "\n";
+    }
+});
+```
+
+### Deterministic Testing with Controlled Scheduling
+
+For ReactPHP, you can control the event loop timing:
+
+```php
+# filename: deterministic-test.php
+<?php
+
+declare(strict_types=1);
+
+use React\EventLoop\Loop;
+use React\Promise\Promise;
+
+class DeterministicConcurrentTest {
+    public function testOrdering(): bool {
+        $results = [];
+        $promises = [];
+
+        // Create promises in controlled order
+        for ($i = 0; $i < 10; $i++) {
+            $promises[] = new Promise(function ($resolve) use ($i, &$results) {
+                Loop::addTimer(0.001 * $i, function () use ($resolve, $i, &$results) {
+                    $results[] = $i;
+                    $resolve($i);
+                });
+            });
+        }
+
+        // Wait for all
+        \React\Promise\all($promises)->then(function () use (&$results) {
+            // Results should be in order due to controlled timing
+            $expected = range(0, 9);
+            return $results === $expected;
+        });
+
+        Loop::run();
+
+        return $results === range(0, 9);
+    }
+}
+```
+
+### Best Practices for Testing Concurrent Code
+
+1. **Run tests multiple times** - Use loops to increase chance of catching bugs
+2. **Test with different concurrency levels** - Test with 1, 10, 100, 1000 concurrent operations
+3. **Verify invariants** - Check that properties always hold (no lost items, correct counts)
+4. **Use timeouts** - Prevent tests from hanging indefinitely
+5. **Log operations** - Record all operations to analyze failures
+6. **Test edge cases** - Empty queues, single item, maximum capacity
+7. **Monitor resource usage** - Check for memory leaks, connection leaks
+
+## Wrap-up
+
+Congratulations! You've completed the concurrent algorithms chapter. Here's what you've accomplished:
+
+- ✓ Mastered async/await patterns with ReactPHP for non-blocking I/O operations
+- ✓ Implemented parallel processing with ext-parallel for CPU-intensive tasks
+- ✓ Built high-performance concurrent applications with Swoole coroutines
+- ✓ Designed thread-safe concurrent data structures (queues, counters, hash maps)
+- ✓ Applied concurrency patterns to real-world problems (web scraping, data processing)
+- ✓ Implemented production deployment strategies with monitoring and graceful shutdown
+- ✓ Learned to detect, prevent, and resolve deadlocks
+- ✓ Mastered testing techniques for concurrent code (stress testing, property-based testing)
+- ✓ Learned to avoid race conditions and handle errors gracefully in concurrent code
 
 **Key Takeaways**:
-- Use ReactPHP for event-driven I/O
+- Use ReactPHP for event-driven I/O-bound operations
 - Use ext-parallel for CPU-bound parallelism
-- Use Swoole for high-performance web apps
-- Always limit concurrency
-- Protect shared state
-- Handle errors gracefully
+- Use Swoole for high-performance web applications
+- Always limit concurrency to prevent resource exhaustion
+- Protect shared state with atomic operations or channels
+- Handle errors gracefully with retries, fallbacks, and circuit breakers
 
-## Next Steps
+Concurrent algorithms dramatically improve performance for I/O-bound operations (API calls, file I/O), CPU-intensive tasks (data processing, encoding), and real-time applications (chat, notifications). The techniques you've learned can provide 10x to 100x performance improvements when applied correctly.
 
-- **Chapter 32: Probabilistic Algorithms** - Space-efficient approximate algorithms
-- **Chapter 27: Caching & Memoization** - Speed up repeated computations
-- **Chapter 29: Performance Optimization** - General optimization techniques
+## Further Reading
+
+- [ReactPHP Documentation](https://reactphp.org/) — Official ReactPHP documentation and examples
+- [Swoole Documentation](https://www.swoole.co.uk/docs) — Complete Swoole coroutine and server documentation
+- [ext-parallel Documentation](https://www.php.net/manual/en/book.parallel.php) — PHP parallel extension reference
+- [PHP Parallel Processing Guide](https://www.php.net/manual/en/book.pcntl.php) — Process control functions for PHP
+- [Concurrency Patterns](https://en.wikipedia.org/wiki/Concurrency_pattern) — Wikipedia article on common concurrency patterns
+- [Chapter 32: Probabilistic Algorithms](/series/php-algorithms/chapters/32-probabilistic-algorithms) — Space-efficient approximate algorithms
+- [Chapter 29: Performance Optimization](/series/php-algorithms/chapters/29-performance-optimization) — General optimization techniques
 
 ## Production Deployment Tips
 
@@ -1938,16 +2711,22 @@ echo "Concurrent: {$concurrentTime}s\n";   // ~1 second
 echo "Speedup: " . ($sequentialTime / $concurrentTime) . "x\n";  // ~20x
 ```
 
+
+<ChapterCheckbox 
+  seriesId="php-algorithms"
+  chapterId="31"
+  label="Concurrent Algorithms complete!"
+/>
 ## 💻 Code Samples
 
 All code examples from this chapter are available in the GitHub repository:
 
-**[View Chapter 31 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-31)**
+**[View Chapter 31 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/php-algorithms/chapter-31)**
 
 Clone the repository to run examples:
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
-cd codewithphp/code-samples/php-algorithms/chapter-31
+cd codewithphp/code/php-algorithms/chapter-31
 php 01-*.php
 ```
 

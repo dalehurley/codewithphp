@@ -1,45 +1,69 @@
 ---
-title: "Depth-First Search (DFS)"
+title: "22: Depth-First Search (DFS)"
 description: "Master Depth-First Search for graph traversal, exploring applications like cycle detection, topological sorting, connected components, and path finding"
 series: "php-algorithms"
 chapter: 22
 order: 22
-difficulty: "intermediate"
-prerequisites: ["Graph Representations", "Recursion Fundamentals", "Stacks & Queues"]
+difficulty: "Intermediate"
+prerequisites:
+  - "/series/php-algorithms/chapters/21-graph-representations"
+  - "/series/php-algorithms/chapters/03-recursion-fundamentals"
+  - "/series/php-algorithms/chapters/17-stacks-queues"
 ---
+![Depth-First Search (DFS)](/images/php-algorithms/chapter-22-depth-first-search-hero-full.webp)
 
 <div class="breadcrumbs">
   <a href="/">Home</a>
   <span class="breadcrumbs-separator">›</span>
-  <a href="/#choose-your-learning-path">Series</a>
+  <a href="/series">Series</a>
   <span class="breadcrumbs-separator">›</span>
-  <a href="/series/php-algorithms/">PHP Algorithms</a>
+  <a href="/series/php-algorithms">PHP Algorithms</a>
   <span class="breadcrumbs-separator">›</span>
   <span>Chapter 22</span>
 </div>
 
-# Depth-First Search (DFS) <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
+# 22: Depth-First Search (DFS)
 
-## What You'll Learn
+## Overview
+
+Depth-First Search is a fundamental graph traversal algorithm that explores as far as possible along each branch before backtracking—like exploring a maze by always taking the left-most unexplored path until you hit a dead end, then backtracking to try the next option. It's the foundation for many powerful graph algorithms and surprisingly elegant in its simplicity.
+
+In this chapter, you'll master both recursive and iterative implementations of DFS, understand how it explores graphs through backtracking, and apply it to solve real-world problems like cycle detection, path finding, topological sorting, and finding connected components. You'll build practical applications including a maze solver and a dependency resolver, gaining deep insight into one of computer science's most versatile algorithms.
+
+By the end of this chapter, you'll understand when DFS is the right choice over breadth-first search, how to optimize it for different graph structures, and how it forms the basis for advanced algorithms like strongly connected components detection.
+
+## Prerequisites
+
+Before starting this chapter, you should have:
+
+- Complete understanding of [graph representations](/series/php-algorithms/chapters/21-graph-representations) (Chapter 21)
+- Strong [recursion skills](/series/php-algorithms/chapters/03-recursion-fundamentals) (Chapter 3)
+- Knowledge of [stacks and queues](/series/php-algorithms/chapters/17-stacks-queues) (Chapter 17)
+- Familiarity with visited/seen tracking patterns
+
+**Estimated Time**: ~55 minutes
+
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- A complete DFS implementation class with both recursive and iterative versions
+- A path finder that discovers routes between vertices in graphs
+- A cycle detector for both directed and undirected graphs
+- A topological sort implementation for dependency resolution
+- A connected components finder for analyzing graph structure
+- A bridge detector for finding critical edges in networks
+- An articulation points detector for identifying critical nodes
+- A maze solver using depth-first exploration
+- A dependency resolver for package management scenarios
+
+## Objectives
 
 - Master the depth-first search algorithm for graph traversal
 - Implement both recursive and iterative DFS versions
 - Apply DFS to solve cycle detection, path finding, and connected components
 - Understand topological sorting with DFS
 - Build a maze solver using depth-first exploration
-
-**Estimated Time**: ~55 minutes
-
-## Prerequisites
-
-Before starting this chapter, you should have:
-
-- ✓ Complete understanding of graph representations (Chapter 21)
-- ✓ Strong recursion skills (Chapter 3)
-- ✓ Knowledge of stacks and queues (Chapter 17)
-- ✓ Familiarity with visited/seen tracking patterns
-
-Depth-First Search is a fundamental graph traversal algorithm that explores as far as possible along each branch before backtracking—like exploring a maze by always taking the left-most unexplored path until you hit a dead end, then backtracking to try the next option. It's the foundation for many powerful graph algorithms and surprisingly elegant in its simplicity.
 
 ## How DFS Works
 
@@ -64,7 +88,10 @@ Order: [0, 1, 2, 4, 3]
 Understanding DFS execution through detailed visualization:
 
 ```php
+# filename: dfs-visualizer.php
 <?php
+
+declare(strict_types=1);
 
 class DFSVisualizer
 {
@@ -216,7 +243,10 @@ Total vertices visited: 5
 Understanding recursion and backtracking:
 
 ```php
+# filename: dfs-call-stack-visualizer.php
 <?php
+
+declare(strict_types=1);
 
 class DFSCallStackVisualizer
 {
@@ -326,7 +356,10 @@ Visited: {0, 1, 3, 2}
 ## Recursive DFS Implementation
 
 ```php
+# filename: recursive-dfs.php
 <?php
+
+declare(strict_types=1);
 
 class DFS
 {
@@ -402,7 +435,10 @@ print_r($dfs->traverseAll($disconnected));  // [0, 1, 2, 3]
 Using an explicit stack instead of recursion.
 
 ```php
+# filename: iterative-dfs.php
 <?php
+
+declare(strict_types=1);
 
 class IterativeDFS
 {
@@ -476,7 +512,10 @@ print_r($dfs->traverseEager($graph, 0));  // [0, 1, 2, 4, 3]
 Finding a path between two vertices.
 
 ```php
+# filename: dfs-path-finder.php
 <?php
+
+declare(strict_types=1);
 
 class DFSPathFinder
 {
@@ -575,7 +614,10 @@ print_r($pathFinder->findAllPaths($graph, 0, 3));
 Detecting cycles in directed and undirected graphs.
 
 ```php
+# filename: cycle-detector.php
 <?php
+
+declare(strict_types=1);
 
 class CycleDetector
 {
@@ -681,7 +723,10 @@ echo $detector->hasCycleUndirected($undirectedCycle) ? "Cycle found\n" : "No cyc
 Ordering vertices in a Directed Acyclic Graph (DAG) such that for every edge u→v, u comes before v.
 
 ```php
+# filename: topological-sort.php
 <?php
+
+declare(strict_types=1);
 
 class TopologicalSort
 {
@@ -770,7 +815,10 @@ if ($order !== null) {
 Finding all connected components in an undirected graph.
 
 ```php
+# filename: connected-components.php
 <?php
+
+declare(strict_types=1);
 
 class ConnectedComponents
 {
@@ -856,7 +904,10 @@ echo "Are 0 and 3 connected? " . ($cc->areConnected($network, 0, 3) ? "Yes" : "N
 Recording discovery and finish times for each vertex.
 
 ```php
+# filename: dfs-timestamps.php
 <?php
+
+declare(strict_types=1);
 
 class DFSWithTimestamps
 {
@@ -952,12 +1003,208 @@ print_r($times['finish']);
 // [0 => 8, 1 => 4, 3 => 4, 2 => 6]
 ```
 
+## Bridge Detection (Cut Edges)
+
+Finding edges whose removal disconnects the graph. Bridges are critical edges in network analysis.
+
+```php
+# filename: bridge-detector.php
+<?php
+
+declare(strict_types=1);
+
+class BridgeDetector
+{
+    private array $visited = [];
+    private array $discoveryTime = [];
+    private array $lowTime = [];
+    private array $bridges = [];
+    private int $time = 0;
+
+    // Find all bridges in undirected graph
+    public function findBridges(array $graph): array
+    {
+        $this->visited = [];
+        $this->discoveryTime = [];
+        $this->lowTime = [];
+        $this->bridges = [];
+        $this->time = 0;
+
+        foreach (array_keys($graph) as $vertex) {
+            if (!isset($this->visited[$vertex])) {
+                $this->dfs($graph, $vertex, -1);
+            }
+        }
+
+        return $this->bridges;
+    }
+
+    private function dfs(array $graph, int $vertex, int $parent): void
+    {
+        $this->time++;
+        $this->discoveryTime[$vertex] = $this->time;
+        $this->lowTime[$vertex] = $this->time;
+        $this->visited[$vertex] = true;
+
+        foreach ($graph[$vertex] ?? [] as $neighbor) {
+            if ($neighbor === $parent) {
+                continue;  // Skip parent edge
+            }
+
+            if (!isset($this->visited[$neighbor])) {
+                // Tree edge - explore child
+                $this->dfs($graph, $neighbor, $vertex);
+
+                // Update low time: can we reach ancestor through child?
+                $this->lowTime[$vertex] = min(
+                    $this->lowTime[$vertex],
+                    $this->lowTime[$neighbor]
+                );
+
+                // Bridge found: if low time of child > discovery time of parent
+                // No back edge from subtree to ancestor
+                if ($this->lowTime[$neighbor] > $this->discoveryTime[$vertex]) {
+                    $this->bridges[] = [$vertex, $neighbor];
+                }
+            } else {
+                // Back edge - update low time
+                $this->lowTime[$vertex] = min(
+                    $this->lowTime[$vertex],
+                    $this->discoveryTime[$neighbor]
+                );
+            }
+        }
+    }
+}
+
+// Example - Network with bridges
+$network = [
+    0 => [1, 2],
+    1 => [0, 2],
+    2 => [0, 1, 3],
+    3 => [2, 4],
+    4 => [3]
+];
+
+$detector = new BridgeDetector();
+$bridges = $detector->findBridges($network);
+print_r($bridges);
+// [[2, 3], [3, 4]]
+// Edge 2-3 is a bridge (removing it disconnects 3,4 from rest)
+// Edge 3-4 is a bridge (removing it isolates vertex 4)
+```
+
+## Articulation Points (Cut Vertices)
+
+Finding vertices whose removal disconnects the graph. Critical nodes in network analysis.
+
+```php
+# filename: articulation-points.php
+<?php
+
+declare(strict_types=1);
+
+class ArticulationPointsDetector
+{
+    private array $visited = [];
+    private array $discoveryTime = [];
+    private array $lowTime = [];
+    private array $articulationPoints = [];
+    private int $time = 0;
+
+    // Find all articulation points in undirected graph
+    public function findArticulationPoints(array $graph): array
+    {
+        $this->visited = [];
+        $this->discoveryTime = [];
+        $this->lowTime = [];
+        $this->articulationPoints = [];
+        $this->time = 0;
+
+        foreach (array_keys($graph) as $vertex) {
+            if (!isset($this->visited[$vertex])) {
+                $children = 0;
+                $this->dfs($graph, $vertex, -1, $children);
+
+                // Root is articulation point if it has > 1 child
+                if ($children > 1) {
+                    $this->articulationPoints[] = $vertex;
+                }
+            }
+        }
+
+        return array_unique($this->articulationPoints);
+    }
+
+    private function dfs(
+        array $graph,
+        int $vertex,
+        int $parent,
+        int &$children
+    ): void {
+        $this->time++;
+        $this->discoveryTime[$vertex] = $this->time;
+        $this->lowTime[$vertex] = $this->time;
+        $this->visited[$vertex] = true;
+
+        foreach ($graph[$vertex] ?? [] as $neighbor) {
+            if ($neighbor === $parent) {
+                continue;
+            }
+
+            if (!isset($this->visited[$neighbor])) {
+                $children++;
+                $this->dfs($graph, $neighbor, $vertex, $children);
+
+                // Update low time
+                $this->lowTime[$vertex] = min(
+                    $this->lowTime[$vertex],
+                    $this->lowTime[$neighbor]
+                );
+
+                // Articulation point: if low time of child >= discovery time of parent
+                // No back edge from subtree to ancestor
+                if ($parent !== -1 && 
+                    $this->lowTime[$neighbor] >= $this->discoveryTime[$vertex]) {
+                    $this->articulationPoints[] = $vertex;
+                }
+            } else {
+                // Back edge
+                $this->lowTime[$vertex] = min(
+                    $this->lowTime[$vertex],
+                    $this->discoveryTime[$neighbor]
+                );
+            }
+        }
+    }
+}
+
+// Example - Social network with critical nodes
+$network = [
+    0 => [1],
+    1 => [0, 2, 3],
+    2 => [1],
+    3 => [1, 4],
+    4 => [3]
+];
+
+$detector = new ArticulationPointsDetector();
+$points = $detector->findArticulationPoints($network);
+print_r($points);
+// [1, 3]
+// Vertex 1 is critical (removing it disconnects 0 from rest)
+// Vertex 3 is critical (removing it disconnects 4 from rest)
+```
+
 ## Strongly Connected Components (Kosaraju's Algorithm)
 
 Finding strongly connected components in directed graphs.
 
 ```php
+# filename: strongly-connected-components.php
 <?php
+
+declare(strict_types=1);
 
 class StronglyConnectedComponents
 {
@@ -1076,7 +1323,10 @@ print_r($scc->findSCC($web));
 Comparing DFS performance across different graph types:
 
 ```php
+# filename: dfs-performance-analyzer.php
 <?php
+
+declare(strict_types=1);
 
 class DFSPerformanceAnalyzer
 {
@@ -1267,7 +1517,10 @@ Key Findings:
 Understanding when to use DFS vs BFS:
 
 ```php
+# filename: dfs-vs-bfs-comparison.php
 <?php
+
+declare(strict_types=1);
 
 class DFSvsBFSComparison
 {
@@ -1414,7 +1667,10 @@ BFS Order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 ### 1. Maze Solver
 
 ```php
+# filename: maze-solver.php
 <?php
+
+declare(strict_types=1);
 
 class MazeSolver
 {
@@ -1507,7 +1763,10 @@ print_r($path);
 ### 2. File System Directory Walker
 
 ```php
+# filename: directory-walker.php
 <?php
+
+declare(strict_types=1);
 
 class DirectoryWalker
 {
@@ -1548,7 +1807,10 @@ class DirectoryWalker
 ### 3. Dependency Resolver
 
 ```php
+# filename: dependency-resolver.php
 <?php
+
+declare(strict_types=1);
 
 class DependencyResolver
 {
@@ -1619,6 +1881,39 @@ print_r($order);
    - Stack for iterative DFS
    - Recursion stack for recursive DFS
 
+## Limitations
+
+While DFS is powerful, it's not always the best choice:
+
+1. **Doesn't Guarantee Shortest Path**
+   - DFS finds a path, but not necessarily the shortest
+   - Use BFS for shortest paths in unweighted graphs
+   - Use Dijkstra's algorithm for weighted graphs
+
+2. **Stack Overflow Risk**
+   - Deep graphs can cause recursion stack overflow
+   - Use iterative DFS for graphs with depth > 10,000
+   - Consider iterative deepening DFS (IDDFS) for very deep graphs
+
+3. **May Explore Unnecessary Paths**
+   - DFS explores entire branches even if solution is nearby
+   - Can be inefficient in wide, shallow search spaces
+   - BFS may be better when solutions are near the start
+
+4. **Not Optimal for Level-Order Problems**
+   - Problems requiring level-by-level processing favor BFS
+   - Examples: level-order tree traversal, shortest path problems
+
+5. **Memory Usage in Deep Graphs**
+   - Recursive DFS uses O(V) stack space in worst case
+   - Very deep graphs may exhaust available memory
+   - Iterative DFS with explicit stack has same space complexity
+
+6. **Requires Careful Visited Tracking**
+   - Missing visited checks cause infinite loops
+   - Must reset visited set between independent DFS calls
+   - Different visited strategies needed for different problems (e.g., all paths vs single path)
+
 ## Practice Exercises
 
 1. **Island Counting**
@@ -1641,17 +1936,173 @@ print_r($order);
    - Check if courses can be completed given prerequisites
    - Cycle detection in dependency graph
 
-## Key Takeaways
+## Troubleshooting
 
-- DFS explores as far as possible along each branch before backtracking
-- Can be implemented recursively (using call stack) or iteratively (using explicit stack)
-- Time complexity: O(V + E), Space complexity: O(V)
-- Essential for many graph problems: cycles, paths, components, topological sort
-- Maintains visited set to track explored vertices
-- Works on both directed and undirected graphs
-- Foundation for advanced algorithms like strongly connected components
-- Natural choice for problems requiring exhaustive exploration or backtracking
+### Error: "Maximum function nesting level reached"
 
+**Symptom**: `Fatal error: Maximum function nesting level of '256' reached`
+
+**Cause**: Deep recursion in recursive DFS implementation exceeds PHP's recursion limit
+
+**Solution**: 
+- Use iterative DFS instead of recursive DFS
+- Increase recursion limit (not recommended): `ini_set('xdebug.max_nesting_level', 1000);`
+- For very deep graphs, always prefer iterative implementation:
+
+```php
+// Use iterative DFS for deep graphs
+$dfs = new IterativeDFS();
+$result = $dfs->traverse($graph, $start);
+```
+
+### Problem: Infinite Loop in DFS
+
+**Symptom**: Algorithm runs forever, never terminates
+
+**Cause**: Missing visited check or not resetting visited set between calls
+
+**Solution**: Always check visited before recursing:
+
+```php
+// Correct
+foreach ($graph[$vertex] ?? [] as $neighbor) {
+    if (!isset($visited[$neighbor])) {  // Check visited
+        $this->dfs($graph, $neighbor, $visited);
+    }
+}
+
+// Wrong - causes infinite loop
+foreach ($graph[$vertex] ?? [] as $neighbor) {
+    $this->dfs($graph, $neighbor, $visited);  // No visited check!
+}
+```
+
+### Problem: DFS Doesn't Find Shortest Path
+
+**Symptom**: Path found by DFS is longer than expected
+
+**Cause**: DFS doesn't guarantee shortest paths - it finds any path
+
+**Solution**: 
+- Use BFS for shortest paths in unweighted graphs
+- Use Dijkstra's algorithm for weighted graphs
+- DFS is correct for problems that don't require shortest path (e.g., cycle detection, topological sort)
+
+### Problem: Stack Overflow in Recursive DFS
+
+**Symptom**: `Fatal error: Allowed memory size exhausted` or segmentation fault
+
+**Cause**: Very deep graph causes recursion stack to exceed available memory
+
+**Solution**:
+- Switch to iterative DFS implementation
+- For graphs with depth > 10,000, always use iterative DFS
+- Monitor graph depth before choosing recursive vs iterative
+
+```php
+// Check graph depth first
+$maxDepth = $this->estimateMaxDepth($graph, $start);
+if ($maxDepth > 10000) {
+    // Use iterative DFS
+    $dfs = new IterativeDFS();
+} else {
+    // Recursive DFS is fine
+    $dfs = new DFS();
+}
+```
+
+### Problem: Visited Set Not Reset Between Calls
+
+**Symptom**: Second DFS call doesn't visit vertices that should be visited
+
+**Cause**: Visited array persists between multiple DFS calls
+
+**Solution**: Always reset visited set at start of each traversal:
+
+```php
+public function traverse(array $graph, int $start): array
+{
+    $this->visited = [];  // Reset visited
+    $this->result = [];
+    $this->dfsRecursive($graph, $start);
+    return $this->result;
+}
+```
+
+### Problem: Wrong Order in Iterative DFS
+
+**Symptom**: Iterative DFS produces different order than recursive DFS
+
+**Cause**: Stack order differs from recursion order
+
+**Solution**: Reverse neighbors when pushing to stack to match recursive order:
+
+```php
+// To match recursive DFS order
+$neighbors = array_reverse($graph[$vertex] ?? []);
+foreach ($neighbors as $neighbor) {
+    $stack[] = $neighbor;
+}
+```
+
+### Problem: Cycle Detection Returns False Positives
+
+**Symptom**: Algorithm reports cycles in acyclic graphs
+
+**Cause**: Not distinguishing between directed and undirected graphs
+
+**Solution**: Use correct cycle detection method:
+
+```php
+// For directed graphs
+$detector = new CycleDetector();
+$hasCycle = $detector->hasCycleDirected($graph);
+
+// For undirected graphs
+$hasCycle = $detector->hasCycleUndirected($graph);
+
+// Don't mix them!
+```
+
+## Wrap-up
+
+Congratulations! You've mastered Depth-First Search, one of the most fundamental graph traversal algorithms. Here's what you've accomplished:
+
+- ✓ Implemented both recursive and iterative DFS versions
+- ✓ Built visualization tools to understand DFS execution and call stack behavior
+- ✓ Created a path finder that discovers routes between vertices
+- ✓ Developed cycle detection for both directed and undirected graphs
+- ✓ Implemented topological sorting for dependency resolution
+- ✓ Built a connected components finder for analyzing graph structure
+- ✓ Learned DFS with timestamps for edge classification
+- ✓ Implemented bridge detection to find critical edges in networks
+- ✓ Built articulation points detector to identify critical nodes
+- ✓ Implemented Kosaraju's algorithm for strongly connected components
+- ✓ Analyzed performance characteristics across different graph types
+- ✓ Compared DFS vs BFS to understand when to use each algorithm
+- ✓ Understood limitations and when DFS is not the optimal choice
+- ✓ Built practical applications: maze solver, directory walker, and dependency resolver
+- ✓ Understood complexity analysis: O(V + E) time, O(V) space
+
+You now have a deep understanding of how DFS explores graphs by going deep before backtracking, making it perfect for problems requiring exhaustive exploration, backtracking, or topological ordering. This foundation will serve you well as you tackle more advanced graph algorithms.
+
+## Further Reading
+
+- [Depth-First Search on GeeksforGeeks](https://www.geeksforgeeks.org/depth-first-search-or-dfs-for-a-graph/) — Comprehensive DFS tutorial with examples
+- [Topological Sorting Algorithm](https://www.geeksforgeeks.org/topological-sorting/) — Detailed explanation of topological sort using DFS
+- [Bridge Detection Algorithm](https://www.geeksforgeeks.org/bridge-in-a-graph/) — Finding critical edges using DFS
+- [Articulation Points Algorithm](https://www.geeksforgeeks.org/articulation-points-or-cut-vertices-in-a-graph/) — Finding critical vertices using DFS
+- [Strongly Connected Components](https://www.geeksforgeeks.org/strongly-connected-components/) — Kosaraju's algorithm explained
+- [Graph Traversal Visualization](https://visualgo.net/en/dfsbfs) — Interactive visualization of DFS and BFS
+- [Chapter 21: Graph Representations](/series/php-algorithms/chapters/21-graph-representations) — Review graph data structures
+- [Chapter 23: Breadth-First Search](/series/php-algorithms/chapters/23-breadth-first-search) — Next chapter covering BFS traversal
+- [Introduction to Algorithms (CLRS)](https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/) — Chapter 22 covers depth-first search in depth
+
+<ChapterCheckbox 
+  seriesId="php-algorithms"
+  chapterId="22"
+  label="Depth-First Search complete!"
+/>
 ## 💻 Code Samples
 
 All code examples from this chapter are available in the GitHub repository:

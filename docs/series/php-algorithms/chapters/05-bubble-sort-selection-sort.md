@@ -10,6 +10,8 @@ prerequisites:
   - "Familiarity with arrays and loops"
   - "Completion of Chapters 0-2"
 ---
+![05: Bubble Sort & Selection Sort](/images/php-algorithms/chapter-05-bubble-selection-sort-hero-full.webp)
+
 
 <div class="breadcrumbs">
   <a href="/">Home</a>
@@ -23,9 +25,15 @@ prerequisites:
 
 # Bubble Sort & Selection Sort <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
 
+## Overview
+
 Now that we understand algorithm complexity and how to benchmark performance, let's dive into our first sorting algorithms. We'll start with two simple but inefficient sorting algorithms: **Bubble Sort** and **Selection Sort**.
 
-While these algorithms aren't practical for large datasets, they're excellent learning tools that introduce fundamental sorting concepts.
+While these algorithms aren't practical for large datasets, they're excellent learning tools that introduce fundamental sorting concepts. You'll implement these algorithms from scratch, understand why they're O(n²), and learn optimization techniques that can dramatically improve performance on certain types of data.
+
+By the end of this chapter, you'll not only understand how sorting works at a fundamental level, but you'll also appreciate why modern sorting algorithms are necessary for real-world applications. You'll benchmark these algorithms against various dataset sizes and patterns, validating theoretical complexity analysis with real measurements.
+
+This hands-on experience will prepare you for more advanced sorting algorithms in upcoming chapters, where you'll see how clever techniques can reduce O(n²) complexity to O(n log n) or even O(n) in special cases.
 
 ## What You'll Learn
 
@@ -41,11 +49,23 @@ By the end of this chapter, you will:
 
 ## Prerequisites
 
-Before starting this chapter, ensure you have:
+Before starting this chapter, you should have:
 
-- ✓ Understanding of Big O notation *(60 mins from Chapter 1 if not done)*
+- ✓ Understanding of Big O notation *(60 mins from [Chapter 01](/series/php-algorithms/chapters/01-introduction-complexity-analysis) if not done)*
 - ✓ Familiarity with arrays and loops *(10 mins review if needed)*
-- ✓ Completion of Chapters 0-2 *(180 mins if not done)*
+- ✓ Completion of [Chapter 00](/series/php-algorithms/chapters/00-php-setup-primer), [Chapter 01](/series/php-algorithms/chapters/01-introduction-complexity-analysis), and [Chapter 02](/series/php-algorithms/chapters/02-benchmarking-profiling) *(180 mins if not done)*
+- **Estimated Time**: ~55-65 minutes
+
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- ✅ **Complete Bubble Sort implementation** with basic and optimized versions
+- ✅ **Selection Sort implementation** with visualization capabilities
+- ✅ **Performance benchmark suite** comparing algorithms across different data patterns
+- ✅ **Advanced variations** including Cocktail Shaker Sort and Comb Sort
+- ✅ **Real-world examples** sorting user data and finding top K elements
+- ✅ **Comprehensive test suite** validating algorithm correctness and complexity
 
 ## Quick Checklist
 
@@ -96,6 +116,11 @@ Continue until the array is sorted.
 ### Basic Implementation
 
 ```php
+# filename: bubble-sort-basic.php
+<?php
+
+declare(strict_types=1);
+
 function bubbleSort(array $arr): array
 {
     $n = count($arr);
@@ -118,7 +143,7 @@ function bubbleSort(array $arr): array
 // Test it
 $numbers = [64, 34, 25, 12, 22, 11, 90];
 print_r(bubbleSort($numbers));
-// Output: [11, 12, 22, 25, 34, 64, 90]
+// Output: Array ( [0] => 11 [1] => 12 [2] => 22 [3] => 25 [4] => 34 [5] => 64 [6] => 90 )
 ```
 
 ### Complexity Analysis
@@ -130,16 +155,23 @@ print_r(bubbleSort($numbers));
 
 - **Space Complexity:** O(1) - sorts in place
 
-**Why O(n²)?**
+::: info Why O(n²)?
+The nested loop structure creates quadratic complexity:
 - Outer loop runs n-1 times
 - Inner loop runs (n-1), (n-2), (n-3), ..., 1 times
 - Total comparisons: (n-1) + (n-2) + ... + 1 = n(n-1)/2 ≈ n²/2 → O(n²)
+:::
 
 ### Optimized Bubble Sort
 
 We can optimize by stopping early if no swaps occur (array is sorted):
 
 ```php
+# filename: bubble-sort-optimized.php
+<?php
+
+declare(strict_types=1);
+
 function bubbleSortOptimized(array $arr): array
 {
     $n = count($arr);
@@ -168,7 +200,45 @@ $sorted = [1, 2, 3, 4, 5];
 bubbleSortOptimized($sorted); // Only one pass needed!
 ```
 
-This optimization improves best-case complexity to **O(n)** when the array is already sorted.
+::: tip Optimization Impact
+This optimization improves best-case complexity to **O(n)** when the array is already sorted. This makes bubble sort surprisingly efficient for nearly-sorted data!
+:::
+
+### Algorithm Flow Diagram
+
+Here's a visual representation of how bubble sort works:
+
+```mermaid
+flowchart TB
+    Start[Start: Unsorted Array] --> Init[i = 0, swapped = true]
+    Init --> OuterCheck{i < n - 1?}
+    OuterCheck -->|No| Done[Done: Array Sorted!]
+    OuterCheck -->|Yes| ResetFlag[swapped = false]
+    ResetFlag --> InnerInit[j = 0]
+    InnerInit --> InnerCheck{j < n - i - 1?}
+    InnerCheck -->|No| CheckSwapped{Any swaps?}
+    InnerCheck -->|Yes| Compare{arr[j] > arr[j+1]?}
+    Compare -->|Yes| Swap[Swap arr[j] ↔ arr[j+1]]
+    Compare -->|No| NoSwap[No swap needed]
+    Swap --> SetFlag[swapped = true]
+    SetFlag --> IncrementJ[j++]
+    NoSwap --> IncrementJ
+    IncrementJ --> InnerCheck
+    CheckSwapped -->|No swaps| Done
+    CheckSwapped -->|Had swaps| IncrementI[i++]
+    IncrementI --> OuterCheck
+    
+    style Start fill:#e1f5ff
+    style Done fill:#d4edda
+    style Swap fill:#fff3cd
+    style Compare fill:#f8d7da
+```
+
+**Key points:**
+- **Outer loop** controls the number of passes (i)
+- **Inner loop** compares adjacent elements (j)
+- **Optimization**: Exit early if no swaps occur
+- Each pass guarantees one more element is in final position
 
 ### Visualizing Bubble Sort
 
@@ -247,6 +317,11 @@ Done!
 ### Implementation
 
 ```php
+# filename: selection-sort.php
+<?php
+
+declare(strict_types=1);
+
 function selectionSort(array $arr): array
 {
     $n = count($arr);
@@ -274,7 +349,7 @@ function selectionSort(array $arr): array
 // Test
 $numbers = [64, 25, 12, 22, 11];
 print_r(selectionSort($numbers));
-// Output: [11, 12, 22, 25, 64]
+// Output: Array ( [0] => 11 [1] => 12 [2] => 22 [3] => 25 [4] => 64 )
 ```
 
 ### Complexity Analysis
@@ -286,10 +361,52 @@ print_r(selectionSort($numbers));
 
 - **Space Complexity:** O(1) - sorts in place
 
-**Why always O(n²)?**
-- Always makes the same number of comparisons regardless of input
+::: warning No Optimization Possible
+Unlike bubble sort, selection sort always performs O(n²) comparisons regardless of input:
+- Always makes the same number of comparisons
 - No early exit optimization possible
 - Comparisons: (n-1) + (n-2) + ... + 1 = n(n-1)/2 → O(n²)
+
+However, it minimizes the number of **swaps** to O(n), making it useful when write operations are expensive.
+:::
+
+### Algorithm Flow Diagram
+
+Here's a visual representation of how selection sort works:
+
+```mermaid
+flowchart TB
+    Start[Start: Unsorted Array] --> Init[i = 0]
+    Init --> OuterCheck{i < n - 1?}
+    OuterCheck -->|No| Done[Done: Array Sorted!]
+    OuterCheck -->|Yes| SetMin[minIndex = i]
+    SetMin --> InnerInit[j = i + 1]
+    InnerInit --> InnerCheck{j < n?}
+    InnerCheck -->|No| CheckSwap{minIndex ≠ i?}
+    InnerCheck -->|Yes| Compare{arr[j] < arr[minIndex]?}
+    Compare -->|Yes| UpdateMin[minIndex = j]
+    Compare -->|No| Continue[Continue]
+    UpdateMin --> IncrementJ[j++]
+    Continue --> IncrementJ
+    IncrementJ --> InnerCheck
+    CheckSwap -->|Yes| Swap[Swap arr[i] ↔ arr[minIndex]]
+    CheckSwap -->|No| NoSwap[No swap needed]
+    Swap --> IncrementI[i++]
+    NoSwap --> IncrementI
+    IncrementI --> OuterCheck
+    
+    style Start fill:#e1f5ff
+    style Done fill:#d4edda
+    style Swap fill:#fff3cd
+    style Compare fill:#f8d7da
+    style UpdateMin fill:#fff3cd
+```
+
+**Key points:**
+- **Outer loop** moves the boundary between sorted/unsorted portions
+- **Inner loop** finds the minimum element in unsorted portion
+- Only **one swap per pass** (at most)
+- No early termination possible (always does all comparisons)
 
 ### Selection Sort with Visualization
 
@@ -360,9 +477,15 @@ foreach ($sizes as $size) {
 | **Stable?** | Yes | No |
 | **When to use** | Nearly sorted data | Minimize writes |
 
-**Stability** means equal elements maintain their relative order. This matters when sorting objects:
+::: info What is Stability?
+**Stability** means equal elements maintain their relative order after sorting. This matters when sorting objects by one field while preserving order from a previous sort:
 
 ```php
+# filename: stability-example.php
+<?php
+
+declare(strict_types=1);
+
 $students = [
     ['name' => 'Alice', 'score' => 85],
     ['name' => 'Bob', 'score' => 90],
@@ -371,13 +494,89 @@ $students = [
 
 // Stable sort: Alice stays before Charlie (both scored 85)
 // Unstable sort: Charlie might come before Alice
+
+// This matters when you sort by multiple fields:
+// 1. First sort by name (alphabetical)
+// 2. Then stable-sort by score
+// Result: Same scores appear in alphabetical order
+```
+
+Bubble sort is **stable** because it only swaps adjacent elements when needed. Selection sort is **unstable** because it can swap non-adjacent elements, disrupting the original order.
+:::
+
+### Memory Usage Comparison
+
+Both algorithms are **in-place**, meaning they sort the array without requiring significant extra memory:
+
+| Aspect | Bubble Sort | Selection Sort |
+|--------|-------------|----------------|
+| **Space complexity** | O(1) | O(1) |
+| **Extra variables** | 2-3 temp vars | 2 index vars |
+| **Recursion stack** | None | None |
+| **Memory efficient?** | ✅ Yes | ✅ Yes |
+
+::: info Why Memory Matters
+In-place sorting is crucial for:
+- **Memory-constrained environments** (embedded systems, mobile devices)
+- **Large datasets** that barely fit in RAM
+- **Real-time systems** where memory allocation is expensive
+- **Systems with fragmented memory** where large allocations fail
+
+Both bubble and selection sort excel here, unlike merge sort which requires O(n) extra space.
+:::
+
+```php
+# filename: memory-comparison.php
+<?php
+
+declare(strict_types=1);
+
+// Demonstrate memory efficiency
+$largeArray = range(1, 100000);
+shuffle($largeArray);
+
+// These sorts modify the array in-place
+$memoryBefore = memory_get_usage();
+bubbleSort($largeArray); // Or selectionSort()
+$memoryAfter = memory_get_usage();
+
+echo "Memory used: " . ($memoryAfter - $memoryBefore) . " bytes\n";
+// Output: ~0-100 bytes (just a few temporary variables)
+
+// Compare to merge sort which would need ~800KB for the same array
 ```
 
 ## Practical Applications
 
+::: tip When to Use Built-in `sort()`
+For production code, **always use PHP's built-in `sort()`** function instead of implementing your own:
+
+```php
+# filename: use-builtin-sort.php
+<?php
+
+$numbers = [64, 34, 25, 12, 22, 11, 90];
+
+// ✅ Production: Use built-in (uses optimized C implementation)
+sort($numbers); // Typically uses Quicksort or Timsort
+
+// ❌ Don't implement your own unless:
+// - Learning/educational purposes
+// - Special sorting requirements
+// - Custom comparison logic not supported by built-ins
+```
+
+The examples in this chapter are for **learning** how algorithms work, not for production use!
+:::
+
 ### When Bubble Sort Is Okay
 
 ```php
+# filename: bubble-sort-use-cases.php
+<?php
+
+declare(strict_types=1);
+
 // Tiny array - bubble sort is fine
 function sortThreeNumbers(int $a, int $b, int $c): array
 {
@@ -427,6 +626,64 @@ $scores = [45, 92, 67, 88, 71, 95, 53];
 print_r(findTopK($scores, 3)); // [95, 92, 88]
 ```
 
+### When NOT to Use These Algorithms
+
+::: danger Avoid for Large Datasets
+**Never use Bubble Sort or Selection Sort for:**
+
+❌ **Arrays larger than 100 elements** — O(n²) becomes painfully slow
+- 100 elements: ~10,000 operations
+- 1,000 elements: ~1,000,000 operations  
+- 10,000 elements: ~100,000,000 operations (minutes to complete!)
+
+❌ **Performance-critical code paths** — Use optimized algorithms instead
+
+❌ **Production sorting** — PHP's built-in functions are 10-100x faster
+
+❌ **Large objects or complex data** — Each swap is expensive
+
+❌ **Parallel/concurrent sorting** — Not parallelizable due to sequential nature
+
+❌ **Real-time applications** — Unpredictable performance on random data
+:::
+
+**Example of bad usage:**
+
+```php
+# filename: bad-usage-example.php
+<?php
+
+declare(strict_types=1);
+
+// ❌ BAD: Sorting large database result set
+$customers = $database->query("SELECT * FROM customers")->fetchAll();
+// 10,000 records
+
+$start = microtime(true);
+$sorted = bubbleSort($customers); // Takes 30+ seconds! ⏱️
+$time = microtime(true) - $start;
+echo "Bubble sort: {$time}s\n"; // 30+ seconds
+
+// ✅ GOOD: Use built-in sort with custom comparator
+$start = microtime(true);
+usort($customers, fn($a, $b) => $a['name'] <=> $b['name']);
+$time = microtime(true) - $start;
+echo "PHP usort: {$time}s\n"; // ~0.05 seconds (600x faster!)
+```
+
+**Why built-in functions are faster:**
+- Written in C (compiled, not interpreted)
+- Use optimized algorithms (Quicksort/Timsort hybrid)
+- Cache-friendly memory access patterns
+- Decades of performance tuning
+
+**When to use bubble/selection sort:**
+- ✅ Educational purposes (learning how sorting works)
+- ✅ Tiny arrays (< 10 elements) where simplicity matters
+- ✅ Nearly-sorted data (bubble sort optimized only)
+- ✅ Embedded systems with extreme memory constraints
+- ✅ Technical interviews to demonstrate understanding
+
 ## Real-World Example: Sorting User Data
 
 ```php
@@ -468,45 +725,121 @@ foreach ($sorted as $user) {
 }
 ```
 
-## Common Mistakes to Avoid
+## Quick Decision Guide
 
-### Mistake 1: Off-by-One Errors
+Use this flowchart to choose the right sorting approach:
 
-```php
-// Wrong: goes out of bounds
-for ($j = 0; $j < $n; $j++) { // Should be $n - 1
-    if ($arr[$j] > $arr[$j + 1]) { // $j + 1 can exceed bounds!
+```mermaid
+flowchart TD
+    Start{What's your array size?}
+    Start -->|> 100 elements| UseBuiltIn[✅ Use PHP's sort/usort]
+    Start -->|< 100 elements| CheckPattern{What's your priority?}
+    
+    CheckPattern -->|Production code| UseBuiltIn2[✅ Use PHP's sort anyway!]
+    CheckPattern -->|Learning/Educational| Continue{Data characteristics?}
+    CheckPattern -->|Interview/Demo| Continue
+    
+    Continue -->|Nearly sorted| BubbleOpt[✅ Bubble Sort Optimized<br/>O n best case]
+    Continue -->|Need stability?| BubbleStable[✅ Bubble Sort<br/>Stable algorithm]
+    Continue -->|Minimize writes?| Selection[✅ Selection Sort<br/>O n swaps only]
+    Continue -->|Random data| Either[Either works<br/>Both O n² anyway]
+    
+    UseBuiltIn --> WhyBuiltIn[Why? 10-100x faster<br/>Written in C<br/>Battle-tested]
+    UseBuiltIn2 --> WhyBuiltIn
+    
+    style BubbleOpt fill:#d4edda
+    style BubbleStable fill:#d4edda
+    style Selection fill:#d4edda
+    style Either fill:#fff3cd
+    style UseBuiltIn fill:#cce5ff
+    style UseBuiltIn2 fill:#cce5ff
 ```
 
-### Mistake 2: Forgetting to Return
+### Decision Table Summary
+
+| Scenario | Best Choice | Reason |
+|----------|-------------|--------|
+| **Array > 100 elements** | PHP `sort()` | Much faster, optimized |
+| **Production code** | PHP `sort()` / `usort()` | Reliable, tested, fast |
+| **Nearly sorted data** | Bubble Sort (optimized) | O(n) best case |
+| **Need stability** | Bubble Sort | Maintains relative order |
+| **Minimize writes** | Selection Sort | Only O(n) swaps |
+| **Random small array** | Either (or built-in) | Both O(n²) anyway |
+| **Learning/Teaching** | Both | Understand fundamentals |
+| **Memory constrained** | Either | Both O(1) space |
+
+## Common Mistakes to Avoid
+
+::: danger Off-by-One Errors
+One of the most common bugs in sorting algorithms:
 
 ```php
-// Wrong: modifies in place but doesn't return
+# filename: mistake-off-by-one.php
+<?php
+
+// ❌ Wrong: goes out of bounds
+for ($j = 0; $j < $n; $j++) { // Should be $n - 1
+    if ($arr[$j] > $arr[$j + 1]) { // $j + 1 can exceed bounds!
+        // This will cause: "Undefined array key" error
+    }
+}
+
+// ✅ Correct: stop before the last element
+for ($j = 0; $j < $n - 1; $j++) {
+    if ($arr[$j] > $arr[$j + 1]) {
+        [$arr[$j], $arr[$j + 1]] = [$arr[$j + 1], $arr[$j]];
+    }
+}
+```
+
+Always remember: when comparing `$arr[$j]` with `$arr[$j + 1]`, loop must stop at `$n - 1`.
+:::
+
+::: danger Forgetting to Return
+Arrays in PHP are passed by value, not reference:
+
+```php
+# filename: mistake-no-return.php
+<?php
+
+// ❌ Wrong: modifies in place but doesn't return
 function bubbleSort(array $arr): void
 {
     // ... sorting logic ...
-    // Forgot to return $arr!
+    // Changes are lost! PHP arrays are passed by value
 }
 
-// Correct:
+// ✅ Correct: return the modified array
 function bubbleSort(array $arr): array
 {
     // ... sorting logic ...
-    return $arr;
+    return $arr; // Return is required!
 }
-```
 
-### Mistake 3: Inefficient Swapping
+// Usage
+$numbers = [5, 2, 8];
+$sorted = bubbleSort($numbers); // Must capture return value
+```
+:::
+
+::: tip Modern PHP Swapping
+Use array destructuring for elegant swaps:
 
 ```php
-// Inefficient
+# filename: swapping-techniques.php
+<?php
+
+// Old way (still works)
 $temp = $arr[$i];
 $arr[$i] = $arr[$j];
 $arr[$j] = $temp;
 
-// Better: PHP's array destructuring
+// ✅ Modern PHP way: array destructuring (PHP 7.1+)
 [$arr[$i], $arr[$j]] = [$arr[$j], $arr[$i]];
+
+// This is cleaner, more readable, and equally fast
 ```
+:::
 
 ## Cocktail Shaker Sort (Bidirectional Bubble Sort)
 
@@ -971,94 +1304,241 @@ $benchmark->runComprehensiveTests();
 
 ## Practice Exercises
 
+Test your understanding with these hands-on challenges:
+
 ### Exercise 1: Descending Bubble Sort
 
-Modify bubble sort to sort in **descending** order:
+**Goal**: Modify bubble sort to sort in descending order instead of ascending.
+
+**Requirements**:
+- Create a function `bubbleSortDesc()` that sorts from largest to smallest
+- Use the same optimization technique (early termination)
+- Test with the array `[5, 2, 8, 1, 9]`
+
+**Validation**: 
 
 ```php
+# filename: exercise-01-descending-sort.php
+<?php
+
+declare(strict_types=1);
+
 function bubbleSortDesc(array $arr): array
 {
     // Your code here
 }
 
-echo implode(', ', bubbleSortDesc([5, 2, 8, 1, 9]));
-// Should output: 9, 8, 5, 2, 1
+// Test
+$result = bubbleSortDesc([5, 2, 8, 1, 9]);
+echo implode(', ', $result);
+```
+
+**Expected output:**
+```
+9, 8, 5, 2, 1
 ```
 
 <details>
-<summary>Solution</summary>
+<summary>💡 Click to see solution</summary>
 
 ```php
+# filename: solution-01-descending-sort.php
+<?php
+
+declare(strict_types=1);
+
 function bubbleSortDesc(array $arr): array
 {
     $n = count($arr);
 
     for ($i = 0; $i < $n - 1; $i++) {
+        $swapped = false;
+        
         for ($j = 0; $j < $n - $i - 1; $j++) {
-            // Change > to <
+            // Change > to < for descending order
             if ($arr[$j] < $arr[$j + 1]) {
                 [$arr[$j], $arr[$j + 1]] = [$arr[$j + 1], $arr[$j]];
+                $swapped = true;
             }
         }
+        
+        if (!$swapped) break;
     }
 
     return $arr;
 }
+
+// Test
+$result = bubbleSortDesc([5, 2, 8, 1, 9]);
+echo implode(', ', $result); // Output: 9, 8, 5, 2, 1
 ```
+
+**Key insight**: Simply flip the comparison operator from `>` to `<` to reverse the sort order.
 </details>
 
 ### Exercise 2: Count Swaps
 
-Modify bubble sort to count the number of swaps performed:
+**Goal**: Modify bubble sort to track and return the number of swaps performed.
+
+**Requirements**:
+- Return both the sorted array and swap count
+- Test with random, sorted, and reverse-sorted arrays
+- Compare swap counts between the three cases
+
+**Validation**:
 
 ```php
+# filename: exercise-02-count-swaps.php
+<?php
+
+declare(strict_types=1);
+
 function bubbleSortCountSwaps(array $arr): array
 {
     $swaps = 0;
     // Your code here
-    echo "Swaps performed: $swaps\n";
-    return $arr;
+    return ['array' => $arr, 'swaps' => $swaps];
 }
+
+// Test
+$result = bubbleSortCountSwaps([5, 2, 8, 1, 9]);
+echo "Sorted: " . implode(', ', $result['array']) . "\n";
+echo "Swaps performed: {$result['swaps']}\n";
 ```
 
-### Exercise 3: Find Kth Smallest
-
-Use selection sort to find the Kth smallest element:
-
-```php
-function findKthSmallest(array $arr, int $k): int
-{
-    // Hint: You only need k passes of selection sort
-}
-
-echo findKthSmallest([7, 10, 4, 3, 20, 15], 3); // Should output: 7
+**Expected output:**
+```
+Sorted: 1, 2, 5, 8, 9
+Swaps performed: 6
 ```
 
 <details>
-<summary>Solution</summary>
+<summary>💡 Click to see solution</summary>
 
 ```php
+# filename: solution-02-count-swaps.php
+<?php
+
+declare(strict_types=1);
+
+function bubbleSortCountSwaps(array $arr): array
+{
+    $n = count($arr);
+    $swaps = 0;
+
+    for ($i = 0; $i < $n - 1; $i++) {
+        for ($j = 0; $j < $n - $i - 1; $j++) {
+            if ($arr[$j] > $arr[$j + 1]) {
+                [$arr[$j], $arr[$j + 1]] = [$arr[$j + 1], $arr[$j]];
+                $swaps++; // Increment counter
+            }
+        }
+    }
+
+    return ['array' => $arr, 'swaps' => $swaps];
+}
+
+// Test different patterns
+$patterns = [
+    'Random' => [5, 2, 8, 1, 9],
+    'Sorted' => [1, 2, 5, 8, 9],
+    'Reversed' => [9, 8, 5, 2, 1],
+];
+
+foreach ($patterns as $name => $data) {
+    $result = bubbleSortCountSwaps($data);
+    echo "{$name}: {$result['swaps']} swaps\n";
+}
+// Output:
+// Random: 6 swaps
+// Sorted: 0 swaps
+// Reversed: 10 swaps
+```
+
+**Key insight**: Reverse-sorted arrays require the maximum number of swaps (n(n-1)/2), while sorted arrays require zero.
+</details>
+
+### Exercise 3: Find Kth Smallest Element
+
+**Goal**: Use selection sort to efficiently find the Kth smallest element without fully sorting the array.
+
+**Requirements**:
+- Only perform K passes of selection sort (not full sort)
+- Return the Kth smallest element
+- Must work for K from 1 to n
+
+**Validation**:
+
+```php
+# filename: exercise-03-kth-smallest.php
+<?php
+
+declare(strict_types=1);
+
+function findKthSmallest(array $arr, int $k): int
+{
+    // Hint: You only need k passes of selection sort
+    // Your code here
+}
+
+// Test
+echo findKthSmallest([7, 10, 4, 3, 20, 15], 3); // Should output: 7
+echo "\n";
+echo findKthSmallest([7, 10, 4, 3, 20, 15], 1); // Should output: 3
+```
+
+**Expected output:**
+```
+7
+3
+```
+
+<details>
+<summary>💡 Click to see solution</summary>
+
+```php
+# filename: solution-03-kth-smallest.php
+<?php
+
+declare(strict_types=1);
+
 function findKthSmallest(array $arr, int $k): int
 {
     $n = count($arr);
 
+    // Only do k passes instead of n-1
     for ($i = 0; $i < $k; $i++) {
         $minIndex = $i;
 
+        // Find minimum in remaining portion
         for ($j = $i + 1; $j < $n; $j++) {
             if ($arr[$j] < $arr[$minIndex]) {
                 $minIndex = $j;
             }
         }
 
+        // Swap if needed
         if ($minIndex !== $i) {
             [$arr[$i], $arr[$minIndex]] = [$arr[$minIndex], $arr[$i]];
         }
     }
 
+    // After k passes, kth smallest is at position k-1
     return $arr[$k - 1];
 }
+
+// Test
+echo findKthSmallest([7, 10, 4, 3, 20, 15], 3); // Output: 7
+echo "\n";
+echo findKthSmallest([7, 10, 4, 3, 20, 15], 1); // Output: 3
+echo "\n";
+
+// After 3 passes: [3, 4, 7, 10, 20, 15]
+//                      ^
+//                   3rd smallest
 ```
+
+**Key insight**: This optimization reduces time complexity from O(n²) to O(k×n), which is much faster when k << n.
 </details>
 
 ## Key Takeaways
@@ -1070,15 +1550,82 @@ function findKthSmallest(array $arr, int $k): int
 - Use only for **small datasets** (< 100 elements)
 - Understanding these helps you appreciate better algorithms
 
-## What's Next
+## Wrap-up
 
-These simple sorts taught us the basics, but they're too slow for real-world use. In the next chapter, we'll learn **Insertion Sort and Merge Sort**—algorithms that are actually practical for larger datasets.
+Congratulations! You've completed Chapter 05. Here's what you accomplished:
+
+- ✅ **Implemented Bubble Sort** from scratch with both basic and optimized versions
+- ✅ **Mastered Selection Sort** and understood its unique characteristics
+- ✅ **Analyzed time complexity** of O(n²) algorithms with mathematical proofs
+- ✅ **Created visualization functions** to see how sorting works step-by-step
+- ✅ **Built benchmark suites** comparing algorithms across different data patterns
+- ✅ **Explored advanced variations** like Cocktail Shaker Sort and Comb Sort
+- ✅ **Understood stability** in sorting and why it matters
+- ✅ **Learned when to use** simple algorithms vs advanced alternatives
+- ✅ **Applied sorting concepts** to real-world problems like finding top K elements
+
+You now have a solid foundation in sorting algorithms and understand the fundamental trade-offs between simplicity and efficiency. This knowledge will make the more advanced sorting algorithms in the next chapters much easier to understand.
+
+::: tip What You Can Do Now
+- Sort small arrays efficiently with appropriate algorithms
+- Optimize bubble sort for nearly-sorted data
+- Choose between bubble sort and selection sort based on constraints
+- Benchmark and compare algorithm performance empirically
+- Explain time complexity with both theory and practical examples
+:::
+
+## Further Reading
+
+- [Sorting Algorithm - Wikipedia](https://en.wikipedia.org/wiki/Sorting_algorithm) — Comprehensive overview of all sorting algorithms
+- [Big-O Cheat Sheet](https://www.bigocheatsheet.com/) — Quick reference for algorithm complexities
+- [Visualgo: Sorting Algorithms](https://visualgo.net/en/sorting) — Interactive visualizations of sorting algorithms
+- [PHP Manual: Sorting Arrays](https://www.php.net/manual/en/array.sorting.php) — Built-in PHP sorting functions
+- [Stable Sorting Algorithms](https://en.wikipedia.org/wiki/Sorting_algorithm#Stability) — Deep dive into sorting stability
+- [Chapter 06: Insertion Sort & Merge Sort](/series/php-algorithms/chapters/06-insertion-sort-merge-sort) — Next chapter on more efficient sorting
+
+<ChapterCheckbox 
+  seriesId="php-algorithms"
+  chapterId="05"
+  label="Completed Bubble Sort & Selection Sort!"
+/>
+
+## What's Next: Leveling Up to O(n log n)
+
+You've mastered O(n²) sorting algorithms—congratulations! But there's a dramatic performance leap waiting in the next chapter.
+
+### Bridge to Chapter 06: Better Algorithms
+
+Here's what changes when we move beyond O(n²):
+
+| This Chapter (05) | Next Chapter (06) | Improvement |
+|-------------------|-------------------|-------------|
+| **Bubble Sort**: O(n²) | **Insertion Sort**: O(n²) but adaptive | ⚡ 10x faster on nearly-sorted data |
+| **Selection Sort**: Always O(n²) | **Merge Sort**: Always O(n log n) | 🚀 100x faster on 10,000 elements |
+| Simple nested loops | Divide-and-conquer strategy | 🧠 Powerful new paradigm |
+| Good for learning | Good for production | 💼 Real-world applicable |
+| 10,000 elements: 100M ops | 10,000 elements: 130K ops | ⚡ 770x improvement! |
+
+**The key difference**: O(n log n) algorithms like Merge Sort use **recursion and divide-and-conquer**—they split problems into smaller subproblems, solve them independently, and combine results. This strategy reduces 100 million operations to just 130,000!
+
+### What You'll Learn Next
+
+In **Chapter 06: Insertion Sort & Merge Sort**, you'll:
+
+1. **Insertion Sort** — Your first adaptive algorithm (speeds up on nearly-sorted data)
+2. **Merge Sort** — Your first O(n log n) algorithm (reliably fast on any data)
+3. **Divide-and-conquer** — A paradigm you'll use throughout the series
+4. **Stable sorting** — Why maintaining order matters for real applications
+5. **Recursive thinking** — Breaking problems down to solve them efficiently
+
+**Why this matters**: The jump from O(n²) to O(n log n) is one of the most important leaps in algorithm performance. Once you understand it, you'll never look at nested loops the same way!
+
+**Ready to level up?** → Continue to [Chapter 06: Insertion Sort & Merge Sort](/series/php-algorithms/chapters/06-insertion-sort-merge-sort)
 
 ## 💻 Code Samples
 
 All code examples from this chapter are available in the GitHub repository:
 
-**[View Chapter 05 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-05)**
+**[View Chapter 05 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/php-algorithms/chapter-05)**
 
 Files included:
 - `01-sorting-algorithms.php` - Complete sorting implementations including Bubble Sort (basic and optimized), Selection Sort, Cocktail Shaker Sort, visualizations, and performance benchmarks
@@ -1087,7 +1634,7 @@ Files included:
 Clone the repository to run the examples locally:
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
-cd codewithphp/code-samples/php-algorithms/chapter-05
+cd codewithphp/code/php-algorithms/chapter-05
 php 01-sorting-algorithms.php
 ```
 

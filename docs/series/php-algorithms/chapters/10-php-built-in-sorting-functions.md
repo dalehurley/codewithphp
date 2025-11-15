@@ -10,6 +10,8 @@ prerequisites:
   - "Completion of Chapters 05-09"
   - "Familiarity with PHP arrays"
 ---
+![10: PHP's Built-in Sorting Functions](/images/php-algorithms/chapter-10-php-builtin-sorting-hero-full.webp)
+
 
 <div class="breadcrumbs">
   <a href="/">Home</a>
@@ -880,6 +882,12 @@ function sortVersions(array $versions): array
 - **Pre-calculate** expensive values before sorting
 - Sorting is **in-place**—functions modify the array
 
+<ChapterCheckbox 
+  seriesId="php-algorithms"
+  chapterId="10"
+  label="Mastered PHP's built-in sorting functions!"
+/>
+
 ## What's Next
 
 Congratulations! You've completed the sorting algorithms section. In the next chapter, we'll move on to **Searching Algorithms**, starting with **Linear Search & Variants**.
@@ -888,17 +896,18 @@ Congratulations! You've completed the sorting algorithms section. In the next ch
 
 All code examples from this chapter are available in the GitHub repository:
 
-**[View Chapter 10 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-10)**
+**[View Chapter 10 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/php-algorithms/chapter-10)**
 
 Files included:
 - `01-basic-sorting-functions.php` - Demonstrates sort(), rsort(), asort(), arsort(), ksort(), krsort(), and natsort()
 - `02-custom-sorting-usort.php` - Custom comparators with usort(), uasort(), uksort() and best practices
+- `03-advanced-sorting-techniques.php` - Advanced topics: Intl Collator, SplFixedArray, shuffle(), mixed types, performance optimization
 - `README.md` - Complete documentation and usage guide
 
 Clone the repository to run the examples locally:
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
-cd codewithphp/code-samples/php-algorithms/chapter-10
+cd codewithphp/code/php-algorithms/chapter-10
 php 01-basic-sorting-functions.php
 ```
 

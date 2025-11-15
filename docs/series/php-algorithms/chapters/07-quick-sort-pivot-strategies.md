@@ -10,6 +10,8 @@ prerequisites:
   - "Understanding of Big O notation"
   - "Completion of Chapters 05-06"
 ---
+![07: Quick Sort & Pivot Strategies](/images/php-algorithms/chapter-07-quick-sort-hero-full.webp)
+
 
 <div class="breadcrumbs">
   <a href="/">Home</a>
@@ -887,6 +889,12 @@ function wiggleSort(array &$nums): void
 - Generally **faster than merge sort** in practice
 - Not stable, but cache-efficient
 
+<ChapterCheckbox 
+  seriesId="php-algorithms"
+  chapterId="07"
+  label="Completed Quick Sort & Pivot Strategies!"
+/>
+
 ## What's Next
 
 In the next chapter, we'll explore **Heap Sort & Priority Queues**, learning about the heap data structure and how to use it for efficient sorting and priority management.
@@ -895,7 +903,7 @@ In the next chapter, we'll explore **Heap Sort & Priority Queues**, learning abo
 
 All code examples from this chapter are available in the GitHub repository:
 
-**[View Chapter 07 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-07)**
+**[View Chapter 07 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/php-algorithms/chapter-07)**
 
 Files included:
 - `01-quick-sort-basic.php` - Basic quick sort implementation with visualization and performance analysis
@@ -907,7 +915,7 @@ Files included:
 Clone the repository to run the examples locally:
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
-cd codewithphp/code-samples/php-algorithms/chapter-07
+cd codewithphp/code/php-algorithms/chapter-07
 php 01-quick-sort-basic.php
 ```
 

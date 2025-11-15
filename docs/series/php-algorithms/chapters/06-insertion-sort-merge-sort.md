@@ -10,6 +10,8 @@ prerequisites:
   - "Completion of Chapter 05 (Bubble & Selection Sort)"
   - "Familiarity with recursion"
 ---
+![06: Insertion Sort & Merge Sort](/images/php-algorithms/chapter-06-insertion-merge-sort-hero-full.webp)
+
 
 <div class="breadcrumbs">
   <a href="/">Home</a>
@@ -23,7 +25,15 @@ prerequisites:
 
 # Insertion Sort & Merge Sort <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
 
-In this chapter, we'll explore two more sorting algorithms: **Insertion Sort**, which is simple and efficient for small arrays, and **Merge Sort**, our first O(n log n) sorting algorithm using divide-and-conquer.
+## Overview
+
+Now that you understand simple O(n²) sorting algorithms like Bubble Sort and Selection Sort, it's time to explore more efficient techniques. In this chapter, we'll dive into **Insertion Sort**—a surprisingly effective algorithm for small or nearly-sorted data—and **Merge Sort**—your first encounter with O(n log n) complexity using the powerful divide-and-conquer strategy.
+
+Insertion Sort might seem similar to Bubble Sort at first glance, but it has a crucial advantage: it's adaptive. When data is already sorted or nearly sorted, Insertion Sort runs in O(n) time, making it faster than even advanced algorithms in these scenarios. You'll learn why Insertion Sort is often used as a fallback in hybrid sorting implementations.
+
+Merge Sort introduces you to divide-and-conquer, a fundamental algorithmic paradigm you'll see throughout this series. Unlike Insertion Sort, Merge Sort guarantees O(n log n) performance regardless of input, making it reliable for large datasets. You'll understand why Merge Sort is stable, how it uses extra memory, and when its predictable performance makes it the right choice.
+
+By the end of this chapter, you'll have implemented both algorithms from scratch, compared their performance characteristics, and understood when to use each one. This knowledge sets the foundation for Quick Sort in the next chapter, where you'll see another divide-and-conquer approach with different trade-offs.
 
 ## What You'll Learn
 
@@ -41,9 +51,22 @@ By the end of this chapter, you will:
 
 Before starting this chapter, ensure you have:
 
-- ✓ Understanding of Big O notation *(60 mins from Chapter 1 if not done)*
-- ✓ Completion of Chapter 05 (Bubble & Selection Sort) *(55 mins if not done)*
-- ✓ Familiarity with recursion *(70 mins from Chapter 3 if not done)*
+- ✓ Understanding of Big O notation *(60 mins from [Chapter 01](/series/php-algorithms/chapters/01-introduction-complexity-analysis) if not done)*
+- ✓ Completion of [Chapter 05](/series/php-algorithms/chapters/05-bubble-sort-selection-sort) (Bubble & Selection Sort) *(55 mins if not done)*
+- ✓ Familiarity with recursion *(70 mins from [Chapter 03](/series/php-algorithms/chapters/03-recursion-fundamentals) if not done)*
+- **Estimated Time**: ~60-70 minutes
+
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- ✅ **Complete Insertion Sort implementation** with visualization and edge case handling
+- ✅ **Merge Sort implementation** using recursive divide-and-conquer approach
+- ✅ **Merge helper function** that efficiently combines two sorted arrays
+- ✅ **Performance comparison suite** benchmarking Insertion Sort vs Merge Sort across different data patterns
+- ✅ **Hybrid sorting optimization** combining Insertion Sort for small subarrays with Merge Sort
+- ✅ **Real-world applications** demonstrating when each algorithm excels
+- ✅ **Stability verification** testing stable sorting behavior with duplicate keys
 
 ## Quick Checklist
 
@@ -103,6 +126,11 @@ Imagine cards being picked one at a time from an unsorted pile and inserted into
 ### Implementation
 
 ```php
+# filename: insertion-sort.php
+<?php
+
+declare(strict_types=1);
+
 function insertionSort(array $arr): array
 {
     $n = count($arr);
@@ -165,6 +193,11 @@ Despite O(n²) complexity, insertion sort is excellent for:
 4. **Stable sorting** requirement
 
 ```php
+# filename: hybrid-sort.php
+<?php
+
+declare(strict_types=1);
+
 // Hybrid approach: Use insertion sort for small subarrays
 function smartSort(array $arr): array
 {
@@ -179,6 +212,11 @@ function smartSort(array $arr): array
 
 **1. Empty or Single Element Array**
 ```php
+# filename: edge-cases.php
+<?php
+
+declare(strict_types=1);
+
 insertionSort([]);        // Returns: []
 insertionSort([42]);      // Returns: [42]
 // No comparisons needed!
@@ -186,6 +224,11 @@ insertionSort([42]);      // Returns: [42]
 
 **2. Already Sorted Array (Best Case)**
 ```php
+# filename: best-case.php
+<?php
+
+declare(strict_types=1);
+
 $sorted = [1, 2, 3, 4, 5];
 // Only n comparisons, no shifts
 // Runs in O(n) time!
@@ -193,6 +236,11 @@ $sorted = [1, 2, 3, 4, 5];
 
 **3. Reverse Sorted Array (Worst Case)**
 ```php
+# filename: worst-case.php
+<?php
+
+declare(strict_types=1);
+
 $reversed = [5, 4, 3, 2, 1];
 // Each element requires maximum shifts
 // Total: n²/2 comparisons and shifts
@@ -200,6 +248,11 @@ $reversed = [5, 4, 3, 2, 1];
 
 **4. All Equal Elements**
 ```php
+# filename: equal-elements.php
+<?php
+
+declare(strict_types=1);
+
 $equal = [5, 5, 5, 5, 5];
 // n comparisons, no shifts
 // O(n) time - very efficient!
@@ -207,6 +260,11 @@ $equal = [5, 5, 5, 5, 5];
 
 **5. Array with Duplicates (Stability Test)**
 ```php
+# filename: stability-test.php
+<?php
+
+declare(strict_types=1);
+
 class Item {
     public function __construct(public int $value, public string $id) {}
 }
@@ -224,6 +282,11 @@ insertionSort($items);
 
 **6. Nearly Sorted Array with Few Swaps**
 ```php
+# filename: nearly-sorted.php
+<?php
+
+declare(strict_types=1);
+
 $nearlySorted = [1, 2, 3, 10, 5, 6, 7, 8, 9];
 // Only element 10 out of place
 // Very fast: ~O(n) performance
@@ -248,6 +311,11 @@ $nearlySorted = [1, 2, 3, 10, 5, 6, 7, 8, 9];
 ### Visualizing Insertion Sort
 
 ```php
+# filename: insertion-sort-visualized.php
+<?php
+
+declare(strict_types=1);
+
 function insertionSortVisualized(array $arr): array
 {
     $n = count($arr);
@@ -335,6 +403,11 @@ Visualize two sorted stacks of cards. Always compare the top cards from both sta
 ### Implementation
 
 ```php
+# filename: merge-sort.php
+<?php
+
+declare(strict_types=1);
+
 function mergeSort(array $arr): array
 {
     // Base case: array of 0 or 1 element is already sorted
@@ -438,6 +511,11 @@ print_r(mergeSort($numbers));
 
 **Memory Layout During Merge:**
 ```php
+# filename: memory-layout.php
+<?php
+
+declare(strict_types=1);
+
 // Merging [3, 27, 38, 43] and [9, 10, 82]
 // Needs temporary space:
 $left  = [3, 27, 38, 43];  // n/2 space
@@ -465,6 +543,11 @@ $result = [];               // n space (while building)
 
 **1. Empty or Single Element**
 ```php
+# filename: merge-sort-edge-cases.php
+<?php
+
+declare(strict_types=1);
+
 mergeSort([]);       // Returns: []
 mergeSort([42]);     // Returns: [42]
 // Base case - no division or merging needed
@@ -472,12 +555,22 @@ mergeSort([42]);     // Returns: [42]
 
 **2. Two Elements**
 ```php
+# filename: two-elements.php
+<?php
+
+declare(strict_types=1);
+
 mergeSort([5, 2]);   // Returns: [2, 5]
 // Minimal division: [5] | [2] → merge → [2, 5]
 ```
 
 **3. Already Sorted Array**
 ```php
+# filename: sorted-array.php
+<?php
+
+declare(strict_types=1);
+
 $sorted = [1, 2, 3, 4, 5];
 // Still O(n log n) - no shortcuts!
 // Always divides and merges, even if sorted
@@ -485,6 +578,11 @@ $sorted = [1, 2, 3, 4, 5];
 
 **4. Reverse Sorted Array**
 ```php
+# filename: reverse-sorted.php
+<?php
+
+declare(strict_types=1);
+
 $reversed = [5, 4, 3, 2, 1];
 // Also O(n log n) - same work as sorted
 // Merge sort doesn't care about initial order
@@ -492,6 +590,11 @@ $reversed = [5, 4, 3, 2, 1];
 
 **5. All Equal Elements**
 ```php
+# filename: equal-elements-merge.php
+<?php
+
+declare(strict_types=1);
+
 $equal = [5, 5, 5, 5, 5];
 // O(n log n) - still divides and merges
 // No optimizations for duplicates
@@ -499,6 +602,11 @@ $equal = [5, 5, 5, 5, 5];
 
 **6. Stability with Duplicates**
 ```php
+# filename: merge-sort-stability.php
+<?php
+
+declare(strict_types=1);
+
 class Item {
     public function __construct(public int $value, public string $id) {}
 }
@@ -534,6 +642,11 @@ mergeSort($items);
 ### Visualizing Merge Sort
 
 ```php
+# filename: merge-sort-visualized.php
+<?php
+
+declare(strict_types=1);
+
 function mergeSortVisualized(array $arr, int $depth = 0): array
 {
     $indent = str_repeat('  ', $depth);
@@ -599,6 +712,11 @@ mergeSortVisualized([38, 27, 43, 3]);
 ### Performance Benchmark Results
 
 ```php
+# filename: benchmark-comparison.php
+<?php
+
+declare(strict_types=1);
+
 require_once 'Benchmark.php';
 
 $bench = new Benchmark();
@@ -667,6 +785,11 @@ Is array size < 50?
 ### Insertion Sort: Real-World Use Case
 
 ```php
+# filename: insertion-sort-practical.php
+<?php
+
+declare(strict_types=1);
+
 // Sorting user posts by timestamp (nearly sorted data)
 class Post
 {
@@ -704,6 +827,11 @@ function sortRecentPosts(array $posts): array
 Merge sort is excellent for sorting data that doesn't fit in memory:
 
 ```php
+# filename: external-merge-sort.php
+<?php
+
+declare(strict_types=1);
+
 // Simplified external sort for large files
 function externalMergeSort(string $inputFile, string $outputFile): void
 {
@@ -730,6 +858,11 @@ function externalMergeSort(string $inputFile, string $outputFile): void
 ### Optimization 1: Use Insertion Sort for Small Subarrays
 
 ```php
+# filename: merge-sort-optimized.php
+<?php
+
+declare(strict_types=1);
+
 function mergeSortOptimized(array $arr): array
 {
     // Use insertion sort for small arrays
@@ -752,6 +885,11 @@ function mergeSortOptimized(array $arr): array
 ### Optimization 2: Skip Merge if Already Sorted
 
 ```php
+# filename: merge-sort-skip-merge.php
+<?php
+
+declare(strict_types=1);
+
 function mergeSortSkipMerge(array $arr): array
 {
     if (count($arr) <= 1) {
@@ -778,6 +916,11 @@ function mergeSortSkipMerge(array $arr): array
 Use merge sort to count inversions (pairs where i < j but arr[i] > arr[j]):
 
 ```php
+# filename: exercise-count-inversions.php
+<?php
+
+declare(strict_types=1);
+
 function countInversions(array $arr): int
 {
     // Your code here
@@ -792,6 +935,11 @@ echo countInversions([2, 4, 1, 3, 5]); // Should output: 3
 Merge k sorted arrays into one sorted array:
 
 ```php
+# filename: exercise-k-way-merge.php
+<?php
+
+declare(strict_types=1);
+
 function mergeKSortedArrays(array $arrays): array
 {
     // Your code here
@@ -811,6 +959,11 @@ print_r(mergeKSortedArrays($arrays));
 Implement merge sort for a linked list (bonus challenge):
 
 ```php
+# filename: exercise-linked-list-sort.php
+<?php
+
+declare(strict_types=1);
+
 class ListNode
 {
     public function __construct(
@@ -825,6 +978,470 @@ function sortList(?ListNode $head): ?ListNode
 }
 ```
 
+## Common Mistakes to Avoid
+
+::: danger Off-by-One Errors in Insertion Sort
+When shifting elements, it's easy to get the index wrong:
+
+```php
+# filename: mistake-off-by-one.php
+<?php
+
+declare(strict_types=1);
+
+// ❌ Wrong: might access negative index
+while ($j >= 0 && $arr[$j] > $key) {
+    $arr[$j + 1] = $arr[$j];
+    $j--; // Can go to -1, but condition prevents access
+}
+
+// ✅ Correct: always check bounds first
+while ($j >= 0 && $arr[$j] > $key) {
+    $arr[$j + 1] = $arr[$j];
+    $j--;
+}
+$arr[$j + 1] = $key; // Insert after loop, not inside
+```
+
+The key is inserted **after** the while loop completes, at position `$j + 1`.
+:::
+
+::: danger Forgetting Base Case in Merge Sort
+Merge Sort recursion must handle empty and single-element arrays:
+
+```php
+# filename: mistake-missing-base-case.php
+<?php
+
+declare(strict_types=1);
+
+// ❌ Wrong: infinite recursion on single element
+function mergeSort(array $arr): array
+{
+    $mid = (int)(count($arr) / 2); // Single element: mid = 0
+    $left = array_slice($arr, 0, 0); // Empty array
+    $right = array_slice($arr, 0); // Still has the element
+    // Recurses forever!
+}
+
+// ✅ Correct: base case stops recursion
+function mergeSort(array $arr): array
+{
+    if (count($arr) <= 1) {
+        return $arr; // Base case: already sorted
+    }
+    // ... rest of implementation
+}
+```
+
+Always check for base case **before** dividing the array.
+:::
+
+::: danger Memory Issues with Large Arrays
+Merge Sort creates new arrays, which can be problematic:
+
+```php
+# filename: mistake-memory.php
+<?php
+
+declare(strict_types=1);
+
+// ⚠️ Warning: Merge Sort uses O(n) extra space
+// For very large arrays (millions of elements), this can cause:
+// - Memory exhaustion
+// - Slower performance due to memory allocation overhead
+
+// Consider using in-place Quick Sort for very large datasets
+// or external sorting for files that don't fit in memory
+```
+
+For arrays larger than available memory, consider external sorting or Quick Sort.
+:::
+
+::: tip Stability Matters
+When sorting objects with equal keys, stable sorts preserve original order:
+
+```php
+# filename: stability-importance.php
+<?php
+
+declare(strict_types=1);
+
+class Student {
+    public function __construct(
+        public string $name,
+        public int $grade
+    ) {}
+}
+
+$students = [
+    new Student('Alice', 85),
+    new Student('Bob', 90),
+    new Student('Charlie', 85), // Same grade as Alice
+];
+
+// Both Insertion Sort and Merge Sort are stable
+// Alice will always come before Charlie after sorting by grade
+// This matters when you need consistent ordering
+```
+
+If you need stability, use Insertion Sort or Merge Sort, not Selection Sort or Quick Sort.
+:::
+
+## Interview Questions & Answers
+
+### Q1: When would you use Insertion Sort in production?
+
+**Answer:**
+Insertion Sort is actually used in production, unlike Bubble Sort:
+
+- **Small arrays** (< 50 elements) where overhead of advanced algorithms isn't worth it
+- **Nearly sorted data** where it achieves O(n) performance
+- **Hybrid sorting algorithms** as a fallback for small subarrays (used in Timsort, Introsort)
+- **Online sorting** when data arrives incrementally
+- **Stable sorting requirement** with O(1) space constraint
+- **Memory-constrained environments** where Merge Sort's O(n) space is prohibitive
+
+**Real-world example:** Many production sorting implementations (like Python's Timsort) use Insertion Sort for small subarrays.
+
+### Q2: Why is Merge Sort O(n log n) in all cases?
+
+**Answer:**
+Merge Sort always divides the array in half (log n levels) and merges all n elements at each level:
+
+```php
+# filename: interview-merge-complexity.php
+<?php
+
+declare(strict_types=1);
+
+// Merge Sort always does the same work:
+// 1. Divide: log₂(n) levels (8 elements → 3 levels)
+// 2. Merge: n elements processed at each level
+// 3. Total: log n × n = O(n log n)
+
+// Unlike Quick Sort, Merge Sort doesn't depend on pivot selection
+// Unlike Insertion Sort, Merge Sort doesn't benefit from sorted data
+// It's predictable and consistent
+```
+
+**Key insight:** Merge Sort doesn't have shortcuts. Even if data is sorted, it still divides and merges everything, which is why it's O(n log n) in best, average, and worst cases.
+
+### Q3: How does Merge Sort's space complexity compare to other algorithms?
+
+**Answer:**
+Merge Sort uses O(n) auxiliary space, which is a trade-off:
+
+| Algorithm | Space Complexity | Why? |
+|-----------|------------------|------|
+| **Insertion Sort** | O(1) | In-place, only needs a few variables |
+| **Merge Sort** | O(n) | Needs temporary arrays for merging |
+| **Quick Sort** | O(log n) | Recursion stack depth |
+| **Heap Sort** | O(1) | In-place heap operations |
+
+```php
+# filename: interview-space-complexity.php
+<?php
+
+declare(strict_types=1);
+
+// Merge Sort space usage:
+function mergeSort(array $arr): array
+{
+    // Base case: O(1) space
+    if (count($arr) <= 1) return $arr;
+    
+    // Divide: creates two arrays of size n/2 each = O(n) space
+    $left = array_slice($arr, 0, $mid);   // n/2 space
+    $right = array_slice($arr, $mid);      // n/2 space
+    
+    // Recursive calls: O(n) space at each level
+    // But space is reused, so total is O(n), not O(n log n)
+    
+    // Merge: creates result array = O(n) space
+    return merge($left, $right);
+}
+
+// Total: O(n) auxiliary space
+// This is why Merge Sort isn't used when memory is limited
+```
+
+**Trade-off:** Merge Sort sacrifices space for guaranteed O(n log n) time and stability.
+
+### Q4: Implement iterative (bottom-up) Merge Sort
+
+**Answer:**
+Iterative Merge Sort avoids recursion overhead:
+
+```php
+# filename: interview-iterative-merge-sort.php
+<?php
+
+declare(strict_types=1);
+
+function iterativeMergeSort(array $arr): array
+{
+    $n = count($arr);
+    
+    // Start with subarrays of size 1, then double each iteration
+    for ($size = 1; $size < $n; $size *= 2) {
+        // Merge adjacent subarrays
+        for ($left = 0; $left < $n - 1; $left += 2 * $size) {
+            $mid = min($left + $size - 1, $n - 1);
+            $right = min($left + 2 * $size - 1, $n - 1);
+            
+            // Merge arr[left..mid] and arr[mid+1..right]
+            $arr = mergeIterative($arr, $left, $mid, $right);
+        }
+    }
+    
+    return $arr;
+}
+
+function mergeIterative(array $arr, int $left, int $mid, int $right): array
+{
+    $leftArr = array_slice($arr, $left, $mid - $left + 1);
+    $rightArr = array_slice($arr, $mid + 1, $right - $mid);
+    
+    $i = $j = 0;
+    $k = $left;
+    
+    while ($i < count($leftArr) && $j < count($rightArr)) {
+        if ($leftArr[$i] <= $rightArr[$j]) {
+            $arr[$k++] = $leftArr[$i++];
+        } else {
+            $arr[$k++] = $rightArr[$j++];
+        }
+    }
+    
+    // Copy remaining elements
+    while ($i < count($leftArr)) {
+        $arr[$k++] = $leftArr[$i++];
+    }
+    while ($j < count($rightArr)) {
+        $arr[$k++] = $rightArr[$j++];
+    }
+    
+    return $arr;
+}
+
+// Test
+$numbers = [38, 27, 43, 3, 9, 82, 10];
+print_r(iterativeMergeSort($numbers));
+// Output: [3, 9, 10, 27, 38, 43, 82]
+```
+
+**Advantages:** No recursion stack overhead, same O(n log n) time complexity, easier to parallelize.
+
+### Q5: Why is Insertion Sort faster than Merge Sort for small arrays?
+
+**Answer:**
+Insertion Sort has lower overhead:
+
+```php
+# filename: interview-small-arrays.php
+<?php
+
+declare(strict_types=1);
+
+// For small arrays (< 50 elements), Insertion Sort wins because:
+
+// 1. No function call overhead (Merge Sort has recursion)
+// 2. Better cache locality (sequential memory access)
+// 3. Simple operations (comparisons and shifts)
+// 4. No memory allocation (Merge Sort creates arrays)
+
+// Benchmark results typically show:
+// Array size 10:  Insertion Sort ~0.01ms, Merge Sort ~0.02ms
+// Array size 50:  Insertion Sort ~0.25ms, Merge Sort ~0.12ms (Merge wins)
+// Array size 100: Insertion Sort ~1.0ms, Merge Sort ~0.25ms (Merge wins)
+
+// Crossover point: Usually around 20-50 elements
+```
+
+**Key factors:**
+- **Constant factors matter** for small n: O(n²) with small constant < O(n log n) with large constant
+- **Cache efficiency:** Insertion Sort accesses memory sequentially
+- **No overhead:** No recursion, no array allocations
+
+This is why hybrid algorithms use Insertion Sort for small subarrays.
+
+### Q6: How would you merge k sorted arrays efficiently?
+
+**Answer:**
+Use a min-heap or merge pairs iteratively:
+
+```php
+# filename: interview-k-way-merge.php
+<?php
+
+declare(strict_types=1);
+
+// Approach 1: Merge pairs iteratively (like Merge Sort)
+function mergeKSortedArrays(array $arrays): array
+{
+    if (empty($arrays)) return [];
+    if (count($arrays) === 1) return $arrays[0];
+    
+    // Merge pairs until one array remains
+    while (count($arrays) > 1) {
+        $merged = [];
+        
+        // Merge adjacent pairs
+        for ($i = 0; $i < count($arrays); $i += 2) {
+            if ($i + 1 < count($arrays)) {
+                $merged[] = merge($arrays[$i], $arrays[$i + 1]);
+            } else {
+                $merged[] = $arrays[$i]; // Odd one out
+            }
+        }
+        
+        $arrays = $merged;
+    }
+    
+    return $arrays[0];
+}
+
+// Approach 2: Use min-heap (more efficient for large k)
+function mergeKSortedArraysHeap(array $arrays): array
+{
+    $heap = new SplMinHeap();
+    $result = [];
+    $indices = array_fill(0, count($arrays), 0);
+    
+    // Initialize heap with first element of each array
+    foreach ($arrays as $i => $arr) {
+        if (!empty($arr)) {
+            $heap->insert([$arr[0], $i, 0]);
+        }
+    }
+    
+    // Extract min and add next element from same array
+    while (!$heap->isEmpty()) {
+        [$value, $arrayIndex, $elementIndex] = $heap->extract();
+        $result[] = $value;
+        
+        $nextIndex = $elementIndex + 1;
+        if ($nextIndex < count($arrays[$arrayIndex])) {
+            $heap->insert([
+                $arrays[$arrayIndex][$nextIndex],
+                $arrayIndex,
+                $nextIndex
+            ]);
+        }
+    }
+    
+    return $result;
+}
+
+// Test
+$arrays = [
+    [1, 4, 7],
+    [2, 5, 8],
+    [3, 6, 9]
+];
+print_r(mergeKSortedArrays($arrays));
+// Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+```
+
+**Time complexity:** O(n log k) where n is total elements and k is number of arrays.
+
+### Q7: Explain why Merge Sort is stable
+
+**Answer:**
+Merge Sort maintains relative order of equal elements:
+
+```php
+# filename: interview-stability.php
+<?php
+
+declare(strict_types=1);
+
+class Item {
+    public function __construct(
+        public int $value,
+        public string $id
+    ) {}
+}
+
+// Key: In merge(), when elements are equal, we take from left first
+function merge(array $left, array $right): array
+{
+    $result = [];
+    $i = $j = 0;
+    
+    while ($i < count($left) && $j < count($right)) {
+        // Critical: Use <= not < to maintain stability
+        if ($left[$i]->value <= $right[$j]->value) {
+            $result[] = $left[$i]; // Take from left when equal
+            $i++;
+        } else {
+            $result[] = $right[$j];
+            $j++;
+        }
+    }
+    // ... rest of merge
+}
+
+// Example:
+$items = [
+    new Item(3, 'first'),
+    new Item(1, 'middle'),
+    new Item(3, 'last'),
+];
+
+// After sorting by value:
+// Item(1, 'middle'), Item(3, 'first'), Item(3, 'last')
+// 'first' comes before 'last' because Merge Sort is stable
+```
+
+**Why it matters:** When sorting by multiple criteria (e.g., sort by grade, then by name), stability ensures consistent ordering.
+
+### Q8: Compare Insertion Sort and Merge Sort for external sorting
+
+**Answer:**
+Merge Sort is ideal for external sorting (sorting data that doesn't fit in memory):
+
+```php
+# filename: interview-external-sorting.php
+<?php
+
+declare(strict_types=1);
+
+// External Merge Sort process:
+function externalMergeSort(string $inputFile, string $outputFile): void
+{
+    // 1. Divide: Split large file into chunks that fit in memory
+    $chunks = divideIntoChunks($inputFile, chunkSize: 1000);
+    
+    // 2. Sort each chunk (can use Insertion Sort for small chunks)
+    $sortedChunks = [];
+    foreach ($chunks as $chunk) {
+        // Insertion Sort for small chunks, Merge Sort for larger
+        $sorted = count($chunk) < 50 
+            ? insertionSort($chunk)
+            : mergeSort($chunk);
+        $sortedChunks[] = $sorted;
+    }
+    
+    // 3. Merge sorted chunks (like k-way merge)
+    $final = mergeSortedChunks($sortedChunks);
+    
+    // 4. Write to output file
+    file_put_contents($outputFile, implode("\n", $final));
+}
+
+// Why Merge Sort?
+// - Sequential disk access (good for I/O)
+// - Predictable performance
+// - Natural fit for merging sorted files
+// - Can merge multiple files efficiently
+```
+
+**Insertion Sort limitations:** Requires random access, not suitable for external sorting.
+
+**Merge Sort advantages:** Sequential access pattern, natural for merging files, used in database systems for sorting large datasets.
+
 ## Key Takeaways
 
 - **Insertion Sort**: O(n²) but excellent for small or nearly sorted arrays, stable, in-place
@@ -834,6 +1451,48 @@ function sortList(?ListNode $head): ?ListNode
 - **Hybrid approaches** combining both can be very effective
 - **Stability** matters when sorting objects with multiple fields
 
+## Wrap-up
+
+Congratulations! You've completed Chapter 06. Here's what you accomplished:
+
+- ✅ **Implemented Insertion Sort** from scratch with proper element shifting
+- ✅ **Mastered Merge Sort** using recursive divide-and-conquer strategy
+- ✅ **Built the merge() helper function** that efficiently combines sorted arrays
+- ✅ **Analyzed complexity** understanding O(n) best case for Insertion Sort and O(n log n) guaranteed for Merge Sort
+- ✅ **Compared algorithms** side-by-side with performance benchmarks
+- ✅ **Explored stability** and why it matters for maintaining relative order
+- ✅ **Learned optimization techniques** including hybrid approaches
+- ✅ **Applied sorting concepts** to real-world scenarios like external sorting
+- ✅ **Understood when to use each algorithm** based on data characteristics
+
+You now understand two fundamentally different sorting approaches: adaptive insertion-based sorting and divide-and-conquer merge sorting. This knowledge prepares you for Quick Sort in the next chapter, where you'll see another divide-and-conquer strategy with different trade-offs.
+
+::: tip What You Can Do Now
+- Choose the right sorting algorithm based on data size and characteristics
+- Implement Insertion Sort for small or nearly-sorted arrays
+- Implement Merge Sort when you need guaranteed O(n log n) performance
+- Understand and explain stability in sorting algorithms
+- Optimize sorting algorithms using hybrid approaches
+- Apply sorting to real-world problems like external file sorting
+:::
+
+## Further Reading
+
+- [Insertion Sort - Wikipedia](https://en.wikipedia.org/wiki/Insertion_sort) — Comprehensive overview of insertion sort
+- [Merge Sort - Wikipedia](https://en.wikipedia.org/wiki/Merge_sort) — Deep dive into merge sort algorithm
+- [Divide-and-Conquer Algorithms](https://en.wikipedia.org/wiki/Divide-and-conquer_algorithm) — Understanding the divide-and-conquer paradigm
+- [Stable Sorting Algorithms](https://en.wikipedia.org/wiki/Sorting_algorithm#Stability) — Why stability matters in sorting
+- [Visualgo: Sorting Algorithms](https://visualgo.net/en/sorting) — Interactive visualizations of insertion and merge sort
+- [PHP Manual: Sorting Arrays](https://www.php.net/manual/en/array.sorting.php) — Built-in PHP sorting functions and their stability
+- [Chapter 05: Bubble Sort & Selection Sort](/series/php-algorithms/chapters/05-bubble-sort-selection-sort) — Previous chapter on simple sorting algorithms
+- [Chapter 07: Quick Sort & Pivot Strategies](/series/php-algorithms/chapters/07-quick-sort-pivot-strategies) — Next chapter on another divide-and-conquer algorithm
+
+<ChapterCheckbox 
+  seriesId="php-algorithms"
+  chapterId="06"
+  label="Completed Insertion Sort & Merge Sort!"
+/>
+
 ## What's Next
 
 In the next chapter, we'll explore **Quick Sort**, one of the fastest sorting algorithms in practice, along with pivot selection strategies.
@@ -842,7 +1501,7 @@ In the next chapter, we'll explore **Quick Sort**, one of the fastest sorting al
 
 All code examples from this chapter are available in the GitHub repository:
 
-**[View Chapter 06 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-06)**
+**[View Chapter 06 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/php-algorithms/chapter-06)**
 
 Files included:
 - `01-insertion-sort.php` - Complete insertion sort implementation with visualization and analysis
@@ -855,7 +1514,7 @@ Files included:
 Clone the repository to run the examples locally:
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
-cd codewithphp/code-samples/php-algorithms/chapter-06
+cd codewithphp/code/php-algorithms/chapter-06
 php 01-insertion-sort.php
 ```
 

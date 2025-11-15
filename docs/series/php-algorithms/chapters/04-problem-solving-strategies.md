@@ -10,6 +10,8 @@ prerequisites:
   - "Familiarity with recursion"
   - "Completion of Chapters 0-3"
 ---
+![04: Problem-Solving Strategies](/images/php-algorithms/chapter-04-problem-solving-hero-full.webp)
+
 
 <div class="breadcrumbs">
   <a href="/">Home</a>
@@ -23,7 +25,15 @@ prerequisites:
 
 # Problem-Solving Strategies <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
 
-Now that you understand algorithms, complexity analysis, benchmarking, and recursion, it's time to develop systematic problem-solving strategies. This chapter teaches you how to approach any algorithmic problem with confidence.
+## Overview
+
+Now that you understand algorithms, complexity analysis, benchmarking, and recursion, it's time to develop systematic problem-solving strategies. This chapter teaches you how to approach any algorithmic problem with confidence—whether you're optimizing production code, tackling technical interview questions, or designing efficient solutions for real-world challenges.
+
+The difference between a struggling developer and an expert problem-solver isn't innate talent—it's having a systematic framework and recognizing patterns. In this chapter, you'll learn both. You'll master a four-step problem-solving framework (Understand → Plan → Implement → Optimize) and explore seven powerful algorithmic patterns that appear repeatedly across thousands of problems.
+
+Rather than memorizing solutions, you'll learn to recognize when a problem calls for two pointers vs. a sliding window, when to use divide-and-conquer vs. greedy approaches, and how to combine multiple patterns to solve complex challenges. You'll work through complete problem walkthroughs, see visual representations of how algorithms work, and practice with real problems from coding interviews and production systems.
+
+By the end of this chapter, you'll have a mental toolkit that transforms intimidating algorithmic challenges into structured, solvable puzzles. These strategies apply far beyond algorithms—they'll improve how you approach any complex programming problem.
 
 ## What You'll Learn
 
@@ -49,6 +59,22 @@ Before starting this chapter, ensure you have:
 
 When faced with an algorithm challenge, follow this systematic approach:
 
+```mermaid
+flowchart TD
+    A[1. Understand the Problem] --> B[2. Devise a Plan]
+    B --> C[3. Implement and Test]
+    C --> D[4. Optimize and Refine]
+    D --> E{Good Enough?}
+    E -->|No| B
+    E -->|Yes| F[Complete]
+    
+    style A fill:#e1f5ff
+    style B fill:#fff4e1
+    style C fill:#e8f5e9
+    style D fill:#f3e5f5
+    style F fill:#c8e6c9
+```
+
 ### 1. Understand the Problem
 
 Before writing any code, make sure you fully understand what's being asked:
@@ -67,6 +93,59 @@ Before writing any code, make sure you fully understand what's being asked:
 - Output: Array of pairs (arrays with 2 elements)
 - Edge cases: Empty array, no pairs found, duplicate numbers
 - Should pairs be unique? Can we use the same element twice?
+
+#### Constraint Analysis: Choosing Algorithms by Size
+
+**Critical**: The size of your input determines which algorithm is acceptable.
+
+```php
+// Problem constraint analysis
+
+// n ≤ 10: Any algorithm works, even O(n!)
+// Example: Generate all permutations (10! = 3.6 million operations)
+
+// n ≤ 20: O(2ⁿ) algorithms acceptable
+// Example: Subset generation (2²⁰ = ~1 million subsets)
+
+// n ≤ 100: O(n³) or O(n² log n) acceptable
+// Example: Triple nested loops (100³ = 1 million operations)
+
+// n ≤ 1,000: O(n²) acceptable
+// Example: Compare all pairs (1000² = 1 million operations)
+
+// n ≤ 10,000: O(n log n) required
+// Example: Sorting, binary search (10,000 × 14 = 140k operations)
+
+// n ≤ 1,000,000: O(n) or O(n log n) required
+// Example: Hash maps, efficient sorting
+
+// n ≤ 100,000,000: O(n) or O(log n) required
+// Example: Single pass algorithms, binary search on sorted data
+```
+
+**Rule of thumb**: Modern computers handle ~10⁸ to 10⁹ operations per second.
+
+```php
+// Example: Should I use nested loops?
+function analyzeConstraints(int $n): string
+{
+    $operations = $n * $n;
+    
+    if ($operations > 100_000_000) {
+        return "Too slow! Need O(n log n) or O(n) algorithm";
+    }
+    
+    if ($operations > 10_000_000) {
+        return "Acceptable but slow. Consider optimization.";
+    }
+    
+    return "Fine! O(n²) is fast enough for this input size.";
+}
+
+echo analyzeConstraints(100);    // Fine
+echo analyzeConstraints(1000);   // Fine  
+echo analyzeConstraints(10000);  // Too slow!
+```
 
 ### 2. Devise a Plan
 
@@ -385,6 +464,69 @@ print_r(permute([1, 2, 3]));
 // Output: [[1,2,3], [1,3,2], [2,1,3], [2,3,1], [3,1,2], [3,2,1]]
 ```
 
+## Pattern 8: Bit Manipulation
+
+Use bitwise operations for efficient computation on binary representations.
+
+**When to use:** Flags, sets, optimization, number properties
+
+```php
+// Problem: Count number of 1 bits in binary representation
+function countOnes(int $n): int
+{
+    $count = 0;
+    
+    while ($n > 0) {
+        $n = $n & ($n - 1); // Remove rightmost 1 bit
+        $count++;
+    }
+    
+    return $count;
+}
+
+echo countOnes(13); // 3 (binary: 1101)
+
+// Problem: Check if number is power of 2
+function isPowerOfTwo(int $n): bool
+{
+    return $n > 0 && ($n & ($n - 1)) === 0;
+}
+
+echo isPowerOfTwo(16) ? 'true' : 'false'; // true
+echo isPowerOfTwo(18) ? 'true' : 'false'; // false
+
+// Problem: Find single number in array where all others appear twice
+function singleNumber(array $nums): int
+{
+    $result = 0;
+    
+    foreach ($nums as $num) {
+        $result ^= $num; // XOR cancels out duplicates
+    }
+    
+    return $result;
+}
+
+echo singleNumber([4, 1, 2, 1, 2]); // 4
+
+// Common bit manipulation operations
+function bitOperations(int $num): void
+{
+    echo "Set bit 2: " . ($num | (1 << 2)) . "\n";      // Set bit at position
+    echo "Clear bit 2: " . ($num & ~(1 << 2)) . "\n";   // Clear bit at position
+    echo "Toggle bit 2: " . ($num ^ (1 << 2)) . "\n";   // Toggle bit at position
+    echo "Check bit 2: " . (($num & (1 << 2)) !== 0 ? 'set' : 'clear') . "\n";
+}
+```
+
+**Key bitwise operations:**
+- `&` (AND): Check if bits are set
+- `|` (OR): Set bits
+- `^` (XOR): Toggle bits, find unique elements
+- `~` (NOT): Flip bits
+- `<<` (Left shift): Multiply by 2
+- `>>` (Right shift): Divide by 2
+
 ## Problem Classification
 
 Learn to recognize problem types:
@@ -487,6 +629,159 @@ echo longestConsecutive([0, 3, 7, 2, 5, 8, 4, 6, 0, 1]); // 9
 // This is optimal - can't do better than O(n) time
 ```
 
+## Converting Recursion to Iteration
+
+Many recursive solutions can be converted to iterative ones using a stack. This is useful when you hit recursion limits or need better performance.
+
+```php
+// Recursive tree traversal (in-order)
+function inOrderRecursive(?TreeNode $node, array &$result): void
+{
+    if ($node === null) return;
+    
+    inOrderRecursive($node->left, $result);
+    $result[] = $node->val;
+    inOrderRecursive($node->right, $result);
+}
+
+// Iterative equivalent using explicit stack
+function inOrderIterative(TreeNode $root): array
+{
+    $result = [];
+    $stack = [];
+    $current = $root;
+    
+    while ($current !== null || !empty($stack)) {
+        // Go to leftmost node
+        while ($current !== null) {
+            $stack[] = $current;
+            $current = $current->left;
+        }
+        
+        // Process node
+        $current = array_pop($stack);
+        $result[] = $current->val;
+        
+        // Move to right subtree
+        $current = $current->right;
+    }
+    
+    return $result;
+}
+
+// Example: Factorial (recursive vs iterative)
+function factorialRecursive(int $n): int
+{
+    if ($n <= 1) return 1;
+    return $n * factorialRecursive($n - 1);
+}
+
+function factorialIterative(int $n): int
+{
+    $result = 1;
+    for ($i = 2; $i <= $n; $i++) {
+        $result *= $i;
+    }
+    return $result;
+}
+```
+
+**When to convert:**
+- Deep recursion causing stack overflow
+- Tail recursion that can be optimized
+- Performance-critical code
+- When you need explicit control over the call stack
+
+## Time vs Space Complexity Trade-offs
+
+Understanding trade-offs is crucial for problem-solving:
+
+### Common Trade-offs
+
+```php
+// Example: Two Sum problem
+
+// Approach 1: Brute Force
+// Time: O(n²), Space: O(1)
+function twoSumBruteForce(array $nums, int $target): ?array
+{
+    for ($i = 0; $i < count($nums); $i++) {
+        for ($j = $i + 1; $j < count($nums); $j++) {
+            if ($nums[$i] + $nums[$j] === $target) {
+                return [$i, $j];
+            }
+        }
+    }
+    return null;
+}
+
+// Approach 2: Hash Map
+// Time: O(n), Space: O(n)
+function twoSumHashMap(array $nums, int $target): ?array
+{
+    $map = [];
+    foreach ($nums as $i => $num) {
+        $complement = $target - $num;
+        if (isset($map[$complement])) {
+            return [$map[$complement], $i];
+        }
+        $map[$num] = $i;
+    }
+    return null;
+}
+
+// Trade-off decision:
+// - Small arrays (< 100 elements): Brute force is fine
+// - Large arrays: Hash map is much faster
+// - Memory constrained: Brute force uses no extra space
+```
+
+### Trade-off Matrix
+
+| Optimization Goal | What to Prioritize | What to Sacrifice |
+|------------------|-------------------|-------------------|
+| **Speed** | Time complexity (O(n) vs O(n²)) | Space (use hash maps, caching) |
+| **Memory** | Space complexity (O(1) vs O(n)) | Time (iterate multiple times) |
+| **Readability** | Simple, clear code | Optimal performance |
+| **Flexibility** | General solutions | Specialized optimizations |
+
+```php
+// Example: Finding duplicates
+
+// Fast but memory-intensive: O(n) time, O(n) space
+function hasDuplicatesFast(array $nums): bool
+{
+    $seen = [];
+    foreach ($nums as $num) {
+        if (isset($seen[$num])) return true;
+        $seen[$num] = true;
+    }
+    return false;
+}
+
+// Slow but memory-efficient: O(n²) time, O(1) space
+function hasDuplicatesSlow(array $nums): bool
+{
+    $n = count($nums);
+    for ($i = 0; $i < $n; $i++) {
+        for ($j = $i + 1; $j < $n; $j++) {
+            if ($nums[$i] === $nums[$j]) return true;
+        }
+    }
+    return false;
+}
+
+// Balanced approach: O(n log n) time, O(1) space (if allowed to modify)
+function hasDuplicatesBalanced(array $nums): bool
+{
+    sort($nums);
+    for ($i = 1; $i < count($nums); $i++) {
+        if ($nums[$i] === $nums[$i - 1]) return true;
+    }
+    return false;
+}
+```
+
 ## Debugging Strategies
 
 When your solution doesn't work:
@@ -540,9 +835,20 @@ function safeFunction($input)
 
 ## Practice Problems
 
+Apply the strategies you've learned to solve these problems independently. Each problem reinforces specific patterns from this chapter.
+
+::: tip Practice Strategy
+1. **Understand**: Read the problem carefully, identify inputs/outputs
+2. **Plan**: Choose which pattern(s) to apply before coding
+3. **Implement**: Write a working solution, test with examples
+4. **Optimize**: Analyze complexity, look for improvements
+:::
+
 ### Problem 1: Product of Array Except Self
 
-Given an array, return array where each element is the product of all others (without using division).
+**Difficulty**: Medium | **Pattern**: Array Manipulation
+
+Given an array, return an array where each element is the product of all other elements (without using division).
 
 ```php
 function productExceptSelf(array $nums): array
@@ -551,14 +857,54 @@ function productExceptSelf(array $nums): array
 }
 
 // Test: [1, 2, 3, 4] → [24, 12, 8, 6]
+// Explanation: [2*3*4, 1*3*4, 1*2*4, 1*2*3]
 ```
 
 <details>
-<summary>Hint</summary>
-Use two passes: one for products to the left, one for products to the right.
+<summary>💡 Hint 1</summary>
+
+Use two passes: one for products to the left of each element, one for products to the right.
+</details>
+
+<details>
+<summary>💡 Hint 2</summary>
+
+You can compute left products in one array, then multiply by right products in a second pass to get O(n) time with O(n) space.
+</details>
+
+<details>
+<summary>✅ Solution</summary>
+
+```php
+function productExceptSelf(array $nums): array
+{
+    $n = count($nums);
+    $result = array_fill(0, $n, 1);
+    
+    // Left products
+    $leftProduct = 1;
+    for ($i = 0; $i < $n; $i++) {
+        $result[$i] = $leftProduct;
+        $leftProduct *= $nums[$i];
+    }
+    
+    // Right products (multiply into result)
+    $rightProduct = 1;
+    for ($i = $n - 1; $i >= 0; $i--) {
+        $result[$i] *= $rightProduct;
+        $rightProduct *= $nums[$i];
+    }
+    
+    return $result;
+}
+```
+
+**Time**: O(n), **Space**: O(1) excluding output array
 </details>
 
 ### Problem 2: Valid Parentheses
+
+**Difficulty**: Easy | **Pattern**: Stack
 
 Check if a string of parentheses is valid: `"()[]{ }"` → true, `"([)]"` → false
 
@@ -567,16 +913,54 @@ function isValidParentheses(string $s): bool
 {
     // Your solution here
 }
+
+// Test cases:
+// "()[]{}" → true
+// "([)]" → false (improper nesting)
+// "{[]}" → true
 ```
 
 <details>
-<summary>Hint</summary>
-Use a stack to track opening brackets.
+<summary>💡 Hint</summary>
+
+Use a stack to track opening brackets. When you see a closing bracket, check if it matches the most recent opening bracket.
+</details>
+
+<details>
+<summary>✅ Solution</summary>
+
+```php
+function isValidParentheses(string $s): bool
+{
+    $stack = [];
+    $pairs = [')' => '(', ']' => '[', '}' => '{'];
+    
+    for ($i = 0; $i < strlen($s); $i++) {
+        $char = $s[$i];
+        
+        if (in_array($char, ['(', '[', '{'])) {
+            // Opening bracket - push to stack
+            $stack[] = $char;
+        } elseif (isset($pairs[$char])) {
+            // Closing bracket - check match
+            if (empty($stack) || array_pop($stack) !== $pairs[$char]) {
+                return false;
+            }
+        }
+    }
+    
+    return empty($stack);
+}
+```
+
+**Time**: O(n), **Space**: O(n)
 </details>
 
 ### Problem 3: Container With Most Water
 
-Given heights array, find two lines that form container with maximum area.
+**Difficulty**: Medium | **Pattern**: Two Pointers
+
+Given an array of heights, find two lines that together with the x-axis form a container with the maximum water capacity.
 
 ```php
 function maxArea(array $heights): int
@@ -585,15 +969,18 @@ function maxArea(array $heights): int
 }
 
 // Test: [1, 8, 6, 2, 5, 4, 8, 3, 7] → 49
+// Explanation: Container between heights[1]=8 and heights[8]=7, width=7
+// Area = min(8, 7) × 7 = 49
 ```
 
 <details>
-<summary>Hint</summary>
-Use two pointers from both ends, move the pointer with smaller height.
+<summary>💡 Hint</summary>
+
+Use two pointers from both ends. The area is limited by the shorter line. Which pointer should you move to potentially find a larger area?
 </details>
 
 <details>
-<summary>Solution</summary>
+<summary>✅ Solution</summary>
 
 ```php
 function maxArea(array $heights): int
@@ -1134,14 +1521,59 @@ $cache->put(3, 3);   // Evicts key 2
 echo $cache->get(2); // -1 (not found)
 ```
 
+## Real-World Applications
+
+These problem-solving patterns aren't just for coding interviews—they solve real production challenges:
+
+### Two Pointers
+- **Log file analysis**: Finding matching start/end timestamps in sorted logs
+- **Data deduplication**: Merging sorted datasets from multiple sources
+- **Version comparison**: Finding differences between sorted file lists
+
+### Sliding Window
+- **Rate limiting**: Tracking requests in a time window for API throttling
+- **Performance monitoring**: Computing moving averages for metrics dashboards
+- **Stream processing**: Analyzing consecutive events in real-time data
+
+### Hash Maps
+- **Caching systems**: O(1) lookups for frequently accessed data (Redis, Memcached)
+- **User session management**: Fast session ID → user data mapping
+- **Duplicate detection**: Finding duplicate records in large datasets
+
+### Divide and Conquer
+- **Image processing**: Recursive filters and transformations
+- **Search engines**: Distributed search across partitioned indexes
+- **Database queries**: Parallel query execution on sharded data
+
+### Greedy Algorithms
+- **Task scheduling**: Selecting optimal time slots for batch jobs
+- **Resource allocation**: Distributing limited resources (memory, CPU) efficiently
+- **Compression algorithms**: Huffman coding for file compression
+
+### Backtracking
+- **Route planning**: Finding valid paths with constraints (GPS navigation)
+- **Configuration validation**: Testing all combinations of feature flags
+- **Constraint solving**: Scheduling meetings with availability constraints
+
+::: tip From Interview to Production
+The patterns you learn solving algorithm problems directly apply to building scalable systems. A developer who understands hash maps writes better caching layers. A developer who understands divide-and-conquer designs better distributed systems.
+:::
+
 ## Key Takeaways
 
-- **Understand** the problem completely before coding
-- **Choose the right strategy**: two pointers, sliding window, hash maps, divide and conquer, etc.
-- **Start simple**: Get a working solution first, then optimize
-- **Recognize patterns**: Many problems fit common templates
-- **Test thoroughly**: Include edge cases in your testing
-- **Analyze complexity**: Know the Big O of your solution
+- **Understand** the problem completely before coding—clarify inputs, outputs, constraints, and edge cases
+- **Choose the right strategy**: Recognize which pattern fits (two pointers, sliding window, hash maps, divide and conquer, etc.)
+- **Start simple**: Get a working solution first, then optimize based on measured performance
+- **Recognize patterns**: Most problems are variations of common templates you've seen before
+- **Test thoroughly**: Include edge cases (empty input, single element, duplicates, negative numbers)
+- **Analyze complexity**: Know the Big O of your solution and understand the trade-offs
+- **Combine patterns**: Real problems often require multiple strategies working together
+
+<ChapterCheckbox 
+  seriesId="php-algorithms"
+  chapterId="04"
+  label="Problem-solving strategies conquered!"
+/>
 
 ## What's Next
 
@@ -1154,8 +1586,8 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 04 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-04)**
 
 Files included:
-- `01-problem-solving-patterns.php` - All major problem-solving patterns including two pointers, sliding window, hash maps, divide and conquer, greedy algorithms, and backtracking
-- `README.md` - Complete documentation and usage guide
+- [`01-problem-solving-patterns.php`](https://github.com/dalehurley/codewithphp/blob/main/code-samples/php-algorithms/chapter-04/01-problem-solving-patterns.php) — All major problem-solving patterns including two pointers, sliding window, hash maps, divide and conquer, greedy algorithms, and backtracking
+- [`README.md`](https://github.com/dalehurley/codewithphp/blob/main/code-samples/php-algorithms/chapter-04/README.md) — Complete documentation and usage guide
 
 Clone the repository to run the examples locally:
 ```bash

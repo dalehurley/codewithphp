@@ -59,7 +59,7 @@ class ImagenMCPServer {
               },
               series: {
                 type: 'string',
-                enum: ['php-basics', 'ai-ml-php-developers', 'python-developers-love-php-laravel', 'build-crm-laravel-12', 'rails-developers-love-laravel'],
+                enum: ['php-basics', 'ai-ml-php-developers', 'python-developers-love-php-laravel', 'build-crm-laravel-12', 'rails-developers-love-laravel', 'php-algorithms'],
                 description: 'Tutorial series for organizing images (required)',
               },
               chapter: {
@@ -115,7 +115,7 @@ class ImagenMCPServer {
             properties: {
               series: {
                 type: 'string',
-                enum: ['php-basics', 'ai-ml-php-developers', 'python-developers-love-php-laravel', 'build-crm-laravel-12', 'rails-developers-love-laravel'],
+                enum: ['php-basics', 'ai-ml-php-developers', 'python-developers-love-php-laravel', 'build-crm-laravel-12', 'rails-developers-love-laravel', 'php-algorithms'],
                 description: 'Tutorial series for organizing images (required)',
               },
               theme: {
@@ -325,7 +325,7 @@ class ImagenMCPServer {
       }
 
       // Validate series
-      const validSeries = ['php-basics', 'ai-ml-php-developers', 'python-developers-love-php-laravel', 'build-crm-laravel-12', 'rails-developers-love-laravel'];
+      const validSeries = ['php-basics', 'ai-ml-php-developers', 'python-developers-love-php-laravel', 'build-crm-laravel-12', 'rails-developers-love-laravel', 'php-algorithms'];
       if (!validSeries.includes(series)) {
         throw new Error(`Invalid series: ${series}. Must be one of: ${validSeries.join(', ')}`);
       }
@@ -453,7 +453,7 @@ class ImagenMCPServer {
       }
 
       // Validate series
-      const validSeries = ['php-basics', 'ai-ml-php-developers', 'python-developers-love-php-laravel', 'build-crm-laravel-12', 'rails-developers-love-laravel'];
+      const validSeries = ['php-basics', 'ai-ml-php-developers', 'python-developers-love-php-laravel', 'build-crm-laravel-12', 'rails-developers-love-laravel', 'php-algorithms'];
       if (!validSeries.includes(series)) {
         throw new Error(`Invalid series: ${series}. Must be one of: ${validSeries.join(', ')}`);
       }

@@ -1,12 +1,14 @@
 ---
-title: "Probabilistic Algorithms"
+title: "32: Probabilistic Algorithms"
 description: "Master space-efficient probabilistic data structures including Bloom filters, HyperLogLog, Count-Min Sketch, and streaming algorithms for big data processing"
 series: "php-algorithms"
 chapter: 32
 order: 32
-difficulty: "advanced"
-prerequisites: ["Hash Functions", "Data Structures", "Statistical Concepts"]
+difficulty: "Advanced"
+prerequisites: []
 ---
+![Probabilistic Algorithms](/images/php-algorithms/chapter-32-probabilistic-algorithms-hero-full.webp)
+
 
 <div class="breadcrumbs">
   <a href="/">Home</a>
@@ -18,7 +20,7 @@ prerequisites: ["Hash Functions", "Data Structures", "Statistical Concepts"]
   <span>Chapter 32</span>
 </div>
 
-# Probabilistic Algorithms <span class="difficulty-badge difficulty-advanced">Advanced</span>
+# 32: Probabilistic Algorithms <span class="difficulty-badge difficulty-advanced">Advanced</span>
 
 ## What You'll Learn
 
@@ -87,6 +89,11 @@ A Bloom filter is a space-efficient probabilistic data structure for testing set
 ### Basic Implementation
 
 ```php
+# filename: bloom-filter.php
+<?php
+
+declare(strict_types=1);
+
 class BloomFilter {
     private array $bits;
     private int $size;
@@ -135,6 +142,16 @@ class BloomFilter {
         $ratio = $bitsSet / $this->size;
         return pow(1 - exp(-$this->hashCount * $ratio), $this->hashCount);
     }
+
+    public function getMemoryUsage(): int {
+        // Each boolean in PHP uses 1 byte, but array overhead adds ~16 bytes
+        // Approximate: size bytes + array overhead
+        return $this->size + 16;
+    }
+
+    public function getHashCount(): int {
+        return $this->hashCount;
+    }
 }
 
 // Usage
@@ -156,6 +173,11 @@ echo "False positive rate: " . ($filter->getFalsePositiveRate() * 100) . "%\n";
 ### Production-Ready Bloom Filter
 
 ```php
+# filename: scalable-bloom-filter.php
+<?php
+
+declare(strict_types=1);
+
 class ScalableBloomFilter {
     private array $filters = [];
     private int $capacity;
@@ -206,7 +228,7 @@ class ScalableBloomFilter {
     public function getMemoryUsage(): int {
         $total = 0;
         foreach ($this->filters as $filter) {
-            $total += memory_get_usage();
+            $total += $filter->getMemoryUsage();
         }
         return $total;
     }
@@ -216,6 +238,11 @@ class ScalableBloomFilter {
 ### Real-World Example: Email Spam Filter
 
 ```php
+# filename: spam-filter.php
+<?php
+
+declare(strict_types=1);
+
 class SpamFilter {
     private BloomFilter $knownSpam;
     private BloomFilter $knownHam;
@@ -276,6 +303,353 @@ echo $filter->classify('hash1');  // spam
 echo $filter->classify('hash7');  // unknown
 ```
 
+## Cuckoo Filter
+
+A Cuckoo Filter is a probabilistic data structure that supports deletion, unlike Bloom Filters. It uses cuckoo hashing with fingerprinting to achieve similar space efficiency while allowing item removal.
+
+### Implementation
+
+```php
+# filename: cuckoo-filter.php
+<?php
+
+declare(strict_types=1);
+
+class CuckooFilter {
+    private array $buckets;
+    private int $bucketSize;
+    private int $numBuckets;
+    private int $fingerprintSize;
+    private int $maxKicks;
+
+    public function __construct(int $capacity, int $bucketSize = 4, float $falsePositiveRate = 0.01) {
+        $this->bucketSize = $bucketSize;
+        $this->fingerprintSize = $this->calculateFingerprintSize($falsePositiveRate);
+        $this->numBuckets = (int) ceil($capacity / $bucketSize);
+        $this->buckets = array_fill(0, $this->numBuckets, array_fill(0, $bucketSize, null));
+        $this->maxKicks = 500;  // Maximum relocations before giving up
+    }
+
+    private function calculateFingerprintSize(float $fpr): int {
+        // Fingerprint size based on false positive rate
+        return max(1, (int) ceil(-log2($fpr)));
+    }
+
+    private function fingerprint(string $item): int {
+        $hash = crc32($item);
+        $mask = (1 << $this->fingerprintSize) - 1;
+        $fp = $hash & $mask;
+        return $fp === 0 ? 1 : $fp;  // Ensure non-zero fingerprint
+    }
+
+    private function hash1(string $item): int {
+        return abs(crc32($item)) % $this->numBuckets;
+    }
+
+    private function hash2(int $fingerprint, int $hash1): int {
+        return ($hash1 ^ crc32((string)$fingerprint)) % $this->numBuckets;
+    }
+
+    public function add(string $item): bool {
+        $fp = $this->fingerprint($item);
+        $h1 = $this->hash1($item);
+        $h2 = $this->hash2($fp, $h1);
+
+        // Try first bucket
+        if ($this->insertIntoBucket($h1, $fp)) {
+            return true;
+        }
+
+        // Try second bucket
+        if ($this->insertIntoBucket($h2, $fp)) {
+            return true;
+        }
+
+        // Both buckets full, need to relocate
+        return $this->relocate($h1, $fp);
+    }
+
+    private function insertIntoBucket(int $bucketIndex, int $fingerprint): bool {
+        $bucket = &$this->buckets[$bucketIndex];
+        
+        for ($i = 0; $i < $this->bucketSize; $i++) {
+            if ($bucket[$i] === null) {
+                $bucket[$i] = $fingerprint;
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    private function relocate(int $bucketIndex, int $fingerprint): bool {
+        for ($i = 0; $i < $this->maxKicks; $i++) {
+            $bucket = &$this->buckets[$bucketIndex];
+            $randomIndex = mt_rand(0, $this->bucketSize - 1);
+            $oldFp = $bucket[$randomIndex];
+            
+            $bucket[$randomIndex] = $fingerprint;
+            $fingerprint = $oldFp;
+            
+            $bucketIndex = $this->hash2($fingerprint, $bucketIndex);
+            
+            if ($this->insertIntoBucket($bucketIndex, $fingerprint)) {
+                return true;
+            }
+        }
+        
+        return false;  // Failed after max kicks
+    }
+
+    public function contains(string $item): bool {
+        $fp = $this->fingerprint($item);
+        $h1 = $this->hash1($item);
+        $h2 = $this->hash2($fp, $h1);
+
+        return $this->bucketContains($h1, $fp) || $this->bucketContains($h2, $fp);
+    }
+
+    private function bucketContains(int $bucketIndex, int $fingerprint): bool {
+        $bucket = $this->buckets[$bucketIndex];
+        
+        for ($i = 0; $i < $this->bucketSize; $i++) {
+            if ($bucket[$i] === $fingerprint) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    public function delete(string $item): bool {
+        $fp = $this->fingerprint($item);
+        $h1 = $this->hash1($item);
+        $h2 = $this->hash2($fp, $h1);
+
+        if ($this->removeFromBucket($h1, $fp)) {
+            return true;
+        }
+
+        return $this->removeFromBucket($h2, $fp);
+    }
+
+    private function removeFromBucket(int $bucketIndex, int $fingerprint): bool {
+        $bucket = &$this->buckets[$bucketIndex];
+        
+        for ($i = 0; $i < $this->bucketSize; $i++) {
+            if ($bucket[$i] === $fingerprint) {
+                $bucket[$i] = null;
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    public function getMemoryUsage(): int {
+        return $this->numBuckets * $this->bucketSize * $this->fingerprintSize / 8;
+    }
+}
+
+// Usage
+$filter = new CuckooFilter(10000, 4, 0.01);
+
+$filter->add('user_123');
+$filter->add('user_456');
+
+var_dump($filter->contains('user_123'));  // true
+var_dump($filter->contains('user_999'));  // false
+
+$filter->delete('user_123');
+var_dump($filter->contains('user_123'));  // false
+```
+
+**Time Complexity**: O(1) average for add/contains/delete, O(k) worst case where k is max kicks
+**Space Complexity**: O(n) where n is capacity
+**Advantages**: Supports deletion, better cache performance than Bloom Filters
+**Disadvantages**: More complex implementation, potential for insertion failures
+
+### Real-World Example: Dynamic Blacklist
+
+```php
+# filename: dynamic-blacklist.php
+<?php
+
+declare(strict_types=1);
+
+class DynamicBlacklist {
+    private CuckooFilter $blacklist;
+    private array $metadata = [];  // Store additional info for blacklisted items
+
+    public function __construct(int $capacity = 1000000) {
+        $this->blacklist = new CuckooFilter($capacity, 4, 0.001);
+    }
+
+    public function add(string $item, array $metadata = []): bool {
+        if ($this->blacklist->add($item)) {
+            $this->metadata[$item] = $metadata;
+            return true;
+        }
+        return false;  // Filter full
+    }
+
+    public function remove(string $item): bool {
+        if ($this->blacklist->delete($item)) {
+            unset($this->metadata[$item]);
+            return true;
+        }
+        return false;
+    }
+
+    public function isBlacklisted(string $item): bool {
+        return $this->blacklist->contains($item);
+    }
+
+    public function getMetadata(string $item): ?array {
+        return $this->metadata[$item] ?? null;
+    }
+}
+
+// Usage: IP blacklist with expiration
+$blacklist = new DynamicBlacklist(1000000);
+
+// Add IPs with expiration time
+$blacklist->add('192.168.1.100', ['reason' => 'spam', 'expires' => time() + 3600]);
+$blacklist->add('10.0.0.50', ['reason' => 'abuse', 'expires' => time() + 7200]);
+
+// Check if blacklisted
+if ($blacklist->isBlacklisted('192.168.1.100')) {
+    echo "IP is blacklisted\n";
+}
+
+// Remove expired entries
+// (In production, run periodic cleanup)
+```
+
+## Quotient Filter
+
+A Quotient Filter is a space-efficient probabilistic data structure similar to Bloom Filters but with better cache performance and support for deletion.
+
+### Implementation
+
+```php
+# filename: quotient-filter.php
+<?php
+
+declare(strict_types=1);
+
+class QuotientFilter {
+    private array $slots;
+    private int $quotientBits;
+    private int $remainderBits;
+    private int $numSlots;
+
+    public function __construct(int $capacity, float $falsePositiveRate = 0.01) {
+        $this->quotientBits = (int) ceil(log($capacity, 2));
+        $this->remainderBits = max(3, (int) ceil(-log2($falsePositiveRate)));
+        $this->numSlots = 1 << $this->quotientBits;
+        $this->slots = array_fill(0, $this->numSlots, ['remainder' => 0, 'isOccupied' => false, 'isContinuation' => false, 'isShifted' => false]);
+    }
+
+    private function hash(string $item): array {
+        $hash = crc32($item);
+        $quotient = $hash & ((1 << $this->quotientBits) - 1);
+        $remainder = ($hash >> $this->quotientBits) & ((1 << $this->remainderBits) - 1);
+        return ['quotient' => $quotient, 'remainder' => $remainder === 0 ? 1 : $remainder];
+    }
+
+    public function add(string $item): bool {
+        $h = $this->hash($item);
+        $quotient = $h['quotient'];
+        $remainder = $h['remainder'];
+
+        if ($this->slots[$quotient]['isOccupied']) {
+            // Find run start
+            $start = $this->findRunStart($quotient);
+            // Find insertion point
+            $insertPos = $this->findInsertPosition($start, $remainder);
+            // Shift and insert
+            return $this->insertAt($insertPos, $remainder, $quotient);
+        } else {
+            // Empty slot, insert directly
+            $this->slots[$quotient] = [
+                'remainder' => $remainder,
+                'isOccupied' => true,
+                'isContinuation' => false,
+                'isShifted' => false
+            ];
+            return true;
+        }
+    }
+
+    private function findRunStart(int $quotient): int {
+        $start = $quotient;
+        while ($this->slots[$start]['isShifted']) {
+            $start = ($start - 1 + $this->numSlots) % $this->numSlots;
+        }
+        return $start;
+    }
+
+    private function findInsertPosition(int $start, int $remainder): int {
+        $pos = $start;
+        while ($this->slots[$pos]['isOccupied'] && $this->slots[$pos]['remainder'] < $remainder) {
+            $pos = ($pos + 1) % $this->numSlots;
+        }
+        return $pos;
+    }
+
+    private function insertAt(int $pos, int $remainder, int $quotient): bool {
+        // Simplified insertion - full implementation requires shifting
+        if (!$this->slots[$pos]['isOccupied']) {
+            $this->slots[$pos] = [
+                'remainder' => $remainder,
+                'isOccupied' => true,
+                'isContinuation' => $pos !== $quotient,
+                'isShifted' => $pos !== $quotient
+            ];
+            return true;
+        }
+        return false;  // Slot occupied, would need to shift
+    }
+
+    public function contains(string $item): bool {
+        $h = $this->hash($item);
+        $quotient = $h['quotient'];
+        $remainder = $h['remainder'];
+
+        if (!$this->slots[$quotient]['isOccupied']) {
+            return false;
+        }
+
+        $start = $this->findRunStart($quotient);
+        $pos = $start;
+
+        while ($pos !== ($start + 1) % $this->numSlots || $this->slots[$pos]['isContinuation']) {
+            if ($this->slots[$pos]['remainder'] === $remainder) {
+                return true;
+            }
+            $pos = ($pos + 1) % $this->numSlots;
+        }
+
+        return false;
+    }
+
+    public function getMemoryUsage(): int {
+        return $this->numSlots * ($this->remainderBits + 3);  // 3 bits for flags
+    }
+}
+
+// Usage
+$filter = new QuotientFilter(10000, 0.01);
+$filter->add('item1');
+var_dump($filter->contains('item1'));  // true
+```
+
+**Time Complexity**: O(1) average, O(r) worst case where r is run length
+**Space Complexity**: O(n) where n is capacity
+**Advantages**: Better cache locality, supports deletion (with modifications)
+**Disadvantages**: More complex than Bloom Filter, insertion can be slower
+
 ## HyperLogLog
 
 HyperLogLog estimates the cardinality (number of unique elements) of very large datasets with remarkable accuracy using minimal memory.
@@ -283,6 +657,11 @@ HyperLogLog estimates the cardinality (number of unique elements) of very large 
 ### Implementation
 
 ```php
+# filename: hyperloglog.php
+<?php
+
+declare(strict_types=1);
+
 class HyperLogLog {
     private array $registers;
     private int $precision;
@@ -343,7 +722,10 @@ class HyperLogLog {
     }
 
     private function hash(string $item): int {
-        return crc32($item);
+        // crc32() can return negative values, convert to unsigned 32-bit integer
+        $hash = crc32($item);
+        // Convert signed to unsigned 32-bit integer
+        return $hash < 0 ? (0xFFFFFFFF & $hash) : $hash;
     }
 
     private function countLeadingZeros(int $value): int {
@@ -421,6 +803,11 @@ echo "Memory: " . $hll->getMemoryUsage() . " bytes\n";
 ### Real-World Example: Unique Visitor Counter
 
 ```php
+# filename: unique-visitor-counter.php
+<?php
+
+declare(strict_types=1);
+
 class UniqueVisitorCounter {
     private array $hourly = [];  // HLL per hour
     private array $daily = [];   // HLL per day
@@ -512,6 +899,82 @@ $unique = $counter->getUniqueVisitorsRange(
 echo "Unique visitors this week: $unique\n";
 ```
 
+## Count Sketch
+
+Count Sketch is a variant of Count-Min Sketch that provides better variance properties by using both addition and subtraction, making it more accurate for frequency estimation.
+
+### Implementation
+
+```php
+# filename: count-sketch.php
+<?php
+
+declare(strict_types=1);
+
+class CountSketch {
+    private array $table;
+    private int $width;
+    private int $depth;
+
+    public function __construct(float $epsilon = 0.001, float $delta = 0.01) {
+        $this->width = (int) ceil(M_E / $epsilon);
+        $this->depth = (int) ceil(log(1 / $delta));
+        $this->table = array_fill(0, $this->depth, array_fill(0, $this->width, 0));
+    }
+
+    private function hash(string $item, int $seed): int {
+        return abs(crc32($item . $seed)) % $this->width;
+    }
+
+    private function signHash(string $item, int $seed): int {
+        // Returns +1 or -1
+        return (crc32($item . $seed . 'sign') & 1) ? 1 : -1;
+    }
+
+    public function add(string $item, int $count = 1): void {
+        for ($i = 0; $i < $this->depth; $i++) {
+            $index = $this->hash($item, $i);
+            $sign = $this->signHash($item, $i);
+            $this->table[$i][$index] += $sign * $count;
+        }
+    }
+
+    public function estimate(string $item): int {
+        $estimates = [];
+
+        for ($i = 0; $i < $this->depth; $i++) {
+            $index = $this->hash($item, $i);
+            $sign = $this->signHash($item, $i);
+            $estimates[] = $sign * $this->table[$i][$index];
+        }
+
+        // Return median for better accuracy
+        sort($estimates);
+        $mid = (int)($this->depth / 2);
+        return $estimates[$mid];
+    }
+
+    public function getMemoryUsage(): int {
+        return $this->width * $this->depth * 8;  // 8 bytes per counter
+    }
+}
+
+// Usage
+$cs = new CountSketch(0.001, 0.01);
+
+$cs->add('/home', 5);
+$cs->add('/about', 2);
+$cs->add('/home', 3);
+
+echo $cs->estimate('/home');      // ~8
+echo $cs->estimate('/about');     // ~2
+```
+
+**Time Complexity**: O(d) where d is depth
+**Space Complexity**: O(w × d) where w is width, d is depth
+**Advantages**: Better variance than Count-Min Sketch, median reduces noise
+**Disadvantages**: Slightly more complex, requires sign hash
+
 ## Count-Min Sketch
 
 Count-Min Sketch estimates the frequency of items in a data stream with controlled error bounds.
@@ -519,6 +982,11 @@ Count-Min Sketch estimates the frequency of items in a data stream with controll
 ### Implementation
 
 ```php
+# filename: count-min-sketch.php
+<?php
+
+declare(strict_types=1);
+
 class CountMinSketch {
     private array $table;
     private int $width;
@@ -597,6 +1065,11 @@ echo "Memory: " . $cms->getMemoryUsage() . " bytes\n";
 ### Real-World Example: Heavy Hitters Detection
 
 ```php
+# filename: heavy-hitters-detector.php
+<?php
+
+declare(strict_types=1);
+
 class HeavyHittersDetector {
     private CountMinSketch $cms;
     private array $topK = [];
@@ -678,6 +1151,11 @@ Reservoir sampling maintains a random sample of k items from a stream of unknown
 ### Implementation
 
 ```php
+# filename: reservoir-sampler.php
+<?php
+
+declare(strict_types=1);
+
 class ReservoirSampler {
     private array $reservoir;
     private int $size;
@@ -734,6 +1212,11 @@ print_r(array_slice($sample, 0, 10));
 ### Weighted Reservoir Sampling
 
 ```php
+# filename: weighted-reservoir-sampler.php
+<?php
+
+declare(strict_types=1);
+
 class WeightedReservoirSampler {
     private SplPriorityQueue $reservoir;
     private int $size;
@@ -786,6 +1269,11 @@ $sample = $sampler->getSample();  // 100 users, biased toward high engagement
 Probabilistic counter that uses logarithmic space.
 
 ```php
+# filename: morris-counter.php
+<?php
+
+declare(strict_types=1);
+
 class MorrisCounter {
     private int $x = 0;  // log2(count)
 
@@ -822,14 +1310,492 @@ echo "Error: " . number_format($error, 2) . "%\n";
 echo "Memory: {$counter->getMemoryUsage()} bytes\n";
 ```
 
+## MinHash
+
+MinHash is a probabilistic technique for estimating Jaccard similarity between sets. It's widely used in recommendation systems, duplicate detection, and document similarity.
+
+### Implementation
+
+```php
+# filename: minhash.php
+<?php
+
+declare(strict_types=1);
+
+class MinHash {
+    private int $numHashFunctions;
+    private array $hashFunctions;
+
+    public function __construct(int $numHashFunctions = 128) {
+        $this->numHashFunctions = $numHashFunctions;
+        $this->hashFunctions = [];
+        
+        // Generate random hash functions
+        for ($i = 0; $i < $numHashFunctions; $i++) {
+            $a = mt_rand(1, PHP_INT_MAX);
+            $b = mt_rand(1, PHP_INT_MAX);
+            $this->hashFunctions[] = function($x) use ($a, $b, $i) {
+                return ($a * crc32($x . $i) + $b) % PHP_INT_MAX;
+            };
+        }
+    }
+
+    public function computeSignature(array $set): array {
+        $signature = array_fill(0, $this->numHashFunctions, PHP_INT_MAX);
+
+        foreach ($set as $element) {
+            foreach ($this->hashFunctions as $i => $hashFn) {
+                $hash = $hashFn($element);
+                $signature[$i] = min($signature[$i], $hash);
+            }
+        }
+
+        return $signature;
+    }
+
+    public function jaccardSimilarity(array $signature1, array $signature2): float {
+        $matches = 0;
+        
+        for ($i = 0; $i < $this->numHashFunctions; $i++) {
+            if ($signature1[$i] === $signature2[$i]) {
+                $matches++;
+            }
+        }
+
+        return $matches / $this->numHashFunctions;
+    }
+
+    public function exactJaccard(array $set1, array $set2): float {
+        $intersection = count(array_intersect($set1, $set2));
+        $union = count(array_unique(array_merge($set1, $set2)));
+        return $union > 0 ? $intersection / $union : 0.0;
+    }
+}
+
+// Usage: Document similarity
+$minhash = new MinHash(128);
+
+$doc1 = ['php', 'algorithm', 'data', 'structure', 'hash'];
+$doc2 = ['php', 'algorithm', 'tree', 'graph', 'data'];
+
+$sig1 = $minhash->computeSignature($doc1);
+$sig2 = $minhash->computeSignature($doc2);
+
+$similarity = $minhash->jaccardSimilarity($sig1, $sig2);
+$exact = $minhash->exactJaccard($doc1, $doc2);
+
+echo "MinHash similarity: " . number_format($similarity, 3) . "\n";
+echo "Exact Jaccard: " . number_format($exact, 3) . "\n";
+```
+
+**Time Complexity**: O(n × k) where n is set size, k is number of hash functions
+**Space Complexity**: O(k) for signature
+**Accuracy**: Error decreases with more hash functions (typically 128-512)
+
+### Real-World Example: Recommendation System
+
+```php
+# filename: recommendation-minhash.php
+<?php
+
+declare(strict_types=1);
+
+class RecommendationEngine {
+    private MinHash $minhash;
+    private array $userSignatures = [];
+
+    public function __construct() {
+        $this->minhash = new MinHash(256);
+    }
+
+    public function addUserPreferences(string $userId, array $items): void {
+        $this->userSignatures[$userId] = $this->minhash->computeSignature($items);
+    }
+
+    public function findSimilarUsers(string $userId, float $threshold = 0.5): array {
+        if (!isset($this->userSignatures[$userId])) {
+            return [];
+        }
+
+        $userSig = $this->userSignatures[$userId];
+        $similar = [];
+
+        foreach ($this->userSignatures as $otherId => $otherSig) {
+            if ($otherId === $userId) {
+                continue;
+            }
+
+            $similarity = $this->minhash->jaccardSimilarity($userSig, $otherSig);
+            if ($similarity >= $threshold) {
+                $similar[$otherId] = $similarity;
+            }
+        }
+
+        arsort($similar);
+        return $similar;
+    }
+
+    public function recommend(string $userId, int $topN = 10): array {
+        $similarUsers = $this->findSimilarUsers($userId, 0.3);
+        // Return top N recommendations based on similar users
+        return array_slice($similarUsers, 0, $topN, true);
+    }
+}
+
+// Usage
+$engine = new RecommendationEngine();
+
+$engine->addUserPreferences('user1', ['php', 'laravel', 'mysql', 'redis']);
+$engine->addUserPreferences('user2', ['php', 'laravel', 'postgres', 'redis']);
+$engine->addUserPreferences('user3', ['python', 'django', 'postgres']);
+
+$similar = $engine->findSimilarUsers('user1', 0.5);
+print_r($similar);  // user2 with high similarity
+```
+
+## T-Digest
+
+T-Digest is a probabilistic data structure for estimating quantiles (percentiles) with high accuracy and low memory usage. It's essential for monitoring systems and analytics.
+
+### Implementation
+
+```php
+# filename: t-digest.php
+<?php
+
+declare(strict_types=1);
+
+class TDigest {
+    private array $centroids = [];
+    private float $compression;
+    private int $totalCount = 0;
+
+    public function __construct(float $compression = 100.0) {
+        $this->compression = $compression;
+    }
+
+    public function add(float $value, int $count = 1): void {
+        $this->totalCount += $count;
+
+        if (empty($this->centroids)) {
+            $this->centroids[] = ['mean' => $value, 'count' => $count];
+            return;
+        }
+
+        // Find insertion point
+        $index = $this->findInsertionPoint($value);
+        
+        if ($index === -1) {
+            // Add to end
+            $this->centroids[] = ['mean' => $value, 'count' => $count];
+        } else {
+            // Merge with existing centroid or insert
+            $this->mergeOrInsert($index, $value, $count);
+        }
+
+        // Compress if needed
+        if (count($this->centroids) > $this->compression * 2) {
+            $this->compress();
+        }
+    }
+
+    private function findInsertionPoint(float $value): int {
+        for ($i = 0; $i < count($this->centroids); $i++) {
+            if ($this->centroids[$i]['mean'] >= $value) {
+                return $i;
+            }
+        }
+        return -1;
+    }
+
+    private function mergeOrInsert(int $index, float $value, int $count): void {
+        $centroid = &$this->centroids[$index];
+        $k1 = $this->quantile($index - 1);
+        $k2 = $this->quantile($index);
+
+        $threshold = 4 * $this->totalCount * $this->q($k2) * (1 - $this->q($k2)) / $this->compression;
+
+        if ($centroid['count'] + $count <= $threshold) {
+            // Merge
+            $centroid['mean'] = ($centroid['mean'] * $centroid['count'] + $value * $count) / ($centroid['count'] + $count);
+            $centroid['count'] += $count;
+        } else {
+            // Insert new centroid
+            array_splice($this->centroids, $index, 0, [['mean' => $value, 'count' => $count]]);
+        }
+    }
+
+    private function quantile(int $index): float {
+        $sum = 0;
+        for ($i = 0; $i < $index; $i++) {
+            $sum += $this->centroids[$i]['count'];
+        }
+        return ($sum + $this->centroids[$index]['count'] / 2) / $this->totalCount;
+    }
+
+    private function q(float $k): float {
+        return ($k / $this->compression) * (1 - $k / $this->compression);
+    }
+
+    private function compress(): void {
+        // Simplified compression - merge nearby centroids
+        $compressed = [];
+        $i = 0;
+
+        while ($i < count($this->centroids)) {
+            $merged = $this->centroids[$i];
+            $j = $i + 1;
+
+            while ($j < count($this->centroids) && 
+                   abs($this->centroids[$j]['mean'] - $merged['mean']) < 0.01) {
+                $merged['mean'] = ($merged['mean'] * $merged['count'] + 
+                                  $this->centroids[$j]['mean'] * $this->centroids[$j]['count']) /
+                                  ($merged['count'] + $this->centroids[$j]['count']);
+                $merged['count'] += $this->centroids[$j]['count'];
+                $j++;
+            }
+
+            $compressed[] = $merged;
+            $i = $j;
+        }
+
+        $this->centroids = $compressed;
+    }
+
+    public function quantile(float $q): float {
+        if ($q <= 0) {
+            return $this->centroids[0]['mean'];
+        }
+        if ($q >= 1) {
+            return $this->centroids[count($this->centroids) - 1]['mean'];
+        }
+
+        $target = $q * $this->totalCount;
+        $sum = 0;
+
+        foreach ($this->centroids as $centroid) {
+            $sum += $centroid['count'];
+            if ($sum >= $target) {
+                return $centroid['mean'];
+            }
+        }
+
+        return $this->centroids[count($this->centroids) - 1]['mean'];
+    }
+
+    public function percentile(float $p): float {
+        return $this->quantile($p / 100);
+    }
+
+    public function getMemoryUsage(): int {
+        return count($this->centroids) * 16;  // ~16 bytes per centroid
+    }
+}
+
+// Usage: Performance monitoring
+$tdigest = new TDigest(100.0);
+
+// Add response times
+for ($i = 0; $i < 10000; $i++) {
+    $tdigest->add(mt_rand(10, 500));  // Response times in ms
+}
+
+echo "P50 (median): " . $tdigest->percentile(50) . "ms\n";
+echo "P95: " . $tdigest->percentile(95) . "ms\n";
+echo "P99: " . $tdigest->percentile(99) . "ms\n";
+echo "Memory: " . $tdigest->getMemoryUsage() . " bytes\n";
+```
+
+**Time Complexity**: O(log n) for insertion, O(log n) for quantile query
+**Space Complexity**: O(compression) - typically 100-1000 centroids
+**Accuracy**: High accuracy for percentiles, especially tail percentiles (P95, P99)
+
+### Real-World Example: API Latency Monitoring
+
+```php
+# filename: latency-monitor.php
+<?php
+
+declare(strict_types=1);
+
+class LatencyMonitor {
+    private TDigest $latencies;
+    private int $windowSize;
+    private array $recentLatencies = [];
+
+    public function __construct(int $windowSize = 1000) {
+        $this->latencies = new TDigest(200.0);
+        $this->windowSize = $windowSize;
+    }
+
+    public function record(float $latencyMs): void {
+        $this->latencies->add($latencyMs);
+        $this->recentLatencies[] = $latencyMs;
+
+        if (count($this->recentLatencies) > $this->windowSize) {
+            array_shift($this->recentLatencies);
+        }
+    }
+
+    public function getStats(): array {
+        return [
+            'p50' => $this->latencies->percentile(50),
+            'p75' => $this->latencies->percentile(75),
+            'p90' => $this->latencies->percentile(90),
+            'p95' => $this->latencies->percentile(95),
+            'p99' => $this->latencies->percentile(99),
+            'p99_9' => $this->latencies->percentile(99.9),
+            'memory_bytes' => $this->latencies->getMemoryUsage()
+        ];
+    }
+
+    public function isSlow(float $latencyMs, float $p95Threshold): bool {
+        return $latencyMs > $p95Threshold;
+    }
+}
+
+// Usage
+$monitor = new LatencyMonitor();
+
+// Record API response times
+$monitor->record(45.2);
+$monitor->record(38.9);
+$monitor->record(120.5);
+$monitor->record(52.1);
+// ... thousands more
+
+$stats = $monitor->getStats();
+echo "P95 latency: " . $stats['p95'] . "ms\n";
+echo "P99 latency: " . $stats['p99'] . "ms\n";
+```
+
+## Locality-Sensitive Hashing (LSH)
+
+LSH is a technique for approximate nearest neighbor search in high-dimensional spaces. It's used in recommendation systems, image search, and similarity detection.
+
+### Implementation
+
+```php
+# filename: lsh.php
+<?php
+
+declare(strict_types=1);
+
+class LSH {
+    private int $numHashTables;
+    private int $numHashFunctions;
+    private array $hashTables;
+    private array $randomVectors;
+
+    public function __construct(int $numHashTables = 10, int $numHashFunctions = 5) {
+        $this->numHashTables = $numHashTables;
+        $this->numHashFunctions = $numHashFunctions;
+        $this->hashTables = array_fill(0, $numHashTables, []);
+        $this->randomVectors = [];
+
+        // Generate random vectors for each hash table
+        for ($i = 0; $i < $numHashTables; $i++) {
+            $this->randomVectors[$i] = [];
+            for ($j = 0; $j < $numHashFunctions; $j++) {
+                $this->randomVectors[$i][$j] = $this->generateRandomVector(128);  // 128-dim vectors
+            }
+        }
+    }
+
+    private function generateRandomVector(int $dim): array {
+        $vector = [];
+        for ($i = 0; $i < $dim; $i++) {
+            $vector[] = (mt_rand() / mt_getrandmax() - 0.5) * 2;
+        }
+        return $vector;
+    }
+
+    private function dotProduct(array $vec1, array $vec2): float {
+        $sum = 0.0;
+        for ($i = 0; $i < min(count($vec1), count($vec2)); $i++) {
+            $sum += $vec1[$i] * $vec2[$i];
+        }
+        return $sum;
+    }
+
+    private function hash(array $vector, int $tableIndex): string {
+        $hash = '';
+        foreach ($this->randomVectors[$tableIndex] as $randomVec) {
+            $dot = $this->dotProduct($vector, $randomVec);
+            $hash .= $dot >= 0 ? '1' : '0';
+        }
+        return $hash;
+    }
+
+    public function insert(string $id, array $vector): void {
+        for ($i = 0; $i < $this->numHashTables; $i++) {
+            $hash = $this->hash($vector, $i);
+            if (!isset($this->hashTables[$i][$hash])) {
+                $this->hashTables[$i][$hash] = [];
+            }
+            $this->hashTables[$i][$hash][] = $id;
+        }
+    }
+
+    public function query(array $vector, int $maxResults = 10): array {
+        $candidates = [];
+        
+        for ($i = 0; $i < $this->numHashTables; $i++) {
+            $hash = $this->hash($vector, $i);
+            if (isset($this->hashTables[$i][$hash])) {
+                $candidates = array_merge($candidates, $this->hashTables[$i][$hash]);
+            }
+        }
+
+        // Remove duplicates and return top results
+        $candidates = array_unique($candidates);
+        return array_slice($candidates, 0, $maxResults);
+    }
+
+    public function cosineSimilarity(array $vec1, array $vec2): float {
+        $dot = $this->dotProduct($vec1, $vec2);
+        $norm1 = sqrt($this->dotProduct($vec1, $vec1));
+        $norm2 = sqrt($this->dotProduct($vec2, $vec2));
+        
+        if ($norm1 === 0.0 || $norm2 === 0.0) {
+            return 0.0;
+        }
+        
+        return $dot / ($norm1 * $norm2);
+    }
+}
+
+// Usage: Image similarity search
+$lsh = new LSH(20, 8);
+
+// Insert image feature vectors
+$lsh->insert('image1', [0.1, 0.2, 0.3, /* ... 128 dimensions */]);
+$lsh->insert('image2', [0.15, 0.25, 0.35, /* ... */]);
+$lsh->insert('image3', [0.9, 0.8, 0.7, /* ... */]);
+
+// Query similar images
+$queryVector = [0.12, 0.22, 0.32, /* ... */];
+$similar = $lsh->query($queryVector, 5);
+print_r($similar);  // Returns candidate IDs for similar images
+```
+
+**Time Complexity**: O(d × L) for insertion/query where d is dimensions, L is num hash tables
+**Space Complexity**: O(n × L) where n is number of items
+**Use Cases**: Image search, recommendation systems, duplicate detection, clustering
+
 ## Skip List (Probabilistic BST)
 
 ```php
+# filename: skip-list.php
+<?php
+
+declare(strict_types=1);
+
 class SkipNode {
-    public $value;
+    public mixed $value;
     public array $forward = [];
 
-    public function __construct($value) {
+    public function __construct(mixed $value) {
         $this->value = $value;
     }
 }
@@ -957,8 +1923,14 @@ var_dump($skipList->search(7));  // false
 | Algorithm | Use Case | Space | Accuracy | Operations |
 |-----------|----------|-------|----------|------------|
 | Bloom Filter | Membership testing | O(m) | No false negatives | Add, Contains |
+| Cuckoo Filter | Membership with deletion | O(m) | No false negatives | Add, Contains, Delete |
+| Quotient Filter | Cache-friendly membership | O(m) | No false negatives | Add, Contains, Delete |
 | HyperLogLog | Cardinality estimation | O(2^p) | ±0.81% (p=14) | Add, Count, Merge |
 | Count-Min Sketch | Frequency estimation | O(w×d) | ±εN | Add, Estimate |
+| Count Sketch | Frequency (better variance) | O(w×d) | ±εN (median) | Add, Estimate |
+| MinHash | Set similarity (Jaccard) | O(k) | Error ∝ 1/√k | Compute, Similarity |
+| T-Digest | Quantile estimation | O(compression) | High accuracy | Add, Quantile |
+| LSH | Nearest neighbor search | O(n×L) | Approximate | Insert, Query |
 | Reservoir Sampling | Random sampling | O(k) | Exact distribution | Add, GetSample |
 | Morris Counter | Approximate counting | O(1) | ±√n | Increment, Count |
 | Skip List | Sorted set | O(n log n) | Exact | Insert, Search, Delete |
@@ -1086,7 +2058,11 @@ class QueryBloomOptimizer {
     public function buildIndex(string $table, string $column): void {
         echo "Building Bloom filter for $table.$column...\n";
 
-        $stmt = $this->db->query("SELECT DISTINCT $column FROM $table");
+        // Use backtick quoting for identifiers to prevent SQL injection
+        // In production, validate table/column names against whitelist
+        $quotedTable = "`" . str_replace("`", "``", $table) . "`";
+        $quotedColumn = "`" . str_replace("`", "``", $column) . "`";
+        $stmt = $this->db->query("SELECT DISTINCT {$quotedColumn} FROM {$quotedTable}");
         $values = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
         $bloom = new BloomFilter(count($values), 0.01);
@@ -1777,8 +2753,14 @@ ProbabilisticBenchmarks::benchmarkHyperLogLog();
 Probabilistic algorithms enable processing of massive datasets that would be impossible with exact algorithms:
 
 - **Bloom Filters**: Fast membership testing with minimal memory (use cases: cache layers, database optimization, blacklists)
+- **Cuckoo Filter**: Membership testing with deletion support (use cases: dynamic blacklists, cache invalidation)
+- **Quotient Filter**: Cache-friendly membership structure (use cases: high-performance lookups, better cache locality)
 - **HyperLogLog**: Count unique items with 0.81% error in ~16KB (use cases: analytics, unique visitors, cardinality estimation)
 - **Count-Min Sketch**: Track frequencies with bounded error (use cases: heavy hitters, trending topics, frequency queries)
+- **Count Sketch**: Frequency estimation with better variance (use cases: when variance matters more than worst-case error)
+- **MinHash**: Estimate Jaccard similarity between sets (use cases: recommendation systems, duplicate detection, document similarity)
+- **T-Digest**: Estimate quantiles/percentiles accurately (use cases: performance monitoring, SLA tracking, analytics dashboards)
+- **LSH**: Approximate nearest neighbor search (use cases: image similarity, recommendation systems, clustering)
 - **Reservoir Sampling**: Maintain random samples from streams (use cases: sampling, statistics, monitoring)
 - **Morris Counter**: Count in logarithmic space (use cases: large counters, space-constrained environments)
 
@@ -1793,22 +2775,53 @@ Probabilistic algorithms enable processing of massive datasets that would be imp
 - Real-time processing required
 - Space/time constraints critical
 
+## Wrap-up
+
+You've mastered probabilistic algorithms - the secret weapons of big data systems! Here's what you've accomplished:
+
+- ✓ Implemented Bloom filters for space-efficient membership testing
+- ✓ Built Cuckoo Filters and Quotient Filters for membership with deletion support
+- ✓ Created HyperLogLog structures for cardinality estimation with minimal memory
+- ✓ Implemented Count-Min Sketch and Count Sketch for frequency tracking
+- ✓ Applied MinHash for set similarity estimation (Jaccard similarity)
+- ✓ Built T-Digest for accurate quantile/percentile estimation
+- ✓ Implemented LSH for approximate nearest neighbor search
+- ✓ Applied reservoir sampling for random sampling from streams
+- ✓ Understood the accuracy/efficiency trade-offs in probabilistic algorithms
+- ✓ Explored advanced use cases like distributed caching, query optimization, and recommendation systems
+
+These algorithms enable you to handle datasets that would be impossible with exact algorithms, trading perfect accuracy for dramatic space and time improvements. You're now equipped to build systems that process billions of data points with kilobytes of memory.
+
+## Further Reading
+
+- [Bloom Filter Wikipedia](https://en.wikipedia.org/wiki/Bloom_filter) — Comprehensive overview of Bloom filter theory and applications
+- [HyperLogLog Paper](https://algo.inria.fr/flajolet/Publications/FlFuGaMe07.pdf) — Original HyperLogLog research paper by Flajolet et al.
+- [Count-Min Sketch Paper](https://www.cs.princeton.edu/courses/archive/spring04/cos598B/bib/Cormode_Sketch.pdf) — Original Count-Min Sketch paper
+- [Probabilistic Data Structures](https://highlyscalable.wordpress.com/2012/05/01/probabilistic-structures-web-analytics-data-mining/) — Excellent blog post on probabilistic data structures
+- [Streaming Algorithms](https://en.wikipedia.org/wiki/Streaming_algorithm) — Wikipedia overview of streaming algorithms
+
 ## Next Steps
 
-- **Chapter 33: String Algorithms Deep Dive** - Advanced string matching
-- **Chapter 36: Stream Processing Algorithms** - Real-time data processing
-- **Chapter 26: Approximate Algorithms** - More approximation techniques
+- **Chapter 33: String Algorithms Deep Dive** — Advanced string matching
+- **Chapter 36: Stream Processing Algorithms** — Real-time data processing
+- **Chapter 26: Approximate Algorithms** — More approximation techniques
 
+
+<ChapterCheckbox 
+  seriesId="php-algorithms"
+  chapterId="32"
+  label="Probabilistic Algorithms mastered!"
+/>
 ## 💻 Code Samples
 
 All code examples from this chapter are available in the GitHub repository:
 
-**[View Chapter 32 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-32)**
+**[View Chapter 32 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/php-algorithms/chapter-32)**
 
 Clone the repository to run examples:
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
-cd codewithphp/code-samples/php-algorithms/chapter-32
+cd codewithphp/code/php-algorithms/chapter-32
 php 01-*.php
 ```
 

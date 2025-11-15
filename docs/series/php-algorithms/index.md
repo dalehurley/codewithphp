@@ -5,826 +5,689 @@ series: php-algorithms
 order: 0
 difficulty: Intermediate
 prerequisites:
-  - "Solid understanding of PHP basics"
-  - "Familiarity with arrays and loops"
-  - "Basic understanding of functions and recursion"
-  - "Understanding of PHP classes and objects"
+  [
+    "Solid understanding of PHP basics",
+    "Familiarity with arrays and loops",
+    "Basic understanding of functions and recursion",
+    "Understanding of PHP classes and objects",
+  ]
 ---
 
-# Algorithms for PHP Developers
-
-<div class="series-hero">
-  <div class="hero-content">
-    <p class="hero-tagline">Master Computer Science Algorithms with PHP</p>
-    <p class="hero-description">
-      Learn essential algorithms and data structures through practical PHP implementations. Build a solid foundation in algorithmic thinking to write more efficient, scalable applications.
-    </p>
-  </div>
+<div class="breadcrumbs">
+  <a href="/">Home</a>
+  <span class="breadcrumbs-separator">›</span>
+  <a href="/#choose-your-learning-path">Series</a>
+  <span class="breadcrumbs-separator">›</span>
+  <span>Algorithms for PHP Developers</span>
 </div>
 
-## 🚀 Quick Start
+![Algorithms for PHP Developers](/images/php-algorithms/chapter-00-quick-start-guide-hero-full.webp)
 
-**New to algorithms?** Start with [Chapter 0: Quick Start Guide](/series/php-algorithms/chapters/00-quick-start-guide/) for a 5-minute overview.
+# Algorithms for PHP Developers <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
 
-**Want the essentials fast?** Check out [Appendix A: Complexity Cheat Sheet](/series/php-algorithms/appendices/a-complexity-cheat-sheet/) for quick reference.
+## Overview
 
-**Building a specific feature?** Jump to [Use Case Navigation](#navigation-by-use-case) below to find the algorithms you need.
+Welcome to **Algorithms for PHP Developers** — a comprehensive, hands-on course that teaches you essential computer science algorithms through practical PHP implementations. Whether you're preparing for technical interviews, optimizing production applications, or simply wanting to understand how algorithms work under the hood, this series will give you the knowledge and skills to solve complex problems efficiently.
 
----
+Algorithms and data structures form the foundation of computer science and software engineering. Understanding them transforms you from someone who writes code that works to someone who writes code that scales, performs efficiently, and handles edge cases gracefully. Yet many self-taught developers—and even experienced PHP developers—lack formal CS training and feel intimidated by algorithmic concepts.
 
-## 📚 What You'll Learn
+This series bridges that gap. You'll learn classic algorithms explained in developer-friendly terms, implemented in modern PHP 8.4, and applied to real-world scenarios. From sorting thousands of records to finding the shortest path in a routing system, from optimizing database queries to building recommendation engines—you'll understand when and how to apply each algorithm effectively.
 
-This series bridges the gap between theoretical computer science and practical PHP development. You'll learn how classic algorithms work, when to use them, and how to implement them effectively in PHP.
+By the end of this series, you'll have mastered Big O notation for analyzing complexity, implemented dozens of algorithms from scratch, explored advanced data structures, and built practical projects that demonstrate real-world applications. More importantly, you'll have developed algorithmic thinking—the ability to break down complex problems and design efficient solutions.
 
-### Core Topics Covered
+## Who This Is For
 
-- **Algorithm Analysis**: Understanding Big O notation and complexity
-- **Sorting Algorithms**: From bubble sort to quicksort
-- **Searching Techniques**: Linear and binary search strategies
-- **Data Structures**: Arrays, linked lists, stacks, queues, and trees
-- **Recursion**: Mastering recursive problem-solving
-- **Graph Algorithms**: Traversal and pathfinding
-- **Dynamic Programming**: Optimization techniques
-- **String Algorithms**: Pattern matching and manipulation
-- **Hash Tables**: Fast lookups and collision handling
-- **Concurrent & Parallel**: Modern async algorithms
-- **Probabilistic Algorithms**: Bloom filters and approximation
-- **Real-World Applications**: When and how to use each algorithm
+This series is designed for:
 
----
+- **PHP developers** (intermediate to advanced) who want to level up their problem-solving skills
+- **Self-taught programmers** looking to fill in computer science fundamentals
+- **Interview preppers** who need to master algorithms in a PHP context
+- **Web developers** wanting to optimize application performance and scalability
+- **Anyone transitioning** from "code that works" to "code that scales efficiently"
 
-## 🎯 Learning Paths
+You don't need a computer science degree or advanced mathematics knowledge. If you're comfortable with PHP syntax, arrays, loops, functions, and basic object-oriented programming, you're ready to start.
 
-Choose your learning path based on your goals and experience level:
+## Prerequisites
 
-### Path 1: Absolute Beginner
-**Time: ~12 hours | Perfect if you're new to algorithms**
+**Software Requirements:**
 
-1. [Chapter 0: Quick Start Guide](/series/php-algorithms/chapters/00-quick-start-guide/) - Start here!
-2. [Chapter 1: Big O Notation](/series/php-algorithms/chapters/01-algorithm-complexity-big-o/)
-3. [Chapter 2: Benchmarking](/series/php-algorithms/chapters/02-benchmarking-performance-testing/)
-4. [Chapter 5: Bubble & Selection Sort](/series/php-algorithms/chapters/05-bubble-selection-sort/)
-5. [Chapter 11: Linear Search](/series/php-algorithms/chapters/11-linear-search/)
-6. [Chapter 15: Arrays](/series/php-algorithms/chapters/15-arrays-dynamic-arrays/)
-7. [Chapter 17: Stacks & Queues](/series/php-algorithms/chapters/17-stacks-queues/)
-8. [Chapter 28: Algorithm Selection Guide](/series/php-algorithms/chapters/28-algorithm-selection-guide/)
+- **PHP 8.4** (we'll use modern PHP features throughout)
+- **Composer** (PHP's dependency manager for some chapters)
+- **Text editor or IDE** (VS Code, PhpStorm, or your preferred editor)
+- **Terminal/Command line** access
 
-### Path 2: Interview Preparation
-**Time: ~25 hours | Master common interview questions**
+**Time Commitment:**
 
-1. [Chapter 0: Quick Start Guide](/series/php-algorithms/chapters/00-quick-start-guide/)
-2. All Sorting Chapters (5-10)
-3. All Searching Chapters (11-14)
-4. [Chapter 15: Arrays](/series/php-algorithms/chapters/15-arrays-dynamic-arrays/)
-5. [Chapter 18-19: Trees & Traversals](/series/php-algorithms/chapters/18-trees-binary-search-trees/)
-6. [Chapter 22-23: DFS & BFS](/series/php-algorithms/chapters/22-depth-first-search/)
-7. All Dynamic Programming (25-26)
-8. [Chapter 30: Real-World Case Studies](/series/php-algorithms/chapters/30-real-world-case-studies/)
+- **Estimated total**: 40–50 hours to complete all chapters (including appendices)
+- **Per chapter**: 30 minutes to 90 minutes
+- **Core learning path (Beginner)**: 12 hours
+- **Interview preparation path**: 25 hours
+- **Production optimization path**: 15 hours
+- **Complete mastery path**: 40+ hours
 
-### Path 3: Production Optimization
-**Time: ~15 hours | Optimize real applications**
+**Skill Assumptions:**
 
-1. [Chapter 0: Quick Start Guide](/series/php-algorithms/chapters/00-quick-start-guide/)
-2. [Chapter 2: Benchmarking](/series/php-algorithms/chapters/02-benchmarking-performance-testing/)
-3. [Chapter 13: Hash Tables](/series/php-algorithms/chapters/13-hash-tables-hash-functions/)
-4. [Chapter 27: Caching Strategies](/series/php-algorithms/chapters/27-caching-memoization-strategies/)
-5. [Chapter 28: Algorithm Selection](/series/php-algorithms/chapters/28-algorithm-selection-guide/)
-6. [Chapter 29: Performance Optimization](/series/php-algorithms/chapters/29-performance-optimization/)
-7. [Chapter 30: Real-World Case Studies](/series/php-algorithms/chapters/30-real-world-case-studies/)
-8. [Chapter 36: Stream Processing](/series/php-algorithms/chapters/36-stream-processing-algorithms/)
-9. [Appendix B: PHP Performance Tips](/series/php-algorithms/appendices/b-php-performance-tips/)
+- You can write PHP functions and classes confidently
+- You understand arrays, loops, and conditional statements
+- You're familiar with basic recursion concepts
+- You can read and understand PHP documentation
+- No prior algorithms or data structures knowledge required
 
-### Path 4: Complete Mastery
-**Time: ~40 hours | Full series coverage**
+## What You'll Build
 
-Complete all chapters in order from 0-36, including all appendices.
+<ProgressTracker seriesId="php-algorithms" :totalChapters="37" title="Your Progress" />
 
----
+By working through this series, you will:
 
-## 🗂️ Navigation by Topic
+1. **Implement classic algorithms from scratch** in modern PHP 8.4:
+   - 6 sorting algorithms with performance comparisons
+   - 4 searching techniques for different use cases
+   - 6 data structures (linked lists, stacks, queues, trees)
+   - 5 graph algorithms for traversal and pathfinding
+   - Dynamic programming solutions for optimization problems
+   - Advanced string matching and pattern recognition
 
-### Sorting & Ordering
-- [Chapter 5: Bubble & Selection Sort](/series/php-algorithms/chapters/05-bubble-selection-sort/)
-- [Chapter 6: Insertion & Merge Sort](/series/php-algorithms/chapters/06-insertion-merge-sort/)
-- [Chapter 7: Quick Sort](/series/php-algorithms/chapters/07-quick-sort-pivot-strategies/)
-- [Chapter 8: Heap Sort](/series/php-algorithms/chapters/08-heap-sort-priority-queues/)
-- [Chapter 9: Comparing Sorts](/series/php-algorithms/chapters/09-comparing-sorting-algorithms/)
-- [Chapter 10: PHP Built-in Sorting](/series/php-algorithms/chapters/10-php-builtin-sorting/)
+2. **Build practical projects** demonstrating real-world applications:
+   - Product recommendation engine using collaborative filtering
+   - Social feed ranking algorithm
+   - Search engine with full-text indexing
+   - Data pipeline for ETL processing
+   - Route optimization system
+   - Caching strategies for high-performance applications
 
-### Searching & Finding
-- [Chapter 11: Linear Search](/series/php-algorithms/chapters/11-linear-search/)
-- [Chapter 12: Binary Search](/series/php-algorithms/chapters/12-binary-search/)
-- [Chapter 13: Hash Tables](/series/php-algorithms/chapters/13-hash-tables-hash-functions/)
-- [Chapter 14: String Search](/series/php-algorithms/chapters/14-string-search-algorithms/)
-- [Chapter 33: Advanced String Algorithms](/series/php-algorithms/chapters/33-string-algorithms-deep-dive/)
+3. **Master algorithmic analysis**:
+   - Big O notation for time and space complexity
+   - Benchmarking framework for measuring performance
+   - Trade-off analysis for choosing the right algorithm
+   - Performance optimization techniques
 
-### Data Structures
-- [Chapter 15: Arrays](/series/php-algorithms/chapters/15-arrays-dynamic-arrays/)
-- [Chapter 16: Linked Lists](/series/php-algorithms/chapters/16-linked-lists/)
-- [Chapter 17: Stacks & Queues](/series/php-algorithms/chapters/17-stacks-queues/)
-- [Chapter 18: Binary Search Trees](/series/php-algorithms/chapters/18-trees-binary-search-trees/)
-- [Chapter 19: Tree Traversals](/series/php-algorithms/chapters/19-tree-traversal-algorithms/)
-- [Chapter 20: Balanced Trees](/series/php-algorithms/chapters/20-balanced-trees-avl-red-black/)
+4. **Gain interview-ready skills**:
+   - Common interview questions solved in PHP
+   - Problem-solving strategies and patterns
+   - Time/space complexity analysis for any algorithm
+   - Communication techniques for explaining your approach
 
-### Graph Algorithms
-- [Chapter 21: Graph Representations](/series/php-algorithms/chapters/21-graph-representations/)
-- [Chapter 22: Depth-First Search](/series/php-algorithms/chapters/22-depth-first-search/)
-- [Chapter 23: Breadth-First Search](/series/php-algorithms/chapters/23-breadth-first-search/)
-- [Chapter 24: Dijkstra's Algorithm](/series/php-algorithms/chapters/24-dijkstra-shortest-path/)
+Every code example is production-ready, following PHP 8.4 best practices, and includes comprehensive explanations of how and why it works.
 
-### Optimization Techniques
-- [Chapter 25: Dynamic Programming Fundamentals](/series/php-algorithms/chapters/25-dynamic-programming-fundamentals/)
-- [Chapter 26: Advanced Dynamic Programming](/series/php-algorithms/chapters/26-advanced-dynamic-programming/)
-- [Chapter 27: Caching & Memoization](/series/php-algorithms/chapters/27-caching-memoization-strategies/)
-- [Chapter 29: Performance Optimization](/series/php-algorithms/chapters/29-performance-optimization/)
+## Learning Objectives
 
-### Advanced Topics
-- [Chapter 31: Concurrent Algorithms](/series/php-algorithms/chapters/31-concurrent-algorithms/)
-- [Chapter 32: Probabilistic Algorithms](/series/php-algorithms/chapters/32-probabilistic-algorithms/)
-- [Chapter 33: String Algorithms Deep Dive](/series/php-algorithms/chapters/33-string-algorithms-deep-dive/)
-- [Chapter 34: Geometric Algorithms](/series/php-algorithms/chapters/34-geometric-algorithms/)
-- [Chapter 35: Cryptographic Algorithms](/series/php-algorithms/chapters/35-cryptographic-algorithms/)
-- [Chapter 36: Stream Processing](/series/php-algorithms/chapters/36-stream-processing-algorithms/)
+By the end of this series, you will be able to:
 
----
+- **Analyze algorithm efficiency** using Big O notation with confidence
+- **Implement sorting algorithms** and know which to use when
+- **Master search techniques** from linear to binary to hash-based lookups
+- **Build custom data structures** when PHP's arrays aren't enough
+- **Solve problems recursively** and understand when recursion makes sense
+- **Traverse and search graphs** for routing and relationship problems
+- **Apply dynamic programming** to optimize complex calculations
+- **Choose the right algorithm** for any given problem and dataset size
+- **Optimize existing code** by identifying bottlenecks and applying better algorithms
+- **Ace technical interviews** by solving algorithmic problems confidently in PHP
 
-## 🛠️ Navigation by Use Case
+## How This Series Works
 
-### Building Web Applications
-**E-commerce, Social Media, SaaS**
-- [Chapter 13: Hash Tables](/series/php-algorithms/chapters/13-hash-tables-hash-functions/) - Fast user lookups
-- [Chapter 27: Caching Strategies](/series/php-algorithms/chapters/27-caching-memoization-strategies/) - Speed up responses
-- [Chapter 30: Case Study - Product Recommendations](/series/php-algorithms/chapters/30-real-world-case-studies/)
-- [Chapter 30: Case Study - Social Feed Ranking](/series/php-algorithms/chapters/30-real-world-case-studies/)
-- [Chapter 32: Bloom Filters](/series/php-algorithms/chapters/32-probabilistic-algorithms/) - Membership testing
+This series follows a **progressive, hands-on approach**: you'll learn each algorithm by understanding the concept, implementing it yourself in PHP, analyzing its performance, and seeing real-world applications.
 
-### Building APIs
-**REST APIs, GraphQL, Microservices**
-- [Chapter 27: Caching](/series/php-algorithms/chapters/27-caching-memoization-strategies/) - API response caching
-- [Chapter 28: Algorithm Selection](/series/php-algorithms/chapters/28-algorithm-selection-guide/) - Choose the right approach
-- [Chapter 29: Performance](/series/php-algorithms/chapters/29-performance-optimization/) - Optimize query performance
-- [Chapter 36: Stream Processing](/series/php-algorithms/chapters/36-stream-processing-algorithms/) - Handle large payloads
+Each chapter includes:
 
-### Data Processing
-**ETL, Analytics, Batch Jobs**
-- [Chapter 6: Merge Sort](/series/php-algorithms/chapters/06-insertion-merge-sort/) - Sort large datasets
-- [Chapter 25: Dynamic Programming](/series/php-algorithms/chapters/25-dynamic-programming-fundamentals/) - Optimize calculations
-- [Chapter 30: Case Study - Data Pipelines](/series/php-algorithms/chapters/30-real-world-case-studies/)
-- [Chapter 31: Parallel Processing](/series/php-algorithms/chapters/31-concurrent-algorithms/)
-- [Chapter 36: Stream Processing](/series/php-algorithms/chapters/36-stream-processing-algorithms/)
+- **Clear explanations** of algorithms using developer-friendly language
+- **Step-by-step implementations** in modern PHP 8.4
+- **Big O analysis** for understanding complexity
+- **Practical examples** showing when and why to use each algorithm
+- **Performance comparisons** with benchmarking results
+- **Hands-on exercises** to reinforce learning
+- **Troubleshooting tips** for common implementation challenges
+- **Further reading** for deeper exploration
 
-### Search & Discovery
-**Search Engines, Autocomplete, Recommendations**
-- [Chapter 14: String Search](/series/php-algorithms/chapters/14-string-search-algorithms/) - Pattern matching
-- [Chapter 30: Case Study - Search Engine](/series/php-algorithms/chapters/30-real-world-case-studies/)
-- [Chapter 32: Probabilistic](/series/php-algorithms/chapters/32-probabilistic-algorithms/) - Approximate matching
-- [Chapter 33: Advanced String](/series/php-algorithms/chapters/33-string-algorithms-deep-dive/) - Trie, suffix trees
+We'll start with fundamentals (Big O notation, benchmarking), progress through classic algorithms (sorting, searching), explore data structures (arrays, trees, graphs), and finish with advanced topics (concurrency, probabilistic algorithms, real-world case studies).
 
-### Routing & Navigation
-**Maps, Delivery, Network Routing**
-- [Chapter 22: DFS](/series/php-algorithms/chapters/22-depth-first-search/) - Find paths
-- [Chapter 23: BFS](/series/php-algorithms/chapters/23-breadth-first-search/) - Shortest path (unweighted)
-- [Chapter 24: Dijkstra](/series/php-algorithms/chapters/24-dijkstra-shortest-path/) - Shortest path (weighted)
-- [Chapter 34: Geometric](/series/php-algorithms/chapters/34-geometric-algorithms/) - Spatial algorithms
+::: tip
+Type the code yourself instead of copy-pasting. Understanding algorithms requires hands-on practice—implementing, testing, breaking, and fixing. Build muscle memory and debugging skills by typing every example.
+:::
 
-### Security & Authentication
-**Auth Systems, Rate Limiting, Validation**
-- [Chapter 35: Cryptographic](/series/php-algorithms/chapters/35-cryptographic-algorithms/) - Hashing, encryption
-- [Chapter 27: Caching](/series/php-algorithms/chapters/27-caching-memoization-strategies/) - Session management
-- Token bucket algorithm (in Chapter 36)
+## Quick Start
+
+Want to see algorithmic thinking in action right now? Here's a 2-minute example comparing approaches:
+
+```php
+<?php
+// Problem: Find if a number exists in a sorted array
+$numbers = range(1, 1000000); // One million numbers (already sorted)
+$target = 750000;
+
+// ❌ Naive approach: O(n) - linear search
+$start = microtime(true);
+$found = in_array($target, $numbers, true);
+echo "Linear search: " . round((microtime(true) - $start) * 1000, 2) . "ms\n";
+
+// ✅ Optimized approach: O(log n) - binary search (array must be sorted)
+function binarySearch(array $arr, int $target): ?int {
+    $left = 0;
+    $right = count($arr) - 1;
+    while ($left <= $right) {
+        $mid = (int)(($left + $right) / 2);
+        if ($arr[$mid] === $target) return $mid;
+        if ($arr[$mid] < $target) $left = $mid + 1;
+        else $right = $mid - 1;
+    }
+    return null;
+}
+
+$start = microtime(true);
+$index = binarySearch($numbers, $target);
+echo "Binary search: " . round((microtime(true) - $start) * 1000, 2) . "ms\n";
+
+// Expected: Binary search is ~1000x faster!
+```
+
+**What's Next?**  
+That's algorithmic thinking: understanding that algorithm choice dramatically affects performance. Head to [Chapter 00: Quick Start Guide](/series/php-algorithms/chapters/00-quick-start-guide/) for a 5-minute overview, or start with [Chapter 01: Algorithm Complexity & Big O Notation](/series/php-algorithms/chapters/01-algorithm-complexity-big-o-notation/) for comprehensive learning.
 
 ---
 
-## 📖 All Chapters
+## Learning Paths & Chapters
 
-### Part 0: Getting Started
+Choose your learning path based on your goals and experience level, or explore all chapters below.
 
-<div class="chapter-card">
-  <div class="chapter-number">00</div>
-  <div class="chapter-content">
-    <h3>Quick Start Guide</h3>
-    <p><strong>NEW!</strong> Start here if you have 5 minutes. Common scenarios, algorithm mapping, and copy-paste ready solutions.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Beginner</span>
-      <span class="duration">5 min</span>
-    </div>
+::: tip Recommended Learning Paths
+- **Absolute Beginner** (~12 hours): Chapters 00, 01, 02, 03, 06, 12, 16, 18, 29
+- **Interview Preparation** (~25 hours): Chapters 00-03, 06-15, 16, 19-20, 23-27, 31
+- **Production Optimization** (~15 hours): Chapters 00, 03, 14, 28-31, 36, + Appendix B
+- **Complete Mastery** (~40 hours): All chapters 00-36 + all appendices
+:::
+
+### Part 0: Getting Started (Chapter 00)
+
+Get oriented quickly with common scenarios and algorithm selection.
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-00-quick-start-guide-hero-thumbnail.webp" alt="Chapter 00 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/00-quick-start-guide">00 — Quick Start Guide</a></h4>
+    <p style="margin-bottom: 0;"><strong>NEW!</strong> Start here if you have 5 minutes. Common scenarios, algorithm mapping tables, and copy-paste ready solutions for immediate problem-solving. Discover which algorithm to use when, and see real-world use cases mapped to specific chapters for fast navigation.</p>
   </div>
 </div>
 
-### Part 1: Foundation
+### Part 1: Foundation (Chapters 01–05)
 
-<div class="chapter-grid">
+Build essential knowledge for algorithmic thinking and analysis.
 
-<div class="chapter-card">
-  <div class="chapter-number">01</div>
-  <div class="chapter-content">
-    <h3>Introduction to Algorithms</h3>
-    <p>Understand what algorithms are, why they matter, and how to think algorithmically. Set up your development environment for algorithm practice.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Beginner</span>
-      <span class="duration">30 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-00-introduction-hero-thumbnail.webp" alt="Chapter 01 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/01-algorithm-complexity-big-o-notation">01 — Algorithm Complexity & Big O Notation</a></h4>
+    <p style="margin-bottom: 0;">Master Big O notation for analyzing algorithm efficiency. Understand time and space complexity, compare algorithms using O(1), O(n), O(log n), and O(n²) notation. Learn to identify bottlenecks and choose efficient solutions based on data size and performance requirements.</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">02</div>
-  <div class="chapter-content">
-    <h3>Algorithm Complexity & Big O Notation</h3>
-    <p>Learn to analyze algorithm efficiency using Big O notation. Understand time and space complexity with practical PHP examples.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Intermediate</span>
-      <span class="duration">45 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-01-complexity-big-o-hero-thumbnail.webp" alt="Chapter 02 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/02-benchmarking-performance-testing">02 — Benchmarking & Performance Testing</a></h4>
+    <p style="margin-bottom: 0;">Build a benchmarking framework to measure real-world algorithm performance. Learn to profile PHP code, measure execution time accurately, handle timing variations, and interpret benchmark results. Understand when theoretical Big O matches practice and when it doesn't.</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">03</div>
-  <div class="chapter-content">
-    <h3>Benchmarking & Performance Testing</h3>
-    <p>Build a benchmarking framework to measure algorithm performance. Learn to profile PHP code and interpret results.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Intermediate</span>
-      <span class="duration">40 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-02-benchmarking-hero-thumbnail.webp" alt="Chapter 03 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/03-recursion-fundamentals">03 — Recursion Fundamentals</a></h4>
+    <p style="margin-bottom: 0;">Master recursive thinking and implementation. Understand base cases, recursive cases, call stacks, and when recursion is the appropriate solution. Implement classic recursive algorithms (factorial, fibonacci, tree traversal) and learn to convert between recursive and iterative approaches.</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">04</div>
-  <div class="chapter-content">
-    <h3>Recursion Fundamentals</h3>
-    <p>Master recursive thinking and implementation. Learn base cases, recursive cases, and when recursion is the right tool.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Intermediate</span>
-      <span class="duration">50 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-03-recursion-hero-thumbnail.webp" alt="Chapter 04 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/04-problem-solving-strategies">04 — Problem-Solving Strategies</a></h4>
+    <p style="margin-bottom: 0;">Develop systematic approaches to algorithm problems. Learn divide-and-conquer, greedy algorithms, brute force, and pattern recognition strategies. Practice breaking down complex problems into manageable steps and choosing the right algorithmic approach for each situation.</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">05</div>
-  <div class="chapter-content">
-    <h3>Problem-Solving Strategies</h3>
-    <p>Develop systematic approaches to algorithm problems. Learn to break down complex problems into manageable steps.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Intermediate</span>
-      <span class="duration">35 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-04-problem-solving-hero-thumbnail.webp" alt="Chapter 05 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/05-bubble-sort-selection-sort">05 — Bubble Sort & Selection Sort</a></h4>
+    <p style="margin-bottom: 0;">Implement and understand simple sorting algorithms. Learn their O(n²) time complexity and when (not) to use them. Build intuition for how sorting works by understanding these foundational algorithms before moving to more efficient approaches.</p>
   </div>
 </div>
 
-</div>
+### Part 2: Sorting Algorithms (Chapters 06–11)
 
-### Part 2: Sorting Algorithms
+Master sorting techniques from simple to advanced.
 
-<div class="chapter-grid">
-
-<div class="chapter-card">
-  <div class="chapter-number">06</div>
-  <div class="chapter-content">
-    <h3>Bubble Sort & Selection Sort</h3>
-    <p>Implement and understand simple sorting algorithms. Learn their time complexity and when (not) to use them.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Intermediate</span>
-      <span class="duration">40 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-05-bubble-selection-sort-hero-thumbnail.webp" alt="Chapter 06 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/06-insertion-sort-merge-sort">06 — Insertion Sort & Merge Sort</a></h4>
+    <p style="margin-bottom: 0;">Explore more efficient sorting techniques. Understand divide-and-conquer strategies with merge sort (O(n log n)) and when insertion sort excels for small or nearly-sorted arrays. Learn about stable sorting and its practical implications.</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">07</div>
-  <div class="chapter-content">
-    <h3>Insertion Sort & Merge Sort</h3>
-    <p>Explore more efficient sorting techniques. Understand divide-and-conquer strategies and stable sorting.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Intermediate</span>
-      <span class="duration">50 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-06-insertion-merge-sort-hero-thumbnail.webp" alt="Chapter 07 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/07-quick-sort-pivot-strategies">07 — Quick Sort & Pivot Strategies</a></h4>
+    <p style="margin-bottom: 0;">Master one of the most popular sorting algorithms used in production. Learn partitioning, pivot selection strategies (first, last, median-of-three, random), and optimization techniques. Understand why quicksort is often faster than merge sort in practice.</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">08</div>
-  <div class="chapter-content">
-    <h3>Quick Sort & Pivot Strategies</h3>
-    <p>Master one of the most popular sorting algorithms. Learn partitioning, pivot selection, and optimization techniques.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Intermediate</span>
-      <span class="duration">55 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-07-quick-sort-hero-thumbnail.webp" alt="Chapter 08 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/08-heap-sort-priority-queues">08 — Heap Sort & Priority Queues</a></h4>
+    <p style="margin-bottom: 0;">Build a binary heap data structure and use it for efficient O(n log n) sorting. Understand heap properties (max-heap, min-heap), heapify operations, and implement priority queues for task scheduling and event-driven systems.</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">09</div>
-  <div class="chapter-content">
-    <h3>Heap Sort & Priority Queues</h3>
-    <p>Build a heap data structure and use it for efficient sorting. Understand heap properties and operations.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Advanced</span>
-      <span class="duration">60 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-08-heap-sort-hero-thumbnail.webp" alt="Chapter 09 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/09-comparing-sorting-algorithms">09 — Comparing Sorting Algorithms</a></h4>
+    <p style="margin-bottom: 0;">Benchmark all sorting algorithms against each other with different data sizes and patterns. Learn which to use in different scenarios: nearly-sorted data, random data, reverse-sorted data. Understand trade-offs between time complexity, space complexity, and stability.</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">10</div>
-  <div class="chapter-content">
-    <h3>Comparing Sorting Algorithms</h3>
-    <p>Benchmark all sorting algorithms against each other. Learn which to use in different scenarios.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Intermediate</span>
-      <span class="duration">35 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-09-comparing-sorts-hero-thumbnail.webp" alt="Chapter 10 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/10-php-built-in-sorting-functions">10 — PHP's Built-in Sorting Functions</a></h4>
+    <p style="margin-bottom: 0;">Explore PHP's sort(), usort(), asort(), ksort(), and array sorting functions. Understand their implementations, performance characteristics, and best practices. Learn when to use built-in functions versus custom implementations.</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">11</div>
-  <div class="chapter-content">
-    <h3>PHP's Built-in Sorting Functions</h3>
-    <p>Explore PHP's sort(), usort(), and array sorting functions. Understand their implementations and best practices.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Intermediate</span>
-      <span class="duration">30 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-10-php-builtin-sorting-hero-thumbnail.webp" alt="Chapter 11 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/11-linear-search-variants">11 — Linear Search & Variants</a></h4>
+    <p style="margin-bottom: 0;">Understand the simplest search algorithm with O(n) complexity and its variations. Learn sentinel search for optimization, early termination strategies, and when linear search is actually the best choice (small datasets, unsorted data).</p>
   </div>
 </div>
 
-</div>
+### Part 3: Searching Algorithms (Chapters 12–15)
 
-### Part 3: Searching Algorithms
+Efficient techniques for finding data in collections.
 
-<div class="chapter-grid">
-
-<div class="chapter-card">
-  <div class="chapter-number">12</div>
-  <div class="chapter-content">
-    <h3>Linear Search & Variants</h3>
-    <p>Understand the simplest search algorithm and its variations. Learn sentinel search and early termination.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Intermediate</span>
-      <span class="duration">30 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-11-linear-search-hero-thumbnail.webp" alt="Chapter 12 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/12-binary-search">12 — Binary Search</a></h4>
+    <p style="margin-bottom: 0;">Master the efficient O(log n) divide-and-conquer search algorithm for sorted arrays. Implement iterative and recursive versions, handle edge cases, and learn variations (first occurrence, last occurrence, insertion point).</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">13</div>
-  <div class="chapter-content">
-    <h3>Binary Search</h3>
-    <p>Master the efficient divide-and-conquer search algorithm. Implement iterative and recursive versions.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Intermediate</span>
-      <span class="duration">45 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-12-binary-search-hero-thumbnail.webp" alt="Chapter 13 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/13-hash-tables-hash-functions">13 — Hash Tables & Hash Functions</a></h4>
+    <p style="margin-bottom: 0;">Build a hash table from scratch for O(1) average-case lookups. Learn hash function design, collision handling with chaining and open addressing, load factors, and when to use hash tables versus arrays in PHP.</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">14</div>
-  <div class="chapter-content">
-    <h3>Hash Tables & Hash Functions</h3>
-    <p>Build a hash table from scratch. Learn collision handling with chaining and open addressing.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Advanced</span>
-      <span class="duration">60 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-13-hash-tables-hero-thumbnail.webp" alt="Chapter 14 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/14-string-search-algorithms">14 — String Search Algorithms</a></h4>
+    <p style="margin-bottom: 0;">Implement pattern matching algorithms: naive search, Knuth-Morris-Pratt (KMP), and Boyer-Moore. Build a simple grep-like tool and understand which algorithm works best for different text search scenarios.</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">15</div>
-  <div class="chapter-content">
-    <h3>String Search Algorithms</h3>
-    <p>Implement pattern matching with naive search, KMP algorithm, and Boyer-Moore. Build a simple grep-like tool.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Advanced</span>
-      <span class="duration">70 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-14-string-search-hero-thumbnail.webp" alt="Chapter 15 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/15-arrays-dynamic-arrays">15 — Arrays & Dynamic Arrays</a></h4>
+    <p style="margin-bottom: 0;">Deep dive into arrays: how they work in memory, dynamic resizing strategies (doubling capacity), amortized analysis, and PHP's unique array implementation (ordered hash map). Understand when PHP arrays excel and when custom structures are needed.</p>
   </div>
 </div>
 
-</div>
+### Part 4: Data Structures (Chapters 16–21)
 
-### Part 4: Data Structures
+Build fundamental data structures from scratch.
 
-<div class="chapter-grid">
-
-<div class="chapter-card">
-  <div class="chapter-number">16</div>
-  <div class="chapter-content">
-    <h3>Arrays & Dynamic Arrays</h3>
-    <p>Deep dive into arrays: how they work in memory, resizing strategies, and PHP's array implementation.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Intermediate</span>
-      <span class="duration">40 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-15-arrays-hero-thumbnail.webp" alt="Chapter 16 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/16-linked-lists">16 — Linked Lists</a></h4>
+    <p style="margin-bottom: 0;">Build singly and doubly linked lists from scratch using PHP objects. Understand pointer manipulation, node operations (insert, delete, search), and when linked lists outperform arrays (frequent insertions/deletions at arbitrary positions).</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">17</div>
-  <div class="chapter-content">
-    <h3>Linked Lists</h3>
-    <p>Build singly and doubly linked lists from scratch. Understand pointer manipulation and list operations.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Intermediate</span>
-      <span class="duration">55 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-16-linked-lists-hero-thumbnail.webp" alt="Chapter 17 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/17-stacks-queues">17 — Stacks & Queues</a></h4>
+    <p style="margin-bottom: 0;">Implement LIFO (Last In First Out) stacks and FIFO (First In First Out) queues. Build practical applications: expression evaluator (postfix notation), task scheduler, browser history, and undo/redo functionality.</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">18</div>
-  <div class="chapter-content">
-    <h3>Stacks & Queues</h3>
-    <p>Implement LIFO and FIFO data structures. Build an expression evaluator and task scheduler.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Intermediate</span>
-      <span class="duration">45 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-17-stacks-queues-hero-thumbnail.webp" alt="Chapter 18 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/18-trees-binary-search-trees">18 — Trees & Binary Search Trees</a></h4>
+    <p style="margin-bottom: 0;">Learn tree terminology (root, leaf, parent, child, height, depth) and implement a Binary Search Tree with O(log n) average-case operations. Master insertion, deletion, search, and understand BST properties and degenerate cases.</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">19</div>
-  <div class="chapter-content">
-    <h3>Trees & Binary Search Trees</h3>
-    <p>Learn tree terminology and implement a BST. Master insertion, deletion, and search operations.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Advanced</span>
-      <span class="duration">65 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-18-binary-search-trees-hero-thumbnail.webp" alt="Chapter 19 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/19-tree-traversal-algorithms">19 — Tree Traversal Algorithms</a></h4>
+    <p style="margin-bottom: 0;">Implement in-order, pre-order, post-order (depth-first), and level-order (breadth-first) traversals. Use them to solve practical problems: expression trees, directory structures, syntax trees, and hierarchical data processing.</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">20</div>
-  <div class="chapter-content">
-    <h3>Tree Traversal Algorithms</h3>
-    <p>Implement in-order, pre-order, post-order, and level-order traversals. Use them to solve practical problems.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Advanced</span>
-      <span class="duration">50 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-19-tree-traversal-hero-thumbnail.webp" alt="Chapter 20 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/20-balanced-trees-avl-red-black">20 — Balanced Trees (AVL & Red-Black)</a></h4>
+    <p style="margin-bottom: 0;">Understand self-balancing trees that guarantee O(log n) operations. Learn AVL tree rotations, Red-Black tree properties, when balanced trees are essential (databases, language implementations), and trade-offs versus simple BSTs.</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">21</div>
-  <div class="chapter-content">
-    <h3>Balanced Trees (AVL & Red-Black)</h3>
-    <p>Understand self-balancing trees. Learn rotation operations and when to use balanced trees.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Advanced</span>
-      <span class="duration">75 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-20-balanced-trees-hero-thumbnail.webp" alt="Chapter 21 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/21-graph-representations">21 — Graph Representations</a></h4>
+    <p style="margin-bottom: 0;">Model graphs using adjacency matrices (dense graphs) and adjacency lists (sparse graphs). Understand directed vs undirected graphs, weighted vs unweighted edges, and choose the right representation based on graph density and operations needed.</p>
   </div>
 </div>
 
-</div>
+### Part 5: Graph Algorithms (Chapters 22–25)
 
-### Part 5: Graph Algorithms
+Traverse and analyze networks and relationships.
 
-<div class="chapter-grid">
-
-<div class="chapter-card">
-  <div class="chapter-number">22</div>
-  <div class="chapter-content">
-    <h3>Graph Representations</h3>
-    <p>Model graphs using adjacency matrices and adjacency lists. Choose the right representation for your problem.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Intermediate</span>
-      <span class="duration">40 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-21-graph-representations-hero-thumbnail.webp" alt="Chapter 22 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/22-depth-first-search">22 — Depth-First Search (DFS)</a></h4>
+    <p style="margin-bottom: 0;">Implement DFS for graph traversal using recursion and stacks. Use it to detect cycles, find connected components, solve maze problems, perform topological sorting, and explore all paths in a graph.</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">23</div>
-  <div class="chapter-content">
-    <h3>Depth-First Search (DFS)</h3>
-    <p>Implement DFS for graph traversal. Use it to detect cycles, find paths, and solve maze problems.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Advanced</span>
-      <span class="duration">55 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-22-depth-first-search-hero-thumbnail.webp" alt="Chapter 23 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/23-breadth-first-search">23 — Breadth-First Search (BFS)</a></h4>
+    <p style="margin-bottom: 0;">Master BFS for finding shortest paths in unweighted graphs. Build practical applications: web crawler, social network analyzer (degrees of separation), level-order traversal, and minimum spanning tree discovery.</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">24</div>
-  <div class="chapter-content">
-    <h3>Breadth-First Search (BFS)</h3>
-    <p>Master BFS for shortest path problems. Build a web crawler and social network analyzer.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Advanced</span>
-      <span class="duration">55 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-23-breadth-first-search-hero-thumbnail.webp" alt="Chapter 24 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/24-dijkstra-shortest-path">24 — Dijkstra's Shortest Path</a></h4>
+    <p style="margin-bottom: 0;">Find shortest paths in weighted graphs using Dijkstra's algorithm with priority queues. Implement route planning applications (GPS navigation, network routing), understand limitations (no negative weights), and compare with A* algorithm.</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">25</div>
-  <div class="chapter-content">
-    <h3>Dijkstra's Shortest Path</h3>
-    <p>Find shortest paths in weighted graphs. Implement Dijkstra's algorithm for route planning applications.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Advanced</span>
-      <span class="duration">65 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-24-dijkstra-hero-thumbnail.webp" alt="Chapter 25 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/25-dynamic-programming-fundamentals">25 — Dynamic Programming Fundamentals</a></h4>
+    <p style="margin-bottom: 0;">Learn memoization (top-down) and tabulation (bottom-up) approaches to optimization. Solve classic problems: fibonacci, coin change, knapsack, longest common subsequence. Transform exponential-time recursive solutions into polynomial-time iterative ones.</p>
   </div>
 </div>
 
-</div>
+### Part 6: Dynamic Programming (Chapters 26–27)
 
-### Part 6: Dynamic Programming
+Optimize complex problems with memoization and tabulation.
 
-<div class="chapter-grid">
-
-<div class="chapter-card">
-  <div class="chapter-number">25</div>
-  <div class="chapter-content">
-    <h3>Dynamic Programming Fundamentals</h3>
-    <p>Learn memoization and tabulation. Solve fibonacci, coin change, and knapsack problems efficiently.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Advanced</span>
-      <span class="duration">60 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-25-dynamic-programming-hero-thumbnail.webp" alt="Chapter 26 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/26-advanced-dynamic-programming">26 — Advanced Dynamic Programming</a></h4>
+    <p style="margin-bottom: 0;">Master interval DP, bitmask DP, and multi-dimensional optimization problems. Solve traveling salesman problem (TSP), edit distance (Levenshtein), matrix chain multiplication, and other complex optimization scenarios common in interviews and production code.</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">26</div>
-  <div class="chapter-content">
-    <h3>Advanced Dynamic Programming</h3>
-    <p>Master interval DP, bitmask DP, and multi-dimensional optimization. Solve TSP, edit distance, and matrix chain multiplication.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Advanced</span>
-      <span class="duration">70 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-26-advanced-dp-hero-thumbnail.webp" alt="Chapter 27 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/27-caching-memoization-strategies">27 — Caching & Memoization Strategies</a></h4>
+    <p style="margin-bottom: 0;">Implement LRU (Least Recently Used) cache, TTL (Time To Live) cache, and integrate with Redis/Memcached. Apply caching strategies to real PHP applications for API responses, database queries, computed results, and session management.</p>
   </div>
 </div>
 
-</div>
+### Part 7: Practical Applications (Chapters 28–30)
 
-### Part 7: Practical Applications
+Apply algorithms to real-world PHP development scenarios.
 
-<div class="chapter-grid">
-
-<div class="chapter-card">
-  <div class="chapter-number">27</div>
-  <div class="chapter-content">
-    <h3>Caching & Memoization Strategies</h3>
-    <p>Implement LRU cache, TTL cache, and Redis integration. Apply caching strategies to real PHP applications.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Advanced</span>
-      <span class="duration">60 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-27-caching-hero-thumbnail.webp" alt="Chapter 28 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/28-algorithm-selection-guide">28 — Algorithm Selection Guide</a></h4>
+    <p style="margin-bottom: 0;">Decision trees for choosing the right algorithm for your problem. Learn pattern recognition, complexity constraints, data size considerations, and practical trade-offs. Map common problems (sorting, searching, optimization) to optimal algorithm choices.</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">28</div>
-  <div class="chapter-content">
-    <h3>Algorithm Selection Guide</h3>
-    <p>Decision trees for choosing algorithms. Pattern recognition and complexity constraints for real problems.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Intermediate</span>
-      <span class="duration">40 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-28-algorithm-selection-hero-thumbnail.webp" alt="Chapter 29 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/29-performance-optimization">29 — Performance Optimization</a></h4>
+    <p style="margin-bottom: 0;">Profile PHP code with Xdebug and Blackfire, benchmark algorithms, optimize memory usage, and apply PHP-specific performance techniques (OPcache, JIT compilation, preloading). Identify bottlenecks and measure improvements systematically.</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">29</div>
-  <div class="chapter-content">
-    <h3>Performance Optimization</h3>
-    <p>Profiling, benchmarking, memory optimization, and PHP-specific performance techniques.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Advanced</span>
-      <span class="duration">55 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-29-performance-optimization-hero-thumbnail.webp" alt="Chapter 30 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/30-real-world-case-studies">30 — Real-World Case Studies</a></h4>
+    <p style="margin-bottom: 0;">Complete implementations of production scenarios: e-commerce product recommendations (collaborative filtering), social feed ranking algorithms, search engine indexing, ETL data pipelines. See how multiple algorithms combine to solve complex real-world problems.</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">30</div>
-  <div class="chapter-content">
-    <h3>Real-World Case Studies</h3>
-    <p>E-commerce recommendations, social feed ranking, search engines, and data pipelines with complete implementations.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Advanced</span>
-      <span class="duration">60 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-30-case-studies-hero-thumbnail.webp" alt="Chapter 31 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/31-real-world-case-studies">31 — Real-World Case Studies</a></h4>
+    <p style="margin-bottom: 0;">Complete implementations of production scenarios: e-commerce product recommendations (collaborative filtering), social feed ranking algorithms, search engine indexing, ETL data pipelines. See how multiple algorithms combine to solve complex real-world problems.</p>
   </div>
 </div>
 
-</div>
+### Part 8: Advanced Topics (Chapters 31–36)
 
-### Part 8: Advanced Topics
+Explore cutting-edge algorithms for specialized applications.
 
-<div class="chapter-grid">
-
-<div class="chapter-card">
-  <div class="chapter-number">31</div>
-  <div class="chapter-content">
-    <h3>Concurrent Algorithms</h3>
-    <p><strong>NEW!</strong> Async/await patterns, parallel processing, worker pools, and concurrent data structures in PHP.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Advanced</span>
-      <span class="duration">65 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-31-concurrent-algorithms-hero-thumbnail.webp" alt="Chapter 31 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/31-concurrent-algorithms">31 — Concurrent Algorithms</a></h4>
+    <p style="margin-bottom: 0;"><strong>NEW!</strong> Async/await patterns with Amphp/ReactPHP, parallel processing with multiple processes, worker pools for job distribution, and concurrent data structures (thread-safe queues, atomic operations). Handle race conditions and synchronization in PHP.</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">32</div>
-  <div class="chapter-content">
-    <h3>Probabilistic Algorithms</h3>
-    <p><strong>NEW!</strong> Bloom filters, HyperLogLog, count-min sketch, and probabilistic data structures.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Advanced</span>
-      <span class="duration">60 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-32-probabilistic-algorithms-hero-thumbnail.webp" alt="Chapter 32 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/32-probabilistic-algorithms">32 — Probabilistic Algorithms</a></h4>
+    <p style="margin-bottom: 0;"><strong>NEW!</strong> Space-efficient probabilistic data structures: Bloom filters (membership testing), HyperLogLog (cardinality estimation), count-min sketch (frequency counting), and skip lists. Trade perfect accuracy for memory efficiency in big data scenarios.</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">33</div>
-  <div class="chapter-content">
-    <h3>String Algorithms Deep Dive</h3>
-    <p><strong>NEW!</strong> Aho-Corasick, suffix trees, suffix arrays, and advanced string matching techniques.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Advanced</span>
-      <span class="duration">70 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-33-string-algorithms-hero-thumbnail.webp" alt="Chapter 33 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/33-string-algorithms-deep-dive">33 — String Algorithms Deep Dive</a></h4>
+    <p style="margin-bottom: 0;"><strong>NEW!</strong> Advanced string matching: Aho-Corasick (multi-pattern search), suffix trees and arrays (substring queries), Rabin-Karp (rolling hash), and Levenshtein distance (fuzzy matching). Essential for search engines, DNA sequence analysis, and text processing.</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">34</div>
-  <div class="chapter-content">
-    <h3>Geometric Algorithms</h3>
-    <p><strong>NEW!</strong> Convex hull, line intersection, point in polygon, and computational geometry basics.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Advanced</span>
-      <span class="duration">65 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-34-geometric-algorithms-hero-thumbnail.webp" alt="Chapter 34 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/34-geometric-algorithms">34 — Geometric Algorithms</a></h4>
+    <p style="margin-bottom: 0;"><strong>NEW!</strong> Computational geometry basics: convex hull (Graham scan), line intersection detection, point in polygon testing, closest pair of points, and Voronoi diagrams. Applications in mapping, computer graphics, GIS systems, and collision detection.</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">35</div>
-  <div class="chapter-content">
-    <h3>Cryptographic Algorithms</h3>
-    <p><strong>NEW!</strong> Hashing, encryption basics, secure random number generation, and cryptographic primitives.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Advanced</span>
-      <span class="duration">55 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-35-cryptographic-algorithms-hero-thumbnail.webp" alt="Chapter 35 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/35-cryptographic-algorithms">35 — Cryptographic Algorithms</a></h4>
+    <p style="margin-bottom: 0;"><strong>NEW!</strong> Cryptographic hash functions (SHA-256, bcrypt), symmetric and asymmetric encryption basics, secure random number generation, digital signatures, and key derivation functions. Understand security primitives used in authentication, password storage, and data protection.</p>
   </div>
 </div>
 
-<div class="chapter-card">
-  <div class="chapter-number">36</div>
-  <div class="chapter-content">
-    <h3>Stream Processing Algorithms</h3>
-    <p><strong>NEW!</strong> Sliding windows, reservoir sampling, approximate counting, and real-time data processing.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Advanced</span>
-      <span class="duration">60 min</span>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/php-algorithms/chapter-36-stream-processing-hero-thumbnail.webp" alt="Chapter 36 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/36-stream-processing-algorithms">36 — Stream Processing Algorithms</a></h4>
+    <p style="margin-bottom: 0;"><strong>NEW!</strong> Process infinite data streams efficiently: sliding window algorithms, rate limiting mechanisms, lossy counting for frequent items, and real-time aggregation. Essential for analytics dashboards, monitoring systems, and event processing. See Chapter 32 for probabilistic stream algorithms like reservoir sampling.</p>
   </div>
-</div>
-
 </div>
 
 ---
 
-## 📑 Appendices
+## Appendices
 
-<div class="chapter-grid">
+Quick reference materials to support your learning journey.
 
-<div class="chapter-card">
-  <div class="chapter-content">
-    <h3>Appendix A: Complexity Cheat Sheet</h3>
-    <p><strong>NEW!</strong> Quick reference for Big O complexity, common algorithm complexities, and decision guides.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Reference</span>
-      <span class="duration">Quick reference</span>
-    </div>
-  </div>
-</div>
-
-<div class="chapter-card">
-  <div class="chapter-content">
-    <h3>Appendix B: PHP Performance Tips</h3>
-    <p><strong>NEW!</strong> PHP-specific optimization techniques, OPcache configuration, and production best practices.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Reference</span>
-      <span class="duration">Quick reference</span>
-    </div>
-  </div>
-</div>
-
-<div class="chapter-card">
-  <div class="chapter-content">
-    <h3>Appendix C: Glossary</h3>
-    <p><strong>NEW!</strong> Comprehensive glossary of algorithm and data structure terms with examples.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Reference</span>
-      <span class="duration">Quick reference</span>
-    </div>
-  </div>
-</div>
-
-<div class="chapter-card">
-  <div class="chapter-content">
-    <h3>Appendix D: Further Reading</h3>
-    <p><strong>NEW!</strong> Curated resources, books, courses, and websites for continued learning.</p>
-    <div class="chapter-meta">
-      <span class="difficulty">Reference</span>
-      <span class="duration">Quick reference</span>
-    </div>
-  </div>
-</div>
-
-</div>
+- **[Appendix A: Complexity Cheat Sheet](/series/php-algorithms/appendices/a-complexity-cheat-sheet/)** — Quick reference for Big O complexity, common algorithm complexities, and decision guides
+- **[Appendix B: PHP Performance Tips](/series/php-algorithms/appendices/b-php-performance-tips/)** — PHP-specific optimization techniques, OPcache configuration, and production best practices  
+- **[Appendix C: Glossary](/series/php-algorithms/appendices/c-glossary/)** — Comprehensive glossary of algorithm and data structure terms with examples
+- **[Appendix D: Further Reading](/series/php-algorithms/appendices/d-further-reading/)** — Curated resources, books, courses, and websites for continued learning
 
 ---
 
-## 🎓 Who This Series Is For
+## Frequently Asked Questions
 
-This series is perfect for:
+**I'm not a computer science graduate. Can I really learn algorithms?**  
+Absolutely! This series is designed for self-taught developers and doesn't assume formal CS training. We explain concepts in developer-friendly terms with practical PHP examples. If you can write PHP functions and use arrays, you're ready to start.
 
-- **PHP developers** who want to level up their problem-solving skills
-- **Self-taught programmers** looking to fill in CS fundamentals
-- **Interview preppers** who need to understand algorithms in PHP context
-- **Web developers** wanting to optimize application performance
-- **Anyone curious** about how algorithms work under the hood
+**Do I need to know math to understand algorithms?**  
+Not advanced math. You'll encounter basic arithmetic and occasionally logarithms, but everything is explained in practical terms. We focus on understanding concepts rather than mathematical proofs.
 
-## ✅ Prerequisites
+**How long will it take to become proficient?**  
+The Beginner path takes ~12 hours and gives you solid fundamentals. For interview preparation, expect ~25 hours. Complete mastery of all chapters takes ~40 hours. But you'll see immediate benefits even after the first few chapters.
 
-Before starting this series, you should be comfortable with:
+**Should I memorize all these algorithms?**  
+No! Focus on understanding the concepts, when to use each algorithm, and how to analyze complexity. Professional developers look up implementation details regularly. Understanding trade-offs is more valuable than memorization.
 
-- PHP syntax and basic programming concepts
-- Working with arrays and loops
-- Writing and calling functions
-- Understanding of classes and objects
-- Basic command-line usage
+**Are these algorithms practical for web development?**  
+Very! You'll learn sorting for data presentation, searching for lookups, hash tables for caching, graph algorithms for routing, and more. Chapter 31 specifically covers real-world web application scenarios.
 
-If you're new to PHP, check out our [PHP Basics](/series/php-basics/) series first.
+**What about PHP's built-in functions like `sort()` and `array_search()`?**  
+PHP's built-in functions are optimized and should be your first choice. However, understanding the algorithms behind them helps you:
+- Choose the right function for your use case
+- Understand performance implications
+- Solve problems when built-ins aren't enough
+- Ace technical interviews
+
+**Will this help me pass coding interviews?**  
+Yes! The Interview Preparation path is specifically designed for technical interviews. You'll solve common questions, learn to communicate your approach, and analyze complexity—exactly what interviewers look for.
+
+**Can I skip chapters?**  
+The Quick Start (Chapter 00) helps you navigate to specific topics. Foundation chapters (01-05) are essential. After that, you can jump to specific algorithms you need, though concepts build on each other.
+
+**How often should I practice?**  
+Consistent, spaced practice works best. Try 2-3 chapters per week with hands-on implementation. Spend 30-60 minutes coding each algorithm yourself rather than just reading.
+
+**What comes after this series?**  
+You'll be prepared for advanced topics like distributed algorithms, machine learning, compiler design, or whatever interests you. Check out our [AI/ML for PHP Developers](/series/ai-ml-php-developers/) series to apply algorithmic thinking to machine learning.
+
+## Getting Help
+
+**Stuck on something?** Here's where to get help:
+
+- **Check the appendices first**:
+  - [Appendix A: Complexity Cheat Sheet](/series/php-algorithms/appendices/a-complexity-cheat-sheet/) for Big O reference
+  - [Appendix C: Glossary](/series/php-algorithms/appendices/c-glossary/) for term definitions
+  - [Appendix B: PHP Performance Tips](/series/php-algorithms/appendices/b-php-performance-tips/) for optimization
+- **Review chapter troubleshooting sections** for common implementation issues
+- **Check code samples** in `/code-samples/php-algorithms/` for working examples
+- **PHP Manual**: [php.net](https://www.php.net/) for language reference
+- **GitHub Discussions**: [Ask questions and share progress](https://github.com/dalehurley/codewithphp/discussions)
+- **Report issues**: [Open an issue](https://github.com/dalehurley/codewithphp/issues) for unclear explanations or broken examples
+
+## Related Resources
+
+Want to dive deeper? These resources complement the series:
+
+### Algorithm Resources
+
+- **[Big-O Cheat Sheet](https://www.bigocheatsheet.com/)**: Visual complexity reference
+- **[VisuAlgo](https://visualgo.net/)**: Algorithm visualizations (excellent for understanding)
+- **[LeetCode](https://leetcode.com/)**: Practice problems with PHP support
+- **[HackerRank](https://www.hackerrank.com/)**: Additional algorithm challenges
+
+### PHP Resources
+
+- **[PHP Manual](https://www.php.net/manual/en/)**: Official language reference
+- **[PHP: The Right Way](https://phptherightway.com/)**: Modern PHP best practices
+- **[PHP Internals Book](https://www.phpinternalsbook.com/)**: Deep dive into PHP implementation
+
+### Books (Recommended Reading)
+
+- **"Introduction to Algorithms"** by Cormen, Leiserson, Rivest, Stein (CLRS) — The definitive algorithms textbook
+- **"Grokking Algorithms"** by Aditya Bhargava — Visual, beginner-friendly introduction
+- **"The Algorithm Design Manual"** by Steven Skiena — Practical focus with real-world examples
+
+### Related Code with PHP Series
+
+- **[PHP Basics](/series/php-basics/)** — Master PHP fundamentals first
+- **[AI/ML for PHP Developers](/series/ai-ml-php-developers/)** — Apply algorithms to machine learning
+- **[Python to Laravel](/series/python-developers-love-php-laravel/)** — Compare algorithmic approaches across languages
 
 ---
 
-## 💡 How to Get the Most Out of This Series
-
-1. **Start with Chapter 0** - Get oriented quickly
-2. **Code along**: Type out every algorithm yourself—don't just copy-paste
-3. **Experiment**: Modify algorithms and see what happens
-4. **Benchmark**: Test performance with different input sizes
-5. **Practice**: Solve additional problems using each algorithm
-6. **Apply**: Look for opportunities to use these algorithms in your projects
-7. **Use appendices**: Quick reference when you need it
-
-## 🆘 Getting Help
-
-Stuck on a concept? Here's how to get help:
-
-- **Check Appendix C (Glossary)**: Look up unfamiliar terms
-- **Review Appendix A (Cheat Sheet)**: Quick complexity reference
-- **Read carefully**: Each chapter includes detailed explanations
-- **Debug systematically**: Use var_dump() and step through code
-- **Test incrementally**: Build and test each part before moving on
-- **Review fundamentals**: Go back to earlier chapters if needed
-
-## 🚀 What's Next?
-
-After completing this series, you'll be ready to:
-
-- **Ace technical interviews** with confidence in PHP
-- **Optimize existing applications** by choosing better algorithms
-- **Design scalable systems** with algorithmic thinking
-- **Learn advanced topics** like machine learning and distributed systems
-- **Contribute to open source** with deeper CS knowledge
-
-## 📚 Continue Your Learning Journey
-
-Check out our other series:
-
-- **[PHP Basics](/series/php-basics/)** - Master PHP fundamentals
-- **[AI/ML for PHP Developers](/series/ai-ml-php-developers/)** - Apply algorithms to machine learning
-- **[Python to PHP](/series/python-developers-love-php-laravel/)** - Compare algorithmic approaches
+::: tip Ready to Start?
+Head to [Chapter 00: Quick Start Guide](/series/php-algorithms/chapters/00-quick-start-guide) for a 5-minute overview, or begin comprehensive learning with [Chapter 01: Algorithm Complexity & Big O Notation](/series/php-algorithms/chapters/01-algorithm-complexity-big-o-notation)!
+:::
 
 ---
 
-<div class="series-cta">
-  <h2>Ready to Master Algorithms?</h2>
-  <p>Start with Chapter 0 for a quick overview, or dive into Chapter 1 for comprehensive learning.</p>
-  <a href="/series/php-algorithms/chapters/00-quick-start-guide" class="cta-button">Quick Start (5 min) →</a>
-  <a href="/series/php-algorithms/chapters/01-introduction-to-algorithms" class="cta-button-secondary">Full Course →</a>
-</div>
+## Continue Your Learning
+
+Master other aspects of modern PHP development:
+
+**→ [PHP Basics](/series/php-basics/)** — Master PHP fundamentals from scratch  
+**→ [AI/ML for PHP Developers](/series/ai-ml-php-developers/)** — Apply algorithmic thinking to machine learning  
+**→ [Build a CRM with Laravel 12](/series/build-crm-laravel-12/)** — Apply algorithms in production applications
+
+<style>
+:root {
+  --primary-teal: #0d9488;
+  --primary-teal-dark: #0f766e;
+  --algo-blue: #3b82f6;
+  --algo-indigo: #6366f1;
+  --php-amber: #f59e0b;
+  --php-orange: #ea580c;
+  --neutral-gray: #64748b;
+  --bg-light: #f8fafc;
+}
+
+/* Chapter card enhancements */
+div[style*="display: flex"][style*="align-items: flex-start"] {
+  transition: all 0.3s ease;
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid var(--algo-blue);
+}
+
+div[style*="display: flex"][style*="align-items: flex-start"]:hover {
+  background: var(--bg-light);
+  transform: translateX(4px);
+  box-shadow: 0 2px 12px rgba(59, 130, 246, 0.15);
+  border-left-color: var(--algo-indigo);
+}
+
+/* Image styling */
+div[style*="display: flex"] img[style*="width: 180px"] {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+div[style*="display: flex"]:hover img[style*="width: 180px"] {
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+/* Link styling */
+div[style*="display: flex"] h4 a {
+  color: var(--algo-blue);
+  transition: color 0.2s ease;
+}
+
+div[style*="display: flex"] h4 a:hover {
+  color: var(--algo-indigo);
+}
+</style>

@@ -10,6 +10,8 @@ prerequisites:
   - "Familiarity with Big O notation"
   - "Completion of foundation chapters"
 ---
+![15: Arrays & Dynamic Arrays](/images/php-algorithms/chapter-15-arrays-hero-full.webp)
+
 
 <div class="breadcrumbs">
   <a href="/">Home</a>
@@ -30,6 +32,9 @@ prerequisites:
 - Master PHP's unique hybrid array/hash table implementation
 - Analyze amortized time complexity for array operations
 - Build a custom dynamic array class from scratch
+- Leverage PHP-specific features: SplFixedArray, array unpacking, destructuring
+- Understand copy-on-write semantics and array iteration internals
+- Optimize array operations with references and modern PHP syntax
 
 **Estimated Time**: ~45 minutes
 
@@ -42,7 +47,13 @@ Before starting this chapter, you should have:
 - ✓ Completion of foundation chapters (1-5)
 - ✓ Basic knowledge of memory concepts
 
+## Overview
+
 Arrays are the most fundamental data structure in programming. While we use them constantly, understanding how they work internally—especially dynamic arrays—is crucial for writing efficient code. In this chapter, we'll explore array internals, dynamic resizing strategies, and PHP's unique array implementation that combines the best of both worlds.
+
+You'll learn how arrays store data in contiguous memory for O(1) access, how dynamic arrays automatically resize to accommodate new elements, and why PHP's arrays are actually sophisticated hash tables rather than traditional arrays. We'll build a custom dynamic array class from scratch to understand the resizing mechanics, analyze amortized time complexity, and explore common array patterns used in algorithm design.
+
+By the end of this chapter, you'll have a deep understanding of array internals that will help you write more efficient PHP code and make better data structure choices in your applications.
 
 ## Static vs Dynamic Arrays
 
@@ -66,6 +77,7 @@ int numbers[5];  // Exactly 5 integers, can't grow
 Dynamic arrays can grow as needed:
 
 ```php
+# filename: dynamic-array-example.php
 // PHP array - can grow dynamically
 $numbers = [1, 2, 3];
 $numbers[] = 4;  // Grows automatically!
@@ -98,6 +110,7 @@ Index:     0     1     2     3     4
 ### Array Access
 
 ```php
+# filename: array-access-example.php
 // How array access works internally:
 // 1. Calculate address: base_address + (index × 4 bytes)
 // 2. Read value at that address
@@ -111,6 +124,7 @@ $value = $arr[2];  // O(1) - direct memory access
 Let's implement a dynamic array from scratch to understand resizing:
 
 ```php
+# filename: DynamicArray.php
 class DynamicArray
 {
     private array $data;
@@ -318,6 +332,7 @@ push(9)   | 9     | 16       | Copy 8 + insert 1
 ### Strategy 1: Double When Full (Most Common)
 
 ```php
+# filename: DynamicArray.php
 private function resize(): void
 {
     $this->capacity *= 2;  // Double capacity
@@ -336,6 +351,7 @@ private function resize(): void
 ### Strategy 2: Grow by Constant Amount
 
 ```php
+# filename: DynamicArray.php
 private function resize(): void
 {
     $this->capacity += 100;  // Add fixed amount
@@ -352,6 +368,7 @@ private function resize(): void
 ### Strategy 3: Golden Ratio Growth
 
 ```php
+# filename: DynamicArray.php
 private function resize(): void
 {
     $this->capacity = (int)($this->capacity * 1.5);  // 1.5x growth
@@ -370,6 +387,7 @@ PHP arrays are **ordered hash tables**, not traditional arrays!
 ### PHP Array Features
 
 ```php
+# filename: php-array-features.php
 // Integer keys (array-like)
 $arr1 = [10, 20, 30];
 
@@ -420,6 +438,7 @@ PHP arrays are hash tables with:
 ### 1. Two Pointers
 
 ```php
+# filename: two-pointers-pattern.php
 function twoPointers(array $arr): bool
 {
     $left = 0;
@@ -445,6 +464,7 @@ function twoPointers(array $arr): bool
 ### 2. Sliding Window
 
 ```php
+# filename: sliding-window-pattern.php
 function maxSumSubarray(array $arr, int $k): int
 {
     $n = count($arr);
@@ -467,6 +487,7 @@ function maxSumSubarray(array $arr, int $k): int
 ### 3. Prefix Sum
 
 ```php
+# filename: prefix-sum-pattern.php
 class PrefixSum
 {
     private array $prefix;
@@ -496,6 +517,7 @@ echo $ps->rangeSum(1, 3); // Sum of [2,3,4] = 9
 ### 4. Kadane's Algorithm (Max Subarray)
 
 ```php
+# filename: kadane-algorithm.php
 function maxSubarraySum(array $arr): int
 {
     $maxSoFar = $arr[0];
@@ -518,6 +540,7 @@ echo maxSubarraySum($arr); // 6 (subarray [4,-1,2,1])
 ### 2D Arrays (Matrices)
 
 ```php
+# filename: multidimensional-arrays.php
 // Create 2D array
 function create2DArray(int $rows, int $cols, mixed $default = 0): array
 {
@@ -562,6 +585,7 @@ function transpose(array $matrix): array
 ### Jagged Arrays
 
 ```php
+# filename: jagged-arrays.php
 // Array of arrays with different lengths
 $jagged = [
     [1, 2, 3],
@@ -579,6 +603,7 @@ foreach ($jagged as $row) {
 ### 1. Circular Buffer (Ring Buffer)
 
 ```php
+# filename: CircularBuffer.php
 class CircularBuffer
 {
     private array $buffer;
@@ -639,6 +664,7 @@ echo $buffer->dequeue(); // A
 ### 2. Sparse Array
 
 ```php
+# filename: SparseArray.php
 class SparseArray
 {
     private array $data = [];
@@ -677,6 +703,7 @@ $sparse->set(1000000, 42);  // Only stores non-zero value
 ### 3. Bit Array (Bit Vector)
 
 ```php
+# filename: BitArray.php
 class BitArray
 {
     private array $bits;
@@ -724,6 +751,7 @@ echo $bits->get(500000) ? 'Set' : 'Not set';
 Rotate array k positions to the right:
 
 ```php
+# filename: exercise-rotate-array.php
 function rotateArray(array &$arr, int $k): void
 {
     // Your code here
@@ -738,6 +766,7 @@ print_r($arr); // [4, 5, 1, 2, 3]
 <summary>Solution</summary>
 
 ```php
+# filename: exercise-rotate-array-solution.php
 function rotateArray(array &$arr, int $k): void
 {
     $n = count($arr);
@@ -762,6 +791,7 @@ function rotateArray(array &$arr, int $k): void
 Calculate product of all elements except current:
 
 ```php
+# filename: exercise-product-except-self.php
 function productExceptSelf(array $nums): array
 {
     // Cannot use division
@@ -777,6 +807,7 @@ print_r(productExceptSelf([1, 2, 3, 4]));
 Find all duplicates in O(n) time and O(1) space (array contains 1 to n):
 
 ```php
+# filename: exercise-find-duplicates.php
 function findDuplicates(array $nums): array
 {
     // Your code here
@@ -790,6 +821,7 @@ While the chapter focuses on arrays, understanding linked lists helps appreciate
 ### Singly Linked List
 
 ```php
+# filename: SinglyLinkedList.php
 class SinglyLinkedListNode
 {
     public function __construct(
@@ -893,6 +925,7 @@ class SinglyLinkedList
 ### Doubly Linked List
 
 ```php
+# filename: DoublyLinkedList.php
 class DoublyLinkedListNode
 {
     public function __construct(
@@ -995,6 +1028,7 @@ class DoublyLinkedList
 ### Circular Linked List
 
 ```php
+# filename: CircularLinkedList.php
 class CircularLinkedListNode
 {
     public function __construct(
@@ -1076,6 +1110,7 @@ class CircularLinkedList
 ## Array vs Linked List Performance Comparison
 
 ```php
+# filename: performance-comparison.php
 class DataStructureComparison
 {
     public function compareOperations(): void
@@ -1200,6 +1235,7 @@ $comparison->memoryComparison();
 ### Efficient Array Manipulation
 
 ```php
+# filename: array-optimization-tips.php
 class ArrayOptimizationTips
 {
     /**
@@ -1334,11 +1370,397 @@ $tips->issetVsArrayKeyExists();
 $tips->functionalVsLoop();
 ```
 
+## PHP-Specific Array Features
+
+PHP offers several unique array features that aren't available in traditional arrays. Understanding these can help you write more efficient and modern PHP code.
+
+### SplFixedArray: Fixed-Size Arrays
+
+PHP's `SplFixedArray` provides a fixed-size array implementation that's more memory-efficient than regular PHP arrays:
+
+```php
+# filename: SplFixedArray-example.php
+$size = 10000;
+
+// Regular PHP array
+$regular = [];
+for ($i = 0; $i < $size; $i++) {
+    $regular[] = $i;
+}
+
+// SplFixedArray - must set size first
+$fixed = new SplFixedArray($size);
+for ($i = 0; $i < $size; $i++) {
+    $fixed[$i] = $i;
+}
+
+// Memory comparison
+echo "Regular array memory: " . memory_get_usage() . "\n";
+unset($regular);
+echo "SplFixedArray memory: " . memory_get_usage() . "\n";
+```
+
+**Characteristics:**
+- Fixed size (set at creation)
+- Lower memory overhead than regular arrays
+- Faster iteration (no hash table overhead)
+- Integer indices only (0 to size-1)
+- Cannot grow or shrink
+
+**When to use:**
+- Size is known in advance
+- Need maximum performance
+- Memory is constrained
+- Only need integer indices
+
+**Performance comparison:**
+
+```php
+# filename: SplFixedArray-performance.php
+function compareArrayPerformance(): void
+{
+    $size = 100000;
+    $iterations = 1000;
+
+    // Regular array
+    $start = microtime(true);
+    $regular = range(0, $size - 1);
+    for ($i = 0; $i < $iterations; $i++) {
+        $val = $regular[rand(0, $size - 1)];
+    }
+    $regularTime = microtime(true) - $start;
+
+    // SplFixedArray
+    $start = microtime(true);
+    $fixed = new SplFixedArray($size);
+    for ($i = 0; $i < $size; $i++) {
+        $fixed[$i] = $i;
+    }
+    for ($i = 0; $i < $iterations; $i++) {
+        $val = $fixed[rand(0, $size - 1)];
+    }
+    $fixedTime = microtime(true) - $start;
+
+    printf("Regular array: %.6f sec\n", $regularTime);
+    printf("SplFixedArray: %.6f sec (%.2fx faster)\n",
+        $fixedTime, $regularTime / $fixedTime);
+}
+```
+
+### Array Unpacking (Spread Operator)
+
+PHP 7.4+ supports the spread operator (`...`) for unpacking arrays:
+
+```php
+# filename: array-unpacking.php
+// Merge arrays
+$arr1 = [1, 2, 3];
+$arr2 = [4, 5, 6];
+$merged = [...$arr1, ...$arr2]; // [1, 2, 3, 4, 5, 6]
+
+// Function arguments
+function sum(int ...$numbers): int
+{
+    return array_sum($numbers);
+}
+
+$values = [1, 2, 3, 4, 5];
+echo sum(...$values); // 15
+
+// Insert elements at specific positions
+$arr = [1, 2, 3];
+$newArr = [0, ...$arr, 4, 5]; // [0, 1, 2, 3, 4, 5]
+
+// Clone array (shallow copy)
+$original = [1, 2, 3];
+$copy = [...$original];
+$copy[0] = 99;
+// $original unchanged: [1, 2, 3]
+```
+
+**Performance note:** Spread operator creates a new array, so it's O(n) for large arrays. Use `array_merge()` for better performance with very large arrays.
+
+### Array Destructuring
+
+PHP 7.1+ supports array destructuring for elegant variable assignment:
+
+```php
+# filename: array-destructuring.php
+// List destructuring (indexed arrays)
+$data = [10, 20, 30];
+[$a, $b, $c] = $data;
+// $a = 10, $b = 20, $c = 30
+
+// Skip elements
+[$first, , $third] = [1, 2, 3];
+// $first = 1, $third = 3
+
+// Associative array destructuring
+$user = ['name' => 'Alice', 'age' => 30, 'city' => 'NYC'];
+['name' => $name, 'age' => $age] = $user;
+// $name = 'Alice', $age = 30
+
+// Swap variables elegantly
+$a = 5;
+$b = 10;
+[$a, $b] = [$b, $a];
+// $a = 10, $b = 5
+
+// Function return values
+function getCoordinates(): array
+{
+    return [40.7128, -74.0060];
+}
+
+[$lat, $lon] = getCoordinates();
+
+// Nested destructuring
+$matrix = [
+    [1, 2],
+    [3, 4]
+];
+[[$a, $b], [$c, $d]] = $matrix;
+```
+
+**Use cases:**
+- Swapping variables without temp variable
+- Extracting function return values
+- Parsing structured data
+- Simplifying array access
+
+### Copy-on-Write Semantics
+
+PHP arrays use copy-on-write (COW) optimization:
+
+```php
+# filename: copy-on-write.php
+$original = [1, 2, 3, 4, 5];
+$copy = $original; // No copy yet - both reference same data
+
+// Modify copy
+$copy[0] = 99; // NOW a copy is made
+// $original unchanged: [1, 2, 3, 4, 5]
+// $copy: [99, 2, 3, 4, 5]
+
+// Passing to function (copy-on-write)
+function modifyArray(array $arr): void
+{
+    $arr[0] = 999; // Creates copy, original unchanged
+}
+
+$data = [1, 2, 3];
+modifyArray($data);
+// $data unchanged: [1, 2, 3]
+
+// Pass by reference to avoid copy
+function modifyArrayByRef(array &$arr): void
+{
+    $arr[0] = 999; // Modifies original
+}
+
+$data = [1, 2, 3];
+modifyArrayByRef($data);
+// $data modified: [999, 2, 3]
+```
+
+**Memory implications:**
+- Assignments don't copy immediately
+- Copy happens only when modified
+- Saves memory for read-only operations
+- Be careful with large arrays and references
+
+**When copy happens:**
+- Modifying array element
+- Using array functions that modify (`array_pop`, `array_shift`, etc.)
+- Explicit copy with `[...$arr]` or `array_slice($arr, 0)`
+
+### Array Iteration Internals
+
+Understanding how PHP iterates arrays helps optimize performance:
+
+```php
+# filename: array-iteration-internals.php
+// Method 1: foreach (most common, optimized)
+$arr = range(1, 1000000);
+foreach ($arr as $value) {
+    // Process $value
+}
+
+// Method 2: foreach with key
+foreach ($arr as $key => $value) {
+    // Process $key and $value
+}
+
+// Method 3: for loop (only for indexed arrays)
+for ($i = 0; $i < count($arr); $i++) {
+    // Process $arr[$i]
+}
+
+// Method 4: while with each() - DEPRECATED in PHP 7.2+
+// Don't use this
+
+// Method 5: ArrayIterator (for custom iteration)
+$iterator = new ArrayIterator($arr);
+foreach ($iterator as $value) {
+    // Process $value
+}
+```
+
+**Performance comparison:**
+
+```php
+# filename: iteration-performance.php
+function compareIterationMethods(): void
+{
+    $size = 1000000;
+    $arr = range(1, $size);
+
+    // foreach (value only)
+    $start = microtime(true);
+    $sum = 0;
+    foreach ($arr as $val) {
+        $sum += $val;
+    }
+    $foreachTime = microtime(true) - $start;
+
+    // foreach (key-value)
+    $start = microtime(true);
+    $sum = 0;
+    foreach ($arr as $key => $val) {
+        $sum += $val;
+    }
+    $foreachKVTime = microtime(true) - $start;
+
+    // for loop
+    $start = microtime(true);
+    $sum = 0;
+    $count = count($arr);
+    for ($i = 0; $i < $count; $i++) {
+        $sum += $arr[$i];
+    }
+    $forTime = microtime(true) - $start;
+
+    // array_map (functional)
+    $start = microtime(true);
+    $sum = array_sum(array_map(fn($x) => $x, $arr));
+    $mapTime = microtime(true) - $start;
+
+    printf("foreach (value):     %.6f sec\n", $foreachTime);
+    printf("foreach (key-value): %.6f sec\n", $foreachKVTime);
+    printf("for loop:            %.6f sec\n", $forTime);
+    printf("array_map:           %.6f sec\n", $mapTime);
+}
+```
+
+**Key insights:**
+- `foreach` is optimized internally (fastest for most cases)
+- `for` loop requires `count()` call (cache it!)
+- `foreach` with key is slightly slower than value-only
+- `array_map` has function call overhead but can be parallelized
+
+**Iterator interface:**
+
+```php
+# filename: custom-array-iterator.php
+class RangeIterator implements Iterator
+{
+    private int $start;
+    private int $end;
+    private int $current;
+
+    public function __construct(int $start, int $end)
+    {
+        $this->start = $start;
+        $this->end = $end;
+        $this->current = $start;
+    }
+
+    public function current(): int
+    {
+        return $this->current;
+    }
+
+    public function key(): int
+    {
+        return $this->current - $this->start;
+    }
+
+    public function next(): void
+    {
+        $this->current++;
+    }
+
+    public function rewind(): void
+    {
+        $this->current = $this->start;
+    }
+
+    public function valid(): bool
+    {
+        return $this->current <= $this->end;
+    }
+}
+
+// Use custom iterator
+$range = new RangeIterator(1, 1000000);
+foreach ($range as $value) {
+    // Memory efficient - generates values on demand
+}
+```
+
+### Array References
+
+Understanding array references is crucial for performance:
+
+```php
+# filename: array-references.php
+// Reference assignment
+$arr1 = [1, 2, 3];
+$arr2 = &$arr1; // $arr2 is reference to $arr1
+$arr2[0] = 99;
+// Both arrays modified: [99, 2, 3]
+
+// Pass by reference
+function doubleArray(array &$arr): void
+{
+    foreach ($arr as &$value) {
+        $value *= 2;
+    }
+}
+
+$numbers = [1, 2, 3];
+doubleArray($numbers);
+// $numbers: [2, 4, 6]
+
+// Reference in foreach (be careful!)
+$arr = [1, 2, 3];
+foreach ($arr as &$value) {
+    $value *= 2;
+}
+unset($value); // Important! Clear reference
+// Without unset, $value still references last element
+
+// Array of references
+$a = 1;
+$b = 2;
+$c = 3;
+$refs = [&$a, &$b, &$c];
+$refs[0] = 99;
+// $a is now 99
+```
+
+**Best practices:**
+- Use references for large arrays passed to functions
+- Always `unset()` reference variables after foreach
+- Be explicit about when you need references
+- Avoid unnecessary references (they prevent COW optimization)
+
 ## Advanced PHP SPL Usage
 
 ### Using SPL Data Structures
 
 ```php
+# filename: spl-data-structures.php
 class SPLDataStructureExamples
 {
     /**
@@ -1495,11 +1917,22 @@ class SPLDataStructureExamples
 - **PHP arrays** are hash tables, not traditional arrays
 - **Common patterns**: two pointers, sliding window, prefix sum
 - **Memory layout** affects cache performance
+- **SplFixedArray** offers fixed-size arrays with lower overhead
+- **Array unpacking** (`...`) and **destructuring** (`[$a, $b]`) simplify modern PHP code
+- **Copy-on-write** optimization saves memory for read-only operations
+- **foreach** is optimized internally and fastest for most iteration needs
+- **Array references** enable efficient in-place modifications
 - **Linked lists** excel at insertions/deletions but poor at random access
 - **SPL data structures** are optimized C implementations
 - Understanding internals helps choose the right data structure
 - **Trade-offs**: memory vs speed, access patterns matter
 
+
+<ChapterCheckbox 
+  seriesId="php-algorithms"
+  chapterId="15"
+  label="Arrays and Dynamic Arrays mastered!"
+/>
 ## What's Next
 
 In the next chapter, we'll explore **Linked Lists**, learning when pointer-based structures are better than arrays.
@@ -1508,12 +1941,12 @@ In the next chapter, we'll explore **Linked Lists**, learning when pointer-based
 
 All code examples from this chapter are available in the GitHub repository:
 
-**[View Chapter 15 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-15)**
+**[View Chapter 15 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/php-algorithms/chapter-15)**
 
 Clone the repository to run examples:
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
-cd codewithphp/code-samples/php-algorithms/chapter-15
+cd codewithphp/code/php-algorithms/chapter-15
 php 01-*.php
 ```
 

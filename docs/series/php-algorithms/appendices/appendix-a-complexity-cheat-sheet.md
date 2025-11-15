@@ -81,6 +81,11 @@ O(2^n)        1.27×10³⁰  (larger than atoms in universe)
 
 **O(1) - Constant Time**:
 ```php
+<?php
+# filename: constant-time-example.php
+
+declare(strict_types=1);
+
 // Direct array access
 $value = $array[$key];  // Always same time
 
@@ -92,6 +97,11 @@ unset($map[$key]);      // Instant delete
 
 **O(log n) - Logarithmic**:
 ```php
+<?php
+# filename: logarithmic-example.php
+
+declare(strict_types=1);
+
 // Binary search on sorted array
 $index = binarySearch($sortedArray, $target);
 
@@ -102,6 +112,11 @@ $tree->search($value);  // Height = log n
 
 **O(n) - Linear**:
 ```php
+<?php
+# filename: linear-example.php
+
+declare(strict_types=1);
+
 // Single loop through array
 foreach ($array as $item) {
     process($item);
@@ -114,6 +129,11 @@ $found = in_array($needle, $haystack);
 
 **O(n log n) - Linearithmic**:
 ```php
+<?php
+# filename: linearithmic-example.php
+
+declare(strict_types=1);
+
 // Efficient sorting
 sort($array);           // PHP's built-in
 $merged = mergeSort($array);  // Merge sort
@@ -122,9 +142,15 @@ $merged = mergeSort($array);  // Merge sort
 
 **O(n²) - Quadratic**:
 ```php
+<?php
+# filename: quadratic-example.php
+
+declare(strict_types=1);
+
 // Nested loops
-for ($i = 0; $i < count($arr); $i++) {
-    for ($j = $i + 1; $j < count($arr); $j++) {
+$count = count($arr);
+for ($i = 0; $i < $count; $i++) {
+    for ($j = $i + 1; $j < $count; $j++) {
         comparePair($arr[$i], $arr[$j]);
     }
 }
@@ -133,10 +159,39 @@ for ($i = 0; $i < count($arr); $i++) {
 
 **O(2^n) - Exponential**:
 ```php
+<?php
+# filename: exponential-example.php
+
+declare(strict_types=1);
+
 // Naive recursive Fibonacci
-function fib($n) {
+function fib(int $n): int {
     if ($n <= 1) return $n;
     return fib($n-1) + fib($n-2);  // Two recursive calls
+}
+```
+*See: Chapter 25 (Dynamic Programming - shows optimization)*
+
+**O(n!) - Factorial**:
+```php
+<?php
+# filename: factorial-example.php
+
+declare(strict_types=1);
+
+// Generate all permutations
+function permutations(array $items): array {
+    if (count($items) <= 1) return [$items];
+    
+    $result = [];
+    foreach ($items as $i => $item) {
+        $rest = $items;
+        unset($rest[$i]);
+        foreach (permutations(array_values($rest)) as $perm) {
+            $result[] = array_merge([$item], $perm);
+        }
+    }
+    return $result;
 }
 ```
 *See: Chapter 25 (Dynamic Programming - shows optimization)*
@@ -193,6 +248,33 @@ function fib($n) {
 | Insert | O(log n) | O(n) |
 | Delete | O(log n) | O(n) |
 | Min/Max | O(log n) | O(n) |
+
+### AVL Tree
+
+| Operation | Time | Space | Notes |
+|-----------|------|-------|-------|
+| Search | O(log n) | O(1) | Height bounded by 1.44 × log(n) |
+| Insert | O(log n) | O(1) | May require rotations |
+| Delete | O(log n) | O(1) | May require rotations |
+| Min/Max | O(log n) | O(1) | Height field per node |
+| Space | O(n) | O(n) | Strict balance maintained |
+
+### Red-Black Tree
+
+| Operation | Time | Space | Notes |
+|-----------|------|-------|-------|
+| Search | O(log n) | O(1) | Height bounded by 2 × log(n) |
+| Insert | O(log n) | O(1) | Max 2 rotations |
+| Delete | O(log n) | O(1) | Max 3 rotations |
+| Min/Max | O(log n) | O(1) | Color bit per node |
+| Space | O(n) | O(n) | Looser balance than AVL |
+
+**Comparison**:
+- **AVL**: Stricter balance, faster searches, more rotations on insert/delete
+- **Red-Black**: Looser balance, faster insertions/deletions, slightly slower searches
+- Both guarantee O(log n) worst-case performance
+
+*See: Chapter 20 (Balanced Trees: AVL & Red-Black Trees)*
 
 ### Heap (SplPriorityQueue, SplMinHeap, SplMaxHeap)
 
@@ -263,12 +345,19 @@ function fib($n) {
 | Naive String Match | O(nm) | O(1) | Simple pattern search |
 | KMP | O(n + m) | O(m) | Pattern matching |
 | Boyer-Moore | O(n/m) best | O(m) | Fast pattern matching |
-| Rabin-Karp | O(n + m) avg | O(1) | Multiple patterns |
-| Aho-Corasick | O(n + m + z) | O(m) | Multi-pattern search |
-| Suffix Array | O(n log n) | O(n) | Substring queries |
+| Rabin-Karp | O(n + m) avg, O(nm) worst | O(1) | Multiple patterns |
+| Aho-Corasick | O(n + m + z) | O(m × σ) | Multi-pattern search |
+| Z-Algorithm | O(n + m) | O(n + m) | Fast pattern matching |
+| Suffix Array | O(n log n) build, O(m log n + occ) search | O(n) | Substring queries |
+| Suffix Tree | O(n) build (Ukkonen's), O(m) search | O(n) | Linear-time pattern matching |
 | Longest Common Subsequence | O(nm) | O(nm) | Sequence comparison |
 | Edit Distance | O(nm) | O(nm) | String similarity |
 | Manacher's Algorithm | O(n) | O(n) | Palindrome finding |
+
+**Notes**:
+- **Aho-Corasick**: n = text length, m = total pattern length, z = number of matches, σ = alphabet size
+- **Suffix Array**: occ = number of occurrences, specialized algorithms can build in O(n)
+- **Suffix Tree**: Uses Ukkonen's algorithm for linear construction
 
 ## Dynamic Programming Problems
 
@@ -283,6 +372,67 @@ function fib($n) {
 | Matrix Chain Multiplication | O(n³) | O(n²) |
 | Edit Distance | O(nm) | O(nm) |
 | Coin Change | O(nA) | O(n) |
+
+## Stream Processing Algorithms
+
+Stream processing algorithms handle continuous, potentially infinite data streams with constant or logarithmic space complexity.
+
+| Algorithm | Time per Element | Space | Notes |
+|-----------|-----------------|-------|-------|
+| Fixed-Size Sliding Window | O(1) add/sum/avg, O(n) min/max | O(n) | Window size n |
+| Optimized Sliding Window | O(1) amortized all ops | O(n) | Uses monotonic queues |
+| Time-Based Sliding Window | O(1) add, O(n) cleanup | O(n) | n = events in window |
+| Token Bucket Rate Limiter | O(1) | O(1) | Constant space |
+| Leaky Bucket Rate Limiter | O(1) | O(1) | Constant space |
+| Sliding Window Counter | O(1) | O(k) | k = time buckets |
+| Moving Average (SMA) | O(1) | O(n) | n = window size |
+| Exponential Moving Average (EMA) | O(1) | O(1) | Constant space |
+| Top-K Elements | O(1) add, O(n log n) query | O(n) | n = unique elements |
+| Reservoir Sampling | O(1) | O(k) | k = sample size |
+| Stream Aggregator | O(1) per record | O(n) | n = stored values |
+
+*See: Chapter 36 (Stream Processing Algorithms)*
+
+## Probabilistic Algorithms
+
+Probabilistic algorithms trade perfect accuracy for dramatic space/time improvements, essential for big data processing.
+
+| Algorithm | Time | Space | Accuracy | Use Case |
+|-----------|------|-------|----------|----------|
+| Bloom Filter | O(k) add/contains | O(m) | No false negatives | Membership testing |
+| HyperLogLog | O(1) add | O(2^p) | ±0.81% (p=14) | Cardinality estimation |
+| Count-Min Sketch | O(d) add/estimate | O(w×d) | ±εN | Frequency estimation |
+| Reservoir Sampling | O(1) add | O(k) | Exact distribution | Random sampling |
+| Morris Counter | O(1) increment | O(1) | ±√n | Approximate counting |
+| Skip List | O(log n) avg | O(n log n) | Exact | Sorted set operations |
+
+**Notes**:
+- **Bloom Filter**: k = number of hash functions, m = bit array size
+- **HyperLogLog**: p = precision parameter (typically 14)
+- **Count-Min Sketch**: w = width, d = depth (hash functions)
+- **Reservoir Sampling**: k = sample size
+
+*See: Chapter 32 (Probabilistic Algorithms)*
+
+## Concurrent Algorithms
+
+Concurrent algorithms enable parallel execution, dramatically improving performance for I/O-bound and CPU-intensive tasks.
+
+| Pattern | Time Complexity | Space | Notes |
+|---------|----------------|-------|-------|
+| Async I/O (ReactPHP) | O(1) scheduling | O(n) | n = concurrent operations |
+| Parallel Processing | O(n/p) | O(n) | p = processors |
+| Coroutines (Swoole) | O(1) yield/resume | O(k) | k = coroutine stack |
+| Worker Pool | O(n/p) | O(p) | p = workers, n = tasks |
+| Pipeline Processing | O(n) | O(k) | k = pipeline stages |
+| Fork-Join | O(n/p + log p) | O(n) | Divide and conquer |
+
+**Notes**:
+- Concurrent algorithms reduce wall-clock time but may increase total CPU time
+- Space complexity often increases due to multiple execution contexts
+- Actual speedup depends on I/O wait time and CPU cores available
+
+*See: Chapter 31 (Concurrent Algorithms)*
 
 ## Common PHP Function Complexities
 
@@ -360,6 +510,15 @@ function fib($n) {
 | `fdiv()` | O(1) | O(1) | Division by zero returns INF |
 | Match expression | O(1) | O(1) | Strict comparison switch |
 
+### PHP 8.4+ Features
+
+| Feature | Time | Space | Notes |
+|---------|------|-------|-------|
+| Property hooks | O(1) | O(1) | Overhead per property access |
+| Asymmetric visibility | O(1) | O(1) | No performance impact |
+| Typed class constants | O(1) | O(1) | Compile-time check |
+| Override attribute | O(1) | O(1) | Compile-time validation |
+
 ### SPL Data Structure Operations
 
 | Operation | SplStack | SplQueue | SplHeap | SplFixedArray |
@@ -373,6 +532,11 @@ function fib($n) {
 **Example: When to use each**:
 
 ```php
+<?php
+# filename: queue-comparison.php
+
+declare(strict_types=1);
+
 // ❌ BAD: Using array_shift in loop (O(n²) total)
 while (count($arr) > 0) {
     $item = array_shift($arr);  // O(n) each time
@@ -381,7 +545,9 @@ while (count($arr) > 0) {
 
 // ✅ GOOD: Using SplQueue (O(n) total)
 $queue = new SplQueue();
-foreach ($arr as $item) $queue->enqueue($item);
+foreach ($arr as $item) {
+    $queue->enqueue($item);
+}
 while (!$queue->isEmpty()) {
     $item = $queue->dequeue();  // O(1) each time
     process($item);
@@ -400,10 +566,18 @@ while (!$queue->isEmpty()) {
 | Matrix | O(n²) | Floyd-Warshall, DP table |
 | Recursion depth | O(n) | DFS call stack |
 | Complete binary tree | O(2ⁿ) | All subsets generation |
+| Stream processing | O(1) or O(log n) | Sliding windows, aggregations |
+| Probabilistic structures | O(1) to O(k) | Bloom filters, sketches |
+| Concurrent contexts | O(p) | p = parallel workers/threads |
 
 ### PHP-Specific Memory Considerations
 
 ```php
+<?php
+# filename: memory-overhead.php
+
+declare(strict_types=1);
+
 // Array overhead
 $arr = [];  // ~56 bytes base
 $arr[] = 1; // ~72 bytes per element (with overhead)
@@ -541,6 +715,21 @@ $obj = new Foo();  // ~40 bytes minimum
 ### Need to sort?
 → PHP `sort()` O(n log n)
 
+### Need rate limiting?
+→ Token Bucket O(1) time, O(1) space
+→ Sliding Window Counter O(1) time, O(k) space
+
+### Need to track unique items in stream?
+→ HyperLogLog O(1) add, O(2^p) space
+→ Bloom Filter O(k) add/check, O(m) space
+
+### Need frequency counts in stream?
+→ Count-Min Sketch O(d) add/estimate, O(w×d) space
+
+### Need parallel processing?
+→ Worker Pool O(n/p) time, O(p) space
+→ Async I/O O(1) scheduling, O(n) space
+
 ## Common Mistakes to Avoid
 
 1. ❌ Using `in_array()` in loop → O(n²)
@@ -558,16 +747,30 @@ $obj = new Foo();  // ~40 bytes minimum
 5. ❌ Sorting already sorted data repeatedly
    ✅ Check if sorted first or maintain sorted order
 
+6. ❌ Using `array_shift()` in sliding window → O(n²) total
+   ✅ Use deque or circular buffer → O(1) per operation
+
+7. ❌ Storing entire stream in memory → O(n) space
+   ✅ Use stream processing algorithms → O(1) or O(log n) space
+
+8. ❌ Exact counting for billions of items → O(n) space
+   ✅ Use probabilistic algorithms (Bloom filter, HyperLogLog) → O(1) or O(log n) space
+
 ## Performance Testing Template
 
 ```php
-function measureTime(callable $fn, ...$args): float {
+<?php
+# filename: performance-testing.php
+
+declare(strict_types=1);
+
+function measureTime(callable $fn, mixed ...$args): float {
     $start = microtime(true);
     $fn(...$args);
     return microtime(true) - $start;
 }
 
-function measureMemory(callable $fn, ...$args): int {
+function measureMemory(callable $fn, mixed ...$args): int {
     $before = memory_get_usage();
     $fn(...$args);
     return memory_get_usage() - $before;
@@ -629,6 +832,11 @@ Low Impact, High Effort  ← AVOID
 
 **Example 1: E-commerce Product Search**
 ```php
+<?php
+# filename: product-search-optimization.php
+
+declare(strict_types=1);
+
 // ❌ BAD: O(n²) - checking duplicates in loop
 $filtered = [];
 foreach ($products as $product) {
@@ -653,6 +861,11 @@ foreach ($products as $product) {
 
 **Example 2: User Activity Feed**
 ```php
+<?php
+# filename: activity-feed-optimization.php
+
+declare(strict_types=1);
+
 // ❌ BAD: N+1 query problem
 $posts = $db->query("SELECT * FROM posts LIMIT 50");
 foreach ($posts as $post) {
@@ -674,6 +887,11 @@ $posts = $db->query("
 
 **Example 3: Log Processing**
 ```php
+<?php
+# filename: log-processing-optimization.php
+
+declare(strict_types=1);
+
 // ❌ BAD: String concatenation in loop
 $log = '';
 foreach ($entries as $entry) {
@@ -708,6 +926,7 @@ $log = implode("\n", $lines);
 - **Chapter 16**: Binary Search Trees → Tree operations
 - **Chapter 17**: Balanced Trees → AVL/Red-Black tree guarantees
 - **Chapter 18**: Tree Traversals → DFS/BFS complexity
+- **Chapter 20**: Balanced Trees (AVL & Red-Black) → Self-balancing tree operations
 
 **Algorithms**:
 - **Chapter 7**: Linear Search → O(n) search
@@ -716,7 +935,11 @@ $log = implode("\n", $lines);
 - **Chapter 19**: Graph Representations → Graph storage complexity
 - **Chapter 20-22**: Graph Algorithms → DFS, BFS, Dijkstra complexity
 - **Chapter 23**: String Algorithms → Pattern matching complexity
+- **Chapter 33**: String Algorithms Deep Dive → Advanced string algorithms (Z-algorithm, Suffix Tree)
 - **Chapter 25**: Dynamic Programming → Memoization patterns
+- **Chapter 31**: Concurrent Algorithms → Parallel processing patterns
+- **Chapter 32**: Probabilistic Algorithms → Space-efficient data structures
+- **Chapter 36**: Stream Processing → Real-time algorithms
 
 **Optimization**:
 - **Chapter 29**: Performance Optimization → Practical optimization
@@ -744,7 +967,20 @@ $log = implode("\n", $lines);
 
 **Working with strings?**
 → Chapter 23: String Algorithms
-→ This appendix: String Functions table
+→ Chapter 33: String Algorithms Deep Dive (advanced)
+→ This appendix: String Algorithms table
+
+**Processing data streams?**
+→ Chapter 36: Stream Processing Algorithms
+→ This appendix: Stream Processing Algorithms table
+
+**Need space-efficient solutions?**
+→ Chapter 32: Probabilistic Algorithms
+→ This appendix: Probabilistic Algorithms table
+
+**Need parallel processing?**
+→ Chapter 31: Concurrent Algorithms
+→ This appendix: Concurrent Algorithms table
 
 ## Quick Decision Tree
 
@@ -765,14 +1001,29 @@ Start: I need to process data
 │  ├─ Graph problem?
 │  │  └─ Chapter 19-22: Graph Algorithms
 │  │
-│  └─ Optimization problem?
-│     └─ Chapter 25: Dynamic Programming
+│  ├─ Optimization problem?
+│  │  └─ Chapter 25: Dynamic Programming
+│  │
+│  ├─ Stream processing?
+│  │  └─ Chapter 36: Stream Processing Algorithms
+│  │
+│  ├─ Big data / space constraints?
+│  │  └─ Chapter 32: Probabilistic Algorithms
+│  │
+│  └─ Need parallel/concurrent?
+│     └─ Chapter 31: Concurrent Algorithms
 │
 └─ Performance issue?
    ├─ Algorithm complexity? → This appendix
    ├─ PHP-specific? → Appendix B
    └─ Profiling needed? → Chapter 29
 ```
+
+<ChapterCheckbox 
+  seriesId="php-algorithms"
+  chapterId="appendix-a"
+  label="Complexity Cheat Sheet mastered!"
+/>
 
 ## Resources
 
@@ -791,5 +1042,10 @@ Start: I need to process data
 - **Chapter 10-13**: Sorting Algorithms - Complete sorting guide
 - **Chapter 25**: Dynamic Programming - Optimization techniques
 - **Chapter 29**: Performance Optimization - Real-world optimization
+- **Chapter 31**: Concurrent Algorithms - Parallel processing patterns
+- **Chapter 30**: Real-World Case Studies - Practical algorithm applications
+- **Chapter 32**: Probabilistic Algorithms - Space-efficient data structures
+- **Chapter 33**: String Algorithms Deep Dive - Advanced string matching
+- **Chapter 36**: Stream Processing Algorithms - Real-time data processing
 - **Appendix B**: PHP Performance Tips - PHP-specific optimizations
 - **Appendix C**: Glossary - Algorithm terminology

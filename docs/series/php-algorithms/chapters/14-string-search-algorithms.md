@@ -10,6 +10,8 @@ prerequisites:
   - "Completion of Chapters 11-13"
   - "Familiarity with pattern matching"
 ---
+![14: String Search Algorithms](/images/php-algorithms/chapter-14-string-search-hero-full.webp)
+
 
 <div class="breadcrumbs">
   <a href="/">Home</a>
@@ -23,6 +25,14 @@ prerequisites:
 
 # String Search Algorithms <span class="difficulty-badge difficulty-advanced">Advanced</span>
 
+## Overview
+
+String searching (or pattern matching) is fundamental to text processing. Whether you're implementing search in a text editor, filtering log files, or building a search engine, you need efficient string search algorithms. Every time you use `Ctrl+F` in your editor, search through logs, or filter data, you're relying on string search algorithms working behind the scenes.
+
+In this chapter, we'll explore multiple approaches from simple to sophisticated, discovering how algorithms like KMP and Boyer-Moore achieve remarkable performance gains. We'll start with the naive approach to understand the problem, then progressively build more efficient solutions. You'll learn how the Knuth-Morris-Pratt algorithm never backtracks in the text, how Boyer-Moore can skip entire sections, and how Rabin-Karp uses hashing for efficient multi-pattern matching.
+
+By the end of this chapter, you'll have implemented four major string search algorithms and built a practical grep-like tool. You'll understand when to use each algorithm and how PHP's built-in functions leverage these techniques. This knowledge will help you optimize text processing in your applications and make informed decisions about algorithm selection.
+
 ## What You'll Learn
 
 - Master the naive string search algorithm and understand its limitations
@@ -30,8 +40,6 @@ prerequisites:
 - Build the Boyer-Moore algorithm that powers real-world text editors
 - Use Rabin-Karp hashing for efficient multi-pattern matching
 - Create a practical grep-like tool for text processing
-
-**Estimated Time**: ~55 minutes
 
 ## Prerequisites
 
@@ -42,7 +50,7 @@ Before starting this chapter, you should have:
 - ✓ Familiarity with pattern matching concepts
 - ✓ Basic knowledge of time complexity analysis
 
-String searching (or pattern matching) is fundamental to text processing. Whether you're implementing search in a text editor, filtering log files, or building a search engine, you need efficient string search algorithms. In this chapter, we'll explore multiple approaches from simple to sophisticated, discovering how algorithms like KMP and Boyer-Moore achieve remarkable performance gains.
+**Estimated Time**: ~55 minutes
 
 ## The String Search Problem
 
@@ -139,7 +147,37 @@ KMP improves on naive search by **never re-examining text characters**. It uses 
 
 ### The Prefix Table
 
-The prefix table (also called LPS - Longest Proper Prefix which is also Suffix) tells us where to continue matching after a mismatch.
+The prefix table (also called LPS - Longest Proper Prefix which is also Suffix) tells us where to continue matching after a mismatch. It stores the length of the longest proper prefix that is also a suffix for each position in the pattern.
+
+**Understanding the Prefix Table:**
+
+For pattern `"AABAAB"`:
+- Position 0: `""` → No prefix/suffix → `lps[0] = 0`
+- Position 1: `"A"` → Prefix: `""`, Suffix: `""` → `lps[1] = 1` (length of "A")
+- Position 2: `"AA"` → Prefixes: `"", "A"`, Suffixes: `"", "A"` → `lps[2] = 0` (no proper prefix = suffix)
+- Position 3: `"AAB"` → Prefixes: `"", "A", "AA"`, Suffixes: `"", "B", "AB"` → `lps[3] = 1` ("A")
+- Position 4: `"AABA"` → Prefixes: `"", "A", "AA", "AAB"`, Suffixes: `"", "A", "BA", "ABA"` → `lps[4] = 1` ("A")
+- Position 5: `"AABAAB"` → Prefixes: `"", "A", "AA", "AAB", "AABA"`, Suffixes: `"", "B", "AB", "AAB", "BAAB"` → `lps[5] = 2` ("AA")
+
+**Step-by-Step Construction:**
+
+Let's build the prefix table for `"AABAAB"`:
+
+```
+Pattern: A A B A A B
+Index:   0 1 2 3 4 5
+LPS:     0 1 0 1 2 3
+```
+
+**Step-by-step walkthrough:**
+
+1. **i=0, len=0**: `lps[0] = 0` (always starts at 0)
+2. **i=1, len=0**: Compare `pattern[1]='A'` with `pattern[0]='A'` → Match! `len=1`, `lps[1]=1`, `i=2`
+3. **i=2, len=1**: Compare `pattern[2]='B'` with `pattern[1]='A'` → Mismatch! `len != 0`, so `len = lps[0] = 0`
+4. **i=2, len=0**: Compare `pattern[2]='B'` with `pattern[0]='A'` → Mismatch! `len == 0`, so `lps[2]=0`, `i=3`
+5. **i=3, len=0**: Compare `pattern[3]='A'` with `pattern[0]='A'` → Match! `len=1`, `lps[3]=1`, `i=4`
+6. **i=4, len=1**: Compare `pattern[4]='A'` with `pattern[1]='A'` → Match! `len=2`, `lps[4]=2`, `i=5`
+7. **i=5, len=2**: Compare `pattern[5]='B'` with `pattern[2]='B'` → Match! `len=3`, `lps[5]=3`, done
 
 ```php
 function computePrefixTable(string $pattern): array
@@ -151,13 +189,17 @@ function computePrefixTable(string $pattern): array
 
     while ($i < $m) {
         if ($pattern[$i] === $pattern[$len]) {
+            // Characters match - extend the prefix
             $len++;
             $lps[$i] = $len;
             $i++;
         } else {
+            // Mismatch - try shorter prefix
             if ($len !== 0) {
+                // Don't reset len to 0, use previous LPS value
                 $len = $lps[$len - 1];
             } else {
+                // No prefix found, move to next character
                 $lps[$i] = 0;
                 $i++;
             }
@@ -167,11 +209,52 @@ function computePrefixTable(string $pattern): array
     return $lps;
 }
 
+// Example with detailed output
+function computePrefixTableVisualized(string $pattern): array
+{
+    $m = strlen($pattern);
+    $lps = array_fill(0, $m, 0);
+    $len = 0;
+    $i = 1;
+
+    echo "Building prefix table for: $pattern\n";
+    echo "Index: " . implode(' ', range(0, $m - 1)) . "\n";
+    echo "Char:  " . implode(' ', str_split($pattern)) . "\n\n";
+
+    while ($i < $m) {
+        echo "Step $i: Comparing pattern[$i]='{$pattern[$i]}' with pattern[$len]='{$pattern[$len]}'\n";
+        
+        if ($pattern[$i] === $pattern[$len]) {
+            $len++;
+            $lps[$i] = $len;
+            echo "  ✓ Match! len=$len, lps[$i]=$len\n";
+            $i++;
+        } else {
+            if ($len !== 0) {
+                echo "  ✗ Mismatch, len=$len, trying lps[$len-1]={$lps[$len - 1]}\n";
+                $len = $lps[$len - 1];
+            } else {
+                $lps[$i] = 0;
+                echo "  ✗ Mismatch, len=0, lps[$i]=0\n";
+                $i++;
+            }
+        }
+    }
+
+    echo "\nFinal LPS: " . implode(' ', $lps) . "\n";
+    return $lps;
+}
+
 // Example
 $pattern = "AABAAB";
 print_r(computePrefixTable($pattern));
 // [0, 1, 0, 1, 2, 3]
+
+// Visualized version
+computePrefixTableVisualized($pattern);
 ```
+
+**Key Insight:** When characters don't match, we don't start from the beginning. Instead, we use the LPS value to know how much of the pattern we've already matched, allowing us to skip unnecessary comparisons.
 
 ### KMP Implementation
 
@@ -1448,59 +1531,472 @@ class SearchController extends AbstractController
 
 ## Practice Exercises
 
-### Exercise 1: Wildcard Matching
+Test your understanding with these progressively challenging exercises.
 
-Implement wildcard pattern matching (* and ?):
+### Exercise 1: Wildcard Matching (~20 minutes)
 
+**Goal**: Implement wildcard pattern matching using dynamic programming or two-pointer technique
+
+**Requirements:**
+- Create a file called `exercise-wildcard-match.php`
+- Implement `wildcardMatch(string $text, string $pattern): bool`
+- `*` matches any sequence of characters (including empty)
+- `?` matches any single character
+- Must handle edge cases: empty strings, multiple `*`, `*` at start/end
+
+**Starter code:**
+```php
+# filename: exercise-wildcard-match.php
+<?php
+
+function wildcardMatch(string $text, string $pattern): bool
+{
+    // Your code here
+    // Hint: Use dynamic programming or two-pointer approach
+    // Consider: What happens when you encounter '*'?
+    // Consider: How to handle multiple '*' in a row?
+}
+
+// Test cases
+echo wildcardMatch("hello", "h*o") ? "Match" : "No match"; // Expected: Match
+echo "\n";
+echo wildcardMatch("hello", "h?llo") ? "Match" : "No match"; // Expected: Match
+echo "\n";
+echo wildcardMatch("hello", "h*ll?") ? "Match" : "No match"; // Expected: Match
+echo "\n";
+echo wildcardMatch("hello", "h*ll??") ? "Match" : "No match"; // Expected: No match
+echo "\n";
+echo wildcardMatch("", "*") ? "Match" : "No match"; // Expected: Match
+```
+
+**Validation**: Run your code. It should output:
+```
+Match
+Match
+Match
+No match
+Match
+```
+
+<details>
+<summary>💡 Solution Approach</summary>
+
+**Strategy**: Use dynamic programming with memoization or two-pointer technique.
+
+**Two-Pointer Approach:**
 ```php
 function wildcardMatch(string $text, string $pattern): bool
 {
-    // * matches any sequence
-    // ? matches any single character
-    // Your code here
-}
+    $textLen = strlen($text);
+    $patternLen = strlen($pattern);
+    $textIdx = 0;
+    $patternIdx = 0;
+    $starIdx = -1;
+    $matchIdx = 0;
 
-echo wildcardMatch("hello", "h*o") ? "Match" : "No match"; // Match
-echo wildcardMatch("hello", "h?llo") ? "Match" : "No match"; // Match
+    while ($textIdx < $textLen) {
+        // If characters match or pattern has '?', advance both pointers
+        if ($patternIdx < $patternLen && 
+            ($pattern[$patternIdx] === '?' || $pattern[$patternIdx] === $text[$textIdx])) {
+            $textIdx++;
+            $patternIdx++;
+        }
+        // If pattern has '*', record position and try matching empty string
+        elseif ($patternIdx < $patternLen && $pattern[$patternIdx] === '*') {
+            $starIdx = $patternIdx;
+            $matchIdx = $textIdx;
+            $patternIdx++;
+        }
+        // If we have a '*' recorded, backtrack and try matching one more character
+        elseif ($starIdx !== -1) {
+            $patternIdx = $starIdx + 1;
+            $matchIdx++;
+            $textIdx = $matchIdx;
+        }
+        // No match possible
+        else {
+            return false;
+        }
+    }
+
+    // Skip remaining '*' in pattern
+    while ($patternIdx < $patternLen && $pattern[$patternIdx] === '*') {
+        $patternIdx++;
+    }
+
+    return $patternIdx === $patternLen;
+}
 ```
 
-### Exercise 2: Longest Common Substring
+**Key Insight**: When you encounter `*`, you can match zero or more characters. Use backtracking to try different lengths.
+</details>
 
-Find the longest substring common to two strings:
+---
+
+### Exercise 2: Longest Common Substring (~25 minutes)
+
+**Goal**: Find the longest substring common to two strings using dynamic programming
+
+**Requirements:**
+- Create a file called `exercise-longest-substring.php`
+- Implement `longestCommonSubstring(string $s1, string $s2): string`
+- Return the longest common substring (not subsequence)
+- O(n×m) time complexity is acceptable
+- Handle edge cases: no common substring, empty strings
+
+**Starter code:**
+```php
+# filename: exercise-longest-substring.php
+<?php
+
+function longestCommonSubstring(string $s1, string $s2): string
+{
+    // Your code here
+    // Hint: Use dynamic programming table
+    // Consider: What does dp[i][j] represent?
+    // Consider: How do you track the maximum length and position?
+}
+
+// Test cases
+echo longestCommonSubstring("abcdefgh", "cdefijk"); // Expected: "cdef"
+echo "\n";
+echo longestCommonSubstring("programming", "program"); // Expected: "program"
+echo "\n";
+echo longestCommonSubstring("hello", "world"); // Expected: "" (or empty string)
+echo "\n";
+echo longestCommonSubstring("abc", "abc"); // Expected: "abc"
+```
+
+**Validation**: Run your code. It should output:
+```
+cdef
+program
+
+abc
+```
+
+<details>
+<summary>💡 Solution Approach</summary>
+
+**Strategy**: Dynamic programming where `dp[i][j]` represents the length of common substring ending at positions `i` and `j`.
 
 ```php
 function longestCommonSubstring(string $s1, string $s2): string
 {
-    // Your code here
-}
+    $n = strlen($s1);
+    $m = strlen($s2);
+    
+    if ($n === 0 || $m === 0) {
+        return '';
+    }
 
-echo longestCommonSubstring("abcdefgh", "cdefijk"); // "cdef"
+    $dp = array_fill(0, $n + 1, array_fill(0, $m + 1, 0));
+    $maxLen = 0;
+    $endPos = 0;
+
+    for ($i = 1; $i <= $n; $i++) {
+        for ($j = 1; $j <= $m; $j++) {
+            if ($s1[$i - 1] === $s2[$j - 1]) {
+                $dp[$i][$j] = $dp[$i - 1][$j - 1] + 1;
+                
+                if ($dp[$i][$j] > $maxLen) {
+                    $maxLen = $dp[$i][$j];
+                    $endPos = $i - 1;
+                }
+            } else {
+                $dp[$i][$j] = 0;
+            }
+        }
+    }
+
+    if ($maxLen === 0) {
+        return '';
+    }
+
+    return substr($s1, $endPos - $maxLen + 1, $maxLen);
+}
 ```
 
-### Exercise 3: Anagram Search
+**Key Insight**: Unlike longest common subsequence, substring requires consecutive characters. Reset to 0 when characters don't match.
+</details>
 
-Find all anagrams of a pattern in text:
+---
+
+### Exercise 3: Anagram Search (~30 minutes)
+
+**Goal**: Find all starting indices of anagrams of a pattern in text using sliding window technique
+
+**Requirements:**
+- Create a file called `exercise-anagram-search.php`
+- Implement `findAnagrams(string $text, string $pattern): array`
+- Return array of starting indices where anagram of pattern occurs
+- An anagram has same characters with same frequency
+- O(n) time complexity where n = text length
+- Handle edge cases: pattern longer than text, no anagrams found
+
+**Starter code:**
+```php
+# filename: exercise-anagram-search.php
+<?php
+
+function findAnagrams(string $text, string $pattern): array
+{
+    // Your code here
+    // Hint: Use sliding window with character frequency counting
+    // Consider: How to check if two strings are anagrams?
+    // Consider: How to efficiently update the window?
+}
+
+// Test cases
+print_r(findAnagrams("cbaebabacd", "abc"));
+// Expected: [0, 6] - "cba" and "bac" are anagrams of "abc"
+echo "\n";
+
+print_r(findAnagrams("abab", "ab"));
+// Expected: [0, 1, 2] - "ab", "ba", "ab" are anagrams
+echo "\n";
+
+print_r(findAnagrams("hello", "xyz"));
+// Expected: [] - no anagrams found
+```
+
+**Validation**: Run your code. It should output:
+```
+Array
+(
+    [0] => 0
+    [1] => 6
+)
+Array
+(
+    [0] => 0
+    [1] => 1
+    [2] => 2
+)
+Array
+(
+)
+```
+
+<details>
+<summary>💡 Solution Approach</summary>
+
+**Strategy**: Sliding window with character frequency counting.
 
 ```php
 function findAnagrams(string $text, string $pattern): array
 {
-    // Find all substrings that are anagrams of pattern
-    // Your code here
+    $textLen = strlen($text);
+    $patternLen = strlen($pattern);
+    $result = [];
+
+    if ($patternLen > $textLen) {
+        return $result;
+    }
+
+    // Count character frequencies in pattern
+    $patternCount = array_count_values(str_split($pattern));
+    
+    // Count character frequencies in first window
+    $windowCount = [];
+    for ($i = 0; $i < $patternLen; $i++) {
+        $char = $text[$i];
+        $windowCount[$char] = ($windowCount[$char] ?? 0) + 1;
+    }
+
+    // Check if first window is anagram
+    if ($windowCount === $patternCount) {
+        $result[] = 0;
+    }
+
+    // Slide the window
+    for ($i = $patternLen; $i < $textLen; $i++) {
+        // Remove leftmost character
+        $leftChar = $text[$i - $patternLen];
+        $windowCount[$leftChar]--;
+        if ($windowCount[$leftChar] === 0) {
+            unset($windowCount[$leftChar]);
+        }
+
+        // Add rightmost character
+        $rightChar = $text[$i];
+        $windowCount[$rightChar] = ($windowCount[$rightChar] ?? 0) + 1;
+
+        // Check if current window is anagram
+        if ($windowCount === $patternCount) {
+            $result[] = $i - $patternLen + 1;
+        }
+    }
+
+    return $result;
+}
+```
+
+**Key Insight**: Two strings are anagrams if they have the same character frequencies. Use sliding window to efficiently check each substring.
+</details>
+
+---
+
+### Bonus Exercise 4: Implement KMP from Scratch (~40 minutes)
+
+**Goal**: Implement the complete KMP algorithm including prefix table construction
+
+**Requirements:**
+- Create a file called `exercise-kmp-implementation.php`
+- Implement both `computePrefixTable()` and `kmpSearch()` functions
+- Test with various patterns and texts
+- Add visualization to show how the algorithm works step-by-step
+- Compare performance with naive search
+
+**Starter code:**
+```php
+# filename: exercise-kmp-implementation.php
+<?php
+
+function computePrefixTable(string $pattern): array
+{
+    // Your implementation here
 }
 
-print_r(findAnagrams("cbaebabacd", "abc"));
-// [0, 6] - "cba" and "bac" are anagrams of "abc"
+function kmpSearch(string $text, string $pattern): array
+{
+    // Your implementation here
+}
+
+// Test cases
+$text = "ABABDABACDABABCABCAB";
+$pattern = "ABABCABAB";
+$matches = kmpSearch($text, $pattern);
+print_r($matches); // Expected: [10]
 ```
+
+::: tip Exercise Tips
+- Start with Exercise 1 to build confidence with pattern matching
+- Draw diagrams to visualize how each algorithm works
+- Test edge cases: empty strings, pattern longer than text, no matches
+- For Exercise 3, verify your frequency counting logic carefully
+- Compare your solutions' performance with simpler approaches
+- Review the algorithm explanations if stuck on implementation details
+- Use the visualization functions provided in the chapter to debug
+:::
+
+## Wrap-up
+
+Congratulations! You've mastered string search algorithms—essential tools for efficient text processing. Let's review what you've accomplished:
+
+**✓ Core Algorithms Implemented:**
+- ✅ **Naive search** - Simple O(n×m) approach, easy to understand and implement
+- ✅ **KMP algorithm** - O(n+m) linear-time search that never backtracks in text
+- ✅ **Boyer-Moore** - Often fastest in practice, can skip many characters
+- ✅ **Rabin-Karp** - Uses rolling hash for efficient multi-pattern matching
+
+**✓ Advanced Techniques:**
+- ✅ Built prefix tables (LPS) for KMP preprocessing
+- ✅ Implemented bad character rule for Boyer-Moore
+- ✅ Created rolling hash functions for Rabin-Karp
+- ✅ Handled edge cases: empty strings, Unicode, overlapping matches
+- ✅ Security considerations: timing attacks, ReDoS protection
+
+**✓ Real-World Applications:**
+- ✅ Built a grep-like tool for file searching
+- ✅ Created text highlighting functionality
+- ✅ Implemented URL extraction and word counting
+- ✅ Framework integration examples (Laravel, Symfony)
+- ✅ Performance benchmarking and optimization strategies
+
+**✓ Algorithm Selection:**
+- ✅ Understand when to use each algorithm based on use case
+- ✅ Know PHP's built-in functions and when they're optimal
+- ✅ Recognize trade-offs between simplicity and performance
+- ✅ Choose appropriate algorithm for text size and pattern length
+
+**✓ Common Pitfalls Avoided:**
+- ✅ **Off-by-one errors** in pattern matching loops and index calculations
+- ✅ **Incorrect prefix table construction** in KMP (forgetting to backtrack `len`)
+- ✅ **Hash collision issues** in Rabin-Karp (not verifying actual string match)
+- ✅ **Unicode handling mistakes** (using `strlen()` instead of `mb_strlen()`)
+- ✅ **Performance pitfalls** (using complex algorithms for small texts where naive is faster)
+- ✅ **Edge case failures** (empty strings, pattern longer than text, overlapping matches)
+- ✅ **Infinite loops** in KMP when not properly handling `j` reset after match
+- ✅ **Memory issues** with large texts (loading entire file into memory)
+
+**Real-World Impact:**
+
+String search algorithms power:
+- **Text editors**: Find/replace functionality (Boyer-Moore)
+- **Search engines**: Indexing and query matching (KMP, Rabin-Karp)
+- **Log analysis**: Filtering and pattern matching (grep tools)
+- **Security systems**: Intrusion detection, pattern matching
+- **Database systems**: Full-text search capabilities
+- **Web applications**: Search functionality, autocomplete
+
+You now understand not just *how* these algorithms work, but *when* and *why* to use each one. This knowledge will help you optimize text processing in your applications and make informed decisions about algorithm selection.
 
 ## Key Takeaways
 
-- **Naive search** is O(n×m) but simple
-- **KMP** is O(n+m) and never backtracks in text
-- **Boyer-Moore** is often fastest in practice, can skip characters
-- **Rabin-Karp** uses hashing, good for multiple patterns
-- **PHP's strpos()** is highly optimized - use it when possible
-- **Regular expressions** are powerful but slower for simple patterns
-- **Choose algorithm** based on text size, pattern length, and use case
+### Core Algorithms
+- ✅ **Naive search** is O(n×m) but simple and easy to understand
+- ✅ **KMP** is O(n+m) and never backtracks in text - guaranteed linear time
+- ✅ **Boyer-Moore** is often fastest in practice, can skip many characters
+- ✅ **Rabin-Karp** uses hashing, excellent for multiple patterns
+
+### Performance Characteristics
+- ✅ **Preprocessing time**: KMP and Boyer-Moore require O(m) preprocessing
+- ✅ **Search time**: KMP guarantees O(n), Boyer-Moore averages O(n) but can be O(n×m) worst case
+- ✅ **Space complexity**: KMP uses O(m) for prefix table, Boyer-Moore uses O(σ) for bad character table
+- ✅ **PHP's strpos()** is highly optimized - use it when possible for simple searches
+
+### When to Use Each Algorithm
+- ✅ **Naive**: Small texts, simple patterns, educational purposes
+- ✅ **KMP**: Guaranteed linear time needed, patterns with many repeated substrings
+- ✅ **Boyer-Moore**: Long patterns, large alphabets, general-purpose search
+- ✅ **Rabin-Karp**: Multiple pattern searches, rolling hash benefits
+- ✅ **Regular expressions**: Complex patterns, but slower for simple patterns
+
+### Best Practices
+- ✅ **Choose algorithm** based on text size, pattern length, and use case
+- ✅ **Handle edge cases**: Empty strings, Unicode, special characters
+- ✅ **Consider security**: Timing attacks, ReDoS protection
+- ✅ **Benchmark** different approaches for your specific use case
+- ✅ **Use PHP built-ins** when they meet your needs - they're highly optimized
+
+<ChapterCheckbox 
+  seriesId="php-algorithms"
+  chapterId="14"
+  label="String Search Algorithms understood!"
+/>
+
+## Further Reading
+
+### Official Documentation & Standards
+- [PHP String Functions](https://www.php.net/manual/en/ref.strings.php) — Complete reference for PHP string operations
+- [strpos() function](https://www.php.net/manual/en/function.strpos.php) — PHP's optimized string search
+- [preg_match() function](https://www.php.net/manual/en/function.preg-match.php) — Regular expression matching
+- [PCRE Patterns](https://www.php.net/manual/en/book.pcre.php) — Regular expression syntax and optimization
+
+### Algorithm Resources
+- **Introduction to Algorithms (CLRS)** — Chapter 32 covers string matching algorithms in detail
+- **Algorithm Design Manual** — Section 18.3 covers pattern matching algorithms
+- [KMP Algorithm Visualization](https://www.cs.usfca.edu/~galles/visualization/StringMatching.html) — Interactive algorithm animation
+- [Boyer-Moore Algorithm Paper](https://dl.acm.org/doi/10.1145/359842.359859) — Original 1977 paper by Boyer and Moore
+
+### Advanced Topics
+- **Aho-Corasick Algorithm** — Multi-pattern matching using finite automata
+- **Suffix Trees & Suffix Arrays** — Advanced data structures for string problems
+- **Z-Algorithm** — Linear-time pattern matching using Z-array
+- **Finite Automata** — State machine approach to string matching
+- **Regular Expression Engines** — How regex engines work internally
+
+### Security & Performance
+- [ReDoS (Regular Expression Denial of Service)](https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS) — OWASP guide to preventing ReDoS attacks
+- [Timing Attacks](https://en.wikipedia.org/wiki/Timing_attack) — Understanding timing-based vulnerabilities
+- [PHP Security Best Practices](https://www.php.net/manual/en/security.php) — PHP security documentation
+
+### Related Chapters
+- [Chapter 11: Linear Search & Variants](/series/php-algorithms/chapters/11-linear-search-variants) — Compare with linear search approaches
+- [Chapter 13: Hash Tables & Hash Functions](/series/php-algorithms/chapters/13-hash-tables-hash-functions) — Understanding hash functions used in Rabin-Karp
+- [Chapter 33: String Algorithms Deep Dive](/series/php-algorithms/chapters/33-string-algorithms-deep-dive) — Advanced string algorithms and techniques
+- [Chapter 29: Performance Optimization](/series/php-algorithms/chapters/29-performance-optimization) — Choosing the right algorithm for your use case
 
 ## What's Next
 

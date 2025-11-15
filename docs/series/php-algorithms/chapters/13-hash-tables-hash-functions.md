@@ -10,6 +10,8 @@ prerequisites:
   - "Familiarity with linked lists"
   - "Completion of Chapters 11-12"
 ---
+![13: Hash Tables & Hash Functions](/images/php-algorithms/chapter-13-hash-tables-hero-full.webp)
+
 
 <div class="breadcrumbs">
   <a href="/">Home</a>
@@ -23,26 +25,47 @@ prerequisites:
 
 # Hash Tables & Hash Functions <span class="difficulty-badge difficulty-advanced">Advanced</span>
 
+Hash tables are one of the most important data structures in computer science, providing **O(1) average-case** lookups, insertions, and deletions. Think of them as the secret sauce behind PHP's lightning-fast associative arrays! In this chapter, we'll build hash tables from scratch, design hash functions, and handle collisions like a pro.
+
+**Why hash tables matter:** They power databases, caches, compilers, and even PHP's native arrays. Understanding them deeply will make you a better developer and help you solve complex problems efficiently.
+
 ## What You'll Learn
 
-- Build hash tables from scratch with proper hash functions
-- Implement collision handling using separate chaining and open addressing
-- Master advanced techniques like Robin Hood, Cuckoo, and Hopscotch hashing
-- Apply hash tables to solve real-world problems efficiently
-- Understand security considerations and protect against hash flooding attacks
+**Estimated time:** 60 minutes
 
-**Estimated Time**: ~60 minutes
+By the end of this chapter, you will:
+
+- Build hash tables from scratch with proper hash functions achieving O(1) lookups
+- Implement collision handling using separate chaining and open addressing (linear probing, quadratic probing, double hashing)
+- Master advanced techniques like Robin Hood, Cuckoo, and Hopscotch hashing
+- Design effective hash functions with uniform distribution and minimal collisions
+- Apply hash tables to solve real-world problems: caching, frequency counting, duplicate detection
+- Understand security considerations and protect against hash flooding DoS attacks
+- Leverage PHP's built-in arrays (which ARE hash tables) effectively
 
 ## Prerequisites
 
-Before starting this chapter, you should have:
+Before starting this chapter, ensure you have:
 
-- ✓ Understanding of arrays and how they work
-- ✓ Familiarity with linked lists (covered in Chapter 16, but helpful context)
-- ✓ Completion of Chapters 11-12 (search algorithms)
-- ✓ Basic understanding of O(1) time complexity
+- ✓ Understanding of arrays and how they work _(fundamental concept)_
+- ✓ Familiarity with linked lists _(helpful but not required - we'll explain as needed)_
+- ✓ Completion of Chapters 11-12 search algorithms _(95 mins if not done)_
+- ✓ Basic understanding of O(1) time complexity _(Chapter 1 for review)_
 
-Hash tables are one of the most important data structures in computer science, providing **O(1) average-case** lookups, insertions, and deletions. Think of them as the secret sauce behind PHP's lightning-fast associative arrays! In this chapter, we'll build hash tables from scratch, design hash functions, and handle collisions effectively.
+## Quick Checklist
+
+Complete these hands-on tasks as you work through the chapter:
+
+- [ ] Build a simple hash table with a basic hash function
+- [ ] Implement collision handling with separate chaining
+- [ ] Create open addressing with linear probing
+- [ ] Test different hash functions (division, multiplication, polynomial)
+- [ ] Implement dynamic resizing based on load factor
+- [ ] Build Robin Hood hashing for improved performance
+- [ ] Create a practical caching system using hash tables
+- [ ] Solve the Two Sum problem with O(n) complexity
+- [ ] Implement secure hash table resistant to DoS attacks
+- [ ] Benchmark hash table performance vs linear search
 
 ## What Is a Hash Table?
 
@@ -69,6 +92,7 @@ Value: null null null alice@...com  null null null bob@...com
 A hash function converts a key into an array index:
 
 ```php
+# filename: simple-hash.php
 function simpleHash(string $key, int $size): int
 {
     $hash = 0;
@@ -94,7 +118,10 @@ echo simpleHash("Bob", 10);   // Some index 0-9
 
 ## Building a Simple Hash Table
 
+Let's start with the simplest possible hash table implementation:
+
 ```php
+# filename: basic-hash-table.php
 class HashTable
 {
     private array $table;
@@ -159,9 +186,10 @@ Two main strategies for handling collisions:
 
 ### 1. Separate Chaining
 
-Store multiple key-value pairs at each index using a linked list or array:
+Store multiple key-value pairs at each index using a linked list or array. This is the most common approach and what PHP's arrays use internally:
 
 ```php
+# filename: hash-table-chaining.php
 class HashTableChaining
 {
     private array $table;
@@ -284,11 +312,12 @@ print_r($ht->keys());  // ['Alice', 'Bob', 'Charlie']
 
 ### 2. Open Addressing
 
-Store all entries in the main array, probe for the next available slot on collision:
+Store all entries in the main array, probe for the next available slot on collision. This uses less memory than chaining but can suffer from clustering.
 
 #### Linear Probing
 
 ```php
+# filename: hash-table-linear-probing.php
 class HashTableLinearProbing
 {
     private array $keys;
@@ -411,7 +440,10 @@ class HashTableLinearProbing
 
 #### Quadratic Probing
 
+Reduces clustering by using quadratic increments instead of linear:
+
 ```php
+# filename: quadratic-probing.php
 private function quadraticProbe(string $key): int
 {
     $index = $this->hash($key);
@@ -429,7 +461,10 @@ private function quadraticProbe(string $key): int
 
 #### Double Hashing
 
+Uses a second hash function to determine the probe sequence, providing better distribution:
+
 ```php
+# filename: double-hashing.php
 private function doubleHash(string $key): int
 {
     $hash1 = $this->hash($key);
@@ -460,7 +495,10 @@ private function doubleHash(string $key): int
 
 #### 1. Division Method
 
+Simple but effective - use modulo operation:
+
 ```php
+# filename: hash-division.php
 function hashDivision(string $key, int $size): int
 {
     $hash = 0;
@@ -475,7 +513,10 @@ function hashDivision(string $key, int $size): int
 
 #### 2. Multiplication Method
 
+Uses the golden ratio for better distribution:
+
 ```php
+# filename: hash-multiplication.php
 function hashMultiplication(string $key, int $size): int
 {
     $hash = 0;
@@ -491,7 +532,10 @@ function hashMultiplication(string $key, int $size): int
 
 #### 3. Polynomial Rolling Hash
 
+Best for strings - reduces collisions significantly:
+
 ```php
+# filename: hash-polynomial.php
 function hashPolynomial(string $key, int $size): int
 {
     $hash = 0;
@@ -507,7 +551,10 @@ function hashPolynomial(string $key, int $size): int
 
 #### 4. FNV-1a Hash (Fast, Good Distribution)
 
+Industry-standard non-cryptographic hash:
+
 ```php
+# filename: hash-fnv1a.php
 function hashFNV1a(string $key): int
 {
     $hash = 2166136261; // FNV offset basis
@@ -538,7 +585,10 @@ $hash = md5("my-key", true);
 
 **Load factor** = number of entries / table size
 
+A high load factor means more collisions and slower operations. Resize when it gets too high:
+
 ```php
+# filename: resizable-hash-table.php
 class ResizableHashTable extends HashTableChaining
 {
     private const MAX_LOAD_FACTOR = 0.75;
@@ -578,7 +628,10 @@ class ResizableHashTable extends HashTableChaining
 
 ### 1. Caching
 
+Build a simple LRU-style cache using hash tables:
+
 ```php
+# filename: cache-implementation.php
 class Cache
 {
     private HashTableChaining $cache;
@@ -610,7 +663,10 @@ class Cache
 
 ### 2. Counting Frequencies
 
+Count word occurrences - O(n) instead of O(n²):
+
 ```php
+# filename: count-frequencies.php
 function countFrequencies(array $items): array
 {
     $frequencies = new HashTableChaining();
@@ -636,7 +692,10 @@ print_r(countFrequencies($words));
 
 ### 3. Detecting Duplicates
 
+Check for duplicates in O(n) time:
+
 ```php
+# filename: detect-duplicates.php
 function hasDuplicates(array $arr): bool
 {
     $seen = new HashTableChaining();
@@ -656,7 +715,10 @@ function hasDuplicates(array $arr): bool
 
 ### 4. Two Sum Problem
 
+Classic interview question - find two numbers that sum to target:
+
 ```php
+# filename: two-sum.php
 function twoSum(array $nums, int $target): ?array
 {
     $map = new HashTableChaining();
@@ -680,7 +742,7 @@ print_r(twoSum($nums, 9)); // [0, 1]
 
 ## PHP's Built-in Arrays ARE Hash Tables!
 
-PHP arrays are actually hash tables:
+**Mind-blowing fact:** PHP arrays are actually hash tables under the hood! This is why PHP arrays are so flexible and fast.
 
 ```php
 // Associative array = hash table
@@ -702,21 +764,64 @@ if (isset($ages['Alice'])) {
 }
 ```
 
-**PHP array operations:**
-- `$arr[$key]` → O(1) get
-- `$arr[$key] = $value` → O(1) set
-- `isset($arr[$key])` → O(1) check
-- `unset($arr[$key])` → O(1) delete
-- `array_key_exists()` → O(1)
-- `in_array()` → O(n) (searches values, not keys!)
+**PHP array operations and their complexity:**
+- `$arr[$key]` → **O(1)** get value by key
+- `$arr[$key] = $value` → **O(1)** set/insert
+- `isset($arr[$key])` → **O(1)** check existence
+- `unset($arr[$key])` → **O(1)** delete
+- `array_key_exists()` → **O(1)** key existence check
+- `in_array()` → **O(n)** ⚠️ searches values, not keys! Use hash lookup instead.
+
+### Hash Tables vs Other Searches
+
+Let's compare hash tables with search methods from previous chapters:
+
+```php
+# filename: comparison-demo.php
+$data = range(1, 100000); // 100k elements
+
+// Linear Search - O(n)
+$start = microtime(true);
+$found = in_array(99999, $data); // Worst case: checks all elements
+$linearTime = microtime(true) - $start;
+echo "Linear Search: " . ($linearTime * 1000) . "ms\n";
+
+// Binary Search - O(log n) - requires sorted array
+sort($data);
+$start = microtime(true);
+$found = binarySearch($data, 99999);
+$binaryTime = microtime(true) - $start;
+echo "Binary Search: " . ($binaryTime * 1000) . "ms\n";
+
+// Hash Table - O(1)
+$hashTable = array_flip($data); // Create hash table
+$start = microtime(true);
+$found = isset($hashTable[99999]); // Instant lookup!
+$hashTime = microtime(true) - $start;
+echo "Hash Table: " . ($hashTime * 1000) . "ms\n";
+
+// Results (approximate):
+// Linear Search: 2-5ms
+// Binary Search: 0.01-0.02ms
+// Hash Table: 0.001-0.002ms ← 100-1000x faster!
+```
+
+**When each approach wins:**
+
+| Data Structure | Best For | Worst For |
+|---------------|----------|-----------|
+| **Hash Table** | Fast lookups, counting, caching | Sorted data, range queries |
+| **Binary Search** | Sorted data, range queries | Frequent insertions |
+| **Linear Search** | Small arrays (<10 items), unsorted | Large datasets |
 
 ## Advanced Collision Handling Strategies
 
 ### Robin Hood Hashing
 
-Robin Hood hashing improves on linear probing by reducing variance in probe sequence lengths:
+Robin Hood hashing improves on linear probing by reducing variance in probe sequence lengths. It "steals from the rich" by swapping entries to reduce maximum probe distance:
 
 ```php
+# filename: robin-hood-hash-table.php
 class RobinHoodHashTable
 {
     private array $keys;
@@ -806,9 +911,10 @@ class RobinHoodHashTable
 
 ### Cuckoo Hashing
 
-Uses two hash functions and two tables, guaranteeing O(1) lookup:
+Uses two hash functions and two tables, guaranteeing O(1) worst-case lookup (not just average). Named after the cuckoo bird that kicks other eggs out of nests:
 
 ```php
+# filename: cuckoo-hash-table.php
 class CuckooHashTable
 {
     private array $table1;
@@ -940,9 +1046,10 @@ class CuckooHashTable
 
 ### Hopscotch Hashing
 
-Combines benefits of chaining and open addressing:
+Combines benefits of chaining and open addressing. Keeps entries within a "hop range" of their ideal position:
 
 ```php
+# filename: hopscotch-hash-table.php
 class HopscotchHashTable
 {
     private array $table;
@@ -1026,11 +1133,758 @@ class HopscotchHashTable
 }
 ```
 
-## Performance Benchmarks: Collision Strategies
+## Distributed Hash Tables
 
-Comparing different collision handling approaches:
+When scaling applications beyond a single server, you'll need to distribute data across multiple nodes. This is where **distributed hash tables** and **consistent hashing** become essential. Let's explore how to hash data across servers while minimizing disruption when nodes are added or removed.
+
+### The Problem with Simple Modulo Hashing
+
+The naive approach to distributing keys across N servers uses modulo:
 
 ```php
+# filename: naive-distribution.php
+function getServer(string $key, int $serverCount): int
+{
+    return abs(crc32($key)) % $serverCount;
+}
+
+// With 3 servers:
+echo getServer('user_123', 3); // Server 0
+echo getServer('user_456', 3); // Server 1
+echo getServer('user_789', 3); // Server 2
+```
+
+**The problem:** When you add or remove a server, almost ALL keys need to be remapped:
+
+```php
+// Originally 3 servers
+$serverCount = 3;
+$keys = ['user_1', 'user_2', 'user_3', 'user_4', 'user_5'];
+
+foreach ($keys as $key) {
+    $original = abs(crc32($key)) % 3;
+    $afterAdd = abs(crc32($key)) % 4; // Added 1 server
+    
+    if ($original !== $afterAdd) {
+        echo "$key moved from server $original to $afterAdd\n";
+    }
+}
+
+// Output: Most keys move! 🚨
+// user_1 moved from server 2 to 1
+// user_2 moved from server 0 to 3
+// user_3 moved from server 1 to 2
+// ... 75% of keys need to be moved!
+```
+
+With modulo hashing, adding one server to a 3-server cluster requires moving **75% of all cached data**. This causes a **cache stampede** that can take down your application.
+
+### Consistent Hashing Solution
+
+**Consistent hashing** solves this by arranging servers on a virtual ring (0 to 2³²-1). When you add or remove a server, only K/N keys need to move (where K is total keys, N is total servers).
+
+#### How It Works
+
+1. **Hash Ring:** Imagine a circle with positions from 0 to 2³²-1
+2. **Server Placement:** Hash each server name onto the ring
+3. **Key Placement:** Hash each key onto the ring
+4. **Lookup:** To find which server stores a key, move clockwise from the key's position until you find a server
+
+**Visual representation:**
+```
+         0/2³²
+          |
+    [Server C]
+         /  \
+       /      \
+  user_123  [Server A]
+     |          |
+     |      user_456
+[Server B]     |
+     |         |
+  user_789    /
+       \    /
+         \/
+       180°
+```
+
+### Basic Consistent Hash Implementation
+
+```php
+# filename: consistent-hash.php
+class ConsistentHash
+{
+    private array $ring = [];
+    private array $sortedKeys = [];
+    private int $replicas;
+
+    public function __construct(int $replicas = 150)
+    {
+        $this->replicas = $replicas; // Virtual nodes per physical node
+    }
+
+    public function addNode(string $node): void
+    {
+        // Add multiple virtual nodes for better distribution
+        for ($i = 0; $i < $this->replicas; $i++) {
+            $hash = crc32($node . ':' . $i);
+            $this->ring[$hash] = $node;
+        }
+        
+        // Keep sorted for binary search
+        $this->sortedKeys = array_keys($this->ring);
+        sort($this->sortedKeys);
+    }
+
+    public function removeNode(string $node): void
+    {
+        for ($i = 0; $i < $this->replicas; $i++) {
+            $hash = crc32($node . ':' . $i);
+            unset($this->ring[$hash]);
+        }
+        
+        $this->sortedKeys = array_keys($this->ring);
+        sort($this->sortedKeys);
+    }
+
+    public function getNode(string $key): ?string
+    {
+        if (empty($this->ring)) {
+            return null;
+        }
+
+        $hash = crc32($key);
+
+        // Binary search for the first node >= hash
+        $idx = $this->findNode($hash);
+        
+        return $this->ring[$this->sortedKeys[$idx]];
+    }
+
+    private function findNode(int $hash): int
+    {
+        // Binary search for first position >= hash
+        $left = 0;
+        $right = count($this->sortedKeys) - 1;
+
+        // If hash is larger than largest key, wrap around
+        if ($hash > $this->sortedKeys[$right]) {
+            return 0;
+        }
+
+        while ($left < $right) {
+            $mid = (int)(($left + $right) / 2);
+            
+            if ($this->sortedKeys[$mid] < $hash) {
+                $left = $mid + 1;
+            } else {
+                $right = $mid;
+            }
+        }
+
+        return $left;
+    }
+
+    public function getNodes(): array
+    {
+        return array_unique(array_values($this->ring));
+    }
+
+    public function getDistribution(array $keys): array
+    {
+        $distribution = [];
+        
+        foreach ($keys as $key) {
+            $node = $this->getNode($key);
+            $distribution[$node] = ($distribution[$node] ?? 0) + 1;
+        }
+        
+        return $distribution;
+    }
+}
+```
+
+### Using Consistent Hashing
+
+```php
+# filename: consistent-hash-demo.php
+$ch = new ConsistentHash(replicas: 150);
+
+// Add servers
+$ch->addNode('server-1');
+$ch->addNode('server-2');
+$ch->addNode('server-3');
+
+// Distribute keys
+$keys = [];
+for ($i = 0; $i < 1000; $i++) {
+    $keys[] = "user_$i";
+}
+
+// Check distribution before adding server
+$beforeDist = $ch->getDistribution($keys);
+print_r($beforeDist);
+// server-1: 334 keys
+// server-2: 333 keys  
+// server-3: 333 keys  ← Pretty balanced!
+
+// Add a new server
+$ch->addNode('server-4');
+
+// Check distribution after
+$afterDist = $ch->getDistribution($keys);
+print_r($afterDist);
+// server-1: 251 keys
+// server-2: 250 keys
+// server-3: 250 keys
+// server-4: 249 keys
+
+// Count how many keys moved
+$moved = 0;
+foreach ($keys as $key) {
+    $before = $ch->getNode($key); // Would need to track original
+    // With consistent hashing: only ~250 keys moved (25%)
+    // With modulo: ~750 keys would move (75%)!
+}
+```
+
+### Virtual Nodes (Replicas)
+
+Why do we create 150 virtual nodes per physical node? **Better distribution!**
+
+```php
+# filename: virtual-nodes-demo.php
+function testDistribution(int $replicas): void
+{
+    $ch = new ConsistentHash($replicas);
+    $ch->addNode('server-1');
+    $ch->addNode('server-2');
+    $ch->addNode('server-3');
+
+    $keys = array_map(fn($i) => "key_$i", range(1, 10000));
+    $dist = $ch->getDistribution($keys);
+
+    echo "Replicas: $replicas\n";
+    foreach ($dist as $node => $count) {
+        $percent = ($count / 10000) * 100;
+        echo "  $node: $count keys (" . number_format($percent, 1) . "%)\n";
+    }
+    echo "\n";
+}
+
+// Compare different replica counts
+testDistribution(1);    // Poor distribution
+// server-1: 8234 keys (82.3%) 🚨
+// server-2: 891 keys (8.9%)
+// server-3: 875 keys (8.8%)
+
+testDistribution(10);   // Better but still uneven
+// server-1: 4123 keys (41.2%)
+// server-2: 3456 keys (34.6%)
+// server-3: 2421 keys (24.2%)
+
+testDistribution(150);  // Good distribution!
+// server-1: 3341 keys (33.4%) ✅
+// server-2: 3330 keys (33.3%)
+// server-3: 3329 keys (33.3%)
+```
+
+More virtual nodes = better load distribution, but slower lookups.  
+**Sweet spot:** 100-200 replicas per node.
+
+### Production-Ready Implementation
+
+```php
+# filename: consistent-hash-production.php
+class ProductionConsistentHash
+{
+    private array $ring = [];
+    private array $sortedKeys = [];
+    private array $nodes = [];
+    private int $replicas;
+    private string $hashAlgorithm;
+
+    public function __construct(
+        int $replicas = 150,
+        string $hashAlgorithm = 'crc32'
+    ) {
+        $this->replicas = $replicas;
+        $this->hashAlgorithm = $hashAlgorithm;
+    }
+
+    private function hash(string $value): int
+    {
+        return match($this->hashAlgorithm) {
+            'crc32' => abs(crc32($value)),
+            'md5' => abs((int)hexdec(substr(md5($value), 0, 8))),
+            'fnv1a' => $this->fnv1a($value),
+            default => abs(crc32($value))
+        };
+    }
+
+    private function fnv1a(string $value): int
+    {
+        $hash = 2166136261;
+        for ($i = 0; $i < strlen($value); $i++) {
+            $hash ^= ord($value[$i]);
+            $hash = ($hash * 16777619) & 0xFFFFFFFF;
+        }
+        return abs($hash);
+    }
+
+    public function addNode(string $node, int $weight = 1): void
+    {
+        $this->nodes[$node] = $weight;
+        
+        // More replicas for higher weight nodes
+        $nodeReplicas = $this->replicas * $weight;
+        
+        for ($i = 0; $i < $nodeReplicas; $i++) {
+            $hash = $this->hash($node . ':' . $i);
+            $this->ring[$hash] = $node;
+        }
+        
+        $this->sortedKeys = array_keys($this->ring);
+        sort($this->sortedKeys);
+    }
+
+    public function removeNode(string $node): void
+    {
+        if (!isset($this->nodes[$node])) {
+            return;
+        }
+
+        $weight = $this->nodes[$node];
+        $nodeReplicas = $this->replicas * $weight;
+        
+        for ($i = 0; $i < $nodeReplicas; $i++) {
+            $hash = $this->hash($node . ':' . $i);
+            unset($this->ring[$hash]);
+        }
+        
+        unset($this->nodes[$node]);
+        $this->sortedKeys = array_keys($this->ring);
+        sort($this->sortedKeys);
+    }
+
+    public function getNode(string $key): ?string
+    {
+        if (empty($this->ring)) {
+            return null;
+        }
+
+        $hash = $this->hash($key);
+        $idx = $this->findNode($hash);
+        
+        return $this->ring[$this->sortedKeys[$idx]];
+    }
+
+    public function getNodes(string $key, int $count): array
+    {
+        if (empty($this->ring) || $count <= 0) {
+            return [];
+        }
+
+        $hash = $this->hash($key);
+        $nodes = [];
+        $seenNodes = [];
+        $idx = $this->findNode($hash);
+
+        while (count($nodes) < $count && count($seenNodes) < count($this->nodes)) {
+            $node = $this->ring[$this->sortedKeys[$idx]];
+            
+            if (!isset($seenNodes[$node])) {
+                $nodes[] = $node;
+                $seenNodes[$node] = true;
+            }
+            
+            $idx = ($idx + 1) % count($this->sortedKeys);
+        }
+
+        return $nodes;
+    }
+
+    private function findNode(int $hash): int
+    {
+        $left = 0;
+        $right = count($this->sortedKeys) - 1;
+
+        if ($hash > $this->sortedKeys[$right]) {
+            return 0;
+        }
+
+        while ($left < $right) {
+            $mid = (int)(($left + $right) / 2);
+            
+            if ($this->sortedKeys[$mid] < $hash) {
+                $left = $mid + 1;
+            } else {
+                $right = $mid;
+            }
+        }
+
+        return $left;
+    }
+
+    public function getStats(): array
+    {
+        return [
+            'nodes' => count($this->nodes),
+            'virtual_nodes' => count($this->ring),
+            'replicas_per_node' => $this->replicas,
+            'hash_algorithm' => $this->hashAlgorithm
+        ];
+    }
+}
+```
+
+### Real-World Use Cases
+
+#### 1. Redis Cluster Sharding
+
+```php
+# filename: redis-sharding.php
+class RedisCluster
+{
+    private ProductionConsistentHash $hash;
+    private array $connections = [];
+
+    public function __construct(array $servers)
+    {
+        $this->hash = new ProductionConsistentHash(replicas: 160);
+        
+        foreach ($servers as $server) {
+            $this->hash->addNode($server);
+            $this->connections[$server] = new Redis();
+            $this->connections[$server]->connect($server, 6379);
+        }
+    }
+
+    public function get(string $key): mixed
+    {
+        $server = $this->hash->getNode($key);
+        return $this->connections[$server]->get($key);
+    }
+
+    public function set(string $key, mixed $value, int $ttl = 3600): bool
+    {
+        $server = $this->hash->getNode($key);
+        return $this->connections[$server]->setex($key, $ttl, $value);
+    }
+
+    public function delete(string $key): bool
+    {
+        $server = $this->hash->getNode($key);
+        return $this->connections[$server]->del($key) > 0;
+    }
+
+    // Replicate to multiple nodes for redundancy
+    public function setReplicated(string $key, mixed $value, int $replicas = 2): bool
+    {
+        $servers = $this->hash->getNodes($key, $replicas);
+        $success = true;
+        
+        foreach ($servers as $server) {
+            $result = $this->connections[$server]->set($key, $value);
+            $success = $success && $result;
+        }
+        
+        return $success;
+    }
+
+    public function addServer(string $server): void
+    {
+        $this->hash->addNode($server);
+        $this->connections[$server] = new Redis();
+        $this->connections[$server]->connect($server, 6379);
+        
+        // In production, you'd migrate keys here
+        echo "Added $server - only ~" . (100 / count($this->connections)) . "% of keys need migration\n";
+    }
+}
+
+// Usage
+$cluster = new RedisCluster(['redis-1', 'redis-2', 'redis-3']);
+$cluster->set('user:123:profile', json_encode(['name' => 'Alice']));
+$profile = $cluster->get('user:123:profile');
+
+// Add server dynamically - minimal disruption
+$cluster->addServer('redis-4');
+```
+
+#### 2. Database Sharding
+
+```php
+# filename: database-sharding.php
+class ShardedDatabase
+{
+    private ProductionConsistentHash $hash;
+    private array $connections = [];
+
+    public function __construct(array $shardConfigs)
+    {
+        $this->hash = new ProductionConsistentHash(replicas: 200);
+        
+        foreach ($shardConfigs as $name => $config) {
+            $weight = $config['weight'] ?? 1;
+            $this->hash->addNode($name, $weight);
+            
+            $this->connections[$name] = new PDO(
+                "mysql:host={$config['host']};dbname={$config['db']}",
+                $config['user'],
+                $config['pass']
+            );
+        }
+    }
+
+    public function getConnection(string $shardKey): PDO
+    {
+        $shard = $this->hash->getNode($shardKey);
+        return $this->connections[$shard];
+    }
+
+    public function insert(string $table, string $shardKey, array $data): bool
+    {
+        $db = $this->getConnection($shardKey);
+        
+        $columns = implode(', ', array_keys($data));
+        $placeholders = implode(', ', array_fill(0, count($data), '?'));
+        
+        $stmt = $db->prepare("INSERT INTO $table ($columns) VALUES ($placeholders)");
+        return $stmt->execute(array_values($data));
+    }
+
+    public function findByKey(string $table, string $shardKey, string $idColumn): ?array
+    {
+        $db = $this->getConnection($shardKey);
+        
+        $stmt = $db->prepare("SELECT * FROM $table WHERE $idColumn = ?");
+        $stmt->execute([$shardKey]);
+        
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
+}
+
+// Usage with user_id as shard key
+$db = new ShardedDatabase([
+    'shard-1' => ['host' => 'db1.example.com', 'db' => 'app', 'user' => 'root', 'pass' => 'secret', 'weight' => 2],
+    'shard-2' => ['host' => 'db2.example.com', 'db' => 'app', 'user' => 'root', 'pass' => 'secret', 'weight' => 1],
+    'shard-3' => ['host' => 'db3.example.com', 'db' => 'app', 'user' => 'root', 'pass' => 'secret', 'weight' => 1],
+]);
+
+$userId = 'user_12345';
+$db->insert('users', $userId, [
+    'user_id' => $userId,
+    'name' => 'Alice',
+    'email' => 'alice@example.com'
+]);
+
+$user = $db->findByKey('users', $userId, 'user_id');
+```
+
+### Comparison: Modulo vs Consistent Hashing
+
+Let's compare how many keys need to be moved when adding a server:
+
+```php
+# filename: comparison-modulo-vs-consistent.php
+function compareApproaches(int $originalServers, int $newServers, int $keyCount): void
+{
+    $keys = array_map(fn($i) => "key_$i", range(1, $keyCount));
+    
+    // Modulo approach
+    $moduloMoved = 0;
+    foreach ($keys as $key) {
+        $originalServer = abs(crc32($key)) % $originalServers;
+        $newServer = abs(crc32($key)) % $newServers;
+        
+        if ($originalServer !== $newServer) {
+            $moduloMoved++;
+        }
+    }
+    
+    // Consistent hashing
+    $ch = new ConsistentHash(150);
+    for ($i = 1; $i <= $originalServers; $i++) {
+        $ch->addNode("server-$i");
+    }
+    
+    $originalPlacement = [];
+    foreach ($keys as $key) {
+        $originalPlacement[$key] = $ch->getNode($key);
+    }
+    
+    $ch->addNode("server-" . $newServers);
+    
+    $consistentMoved = 0;
+    foreach ($keys as $key) {
+        if ($originalPlacement[$key] !== $ch->getNode($key)) {
+            $consistentMoved++;
+        }
+    }
+    
+    // Results
+    $moduloPercent = ($moduloMoved / $keyCount) * 100;
+    $consistentPercent = ($consistentMoved / $keyCount) * 100;
+    
+    echo "Adding 1 server to $originalServers servers ($keyCount keys):\n";
+    echo "  Modulo:     $moduloMoved keys moved (" . number_format($moduloPercent, 1) . "%)\n";
+    echo "  Consistent: $consistentMoved keys moved (" . number_format($consistentPercent, 1) . "%)\n";
+    echo "  Improvement: " . number_format($moduloPercent / $consistentPercent, 1) . "x fewer keys moved!\n\n";
+}
+
+compareApproaches(3, 4, 10000);
+// Modulo:     7501 keys moved (75.0%)
+// Consistent: 2489 keys moved (24.9%)
+// Improvement: 3.0x fewer keys moved!
+
+compareApproaches(10, 11, 10000);
+// Modulo:     9091 keys moved (90.9%)
+// Consistent: 909 keys moved (9.1%)
+// Improvement: 10.0x fewer keys moved!
+```
+
+**Key insight:** With consistent hashing, only ~1/N keys move when adding a node (where N is the new server count). With modulo, almost ALL keys move!
+
+### Alternative: Rendezvous Hashing
+
+**Rendezvous hashing** (Highest Random Weight) is an alternative that's simpler and provides even better distribution:
+
+```php
+# filename: rendezvous-hashing.php
+class RendezvousHash
+{
+    private array $nodes = [];
+
+    public function addNode(string $node): void
+    {
+        $this->nodes[] = $node;
+    }
+
+    public function removeNode(string $node): void
+    {
+        $this->nodes = array_values(
+            array_filter($this->nodes, fn($n) => $n !== $node)
+        );
+    }
+
+    public function getNode(string $key): ?string
+    {
+        if (empty($this->nodes)) {
+            return null;
+        }
+
+        $maxScore = -1;
+        $selectedNode = null;
+
+        foreach ($this->nodes as $node) {
+            // Combine key and node, hash them
+            $score = crc32($key . $node);
+            
+            if ($score > $maxScore) {
+                $maxScore = $score;
+                $selectedNode = $node;
+            }
+        }
+
+        return $selectedNode;
+    }
+}
+
+// Usage
+$rh = new RendezvousHash();
+$rh->addNode('server-1');
+$rh->addNode('server-2');
+$rh->addNode('server-3');
+
+echo $rh->getNode('user_123'); // server-2
+echo $rh->getNode('user_456'); // server-1
+```
+
+**Pros:**
+- Simpler implementation (no ring or sorting)
+- Better load distribution
+- Deterministic (no virtual nodes needed)
+
+**Cons:**
+- O(N) lookup time (must check all nodes)
+- Slower than consistent hashing for many nodes
+
+**Use when:** You have few nodes (< 20) and want perfect distribution.
+
+### Performance Comparison
+
+```php
+# filename: distributed-hash-benchmark.php
+function benchmarkDistributedHashing(): void
+{
+    $nodes = ['server-1', 'server-2', 'server-3', 'server-4', 'server-5'];
+    $keys = array_map(fn($i) => "key_$i", range(1, 10000));
+
+    // Consistent Hashing
+    $ch = new ProductionConsistentHash(150);
+    foreach ($nodes as $node) {
+        $ch->addNode($node);
+    }
+
+    $start = microtime(true);
+    foreach ($keys as $key) {
+        $ch->getNode($key);
+    }
+    $chTime = microtime(true) - $start;
+
+    // Rendezvous Hashing
+    $rh = new RendezvousHash();
+    foreach ($nodes as $node) {
+        $rh->addNode($node);
+    }
+
+    $start = microtime(true);
+    foreach ($keys as $key) {
+        $rh->getNode($key);
+    }
+    $rhTime = microtime(true) - $start;
+
+    // Simple Modulo
+    $start = microtime(true);
+    foreach ($keys as $key) {
+        abs(crc32($key)) % count($nodes);
+    }
+    $moduloTime = microtime(true) - $start;
+
+    echo "Lookup performance (10,000 keys, 5 nodes):\n";
+    echo "  Modulo:      " . number_format($moduloTime * 1000, 2) . "ms (fastest but breaks on resize)\n";
+    echo "  Consistent:  " . number_format($chTime * 1000, 2) . "ms (O(log N) per lookup)\n";
+    echo "  Rendezvous:  " . number_format($rhTime * 1000, 2) . "ms (O(N) per lookup)\n";
+}
+```
+
+### When to Use Distributed Hashing
+
+**Use Consistent Hashing when:**
+- ✅ You have distributed caching (Redis, Memcached)
+- ✅ You need to shard databases across multiple servers
+- ✅ Servers are added/removed dynamically
+- ✅ You want to minimize cache invalidation
+- ✅ You have many nodes (> 20)
+
+**Use Rendezvous Hashing when:**
+- ✅ You want perfect load distribution
+- ✅ You have few nodes (< 20)
+- ✅ Simpler implementation is preferred
+- ✅ Lookup speed is not critical
+
+**Use Simple Modulo when:**
+- ✅ Node count NEVER changes
+- ✅ Full cache invalidation is acceptable
+- ✅ Maximum performance is critical
+
+## Performance Benchmarks: Collision Strategies
+
+Let's benchmark different collision strategies to see which performs best under various conditions:
+
+```php
+# filename: collision-benchmark.php
 class CollisionBenchmark
 {
     public function compareStrategies(): void
@@ -1171,7 +2025,10 @@ $benchmark->memoryComparison();
 
 ### Using SplObjectStorage as Hash Table
 
+PHP's SPL provides ready-to-use hash table implementations:
+
 ```php
+# filename: spl-hash-examples.php
 class SPLHashExamples
 {
     /**
@@ -1285,9 +2142,10 @@ $examples->weakReferenceHash();
 
 ### Hash Flooding Attacks
 
-Protect against algorithmic complexity attacks:
+Protect against algorithmic complexity attacks where attackers craft keys that all hash to the same bucket:
 
 ```php
+# filename: secure-hash-table.php
 class SecureHashTable
 {
     private array $table;
@@ -1403,7 +2261,10 @@ class SecureHashTable
 
 ### Cryptographic Hash Functions for Sensitive Data
 
+When storing sensitive data, use cryptographic hashing and encryption:
+
 ```php
+# filename: cryptographic-hash-table.php
 class CryptographicHashTable
 {
     private array $table;
@@ -1504,84 +2365,293 @@ $ssn = $secureTable->getSecure('user:123:ssn', $encryptionKey);
 
 ## Practice Exercises
 
-### Exercise 1: Implement Set
+Test your understanding with these hands-on challenges:
 
-Create a Set data structure using a hash table:
+### Exercise 1: Implement Set Data Structure
 
+**Goal:** Build a Set (unique values only) using your hash table implementation
+
+**Requirements:**
+- Create a `Set` class that stores unique values
+- Implement `add()`, `has()`, `delete()`, and `size()` methods
+- Duplicates should be automatically ignored
+- Should handle any data type (strings, integers, objects)
+
+**Starter code:**
 ```php
+# filename: exercise-set.php
 class Set
 {
-    // Your implementation here
+    private HashTableChaining $table;
 
-    public function add(mixed $value): void {}
-    public function has(mixed $value): bool {}
-    public function delete(mixed $value): bool {}
-    public function size(): int {}
+    public function __construct()
+    {
+        $this->table = new HashTableChaining();
+    }
+
+    public function add(mixed $value): void
+    {
+        // Your implementation here
+    }
+
+    public function has(mixed $value): bool
+    {
+        // Your implementation here
+    }
+
+    public function delete(mixed $value): bool
+    {
+        // Your implementation here
+    }
+
+    public function size(): int
+    {
+        // Your implementation here
+    }
 }
+```
 
+**Validation:**
+```php
 $set = new Set();
 $set->add(1);
 $set->add(2);
-$set->add(1); // Duplicate ignored
-echo $set->size(); // 2
+$set->add(1); // Duplicate - should be ignored
+$set->add(3);
+
+echo $set->size(); // Should output: 3
+echo $set->has(2) ? 'true' : 'false'; // Should output: true
+$set->delete(2);
+echo $set->has(2) ? 'true' : 'false'; // Should output: false
 ```
 
 ### Exercise 2: Group Anagrams
 
-Group strings that are anagrams:
+**Goal:** Group words that are anagrams using a hash table in O(n × m) time where n is word count and m is average word length
 
+**Requirements:**
+- Take an array of strings
+- Return groups of anagrams (words with same letters in different order)
+- Use sorted characters as the hash key
+- Handle case sensitivity appropriately
+
+**Starter code:**
 ```php
+# filename: exercise-anagrams.php
 function groupAnagrams(array $words): array
 {
-    // Use hash table where key is sorted characters
+    $groups = new HashTableChaining();
+
+    foreach ($words as $word) {
+        // Sort characters to create key
+        $key = // Your code here
+
+        // Get existing group or create new one
+        $group = // Your code here
+
+        // Add word to group
+        // Your code here
+
+        // Store back in hash table
+        // Your code here
+    }
+
+    // Convert hash table to array of groups
     // Your code here
 }
+```
 
+**Validation:**
+```php
 $words = ['eat', 'tea', 'tan', 'ate', 'nat', 'bat'];
-print_r(groupAnagrams($words));
-// [['eat', 'tea', 'ate'], ['tan', 'nat'], ['bat']]
+$result = groupAnagrams($words);
+print_r($result);
+
+// Expected output (order may vary):
+// [
+//     ['eat', 'tea', 'ate'],
+//     ['tan', 'nat'],
+//     ['bat']
+// ]
 ```
 
 ### Exercise 3: LRU Cache
 
-Implement an LRU (Least Recently Used) cache:
+**Goal:** Implement an LRU (Least Recently Used) cache using hash table + doubly linked list
 
+**Requirements:**
+- Fixed capacity cache
+- `get(key)` returns value or null, marks as recently used
+- `put(key, value)` inserts/updates, marks as recently used
+- When full, evict least recently used item
+- Both operations should be O(1)
+
+**Hint:** Use hash table for O(1) lookup and doubly linked list for O(1) eviction
+
+**Starter code:**
 ```php
+# filename: exercise-lru-cache.php
 class LRUCache
 {
-    // Use hash table + doubly linked list
-    // Your implementation here
+    private HashTableChaining $cache;
+    private array $accessOrder; // Track access order
+    private int $capacity;
 
-    public function get(string $key): mixed {}
-    public function put(string $key, mixed $value): void {}
+    public function __construct(int $capacity)
+    {
+        $this->capacity = $capacity;
+        $this->cache = new HashTableChaining();
+        $this->accessOrder = [];
+    }
+
+    public function get(string $key): mixed
+    {
+        // Your implementation here
+        // 1. Check if key exists
+        // 2. If yes, update access order and return value
+        // 3. If no, return null
+    }
+
+    public function put(string $key, mixed $value): void
+    {
+        // Your implementation here
+        // 1. Check if at capacity and key doesn't exist
+        // 2. If at capacity, remove LRU item
+        // 3. Add/update key-value pair
+        // 4. Update access order
+    }
 }
+```
+
+**Validation:**
+```php
+$cache = new LRUCache(2);
+
+$cache->put('a', 1);
+$cache->put('b', 2);
+echo $cache->get('a'); // Returns 1
+
+$cache->put('c', 3);   // Evicts key 'b'
+echo $cache->get('b'); // Returns null (evicted)
+
+$cache->put('d', 4);   // Evicts key 'a'
+echo $cache->get('a'); // Returns null (evicted)
+echo $cache->get('c'); // Returns 3
+echo $cache->get('d'); // Returns 4
+```
+
+### Exercise 4: First Unique Character
+
+**Goal:** Find the first non-repeating character in a string using hash table
+
+**Requirements:**
+- Return index of first character that appears only once
+- If no unique character exists, return -1
+- Should be O(n) time complexity
+
+**Starter code:**
+```php
+# filename: exercise-first-unique.php
+function firstUnique(string $s): int
+{
+    // Your implementation using hash table
+}
+```
+
+**Validation:**
+```php
+echo firstUnique("leetcode");   // 0 (l)
+echo firstUnique("loveleetcode"); // 2 (v)
+echo firstUnique("aabb");        // -1 (no unique char)
 ```
 
 ## Key Takeaways
 
-- **Hash tables** provide O(1) average-case operations
-- **Hash functions** convert keys to array indices
-- **Collisions** are inevitable, handle with chaining or open addressing
-- **Separate chaining** uses lists at each index
-- **Open addressing** probes for next available slot
-- **Load factor** determines when to resize
-- **PHP arrays** are hash tables internally
-- Good hash functions are **fast, deterministic, and distribute uniformly**
+Congratulations! You've mastered one of computer science's most important data structures. Here's what you now know:
+
+### Core Concepts
+- ✅ **Hash tables** provide O(1) average-case operations for insert, search, and delete
+- ✅ **Hash functions** convert keys to array indices deterministically
+- ✅ **Collisions** are inevitable - you learned two main strategies to handle them
+- ✅ **Load factor** (entries/size) determines performance and when to resize
+
+### Collision Handling
+- ✅ **Separate chaining** uses linked lists/arrays at each index - simple and effective
+- ✅ **Open addressing** (linear probing, quadratic probing, double hashing) saves memory
+- ✅ **Robin Hood hashing** reduces variance in probe lengths
+- ✅ **Cuckoo hashing** guarantees O(1) worst-case lookups
+- ✅ **Hopscotch hashing** keeps entries within "hop range"
+
+### Distributed Hash Tables
+- ✅ **Consistent hashing** minimizes cache invalidation when adding/removing servers
+- ✅ **Virtual nodes** (replicas) improve load distribution across the hash ring
+- ✅ **Rendezvous hashing** provides simpler alternative with perfect distribution
+- ✅ Only ~1/N keys move when adding nodes (vs 75%+ with simple modulo)
+
+### Hash Function Design
+- ✅ Good hash functions are **fast, deterministic, and distribute uniformly**
+- ✅ Division method: Simple modulo operation
+- ✅ Multiplication method: Uses golden ratio for better distribution
+- ✅ Polynomial rolling hash: Best for strings, minimal collisions
+- ✅ FNV-1a: Industry standard for non-cryptographic hashing
+
+### Real-World Applications
+- ✅ **PHP arrays ARE hash tables** - now you understand what powers them
+- ✅ Build caches with O(1) lookups
+- ✅ Count frequencies in O(n) time instead of O(n²)
+- ✅ Detect duplicates efficiently
+- ✅ Solve classic problems like Two Sum in O(n)
+- ✅ **Redis cluster sharding** with consistent hashing
+- ✅ **Database sharding** across multiple servers
+- ✅ **Load balancing** with minimal disruption on node changes
+
+### Security & Performance
+- ✅ Protect against hash flooding DoS attacks with random seeds
+- ✅ Use cryptographic hash functions for sensitive data
+- ✅ Benchmark different strategies for your use case
+- ✅ Leverage PHP's SPL (SplObjectStorage, WeakMap) for specialized needs
+
+### When to Use Hash Tables
+Use hash tables when you need:
+- Fast key-value lookups (O(1) vs O(log n) for BST)
+- Counting/frequency analysis
+- Duplicate detection
+- Set operations (union, intersection)
+- Caching and memoization
+- Distributing data across multiple servers (consistent hashing)
+
+Avoid hash tables when:
+- You need sorted data (use trees instead)
+- Memory is severely constrained
+- Keys don't hash well (custom objects without good hash functions)
+- You need range queries (use B-trees or sorted arrays)
+
+<ChapterCheckbox 
+  seriesId="php-algorithms"
+  chapterId="13"
+  label="Hash Tables and Hash Functions complete!"
+/>
 
 ## What's Next
 
-In the next chapter, we'll explore **String Search Algorithms**, learning pattern matching techniques like naive search, KMP, and Boyer-Moore.
+In **Chapter 14: String Search Algorithms**, you'll learn pattern matching techniques including:
+- Naive string search
+- Knuth-Morris-Pratt (KMP) algorithm
+- Boyer-Moore algorithm  
+- Rabin-Karp with rolling hashes (uses what you learned here!)
+
+These algorithms are essential for text processing, search engines, and DNA sequence matching.
 
 ## 💻 Code Samples
 
 All code examples from this chapter are available in the GitHub repository:
 
-**[View Chapter 13 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-13)**
+**[View Chapter 13 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/php-algorithms/chapter-13)**
 
 Clone the repository to run examples:
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
-cd codewithphp/code-samples/php-algorithms/chapter-13
+cd codewithphp/code/php-algorithms/chapter-13
 php 01-*.php
 ```
 

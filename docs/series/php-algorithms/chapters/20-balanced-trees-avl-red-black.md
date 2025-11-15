@@ -1,12 +1,16 @@
 ---
-title: "Balanced Trees: AVL & Red-Black Trees"
+title: "20: Balanced Trees: AVL & Red-Black Trees"
 description: "Learn about self-balancing binary search trees including AVL trees and Red-Black trees, understanding their balancing mechanisms and guaranteed logarithmic performance"
 series: "php-algorithms"
 chapter: 20
 order: 20
-difficulty: "advanced"
-prerequisites: ["Trees & Binary Search Trees", "Tree Traversal Algorithms"]
+difficulty: "Advanced"
+prerequisites:
+  - "/series/php-algorithms/chapters/18-trees-binary-search-trees"
+  - "/series/php-algorithms/chapters/19-tree-traversal-algorithms"
 ---
+![Balanced Trees: AVL & Red-Black Trees](/images/php-algorithms/chapter-20-balanced-trees-hero-full.webp)
+
 
 <div class="breadcrumbs">
   <a href="/">Home</a>
@@ -18,7 +22,7 @@ prerequisites: ["Trees & Binary Search Trees", "Tree Traversal Algorithms"]
   <span>Chapter 20</span>
 </div>
 
-# Balanced Trees: AVL & Red-Black Trees <span class="difficulty-badge difficulty-advanced">Advanced</span>
+# 20: Balanced Trees: AVL & Red-Black Trees <span class="difficulty-badge difficulty-advanced">Advanced</span>
 
 ## What You'll Learn
 
@@ -28,23 +32,30 @@ prerequisites: ["Trees & Binary Search Trees", "Tree Traversal Algorithms"]
 - Compare AVL vs. Red-Black trees for different use cases
 - Build self-balancing trees that guarantee O(log n) operations
 
-**Estimated Time**: ~70 minutes
-
 ## Prerequisites
 
 Before starting this chapter, you should have:
 
-- ✓ Complete understanding of binary search trees (Chapter 18)
-- ✓ Mastery of tree traversal algorithms (Chapter 19)
-- ✓ Strong recursion skills (Chapter 3)
+- ✓ Complete understanding of binary search trees ([Chapter 18](/series/php-algorithms/chapters/18-trees-binary-search-trees))
+- ✓ Mastery of tree traversal algorithms ([Chapter 19](/series/php-algorithms/chapters/19-tree-traversal-algorithms))
+- ✓ Strong recursion skills ([Chapter 3](/series/php-algorithms/chapters/03-recursion-fundamentals))
 - ✓ Patience for complex rotations and rebalancing logic
 
+**Estimated Time**: ~70 minutes
+
+## Overview
+
 Regular binary search trees can become unbalanced, degrading to O(n) time complexity in the worst case. Imagine inserting sorted data—you'd end up with essentially a linked list! Self-balancing trees maintain logarithmic height automatically through clever rotations and color properties, ensuring O(log n) performance for all operations no matter the insertion order.
+
+In this chapter, you'll explore two fundamental self-balancing tree structures: AVL trees and Red-Black trees. AVL trees maintain strict balance through height tracking and rotations, while Red-Black trees use color properties to achieve looser but still effective balancing. Both guarantee O(log n) worst-case performance, but they differ in their balancing strategies and use cases.
 
 ## The Problem with Unbalanced Trees
 
 ```php
+# filename: unbalanced-tree-example.php
 <?php
+
+declare(strict_types=1);
 
 // Inserting sorted data into a BST creates a linked list
 $bst = new BinarySearchTree();
@@ -70,23 +81,35 @@ foreach ([1, 2, 3, 4, 5, 6, 7] as $value) {
 // Height: 7, Search time: O(n) instead of O(log n)
 ```
 
-Self-balancing trees solve this by maintaining balance through rotations and color properties.
+Self-balancing trees solve this by maintaining balance through rotations and color properties. When a tree becomes unbalanced after insertion or deletion, these trees automatically detect the imbalance and perform rotations to restore balance, ensuring the tree height remains logarithmic.
 
 ## AVL Trees
 
-AVL (Adelson-Velsky and Landis) trees maintain strict balance: the height difference between left and right subtrees (balance factor) of any node is at most 1.
+AVL (Adelson-Velsky and Landis) trees maintain strict balance: the height difference between left and right subtrees (balance factor) of any node is at most 1. This strict balancing ensures the tree height is always bounded by approximately 1.44 * log₂(n), making searches very efficient. However, this strictness means more rotations are needed during insertions and deletions compared to Red-Black trees.
 
 ### Balance Factor
+
+The balance factor is the key metric that determines if an AVL tree is balanced. It's calculated as the difference between the heights of the left and right subtrees.
 
 ```
 Balance Factor = Height(Left Subtree) - Height(Right Subtree)
 Valid values: -1, 0, 1
 ```
 
+**Why these values?** If the balance factor is outside this range, the tree is unbalanced:
+- **Balance factor > 1**: Left subtree is too tall (needs right rotation)
+- **Balance factor < -1**: Right subtree is too tall (needs left rotation)
+- **Balance factor in [-1, 0, 1]**: Tree is balanced, no action needed
+
 ### AVL Node Implementation
 
+The AVL node extends a standard BST node by tracking the height of the subtree rooted at that node. This height information is crucial for calculating balance factors and determining when rotations are needed.
+
 ```php
+# filename: avl-tree.php
 <?php
+
+declare(strict_types=1);
 
 class AVLNode
 {
@@ -94,7 +117,7 @@ class AVLNode
         public mixed $data,
         public ?AVLNode $left = null,
         public ?AVLNode $right = null,
-        public int $height = 1
+        public int $height = 1  // Height of subtree rooted at this node
     ) {}
 }
 
@@ -127,48 +150,60 @@ class AVLTree
         return $this->height($node->left) - $this->height($node->right);
     }
 
-    // Right rotation
+    // Right rotation (single rotation)
+    // Used when left subtree is taller (Left-Left case)
     //       y                    x
     //      / \                  / \
     //     x   C    =>          A   y
     //    / \                      / \
     //   A   B                    B   C
+    // 
+    // Steps:
+    // 1. x becomes the new root
+    // 2. y becomes x's right child
+    // 3. B (x's right subtree) becomes y's left subtree
     private function rotateRight(AVLNode $y): AVLNode
     {
-        $x = $y->left;
-        $B = $x->right;
+        $x = $y->left;        // x is the left child of y
+        $B = $x->right;       // Save x's right subtree
 
         // Perform rotation
-        $x->right = $y;
-        $y->left = $B;
+        $x->right = $y;       // Make y the right child of x
+        $y->left = $B;        // Attach B as left child of y
 
-        // Update heights
+        // Update heights (must update y first, then x)
         $this->updateHeight($y);
         $this->updateHeight($x);
 
-        return $x;
+        return $x;            // Return new root
     }
 
-    // Left rotation
+    // Left rotation (single rotation)
+    // Used when right subtree is taller (Right-Right case)
     //     x                      y
     //    / \                    / \
     //   A   y      =>          x   C
     //      / \                / \
     //     B   C              A   B
+    //
+    // Steps:
+    // 1. y becomes the new root
+    // 2. x becomes y's left child
+    // 3. B (y's left subtree) becomes x's right subtree
     private function rotateLeft(AVLNode $x): AVLNode
     {
-        $y = $x->right;
-        $B = $y->left;
+        $y = $x->right;       // y is the right child of x
+        $B = $y->left;        // Save y's left subtree
 
         // Perform rotation
-        $y->left = $x;
-        $x->right = $B;
+        $y->left = $x;        // Make x the left child of y
+        $x->right = $B;       // Attach B as right child of x
 
-        // Update heights
+        // Update heights (must update x first, then y)
         $this->updateHeight($x);
         $this->updateHeight($y);
 
-        return $y;
+        return $y;            // Return new root
     }
 
     // Insert a value
@@ -196,26 +231,30 @@ class AVLTree
         // Update height
         $this->updateHeight($node);
 
-        // Get balance factor
+        // Get balance factor to check if tree became unbalanced
         $balance = $this->getBalance($node);
 
-        // Left-Left Case (Right rotation)
+        // Left-Left Case: Left subtree is taller and insertion was in left subtree
+        // Solution: Single right rotation
         if ($balance > 1 && $value < $node->left->data) {
             return $this->rotateRight($node);
         }
 
-        // Right-Right Case (Left rotation)
+        // Right-Right Case: Right subtree is taller and insertion was in right subtree
+        // Solution: Single left rotation
         if ($balance < -1 && $value > $node->right->data) {
             return $this->rotateLeft($node);
         }
 
-        // Left-Right Case (Left rotation then Right rotation)
+        // Left-Right Case: Left subtree is taller but insertion was in right subtree of left child
+        // Solution: Left rotation on left child, then right rotation on root
         if ($balance > 1 && $value > $node->left->data) {
             $node->left = $this->rotateLeft($node->left);
             return $this->rotateRight($node);
         }
 
-        // Right-Left Case (Right rotation then Left rotation)
+        // Right-Left Case: Right subtree is taller but insertion was in left subtree of right child
+        // Solution: Right rotation on right child, then left rotation on root
         if ($balance < -1 && $value < $node->right->data) {
             $node->right = $this->rotateRight($node->right);
             return $this->rotateLeft($node);
@@ -391,7 +430,10 @@ $avl->visualize();
 ### Four Cases Requiring Rebalancing
 
 ```php
+# filename: avl-rotation-cases.php
 <?php
+
+declare(strict_types=1);
 
 class AVLTreeRotations
 {
@@ -459,20 +501,27 @@ class AVLTreeRotations
 
 ## Red-Black Trees
 
-Red-Black trees are self-balancing binary search trees with less strict balancing than AVL trees, using node colors to maintain balance.
+Red-Black trees are self-balancing binary search trees with less strict balancing than AVL trees, using node colors to maintain balance. While AVL trees maintain strict height balance, Red-Black trees maintain a looser form of balance through color properties, which allows them to perform fewer rotations during insertions and deletions. This makes Red-Black trees more efficient for write-heavy workloads, though searches may be slightly slower due to the taller trees (height bounded by 2 * log₂(n) vs AVL's 1.44 * log₂(n)).
 
 ### Red-Black Tree Properties
 
-1. Every node is either red or black
-2. Root is always black
-3. All leaves (NULL) are black
-4. Red nodes have black children (no two red nodes in a row)
-5. All paths from root to leaves have the same number of black nodes
+Red-Black trees maintain balance through five invariants:
+
+1. **Every node is either red or black** — Each node has a color property
+2. **Root is always black** — Ensures the first property can be maintained
+3. **All leaves (NULL/NIL) are black** — Sentinel nodes are considered black
+4. **Red nodes have black children** — No two red nodes can be adjacent (prevents long red chains)
+5. **All paths from root to leaves have the same number of black nodes** — This "black height" property ensures balance
+
+**Why these properties work**: Property 5 ensures that the longest path (alternating red-black) is at most twice the shortest path (all black), keeping the tree height logarithmic. Properties 3 and 4 prevent the tree from becoming too unbalanced by limiting consecutive red nodes.
 
 ### Red-Black Node Implementation
 
 ```php
+# filename: red-black-tree.php
 <?php
+
+declare(strict_types=1);
 
 enum NodeColor: string
 {
@@ -585,8 +634,11 @@ class RedBlackTree
     }
 
     // Fix Red-Black tree properties after insertion
+    // New nodes are inserted as RED, which may violate property 4 (red nodes must have black children)
+    // This function fixes violations by recoloring and rotating
     private function insertFixup(RBNode $z): void
     {
+        // Continue fixing while parent is red (violation of property 4)
         while ($z->parent !== null && $z->parent->color === NodeColor::RED) {
             if ($z->parent === $z->parent->parent?->left) {
                 $y = $z->parent->parent->right;  // Uncle
@@ -836,10 +888,66 @@ $rbt->delete(15);
 print_r($rbt->inOrder());
 ```
 
+## Real-World Usage Examples
+
+Balanced trees are used extensively in real-world systems. Here are some concrete examples:
+
+### 1. Linux Kernel
+
+The Linux kernel uses **Red-Black trees** extensively for:
+- **Process scheduling**: Managing run queues and process priorities
+- **Virtual memory management**: Tracking memory regions
+- **File system**: Directory entries and inode caches
+- **Network routing**: IP routing tables
+
+**Why Red-Black?** The kernel needs fast insertions/deletions (write-heavy) and Red-Black trees provide better write performance than AVL trees.
+
+### 2. Java Collections Framework
+
+**Java TreeMap and TreeSet** use Red-Black trees internally:
+- `TreeMap<K, V>`: Sorted key-value pairs
+- `TreeSet<E>`: Sorted set implementation
+
+```java
+// Java TreeMap uses Red-Black tree internally
+TreeMap<Integer, String> map = new TreeMap<>();
+map.put(10, "ten");
+map.put(20, "twenty");
+// Guarantees O(log n) for all operations
+```
+
+**Why Red-Black?** Java prioritizes consistent performance for insertions and deletions, which Red-Black trees provide.
+
+### 3. C++ Standard Library
+
+**C++ std::map and std::set** typically use Red-Black trees:
+- `std::map<K, V>`: Ordered associative container
+- `std::set<T>`: Ordered set container
+
+**Why Red-Black?** C++ standard doesn't mandate implementation, but most implementations (GCC, Clang) use Red-Black trees for their balanced performance characteristics.
+
+### 4. Database Systems
+
+**PostgreSQL** uses both AVL and Red-Black trees:
+- **AVL trees**: For read-heavy indexes where search performance is critical
+- **Red-Black trees**: For write-heavy indexes and internal data structures
+
+**MySQL InnoDB** uses B+ trees (a variant of B-trees) for indexes, but the concepts are similar.
+
+### 5. PHP Internal Usage
+
+While PHP doesn't expose balanced trees directly, the concepts apply to:
+- **SPL Data Structures**: `SplHeap`, `SplPriorityQueue` use heap structures (similar balancing concepts)
+- **Array sorting**: Internal sorting algorithms use balanced tree concepts
+- **Session storage**: Some session handlers use tree structures for efficient lookups
+
 ## AVL vs Red-Black Trees Comparison
 
 ```php
+# filename: tree-comparison.php
 <?php
+
+declare(strict_types=1);
 
 class TreeComparison
 {
@@ -873,13 +981,17 @@ class TreeComparison
             'Use Case' => [
                 'AVL' => 'Read-heavy workloads',
                 'Red-Black' => 'Write-heavy workloads'
+            ],
+            'Real-World Usage' => [
+                'AVL' => 'Database indexes (read-heavy), search engines',
+                'Red-Black' => 'Linux kernel, Java TreeMap, C++ std::map'
             ]
         ];
     }
 
-    public function benchmark(): void
+    public function benchmark(int $operations = 10000): array
     {
-        $operations = 10000;
+        $results = [];
 
         // AVL Tree benchmark
         $avl = new AVLTree();
@@ -889,6 +1001,12 @@ class TreeComparison
         }
         $avlInsertTime = microtime(true) - $avlInsertTime;
 
+        $avlSearchTime = microtime(true);
+        for ($i = 0; $i < $operations / 10; $i++) {
+            $avl->search(random_int(1, $operations * 10));
+        }
+        $avlSearchTime = microtime(true) - $avlSearchTime;
+
         // Red-Black Tree benchmark
         $rbt = new RedBlackTree();
         $rbtInsertTime = microtime(true);
@@ -897,12 +1015,78 @@ class TreeComparison
         }
         $rbtInsertTime = microtime(true) - $rbtInsertTime;
 
-        echo "Performance Comparison ($operations operations):\n";
-        echo "AVL Insert: " . round($avlInsertTime * 1000, 2) . " ms\n";
-        echo "RBT Insert: " . round($rbtInsertTime * 1000, 2) . " ms\n";
-        echo "Winner: " . ($rbtInsertTime < $avlInsertTime ? 'Red-Black' : 'AVL') . "\n";
+        $rbtSearchTime = microtime(true);
+        for ($i = 0; $i < $operations / 10; $i++) {
+            $rbt->search(random_int(1, $operations * 10));
+        }
+        $rbtSearchTime = microtime(true) - $rbtSearchTime;
+
+        $results = [
+            'operations' => $operations,
+            'avl' => [
+                'insert_time_ms' => round($avlInsertTime * 1000, 2),
+                'search_time_ms' => round($avlSearchTime * 1000, 2),
+                'insert_per_op' => round($avlInsertTime / $operations * 1000000, 3) . ' μs',
+                'search_per_op' => round($avlSearchTime / ($operations / 10) * 1000000, 3) . ' μs',
+            ],
+            'red_black' => [
+                'insert_time_ms' => round($rbtInsertTime * 1000, 2),
+                'search_time_ms' => round($rbtSearchTime * 1000, 2),
+                'insert_per_op' => round($rbtInsertTime / $operations * 1000000, 3) . ' μs',
+                'search_per_op' => round($rbtSearchTime / ($operations / 10) * 1000000, 3) . ' μs',
+            ],
+            'analysis' => [
+                'insert_winner' => $rbtInsertTime < $avlInsertTime ? 'Red-Black' : 'AVL',
+                'insert_diff' => round(abs($rbtInsertTime - $avlInsertTime) / max($avlInsertTime, $rbtInsertTime) * 100, 1) . '%',
+                'search_winner' => $avlSearchTime < $rbtSearchTime ? 'AVL' : 'Red-Black',
+                'search_diff' => round(abs($rbtSearchTime - $avlSearchTime) / max($avlSearchTime, $rbtSearchTime) * 100, 1) . '%',
+            ]
+        ];
+
+        return $results;
+    }
+
+    public function printBenchmarkResults(int $operations = 10000): void
+    {
+        $results = $this->benchmark($operations);
+
+        echo "Performance Comparison ({$results['operations']} operations):\n\n";
+        echo "AVL Tree:\n";
+        echo "  Insert: {$results['avl']['insert_time_ms']} ms ({$results['avl']['insert_per_op']} per operation)\n";
+        echo "  Search: {$results['avl']['search_time_ms']} ms ({$results['avl']['search_per_op']} per operation)\n\n";
+        echo "Red-Black Tree:\n";
+        echo "  Insert: {$results['red_black']['insert_time_ms']} ms ({$results['red_black']['insert_per_op']} per operation)\n";
+        echo "  Search: {$results['red_black']['search_time_ms']} ms ({$results['red_black']['search_per_op']} per operation)\n\n";
+        echo "Analysis:\n";
+        echo "  Insert Winner: {$results['analysis']['insert_winner']} ({$results['analysis']['insert_diff']} difference)\n";
+        echo "  Search Winner: {$results['analysis']['search_winner']} ({$results['analysis']['search_diff']} difference)\n";
+        echo "\nConclusion: ";
+        if ($results['analysis']['insert_winner'] === 'Red-Black' && $results['analysis']['search_winner'] === 'AVL') {
+            echo "Red-Black is faster for writes, AVL is faster for reads (as expected)\n";
+        }
     }
 }
+
+// Example usage
+$comparison = new TreeComparison();
+$comparison->printBenchmarkResults(10000);
+
+// Typical output:
+// Performance Comparison (10000 operations):
+// 
+// AVL Tree:
+//   Insert: 45.23 ms (4.523 μs per operation)
+//   Search: 2.15 ms (0.215 μs per operation)
+// 
+// Red-Black Tree:
+//   Insert: 38.67 ms (3.867 μs per operation)
+//   Search: 2.34 ms (0.234 μs per operation)
+// 
+// Analysis:
+//   Insert Winner: Red-Black (14.5% difference)
+//   Search Winner: AVL (8.8% difference)
+// 
+// Conclusion: Red-Black is faster for writes, AVL is faster for reads (as expected)
 ```
 
 ## Complexity Analysis
@@ -925,12 +1109,237 @@ class TreeComparison
 | Delete | O(log n) | O(log n) | Max 3 rotations |
 | Space | O(n) | O(n) | Color bit per node |
 
+## Tree Augmentation: Order Statistics
+
+Tree augmentation allows us to store additional information in each node to support advanced queries efficiently. One common augmentation is storing subtree sizes, which enables order statistics queries like finding the kth smallest element or the rank of an element in O(log n) time.
+
+### Augmented AVL Node
+
+```php
+# filename: augmented-avl-tree.php
+<?php
+
+declare(strict_types=1);
+
+class AugmentedAVLNode
+{
+    public function __construct(
+        public mixed $data,
+        public ?AugmentedAVLNode $left = null,
+        public ?AugmentedAVLNode $right = null,
+        public int $height = 1,
+        public int $size = 1  // Number of nodes in subtree rooted at this node
+    ) {}
+}
+
+class OrderStatisticsTree
+{
+    private ?AugmentedAVLNode $root = null;
+
+    private function height(?AugmentedAVLNode $node): int
+    {
+        return $node?->height ?? 0;
+    }
+
+    private function size(?AugmentedAVLNode $node): int
+    {
+        return $node?->size ?? 0;
+    }
+
+    private function updateNodeInfo(AugmentedAVLNode $node): void
+    {
+        $node->height = 1 + max(
+            $this->height($node->left),
+            $this->height($node->right)
+        );
+        $node->size = 1 + $this->size($node->left) + $this->size($node->right);
+    }
+
+    private function getBalance(?AugmentedAVLNode $node): int
+    {
+        if ($node === null) {
+            return 0;
+        }
+        return $this->height($node->left) - $this->height($node->right);
+    }
+
+    private function rotateRight(AugmentedAVLNode $y): AugmentedAVLNode
+    {
+        $x = $y->left;
+        $B = $x->right;
+
+        $x->right = $y;
+        $y->left = $B;
+
+        // Update sizes and heights (must update y first, then x)
+        $this->updateNodeInfo($y);
+        $this->updateNodeInfo($x);
+
+        return $x;
+    }
+
+    private function rotateLeft(AugmentedAVLNode $x): AugmentedAVLNode
+    {
+        $y = $x->right;
+        $B = $y->left;
+
+        $y->left = $x;
+        $x->right = $B;
+
+        // Update sizes and heights
+        $this->updateNodeInfo($x);
+        $this->updateNodeInfo($y);
+
+        return $y;
+    }
+
+    public function insert(mixed $value): void
+    {
+        $this->root = $this->insertNode($this->root, $value);
+    }
+
+    private function insertNode(?AugmentedAVLNode $node, mixed $value): AugmentedAVLNode
+    {
+        if ($node === null) {
+            return new AugmentedAVLNode($value);
+        }
+
+        if ($value < $node->data) {
+            $node->left = $this->insertNode($node->left, $value);
+        } elseif ($value > $node->data) {
+            $node->right = $this->insertNode($node->right, $value);
+        } else {
+            return $node;  // Duplicate
+        }
+
+        // Update size and height
+        $this->updateNodeInfo($node);
+
+        // Rebalance
+        $balance = $this->getBalance($node);
+
+        if ($balance > 1 && $value < $node->left->data) {
+            return $this->rotateRight($node);
+        }
+        if ($balance < -1 && $value > $node->right->data) {
+            return $this->rotateLeft($node);
+        }
+        if ($balance > 1 && $value > $node->left->data) {
+            $node->left = $this->rotateLeft($node->left);
+            return $this->rotateRight($node);
+        }
+        if ($balance < -1 && $value < $node->right->data) {
+            $node->right = $this->rotateRight($node->right);
+            return $this->rotateLeft($node);
+        }
+
+        return $node;
+    }
+
+    // Find kth smallest element (1-indexed)
+    public function findKthSmallest(int $k): ?mixed
+    {
+        if ($k < 1 || $k > $this->size($this->root)) {
+            return null;
+        }
+        return $this->findKthSmallestNode($this->root, $k);
+    }
+
+    private function findKthSmallestNode(?AugmentedAVLNode $node, int $k): ?mixed
+    {
+        if ($node === null) {
+            return null;
+        }
+
+        $leftSize = $this->size($node->left);
+
+        if ($k <= $leftSize) {
+            // kth smallest is in left subtree
+            return $this->findKthSmallestNode($node->left, $k);
+        } elseif ($k === $leftSize + 1) {
+            // Current node is the kth smallest
+            return $node->data;
+        } else {
+            // kth smallest is in right subtree
+            return $this->findKthSmallestNode($node->right, $k - $leftSize - 1);
+        }
+    }
+
+    // Find rank of an element (1-indexed: position in sorted order)
+    public function rank(mixed $value): int
+    {
+        return $this->rankNode($this->root, $value);
+    }
+
+    private function rankNode(?AugmentedAVLNode $node, mixed $value): int
+    {
+        if ($node === null) {
+            return 0;
+        }
+
+        if ($value < $node->data) {
+            return $this->rankNode($node->left, $value);
+        } elseif ($value === $node->data) {
+            return $this->size($node->left) + 1;
+        } else {
+            return $this->size($node->left) + 1 + $this->rankNode($node->right, $value);
+        }
+    }
+
+    // Count elements in range [start, end]
+    public function rangeCount(mixed $start, mixed $end): int
+    {
+        return $this->rank($end) - $this->rank($start) + ($this->search($start) ? 1 : 0);
+    }
+
+    public function search(mixed $value): bool
+    {
+        return $this->searchNode($this->root, $value);
+    }
+
+    private function searchNode(?AugmentedAVLNode $node, mixed $value): bool
+    {
+        if ($node === null) {
+            return false;
+        }
+        if ($value === $node->data) {
+            return true;
+        }
+        if ($value < $node->data) {
+            return $this->searchNode($node->left, $value);
+        }
+        return $this->searchNode($node->right, $value);
+    }
+}
+
+// Example usage
+$ost = new OrderStatisticsTree();
+foreach ([10, 20, 30, 40, 50, 25, 35] as $value) {
+    $ost->insert($value);
+}
+
+echo $ost->findKthSmallest(3) . "\n";  // 25 (3rd smallest)
+echo $ost->findKthSmallest(5) . "\n";  // 35 (5th smallest)
+echo $ost->rank(30) . "\n";             // 4 (30 is 4th smallest)
+echo $ost->rangeCount(20, 40) . "\n";  // 4 (20, 25, 30, 35)
+```
+
+**Why It Works**: By storing subtree sizes, we can determine how many elements are smaller than the current node. When searching for the kth smallest:
+- If k ≤ left subtree size, the kth element is in the left subtree
+- If k = left subtree size + 1, the current node is the kth element
+- Otherwise, the kth element is in the right subtree at position (k - left size - 1)
+
+The key is maintaining subtree sizes correctly during rotations. When rotating, we must recalculate sizes for affected nodes, which is why `updateNodeInfo()` updates both height and size.
+
 ## Practical Applications
 
 ### 1. In-Memory Databases
 
 ```php
+# filename: ordered-index-example.php
 <?php
+
+declare(strict_types=1);
 
 class OrderedIndex
 {
@@ -964,7 +1373,10 @@ class OrderedIndex
 ### 2. PHP's Internal Implementation
 
 ```php
+# filename: sorted-set-example.php
 <?php
+
+declare(strict_types=1);
 
 // PHP's SPL (Standard PHP Library) doesn't expose AVL/RB tree directly,
 // but you can use SplHeap or implement custom sorted structures
@@ -1021,7 +1433,10 @@ echo $set->last();         // 8
 ### 3. Priority Queue with Updates
 
 ```php
+# filename: updatable-priority-queue.php
 <?php
+
+declare(strict_types=1);
 
 class UpdatablePriorityQueue
 {
@@ -1089,27 +1504,220 @@ class UpdatablePriorityQueue
    - Hash table would work (O(1) average, no ordering needed)
    - Data is append-only (B-tree might be better)
 
+## Troubleshooting
+
+### Error: "Call to a member function on null"
+
+**Symptom**: `Fatal error: Uncaught Error: Call to a member function data on null`
+
+**Cause**: Accessing `left` or `right` child without checking if it's null first, especially in rotation operations.
+
+**Solution**: Always check for null before accessing node properties:
+
+```php
+// Wrong
+if ($balance > 1 && $value < $node->left->data) {  // May fail if left is null
+    return $this->rotateRight($node);
+}
+
+// Correct
+if ($balance > 1 && $node->left !== null && $value < $node->left->data) {
+    return $this->rotateRight($node);
+}
+```
+
+### Error: "Tree becomes unbalanced after deletion"
+
+**Symptom**: Tree balance factors exceed [-1, 0, 1] after deletion operations.
+
+**Cause**: Not rebalancing after deletion, or incorrect rotation case detection.
+
+**Solution**: Ensure deletion rebalancing checks all four cases and updates heights:
+
+```php
+// After deletion, always check balance and rebalance
+$this->updateHeight($node);
+$balance = $this->getBalance($node);
+
+// Check all four rotation cases
+if ($balance > 1 && $this->getBalance($node->left) >= 0) {
+    return $this->rotateRight($node);
+}
+// ... other cases
+```
+
+### Problem: Red-Black tree violates color properties
+
+**Symptom**: Two red nodes appear consecutively, or black height is inconsistent.
+
+**Cause**: Not properly fixing violations in `insertFixup` or `deleteFixup`, or missing null checks for parent nodes.
+
+**Solution**: Ensure fixup functions handle all cases and check for null parents:
+
+```php
+// Always check parent exists before accessing
+while ($z->parent !== null && $z->parent->color === NodeColor::RED) {
+    if ($z->parent->parent !== null) {
+        // Safe to access grandparent
+        $y = $z->parent->parent->right;
+        // ... rest of fixup logic
+    }
+}
+```
+
+### Problem: Height not updating correctly
+
+**Symptom**: Balance factors are incorrect, leading to unnecessary rotations or missed rebalancing.
+
+**Cause**: Not updating heights after rotations, or updating in wrong order.
+
+**Solution**: Always update heights after structural changes, and update child before parent:
+
+```php
+// Correct order: update children first, then parent
+$this->updateHeight($y);  // Child first
+$this->updateHeight($x);  // Parent second
+```
+
+### Problem: Sentinel node (NIL) causing issues
+
+**Symptom**: Red-Black tree operations fail with null pointer errors.
+
+**Cause**: Not properly initializing NIL node or not checking for NIL in comparisons.
+
+**Solution**: Initialize NIL in constructor and always use `=== $this->nil` for comparisons:
+
+```php
+public function __construct()
+{
+    $this->nil = new RBNode(null, NodeColor::BLACK);
+    $this->root = $this->nil;
+}
+
+// Always check against NIL properly
+if ($node === $this->nil) {
+    return;  // Not: if ($node === null)
+}
+```
+
 ## Practice Exercises
 
-1. **Validate Balance**
-   - Write a function to verify AVL tree balance factors
-   - Check Red-Black tree properties are maintained
+### Exercise 1: Validate AVL Balance
 
-2. **Merge Two Trees**
-   - Merge two AVL/Red-Black trees into one balanced tree
-   - Maintain balance throughout
+**Goal**: Verify that an AVL tree maintains proper balance factors
 
-3. **Range Count**
-   - Count nodes with values in range [a, b]
-   - Optimize better than O(n)
+Write a function that checks if an AVL tree is properly balanced:
 
-4. **Kth Smallest with Updates**
-   - Augment tree to find kth smallest in O(log n)
-   - Handle insertions and deletions
+```php
+function isAVLBalanced(?AVLNode $node): bool
+{
+    // Your code here
+    // Check that balance factor is -1, 0, or 1 for all nodes
+    // Recursively check left and right subtrees
+}
+```
 
-5. **Interval Tree**
-   - Extend balanced tree to store intervals
-   - Support overlapping interval queries
+**Validation**: Test with a balanced and unbalanced tree:
+
+```php
+$avl = new AVLTree();
+$avl->insert(10);
+$avl->insert(20);
+$avl->insert(30);
+
+echo isAVLBalanced($avl->root) ? 'Balanced' : 'Unbalanced';
+// Expected: Balanced (tree should auto-balance)
+```
+
+### Exercise 2: Validate Red-Black Properties
+
+**Goal**: Verify Red-Black tree properties are maintained
+
+Write a function that checks all five Red-Black tree properties:
+
+```php
+function isValidRedBlack(?RBNode $root, RBNode $nil): bool
+{
+    // Your code here
+    // Check: 1) Root is black, 2) No red-red violations,
+    // 3) Black height is consistent, 4) Leaves are black
+}
+```
+
+**Validation**: Test with a valid and invalid Red-Black tree.
+
+### Exercise 3: Range Count Query
+
+**Goal**: Count nodes in a range efficiently
+
+Implement a method to count nodes with values in range [a, b] in O(log n + k) time where k is the number of nodes in range. You can use the augmented tree approach from the Tree Augmentation section:
+
+```php
+public function rangeCount(mixed $start, mixed $end): int
+{
+    // Your code here
+    // Hint: Use rank() function: rank(end) - rank(start) + 1 if start exists
+    // Or traverse and count nodes in range
+}
+```
+
+**Validation**: Test with various ranges:
+
+```php
+$ost = new OrderStatisticsTree();
+foreach ([10, 20, 30, 40, 50, 25, 35] as $v) {
+    $ost->insert($v);
+}
+
+echo $ost->rangeCount(20, 40);  // Expected: 4 (20, 25, 30, 35)
+echo $ost->rangeCount(15, 45);  // Expected: 5 (20, 25, 30, 35, 40)
+```
+
+### Exercise 4: Merge Two Balanced Trees
+
+**Goal**: Combine two balanced trees efficiently
+
+Merge two AVL or Red-Black trees into one balanced tree:
+
+```php
+function mergeTrees(AVLTree $tree1, AVLTree $tree2): AVLTree
+{
+    // Your code here
+    // Hint: Use in-order traversal to get sorted values,
+    // then build a new balanced tree
+}
+```
+
+**Validation**: Verify the merged tree is balanced and contains all elements.
+
+### Exercise 5: Kth Smallest Element
+
+**Goal**: Find kth smallest element in O(log n) time
+
+Implement the augmented tree approach shown in the Tree Augmentation section. The key is maintaining subtree sizes:
+
+```php
+public function findKthSmallest(int $k): mixed
+{
+    // Your code here
+    // Use the implementation from Tree Augmentation section
+    // Remember to update subtree sizes during rotations
+}
+```
+
+**Validation**: Test with various k values:
+
+```php
+$ost = new OrderStatisticsTree();
+foreach ([10, 20, 30, 40, 50] as $v) {
+    $ost->insert($v);
+}
+
+echo $ost->findKthSmallest(1);  // Expected: 10
+echo $ost->findKthSmallest(3);  // Expected: 30
+echo $ost->findKthSmallest(5);  // Expected: 50
+echo $ost->rank(30);            // Expected: 3 (30 is 3rd smallest)
+```
 
 ## Key Takeaways
 
@@ -1120,22 +1728,38 @@ class UpdatablePriorityQueue
 - Red-Black requires fewer rotations (max 2-3) but slightly taller trees
 - Choose based on workload: AVL for read-heavy, Red-Black for write-heavy
 - Both guarantee O(log n) worst-case for search, insert, delete
+- **Tree augmentation** enables advanced queries like order statistics in O(log n)
+- **Subtree sizes** can be maintained during rotations for kth smallest/rank queries
+- Real-world usage: Linux kernel (Red-Black), Java TreeMap (Red-Black), databases (both)
 - PHP doesn't have built-in balanced trees, but concepts apply to many data structures
 - Understanding balanced trees is essential for database internals and system programming
+
+## Further Reading
+
+- [AVL Tree Visualization](https://www.cs.usfca.edu/~galles/visualization/AVLtree.html) — Interactive AVL tree visualization tool
+- [Red-Black Tree Visualization](https://www.cs.usfca.edu/~galles/visualization/RedBlack.html) — Interactive Red-Black tree visualization tool
+- [Introduction to Algorithms (CLRS)](https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/) — Comprehensive coverage of balanced trees
+- [PHP SPL Data Structures](https://www.php.net/manual/en/spl.datastructures.php) — PHP's built-in data structures
+
+<ChapterCheckbox 
+  seriesId="php-algorithms"
+  chapterId="20"
+  label="Balanced Trees mastered!"
+/>
 
 ## 💻 Code Samples
 
 All code examples from this chapter are available in the GitHub repository:
 
-**[View Chapter 20 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-20)**
+**[View Chapter 20 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/php-algorithms/chapter-20)**
 
 Clone the repository to run examples:
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
-cd codewithphp/code-samples/php-algorithms/chapter-20
+cd codewithphp/code/php-algorithms/chapter-20
 php 01-*.php
 ```
 
-## Next Steps
+## What's Next
 
-In the next section, we'll explore graph algorithms, starting with graph representations and fundamental traversal algorithms like BFS and DFS applied to graphs.
+In the next chapter, we'll explore **Graph Representations**, learning how to model relationships and connections between entities using adjacency lists, adjacency matrices, and edge lists.
