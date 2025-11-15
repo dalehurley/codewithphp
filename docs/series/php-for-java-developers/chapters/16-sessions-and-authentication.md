@@ -1,6 +1,6 @@
 ---
 title: "16: Sessions & Authentication"
-description: "Session management, JWT, OAuth2, password hashing"
+description: "Session management, authentication strategies, security"
 series: "php-for-java-developers"
 chapter: 16
 order: 16
@@ -15,26 +15,63 @@ prerequisites:
 
 ## Overview
 
-This chapter covers: Session management, JWT, OAuth2, password hashing
+Session management and authentication in PHP, from native sessions to modern token-based auth.
 
-::: tip Complete Content
-For detailed content on this chapter, please see the [Chapters 8-22 Summary](/series/php-for-java-developers/CHAPTERS-8-22-SUMMARY.html#chapter-16).
-:::
+**Topics:** PHP sessions, Session security, JWT authentication, OAuth, Password hashing
 
-## Key Topics
+## Section 1: PHP Sessions
 
-See the comprehensive summary document for detailed coverage of:
-- Concepts and theory
-- Java vs PHP comparisons
-- Code examples
-- Best practices
-- Common pitfalls
+```php
+<?php
+session_start();
+$_SESSION['user_id'] = 123;
+$userId = $_SESSION['user_id'] ?? null;
+session_destroy();
+```
+
+## Section 2: Secure Sessions
+
+```php
+<?php
+session_start([
+    'cookie_lifetime' => 0,
+    'cookie_secure' => true,
+    'cookie_httponly' => true,
+    'cookie_samesite' => 'Strict',
+    'use_strict_mode' => true,
+]);
+```
+
+## Section 3: Password Hashing
+
+```php
+<?php
+$hash = password_hash($password, PASSWORD_ARGON2ID);
+if (password_verify($password, $hash)) {
+    // Valid
+}
+```
+
+## Section 4: JWT Authentication
+
+```php
+<?php
+$token = JWT::encode(['userId' => 123], $secret);
+$payload = JWT::decode($token, $secret);
+```
+
+## Section 5: OAuth Integration
+
+```php
+<?php
+// OAuth 2.0 flow
+$authUrl = $provider->getAuthorizationUrl();
+$token = $provider->getAccessToken('authorization_code', ['code' => $code]);
+```
 
 ---
 
-<div style="display: flex; justify-content: space-between; margin-top: 2rem;">
-  <div>
-    <strong>Previous:</strong> <a href="/series/php-for-java-developers/chapters/15-http-and-request-response">← Chapter 15</a>
-  </div>
+<div style="display: flex; justify-content: space-between;">
+  <div><strong>Previous:</strong> <a href="/series/php-for-java-developers/chapters/15-http-and-request-response">← Chapter 15</a></div>
   <div><strong>Next:</strong> <a href="/series/php-for-java-developers/chapters/17-forms-and-validation">Chapter 17 →</a></div>
 </div>
