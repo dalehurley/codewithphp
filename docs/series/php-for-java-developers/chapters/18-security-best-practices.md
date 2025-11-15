@@ -1,40 +1,85 @@
 ---
 title: "18: Security Best Practices"
-description: "SQL injection, XSS, CSRF, password security, HTTPS"
+description: "OWASP Top 10, XSS, SQL injection, security headers"
 series: "php-for-java-developers"
 chapter: 18
 order: 18
-difficulty: "Intermediate"
+difficulty: "Advanced"
 prerequisites:
   - "/series/php-for-java-developers/chapters/17-forms-and-validation"
 ---
 
 # Chapter 18: Security Best Practices
 
-<Badge type="warning">Intermediate</Badge>
+<Badge type="danger">Advanced</Badge>
 
 ## Overview
 
-This chapter covers: SQL injection, XSS, CSRF, password security, HTTPS
+Essential security practices for PHP applications based on OWASP guidelines.
 
-::: tip Complete Content
-For detailed content on this chapter, please see the [Chapters 8-22 Summary](/series/php-for-java-developers/CHAPTERS-8-22-SUMMARY.html#chapter-18).
-:::
+**Topics:** OWASP Top 10, SQL injection prevention, XSS protection, CSRF, Security headers
 
-## Key Topics
+## Section 1: SQL Injection Prevention
 
-See the comprehensive summary document for detailed coverage of:
-- Concepts and theory
-- Java vs PHP comparisons
-- Code examples
-- Best practices
-- Common pitfalls
+```php
+<?php
+// ✅ Use prepared statements
+$stmt = $pdo->prepare('SELECT * FROM users WHERE email = ?');
+$stmt->execute([$email]);
+
+// ❌ Never concatenate user input
+$sql = "SELECT * FROM users WHERE email = '$email'";  // DANGEROUS!
+```
+
+## Section 2: XSS Protection
+
+```php
+<?php
+// Always escape output
+echo htmlspecialchars($userInput, ENT_QUOTES, 'UTF-8');
+
+// Content Security Policy header
+header("Content-Security-Policy: default-src 'self'");
+```
+
+## Section 3: Authentication Security
+
+```php
+<?php
+// Strong password hashing
+$hash = password_hash($password, PASSWORD_ARGON2ID);
+
+// Rate limiting for login attempts
+if ($attempts > 5) {
+    sleep(pow(2, $attempts)); // Exponential backoff
+}
+```
+
+## Section 4: Security Headers
+
+```php
+<?php
+header('X-Frame-Options: DENY');
+header('X-Content-Type-Options: nosniff');
+header('X-XSS-Protection: 1; mode=block');
+header('Strict-Transport-Security: max-age=31536000');
+```
+
+## Section 5: File Upload Security
+
+```php
+<?php
+// Validate file type by content, not extension
+$finfo = finfo_open(FILEINFO_MIME_TYPE);
+$mimeType = finfo_file($finfo, $_FILES['file']['tmp_name']);
+
+// Store outside web root
+$destination = '/var/uploads/' . bin2hex(random_bytes(16));
+```
 
 ---
 
-<div style="display: flex; justify-content: space-between; margin-top: 2rem;">
-  <div>
-    <strong>Previous:</strong> <a href="/series/php-for-java-developers/chapters/17-forms-and-validation">← Chapter 17</a>
-  </div>
+<div style="display: flex; justify-content: space-between;">
+  <div><strong>Previous:</strong> <a href="/series/php-for-java-developers/chapters/17-forms-and-validation">← Chapter 17</a></div>
   <div><strong>Next:</strong> <a href="/series/php-for-java-developers/chapters/19-framework-comparison">Chapter 19 →</a></div>
 </div>

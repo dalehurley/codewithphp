@@ -1,40 +1,94 @@
 ---
 title: "21: Symfony Components"
-description: "HttpFoundation, Routing, Console, DI container"
+description: "HttpFoundation, Console, EventDispatcher, DependencyInjection"
 series: "php-for-java-developers"
 chapter: 21
 order: 21
-difficulty: "Intermediate"
+difficulty: "Advanced"
 prerequisites:
   - "/series/php-for-java-developers/chapters/20-laravel-fundamentals"
 ---
 
 # Chapter 21: Symfony Components
 
-<Badge type="warning">Intermediate</Badge>
+<Badge type="danger">Advanced</Badge>
 
 ## Overview
 
-This chapter covers: HttpFoundation, Routing, Console, DI container
+Symfony provides reusable PHP components used by many frameworks, similar to Apache Commons for Java.
 
-::: tip Complete Content
-For detailed content on this chapter, please see the [Chapters 8-22 Summary](/series/php-for-java-developers/CHAPTERS-8-22-SUMMARY.html#chapter-21).
-:::
+**Topics:** HttpFoundation, Console, EventDispatcher, DependencyInjection, Routing
 
-## Key Topics
+## Section 1: HttpFoundation
 
-See the comprehensive summary document for detailed coverage of:
-- Concepts and theory
-- Java vs PHP comparisons
-- Code examples
-- Best practices
-- Common pitfalls
+```php
+<?php
+use Symfony\Component\HttpFoundation\{Request, Response};
+
+$request = Request::createFromGlobals();
+$response = new Response('Hello World', 200);
+$response->send();
+```
+
+## Section 2: Console Component
+
+```php
+<?php
+use Symfony\Component\Console\Command\Command;
+
+class GreetCommand extends Command {
+    protected function execute(InputInterface $input, OutputInterface $output) {
+        $output->writeln('Hello!');
+        return Command::SUCCESS;
+    }
+}
+```
+
+## Section 3: EventDispatcher
+
+```php
+<?php
+use Symfony\Component\EventDispatcher\EventDispatcher;
+
+$dispatcher = new EventDispatcher();
+$dispatcher->addListener('user.created', function($event) {
+    // Handle event
+});
+$dispatcher->dispatch($event, 'user.created');
+```
+
+## Section 4: DependencyInjection
+
+```php
+<?php
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+
+$container = new ContainerBuilder();
+$container->register('mailer', Mailer::class);
+$mailer = $container->get('mailer');
+```
+
+## Section 5: Full Symfony Application
+
+```php
+<?php
+// config/routes.yaml
+users_index:
+    path: /users
+    controller: App\Controller\UserController::index
+
+// src/Controller/UserController.php
+class UserController extends AbstractController {
+    #[Route('/users', methods: ['GET'])]
+    public function index(UserRepository $users): Response {
+        return $this->json($users->findAll());
+    }
+}
+```
 
 ---
 
-<div style="display: flex; justify-content: space-between; margin-top: 2rem;">
-  <div>
-    <strong>Previous:</strong> <a href="/series/php-for-java-developers/chapters/20-laravel-fundamentals">← Chapter 20</a>
-  </div>
+<div style="display: flex; justify-content: space-between;">
+  <div><strong>Previous:</strong> <a href="/series/php-for-java-developers/chapters/20-laravel-fundamentals">← Chapter 20</a></div>
   <div><strong>Next:</strong> <a href="/series/php-for-java-developers/chapters/22-micro-frameworks-slim">Chapter 22 →</a></div>
 </div>

@@ -1,6 +1,6 @@
 ---
 title: "22: Micro-frameworks (Slim)"
-description: "Lightweight framework, PSR-7, microservices"
+description: "Building lightweight APIs with Slim framework"
 series: "php-for-java-developers"
 chapter: 22
 order: 22
@@ -15,26 +15,123 @@ prerequisites:
 
 ## Overview
 
-This chapter covers: Lightweight framework, PSR-7, microservices
+Slim is a micro-framework perfect for APIs and microservices, similar to Spark for Java.
 
-::: tip Complete Content
-For detailed content on this chapter, please see the [Chapters 8-22 Summary](/series/php-for-java-developers/CHAPTERS-8-22-SUMMARY.html#chapter-22).
-:::
+**Topics:** Slim routing, Middleware, PSR-7, Dependency injection, API development
 
-## Key Topics
+## Section 1: Getting Started
 
-See the comprehensive summary document for detailed coverage of:
-- Concepts and theory
-- Java vs PHP comparisons
-- Code examples
-- Best practices
-- Common pitfalls
+```bash
+composer require slim/slim slim/psr7
+```
+
+```php
+<?php
+require 'vendor/autoload.php';
+
+use Slim\Factory\AppFactory;
+
+$app = AppFactory::create();
+
+$app->get('/hello/{name}', function ($request, $response, $args) {
+    $response->getBody()->write("Hello, {$args['name']}");
+    return $response;
+});
+
+$app->run();
+```
+
+## Section 2: RESTful API
+
+```php
+<?php
+$app->get('/api/users', function ($request, $response) {
+    $users = $this->get('userRepository')->findAll();
+    return $response->withJson($users);
+});
+
+$app->post('/api/users', function ($request, $response) {
+    $data = $request->getParsedBody();
+    $user = $this->get('userRepository')->create($data);
+    return $response->withJson($user, 201);
+});
+```
+
+## Section 3: Middleware
+
+```php
+<?php
+$app->add(function ($request, $handler) {
+    $response = $handler->handle($request);
+    return $response->withHeader('Access-Control-Allow-Origin', '*');
+});
+
+class AuthMiddleware {
+    public function __invoke($request, $handler) {
+        if (!$this->validateToken($request)) {
+            return new Response(401);
+        }
+        return $handler->handle($request);
+    }
+}
+```
+
+## Section 4: Dependency Container
+
+```php
+<?php
+use DI\Container;
+
+$container = new Container();
+$container->set('userRepository', function() {
+    return new UserRepository(new PDO(/*...*/));
+});
+
+AppFactory::setContainer($container);
+$app = AppFactory::create();
+```
+
+## Section 5: Complete API Example
+
+```php
+<?php
+require 'vendor/autoload.php';
+
+use Psr\Http\Message\{ResponseInterface, ServerRequestInterface};
+use Slim\Factory\AppFactory;
+
+$app = AppFactory::create();
+
+// Middleware
+$app->add(new AuthMiddleware());
+
+// Routes
+$app->group('/api/v1', function ($group) {
+    $group->get('/users', UserController::class . ':index');
+    $group->get('/users/{id}', UserController::class . ':show');
+    $group->post('/users', UserController::class . ':store');
+    $group->put('/users/{id}', UserController::class . ':update');
+    $group->delete('/users/{id}', UserController::class . ':destroy');
+});
+
+$app->run();
+```
 
 ---
 
-<div style="display: flex; justify-content: space-between; margin-top: 2rem;">
-  <div>
-    <strong>Previous:</strong> <a href="/series/php-for-java-developers/chapters/21-symfony-components">← Chapter 21</a>
-  </div>
+## Course Completion
+
+Congratulations! You've completed the PHP for Java Developers series. You now have the knowledge to build modern PHP applications using best practices, frameworks, and tools.
+
+**Next Steps:**
+- Build a complete project using Laravel or Symfony
+- Contribute to open-source PHP projects
+- Explore advanced topics like queues, caching, and performance optimization
+- Join the PHP community
+
+---
+
+<div style="display: flex; justify-content: space-between;">
+  <div><strong>Previous:</strong> <a href="/series/php-for-java-developers/chapters/21-symfony-components">← Chapter 21</a></div>
   <div><strong>Series Complete!</strong></div>
 </div>
