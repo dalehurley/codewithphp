@@ -1,12 +1,14 @@
 ---
-title: "String Algorithms Deep Dive"
+title: "33: String Algorithms Deep Dive"
 description: "Advanced string algorithms including Aho-Corasick, suffix trees/arrays, pattern matching, and text processing for search engines and bioinformatics"
 series: "php-algorithms"
 chapter: 33
 order: 33
-difficulty: "advanced"
-prerequisites: ["Strings", "Trees", "Hash Functions", "Dynamic Programming"]
+difficulty: "Advanced"
+prerequisites: []
 ---
+
+![String Algorithms Deep Dive](/images/php-algorithms/chapter-33-string-algorithms-hero-full.webp)
 
 <div class="breadcrumbs">
   <a href="/">Home</a>
@@ -18,34 +20,59 @@ prerequisites: ["Strings", "Trees", "Hash Functions", "Dynamic Programming"]
   <span>Chapter 33</span>
 </div>
 
-# String Algorithms Deep Dive <span class="difficulty-badge difficulty-advanced">Advanced</span>
+# 33: String Algorithms Deep Dive <span class="difficulty-badge difficulty-advanced">Advanced</span>
 
-## What You'll Learn
+## Overview
 
-Master the powerful string algorithms that power search engines, content filters, DNA sequencing tools, and more. These sophisticated techniques go far beyond simple string matching to solve complex text processing challenges efficiently.
+String algorithms are fundamental to text processing, search engines, bioinformatics, and data compression. This chapter explores advanced string matching and manipulation techniques beyond basic patterns. These algorithms power everything from spam filters to DNA sequencing, handling millions of pattern matches per second.
 
-- Implement Aho-Corasick for searching multiple patterns simultaneously in linear time
-- Build suffix trees and arrays for advanced pattern matching and text analysis
-- Apply string algorithms to real-world problems like content filtering and plagiarism detection
-- Optimize text processing operations that traditionally take quadratic time down to linear
-- Use advanced string matching for bioinformatics and computational biology applications
+While basic string operations like `strpos()` and `substr()` work well for simple tasks, real-world applications require sophisticated algorithms that can handle multiple patterns simultaneously, process massive texts efficiently, and solve complex matching problems. You'll learn how search engines index billions of web pages, how antivirus software scans files for thousands of malware signatures, and how DNA sequencing tools find genetic patterns.
 
-**Estimated Time**: ~55 minutes
+By the end of this chapter, you'll have implemented several advanced string algorithms including Aho-Corasick for multi-pattern matching, suffix arrays and trees for fast substring queries, and specialized algorithms for palindromes and sequence comparison. These techniques form the foundation of modern text processing systems.
 
 ## Prerequisites
 
-This advanced chapter builds on multiple concepts. Ensure you have:
+Before starting this chapter, you should have:
 
-- [ ] **String fundamentals** - Comfortable working with strings and character arrays
-- [ ] **Tree data structures** - Understanding of tries, binary trees, and traversals
-- [ ] **Hash functions** - Knowledge of hashing for string operations
-- [ ] **Dynamic programming** - Familiarity with DP for string problems (LCS, edit distance)
+- PHP 8.4+ installed and confirmed working with `php --version`
+- Comfortable working with strings and character arrays
+- Understanding of tree data structures (tries, binary trees, traversals)
+- Knowledge of hash functions for string operations
+- Familiarity with dynamic programming for string problems (LCS, edit distance)
 
-Ready to become a string algorithm expert? Let's dive deep into advanced text processing!
+**Estimated Time**: ~55 minutes
 
-## Introduction
+**Verify your setup:**
 
-String algorithms are fundamental to text processing, search engines, bioinformatics, and data compression. This chapter explores advanced string matching and manipulation techniques beyond basic patterns. These algorithms power everything from spam filters to DNA sequencing, handling millions of pattern matches per second.
+```bash
+php --version
+```
+
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- Aho-Corasick automaton for multi-pattern matching with failure links
+- Trie (prefix tree) implementation for autocomplete and prefix matching
+- Suffix array implementation with longest common prefix (LCP) array
+- Suffix tree for linear-time pattern matching
+- Z-algorithm implementation for fast string matching
+- Manacher's algorithm for finding all palindromes
+- Rabin-Karp rolling hash implementation
+- Longest Common Subsequence (LCS) algorithm with diff generation
+- Unicode-aware string processing utilities
+- Text similarity and comparison tools
+
+## Objectives
+
+- Implement Aho-Corasick for searching multiple patterns simultaneously in linear time
+- Build trie data structures for efficient autocomplete and prefix matching
+- Construct suffix trees and arrays for advanced pattern matching and text analysis
+- Apply string algorithms to real-world problems like content filtering and plagiarism detection
+- Optimize text processing operations that traditionally take quadratic time down to linear
+- Use advanced string matching for bioinformatics and computational biology applications
+- Handle Unicode and multibyte strings correctly in PHP
+- Compare and benchmark different string matching algorithms
 
 ## Aho-Corasick Algorithm
 
@@ -54,6 +81,11 @@ The Aho-Corasick algorithm efficiently searches for multiple patterns simultaneo
 ### Trie-Based Implementation
 
 ```php
+# filename: aho-corasick.php
+<?php
+
+declare(strict_types=1);
+
 class AhoCorasickNode {
     public array $children = [];
     public ?AhoCorasickNode $failure = null;
@@ -201,13 +233,20 @@ echo "Replaced: $replaced\n";
 ```
 
 **Time Complexity**:
+
 - Build: O(m) where m is total pattern length
 - Search: O(n + z) where n is text length, z is number of matches
+
 **Space Complexity**: O(m × σ) where σ is alphabet size
 
 ### Real-World Example: Content Filtering
 
 ```php
+# filename: content-filter.php
+<?php
+
+declare(strict_types=1);
+
 class ContentFilter {
     private AhoCorasick $profanityFilter;
     private AhoCorasick $spamFilter;
@@ -272,6 +311,407 @@ $censored = $filter->censorContent($content);
 echo "Censored: $censored\n";
 ```
 
+## Trie (Prefix Tree)
+
+A trie (pronounced "try") is a tree-like data structure that stores strings where common prefixes share paths. It's ideal for autocomplete systems, spell checkers, and prefix-based searches. Unlike hash tables, tries allow efficient prefix matching and can find all strings with a given prefix in O(m + k) time, where m is prefix length and k is number of matches.
+
+### Basic Trie Implementation
+
+```php
+# filename: trie.php
+<?php
+
+declare(strict_types=1);
+
+class TrieNode {
+    public array $children = [];
+    public bool $isEndOfWord = false;
+    public int $frequency = 0;  // For ranking autocomplete results
+}
+
+class Trie {
+    private TrieNode $root;
+
+    public function __construct() {
+        $this->root = new TrieNode();
+    }
+
+    public function insert(string $word, int $frequency = 1): void {
+        $node = $this->root;
+
+        for ($i = 0; $i < strlen($word); $i++) {
+            $char = $word[$i];
+
+            if (!isset($node->children[$char])) {
+                $node->children[$char] = new TrieNode();
+            }
+
+            $node = $node->children[$char];
+        }
+
+        $node->isEndOfWord = true;
+        $node->frequency += $frequency;
+    }
+
+    public function search(string $word): bool {
+        $node = $this->findNode($word);
+        return $node !== null && $node->isEndOfWord;
+    }
+
+    public function startsWith(string $prefix): bool {
+        return $this->findNode($prefix) !== null;
+    }
+
+    private function findNode(string $prefix): ?TrieNode {
+        $node = $this->root;
+
+        for ($i = 0; $i < strlen($prefix); $i++) {
+            $char = $prefix[$i];
+
+            if (!isset($node->children[$char])) {
+                return null;
+            }
+
+            $node = $node->children[$char];
+        }
+
+        return $node;
+    }
+
+    public function getAllWordsWithPrefix(string $prefix, int $limit = 10): array {
+        $node = $this->findNode($prefix);
+
+        if ($node === null) {
+            return [];
+        }
+
+        $results = [];
+        $this->collectWords($node, $prefix, $results, $limit);
+
+        // Sort by frequency (most common first)
+        usort($results, fn($a, $b) => $b['frequency'] - $a['frequency']);
+
+        return $results;
+    }
+
+    private function collectWords(TrieNode $node, string $prefix, array &$results, int $limit): void {
+        if (count($results) >= $limit) {
+            return;
+        }
+
+        if ($node->isEndOfWord) {
+            $results[] = [
+                'word' => $prefix,
+                'frequency' => $node->frequency
+            ];
+        }
+
+        foreach ($node->children as $char => $child) {
+            $this->collectWords($child, $prefix . $char, $results, $limit);
+        }
+    }
+
+    public function delete(string $word): bool {
+        return $this->deleteRecursive($this->root, $word, 0);
+    }
+
+    private function deleteRecursive(TrieNode $node, string $word, int $index): bool {
+        if ($index === strlen($word)) {
+            if (!$node->isEndOfWord) {
+                return false;  // Word doesn't exist
+            }
+
+            $node->isEndOfWord = false;
+            return empty($node->children);
+        }
+
+        $char = $word[$index];
+
+        if (!isset($node->children[$char])) {
+            return false;  // Word doesn't exist
+        }
+
+        $shouldDeleteChild = $this->deleteRecursive($node->children[$char], $word, $index + 1);
+
+        if ($shouldDeleteChild) {
+            unset($node->children[$char]);
+            return !$node->isEndOfWord && empty($node->children);
+        }
+
+        return false;
+    }
+
+    public function countWords(): int {
+        return $this->countWordsRecursive($this->root);
+    }
+
+    private function countWordsRecursive(TrieNode $node): int {
+        $count = $node->isEndOfWord ? 1 : 0;
+
+        foreach ($node->children as $child) {
+            $count += $this->countWordsRecursive($child);
+        }
+
+        return $count;
+    }
+}
+
+// Usage
+$trie = new Trie();
+
+// Insert words with frequencies (for autocomplete ranking)
+$trie->insert('hello', 100);
+$trie->insert('help', 50);
+$trie->insert('helmet', 30);
+$trie->insert('world', 80);
+$trie->insert('word', 40);
+
+// Search for exact word
+var_dump($trie->search('hello'));  // true
+var_dump($trie->search('help'));   // true
+var_dump($trie->search('helpful')); // false
+
+// Check prefix
+var_dump($trie->startsWith('hel'));  // true
+var_dump($trie->startsWith('wor'));  // true
+
+// Autocomplete
+$suggestions = $trie->getAllWordsWithPrefix('hel', 5);
+foreach ($suggestions as $suggestion) {
+    echo "{$suggestion['word']} (frequency: {$suggestion['frequency']})\n";
+}
+// Output:
+// hello (frequency: 100)
+// help (frequency: 50)
+// helmet (frequency: 30)
+
+// Count total words
+echo "Total words: " . $trie->countWords() . "\n";  // 5
+```
+
+**Time Complexity**:
+
+- Insert: O(m) where m is word length
+- Search: O(m)
+- Prefix search: O(m + k) where k is number of matches
+- Delete: O(m)
+
+**Space Complexity**: O(ALPHABET_SIZE × N × M) where N is number of words, M is average word length
+
+### Real-World Example: Autocomplete System
+
+```php
+# filename: autocomplete-system.php
+<?php
+
+declare(strict_types=1);
+
+class AutocompleteSystem {
+    private Trie $trie;
+    private string $currentQuery = '';
+
+    public function __construct() {
+        $this->trie = new Trie();
+    }
+
+    public function train(array $queries): void {
+        // Train with historical queries (frequency = number of times searched)
+        foreach ($queries as $query => $frequency) {
+            $this->trie->insert(strtolower($query), $frequency);
+        }
+    }
+
+    public function input(string $char): array {
+        if ($char === '#') {
+            // Save current query
+            if (!empty($this->currentQuery)) {
+                $this->trie->insert(strtolower($this->currentQuery), 1);
+                $this->currentQuery = '';
+            }
+            return [];
+        }
+
+        $this->currentQuery .= $char;
+        return $this->trie->getAllWordsWithPrefix(strtolower($this->currentQuery), 3);
+    }
+
+    public function getTopSuggestions(string $prefix, int $topN = 5): array {
+        $suggestions = $this->trie->getAllWordsWithPrefix(strtolower($prefix), $topN);
+        return array_map(fn($s) => $s['word'], $suggestions);
+    }
+}
+
+// Usage: Build autocomplete from search history
+$autocomplete = new AutocompleteSystem();
+
+// Train with historical search data
+$searchHistory = [
+    'php tutorial' => 150,
+    'php arrays' => 80,
+    'php functions' => 120,
+    'python tutorial' => 90,
+    'python lists' => 60,
+    'javascript tutorial' => 200,
+    'javascript arrays' => 100,
+];
+
+$autocomplete->train($searchHistory);
+
+// Simulate user typing
+echo "User types 'p':\n";
+$suggestions = $autocomplete->input('p');
+foreach ($suggestions as $suggestion) {
+    echo "  - {$suggestion['word']}\n";
+}
+
+echo "\nUser types 'h':\n";
+$suggestions = $autocomplete->input('h');
+foreach ($suggestions as $suggestion) {
+    echo "  - {$suggestion['word']}\n";
+}
+
+// Get top suggestions for a prefix
+echo "\nTop suggestions for 'php':\n";
+$top = $autocomplete->getTopSuggestions('php', 3);
+foreach ($top as $suggestion) {
+    echo "  - $suggestion\n";
+}
+```
+
+### Advanced: Compressed Trie (Radix Tree)
+
+For better space efficiency, we can compress nodes with single children:
+
+```php
+# filename: radix-trie.php
+<?php
+
+declare(strict_types=1);
+
+class RadixNode {
+    public string $label = '';
+    public array $children = [];
+    public bool $isEndOfWord = false;
+}
+
+class RadixTrie {
+    private RadixNode $root;
+
+    public function __construct() {
+        $this->root = new RadixNode();
+    }
+
+    public function insert(string $word): void {
+        $this->insertRecursive($this->root, $word);
+    }
+
+    private function insertRecursive(RadixNode $node, string $word): void {
+        if (empty($word)) {
+            $node->isEndOfWord = true;
+            return;
+        }
+
+        // Find matching child
+        foreach ($node->children as $child) {
+            $commonPrefix = $this->getCommonPrefix($child->label, $word);
+
+            if (!empty($commonPrefix)) {
+                if ($commonPrefix === $child->label) {
+                    // Full match, recurse
+                    $this->insertRecursive($child, substr($word, strlen($commonPrefix)));
+                } else {
+                    // Partial match, split node
+                    $newNode = new RadixNode();
+                    $newNode->label = substr($child->label, strlen($commonPrefix));
+                    $newNode->children = $child->children;
+                    $newNode->isEndOfWord = $child->isEndOfWord;
+
+                    $child->label = $commonPrefix;
+                    $child->children = [$newNode->label[0] => $newNode];
+                    $child->isEndOfWord = false;
+
+                    $remaining = substr($word, strlen($commonPrefix));
+                    if (!empty($remaining)) {
+                        $leaf = new RadixNode();
+                        $leaf->label = $remaining;
+                        $leaf->isEndOfWord = true;
+                        $child->children[$remaining[0]] = $leaf;
+                    } else {
+                        $child->isEndOfWord = true;
+                    }
+                }
+                return;
+            }
+        }
+
+        // No match, create new child
+        $newNode = new RadixNode();
+        $newNode->label = $word;
+        $newNode->isEndOfWord = true;
+        $node->children[$word[0]] = $newNode;
+    }
+
+    private function getCommonPrefix(string $s1, string $s2): string {
+        $minLen = min(strlen($s1), strlen($s2));
+        $prefix = '';
+
+        for ($i = 0; $i < $minLen; $i++) {
+            if ($s1[$i] === $s2[$i]) {
+                $prefix .= $s1[$i];
+            } else {
+                break;
+            }
+        }
+
+        return $prefix;
+    }
+
+    public function search(string $word): bool {
+        return $this->searchRecursive($this->root, $word);
+    }
+
+    private function searchRecursive(RadixNode $node, string $word): bool {
+        if (empty($word)) {
+            return $node->isEndOfWord;
+        }
+
+        foreach ($node->children as $child) {
+            if (str_starts_with($word, $child->label)) {
+                return $this->searchRecursive($child, substr($word, strlen($child->label)));
+            }
+        }
+
+        return false;
+    }
+}
+
+// Usage
+$radixTrie = new RadixTrie();
+
+$radixTrie->insert('hello');
+$radixTrie->insert('help');
+$radixTrie->insert('helmet');
+$radixTrie->insert('world');
+
+var_dump($radixTrie->search('hello'));  // true
+var_dump($radixTrie->search('help'));   // true
+var_dump($radixTrie->search('helmet'));  // true
+var_dump($radixTrie->search('world'));   // true
+var_dump($radixTrie->search('helpful')); // false
+```
+
+**Benefits of Radix Trie**:
+
+- Reduced space complexity (compresses single-child nodes)
+- Faster traversal (fewer nodes to visit)
+- Better cache locality
+
+**Trade-offs**:
+
+- More complex implementation
+- Slower insertion (needs node splitting)
+- Still O(m) for search operations
+
 ## Suffix Array
 
 A suffix array is a sorted array of all suffixes of a string, enabling fast pattern matching and other string operations.
@@ -279,6 +719,11 @@ A suffix array is a sorted array of all suffixes of a string, enabling fast patt
 ### Construction and Search
 
 ```php
+# filename: suffix-array.php
+<?php
+
+declare(strict_types=1);
+
 class SuffixArray {
     private string $text;
     private array $suffixArray;
@@ -449,8 +894,10 @@ echo $sa->countDistinctSubstrings() . "\n";
 ```
 
 **Time Complexity**:
+
 - Build: O(n log n) with comparison sort, O(n) with specialized algorithms
 - Search: O(m log n + occ) where occ is number of occurrences
+
 **Space Complexity**: O(n)
 
 ## Suffix Tree
@@ -460,6 +907,11 @@ A suffix tree is a compressed trie of all suffixes, enabling linear-time pattern
 ### Simplified Suffix Tree
 
 ```php
+# filename: suffix-tree.php
+<?php
+
+declare(strict_types=1);
+
 class SuffixTreeNode {
     public array $children = [];
     public ?int $start = null;
@@ -669,15 +1121,22 @@ echo $st->longestRepeatedSubstring() . "\n";  // 'ana'
 ```
 
 **Time Complexity**:
+
 - Ukkonen's algorithm: O(n) construction
 - Search: O(m) where m is pattern length
+
 **Space Complexity**: O(n)
 
 ## Z-Algorithm
 
-Fast string matching using preprocessing.
+The Z-algorithm preprocesses a string to create a Z-array, where each element represents the length of the longest substring starting from that position that matches the prefix. This enables fast pattern matching in linear time.
 
 ```php
+# filename: z-algorithm.php
+<?php
+
+declare(strict_types=1);
+
 class ZAlgorithm {
     public static function computeZ(string $s): array {
         $n = strlen($s);
@@ -745,9 +1204,14 @@ print_r($positions);  // [0, 2, 4]
 
 ## Manacher's Algorithm
 
-Find all palindromes in linear time.
+Manacher's algorithm finds the longest palindromic substring in a string in linear time O(n). It uses a clever technique of maintaining a "center" and "right boundary" to avoid redundant comparisons, making it much faster than naive approaches.
 
 ```php
+# filename: manacher.php
+<?php
+
+declare(strict_types=1);
+
 class ManacherAlgorithm {
     public static function longestPalindrome(string $s): string {
         // Transform string: "abc" -> "^#a#b#c#$"
@@ -844,7 +1308,14 @@ print_r($all);  // ['a', 'b', 'aba', 'bab', 'ababa']
 
 ## Rabin-Karp with Rolling Hash
 
+The Rabin-Karp algorithm uses rolling hash to efficiently search for patterns in text. Instead of comparing characters directly, it compares hash values, only verifying matches when hashes match. This provides O(n + m) average-case performance.
+
 ```php
+# filename: rabin-karp.php
+<?php
+
+declare(strict_types=1);
+
 class RabinKarp {
     private const BASE = 256;
     private const MOD = 1000000007;
@@ -931,7 +1402,14 @@ print_r($multiple);
 
 ## Longest Common Subsequence (LCS)
 
+The Longest Common Subsequence algorithm finds the longest sequence of characters that appear in the same order in two strings (not necessarily contiguous). It's widely used in version control systems (like Git's diff), DNA sequence alignment, and text comparison tools.
+
 ```php
+# filename: lcs.php
+<?php
+
+declare(strict_types=1);
+
 class LongestCommonSubsequence {
     public static function compute(string $s1, string $s2): string {
         $m = strlen($s1);
@@ -1012,32 +1490,18 @@ print_r($diff);
 **Time Complexity**: O(mn)
 **Space Complexity**: O(mn)
 
-## Summary
-
-Advanced string algorithms provide efficient solutions for:
-- **Multi-pattern matching**: Aho-Corasick
-- **Substring queries**: Suffix arrays/trees
-- **Fast search**: Z-algorithm, Rabin-Karp
-- **Palindrome detection**: Manacher's algorithm
-- **Sequence comparison**: LCS
-
-**Key Takeaways**:
-- Aho-Corasick: Best for multiple pattern search
-- Suffix structures: Enable complex substring queries
-- Rolling hash: Fast average-case matching
-- Manacher: Linear-time palindrome finding
-
-## Next Steps
-
-- **Chapter 17: Advanced Sorting** - String sorting algorithms
-- **Chapter 23: Dynamic Programming** - Edit distance, pattern matching
-- **Chapter 26: Approximate Algorithms** - Fuzzy string matching
-
 ## Unicode and Multibyte String Handling
+
+When working with international text, proper Unicode handling is essential. PHP's default string functions operate on bytes, not characters, which can cause issues with multibyte characters like emojis, Chinese characters, or accented letters. This section covers Unicode-aware string processing techniques.
 
 ### UTF-8 String Processing
 
 ```php
+# filename: unicode-processor.php
+<?php
+
+declare(strict_types=1);
+
 class UnicodeStringProcessor {
     public static function length(string $str): int {
         return mb_strlen($str, 'UTF-8');
@@ -1096,6 +1560,11 @@ foreach ($chars as $char) {
 ### International Pattern Matching
 
 ```php
+# filename: international-pattern-matcher.php
+<?php
+
+declare(strict_types=1);
+
 class InternationalPatternMatcher {
     public static function caseInsensitiveSearch(string $text, string $pattern): array {
         $pattern = mb_strtolower($pattern, 'UTF-8');
@@ -1177,6 +1646,11 @@ print_r($fuzzy);  // Finds "résumé"
 ### 1. Sentence Segmentation
 
 ```php
+# filename: sentence-segmenter.php
+<?php
+
+declare(strict_types=1);
+
 class SentenceSegmenter {
     private array $abbreviations = ['Dr', 'Mr', 'Mrs', 'Ms', 'Prof', 'Inc', 'Ltd', 'etc'];
 
@@ -1230,6 +1704,11 @@ foreach ($sentences as $i => $sentence) {
 ### 2. Word Tokenization with Stemming
 
 ```php
+# filename: text-tokenizer.php
+<?php
+
+declare(strict_types=1);
+
 class TextTokenizer {
     public function tokenize(string $text, bool $lowercase = true, bool $removeStopWords = true): array {
         // Split on whitespace and punctuation
@@ -1294,6 +1773,11 @@ print_r($frequency);
 ### 3. Text Similarity and Comparison
 
 ```php
+# filename: text-similarity.php
+<?php
+
+declare(strict_types=1);
+
 class TextSimilarity {
     public static function jaccardSimilarity(string $text1, string $text2): float {
         $tokenizer = new TextTokenizer();
@@ -1349,7 +1833,14 @@ echo "Levenshtein: " . TextSimilarity::levenshteinSimilarity($text1, $text2) . "
 
 ## Performance Benchmarks
 
+Understanding the performance characteristics of different string algorithms helps you choose the right tool for each job. Here are benchmarks comparing various approaches:
+
 ```php
+# filename: benchmarks.php
+<?php
+
+declare(strict_types=1);
+
 class StringAlgorithmBenchmarks {
     public static function benchmarkPatternMatching(): void {
         $text = str_repeat("abcdefghijklmnopqrstuvwxyz", 10000);  // 260K characters
@@ -1411,6 +1902,8 @@ StringAlgorithmBenchmarks::benchmarkMultipattern();
 
 ## Common Pitfalls
 
+When working with string algorithms, especially in PHP, there are several common mistakes that can lead to bugs or performance issues. Here are the most important ones to avoid:
+
 ### 1. Byte vs Character Indexing
 
 ```php
@@ -1448,16 +1941,54 @@ $pattern = '/^(?>a+)+$/';
 preg_match($pattern, $text);  // Fast failure
 ```
 
+## Wrap-up
+
+Congratulations! You've mastered advanced string algorithms that power modern text processing systems. Here's what you've accomplished:
+
+- ✓ Implemented Aho-Corasick automaton for efficient multi-pattern matching
+- ✓ Built trie data structures for autocomplete and prefix matching
+- ✓ Constructed suffix arrays and trees for fast substring queries
+- ✓ Created specialized algorithms for palindromes and sequence comparison
+- ✓ Handled Unicode and multibyte strings correctly
+- ✓ Applied string algorithms to real-world problems like content filtering
+
+**Key Takeaways**:
+
+- Aho-Corasick excels at multiple pattern search in linear time
+- Tries provide efficient prefix matching and autocomplete functionality
+- Suffix structures enable complex substring queries efficiently
+- Rolling hash provides fast average-case matching
+- Manacher's algorithm finds palindromes in linear time
+- Proper Unicode handling is critical for international text processing
+
+These algorithms form the foundation of search engines, content filters, bioinformatics tools, and many other text processing applications. Understanding them gives you the tools to build efficient, scalable text processing systems.
+
+## Further Reading
+
+- [PHP Manual: Multibyte String Functions](https://www.php.net/manual/en/book.mbstring.php) — Comprehensive guide to Unicode string handling in PHP
+- [Aho-Corasick Algorithm](https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm) — Wikipedia article with detailed explanation
+- [Suffix Array Construction](https://en.wikipedia.org/wiki/Suffix_array) — Theory and applications of suffix arrays
+- [Ukkonen's Algorithm](https://en.wikipedia.org/wiki/Ukkonen%27s_algorithm) — Linear-time suffix tree construction
+- [Manacher's Algorithm](https://en.wikipedia.org/wiki/Longest_palindromic_substring) — Finding longest palindromic substring
+- [Rabin-Karp Algorithm](https://en.wikipedia.org/wiki/Rabin%E2%80%93Karp_algorithm) — Rolling hash for string matching
+
+<ChapterCheckbox 
+  seriesId="php-algorithms"
+  chapterId="33"
+  label="String Algorithms Deep Dive complete!"
+/>
+
 ## 💻 Code Samples
 
 All code examples from this chapter are available in the GitHub repository:
 
-**[View Chapter 33 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-33)**
+**[View Chapter 33 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/php-algorithms/chapter-33)**
 
 Clone the repository to run examples:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
-cd codewithphp/code-samples/php-algorithms/chapter-33
+cd codewithphp/code/php-algorithms/chapter-33
 php 01-*.php
 ```
 

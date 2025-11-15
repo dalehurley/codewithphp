@@ -10,6 +10,8 @@ prerequisites:
   - "Familiarity with recursion"
   - "Understanding of sorted arrays"
 ---
+![12: Binary Search](/images/php-algorithms/chapter-12-binary-search-hero-full.webp)
+
 
 <div class="breadcrumbs">
   <a href="/">Home</a>
@@ -23,7 +25,15 @@ prerequisites:
 
 # Binary Search <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
 
-Binary search is one of the most important algorithms every developer should know. It's a fast, elegant algorithm that searches sorted data by repeatedly dividing the search space in half. In this chapter, we'll master binary search and its many variations.
+## Overview
+
+Binary search is one of the most important algorithms every developer should know. It's a fast, elegant algorithm that searches sorted data by repeatedly dividing the search space in half—achieving O(log n) performance compared to linear search's O(n).
+
+Think of it like finding a name in a phone book: you don't start at page 1 and flip through every page. Instead, you open to the middle, determine if your target is before or after that point, then repeat the process on the relevant half. This divide-and-conquer approach makes binary search dramatically faster than checking every element.
+
+In this chapter, you'll master binary search through hands-on implementation. You'll build both iterative and recursive versions, explore practical variants (finding first/last occurrence, insertion points), understand common pitfalls (off-by-one errors, infinite loops), and see how binary search applies beyond simple array lookups to solve optimization problems.
+
+Binary search forms the foundation for many advanced algorithms and data structures. Understanding it deeply prepares you for database indexing, search optimization, and algorithmic problem-solving in technical interviews and production systems.
 
 ## What You'll Learn
 
@@ -44,12 +54,83 @@ Before starting this chapter, ensure you have:
 - ✓ Understanding of Big O notation *(60 mins from Chapter 1 if not done)*
 - ✓ Familiarity with recursion *(70 mins from Chapter 3 if not done)*
 - ✓ Understanding of sorted arrays *(basic concept)*
+- ✓ PHP 8.4+ installed and working
+
+**Verify your setup:**
+
+```bash
+# Verify PHP version
+php --version  # Should show 8.4 or higher
+```
+
+## Quick Start
+
+Want to see binary search in action right now? Here's a 3-minute example:
+
+```php
+# filename: quick-binary-search.php
+<?php
+
+// Binary search function
+function binarySearch(array $arr, int $target): int|false
+{
+    $left = 0;
+    $right = count($arr) - 1;
+
+    while ($left <= $right) {
+        $mid = (int)(($left + $right) / 2);
+        
+        if ($arr[$mid] === $target) {
+            return $mid;
+        } elseif ($arr[$mid] < $target) {
+            $left = $mid + 1;
+        } else {
+            $right = $mid - 1;
+        }
+    }
+    
+    return false;
+}
+
+// Try it out!
+$numbers = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
+$target = 13;
+
+$result = binarySearch($numbers, $target);
+echo $result !== false 
+    ? "Found $target at index $result\n" 
+    : "Not found\n";
+// Output: Found 13 at index 6
+
+// Compare performance with large array
+$largeArray = range(1, 1000000);
+$needle = 750000;
+
+$start = microtime(true);
+binarySearch($largeArray, $needle);
+$binaryTime = microtime(true) - $start;
+
+$start = microtime(true);
+array_search($needle, $largeArray, true);
+$linearTime = microtime(true) - $start;
+
+printf("Binary: %.6f sec | Linear: %.6f sec | Speedup: %.0fx\n", 
+    $binaryTime, $linearTime, $linearTime / $binaryTime);
+// Output: Binary: 0.000002 sec | Linear: 0.015000 sec | Speedup: 7500x
+```
+
+::: tip Why This Works
+Binary search eliminates half the remaining elements with each comparison. For 1 million elements, it needs only ~20 comparisons instead of potentially 500,000 with linear search!
+:::
+
+Now let's understand how this works step by step.
 
 ## The Problem with Linear Search
 
 First, let's see why we need binary search:
 
 ```php
+# filename: linear-search-comparison.php
 // Linear search: O(n)
 function linearSearch(array $arr, int $target): int|false
 {
@@ -78,13 +159,35 @@ Linear search is simple but slow for large datasets. Binary search solves this.
 5. If target is larger, search right half
 6. Repeat until found or no elements left
 
+### Visual Flow
+
+```mermaid
+flowchart TD
+    A[Start: sorted array and target] --> B{left <= right?}
+    B -->|No| C[Return false - not found]
+    B -->|Yes| D[Calculate mid = left + right / 2]
+    D --> E{arr[mid] == target?}
+    E -->|Yes| F[Return mid - found!]
+    E -->|No| G{arr[mid] < target?}
+    G -->|Yes| H[Set left = mid + 1<br/>Search right half]
+    G -->|No| I[Set right = mid - 1<br/>Search left half]
+    H --> B
+    I --> B
+    
+    style F fill:#90EE90
+    style C fill:#FFB6C6
+    style D fill:#87CEEB
+```
+
 **Example:** Find `37` in `[1, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]`
 
 ```
+Step 1: Search entire array
 [1, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
                       ↑
                      mid=19, target=37, go right
 
+Step 2: Search right half
                         [23, 29, 31, 37, 41, 43, 47]
                               ↑
                             mid=37, FOUND!
@@ -92,9 +195,18 @@ Linear search is simple but slow for large datasets. Binary search solves this.
 
 Only 2 comparisons instead of potentially 15!
 
+::: info Why "log n"?
+Each comparison halves the search space: n → n/2 → n/4 → n/8 → ... → 1
+
+How many halvings until we reach 1? That's log₂(n)!
+
+For 1 million elements: log₂(1,000,000) ≈ 20 comparisons maximum.
+:::
+
 ## Iterative Implementation
 
 ```php
+# filename: binary-search-iterative.php
 function binarySearch(array $arr, int $target): int|false
 {
     $left = 0;
@@ -121,6 +233,18 @@ echo binarySearch($numbers, 13); // Output: 6
 echo binarySearch($numbers, 8);  // Output: false
 ```
 
+::: warning Array Must Be Sorted!
+Binary search **only works on sorted arrays**. If your array is unsorted, you must sort it first using `sort()` or use linear search instead.
+
+```php
+$unsorted = [5, 2, 8, 1, 9];
+binarySearch($unsorted, 8); // ❌ Wrong result!
+
+sort($unsorted);
+binarySearch($unsorted, 8); // ✅ Correct: returns 3
+```
+:::
+
 ### Why Use (int)(($left + $right) / 2)?
 
 ```php
@@ -134,9 +258,18 @@ $mid = $left + (int)(($right - $left) / 2);
 $mid = (int)(($left + $right) / 2); // Usually fine
 ```
 
+::: tip Iterative vs Recursive
+In PHP, prefer iterative implementations:
+- **No recursion overhead**: Faster execution
+- **No stack space concerns**: Won't hit recursion limits
+- **Easier to debug**: Step through with debugger
+- **Industry standard**: Most production code uses iterative
+:::
+
 ## Recursive Implementation
 
 ```php
+# filename: binary-search-recursive.php
 function binarySearchRecursive(
     array $arr,
     int $target,
@@ -191,6 +324,7 @@ How many halvings? log₂(n)
 ## Visualizing Binary Search
 
 ```php
+# filename: binary-search-visualized.php
 function binarySearchVisualized(array $arr, int $target): int|false
 {
     $left = 0;
@@ -250,6 +384,7 @@ Step 3:
 ### 1. Find First Occurrence
 
 ```php
+# filename: binary-search-variants.php
 function findFirst(array $arr, int $target): int|false
 {
     $left = 0;
@@ -352,6 +487,287 @@ $numbers = [1, 2, 2, 2, 3, 4, 5];
 echo countOccurrences($numbers, 2); // Output: 3
 ```
 
+## Ternary Search
+
+Ternary search is a divide-and-conquer algorithm similar to binary search, but it divides the search space into **three parts** instead of two. It's particularly useful for finding the maximum or minimum of a **unimodal function** (a function with a single peak or valley).
+
+### When to Use Ternary Search
+
+**Use ternary search when:**
+- Finding maximum/minimum of a unimodal function
+- The function is continuous and has a single peak/valley
+- Can't compute derivative or use gradient descent
+
+**Don't use for:**
+- Finding specific values in sorted arrays (binary search is faster)
+- Multimodal functions (multiple peaks/valleys)
+
+### How Ternary Search Works
+
+Instead of one midpoint, ternary search uses **two points** that divide the range into three equal parts:
+
+```
+[left -------- mid1 -------- mid2 -------- right]
+      1/3           1/3           1/3
+```
+
+**Algorithm:**
+1. Calculate `mid1 = left + (right - left) / 3`
+2. Calculate `mid2 = right - (right - left) / 3`
+3. Compare values at mid1 and mid2
+4. Eliminate one-third of the search space
+5. Repeat until convergence
+
+### Finding Maximum of Unimodal Function
+
+```php
+# filename: ternary-search-max.php
+<?php
+
+/**
+ * Find maximum of a unimodal function using ternary search
+ */
+function ternarySearchMax(callable $func, float $left, float $right, float $epsilon = 1e-9): float
+{
+    while ($right - $left > $epsilon) {
+        $mid1 = $left + ($right - $left) / 3;
+        $mid2 = $right - ($right - $left) / 3;
+
+        if ($func($mid1) < $func($mid2)) {
+            // Maximum is in right two-thirds
+            $left = $mid1;
+        } else {
+            // Maximum is in left two-thirds
+            $right = $mid2;
+        }
+    }
+
+    return ($left + $right) / 2;
+}
+
+// Example: Find maximum of f(x) = -(x - 3)^2 + 5
+// This parabola has maximum at x = 3, value = 5
+$func = fn($x) => -(($x - 3) ** 2) + 5;
+
+$maxX = ternarySearchMax($func, 0, 10);
+$maxValue = $func($maxX);
+
+echo "Maximum at x = " . round($maxX, 6) . "\n";
+echo "Maximum value = " . round($maxValue, 6) . "\n";
+// Output:
+// Maximum at x = 3.0
+// Maximum value = 5.0
+```
+
+### Finding Minimum of Unimodal Function
+
+```php
+# filename: ternary-search-min.php
+<?php
+
+/**
+ * Find minimum of a unimodal function using ternary search
+ */
+function ternarySearchMin(callable $func, float $left, float $right, float $epsilon = 1e-9): float
+{
+    while ($right - $left > $epsilon) {
+        $mid1 = $left + ($right - $left) / 3;
+        $mid2 = $right - ($right - $left) / 3;
+
+        if ($func($mid1) > $func($mid2)) {
+            // Minimum is in right two-thirds
+            $left = $mid1;
+        } else {
+            // Minimum is in left two-thirds
+            $right = $mid2;
+        }
+    }
+
+    return ($left + $right) / 2;
+}
+
+// Example: Find minimum of f(x) = (x - 2)^2 + 1
+// This parabola has minimum at x = 2, value = 1
+$func = fn($x) => (($x - 2) ** 2) + 1;
+
+$minX = ternarySearchMin($func, 0, 10);
+$minValue = $func($minX);
+
+echo "Minimum at x = " . round($minX, 6) . "\n";
+echo "Minimum value = " . round($minValue, 6) . "\n";
+// Output:
+// Minimum at x = 2.0
+// Minimum value = 1.0
+```
+
+### Complexity Analysis
+
+- **Time Complexity:** O(log₃ n) ≈ 1.58 × log₂ n
+  - Ternary search makes more comparisons per iteration than binary search
+  - Despite dividing by 3, it's actually **slower** than binary search for discrete arrays
+  - Useful for continuous functions where evaluation is expensive
+
+- **Space Complexity:** O(1) - constant space
+
+::: warning Binary vs Ternary Search
+For searching in sorted arrays, **binary search is more efficient** than ternary search!
+
+- Binary: ~log₂(n) comparisons
+- Ternary: ~2 × log₃(n) ≈ 1.26 × log₂(n) comparisons
+
+Ternary search is valuable for **continuous optimization problems**, not discrete array search.
+:::
+
+### Practical Example: Minimizing Cost Function
+
+```php
+# filename: ternary-search-cost-optimization.php
+<?php
+
+/**
+ * Example: Find optimal price point that maximizes revenue
+ * Revenue = price × demand(price)
+ * Demand decreases as price increases
+ */
+class PriceOptimizer
+{
+    /**
+     * Demand function: higher price = lower demand
+     */
+    private function demand(float $price): float
+    {
+        // Simplified model: demand = 1000 - 20 * price
+        return max(0, 1000 - 20 * $price);
+    }
+
+    /**
+     * Revenue function (to maximize)
+     */
+    private function revenue(float $price): float
+    {
+        return $price * $this->demand($price);
+    }
+
+    /**
+     * Find price that maximizes revenue using ternary search
+     */
+    public function findOptimalPrice(float $minPrice, float $maxPrice): array
+    {
+        $left = $minPrice;
+        $right = $maxPrice;
+        $epsilon = 0.01; // Price precision: $0.01
+
+        // Ternary search for maximum revenue
+        while ($right - $left > $epsilon) {
+            $mid1 = $left + ($right - $left) / 3;
+            $mid2 = $right - ($right - $left) / 3;
+
+            $revenue1 = $this->revenue($mid1);
+            $revenue2 = $this->revenue($mid2);
+
+            if ($revenue1 < $revenue2) {
+                $left = $mid1;
+            } else {
+                $right = $mid2;
+            }
+        }
+
+        $optimalPrice = ($left + $right) / 2;
+        $maxRevenue = $this->revenue($optimalPrice);
+        $expectedDemand = $this->demand($optimalPrice);
+
+        return [
+            'price' => round($optimalPrice, 2),
+            'revenue' => round($maxRevenue, 2),
+            'demand' => round($expectedDemand, 0)
+        ];
+    }
+}
+
+// Find optimal pricing
+$optimizer = new PriceOptimizer();
+$result = $optimizer->findOptimalPrice(0, 50);
+
+echo "Optimal Price: $" . $result['price'] . "\n";
+echo "Expected Revenue: $" . $result['revenue'] . "\n";
+echo "Expected Demand: " . $result['demand'] . " units\n";
+// Output:
+// Optimal Price: $25.0
+// Expected Revenue: $12500.0
+// Expected Demand: 500 units
+```
+
+### Real-World Applications
+
+**1. Resource Allocation**
+- Finding optimal server capacity to minimize cost
+- Balancing throughput vs latency
+- Cache size optimization
+
+**2. Engineering Optimization**
+- Finding optimal dimensions for minimum material cost
+- Antenna placement for maximum signal coverage
+- Route optimization with non-linear cost functions
+
+**3. Financial Modeling**
+- Option pricing with non-linear payoffs
+- Portfolio optimization with quadratic utility
+- Finding optimal hedge ratios
+
+**4. Machine Learning Hyperparameter Tuning**
+- Finding optimal learning rate
+- Regularization parameter selection
+- Tree depth optimization
+
+### Ternary Search vs Binary Search
+
+| Feature | Binary Search | Ternary Search |
+|---------|---------------|----------------|
+| **Search Space** | Sorted discrete arrays | Continuous unimodal functions |
+| **Division** | 2 parts (1 midpoint) | 3 parts (2 midpoints) |
+| **Comparisons** | 1 per iteration | 2 per iteration |
+| **Time Complexity** | O(log₂ n) | O(log₃ n) but 2× comparisons |
+| **Practical Use** | Array search | Function optimization |
+| **Better For** | Finding exact values | Finding max/min of function |
+
+::: tip When to Use Each
+- **Binary Search**: Finding a specific value in a sorted array
+- **Ternary Search**: Finding maximum/minimum of a continuous unimodal function
+- **Gradient Descent**: If you can compute derivatives of the function
+- **Golden Section Search**: Another alternative for unimodal optimization (slightly better constant factors)
+:::
+
+### Comparison with Gradient-Based Methods
+
+```php
+# filename: ternary-vs-gradient.php
+<?php
+
+// Ternary search doesn't need derivatives
+function ternaryOptimize($func, $left, $right) {
+    // No derivative calculation needed
+    // Works even if function isn't differentiable
+}
+
+// Gradient descent requires derivative
+function gradientOptimize($func, $derivative, $start) {
+    // Need to compute or approximate derivative
+    // Faster convergence but more complex
+}
+```
+
+**Advantages of Ternary Search:**
+- ✅ No derivative needed (simpler)
+- ✅ Works with non-differentiable functions
+- ✅ Guaranteed to find optimum (for unimodal functions)
+- ✅ Deterministic convergence
+
+**Disadvantages:**
+- ❌ Slower convergence than gradient methods
+- ❌ Only works for unimodal functions
+- ❌ Requires bounded search space
+- ❌ More function evaluations than binary search
+
 ## Binary Search on Answer Space
 
 Sometimes we binary search on possible answers rather than array indices:
@@ -413,42 +829,272 @@ function findPeakElement(array $nums): int
 // Peak is at index 2 (value 3)
 ```
 
-## Common Mistakes & Edge Cases
+## Troubleshooting Common Issues
 
-### Mistake 1: Infinite Loop
+Binary search is simple in concept but has several gotchas. Here are the most common problems and how to fix them.
+
+### Error 1: Infinite Loop
+
+**Symptom**: Script hangs and never terminates
+
+**Cause**: Incorrect loop condition or boundary updates
 
 ```php
-// Wrong: infinite loop when target not found
-while ($left < $right) { // Should be $left <= $right
-    $mid = (int)(($left + $right) / 2);
-    if ($arr[$mid] === $target) return $mid;
-    elseif ($arr[$mid] < $target) $left = $mid; // Should be $mid + 1
-    else $right = $mid; // Should be $mid - 1
+// ❌ WRONG: Infinite loop
+function binarySearchWrong(array $arr, int $target): int|false
+{
+    $left = 0;
+    $right = count($arr) - 1;
+
+    while ($left < $right) { // Wrong condition
+        $mid = (int)(($left + $right) / 2);
+        if ($arr[$mid] === $target) return $mid;
+        elseif ($arr[$mid] < $target) $left = $mid;     // Missing +1
+        else $right = $mid;                              // Missing -1
+    }
+    return false;
 }
 ```
 
-### Mistake 2: Off-by-One Errors
+**Solution**: Use `<=` and always move boundaries past mid
 
 ```php
-// Test edge cases:
-$arr = [1];
-binarySearch($arr, 1);  // Should find at index 0
-binarySearch($arr, 2);  // Should return false
+// ✅ CORRECT
+function binarySearchCorrect(array $arr, int $target): int|false
+{
+    $left = 0;
+    $right = count($arr) - 1;
 
-$arr = [1, 2];
-binarySearch($arr, 1);  // Should find at index 0
-binarySearch($arr, 2);  // Should find at index 1
+    while ($left <= $right) { // Use <= not <
+        $mid = (int)(($left + $right) / 2);
+        if ($arr[$mid] === $target) return $mid;
+        elseif ($arr[$mid] < $target) $left = $mid + 1;  // +1 required
+        else $right = $mid - 1;                          // -1 required
+    }
+    return false;
+}
 ```
 
-### Mistake 3: Unsorted Array
+::: warning Common Mistake
+If you don't add `+1` or `-1` when updating boundaries, the search space never shrinks to zero, causing an infinite loop!
+:::
+
+---
+
+### Error 2: Off-by-One Errors
+
+**Symptom**: Incorrect results for edge cases (first/last element, single element arrays)
+
+**Cause**: Incorrect initialization or boundary calculations
 
 ```php
-// Binary search ONLY works on sorted arrays!
-$unsorted = [5, 2, 8, 1, 9];
-binarySearch($unsorted, 8); // Wrong result! Must sort first!
+// Test with edge cases
+$arr = [1];
+binarySearch($arr, 1);  // Should return 0, not false
 
-sort($unsorted);
-binarySearch($unsorted, 8); // Now correct
+$arr = [1, 2];
+binarySearch($arr, 1);  // Should return 0
+binarySearch($arr, 2);  // Should return 1
+
+$arr = [1, 2, 3, 4, 5];
+binarySearch($arr, 1);  // First element (index 0)
+binarySearch($arr, 5);  // Last element (index 4)
+```
+
+**Solution**: Always test these edge cases
+
+```php
+// Comprehensive edge case tests
+function testBinarySearch(): void
+{
+    // Empty array
+    assert(binarySearch([], 1) === false);
+    
+    // Single element
+    assert(binarySearch([1], 1) === 0);
+    assert(binarySearch([1], 2) === false);
+    
+    // Two elements
+    assert(binarySearch([1, 2], 1) === 0);
+    assert(binarySearch([1, 2], 2) === 1);
+    
+    // First and last
+    $arr = [1, 2, 3, 4, 5];
+    assert(binarySearch($arr, 1) === 0);
+    assert(binarySearch($arr, 5) === 4);
+    
+    echo "✓ All edge case tests passed!\n";
+}
+```
+
+---
+
+### Error 3: Unsorted Array
+
+**Symptom**: Returns wrong index or false when element exists
+
+**Cause**: Binary search only works on sorted arrays!
+
+```php
+// ❌ WRONG: Searching unsorted array
+$unsorted = [5, 2, 8, 1, 9];
+$result = binarySearch($unsorted, 8);
+echo $result; // Wrong result! Element exists but may not be found
+```
+
+**Solution**: Always sort first
+
+```php
+// ✅ CORRECT: Sort before searching
+$unsorted = [5, 2, 8, 1, 9];
+sort($unsorted); // Now: [1, 2, 5, 8, 9]
+$result = binarySearch($unsorted, 8);
+echo $result; // Correct: 3
+```
+
+::: danger Critical Requirement
+Binary search **requires** a sorted array. If you can't sort the array, use linear search (`array_search()` or `in_array()`) instead.
+:::
+
+---
+
+### Error 4: Integer Overflow (Very Large Arrays)
+
+**Symptom**: Incorrect results or crashes with arrays containing billions of elements
+
+**Cause**: `$left + $right` exceeds `PHP_INT_MAX`
+
+```php
+// ❌ Potential overflow
+$mid = (int)(($left + $right) / 2);
+// If $left = 2,000,000,000 and $right = 2,000,000,000
+// Sum = 4,000,000,000 which exceeds PHP_INT_MAX (2,147,483,647 on 32-bit)
+```
+
+**Solution**: Use overflow-safe calculation
+
+```php
+// ✅ Overflow-safe
+$mid = $left + (int)(($right - $left) / 2);
+// Difference is always small, no overflow possible
+```
+
+---
+
+### Error 5: Wrong Return Type
+
+**Symptom**: Type errors or unexpected behavior
+
+**Cause**: Returning wrong type for "not found" case
+
+```php
+// ❌ WRONG: Mixing types
+function binarySearchWrong(array $arr, int $target): int
+{
+    // ...
+    return -1; // Wrong! Should return int|false
+}
+```
+
+**Solution**: Use union types properly
+
+```php
+// ✅ CORRECT: Consistent return type
+function binarySearchCorrect(array $arr, int $target): int|false
+{
+    // ...
+    return false; // Clearly indicates "not found"
+}
+
+// Usage
+$result = binarySearchCorrect($arr, $target);
+if ($result !== false) {
+    echo "Found at index $result\n";
+} else {
+    echo "Not found\n";
+}
+```
+
+---
+
+### Error 6: Duplicate Elements Confusion
+
+**Symptom**: Returns an index but not the first/last occurrence as expected
+
+**Cause**: Standard binary search returns *any* matching index
+
+```php
+$arr = [1, 2, 2, 2, 3, 4];
+$result = binarySearch($arr, 2);
+echo $result; // Could be 1, 2, or 3 - not predictable!
+```
+
+**Solution**: Use specialized variants for first/last occurrence
+
+```php
+// For first occurrence, use findFirst()
+$first = findFirst($arr, 2); // Returns 1
+
+// For last occurrence, use findLast()
+$last = findLast($arr, 2);   // Returns 3
+
+// For count, use countOccurrences()
+$count = countOccurrences($arr, 2); // Returns 3
+```
+
+---
+
+### Debugging Tips
+
+**Enable verbose output during development:**
+
+```php
+function binarySearchDebug(array $arr, int $target): int|false
+{
+    $left = 0;
+    $right = count($arr) - 1;
+    $iteration = 1;
+
+    while ($left <= $right) {
+        $mid = (int)(($left + $right) / 2);
+        
+        echo "Iteration $iteration: left=$left, right=$right, mid=$mid, arr[mid]={$arr[$mid]}\n";
+        
+        if ($arr[$mid] === $target) {
+            echo "✓ Found at index $mid\n";
+            return $mid;
+        } elseif ($arr[$mid] < $target) {
+            echo "  → Going right\n";
+            $left = $mid + 1;
+        } else {
+            echo "  ← Going left\n";
+            $right = $mid - 1;
+        }
+        
+        $iteration++;
+    }
+
+    echo "✗ Not found\n";
+    return false;
+}
+```
+
+**Use assertions for validation:**
+
+```php
+function binarySearchValidated(array $arr, int $target): int|false
+{
+    // Validate input
+    assert(!empty($arr), "Array cannot be empty");
+    
+    // Check if sorted (development only - remove in production)
+    for ($i = 1; $i < count($arr); $i++) {
+        assert($arr[$i] >= $arr[$i - 1], "Array must be sorted");
+    }
+    
+    // Regular implementation
+    // ...
+}
 ```
 
 ## Practical Applications
@@ -1325,53 +1971,302 @@ class SearchController extends AbstractController
 
 ## Practice Exercises
 
-### Exercise 1: Rotated Sorted Array
+Test your understanding with these progressively challenging exercises.
 
-Search in a sorted array that has been rotated:
+### Exercise 1: Rotated Sorted Array (~15 minutes)
+
+**Goal**: Apply binary search to a rotated sorted array
+
+A sorted array has been rotated at a pivot point. For example, `[0,1,2,4,5,6,7]` might become `[4,5,6,7,0,1,2]`. Implement search in O(log n) time.
+
+**Requirements:**
+- Create a file called `exercise-rotated-array.php`
+- Implement `searchRotated(array $nums, int $target): int|false`
+- Return index if found, `false` otherwise
+- Must achieve O(log n) complexity
+
+```php
+# filename: exercise-rotated-array.php
+<?php
+
+function searchRotated(array $nums, int $target): int|false
+{
+    // Your code here
+    // Hint: One half is always sorted
+    // Check which half is sorted, then decide which side to search
+}
+
+// Test cases
+$nums = [4, 5, 6, 7, 0, 1, 2];
+echo searchRotated($nums, 0) . "\n";  // Expected: 4
+echo searchRotated($nums, 3) . "\n";  // Expected: false
+echo searchRotated($nums, 5) . "\n";  // Expected: 1
+```
+
+**Validation**: Run your code. It should output:
+```
+4
+false
+1
+```
+
+<details>
+<summary>💡 Solution Approach</summary>
+
+**Strategy**: Modified binary search recognizing that one half is always sorted.
 
 ```php
 function searchRotated(array $nums, int $target): int|false
 {
+    $left = 0;
+    $right = count($nums) - 1;
+
+    while ($left <= $right) {
+        $mid = $left + (int)(($right - $left) / 2);
+
+        if ($nums[$mid] === $target) {
+            return $mid;
+        }
+
+        // Determine which side is sorted
+        if ($nums[$left] <= $nums[$mid]) {
+            // Left side is sorted
+            if ($nums[$left] <= $target && $target < $nums[$mid]) {
+                $right = $mid - 1; // Target in left sorted portion
+            } else {
+                $left = $mid + 1; // Target in right portion
+            }
+        } else {
+            // Right side is sorted
+            if ($nums[$mid] < $target && $target <= $nums[$right]) {
+                $left = $mid + 1; // Target in right sorted portion
+            } else {
+                $right = $mid - 1; // Target in left portion
+            }
+        }
+    }
+
+    return false;
+}
+```
+
+**Key Insight**: At least one half of the array is always sorted. Check which half is sorted, then determine if target lies in that sorted range.
+</details>
+
+---
+
+### Exercise 2: Find Minimum in Rotated Array (~10 minutes)
+
+**Goal**: Find the minimum element in a rotated sorted array
+
+**Requirements:**
+- Implement `findMin(array $nums): int`
+- Return the minimum element
+- O(log n) time complexity
+- Array was originally sorted in ascending order
+
+```php
+# filename: exercise-find-minimum.php
+<?php
+
+function findMin(array $nums): int
+{
     // Your code here
+    // Hint: Minimum is where rotation happens
+    // Compare mid with right boundary
 }
 
-$nums = [4, 5, 6, 7, 0, 1, 2]; // Rotated [0,1,2,3,4,5,6,7]
-echo searchRotated($nums, 0); // Should output: 4
+// Test cases
+echo findMin([4, 5, 6, 7, 0, 1, 2]) . "\n"; // Expected: 0
+echo findMin([3, 4, 5, 1, 2]) . "\n";      // Expected: 1
+echo findMin([1]) . "\n";                   // Expected: 1
 ```
 
 <details>
-<summary>Hint</summary>
-One half is always sorted. Check which half is sorted, then decide which side to search.
-</details>
-
-### Exercise 2: Find Minimum in Rotated Array
+<summary>💡 Solution Approach</summary>
 
 ```php
 function findMin(array $nums): int
 {
-    // Your code here
+    $left = 0;
+    $right = count($nums) - 1;
+
+    while ($left < $right) {
+        $mid = $left + (int)(($right - $left) / 2);
+
+        if ($nums[$mid] > $nums[$right]) {
+            // Minimum is in right half
+            $left = $mid + 1;
+        } else {
+            // Minimum is in left half (including mid)
+            $right = $mid;
+        }
+    }
+
+    return $nums[$left];
 }
-
-echo findMin([4, 5, 6, 7, 0, 1, 2]); // Should output: 0
 ```
+</details>
 
-### Exercise 3: Search 2D Matrix
+---
 
-Search in a matrix where each row is sorted and first element of each row is greater than last element of previous row:
+### Exercise 3: Search 2D Matrix (~20 minutes)
+
+**Goal**: Search a 2D matrix efficiently
+
+The matrix has these properties:
+- Each row is sorted left to right
+- First element of each row > last element of previous row
+- Essentially a flattened sorted array
+
+**Requirements:**
+- Implement `searchMatrix(array $matrix, int $target): bool`
+- O(log(m * n)) time complexity
+- Return `true` if found, `false` otherwise
 
 ```php
+# filename: exercise-2d-matrix.php
+<?php
+
 function searchMatrix(array $matrix, int $target): bool
 {
     // Your code here
+    // Hint: Treat 2D matrix as 1D sorted array
+    // Convert 1D index to 2D coordinates
 }
 
+// Test case
 $matrix = [
     [1, 3, 5, 7],
     [10, 11, 16, 20],
     [23, 30, 34, 60]
 ];
-echo searchMatrix($matrix, 3) ? 'Found' : 'Not found';
+echo searchMatrix($matrix, 3) ? 'Found' : 'Not found';   // Expected: Found
+echo "\n";
+echo searchMatrix($matrix, 13) ? 'Found' : 'Not found';  // Expected: Not found
 ```
+
+<details>
+<summary>💡 Solution Approach</summary>
+
+```php
+function searchMatrix(array $matrix, int $target): bool
+{
+    if (empty($matrix) || empty($matrix[0])) {
+        return false;
+    }
+
+    $rows = count($matrix);
+    $cols = count($matrix[0]);
+    $left = 0;
+    $right = $rows * $cols - 1;
+
+    while ($left <= $right) {
+        $mid = $left + (int)(($right - $left) / 2);
+        
+        // Convert 1D index to 2D coordinates
+        $row = (int)($mid / $cols);
+        $col = $mid % $cols;
+        $midValue = $matrix[$row][$col];
+
+        if ($midValue === $target) {
+            return true;
+        } elseif ($midValue < $target) {
+            $left = $mid + 1;
+        } else {
+            $right = $mid - 1;
+        }
+    }
+
+    return false;
+}
+```
+
+**Key Insight**: Treat the 2D matrix as a virtual 1D sorted array. Convert indices using:
+- `row = index / cols`
+- `col = index % cols`
+</details>
+
+---
+
+### Bonus Exercise 4: Search Range (~25 minutes)
+
+**Goal**: Find the starting and ending position of a target value
+
+Given a sorted array with duplicates, find the first and last positions of a target value. Return `[-1, -1]` if not found.
+
+**Requirements:**
+- Implement `searchRange(array $nums, int $target): array`
+- Return `[firstIndex, lastIndex]`
+- O(log n) time complexity (two binary searches)
+
+```php
+# filename: exercise-search-range.php
+<?php
+
+function searchRange(array $nums, int $target): array
+{
+    // Your code here
+    // Hint: Use modified binary search twice
+    // Once for leftmost, once for rightmost
+}
+
+// Test
+$nums = [5, 7, 7, 8, 8, 10];
+print_r(searchRange($nums, 8));   // Expected: [3, 4]
+print_r(searchRange($nums, 6));   // Expected: [-1, -1]
+```
+
+::: tip Exercise Tips
+- Start with Exercise 1 to build confidence
+- Draw diagrams to visualize the search space
+- Test edge cases: empty array, single element, target not found
+- Compare your solution's performance with linear search
+- Review the "Binary Search Variants" section if stuck
+:::
+
+## Wrap-up
+
+Congratulations! You've mastered binary search—one of the most important algorithms in computer science. Let's review what you've accomplished:
+
+**✓ Core Skills Acquired:**
+- Implemented iterative binary search achieving O(log n) performance
+- Built recursive version and understood trade-offs
+- Created variants: first/last occurrence, insertion point, count occurrences
+- Applied binary search to answer space (square root, peak finding)
+- Mastered ternary search for continuous function optimization
+- Understood complexity: O(log n) time, O(1) space (iterative)
+
+**✓ Advanced Techniques:**
+- Security considerations: timing-safe search for sensitive data
+- Framework integration: Laravel and Symfony examples
+- Performance optimization: interpolation and exponential search
+- Ternary search for unimodal optimization problems
+- Real-world applications: autocomplete, date ranges, version history, price optimization
+
+**✓ Common Pitfalls Avoided:**
+- Off-by-one errors in boundary conditions
+- Infinite loops from incorrect mid calculations
+- Forgetting array must be sorted
+- Integer overflow in mid calculation (large arrays)
+
+**✓ When to Use Binary Search:**
+- ✅ Data is sorted (or can be sorted once)
+- ✅ Need O(log n) lookup performance
+- ✅ Array size is large (>100 elements)
+- ✅ Searching multiple times (amortize sorting cost)
+- ❌ Don't use if: array is unsorted and can't be sorted, frequent insertions/deletions, small datasets (<50 elements)
+
+**Real-World Impact:**
+
+Binary search isn't just academic—it powers:
+- **Database indexing**: B-trees use binary search principles
+- **Version control**: Finding commits, blame operations
+- **Autocomplete**: Searching dictionaries and suggestions
+- **API rate limiting**: Binary search on time windows
+- **Resource allocation**: Finding optimal capacity/pricing
+
+You now understand not just *how* binary search works, but *when* and *why* to use it. This algorithmic thinking—choosing the right tool for the problem—is what separates good developers from great ones.
 
 ## Key Takeaways
 
@@ -1380,8 +2275,40 @@ echo searchMatrix($matrix, 3) ? 'Found' : 'Not found';
 - **Iterative** implementation preferred in PHP over recursive
 - Many **variants** exist: first/last occurrence, insertion point, etc.
 - Can search on **answer space**, not just array indices
+- **Ternary search** divides into three parts - useful for continuous optimization
 - Watch for **off-by-one errors** and **infinite loops**
 - **Edge cases:** Empty array, single element, duplicates
+
+
+<ChapterCheckbox 
+  seriesId="php-algorithms"
+  chapterId="12"
+  label="Binary Search mastered!"
+/>
+
+## Further Reading
+
+### Official Documentation & Standards
+- [PHP array_search() function](https://www.php.net/manual/en/function.array-search.php) — PHP's built-in linear search
+- [PHP sort() functions](https://www.php.net/manual/en/array.sorting.php) — Sorting arrays for binary search
+
+### Algorithm Resources
+- **Introduction to Algorithms (CLRS)** — Chapter 2.3 covers binary search thoroughly
+- **LeetCode Binary Search Problems** — Practice with real interview questions
+- [Binary Search Visualization](https://www.cs.usfca.edu/~galles/visualization/Search.html) — Interactive algorithm animation
+
+### Advanced Topics
+- **Interpolation Search** — Better than binary for uniformly distributed data: O(log log n)
+- **Exponential Search** — Optimal when target is near beginning
+- **Ternary Search** — Divide into thirds instead of halves for unimodal functions
+- **Binary Search Trees** — Data structure enabling O(log n) insert/delete/search
+- **B-Trees** — How databases implement indexing using binary search principles
+
+### Related Chapters
+- [Chapter 11: Linear Search & Variants](/series/php-algorithms/chapters/11-linear-search-variants) — Compare with linear approach
+- [Chapter 13: Hash Tables & Hash Functions](/series/php-algorithms/chapters/13-hash-tables-hash-functions) — Even faster O(1) lookups
+- [Chapter 16: Binary Search Trees](/series/php-algorithms/chapters/16-binary-search-trees) — Dynamic sorted data structure
+- [Chapter 29: Performance Optimization](/series/php-algorithms/chapters/29-performance-optimization) — Choosing the right algorithm
 
 ## What's Next
 
@@ -1391,7 +2318,7 @@ In the next chapter, we'll explore **Hash Tables & Hash Functions**, learning ab
 
 All code examples from this chapter are available in the GitHub repository:
 
-**[View Chapter 12 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-12)**
+**[View Chapter 12 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/php-algorithms/chapter-12)**
 
 Files included:
 - `01-basic-binary-search.php` - Iterative and recursive implementations with visualized search process
@@ -1402,7 +2329,7 @@ Files included:
 Clone the repository to run the examples locally:
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
-cd codewithphp/code-samples/php-algorithms/chapter-12
+cd codewithphp/code/php-algorithms/chapter-12
 php 01-basic-binary-search.php
 ```
 

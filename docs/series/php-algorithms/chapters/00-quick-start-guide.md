@@ -7,6 +7,8 @@ order: 0
 difficulty: "beginner"
 prerequisites: []
 ---
+![Quick Start Guide](/images/php-algorithms/chapter-00-quick-start-guide-hero-full.webp)
+
 
 <div class="breadcrumbs">
   <a href="/">Home</a>
@@ -21,6 +23,10 @@ prerequisites: []
 # Quick Start Guide <span class="difficulty-badge difficulty-beginner">Beginner</span>
 
 **Got 5 minutes?** This guide gets you from zero to productive fast. Skip the theory and jump straight to practical solutions.
+
+::: info
+This is a reference guide, not a traditional tutorial. For step-by-step learning, start with [Chapter 1: Introduction to Algorithms](/series/php-algorithms/chapters/00-introduction-to-algorithms/).
+:::
 
 ## What You'll Learn
 
@@ -44,6 +50,8 @@ By the end of this quick start guide, you will:
 
 ```php
 <?php
+# filename: quick-sort-example.php
+
 // Small array (<100 items) or nearly sorted
 $data = [64, 34, 25, 12, 22, 11, 90];
 sort($data);  // PHP's built-in - BEST choice 99% of the time
@@ -66,12 +74,16 @@ usort($users, fn($a, $b) => $a['age'] <=> $b['age']);
 
 ```php
 <?php
+# filename: search-examples.php
+
+declare(strict_types=1);
+
 // In unsorted array
 $needle = 'value';
 $found = in_array($needle, $haystack, true);  // Linear search O(n)
 
 // In sorted array - use binary search
-function binarySearch(array $arr, $target): int {
+function binarySearch(array $arr, mixed $target): int {
     $left = 0;
     $right = count($arr) - 1;
 
@@ -90,12 +102,20 @@ $lookup = array_flip($haystack);  // O(1) search after O(n) setup
 $found = isset($lookup[$needle]);
 ```
 
+::: tip Performance Tip
+Binary search is **100x faster** than linear search on large sorted arrays. Hash tables give **instant** O(1) lookups but require O(n) setup time.
+:::
+
 **→ [Binary Search](/series/php-algorithms/chapters/12-binary-search/)** | **[Hash Tables](/series/php-algorithms/chapters/13-hash-tables-hash-functions/)**
 
 ### Cache Results
 
 ```php
 <?php
+# filename: simple-cache.php
+
+declare(strict_types=1);
+
 // Simple in-memory cache
 class SimpleCache {
     private array $cache = [];
@@ -106,11 +126,19 @@ class SimpleCache {
         }
         return $this->cache[$key];
     }
+
+    public function forget(string $key): void {
+        unset($this->cache[$key]);
+    }
+
+    public function clear(): void {
+        $this->cache = [];
+    }
 }
 
 // Usage
 $cache = new SimpleCache();
-$result = $cache->remember('expensive_op', function() {
+$result = $cache->remember('expensive_op', function(): array {
     // Expensive database query or calculation
     return expensiveOperation();
 });
@@ -121,14 +149,25 @@ $redis->connect('127.0.0.1');
 $result = $redis->get('key') ?: $redis->setex('key', 3600, expensiveOperation());
 ```
 
-**→ [Caching Strategies](/series/php-algorithms/chapters/27-caching-memoization-strategies/)**
+::: tip Cache Everything
+Caching is the **#1 performance win**. A simple cache can reduce response times from 500ms to 5ms (100x faster)!
+:::
+
+**→ [Caching Strategies](/series/php-algorithms/chapters/27-caching-memoization-strategies/)** | **[Performance Optimization](/series/php-algorithms/chapters/29-performance-optimization/)**
 
 ### Find Shortest Path
 
 ```php
 <?php
+# filename: shortest-path-bfs.php
+
+declare(strict_types=1);
+
 // Unweighted graph (all edges equal) - Use BFS
 function shortestPath(array $graph, int $start, int $end): ?array {
+    if ($start === $end) return [$start];
+    if (!isset($graph[$start])) return null;
+
     $queue = [[$start]];
     $visited = [$start => true];
 
@@ -141,13 +180,13 @@ function shortestPath(array $graph, int $start, int $end): ?array {
         foreach ($graph[$node] ?? [] as $neighbor) {
             if (!isset($visited[$neighbor])) {
                 $visited[$neighbor] = true;
-                $newPath = array_merge($path, [$neighbor]);
+                $newPath = [...$path, $neighbor];  // PHP 8.4 spread operator
                 $queue[] = $newPath;
             }
         }
     }
 
-    return null;
+    return null;  // No path found
 }
 
 // Weighted graph - See Dijkstra's algorithm
@@ -159,30 +198,51 @@ function shortestPath(array $graph, int $start, int $end): ?array {
 
 ```php
 <?php
+# filename: stream-large-file.php
+
+declare(strict_types=1);
+
 // ❌ BAD: Loads entire file into memory
 $lines = file('huge-file.csv');  // OOM for large files
 
 // ✅ GOOD: Stream with generator
 function readLargeFile(string $filename): Generator {
-    $handle = fopen($filename, 'r');
-    while (($line = fgets($handle)) !== false) {
-        yield $line;
+    if (!file_exists($filename)) {
+        throw new RuntimeException("File not found: $filename");
     }
-    fclose($handle);
+
+    $handle = fopen($filename, 'r');
+    if ($handle === false) {
+        throw new RuntimeException("Cannot open file: $filename");
+    }
+
+    try {
+        while (($line = fgets($handle)) !== false) {
+            yield $line;
+        }
+    } finally {
+        fclose($handle);
+    }
 }
 
 // Usage - constant memory regardless of file size
-foreach (readLargeFile('huge-file.csv') as $line) {
+foreach (readLargeFile('huge-file.csv') as $lineNumber => $line) {
     processLine($line);
 }
 ```
 
-**→ [Performance Optimization](/series/php-algorithms/chapters/29-performance-optimization/)**
+::: warning Memory Management
+Generators use **constant memory** regardless of file size. A 10GB file uses the same ~100KB memory whether you're processing 1 line or 1 billion lines!
+:::
+
+**→ [Performance Optimization](/series/php-algorithms/chapters/29-performance-optimization/)** | **[Stream Processing](/series/php-algorithms/chapters/36-stream-processing-algorithms/)**
 
 ### Optimize Slow Code
 
 ```php
 <?php
+# filename: optimization-examples.php
+
 // 1. Profile first
 $start = microtime(true);
 slowFunction();
@@ -279,7 +339,54 @@ Need to process data?
 
 **Rule of thumb**: If n > 10,000 and you have O(n²), you need a better algorithm.
 
-**→ [Full Complexity Guide](/series/php-algorithms/chapters/01-algorithm-complexity-big-o/)** | **[Appendix A](/series/php-algorithms/appendices/a-complexity-cheat-sheet/)**
+### 📏 Real-World Input Sizes
+
+Understanding typical data scales helps you choose the right algorithm for your use case:
+
+| Use Case | Typical Size | Algorithm Needed | Why |
+|----------|-------------|------------------|-----|
+| User dropdown options | 10-100 | Any (even O(n²)) | Too small to matter |
+| Search autocomplete | 1,000-10,000 | Hash table/Trie | Need instant O(1) lookups |
+| E-commerce catalog | 10,000-100,000 | Indexed DB search | Database handles it |
+| Social media feed | 100-1,000/page | Pagination + O(n) | Per-page processing |
+| Analytics dashboard | 10,000-1M rows | O(n log n) max | Must complete in seconds |
+| Log file processing | 1M-1B entries | Streaming/generators | Can't fit in memory |
+| ML training data | 1M-100M records | Specialized + distributed | Requires infrastructure |
+
+**Quick Size Check**:
+
+```php
+<?php
+# filename: size-check-helper.php
+
+declare(strict_types=1);
+
+function chooseApproach(int $n): string {
+    return match(true) {
+        $n < 100 => "✅ Use any algorithm, even O(n²)",
+        $n < 10_000 => "⚠️  O(n²) acceptable, O(n log n) better",
+        $n < 1_000_000 => "⚡ Need O(n log n), prefer O(n)",
+        default => "🔥 Must use O(n) or streaming"
+    };
+}
+
+// Examples
+echo chooseApproach(50) . "\n";        // Any algorithm
+echo chooseApproach(5_000) . "\n";     // O(n²) acceptable
+echo chooseApproach(500_000) . "\n";   // Need O(n log n)
+echo chooseApproach(10_000_000) . "\n"; // Must stream
+```
+
+::: tip Pro Tip
+If your "large" dataset fits comfortably in a PHP array, it's probably not that large. True big data requires databases, message queues, or streaming processors.
+:::
+
+::: info Quick Reference
+**Most Common**: O(1) hash lookup, O(n) array scan, O(n log n) sort, O(log n) binary search.  
+**Avoid in Production**: O(n²) nested loops on large data, O(2^n) recursive solutions without memoization.
+:::
+
+**→ [Full Complexity Guide](/series/php-algorithms/chapters/00-introduction-to-algorithms#big-o-notation)** | **[Appendix A](/series/php-algorithms/appendices/a-complexity-cheat-sheet/)**
 
 ---
 
@@ -289,6 +396,10 @@ Need to process data?
 
 ```php
 <?php
+# filename: two-pointers-pattern.php
+
+declare(strict_types=1);
+
 // Find pair that sums to target (sorted array)
 function twoSum(array $arr, int $target): ?array {
     $left = 0;
@@ -303,14 +414,27 @@ function twoSum(array $arr, int $target): ?array {
 
     return null;
 }
+
+// Usage example
+$numbers = [1, 2, 3, 4, 6, 8, 9];
+$result = twoSum($numbers, 10);
+// Returns: [1, 5] because $numbers[1] + $numbers[5] = 2 + 8 = 10
 ```
 
 ### Sliding Window
 
 ```php
 <?php
+# filename: sliding-window-pattern.php
+
+declare(strict_types=1);
+
 // Maximum sum of k consecutive elements
 function maxSumSubarray(array $arr, int $k): int {
+    if (count($arr) < $k) {
+        throw new InvalidArgumentException("Array too small for window size");
+    }
+
     $maxSum = $currentSum = array_sum(array_slice($arr, 0, $k));
 
     for ($i = $k; $i < count($arr); $i++) {
@@ -320,26 +444,150 @@ function maxSumSubarray(array $arr, int $k): int {
 
     return $maxSum;
 }
+
+// Usage example
+$sales = [100, 200, 300, 400, 100, 200];
+$maxThreeDaySales = maxSumSubarray($sales, 3);
+// Returns: 900 (days 2-4: 200 + 300 + 400)
 ```
 
 ### Fast & Slow Pointers
 
 ```php
 <?php
-// Detect cycle in linked list
-function hasCycle(ListNode $head): bool {
+# filename: fast-slow-pointers-pattern.php
+
+declare(strict_types=1);
+
+// Detect cycle in linked list (Floyd's Cycle Detection)
+function hasCycle(?ListNode $head): bool {
+    if ($head === null) return false;
+
     $slow = $fast = $head;
 
     while ($fast !== null && $fast->next !== null) {
         $slow = $slow->next;
         $fast = $fast->next->next;
 
-        if ($slow === $fast) return true;
+        if ($slow === $fast) return true;  // Cycle detected
     }
 
-    return false;
+    return false;  // No cycle
+}
+
+// Also known as "Floyd's Tortoise and Hare" algorithm
+// Time: O(n), Space: O(1)
+```
+
+::: tip Pattern Recognition
+These three patterns solve **80% of array/linked list interview questions**. Master them and you'll recognize when to apply them instantly.
+:::
+
+---
+
+## 🔍 Recognize Algorithms in Code
+
+Learn to identify algorithms by their code patterns. This helps you understand existing code and spot optimization opportunities.
+
+### Common Algorithm Signatures
+
+**Two Nested Loops = O(n²) Brute Force**:
+```php
+<?php
+# Pattern: Comparing all pairs
+
+foreach ($arr as $i => $val1) {
+    foreach ($arr as $j => $val2) {
+        if ($val1 + $val2 === $target) {
+            // O(n²) - check all combinations
+        }
+    }
 }
 ```
+
+**Two Pointers = O(n) Optimized**:
+```php
+<?php
+# Pattern: Left and right pointers moving toward each other
+
+$left = 0;
+$right = count($arr) - 1;
+while ($left < $right) {
+    // O(n) - single pass through sorted array
+}
+```
+
+**Divide in Half = O(log n) Binary Search**:
+```php
+<?php
+# Pattern: Repeatedly dividing search space
+
+$mid = (int)(($left + $right) / 2);
+if ($arr[$mid] === $target) {
+    return $mid;
+}
+// O(log n) - eliminates half each iteration
+```
+
+**Hash Table Lookup = O(n) Space-Time Tradeoff**:
+```php
+<?php
+# Pattern: Build lookup table, then query
+
+$seen = [];
+foreach ($arr as $val) {
+    if (isset($seen[$val])) {
+        return true;  // Found duplicate
+    }
+    $seen[$val] = true;
+}
+// O(n) time, O(n) space - trade memory for speed
+```
+
+**Memoization Cache = Dynamic Programming**:
+```php
+<?php
+# Pattern: Cache to avoid recomputation
+
+static $cache = [];
+if (isset($cache[$key])) {
+    return $cache[$key];  // Return cached result
+}
+$result = expensiveCalculation($key);
+$cache[$key] = $result;
+// Overlapping subproblems → DP
+```
+
+**Sort Then Process = O(n log n) Foundation**:
+```php
+<?php
+# Pattern: Sort enables faster algorithms
+
+sort($arr);  // O(n log n)
+// Now can use binary search O(log n)
+// Or two pointers O(n)
+// Total: O(n log n)
+```
+
+### Algorithm Spotting Cheat Sheet
+
+| Code Pattern | Algorithm Type | Complexity | Use Case |
+|--------------|----------------|------------|----------|
+| Two nested loops | Brute force | O(n²) | Small data or first solution |
+| `while ($left < $right)` | Two pointers | O(n) | Sorted array problems |
+| Divide by 2 repeatedly | Binary search | O(log n) | Find in sorted data |
+| Build hash table first | Hash table | O(n) | Fast lookups needed |
+| Recursive + cache | Dynamic programming | Varies | Overlapping subproblems |
+| Queue for nodes | BFS | O(V+E) | Shortest path (unweighted) |
+| Stack/recursion for nodes | DFS | O(V+E) | Path finding, traversal |
+| `sort()` then iterate | Sort-based | O(n log n) | Need ordering first |
+
+::: info Quick Diagnosis
+See nested loops? → Probably O(n²), look for optimization.  
+See hash table? → Trading space for speed.  
+See recursion? → Check for duplicate work (DP candidate).  
+See sort first? → Likely O(n log n) is the best you can do.
+:::
 
 ---
 
@@ -349,6 +597,8 @@ function hasCycle(ListNode $head): bool {
 
 ```php
 <?php
+# filename: ecommerce-examples.php
+
 // Product recommendations - collaborative filtering
 $similarUsers = findSimilarUsers($userId);  // Graph/clustering
 $productScores = calculateScores($similarUsers);  // Aggregation
@@ -365,6 +615,8 @@ $topOrder = $orders->extract();
 
 ```php
 <?php
+# filename: api-examples.php
+
 // Rate limiting - token bucket
 class RateLimiter {
     public function checkLimit(string $userId): bool {
@@ -390,6 +642,8 @@ $response = $cache->get($cacheKey) ?? $cache->set($cacheKey, generateResponse())
 
 ```php
 <?php
+# filename: search-use-case.php
+
 // Autocomplete - Trie data structure
 class AutocompleteNode {
     public array $children = [];
@@ -407,21 +661,49 @@ arsort($scores);
 
 ## 💡 Quick Wins
 
-### 1. Use PHP's Built-in Functions
+### 1. Use PHP's Built-in Functions (Don't Reinvent the Wheel)
 
 ```php
 <?php
-// They're implemented in C and highly optimized
-$sorted = sort($array);  // Faster than any PHP implementation
-$found = in_array($item, $array);
+# filename: use-built-ins.php
+
+declare(strict_types=1);
+
+// ❌ DON'T: Implement basic algorithms yourself
+function mySort(array $arr): array {
+    // 50 lines of sorting code...
+    return $arr;
+}
+
+// ✅ DO: Use PHP's optimized built-ins
+sort($array);  // Implemented in C, handles edge cases
+$found = in_array($item, $array, true);  // Strict comparison
 $sum = array_sum($numbers);
 $filtered = array_filter($array, $callback);
+$unique = array_unique($array);
+$reversed = array_reverse($array);
+$keys = array_keys($array);
+$values = array_values($array);
 ```
+
+**When to use custom algorithms**:
+- ✅ Specific business logic not in built-ins
+- ✅ Performance-critical (after profiling proves it!)
+- ✅ Unique constraints PHP doesn't handle
+- ✅ Learning/interview preparation
+
+**When to use built-ins**:
+- ✅ 99% of the time (seriously!)
+- ✅ Standard operations (sort, search, filter, map)
+- ✅ Production code (battle-tested, optimized)
+- ✅ When you want maintainable code
 
 ### 2. Cache Expensive Operations
 
 ```php
 <?php
+# filename: cache-expensive-ops.php
+
 // ❌ Recalculates every time
 function getStats($userId) {
     return calculateExpensiveStats($userId);  // 500ms
@@ -438,6 +720,8 @@ function getStats($userId) {
 
 ```php
 <?php
+# filename: use-generators.php
+
 // ❌ 1GB memory for 1M records
 $users = User::all();
 foreach ($users as $user) {
@@ -455,6 +739,8 @@ foreach ($users as $user) {
 
 ```php
 <?php
+# filename: batch-operations.php
+
 // ❌ 1000 queries
 foreach ($users as $user) {
     DB::insert('INSERT INTO logs (user_id) VALUES (?)', [$user->id]);
@@ -474,7 +760,13 @@ opcache.memory_consumption=256
 opcache.interned_strings_buffer=16
 opcache.max_accelerated_files=10000
 opcache.validate_timestamps=0  ; Production only
+opcache.jit=tracing  ; PHP 8.0+ JIT compiler
+opcache.jit_buffer_size=128M
 ```
+
+::: warning Production Only
+**Never** set `opcache.validate_timestamps=0` in development! This disables file change detection. Your code changes won't take effect without restarting PHP-FPM.
+:::
 
 ---
 
@@ -483,7 +775,7 @@ opcache.validate_timestamps=0  ; Production only
 ### "I Have 1 Hour"
 
 1. Read this page ✓
-2. [Big O Notation](/series/php-algorithms/chapters/01-algorithm-complexity-big-o/) (15 min)
+2. [Introduction & Big O](/series/php-algorithms/chapters/00-introduction-to-algorithms/) (15 min)
 3. [Hash Tables](/series/php-algorithms/chapters/13-hash-tables-hash-functions/) (20 min)
 4. [Caching](/series/php-algorithms/chapters/27-caching-memoization-strategies/) (25 min)
 
@@ -530,6 +822,8 @@ opcache.validate_timestamps=0  ; Production only
 
 ```php
 <?php
+# filename: avoid-premature-optimization.php
+
 // ❌ DON'T: Optimize before measuring
 // "I'll use a complex algorithm because it's O(n log n)"
 
@@ -545,10 +839,16 @@ if ($time > 0.1) {  // Only if it's actually slow
 
 **Rule**: Make it work, make it right, make it fast - **in that order**.
 
+::: danger Premature Optimization Kills Projects
+"Premature optimization is the root of all evil" — Donald Knuth. **Profile first**, optimize second. 97% of optimizations are wasted effort if applied to the wrong place.
+:::
+
 ### 2. Wrong Data Structure
 
 ```php
 <?php
+# filename: choose-right-data-structure.php
+
 // ❌ BAD: Using array with in_array() for lookups
 $validUsers = [1, 2, 3, 4, 5, /* ...1000 more */];
 if (in_array($userId, $validUsers)) {  // O(n) - SLOW!
@@ -566,23 +866,33 @@ if (isset($validUsers[$userId])) {  // O(1) - FAST!
 
 ```php
 <?php
+# filename: avoid-n-plus-one.php
+
 // ❌ BAD: 1 + N queries
 $users = User::all();  // 1 query
 foreach ($users as $user) {
     echo $user->posts->count();  // N queries - ONE PER USER!
 }
+// Result: 1 + 1000 users = 1001 queries! 🔥
 
 // ✅ GOOD: 2 queries total
 $users = User::withCount('posts')->get();  // 2 queries with JOIN
 foreach ($users as $user) {
     echo $user->posts_count;  // No query!
 }
+// Result: 2 queries total (500x faster) ⚡
 ```
+
+::: warning N+1 Query Detector
+Enable Laravel Debugbar or Telescope in development to catch N+1 queries. This is the **#1 performance killer** in Laravel apps.
+:::
 
 ### 4. Memory Leaks in Loops
 
 ```php
 <?php
+# filename: avoid-memory-leaks.php
+
 // ❌ BAD: Memory accumulates
 $results = [];
 foreach ($hugeDataset as $item) {
@@ -601,6 +911,8 @@ foreach ($hugeDataset as $item) {
 
 ```php
 <?php
+# filename: efficient-string-building.php
+
 // ❌ BAD: O(n²) - Creates new string each time
 $html = '';
 foreach ($items as $item) {
@@ -623,6 +935,8 @@ $html = implode('', $parts);
 
 ```php
 <?php
+# filename: secure-queries.php
+
 // ❌ DANGER: SQL injection
 $result = $db->query("SELECT * FROM users WHERE id = {$_GET['id']}");
 
@@ -635,6 +949,8 @@ $stmt->execute([$_GET['id']]);
 
 ```php
 <?php
+# filename: avoid-timing-attacks.php
+
 // ❌ BAD: Vulnerable to timing attacks
 if ($userHash === $expectedHash) {  // Character-by-character comparison
     return true;
@@ -650,6 +966,8 @@ if (hash_equals($expectedHash, $userHash)) {
 
 ```php
 <?php
+# filename: secure-random.php
+
 // ❌ BAD: Predictable
 $token = md5(time() . rand());
 
@@ -665,6 +983,8 @@ $token = bin2hex(random_bytes(32));
 
 ```php
 <?php
+# filename: profiling-tools.php
+
 // 1. Quick memory check
 echo "Memory: " . memory_get_usage() / 1024 / 1024 . " MB\n";
 echo "Peak: " . memory_get_peak_usage() / 1024 / 1024 . " MB\n";
@@ -703,6 +1023,8 @@ print_r($times);
 
 ```php
 <?php
+# filename: laravel-optimizations.php
+
 // 1. Eager loading (prevents N+1)
 $users = User::with('posts')->get();  // 2 queries instead of N+1
 
@@ -730,6 +1052,8 @@ $users = User::select(['id', 'name'])->get();  // Not SELECT *
 
 ```php
 <?php
+# filename: symfony-optimizations.php
+
 // 1. Query builder for complex queries
 $qb = $entityManager->createQueryBuilder();
 $users = $qb->select('u')
@@ -765,6 +1089,9 @@ $response->setCache([
 **Q: Should I always use the most efficient algorithm?**
 A: No! Use the simplest algorithm that meets your requirements. `sort()` is fine for 99% of cases. **Optimize only when you have measured performance issues.**
 
+**Q: When should I NOT implement a custom algorithm?**
+A: When PHP has a built-in that does it (`sort()`, `array_filter()`, `array_map()`), when you haven't profiled yet, when the built-in is "good enough," or when maintainability matters more than micro-optimizations.
+
 **Q: When do I really need to know this stuff?**
 A: Job interviews, optimizing slow code, working with large datasets, understanding framework internals, debugging production issues.
 
@@ -781,17 +1108,23 @@ A: **Measure**! Use `microtime()`, Xdebug, or Blackfire. Never optimize without 
 A: Start with the essentials (sorting, searching, hash tables, caching). Learn advanced topics (dynamic programming, graph algorithms) when you need them or for interview prep.
 
 **Q: Where do I start if I'm completely new?**
-A: [Chapter 1: Introduction](/series/php-algorithms/chapters/01-introduction-to-algorithms/) for comprehensive learning, or continue with this guide for copy-paste solutions.
+A: [Chapter 1: Introduction](/series/php-algorithms/chapters/00-introduction-to-algorithms/) for comprehensive learning, or continue with this guide for copy-paste solutions.
 
 **Q: What about async/await in PHP?**
 A: PHP 8.1+ supports fibers, but for practical async use ReactPHP, Swoole, or Amp. See [Chapter 31: Concurrent Algorithms](/series/php-algorithms/chapters/31-concurrent-algorithms/).
+
+**Q: How do I know if my data is "large" enough to worry about?**
+A: If it's < 10,000 items and fits in a PHP array comfortably, don't overthink it. Use simple algorithms. If it's > 100,000 or causes memory issues, then optimize. Profile first!
+
+**Q: How do I recognize what algorithm is being used in code I'm reading?**
+A: Look for patterns: nested loops = O(n²), binary divide = O(log n), hash table = space/time tradeoff, recursion + cache = dynamic programming. See the "Recognize Algorithms in Code" section above.
 
 ---
 
 ## 🚀 Next Steps
 
 **Ready to dive deeper?**
-- [Start Chapter 1](/series/php-algorithms/chapters/01-introduction-to-algorithms/) - Full course
+- [Start Chapter 1](/series/php-algorithms/chapters/00-introduction-to-algorithms/) - Full course
 - [See all paths](/series/php-algorithms/#learning-paths) - Choose your journey
 - [Use case guide](/series/php-algorithms/#navigation-by-use-case) - Find what you need
 
@@ -808,30 +1141,69 @@ A: PHP 8.1+ supports fibers, but for practical async use ReactPHP, Swoole, or Am
 
 ```php
 <?php
-function benchmark(callable $fn, array $args = []): float {
-    $start = microtime(true);
-    $fn(...$args);
-    return (microtime(true) - $start) * 1000;  // milliseconds
+# filename: benchmark-helper.php
+
+declare(strict_types=1);
+
+function benchmark(callable $fn, array $args = [], int $iterations = 1): float {
+    $times = [];
+
+    for ($i = 0; $i < $iterations; $i++) {
+        $start = microtime(true);
+        $fn(...$args);
+        $times[] = (microtime(true) - $start) * 1000;
+    }
+
+    return $iterations === 1 ? $times[0] : array_sum($times) / count($times);
 }
 
+// Single run
 echo "Execution time: " . benchmark(fn() => expensiveFunction()) . "ms\n";
+
+// Average of 100 runs for accuracy
+echo "Average time: " . benchmark(fn() => quickFunction(), [], 100) . "ms\n";
 ```
 
 ### Simple Cache Class
 
 ```php
 <?php
+# filename: cache-class.php
+
+declare(strict_types=1);
+
 class Cache {
     private static array $store = [];
 
     public static function remember(string $key, int $ttl, callable $callback): mixed {
+        // Check if cached and not expired
         if (isset(self::$store[$key]) && self::$store[$key]['expires'] > time()) {
             return self::$store[$key]['value'];
         }
 
+        // Generate and cache
         $value = $callback();
-        self::$store[$key] = ['value' => $value, 'expires' => time() + $ttl];
+        self::$store[$key] = [
+            'value' => $value,
+            'expires' => time() + $ttl,
+            'hits' => 0
+        ];
         return $value;
+    }
+
+    public static function forget(string $key): void {
+        unset(self::$store[$key]);
+    }
+
+    public static function flush(): void {
+        self::$store = [];
+    }
+
+    public static function stats(): array {
+        return [
+            'keys' => count(self::$store),
+            'memory' => memory_get_usage()
+        ];
     }
 }
 ```
@@ -840,38 +1212,81 @@ class Cache {
 
 ```php
 <?php
-function binarySearch(array $arr, $target): int {
+# filename: binary-search-helper.php
+
+declare(strict_types=1);
+
+function binarySearch(array $arr, mixed $target): int {
     $left = 0;
     $right = count($arr) - 1;
 
     while ($left <= $right) {
         $mid = (int)(($left + $right) / 2);
+
         if ($arr[$mid] === $target) return $mid;
         if ($arr[$mid] < $target) $left = $mid + 1;
         else $right = $mid - 1;
     }
 
-    return -1;
+    return -1;  // Not found
 }
+
+// Usage
+$numbers = [1, 3, 5, 7, 9, 11, 13, 15];
+$index = binarySearch($numbers, 7);  // Returns: 3
+$missing = binarySearch($numbers, 6);  // Returns: -1
 ```
 
 ### File Stream Generator
 
 ```php
 <?php
+# filename: file-stream-generator.php
+
+declare(strict_types=1);
+
 function streamFile(string $filename): Generator {
-    $handle = fopen($filename, 'r');
-    while (!feof($handle)) {
-        yield fgets($handle);
+    if (!file_exists($filename)) {
+        throw new RuntimeException("File not found: $filename");
     }
-    fclose($handle);
+
+    $handle = fopen($filename, 'r');
+    if ($handle === false) {
+        throw new RuntimeException("Cannot open file: $filename");
+    }
+
+    try {
+        while (!feof($handle)) {
+            $line = fgets($handle);
+            if ($line !== false) {
+                yield $line;
+            }
+        }
+    } finally {
+        fclose($handle);
+    }
+}
+
+// Usage: Process 10GB file with constant memory
+foreach (streamFile('huge.log') as $lineNumber => $line) {
+    if (str_contains($line, 'ERROR')) {
+        echo "Line $lineNumber: $line";
+    }
 }
 ```
+
+---
+
+<ChapterCheckbox 
+  seriesId="php-algorithms"
+  chapterId="00"
+  label="I've reviewed the Quick Start Guide and know where to find solutions"
+/>
 
 ---
 
 <div class="series-cta">
   <h2>Ready for More?</h2>
   <p>This guide covers the essentials. For deep understanding, continue with the full series.</p>
-  <a href="/series/php-algorithms/chapters/01-introduction-to-algorithms" class="cta-button">Start Full Course →</a>
+  <a href="/series/php-algorithms/chapters/00-introduction-to-algorithms" class="cta-button">Start Full Course →</a>
 </div>

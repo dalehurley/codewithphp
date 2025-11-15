@@ -1,12 +1,16 @@
 ---
-title: "Dijkstra's Shortest Path Algorithm"
+title: "24: Dijkstra's Shortest Path Algorithm"
 description: "Master Dijkstra's algorithm for finding shortest paths in weighted graphs, with implementations using priority queues and practical applications in routing and network optimization"
 series: "php-algorithms"
 chapter: 24
 order: 24
-difficulty: "advanced"
-prerequisites: ["Graph Representations", "Breadth-First Search", "Priority Queues"]
+difficulty: "Advanced"
+prerequisites:
+  - "/series/php-algorithms/chapters/21-graph-representations"
+  - "/series/php-algorithms/chapters/23-breadth-first-search"
 ---
+![Dijkstra's Shortest Path Algorithm](/images/php-algorithms/chapter-24-dijkstra-hero-full.webp)
+
 
 <div class="breadcrumbs">
   <a href="/">Home</a>
@@ -18,28 +22,125 @@ prerequisites: ["Graph Representations", "Breadth-First Search", "Priority Queue
   <span>Chapter 24</span>
 </div>
 
-# Dijkstra's Shortest Path Algorithm <span class="difficulty-badge difficulty-advanced">Advanced</span>
+# 24: Dijkstra's Shortest Path Algorithm <span class="difficulty-badge difficulty-advanced">Advanced</span>
 
-## What You'll Learn
+## Overview
+
+Dijkstra's algorithm finds the shortest path from a source vertex to all other vertices in a weighted graph with non-negative edge weights. Think of it as BFS's smarter cousin that handles weighted edges—it powers GPS navigation, network routing protocols, and game pathfinding. It's a fundamental algorithm for routing and navigation systems that every developer should know.
+
+Unlike Breadth-First Search which finds shortest paths in unweighted graphs, Dijkstra's algorithm handles weighted edges by using a greedy approach: it always expands the vertex with the minimum distance first. This guarantees optimal shortest paths when all edge weights are non-negative.
+
+In this chapter, you'll master Dijkstra's algorithm implementation using priority queues, learn how to reconstruct shortest paths, understand the algorithm's time complexity trade-offs, and build practical applications like GPS routing systems and network optimization tools.
+
+## Prerequisites
+
+Before starting this chapter, you should have:
+
+- ✓ Complete understanding of graph representations ([Chapter 21](/series/php-algorithms/chapters/21-graph-representations))
+- ✓ Mastery of BFS for unweighted shortest paths ([Chapter 23](/series/php-algorithms/chapters/23-breadth-first-search))
+- ✓ Knowledge of priority queues and heaps (covered in this chapter)
+- ✓ Understanding of greedy algorithm principles
+
+**Estimated Time**: ~65 minutes
+
+## Quick Start
+
+Let's find the shortest path in a weighted graph using Dijkstra's algorithm:
+
+```php
+# filename: quick-start.php
+<?php
+
+declare(strict_types=1);
+
+// Simple weighted graph: [vertex => [['vertex' => neighbor, 'weight' => cost], ...]]
+$graph = [
+    0 => [['vertex' => 1, 'weight' => 4], ['vertex' => 2, 'weight' => 1]],
+    1 => [['vertex' => 3, 'weight' => 1]],
+    2 => [['vertex' => 1, 'weight' => 2], ['vertex' => 3, 'weight' => 5]],
+    3 => []
+];
+
+// Simple Dijkstra implementation
+function dijkstra(array $graph, int $source): array
+{
+    $distances = [];
+    $visited = [];
+    
+    // Initialize distances
+    foreach (array_keys($graph) as $vertex) {
+        $distances[$vertex] = PHP_INT_MAX;
+    }
+    $distances[$source] = 0;
+    
+    // Priority queue: [distance, vertex]
+    $pq = new SplMinHeap();
+    $pq->insert([0, $source]);
+    
+    while (!$pq->isEmpty()) {
+        [$currentDist, $u] = $pq->extract();
+        
+        if (isset($visited[$u])) {
+            continue;
+        }
+        
+        $visited[$u] = true;
+        
+        foreach ($graph[$u] ?? [] as $edge) {
+            $v = $edge['vertex'];
+            $weight = $edge['weight'];
+            $newDist = $distances[$u] + $weight;
+            
+            if ($newDist < $distances[$v]) {
+                $distances[$v] = $newDist;
+                $pq->insert([$newDist, $v]);
+            }
+        }
+    }
+    
+    return $distances;
+}
+
+// Find shortest distances from vertex 0
+$distances = dijkstra($graph, 0);
+
+echo "Shortest distances from vertex 0:\n";
+foreach ($distances as $vertex => $distance) {
+    $dist = $distance === PHP_INT_MAX ? '∞' : (string)$distance;
+    echo "  To vertex $vertex: $dist\n";
+}
+```
+
+Expected output:
+
+```
+Shortest distances from vertex 0:
+  To vertex 0: 0
+  To vertex 1: 3
+  To vertex 2: 1
+  To vertex 3: 4
+```
+
+This shows the shortest path from vertex 0: directly to vertex 2 (cost 1), then to vertex 1 (cost 3 total), and finally to vertex 3 (cost 4 total).
+
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- A complete Dijkstra's algorithm implementation using priority queues
+- Shortest path finder for weighted graphs with path reconstruction
+- GPS routing system for finding optimal routes between locations
+- Network packet routing system with latency optimization
+- Delivery route optimizer using Dijkstra's algorithm
+- A* pathfinding algorithm implementation with heuristics
+
+## Objectives
 
 - Master Dijkstra's algorithm for shortest path finding in weighted graphs
 - Implement efficient priority queue-based solutions
 - Understand greedy algorithm design and optimality proofs
 - Build practical applications: GPS routing, network optimization
 - Analyze time complexity with different data structure choices
-
-**Estimated Time**: ~65 minutes
-
-## Prerequisites
-
-Before starting this chapter, you should have:
-
-- ✓ Complete understanding of graph representations (Chapter 21)
-- ✓ Mastery of BFS for unweighted shortest paths (Chapter 23)
-- ✓ Knowledge of priority queues and heaps (Chapter 8)
-- ✓ Understanding of greedy algorithm principles
-
-Dijkstra's algorithm finds the shortest path from a source vertex to all other vertices in a weighted graph with non-negative edge weights. Think of it as BFS's smarter cousin that handles weighted edges—it powers GPS navigation, network routing protocols, and game pathfinding. It's a fundamental algorithm for routing and navigation systems that every developer should know.
 
 ## How Dijkstra's Algorithm Works
 
@@ -73,7 +174,10 @@ Final distances: {0:0, 1:4, 2:5, 3:2}
 Understanding how Dijkstra's algorithm builds the shortest path tree:
 
 ```php
+# filename: dijkstra-visualizer.php
 <?php
+
+declare(strict_types=1);
 
 class DijkstraVisualizer
 {
@@ -283,7 +387,10 @@ Shortest distances from vertex 0:
 Understanding how the priority queue drives Dijkstra's algorithm:
 
 ```php
+# filename: dijkstra-pq-visualizer.php
 <?php
+
+declare(strict_types=1);
 
 class DijkstraPriorityQueueVisualizer
 {
@@ -362,7 +469,10 @@ class DijkstraPriorityQueueVisualizer
 ## Basic Implementation (Array-based)
 
 ```php
+# filename: dijkstra-basic.php
 <?php
+
+declare(strict_types=1);
 
 class DijkstraBasic
 {
@@ -452,7 +562,10 @@ print_r($distances);  // [0, 4, 5, 2]
 Using a min-heap priority queue for O(E log V) time complexity.
 
 ```php
+# filename: dijkstra-optimized.php
 <?php
+
+declare(strict_types=1);
 
 class DijkstraOptimized
 {
@@ -586,7 +699,10 @@ echo "Distance 0 to 2: " . $dijkstra->findDistance($graph, 0, 2) . "\n";  // 5
 For better control and understanding.
 
 ```php
+# filename: custom-priority-queue.php
 <?php
+
+declare(strict_types=1);
 
 class MinHeapPriorityQueue
 {
@@ -713,7 +829,10 @@ class DijkstraWithCustomPQ
 Using string identifiers instead of numeric indices.
 
 ```php
+# filename: dijkstra-named-graph.php
 <?php
+
+declare(strict_types=1);
 
 class DijkstraNamedGraph
 {
@@ -856,7 +975,10 @@ echo "Shortest route NYC to Washington: " . implode(' → ', $path) . "\n";
 A* extends Dijkstra with a heuristic function for faster pathfinding.
 
 ```php
+# filename: astar-pathfinding.php
 <?php
+
+declare(strict_types=1);
 
 class AStar
 {
@@ -977,7 +1099,10 @@ echo "A* path: " . implode(' → ', $path) . "\n";  // 0 → 1 → 2 → 5
 ### Single-Pair Shortest Path
 
 ```php
+# filename: single-pair-dijkstra.php
 <?php
+
+declare(strict_types=1);
 
 class SinglePairDijkstra
 {
@@ -1037,7 +1162,10 @@ class SinglePairDijkstra
 ### All-Pairs Shortest Path
 
 ```php
+# filename: all-pairs-dijkstra.php
 <?php
+
+declare(strict_types=1);
 
 class AllPairsDijkstra
 {
@@ -1075,6 +1203,267 @@ class AllPairsDijkstra
 }
 ```
 
+### Bidirectional Dijkstra
+
+Searching from both source and destination simultaneously can significantly speed up single-pair shortest path queries, especially in large graphs. The algorithm stops when the two search frontiers meet.
+
+```php
+# filename: bidirectional-dijkstra.php
+<?php
+
+class BidirectionalDijkstra
+{
+    private const INF = PHP_INT_MAX;
+
+    public function findPath(array $graph, int $source, int $destination): ?array
+    {
+        if ($source === $destination) {
+            return [$source];
+        }
+
+        $vertices = count($graph);
+        
+        // Forward search (from source)
+        $distForward = array_fill(0, $vertices, self::INF);
+        $prevForward = array_fill(0, $vertices, null);
+        $distForward[$source] = 0;
+        $pqForward = new SplMinHeap();
+        $pqForward->insert([0, $source]);
+        $visitedForward = [];
+
+        // Backward search (from destination)
+        $distBackward = array_fill(0, $vertices, self::INF);
+        $prevBackward = array_fill(0, $vertices, null);
+        $distBackward[$destination] = 0;
+        $pqBackward = new SplMinHeap();
+        $pqBackward->insert([0, $destination]);
+        $visitedBackward = [];
+
+        $bestDistance = self::INF;
+        $meetingVertex = -1;
+
+        while (!$pqForward->isEmpty() || !$pqBackward->isEmpty()) {
+            // Forward step
+            if (!$pqForward->isEmpty()) {
+                [$currentDist, $u] = $pqForward->extract();
+
+                if (isset($visitedForward[$u]) || $currentDist > $distForward[$u]) {
+                    continue;
+                }
+
+                $visitedForward[$u] = true;
+
+                // Check if we've met backward search
+                if (isset($visitedBackward[$u])) {
+                    $totalDist = $distForward[$u] + $distBackward[$u];
+                    if ($totalDist < $bestDistance) {
+                        $bestDistance = $totalDist;
+                        $meetingVertex = $u;
+                    }
+                }
+
+                foreach ($graph[$u] ?? [] as $edge) {
+                    $v = $edge['vertex'];
+                    $weight = $edge['weight'];
+                    $newDist = $distForward[$u] + $weight;
+
+                    if ($newDist < $distForward[$v]) {
+                        $distForward[$v] = $newDist;
+                        $prevForward[$v] = $u;
+                        $pqForward->insert([$newDist, $v]);
+                    }
+                }
+            }
+
+            // Backward step
+            if (!$pqBackward->isEmpty()) {
+                [$currentDist, $u] = $pqBackward->extract();
+
+                if (isset($visitedBackward[$u]) || $currentDist > $distBackward[$u]) {
+                    continue;
+                }
+
+                $visitedBackward[$u] = true;
+
+                // Check if we've met forward search
+                if (isset($visitedForward[$u])) {
+                    $totalDist = $distForward[$u] + $distBackward[$u];
+                    if ($totalDist < $bestDistance) {
+                        $bestDistance = $totalDist;
+                        $meetingVertex = $u;
+                    }
+                }
+
+                foreach ($graph[$u] ?? [] as $edge) {
+                    $v = $edge['vertex'];
+                    $weight = $edge['weight'];
+                    $newDist = $distBackward[$u] + $weight;
+
+                    if ($newDist < $distBackward[$v]) {
+                        $distBackward[$v] = $newDist;
+                        $prevBackward[$v] = $u;
+                        $pqBackward->insert([$newDist, $v]);
+                    }
+                }
+            }
+
+            // Early termination if best path found
+            if ($meetingVertex !== -1) {
+                break;
+            }
+        }
+
+        if ($meetingVertex === -1) {
+            return null; // No path found
+        }
+
+        // Reconstruct path: source → meeting → destination
+        $pathForward = $this->reconstructPath($prevForward, $source, $meetingVertex);
+        $pathBackward = $this->reconstructPath($prevBackward, $destination, $meetingVertex);
+        array_reverse($pathBackward);
+        array_pop($pathBackward); // Remove duplicate meeting vertex
+
+        return array_merge($pathForward, $pathBackward);
+    }
+
+    private function reconstructPath(array $previous, int $start, int $end): array
+    {
+        $path = [];
+        $current = $end;
+
+        while ($current !== null) {
+            array_unshift($path, $current);
+            $current = $previous[$current];
+        }
+
+        return $path;
+    }
+}
+
+// Example usage
+$graph = [
+    0 => [['vertex' => 1, 'weight' => 4], ['vertex' => 2, 'weight' => 8]],
+    1 => [['vertex' => 0, 'weight' => 4], ['vertex' => 3, 'weight' => 11]],
+    2 => [['vertex' => 0, 'weight' => 8], ['vertex' => 3, 'weight' => 3]],
+    3 => [['vertex' => 1, 'weight' => 11], ['vertex' => 2, 'weight' => 3]]
+];
+
+$bidijkstra = new BidirectionalDijkstra();
+$path = $bidijkstra->findPath($graph, 0, 3);
+echo "Bidirectional path: " . implode(' → ', $path) . "\n";  // 0 → 2 → 3
+```
+
+### Multi-Source Dijkstra
+
+Starting Dijkstra from multiple source vertices simultaneously. Useful for finding the nearest source to each vertex, such as finding the nearest hospital or server.
+
+```php
+# filename: multi-source-dijkstra.php
+<?php
+
+class MultiSourceDijkstra
+{
+    private const INF = PHP_INT_MAX;
+
+    // Find shortest distances from any source to all vertices
+    public function findDistances(array $graph, array $sources): array
+    {
+        $vertices = count($graph);
+        $distances = array_fill(0, $vertices, self::INF);
+        $pq = new SplMinHeap();
+
+        // Initialize all sources with distance 0
+        foreach ($sources as $source) {
+            $distances[$source] = 0;
+            $pq->insert([0, $source]);
+        }
+
+        while (!$pq->isEmpty()) {
+            [$currentDist, $u] = $pq->extract();
+
+            if ($currentDist > $distances[$u]) {
+                continue;
+            }
+
+            foreach ($graph[$u] ?? [] as $edge) {
+                $v = $edge['vertex'];
+                $weight = $edge['weight'];
+                $newDist = $distances[$u] + $weight;
+
+                if ($newDist < $distances[$v]) {
+                    $distances[$v] = $newDist;
+                    $pq->insert([$newDist, $v]);
+                }
+            }
+        }
+
+        return $distances;
+    }
+
+    // Find nearest source for each vertex
+    public function findNearestSource(array $graph, array $sources): array
+    {
+        $vertices = count($graph);
+        $distances = array_fill(0, $vertices, self::INF);
+        $nearestSource = array_fill(0, $vertices, null);
+        $pq = new SplMinHeap();
+
+        // Initialize all sources
+        foreach ($sources as $source) {
+            $distances[$source] = 0;
+            $nearestSource[$source] = $source;
+            $pq->insert([0, $source]);
+        }
+
+        while (!$pq->isEmpty()) {
+            [$currentDist, $u] = $pq->extract();
+
+            if ($currentDist > $distances[$u]) {
+                continue;
+            }
+
+            foreach ($graph[$u] ?? [] as $edge) {
+                $v = $edge['vertex'];
+                $weight = $edge['weight'];
+                $newDist = $distances[$u] + $weight;
+
+                if ($newDist < $distances[$v]) {
+                    $distances[$v] = $newDist;
+                    $nearestSource[$v] = $nearestSource[$u];
+                    $pq->insert([$newDist, $v]);
+                }
+            }
+        }
+
+        return $nearestSource;
+    }
+}
+
+// Example - Multiple hospitals serving areas
+$cityMap = [
+    0 => [['vertex' => 1, 'weight' => 2], ['vertex' => 2, 'weight' => 3]],
+    1 => [['vertex' => 0, 'weight' => 2], ['vertex' => 3, 'weight' => 1]],
+    2 => [['vertex' => 0, 'weight' => 3], ['vertex' => 3, 'weight' => 2], ['vertex' => 4, 'weight' => 1]],
+    3 => [['vertex' => 1, 'weight' => 1], ['vertex' => 2, 'weight' => 2], ['vertex' => 4, 'weight' => 1], ['vertex' => 5, 'weight' => 3]],
+    4 => [['vertex' => 2, 'weight' => 1], ['vertex' => 3, 'weight' => 1], ['vertex' => 6, 'weight' => 2]],
+    5 => [['vertex' => 3, 'weight' => 3], ['vertex' => 6, 'weight' => 1]],
+    6 => [['vertex' => 4, 'weight' => 2], ['vertex' => 5, 'weight' => 1]]
+];
+
+$hospitals = [0, 5];  // Hospitals at vertices 0 and 5
+
+$multiDijkstra = new MultiSourceDijkstra();
+$distances = $multiDijkstra->findDistances($cityMap, $hospitals);
+echo "Distance to nearest hospital:\n";
+print_r($distances);
+// [0 => 0, 1 => 2, 2 => 3, 3 => 3, 4 => 4, 5 => 0, 6 => 1]
+
+$nearest = $multiDijkstra->findNearestSource($cityMap, $hospitals);
+echo "Nearest hospital for each location:\n";
+print_r($nearest);
+// [0 => 0, 1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 5, 6 => 5]
+```
+
 ## Complexity Analysis
 
 | Implementation | Time Complexity | Space Complexity | Notes |
@@ -1099,7 +1488,10 @@ class AllPairsDijkstra
 ### 1. GPS Navigation System
 
 ```php
+# filename: gps-router.php
 <?php
+
+declare(strict_types=1);
 
 class GPSRouter
 {
@@ -1156,7 +1548,10 @@ class GPSRouter
 ### 2. Network Packet Routing
 
 ```php
+# filename: network-router.php
 <?php
+
+declare(strict_types=1);
 
 class NetworkRouter
 {
@@ -1199,7 +1594,10 @@ class NetworkRouter
 ### 3. Delivery Route Optimization
 
 ```php
+# filename: delivery-optimizer.php
 <?php
+
+declare(strict_types=1);
 
 class DeliveryOptimizer
 {
@@ -1257,7 +1655,10 @@ class DeliveryOptimizer
 ## Limitations and Alternatives
 
 ```php
+# filename: dijkstra-limitations.php
 <?php
+
+declare(strict_types=1);
 
 class DijkstraLimitations
 {
@@ -1289,45 +1690,381 @@ class DijkstraLimitations
 }
 ```
 
+## Edge Cases and Graph Considerations
+
+### Handling Self-Loops
+
+Self-loops (edges from a vertex to itself) are handled naturally by Dijkstra:
+
+```php
+# filename: dijkstra-self-loops.php
+<?php
+
+// Graph with self-loop
+$graph = [
+    0 => [
+        ['vertex' => 0, 'weight' => 5],  // Self-loop
+        ['vertex' => 1, 'weight' => 3]
+    ],
+    1 => [['vertex' => 0, 'weight' => 3]]
+];
+
+// Self-loops are processed but won't improve distance
+// (since distance to self is already 0)
+```
+
+### Multiple Edges Between Same Vertices
+
+When multiple edges exist between the same pair of vertices, Dijkstra naturally selects the shortest:
+
+```php
+# filename: dijkstra-multiple-edges.php
+<?php
+
+// Graph with multiple edges
+$graph = [
+    0 => [
+        ['vertex' => 1, 'weight' => 5],
+        ['vertex' => 1, 'weight' => 3],  // Shorter edge
+        ['vertex' => 1, 'weight' => 7]
+    ],
+    1 => []
+];
+
+// Dijkstra will use the edge with weight 3 (shortest)
+```
+
+### Disconnected Graphs
+
+Dijkstra handles disconnected graphs by leaving unreachable vertices with distance INF:
+
+```php
+# filename: dijkstra-disconnected.php
+<?php
+
+$graph = [
+    0 => [['vertex' => 1, 'weight' => 2]],
+    1 => [['vertex' => 0, 'weight' => 2]],
+    2 => [['vertex' => 3, 'weight' => 1]],  // Separate component
+    3 => [['vertex' => 2, 'weight' => 1]]
+];
+
+$dijkstra = new DijkstraOptimized();
+$distances = $dijkstra->findShortestPaths($graph, 0);
+// [0 => 0, 1 => 2, 2 => INF, 3 => INF]
+```
+
+### Dense vs Sparse Graphs
+
+Choose implementation based on graph density:
+
+- **Dense graphs** (E ≈ V²): Array-based O(V²) may be competitive
+- **Sparse graphs** (E << V²): Priority queue O((V+E) log V) is much better
+
+```php
+# filename: dijkstra-graph-density.php
+<?php
+
+class AdaptiveDijkstra
+{
+    public function findShortestPaths(array $graph, int $source): array
+    {
+        $vertices = count($graph);
+        $edges = 0;
+        
+        foreach ($graph as $edges) {
+            $edges += count($edges);
+        }
+        
+        // Dense graph: E > V * log(V)
+        if ($edges > $vertices * log($vertices + 1)) {
+            return (new DijkstraBasic())->findShortestPaths($graph, $source);
+        } else {
+            return (new DijkstraOptimized())->findShortestPaths($graph, $source);
+        }
+    }
+}
+```
+
+## Dijkstra vs BFS Comparison
+
+Understanding when to use Dijkstra vs BFS for shortest path problems:
+
+```php
+# filename: dijkstra-vs-bfs-comparison.php
+<?php
+
+declare(strict_types=1);
+
+class DijkstraVsBFSComparison
+{
+    public function compare(): array
+    {
+        return [
+            'Graph Type' => [
+                'Dijkstra' => 'Weighted graphs (edges have costs)',
+                'BFS' => 'Unweighted graphs (all edges equal)'
+            ],
+            'Data Structure' => [
+                'Dijkstra' => 'Priority Queue (min-heap)',
+                'BFS' => 'Queue (FIFO)'
+            ],
+            'Shortest Path' => [
+                'Dijkstra' => 'Guaranteed shortest (weighted)',
+                'BFS' => 'Guaranteed shortest (unweighted, minimum edges)'
+            ],
+            'Time Complexity' => [
+                'Dijkstra' => 'O((V + E) log V) with binary heap',
+                'BFS' => 'O(V + E) - faster!'
+            ],
+            'Edge Weights' => [
+                'Dijkstra' => 'Requires non-negative weights',
+                'BFS' => 'No weights needed (treats all as 1)'
+            ],
+            'Use Cases' => [
+                'Dijkstra' => 'GPS routing, network latency, cost optimization',
+                'BFS' => 'Social networks, unweighted grids, level-order traversal'
+            ],
+            'Memory' => [
+                'Dijkstra' => 'O(V) for distances + priority queue',
+                'BFS' => 'O(V) for visited + queue'
+            ],
+            'When to Choose' => [
+                'Dijkstra' => 'Edges have different costs/weights',
+                'BFS' => 'All edges are equal or unweighted'
+            ]
+        ];
+    }
+
+    // Demonstrate difference on same graph structure
+    public function demonstrateDifference(): void
+    {
+        echo "=== Dijkstra vs BFS on Same Graph ===\n\n";
+        
+        // Unweighted graph (BFS)
+        $unweightedGraph = [
+            0 => [1, 2],
+            1 => [0, 3],
+            2 => [0, 3],
+            3 => [1, 2]
+        ];
+        
+        // Weighted graph (Dijkstra) - same structure, different weights
+        $weightedGraph = [
+            0 => [['vertex' => 1, 'weight' => 4], ['vertex' => 2, 'weight' => 1]],
+            1 => [['vertex' => 0, 'weight' => 4], ['vertex' => 3, 'weight' => 1]],
+            2 => [['vertex' => 0, 'weight' => 1], ['vertex' => 3, 'weight' => 5]],
+            3 => [['vertex' => 1, 'weight' => 1], ['vertex' => 2, 'weight' => 5]]
+        ];
+        
+        echo "BFS from 0 to 3 (unweighted):\n";
+        echo "  Path: 0 → 1 → 3 (2 edges, cost = 2)\n";
+        echo "  OR: 0 → 2 → 3 (2 edges, cost = 2)\n";
+        echo "  Both paths have same cost in unweighted graph\n\n";
+        
+        echo "Dijkstra from 0 to 3 (weighted):\n";
+        echo "  Path 0 → 1 → 3: cost = 4 + 1 = 5\n";
+        echo "  Path 0 → 2 → 3: cost = 1 + 5 = 6\n";
+        echo "  Shortest path: 0 → 1 → 3 (cost = 5)\n";
+        echo "  Dijkstra finds optimal path considering weights!\n";
+    }
+}
+
+$comparison = new DijkstraVsBFSComparison();
+print_r($comparison->compare());
+$comparison->demonstrateDifference();
+```
+
+**Key Insight**: If all edges have the same weight (or no weights), BFS is simpler and faster. Use Dijkstra when edges have different costs, distances, or weights that matter for finding the optimal path.
+
 ## Best Practices
 
 1. **Use Priority Queue**
    - Always use min-heap for efficiency
    - Avoid linear search for minimum distance
+   - Exception: Very dense graphs (E ≈ V²) where array-based may be faster
 
 2. **Check for Negative Weights**
    - Dijkstra requires non-negative weights
    - Use Bellman-Ford if negative weights exist
+   - Validate graph before running algorithm
 
 3. **Early Termination**
    - Stop when destination is reached (single-pair)
    - Don't compute unnecessary distances
+   - Consider bidirectional Dijkstra for single-pair queries
 
 4. **Decrease-Key Optimization**
    - Some implementations support updating priorities
    - Can improve performance with Fibonacci heap
+   - PHP's SplMinHeap doesn't support decrease-key (insert duplicates instead)
+
+5. **Choose BFS for Unweighted Graphs**
+   - If all edges are equal, BFS is simpler and faster (O(V+E) vs O((V+E) log V))
+   - Use Dijkstra only when edge weights matter for optimality
+
+6. **Handle Edge Cases**
+   - Self-loops are handled automatically (won't improve distance)
+   - Multiple edges: algorithm naturally selects shortest
+   - Disconnected graphs: unreachable vertices remain INF
+   - Empty graphs: return empty distance array
+
+7. **Choose Right Variant**
+   - Single-pair: Use early termination or bidirectional Dijkstra
+   - All-pairs: Consider Floyd-Warshall for dense graphs
+   - Multi-source: Use multi-source Dijkstra instead of running V times
 
 ## Practice Exercises
 
-1. **Cheapest Flights K Stops**
-   - Find cheapest flight with at most K stops
-   - Modified Dijkstra with stop counting
+### Exercise 1: Cheapest Flights K Stops
 
-2. **Network Delay Time**
-   - Time for signal to reach all nodes from source
-   - Dijkstra to find max distance
+**Goal**: Implement Dijkstra's algorithm with stop constraints
 
-3. **Path with Maximum Probability**
-   - Find path with highest probability of success
-   - Maximize product instead of minimize sum
+Create a function that finds the cheapest flight path with at most K stops between two cities.
 
-4. **Minimum Effort Path**
-   - Find path minimizing maximum absolute difference
-   - Modified Dijkstra tracking max difference
+**Requirements**:
+- Use modified Dijkstra's algorithm that tracks number of stops
+- Handle cases where no path exists within K stops
+- Return both the cost and the path
 
-5. **Swim in Rising Water**
-   - Find path where maximum elevation is minimized
-   - Dijkstra with different cost function
+**Validation**: Test with a flight network graph:
+```php
+$flights = [
+    'NYC' => [['vertex' => 'LA', 'weight' => 500, 'stops' => 0]],
+    'NYC' => [['vertex' => 'Chicago', 'weight' => 200, 'stops' => 0]],
+    'Chicago' => [['vertex' => 'LA', 'weight' => 300, 'stops' => 1]]
+];
+// Find cheapest NYC → LA with max 1 stop
+```
+
+### Exercise 2: Network Delay Time
+
+**Goal**: Find the time for a signal to reach all nodes from a source
+
+**Requirements**:
+- Use Dijkstra's algorithm to find shortest distances to all nodes
+- Return the maximum distance (time for signal to reach farthest node)
+- Handle disconnected graphs (return -1 if some nodes unreachable)
+
+**Validation**: 
+```php
+$network = [
+    0 => [['vertex' => 1, 'weight' => 1], ['vertex' => 2, 'weight' => 2]],
+    1 => [['vertex' => 2, 'weight' => 1]]
+];
+// Signal from node 0: reaches node 1 in 1, node 2 in 2
+// Maximum delay = 2
+```
+
+### Exercise 3: Path with Maximum Probability
+
+**Goal**: Find path with highest probability of success (maximize product)
+
+**Requirements**:
+- Modify Dijkstra to maximize product instead of minimize sum
+- Use max-heap instead of min-heap
+- Convert probabilities to logarithms for numerical stability (optional)
+
+**Validation**: Test with probability graph where edges have success probabilities (0-1).
+
+### Exercise 4: Minimum Effort Path
+
+**Goal**: Find path minimizing maximum absolute difference between consecutive edges
+
+**Requirements**:
+- Track maximum difference encountered so far
+- Use Dijkstra with modified cost function
+- Priority queue ordered by maximum difference, not total distance
+
+**Validation**: Test with grid graph where each edge has a weight representing elevation.
+
+### Exercise 5: Swim in Rising Water
+
+**Goal**: Find path where maximum elevation along path is minimized
+
+**Requirements**:
+- Similar to minimum effort path but simpler
+- Track maximum weight encountered on path
+- Use Dijkstra with max(previous_max, current_edge_weight) as distance
+
+**Validation**: Test with grid representing water levels at each cell.
+
+## Troubleshooting
+
+### Error: "Negative edge weights detected"
+
+**Symptom**: Algorithm produces incorrect shortest paths or infinite loops
+
+**Cause**: Dijkstra's algorithm requires non-negative edge weights. Negative weights can cause the algorithm to revisit vertices and produce incorrect results.
+
+**Solution**: 
+- Validate graph before running Dijkstra: check all edge weights are ≥ 0
+- If negative weights exist, use Bellman-Ford algorithm instead
+- Example validation:
+```php
+foreach ($graph as $edges) {
+    foreach ($edges as $edge) {
+        if ($edge['weight'] < 0) {
+            throw new InvalidArgumentException("Negative weights not allowed");
+        }
+    }
+}
+```
+
+### Problem: Priority Queue Returns Wrong Order
+
+**Symptom**: `SplMinHeap` doesn't order tuples correctly
+
+**Cause**: `SplMinHeap` compares arrays lexicographically, which works for `[distance, vertex]` tuples when distance is first element.
+
+**Solution**: Ensure tuple format is `[priority, value]` where priority is numeric:
+```php
+// Correct
+$pq->insert([5, 2]);  // distance=5, vertex=2
+
+// Wrong - will compare incorrectly
+$pq->insert([2, 5]);  // vertex=2, distance=5
+```
+
+### Problem: Algorithm Too Slow for Large Graphs
+
+**Symptom**: Dijkstra takes too long on graphs with many vertices
+
+**Cause**: Using array-based implementation (O(V²)) instead of priority queue (O((V+E) log V))
+
+**Solution**:
+- Always use priority queue implementation for graphs with V > 100
+- Consider early termination if only need path to specific destination
+- For very large graphs, consider A* with good heuristic
+
+### Problem: Path Reconstruction Returns Empty Array
+
+**Symptom**: `reconstructPath()` returns empty array or incorrect path
+
+**Cause**: `$previous` array not properly maintained, or source/destination mismatch
+
+**Solution**:
+- Ensure `$previous[$v] = $u` is set when updating distance
+- Check that `$previous[$source]` is null (source has no predecessor)
+- Verify destination is reachable: check `$distances[$destination] !== INF`
+
+## Wrap-up
+
+Congratulations! You've mastered Dijkstra's shortest path algorithm, one of the most important algorithms in computer science. Here's what you've accomplished:
+
+- ✓ Understood how Dijkstra's algorithm finds shortest paths using a greedy approach
+- ✓ Implemented both array-based (O(V²)) and priority queue-based (O((V+E) log V)) solutions
+- ✓ Built custom priority queue implementation for better understanding
+- ✓ Learned to reconstruct shortest paths from the `previous` array
+- ✓ Implemented Dijkstra with named vertices for real-world applications
+- ✓ Extended Dijkstra to A* algorithm with heuristic functions
+- ✓ Built practical applications: GPS routing, network optimization, delivery routing
+- ✓ Analyzed time complexity trade-offs between different implementations
+- ✓ Understood limitations and when to use alternative algorithms
+
+Dijkstra's algorithm is the foundation for many routing and navigation systems you use every day. The key insight is using a priority queue to always expand the vertex with minimum distance first, which guarantees optimal shortest paths when edge weights are non-negative. This greedy approach, combined with proper data structures, makes Dijkstra both elegant and efficient.
+
+Remember: Dijkstra requires non-negative weights, uses O((V+E) log V) time with binary heap, and can be optimized further with Fibonacci heaps or extended to A* for faster pathfinding with good heuristics.
 
 ## Key Takeaways
 
@@ -1342,6 +2079,21 @@ class DijkstraLimitations
 - Fundamental algorithm for routing, navigation, and network optimization
 - Many real-world applications: GPS, networking, games, logistics
 
+## Further Reading
+
+- [Breadth-First Search (BFS)](/series/php-algorithms/chapters/23-breadth-first-search) — Compare Dijkstra with BFS for unweighted graphs
+- [Graph Representations](/series/php-algorithms/chapters/21-graph-representations) — Review graph data structures used with Dijkstra
+- [Dijkstra's Algorithm - Wikipedia](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm) — Comprehensive overview with history and variants
+- [A* Search Algorithm - Wikipedia](https://en.wikipedia.org/wiki/A*_search_algorithm) — Learn more about A* pathfinding
+- [Shortest Path Algorithms - GeeksforGeeks](https://www.geeksforgeeks.org/shortest-path-algorithms/) — Visual explanations and comparisons
+- [Network Routing Algorithms](https://www.cisco.com/c/en/us/support/docs/ip/enhanced-interior-gateway-routing-protocol-eigrp/16419-eigrp-toc.html) — Real-world applications in networking
+
+
+<ChapterCheckbox 
+  seriesId="php-algorithms"
+  chapterId="24"
+  label="Dijkstra's Shortest Path understood!"
+/>
 ## 💻 Code Samples
 
 All code examples from this chapter are available in the GitHub repository:

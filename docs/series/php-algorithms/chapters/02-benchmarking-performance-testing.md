@@ -10,6 +10,8 @@ prerequisites:
   - "Familiarity with PHP classes"
   - "Completion of Chapters 0-1"
 ---
+![02: Benchmarking & Performance Testing](/images/php-algorithms/chapter-02-benchmarking-hero-full.webp)
+
 
 <div class="breadcrumbs">
   <a href="/">Home</a>
@@ -1305,6 +1307,12 @@ function testSortPerformance(): void
 - **Warm up** before measuring to avoid JIT overhead
 - Watch for **hidden costs** in PHP functions
 
+<ChapterCheckbox 
+  seriesId="php-algorithms"
+  chapterId="02"
+  label="Completed Benchmarking & Performance Testing!"
+/>
+
 ## What's Next
 
 In the next chapter, we'll dive deep into **Recursion Fundamentals**, learning to write elegant recursive solutions and understanding their performance characteristics.
@@ -1313,7 +1321,7 @@ In the next chapter, we'll dive deep into **Recursion Fundamentals**, learning t
 
 All code examples from this chapter are available in the GitHub repository:
 
-**[View Chapter 02 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-02)**
+**[View Chapter 02 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/php-algorithms/chapter-02)**
 
 Files included:
 - `01-benchmark-framework.php` - Complete benchmarking system with memory profiler, statistical analysis, and comparison tools
@@ -1322,7 +1330,7 @@ Files included:
 Clone the repository to run the examples locally:
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
-cd codewithphp/code-samples/php-algorithms/chapter-02
+cd codewithphp/code/php-algorithms/chapter-02
 php 01-benchmark-framework.php
 ```
 

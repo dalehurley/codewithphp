@@ -10,6 +10,8 @@ prerequisites:
   - "Familiarity with linked structures"
   - "Completion of Chapters 15-17"
 ---
+![18: Trees & Binary Search Trees](/images/php-algorithms/chapter-18-binary-search-trees-hero-full.webp)
+
 
 <div class="breadcrumbs">
   <a href="/">Home</a>
@@ -21,7 +23,7 @@ prerequisites:
   <span>Chapter 18</span>
 </div>
 
-# Trees & Binary Search Trees <span class="difficulty-badge difficulty-advanced">Advanced</span>
+# 18: Trees & Binary Search Trees <span class="difficulty-badge difficulty-advanced">Advanced</span>
 
 ## What You'll Learn
 
@@ -37,12 +39,34 @@ prerequisites:
 
 Before starting this chapter, you should have:
 
-- ✓ Strong understanding of recursion (covered in Chapter 3)
-- ✓ Familiarity with linked structures from Chapter 16
-- ✓ Completion of Chapters 15-17 (data structures)
-- ✓ Comfort with node-based data structures
+- ✓ Completion of [Chapter 3: Recursion Fundamentals](/series/php-algorithms/chapters/03-recursion-fundamentals)
+- ✓ Completion of [Chapter 16: Linked Lists](/series/php-algorithms/chapters/16-linked-lists)
+- ✓ Completion of [Chapter 15: Arrays & Dynamic Arrays](/series/php-algorithms/chapters/15-arrays-dynamic-arrays)
+- ✓ Completion of [Chapter 17: Stacks & Queues](/series/php-algorithms/chapters/17-stacks-queues)
+- ✓ Comfort with node-based data structures and recursive algorithms
 
-Trees are hierarchical data structures fundamental to computer science. From file systems to database indexes, trees power many core technologies. In this chapter, we'll explore tree concepts and implement Binary Search Trees (BSTs), one of the most important tree variants that enables efficient O(log n) searching, insertion, and deletion.
+## Overview
+
+Trees are hierarchical data structures fundamental to computer science. From file systems to database indexes, trees power many core technologies. Unlike linear structures (arrays, linked lists), trees organize data in a branching structure that enables efficient searching, insertion, and deletion operations.
+
+In this chapter, we'll explore tree concepts and implement Binary Search Trees (BSTs), one of the most important tree variants. BSTs maintain a special ordering property that enables O(log n) average-case performance for search, insert, and delete operations—dramatically faster than linear data structures for large datasets.
+
+We'll start with tree terminology and basic binary tree concepts, then dive deep into BST implementation. You'll master insertion, search, and deletion operations using recursion, understand the complexity trade-offs, and learn how to apply BSTs to solve practical problems like range queries and dictionary implementations.
+
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- Complete Binary Search Tree implementation with all core operations (recursive and iterative)
+- Tree visualization tools for debugging and understanding structure
+- BST validation functions to ensure tree properties are maintained
+- Advanced BST operations: successor/predecessor, LCA, range queries, kth smallest
+- Both recursive and iterative implementations for comparison and learning
+- Real-world applications: dictionary/spell checker, file system hierarchy
+- Performance benchmarking tools comparing BST vs arrays and recursive vs iterative
+- Robust error handling and edge case management
+- Framework integration examples for Laravel and Symfony
+- Security-hardened versions with overflow protection and input validation
 
 ## What Is a Tree?
 
@@ -75,6 +99,11 @@ A **binary tree** is a tree where each node has at most 2 children (left and rig
 ### Node Structure
 
 ```php
+# filename: TreeNode.php
+<?php
+
+declare(strict_types=1);
+
 class TreeNode
 {
     public function __construct(
@@ -88,6 +117,13 @@ class TreeNode
 ### Creating a Binary Tree
 
 ```php
+# filename: create-binary-tree.php
+<?php
+
+declare(strict_types=1);
+
+require_once 'TreeNode.php';
+
 // Manual construction
 $root = new TreeNode(1);
 $root->left = new TreeNode(2);
@@ -163,6 +199,13 @@ A **Binary Search Tree** is a binary tree where:
 ## Implementing a BST
 
 ```php
+# filename: BinarySearchTree.php
+<?php
+
+declare(strict_types=1);
+
+require_once 'TreeNode.php';
+
 class BinarySearchTree
 {
     private ?TreeNode $root = null;
@@ -358,11 +401,303 @@ echo $bst->height(); // 2
 echo $bst->size(); // 6
 ```
 
+## Iterative Implementations
+
+While recursive implementations are elegant and intuitive for BSTs, iterative versions offer advantages:
+
+- **Avoid stack overflow** for very deep trees
+- **Better performance** (no function call overhead)
+- **Easier to debug** (no call stack to trace)
+- **Memory efficient** (no recursion stack)
+
+Here are iterative versions of the core operations:
+
+```php
+# filename: BinarySearchTreeIterative.php
+<?php
+
+declare(strict_types=1);
+
+require_once 'TreeNode.php';
+
+class BinarySearchTreeIterative
+{
+    private ?TreeNode $root = null;
+
+    // Iterative insert - O(log n) average, O(n) worst
+    public function insert(mixed $value): void
+    {
+        $newNode = new TreeNode($value);
+
+        if ($this->root === null) {
+            $this->root = $newNode;
+            return;
+        }
+
+        $current = $this->root;
+        while (true) {
+            if ($value < $current->data) {
+                if ($current->left === null) {
+                    $current->left = $newNode;
+                    return;
+                }
+                $current = $current->left;
+            } elseif ($value > $current->data) {
+                if ($current->right === null) {
+                    $current->right = $newNode;
+                    return;
+                }
+                $current = $current->right;
+            } else {
+                // Duplicate value - handle as needed
+                return;
+            }
+        }
+    }
+
+    // Iterative search - O(log n) average, O(n) worst
+    public function search(mixed $value): bool
+    {
+        $current = $this->root;
+
+        while ($current !== null) {
+            if ($value === $current->data) {
+                return true;
+            }
+
+            if ($value < $current->data) {
+                $current = $current->left;
+            } else {
+                $current = $current->right;
+            }
+        }
+
+        return false;
+    }
+
+    // Iterative delete - O(log n) average, O(n) worst
+    public function delete(mixed $value): void
+    {
+        $this->root = $this->deleteNode($this->root, $value);
+    }
+
+    private function deleteNode(?TreeNode $node, mixed $value): ?TreeNode
+    {
+        if ($node === null) {
+            return null;
+        }
+
+        // Find the node to delete using iterative approach
+        $parent = null;
+        $current = $node;
+        $isLeftChild = false;
+
+        // Find node and its parent
+        while ($current !== null && $current->data !== $value) {
+            $parent = $current;
+            if ($value < $current->data) {
+                $current = $current->left;
+                $isLeftChild = true;
+            } else {
+                $current = $current->right;
+                $isLeftChild = false;
+            }
+        }
+
+        // Node not found
+        if ($current === null) {
+            return $node;
+        }
+
+        // Case 1: Leaf node (no children)
+        if ($current->left === null && $current->right === null) {
+            if ($parent === null) {
+                return null; // Deleting root
+            }
+            if ($isLeftChild) {
+                $parent->left = null;
+            } else {
+                $parent->right = null;
+            }
+            return $node;
+        }
+
+        // Case 2: One child
+        if ($current->left === null) {
+            if ($parent === null) {
+                return $current->right; // New root
+            }
+            if ($isLeftChild) {
+                $parent->left = $current->right;
+            } else {
+                $parent->right = $current->right;
+            }
+            return $node;
+        }
+
+        if ($current->right === null) {
+            if ($parent === null) {
+                return $current->left; // New root
+            }
+            if ($isLeftChild) {
+                $parent->left = $current->left;
+            } else {
+                $parent->right = $current->left;
+            }
+            return $node;
+        }
+
+        // Case 3: Two children - find inorder successor
+        $successorParent = $current;
+        $successor = $current->right;
+
+        // Find leftmost node in right subtree
+        while ($successor->left !== null) {
+            $successorParent = $successor;
+            $successor = $successor->left;
+        }
+
+        // Replace current node's data with successor's data
+        $current->data = $successor->data;
+
+        // Remove successor
+        if ($successorParent === $current) {
+            // Successor is direct right child
+            $current->right = $successor->right;
+        } else {
+            // Successor is deeper in right subtree
+            $successorParent->left = $successor->right;
+        }
+
+        return $node;
+    }
+
+    // Get root for testing
+    public function getRoot(): ?TreeNode
+    {
+        return $this->root;
+    }
+}
+
+// Usage
+$bst = new BinarySearchTreeIterative();
+$bst->insert(8);
+$bst->insert(3);
+$bst->insert(10);
+$bst->insert(1);
+$bst->insert(6);
+$bst->insert(14);
+
+echo $bst->search(6) ? "Found" : "Not found"; // Found
+$bst->delete(6);
+echo $bst->search(6) ? "Found" : "Not found"; // Not found
+```
+
+### When to Use Iterative vs Recursive
+
+**Use Recursive when:**
+- Code clarity is priority
+- Tree depth is guaranteed to be reasonable
+- Teaching/learning BST concepts
+- Code simplicity matters more than performance
+
+**Use Iterative when:**
+- Tree depth could be very large (risk of stack overflow)
+- Maximum performance is critical
+- Memory constraints are tight
+- Production systems with unknown input sizes
+
+**Performance Comparison:**
+
+```php
+# filename: compare-recursive-iterative.php
+<?php
+
+declare(strict_types=1);
+
+require_once 'BinarySearchTree.php';
+require_once 'BinarySearchTreeIterative.php';
+
+function comparePerformance(): void
+{
+    $n = 10000;
+    $values = range(1, $n);
+    shuffle($values);
+
+    // Recursive BST
+    $start = microtime(true);
+    $recursiveBST = new BinarySearchTree();
+    foreach ($values as $value) {
+        $recursiveBST->insert($value);
+    }
+    $recursiveTime = microtime(true) - $start;
+
+    // Iterative BST
+    $start = microtime(true);
+    $iterativeBST = new BinarySearchTreeIterative();
+    foreach ($values as $value) {
+        $iterativeBST->insert($value);
+    }
+    $iterativeTime = microtime(true) - $start;
+
+    echo sprintf("Recursive insert: %.4f seconds\n", $recursiveTime);
+    echo sprintf("Iterative insert: %.4f seconds\n", $iterativeTime);
+    echo sprintf("Difference: %.2f%%\n", 
+        (($recursiveTime - $iterativeTime) / $recursiveTime) * 100
+    );
+
+    // Search comparison
+    $searchValues = array_slice($values, 0, 1000);
+    
+    $start = microtime(true);
+    foreach ($searchValues as $value) {
+        $recursiveBST->search($value);
+    }
+    $recursiveSearchTime = microtime(true) - $start;
+
+    $start = microtime(true);
+    foreach ($searchValues as $value) {
+        $iterativeBST->search($value);
+    }
+    $iterativeSearchTime = microtime(true) - $start;
+
+    echo sprintf("\nRecursive search: %.4f seconds\n", $recursiveSearchTime);
+    echo sprintf("Iterative search: %.4f seconds\n", $iterativeSearchTime);
+    echo sprintf("Difference: %.2f%%\n",
+        (($recursiveSearchTime - $iterativeSearchTime) / $recursiveSearchTime) * 100
+    );
+}
+
+// Sample output:
+// Recursive insert: 0.0234 seconds
+// Iterative insert: 0.0198 seconds
+// Difference: 15.38%
+//
+// Recursive search: 0.0045 seconds
+// Iterative search: 0.0038 seconds
+// Difference: 15.56%
+```
+
+**Key Differences:**
+
+1. **Insert**: Iterative tracks parent pointer during traversal
+2. **Search**: Iterative uses simple while loop instead of recursion
+3. **Delete**: Iterative explicitly tracks parent and direction (left/right child)
+
+Both approaches have the same time complexity, but iterative avoids recursion overhead and stack overflow risks.
+
 ## Visual Tree Representation
 
 Let's create a helper to visualize our trees:
 
 ```php
+# filename: TreeVisualizer.php
+<?php
+
+declare(strict_types=1);
+
+require_once 'TreeNode.php';
+
 class TreeVisualizer
 {
     public static function display(?TreeNode $node, string $prefix = '', bool $isLeft = true): void
@@ -650,8 +985,15 @@ Final tree:
 Start at root, go left if smaller, right if larger:
 
 ```php
+# filename: insert-visualized.php
+<?php
+
+declare(strict_types=1);
+
+require_once 'TreeNode.php';
+
 // Inserting 7 into BST
-function insertVisualized(TreeNode $node, int $value, int $depth = 0): TreeNode
+function insertVisualized(?TreeNode $node, int $value, int $depth = 0): ?TreeNode
 {
     $indent = str_repeat("  ", $depth);
 
@@ -723,6 +1065,13 @@ Replace with successor (10):
 Check if a tree is a valid BST:
 
 ```php
+# filename: validate-bst.php
+<?php
+
+declare(strict_types=1);
+
+require_once 'TreeNode.php';
+
 function isValidBST(?TreeNode $node, ?int $min = null, ?int $max = null): bool
 {
     // Empty tree is valid
@@ -763,7 +1112,14 @@ echo isValidBST($invalid) ? "Valid" : "Invalid"; // Invalid
 Next larger value:
 
 ```php
-function inorderSuccessor(TreeNode $root, int $value): ?int
+# filename: inorder-successor.php
+<?php
+
+declare(strict_types=1);
+
+require_once 'TreeNode.php';
+
+function inorderSuccessor(?TreeNode $root, int $value): ?int
 {
     $successor = null;
     $current = $root;
@@ -785,7 +1141,14 @@ function inorderSuccessor(TreeNode $root, int $value): ?int
 Next smaller value:
 
 ```php
-function inorderPredecessor(TreeNode $root, int $value): ?int
+# filename: inorder-predecessor.php
+<?php
+
+declare(strict_types=1);
+
+require_once 'TreeNode.php';
+
+function inorderPredecessor(?TreeNode $root, int $value): ?int
 {
     $predecessor = null;
     $current = $root;
@@ -808,7 +1171,14 @@ function inorderPredecessor(TreeNode $root, int $value): ?int
 Find the lowest common ancestor of two nodes:
 
 ```php
-function findLCA(TreeNode $root, int $n1, int $n2): ?TreeNode
+# filename: lowest-common-ancestor.php
+<?php
+
+declare(strict_types=1);
+
+require_once 'TreeNode.php';
+
+function findLCA(?TreeNode $root, int $n1, int $n2): ?TreeNode
 {
     if ($root === null) {
         return null;
@@ -834,6 +1204,13 @@ function findLCA(TreeNode $root, int $n1, int $n2): ?TreeNode
 Find all values in a range:
 
 ```php
+# filename: range-query.php
+<?php
+
+declare(strict_types=1);
+
+require_once 'TreeNode.php';
+
 function rangeQuery(
     ?TreeNode $node,
     int $min,
@@ -871,7 +1248,14 @@ $result = rangeQuery($root, 5, 12);
 Find the kth smallest element in BST:
 
 ```php
-function kthSmallest(TreeNode $root, int $k): ?int
+# filename: kth-smallest.php
+<?php
+
+declare(strict_types=1);
+
+require_once 'TreeNode.php';
+
+function kthSmallest(?TreeNode $root, int $k): ?int
 {
     $count = 0;
     $result = null;
@@ -905,6 +1289,13 @@ function kthSmallest(TreeNode $root, int $k): ?int
 Build a balanced BST from sorted array:
 
 ```php
+# filename: sorted-array-to-bst.php
+<?php
+
+declare(strict_types=1);
+
+require_once 'TreeNode.php';
+
 function sortedArrayToBST(array $nums): ?TreeNode
 {
     return buildBST($nums, 0, count($nums) - 1);
@@ -942,6 +1333,13 @@ $balanced = sortedArrayToBST($sorted);
 ### 1. Dictionary/Spell Checker
 
 ```php
+# filename: Dictionary.php
+<?php
+
+declare(strict_types=1);
+
+require_once 'BinarySearchTree.php';
+
 class Dictionary
 {
     private BinarySearchTree $words;
@@ -982,6 +1380,11 @@ echo $dict->isValidWord("hello") ? "Valid" : "Invalid";
 ### 2. File System Hierarchy
 
 ```php
+# filename: FileSystem.php
+<?php
+
+declare(strict_types=1);
+
 class FileNode
 {
     public function __construct(
@@ -1054,6 +1457,14 @@ class FileSystem
 Let's compare BST against other data structures:
 
 ```php
+# filename: benchmark-bst.php
+<?php
+
+declare(strict_types=1);
+
+require_once 'BinarySearchTree.php';
+require_once 'sorted-array-to-bst.php';
+
 function benchmarkDataStructures(): void
 {
     $operations = 10000;
@@ -1110,18 +1521,45 @@ function benchmarkBalancedVsSkewed(): void
     echo "=== Balanced BST (from sorted array) ===\n";
 
     // Create balanced BST
+    require_once 'TreeNode.php';
+    require_once 'sorted-array-to-bst.php';
     $sorted = range(1, $n);
     $balancedRoot = sortedArrayToBST($sorted);
+
+    // Helper function to search in tree
+    $searchTree = function(?TreeNode $node, int $value): bool {
+        if ($node === null) {
+            return false;
+        }
+        if ($value === $node->data) {
+            return true;
+        }
+        if ($value < $node->data) {
+            return $searchTree($node->left, $value);
+        }
+        return $searchTree($node->right, $value);
+    };
+
+    // Helper function to calculate height
+    $calculateHeight = function(?TreeNode $node) use (&$calculateHeight): int {
+        if ($node === null) {
+            return -1;
+        }
+        return 1 + max(
+            $calculateHeight($node->left),
+            $calculateHeight($node->right)
+        );
+    };
 
     // Search in balanced tree
     $start = microtime(true);
     for ($i = 0; $i < $searches; $i++) {
-        searchTree($balancedRoot, rand(1, $n));
+        $searchTree($balancedRoot, rand(1, $n));
     }
     $balancedTime = microtime(true) - $start;
     echo sprintf("Search time: %.4f seconds\n", $balancedTime);
     echo sprintf("Avg height: %d (optimal: %d)\n",
-        calculateHeight($balancedRoot),
+        $calculateHeight($balancedRoot),
         (int)ceil(log($n, 2))
     );
 
@@ -1173,6 +1611,13 @@ function benchmarkBalancedVsSkewed(): void
 Robust BST implementations must handle edge cases:
 
 ```php
+# filename: RobustBST.php
+<?php
+
+declare(strict_types=1);
+
+require_once 'TreeNode.php';
+
 class RobustBST
 {
     private ?TreeNode $root = null;
@@ -1363,7 +1808,11 @@ class RobustBST
 ### Laravel: BST-based Cache Service
 
 ```php
-// app/Services/TreeCacheService.php
+# filename: app/Services/TreeCacheService.php
+<?php
+
+declare(strict_types=1);
+
 namespace App\Services;
 
 use Illuminate\Support\Facades\Log;
@@ -1439,7 +1888,11 @@ class CacheEntry
 ### Symfony: BST-based Index Service
 
 ```php
-// src/Service/IndexService.php
+# filename: src/Service/IndexService.php
+<?php
+
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Entity\Document;
@@ -1513,6 +1966,13 @@ class IndexService
 ### 1. Prevent Stack Overflow from Deep Recursion
 
 ```php
+# filename: SecureBST.php
+<?php
+
+declare(strict_types=1);
+
+require_once 'RobustBST.php';
+
 class SecureBST extends RobustBST
 {
     private int $maxDepth = 100;
@@ -1544,6 +2004,13 @@ class SecureBST extends RobustBST
 ### 2. Validate and Sanitize Input
 
 ```php
+# filename: SecureBSTInputValidation.php
+<?php
+
+declare(strict_types=1);
+
+require_once 'RobustBST.php';
+
 class SecureBST extends RobustBST
 {
     public function insert(mixed $value): void
@@ -1576,6 +2043,13 @@ class SecureBST extends RobustBST
 ### 3. Rate Limiting for Operations
 
 ```php
+# filename: ThrottledBST.php
+<?php
+
+declare(strict_types=1);
+
+require_once 'RobustBST.php';
+
 class ThrottledBST extends RobustBST
 {
     private int $operationCount = 0;
@@ -1837,6 +2311,13 @@ class GoodBST
 Convert BST to string and back:
 
 ```php
+# filename: exercise-serialize-bst.php
+<?php
+
+declare(strict_types=1);
+
+require_once 'TreeNode.php';
+
 function serialize(?TreeNode $root): string
 {
     // Your code here
@@ -1853,9 +2334,16 @@ function deserialize(string $data): ?TreeNode
 Create an iterator that returns nodes in sorted order:
 
 ```php
+# filename: exercise-bst-iterator.php
+<?php
+
+declare(strict_types=1);
+
+require_once 'TreeNode.php';
+
 class BSTIterator
 {
-    public function __construct(TreeNode $root) {}
+    public function __construct(?TreeNode $root) {}
 
     public function hasNext(): bool {}
 
@@ -1868,7 +2356,14 @@ class BSTIterator
 Merge two BSTs into one balanced BST:
 
 ```php
-function mergeBSTs(TreeNode $root1, TreeNode $root2): TreeNode
+# filename: exercise-merge-bsts.php
+<?php
+
+declare(strict_types=1);
+
+require_once 'TreeNode.php';
+
+function mergeBSTs(?TreeNode $root1, ?TreeNode $root2): ?TreeNode
 {
     // Your code here
 }
@@ -1882,9 +2377,17 @@ function mergeBSTs(TreeNode $root1, TreeNode $root2): TreeNode
 - **BST operations** are O(log n) average, O(n) worst
 - **Deletion** has 3 cases: leaf, one child, two children
 - **Inorder traversal** of BST yields sorted sequence
+- **Recursive implementations** are elegant but risk stack overflow
+- **Iterative implementations** avoid stack overflow and offer better performance
 - **Balanced trees** needed to guarantee O(log n) performance
 - Common applications: dictionaries, file systems, databases
 
+
+<ChapterCheckbox 
+  seriesId="php-algorithms"
+  chapterId="18"
+  label="Trees and Binary Search Trees understood!"
+/>
 ## What's Next
 
 In the next chapter, we'll explore **Tree Traversal Algorithms**, learning different ways to visit all nodes in a tree systematically.
@@ -1893,12 +2396,12 @@ In the next chapter, we'll explore **Tree Traversal Algorithms**, learning diffe
 
 All code examples from this chapter are available in the GitHub repository:
 
-**[View Chapter 18 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-18)**
+**[View Chapter 18 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/php-algorithms/chapter-18)**
 
 Clone the repository to run examples:
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
-cd codewithphp/code-samples/php-algorithms/chapter-18
+cd codewithphp/code/php-algorithms/chapter-18
 php 01-*.php
 ```
 

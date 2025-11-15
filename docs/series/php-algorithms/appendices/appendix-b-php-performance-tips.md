@@ -1389,6 +1389,12 @@ $results = benchmark(function() {
 print_r($results);
 ```
 
+<ChapterCheckbox 
+  seriesId="php-algorithms"
+  chapterId="appendix-b"
+  label="PHP Performance Tips reviewed!"
+/>
+
 ## Resources
 
 - [PHP OPcache Documentation](https://www.php.net/manual/en/book.opcache.php)

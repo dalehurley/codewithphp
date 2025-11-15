@@ -1,12 +1,16 @@
 ---
-title: "Graph Representations"
+title: "21: Graph Representations"
 description: "Learn the fundamental ways to represent graphs in code including adjacency matrix, adjacency list, and edge list, with practical implementations in PHP"
 series: "php-algorithms"
 chapter: 21
 order: 21
-difficulty: "intermediate"
-prerequisites: ["Arrays & Dynamic Arrays", "Hash Tables & Hash Functions"]
+difficulty: "Intermediate"
+prerequisites:
+  - "/series/php-algorithms/chapters/15-arrays-dynamic-arrays"
+  - "/series/php-algorithms/chapters/13-hash-tables-hash-functions"
 ---
+![Graph Representations](/images/php-algorithms/chapter-21-graph-representations-hero-full.webp)
+
 
 <div class="breadcrumbs">
   <a href="/">Home</a>
@@ -18,7 +22,15 @@ prerequisites: ["Arrays & Dynamic Arrays", "Hash Tables & Hash Functions"]
   <span>Chapter 21</span>
 </div>
 
-# Graph Representations <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
+# 21: Graph Representations <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
+
+## Overview
+
+Graphs are powerful data structures that model relationships between objects—from social networks to road maps, from web page links to dependency trees. Understanding how to represent graphs efficiently is fundamental to implementing graph algorithms. The representation you choose can mean the difference between an algorithm that runs in seconds versus one that takes hours!
+
+In this chapter, you'll learn three fundamental ways to represent graphs in code: the adjacency matrix (perfect for dense graphs with frequent edge lookups), the adjacency list (space-efficient for sparse graphs), and the edge list (ideal for edge-focused algorithms). We'll implement each representation in PHP with both weighted and unweighted variants, explore real-world applications like social networks and package dependency resolution, and learn when to choose each representation based on your specific use case.
+
+By the end of this chapter, you'll have a solid foundation in graph representations that will enable you to implement graph algorithms efficiently in the chapters that follow.
 
 ## What You'll Learn
 
@@ -39,7 +51,58 @@ Before starting this chapter, you should have:
 - ✓ Familiarity with object-oriented PHP
 - ✓ Basic understanding of graph concepts
 
-Graphs are powerful data structures that model relationships between objects—from social networks to road maps, from web page links to dependency trees. Understanding how to represent graphs efficiently is fundamental to implementing graph algorithms. The representation you choose can mean the difference between an algorithm that runs in seconds versus one that takes hours!
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- Complete implementations of three graph representations (adjacency matrix, adjacency list, edge list)
+- Weighted and unweighted variants of each representation
+- A hash map-based graph for named vertices
+- Real-world applications including social network analysis and package dependency resolution
+- A decision guide for choosing the right representation based on graph properties
+
+## Quick Start
+
+Let's create a simple graph to see how it works:
+
+```php
+# filename: quick-start.php
+<?php
+
+declare(strict_types=1);
+
+// Simple adjacency list representation
+$graph = [];
+$graph[0] = [1, 2];  // Vertex 0 connects to vertices 1 and 2
+$graph[1] = [0, 2];  // Vertex 1 connects to vertices 0 and 2
+$graph[2] = [0, 1, 3];  // Vertex 2 connects to vertices 0, 1, and 3
+$graph[3] = [2];  // Vertex 3 connects to vertex 2
+
+// Check if edge exists
+function hasEdge(array $graph, int $from, int $to): bool
+{
+    return in_array($to, $graph[$from] ?? [], true);
+}
+
+// Get neighbors
+function getNeighbors(array $graph, int $vertex): array
+{
+    return $graph[$vertex] ?? [];
+}
+
+// Example usage
+echo "Neighbors of vertex 2: " . implode(', ', getNeighbors($graph, 2)) . "\n";
+echo "Edge from 0 to 1 exists: " . (hasEdge($graph, 0, 1) ? 'Yes' : 'No') . "\n";
+```
+
+Expected output:
+
+```
+Neighbors of vertex 2: 0, 1, 3
+Edge from 0 to 1 exists: Yes
+```
+
+This simple example shows the basic concept: each vertex has a list of its neighbors. In the rest of this chapter, we'll explore more sophisticated representations and their trade-offs.
 
 ## What is a Graph?
 
@@ -50,7 +113,10 @@ A graph G = (V, E) consists of:
 ### Graph Types
 
 ```php
+# filename: graph-types.php
 <?php
+
+declare(strict_types=1);
 
 // Undirected Graph: edges have no direction
 // Example: Facebook friendships (if A is friends with B, B is friends with A)
@@ -81,7 +147,10 @@ A graph G = (V, E) consists of:
 ### Graph Properties
 
 ```php
+# filename: graph-properties.php
 <?php
+
+declare(strict_types=1);
 
 class GraphProperties
 {
@@ -107,12 +176,15 @@ class GraphProperties
 
 ## Adjacency Matrix
 
-A 2D array where `matrix[i][j]` represents the edge from vertex i to vertex j.
+The adjacency matrix is the most intuitive representation: a 2D array where `matrix[i][j]` represents the edge from vertex i to vertex j. This representation excels when you need fast edge lookups (O(1) time) and works best for dense graphs where most vertices are connected.
 
 ### Unweighted Adjacency Matrix
 
 ```php
+# filename: adjacency-matrix.php
 <?php
+
+declare(strict_types=1);
 
 class AdjacencyMatrix
 {
@@ -209,7 +281,10 @@ echo "Degree of 2: " . $graph->getDegree(2) . "\n";  // 3
 ### Weighted Adjacency Matrix
 
 ```php
+# filename: weighted-adjacency-matrix.php
 <?php
+
+declare(strict_types=1);
 
 class WeightedAdjacencyMatrix
 {
@@ -305,12 +380,15 @@ print_r($graph->getNeighborsWithWeights(2));
 
 ## Adjacency List
 
-An array of lists where each vertex has a list of its neighbors. More space-efficient for sparse graphs.
+The adjacency list representation stores each vertex's neighbors in a separate list, making it much more space-efficient for sparse graphs. Instead of allocating space for all possible edges (like the matrix), we only store edges that actually exist. This makes it the preferred choice for most real-world graphs, which are typically sparse.
 
 ### Unweighted Adjacency List
 
 ```php
+# filename: adjacency-list.php
 <?php
+
+declare(strict_types=1);
 
 class AdjacencyList
 {
@@ -409,7 +487,10 @@ echo "Neighbors of 2: " . implode(', ', $graph->getNeighbors(2)) . "\n";  // 0, 
 ### Weighted Adjacency List
 
 ```php
+# filename: weighted-adjacency-list.php
 <?php
+
+declare(strict_types=1);
 
 class WeightedAdjacencyList
 {
@@ -495,10 +576,13 @@ echo "Weight from 0 to 1: " . $graph->getWeight(0, 1) . "\n";  // 5
 
 ## Edge List
 
-A simple list of all edges in the graph. Efficient for algorithms that process all edges.
+The edge list is the simplest representation: just a list of all edges in the graph. While it's not efficient for most operations (edge lookups require scanning the entire list), it's perfect for algorithms that need to process all edges, such as Kruskal's algorithm for finding minimum spanning trees.
 
 ```php
+# filename: edge-list.php
 <?php
+
+declare(strict_types=1);
 
 class Edge
 {
@@ -587,12 +671,101 @@ echo "\nAfter sorting by weight:\n";
 $graph->print();
 ```
 
+## Adjacency Set Representation
+
+An optimized variant of adjacency list using hash sets (associative arrays) instead of arrays for O(1) edge lookups while maintaining efficient neighbor iteration.
+
+```php
+# filename: adjacency-set.php
+<?php
+
+declare(strict_types=1);
+
+class AdjacencySet
+{
+    private array $sets = [];
+    private int $vertices;
+
+    public function __construct(int $vertices)
+    {
+        $this->vertices = $vertices;
+        $this->sets = array_fill(0, $vertices, []);
+    }
+
+    // Add edge (undirected graph) - O(1) lookup
+    public function addEdge(int $from, int $to): void
+    {
+        $this->sets[$from][$to] = true;
+        $this->sets[$to][$from] = true;
+    }
+
+    // Add directed edge
+    public function addDirectedEdge(int $from, int $to): void
+    {
+        $this->sets[$from][$to] = true;
+    }
+
+    // Remove edge - O(1)
+    public function removeEdge(int $from, int $to): void
+    {
+        unset($this->sets[$from][$to]);
+        unset($this->sets[$to][$from]);
+    }
+
+    // Check if edge exists - O(1) instead of O(V)!
+    public function hasEdge(int $from, int $to): bool
+    {
+        return isset($this->sets[$from][$to]);
+    }
+
+    // Get neighbors - O(degree)
+    public function getNeighbors(int $vertex): array
+    {
+        return array_keys($this->sets[$vertex] ?? []);
+    }
+
+    // Get degree
+    public function getDegree(int $vertex): int
+    {
+        return count($this->sets[$vertex] ?? []);
+    }
+
+    // Print set
+    public function print(): void
+    {
+        for ($i = 0; $i < $this->vertices; $i++) {
+            echo "$i: " . implode(' -> ', $this->getNeighbors($i)) . "\n";
+        }
+    }
+}
+
+// Example usage
+$graph = new AdjacencySet(4);
+$graph->addEdge(0, 1);
+$graph->addEdge(0, 2);
+$graph->addEdge(1, 2);
+$graph->addEdge(2, 3);
+
+echo "Has edge 0->1: " . ($graph->hasEdge(0, 1) ? 'Yes' : 'No') . "\n";  // Yes - O(1) lookup!
+echo "Has edge 0->3: " . ($graph->hasEdge(0, 3) ? 'Yes' : 'No') . "\n";  // No
+echo "Neighbors of 2: " . implode(', ', $graph->getNeighbors(2)) . "\n";  // 0, 1, 3
+```
+
+**When to use Adjacency Set:**
+- Need fast edge existence checks (O(1) vs O(V) in regular adjacency list)
+- Graph has many edge existence queries
+- Memory overhead of hash sets is acceptable
+- Still need efficient neighbor iteration
+
 ## Hash Map Representation
 
 Using associative arrays for named vertices (non-integer identifiers).
 
 ```php
+# filename: hashmap-graph.php
 <?php
+
+declare(strict_types=1);
 
 class HashMapGraph
 {
@@ -699,12 +872,699 @@ $roads->print();
 // Washington: Philadelphia(140)
 ```
 
+## Dynamic Vertex Management
+
+Most graph representations assume a fixed number of vertices. However, real-world applications often need to add or remove vertices dynamically. Here's how to handle dynamic graphs:
+
+### Dynamic Adjacency List
+
+```php
+# filename: dynamic-adjacency-list.php
+<?php
+
+declare(strict_types=1);
+
+class DynamicAdjacencyList
+{
+    private array $list = [];
+    private int $nextVertexId = 0;
+
+    // Add a new vertex and return its ID
+    public function addVertex(): int
+    {
+        $vertexId = $this->nextVertexId++;
+        $this->list[$vertexId] = [];
+        return $vertexId;
+    }
+
+    // Remove vertex and all its edges
+    public function removeVertex(int $vertex): void
+    {
+        if (!isset($this->list[$vertex])) {
+            return;
+        }
+
+        // Remove all edges connected to this vertex
+        foreach ($this->list[$vertex] as $neighbor) {
+            if (isset($this->list[$neighbor])) {
+                $this->list[$neighbor] = array_values(
+                    array_filter($this->list[$neighbor], fn($v) => $v !== $vertex)
+                );
+            }
+        }
+
+        // Remove the vertex
+        unset($this->list[$vertex]);
+    }
+
+    // Add edge
+    public function addEdge(int $from, int $to): void
+    {
+        if (!isset($this->list[$from]) || !isset($this->list[$to])) {
+            throw new InvalidArgumentException("Vertices must exist before adding edge");
+        }
+
+        if (!in_array($to, $this->list[$from], true)) {
+            $this->list[$from][] = $to;
+        }
+        if (!in_array($from, $this->list[$to], true)) {
+            $this->list[$to][] = $from;
+        }
+    }
+
+    // Get neighbors
+    public function getNeighbors(int $vertex): array
+    {
+        return $this->list[$vertex] ?? [];
+    }
+
+    // Get all vertices
+    public function getVertices(): array
+    {
+        return array_keys($this->list);
+    }
+
+    // Get vertex count
+    public function getVertexCount(): int
+    {
+        return count($this->list);
+    }
+
+    // Check if vertex exists
+    public function hasVertex(int $vertex): bool
+    {
+        return isset($this->list[$vertex]);
+    }
+}
+
+// Example usage
+$graph = new DynamicAdjacencyList();
+
+// Add vertices dynamically
+$v0 = $graph->addVertex();
+$v1 = $graph->addVertex();
+$v2 = $graph->addVertex();
+
+// Add edges
+$graph->addEdge($v0, $v1);
+$graph->addEdge($v1, $v2);
+
+echo "Vertices: " . implode(', ', $graph->getVertices()) . "\n";  // 0, 1, 2
+echo "Neighbors of $v1: " . implode(', ', $graph->getNeighbors($v1)) . "\n";  // 0, 2
+
+// Remove a vertex
+$graph->removeVertex($v0);
+echo "Vertices after removal: " . implode(', ', $graph->getVertices()) . "\n";  // 1, 2
+```
+
+### Dynamic Adjacency Matrix
+
+```php
+# filename: dynamic-adjacency-matrix.php
+<?php
+
+declare(strict_types=1);
+
+class DynamicAdjacencyMatrix
+{
+    private array $matrix = [];
+    private array $vertexMap = [];  // Map internal IDs to user IDs
+    private int $nextId = 0;
+
+    // Add vertex
+    public function addVertex(int $userId): void
+    {
+        if (isset($this->vertexMap[$userId])) {
+            return;  // Already exists
+        }
+
+        $internalId = $this->nextId++;
+        $this->vertexMap[$userId] = $internalId;
+
+        // Expand matrix
+        $size = count($this->matrix);
+        for ($i = 0; $i < $size; $i++) {
+            $this->matrix[$i][] = 0;  // Add column
+        }
+        $this->matrix[] = array_fill(0, $size + 1, 0);  // Add row
+    }
+
+    // Remove vertex (expensive - O(V²))
+    public function removeVertex(int $userId): void
+    {
+        if (!isset($this->vertexMap[$userId])) {
+            return;
+        }
+
+        $internalId = $this->vertexMap[$userId];
+
+        // Remove row
+        unset($this->matrix[$internalId]);
+        $this->matrix = array_values($this->matrix);  // Reindex
+
+        // Remove column
+        foreach ($this->matrix as $i => $row) {
+            unset($row[$internalId]);
+            $this->matrix[$i] = array_values($row);
+        }
+
+        // Update vertex map
+        unset($this->vertexMap[$userId]);
+        // Rebuild map for remaining vertices
+        $newMap = [];
+        foreach ($this->vertexMap as $uid => $iid) {
+            if ($iid > $internalId) {
+                $newMap[$uid] = $iid - 1;
+            } else {
+                $newMap[$uid] = $iid;
+            }
+        }
+        $this->vertexMap = $newMap;
+    }
+
+    // Add edge
+    public function addEdge(int $from, int $to): void
+    {
+        if (!isset($this->vertexMap[$from]) || !isset($this->vertexMap[$to])) {
+            throw new InvalidArgumentException("Vertices must exist");
+        }
+
+        $iFrom = $this->vertexMap[$from];
+        $iTo = $this->vertexMap[$to];
+        $this->matrix[$iFrom][$iTo] = 1;
+        $this->matrix[$iTo][$iFrom] = 1;
+    }
+
+    // Check edge
+    public function hasEdge(int $from, int $to): bool
+    {
+        if (!isset($this->vertexMap[$from]) || !isset($this->vertexMap[$to])) {
+            return false;
+        }
+
+        $iFrom = $this->vertexMap[$from];
+        $iTo = $this->vertexMap[$to];
+        return $this->matrix[$iFrom][$iTo] === 1;
+    }
+}
+
+// Example usage
+$graph = new DynamicAdjacencyMatrix();
+$graph->addVertex(100);  // User ID 100
+$graph->addVertex(200);  // User ID 200
+$graph->addVertex(300);  // User ID 300
+
+$graph->addEdge(100, 200);
+$graph->addEdge(200, 300);
+
+echo "Edge 100->200: " . ($graph->hasEdge(100, 200) ? 'Yes' : 'No') . "\n";
+```
+
+**Note**: Dynamic adjacency matrix is expensive (O(V²) for vertex removal). Use dynamic adjacency list for better performance.
+
+## Graph Statistics and Utilities
+
+Every graph representation should provide basic statistics and utility methods. Here's a comprehensive utility class that works with any representation:
+
+```php
+# filename: graph-statistics.php
+<?php
+
+declare(strict_types=1);
+
+class GraphStatistics
+{
+    private array $graph;
+    private bool $directed;
+    private int $vertexCount;
+    private int $edgeCount;
+
+    public function __construct(array $graph, bool $directed = false)
+    {
+        $this->graph = $graph;
+        $this->directed = $directed;
+        $this->vertexCount = count($graph);
+        $this->edgeCount = $this->calculateEdgeCount();
+    }
+
+    // Calculate total edge count
+    private function calculateEdgeCount(): int
+    {
+        $count = 0;
+        foreach ($this->graph as $neighbors) {
+            $count += count($neighbors);
+        }
+        return $this->directed ? $count : $count / 2;
+    }
+
+    // Get vertex count
+    public function getVertexCount(): int
+    {
+        return $this->vertexCount;
+    }
+
+    // Get edge count
+    public function getEdgeCount(): int
+    {
+        return $this->edgeCount;
+    }
+
+    // Calculate graph density
+    // For undirected: density = 2E / (V(V-1))
+    // For directed: density = E / (V(V-1))
+    public function getDensity(): float
+    {
+        if ($this->vertexCount <= 1) {
+            return 0.0;
+        }
+
+        $maxEdges = $this->directed
+            ? $this->vertexCount * ($this->vertexCount - 1)
+            : $this->vertexCount * ($this->vertexCount - 1) / 2;
+
+        return $maxEdges > 0 ? $this->edgeCount / $maxEdges : 0.0;
+    }
+
+    // Check if graph is dense
+    public function isDense(float $threshold = 0.5): bool
+    {
+        return $this->getDensity() > $threshold;
+    }
+
+    // Check if graph is sparse
+    public function isSparse(float $threshold = 0.1): bool
+    {
+        return $this->getDensity() < $threshold;
+    }
+
+    // Get average degree
+    public function getAverageDegree(): float
+    {
+        if ($this->vertexCount === 0) {
+            return 0.0;
+        }
+
+        $totalDegree = 0;
+        foreach ($this->graph as $vertex => $neighbors) {
+            $totalDegree += count($neighbors);
+        }
+
+        return $this->directed
+            ? $totalDegree / $this->vertexCount
+            : (2 * $this->edgeCount) / $this->vertexCount;
+    }
+
+    // Get maximum degree
+    public function getMaxDegree(): int
+    {
+        $maxDegree = 0;
+        foreach ($this->graph as $neighbors) {
+            $maxDegree = max($maxDegree, count($neighbors));
+        }
+        return $maxDegree;
+    }
+
+    // Get minimum degree
+    public function getMinDegree(): int
+    {
+        if ($this->vertexCount === 0) {
+            return 0;
+        }
+
+        $minDegree = PHP_INT_MAX;
+        foreach ($this->graph as $neighbors) {
+            $minDegree = min($minDegree, count($neighbors));
+        }
+        return $minDegree === PHP_INT_MAX ? 0 : $minDegree;
+    }
+
+    // Get degree distribution
+    public function getDegreeDistribution(): array
+    {
+        $distribution = [];
+        foreach ($this->graph as $neighbors) {
+            $degree = count($neighbors);
+            $distribution[$degree] = ($distribution[$degree] ?? 0) + 1;
+        }
+        ksort($distribution);
+        return $distribution;
+    }
+
+    // Check if graph is complete (all possible edges exist)
+    public function isComplete(): bool
+    {
+        $maxEdges = $this->directed
+            ? $this->vertexCount * ($this->vertexCount - 1)
+            : $this->vertexCount * ($this->vertexCount - 1) / 2;
+
+        return $this->edgeCount === $maxEdges;
+    }
+
+    // Get all statistics as array
+    public function getAllStatistics(): array
+    {
+        return [
+            'vertices' => $this->vertexCount,
+            'edges' => $this->edgeCount,
+            'density' => round($this->getDensity(), 4),
+            'average_degree' => round($this->getAverageDegree(), 2),
+            'max_degree' => $this->getMaxDegree(),
+            'min_degree' => $this->getMinDegree(),
+            'is_dense' => $this->isDense(),
+            'is_sparse' => $this->isSparse(),
+            'is_complete' => $this->isComplete(),
+            'degree_distribution' => $this->getDegreeDistribution()
+        ];
+    }
+}
+
+// Example usage
+$graph = [
+    0 => [1, 2],
+    1 => [0, 2, 3],
+    2 => [0, 1],
+    3 => [1]
+];
+
+$stats = new GraphStatistics($graph, directed: false);
+print_r($stats->getAllStatistics());
+/*
+Array
+(
+    [vertices] => 4
+    [edges] => 4
+    [density] => 0.6667
+    [average_degree] => 2.0
+    [max_degree] => 3
+    [min_degree] => 1
+    [is_dense] => 1
+    [is_sparse] => 0
+    [is_complete] => 0
+    [degree_distribution] => Array
+        (
+            [1] => 1
+            [2] => 2
+            [3] => 1
+        )
+)
+*/
+```
+
+## Graph Validation
+
+Validating graph representations ensures data integrity and helps catch errors early:
+
+```php
+# filename: graph-validation.php
+<?php
+
+declare(strict_types=1);
+
+class GraphValidator
+{
+    private array $graph;
+    private bool $directed;
+    private int $expectedVertices;
+
+    public function __construct(array $graph, bool $directed = false, int $expectedVertices = 0)
+    {
+        $this->graph = $graph;
+        $this->directed = $directed;
+        $this->expectedVertices = $expectedVertices ?: count($graph);
+    }
+
+    // Validate graph structure
+    public function validate(): array
+    {
+        $errors = [];
+
+        // Check vertex count
+        if ($this->expectedVertices > 0 && count($this->graph) !== $this->expectedVertices) {
+            $errors[] = "Vertex count mismatch: expected {$this->expectedVertices}, got " . count($this->graph);
+        }
+
+        // Check for invalid vertex references
+        foreach ($this->graph as $vertex => $neighbors) {
+            // Validate vertex ID is within range
+            if ($this->expectedVertices > 0 && $vertex >= $this->expectedVertices) {
+                $errors[] = "Invalid vertex ID: $vertex (out of range)";
+            }
+
+            // Check neighbor references
+            foreach ($neighbors as $neighbor) {
+                if (is_array($neighbor)) {
+                    // Weighted edge
+                    $neighborId = $neighbor['vertex'] ?? null;
+                    if ($neighborId === null) {
+                        $errors[] = "Invalid edge structure from vertex $vertex";
+                        continue;
+                    }
+                    $neighbor = $neighborId;
+                }
+
+                // Check if neighbor exists
+                if ($this->expectedVertices > 0 && $neighbor >= $this->expectedVertices) {
+                    $errors[] = "Invalid neighbor reference: vertex $vertex -> $neighbor (out of range)";
+                }
+
+                // Check for self-loops (if not allowed)
+                if ($vertex === $neighbor) {
+                    $errors[] = "Self-loop detected: vertex $vertex -> $vertex";
+                }
+
+                // For undirected graphs, check symmetry
+                if (!$this->directed) {
+                    if (!isset($this->graph[$neighbor]) || !in_array($vertex, $this->graph[$neighbor], true)) {
+                        $errors[] = "Asymmetric edge in undirected graph: $vertex -> $neighbor exists but $neighbor -> $vertex missing";
+                    }
+                }
+            }
+        }
+
+        return $errors;
+    }
+
+    // Check if graph is valid
+    public function isValid(): bool
+    {
+        return empty($this->validate());
+    }
+
+    // Validate and throw exception if invalid
+    public function assertValid(): void
+    {
+        $errors = $this->validate();
+        if (!empty($errors)) {
+            throw new InvalidArgumentException("Graph validation failed:\n" . implode("\n", $errors));
+        }
+    }
+
+    // Check for duplicate edges
+    public function hasDuplicateEdges(): bool
+    {
+        foreach ($this->graph as $vertex => $neighbors) {
+            $seen = [];
+            foreach ($neighbors as $neighbor) {
+                $neighborId = is_array($neighbor) ? $neighbor['vertex'] : $neighbor;
+                if (isset($seen[$neighborId])) {
+                    return true;
+                }
+                $seen[$neighborId] = true;
+            }
+        }
+        return false;
+    }
+
+    // Check for isolated vertices (vertices with no edges)
+    public function getIsolatedVertices(): array
+    {
+        $isolated = [];
+        foreach ($this->graph as $vertex => $neighbors) {
+            if (empty($neighbors)) {
+                $isolated[] = $vertex;
+            }
+        }
+        return $isolated;
+    }
+}
+
+// Example usage
+$graph = [
+    0 => [1, 2],
+    1 => [0, 2],
+    2 => [0, 1, 3],  // Invalid: vertex 3 doesn't exist
+    3 => [2]
+];
+
+$validator = new GraphValidator($graph, directed: false, expectedVertices: 4);
+$errors = $validator->validate();
+
+if (!empty($errors)) {
+    echo "Validation errors found:\n";
+    foreach ($errors as $error) {
+        echo "- $error\n";
+    }
+}
+
+// Valid graph example
+$validGraph = [
+    0 => [1, 2],
+    1 => [0, 2],
+    2 => [0, 1],
+    3 => []
+];
+
+$validator2 = new GraphValidator($validGraph, directed: false, expectedVertices: 4);
+if ($validator2->isValid()) {
+    echo "✓ Graph is valid\n";
+}
+
+$isolated = $validator2->getIsolatedVertices();
+echo "Isolated vertices: " . implode(', ', $isolated) . "\n";  // 3
+```
+
+## Graph Serialization
+
+Saving and loading graphs is essential for persistence and data exchange. Here's how to serialize graphs to JSON:
+
+```php
+# filename: graph-serialization.php
+<?php
+
+declare(strict_types=1);
+
+class SerializableGraph
+{
+    private array $graph = [];
+    private bool $directed = false;
+    private bool $weighted = false;
+
+    public function __construct(bool $directed = false, bool $weighted = false)
+    {
+        $this->directed = $directed;
+        $this->weighted = $weighted;
+    }
+
+    public function addEdge(string $from, string $to, int $weight = 1): void
+    {
+        if (!isset($this->graph[$from])) {
+            $this->graph[$from] = [];
+        }
+
+        if ($this->weighted) {
+            $this->graph[$from][$to] = $weight;
+        } else {
+            $this->graph[$from][$to] = true;
+        }
+
+        if (!$this->directed) {
+            if (!isset($this->graph[$to])) {
+                $this->graph[$to] = [];
+            }
+            if ($this->weighted) {
+                $this->graph[$to][$from] = $weight;
+            } else {
+                $this->graph[$to][$from] = true;
+            }
+        }
+    }
+
+    // Serialize to JSON
+    public function toJson(): string
+    {
+        $data = [
+            'directed' => $this->directed,
+            'weighted' => $this->weighted,
+            'graph' => $this->graph
+        ];
+        return json_encode($data, JSON_PRETTY_PRINT);
+    }
+
+    // Deserialize from JSON
+    public static function fromJson(string $json): self
+    {
+        $data = json_decode($json, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new InvalidArgumentException("Invalid JSON: " . json_last_error_msg());
+        }
+
+        $graph = new self($data['directed'], $data['weighted']);
+        $graph->graph = $data['graph'];
+        return $graph;
+    }
+
+    // Save to file
+    public function saveToFile(string $filename): void
+    {
+        file_put_contents($filename, $this->toJson());
+    }
+
+    // Load from file
+    public static function loadFromFile(string $filename): self
+    {
+        $json = file_get_contents($filename);
+        if ($json === false) {
+            throw new RuntimeException("Could not read file: $filename");
+        }
+        return self::fromJson($json);
+    }
+
+    // Get graph structure
+    public function getGraph(): array
+    {
+        return $this->graph;
+    }
+}
+
+// Example usage
+$graph = new SerializableGraph(directed: false, weighted: true);
+$graph->addEdge('Alice', 'Bob', 5);
+$graph->addEdge('Bob', 'Charlie', 3);
+$graph->addEdge('Alice', 'Charlie', 7);
+
+// Serialize
+$json = $graph->toJson();
+echo "Serialized graph:\n$json\n";
+
+// Save to file
+$graph->saveToFile('graph.json');
+
+// Load from file
+$loadedGraph = SerializableGraph::loadFromFile('graph.json');
+print_r($loadedGraph->getGraph());
+
+// Expected JSON output:
+/*
+{
+    "directed": false,
+    "weighted": true,
+    "graph": {
+        "Alice": {
+            "Bob": 5,
+            "Charlie": 7
+        },
+        "Bob": {
+            "Alice": 5,
+            "Charlie": 3
+        },
+        "Charlie": {
+            "Bob": 3,
+            "Alice": 7
+        }
+    }
+}
+*/
+```
+
 ## Visual Graph Examples
 
 Understanding graph structure through ASCII visualization:
 
 ```php
+# filename: graph-visualizer.php
 <?php
+
+declare(strict_types=1);
 
 class GraphVisualizer
 {
@@ -797,7 +1657,10 @@ $viz->visualizeBipartite();
 Comparing representation performance across different operations:
 
 ```php
+# filename: graph-benchmark.php
 <?php
+
+declare(strict_types=1);
 
 class GraphBenchmark
 {
@@ -938,7 +1801,10 @@ print_r($dense);
 Complete implementation with friend recommendations and influence analysis:
 
 ```php
+# filename: social-network-advanced.php
 <?php
+
+declare(strict_types=1);
 
 class SocialNetworkAdvanced
 {
@@ -1121,7 +1987,10 @@ print_r($network->findCommunities());
 Advanced dependency manager with cycle detection and build order:
 
 ```php
+# filename: package-manager.php
 <?php
+
+declare(strict_types=1);
 
 class PackageManager
 {
@@ -1303,7 +2172,10 @@ echo $manager->visualizeDependencyTree('myapp');
 ## Choosing the Right Representation
 
 ```php
+# filename: representation-guide.php
 <?php
+
+declare(strict_types=1);
 
 class GraphRepresentationGuide
 {
@@ -1357,6 +2229,14 @@ class GraphRepresentationGuide
                 'Has Edge' => 'O(E)',
                 'Get Neighbors' => 'O(E)',
                 'Best For' => 'Edge-focused algorithms (Kruskal\'s MST)'
+            ],
+            'Adjacency Set' => [
+                'Space' => 'O(V + E)',
+                'Add Edge' => 'O(1)',
+                'Remove Edge' => 'O(1)',
+                'Has Edge' => 'O(1)',
+                'Get Neighbors' => 'O(degree)',
+                'Best For' => 'Frequent edge lookups with sparse graphs'
             ]
         ];
     }
@@ -1380,7 +2260,10 @@ print_r($guide->getComplexities());
 ### 1. Social Network Graph
 
 ```php
+# filename: social-network.php
 <?php
+
+declare(strict_types=1);
 
 class SocialNetwork
 {
@@ -1457,7 +2340,10 @@ echo "Friend suggestions for Alice: " . implode(', ', $network->suggestFriends('
 ### 2. Web Page Link Graph
 
 ```php
+# filename: web-graph.php
 <?php
+
+declare(strict_types=1);
 
 class WebGraph
 {
@@ -1521,7 +2407,10 @@ echo "PageRank of contact.html: " . $web->getPageRank('contact.html') . "\n";
 ### 3. Dependency Graph
 
 ```php
+# filename: dependency-graph.php
 <?php
+
+declare(strict_types=1);
 
 class DependencyGraph
 {
@@ -1609,49 +2498,372 @@ echo "symfony/http-kernel is depended on by: " .
    - Real-world applications: Hash map graph
    - Better readability and maintainability
 
+## Troubleshooting
+
+### Error: "Undefined array key"
+
+**Symptom**: `Warning: Undefined array key X` when accessing graph vertices
+
+**Cause**: Attempting to access a vertex that doesn't exist in the graph
+
+**Solution**: Always check if vertex exists before accessing:
+
+```php
+// Wrong
+$neighbors = $graph[$vertex];  // May fail if vertex doesn't exist
+
+// Correct
+$neighbors = $graph[$vertex] ?? [];
+// Or use a method that handles missing vertices
+$neighbors = $graph->getNeighbors($vertex);  // Method handles missing vertices
+```
+
+### Error: "Array to string conversion" in adjacency list
+
+**Symptom**: `Warning: Array to string conversion` when printing or comparing adjacency lists
+
+**Cause**: Trying to use array operations on weighted adjacency list entries (which are arrays)
+
+**Solution**: Handle weighted edges properly:
+
+```php
+// Wrong - treating weighted edge as integer
+if (in_array($to, $this->list[$from])) {  // Fails if edges are ['vertex' => X, 'weight' => Y]
+    // ...
+}
+
+// Correct - check structure
+foreach ($this->list[$from] as $edge) {
+    if (is_array($edge) && $edge['vertex'] === $to) {
+        // Found weighted edge
+    } elseif ($edge === $to) {
+        // Found unweighted edge
+    }
+}
+```
+
+### Problem: Adjacency matrix uses too much memory
+
+**Symptom**: Memory exhaustion with large graphs (10,000+ vertices)
+
+**Cause**: Adjacency matrix uses O(V²) space, which becomes prohibitive for large sparse graphs
+
+**Solution**: Switch to adjacency list for sparse graphs:
+
+```php
+// For sparse graphs (few edges), use adjacency list
+$isSparse = $edges < $vertices * 2;
+if ($isSparse) {
+    $graph = new AdjacencyList($vertices);  // O(V + E) space
+} else {
+    $graph = new AdjacencyMatrix($vertices);  // O(V²) space
+}
+```
+
+### Problem: Edge lookup is slow in adjacency list
+
+**Symptom**: `hasEdge()` takes too long for large graphs
+
+**Cause**: Adjacency list requires O(V) time to check if edge exists (must scan neighbor list)
+
+**Solution**: For frequent edge lookups, use adjacency matrix or optimize with hash sets:
+
+```php
+// Option 1: Use adjacency matrix for frequent lookups
+$graph = new AdjacencyMatrix($vertices);  // O(1) lookup
+
+// Option 2: Optimize adjacency list with hash sets
+class FastAdjacencyList {
+    private array $neighborSets = [];  // Use sets for O(1) lookup
+    
+    public function hasEdge(int $from, int $to): bool {
+        return isset($this->neighborSets[$from][$to]);
+    }
+}
+```
+
+### Problem: Duplicate edges in adjacency list
+
+**Symptom**: Same edge appears multiple times in neighbor list
+
+**Cause**: Adding same edge multiple times without checking
+
+**Solution**: Always check before adding:
+
+```php
+// Wrong - allows duplicates
+public function addEdge(int $from, int $to): void {
+    $this->list[$from][] = $to;  // May add duplicate
+}
+
+// Correct - check first
+public function addEdge(int $from, int $to): void {
+    if (!in_array($to, $this->list[$from], true)) {
+        $this->list[$from][] = $to;
+    }
+}
+```
+
+### Problem: Wrong edge count in undirected graphs
+
+**Symptom**: `getEdgeCount()` returns double the actual number of edges
+
+**Cause**: Counting each edge twice (once for each direction) in undirected graph
+
+**Solution**: Divide by 2 for undirected graphs:
+
+```php
+// Correct implementation
+public function getEdgeCount(): int {
+    $count = 0;
+    foreach ($this->list as $neighbors) {
+        $count += count($neighbors);
+    }
+    return $count / 2;  // Each edge counted twice in undirected graph
+}
+```
+
 ## Practice Exercises
 
-1. **Graph Conversion**
-   - Convert between adjacency matrix and adjacency list
-   - Preserve all edges and weights
+### Exercise 1: Graph Conversion
 
-2. **Graph Transpose**
-   - Reverse all edges in a directed graph
-   - Implement for all three representations
+**Goal**: Convert between adjacency matrix and adjacency list representations while preserving all edges and weights.
 
-3. **Degree Sequence**
-   - Calculate degree of all vertices
-   - Find vertices with maximum/minimum degree
+**Requirements**:
+- Create a class `GraphConverter` with two methods:
+  - `matrixToList(array $matrix): array` - Convert adjacency matrix to adjacency list
+  - `listToMatrix(array $list, int $vertices): array` - Convert adjacency list to adjacency matrix
+- Handle both weighted and unweighted graphs
+- Preserve edge weights when converting weighted graphs
+- Support both directed and undirected graphs
 
-4. **Complement Graph**
-   - Create complement (edges that don't exist become edges)
-   - Original edges are removed
+**Validation**: Test your implementation:
 
-5. **Graph Union/Intersection**
-   - Combine two graphs (union of edges)
-   - Find common edges (intersection)
+```php
+# filename: test-converter.php
+<?php
+
+declare(strict_types=1);
+
+// Create a test graph
+$matrix = [
+    [0, 1, 1, 0],
+    [1, 0, 1, 0],
+    [1, 1, 0, 1],
+    [0, 0, 1, 0]
+];
+
+$converter = new GraphConverter();
+$list = $converter->matrixToList($matrix);
+$backToMatrix = $converter->listToMatrix($list, 4);
+
+// Verify conversion is correct
+assert($matrix === $backToMatrix, "Conversion failed");
+echo "✓ Conversion test passed\n";
+```
+
+Expected output:
+
+```
+✓ Conversion test passed
+```
+
+### Exercise 2: Graph Transpose
+
+**Goal**: Reverse all edges in a directed graph (transpose operation).
+
+**Requirements**:
+- Implement `transpose()` method for `AdjacencyMatrix`, `AdjacencyList`, and `EdgeList` classes
+- For a directed graph with edge A→B, transpose should create edge B→A
+- Preserve edge weights in weighted graphs
+- Return a new graph instance (don't modify the original)
+
+**Validation**: Test with a directed graph:
+
+```php
+# filename: test-transpose.php
+<?php
+
+declare(strict_types=1);
+
+$graph = new AdjacencyList(4);
+$graph->addDirectedEdge(0, 1);
+$graph->addDirectedEdge(0, 2);
+$graph->addDirectedEdge(1, 3);
+$graph->addDirectedEdge(2, 3);
+
+$transposed = $graph->transpose();
+
+// Verify: original has 0→1, transposed should have 1→0
+assert($transposed->hasEdge(1, 0), "Transpose failed");
+assert($transposed->hasEdge(2, 0), "Transpose failed");
+assert($transposed->hasEdge(3, 1), "Transpose failed");
+assert($transposed->hasEdge(3, 2), "Transpose failed");
+echo "✓ Transpose test passed\n";
+```
+
+### Exercise 3: Degree Sequence
+
+**Goal**: Calculate and analyze vertex degrees in a graph.
+
+**Requirements**:
+- Implement `getDegreeSequence(): array` that returns degrees of all vertices
+- Implement `getMaxDegree(): int` and `getMinDegree(): int`
+- Implement `getAverageDegree(): float`
+- Handle both directed graphs (in-degree and out-degree) and undirected graphs
+
+**Validation**: Test with a known graph:
+
+```php
+# filename: test-degrees.php
+<?php
+
+declare(strict_types=1);
+
+$graph = new AdjacencyList(5);
+$graph->addEdge(0, 1);
+$graph->addEdge(0, 2);
+$graph->addEdge(1, 2);
+$graph->addEdge(2, 3);
+$graph->addEdge(2, 4);
+
+$degrees = $graph->getDegreeSequence();
+// Expected: [2, 2, 4, 1, 1] (degrees of vertices 0-4)
+assert($degrees[2] === 4, "Max degree should be 4");
+assert($graph->getMaxDegree() === 4, "Max degree incorrect");
+assert($graph->getMinDegree() === 1, "Min degree incorrect");
+echo "✓ Degree sequence test passed\n";
+```
+
+### Exercise 4: Complement Graph
+
+**Goal**: Create the complement of a graph (edges that don't exist become edges, original edges are removed).
+
+**Requirements**:
+- Implement `complement(): AdjacencyMatrix` or `complement(): AdjacencyList`
+- For an undirected graph with n vertices, complement should have all edges except self-loops and original edges
+- Maximum number of edges in complement: n(n-1)/2 - original_edges
+- Handle both weighted and unweighted graphs
+
+**Validation**: Test with a simple graph:
+
+```php
+# filename: test-complement.php
+<?php
+
+declare(strict_types=1);
+
+$graph = new AdjacencyMatrix(4);
+$graph->addEdge(0, 1);
+$graph->addEdge(0, 2);
+// Original has 2 edges
+
+$complement = $graph->complement();
+// Complement should have 4 edges (total possible: 6, minus 2 original)
+assert($complement->getEdgeCount() === 4, "Complement edge count incorrect");
+assert(!$complement->hasEdge(0, 1), "Original edge should not be in complement");
+assert($complement->hasEdge(1, 3), "Missing edge should be in complement");
+echo "✓ Complement test passed\n";
+```
+
+### Exercise 5: Graph Union and Intersection
+
+**Goal**: Combine two graphs and find common edges.
+
+**Requirements**:
+- Implement `union(Graph $other): Graph` - combines edges from both graphs
+- Implement `intersection(Graph $other): Graph` - finds edges present in both graphs
+- Handle edge weights: for union, keep weights from first graph; for intersection, keep weights only if they match
+- Both graphs must have the same number of vertices
+
+**Validation**: Test union and intersection:
+
+```php
+# filename: test-operations.php
+<?php
+
+declare(strict_types=1);
+
+$graph1 = new AdjacencyList(4);
+$graph1->addEdge(0, 1);
+$graph1->addEdge(0, 2);
+$graph1->addEdge(1, 2);
+
+$graph2 = new AdjacencyList(4);
+$graph2->addEdge(0, 2);
+$graph2->addEdge(2, 3);
+$graph2->addEdge(1, 3);
+
+$union = $graph1->union($graph2);
+// Union should have: 0-1, 0-2, 1-2, 2-3, 1-3 (5 edges)
+assert($union->getEdgeCount() === 5, "Union edge count incorrect");
+
+$intersection = $graph1->intersection($graph2);
+// Intersection should have: 0-2 (1 edge)
+assert($intersection->getEdgeCount() === 1, "Intersection edge count incorrect");
+assert($intersection->hasEdge(0, 2), "Intersection missing common edge");
+echo "✓ Union and intersection tests passed\n";
+```
 
 ## Key Takeaways
 
 - Graphs model relationships between objects (social networks, roads, dependencies)
-- Three main representations: adjacency matrix, adjacency list, edge list
+- Four main representations: adjacency matrix, adjacency list, edge list, adjacency set
 - Adjacency matrix: O(1) edge lookup, O(V²) space, good for dense graphs
 - Adjacency list: O(V + E) space, good for sparse graphs, efficient neighbor iteration
+- Adjacency set: O(1) edge lookup like matrix, O(V + E) space like list - best of both worlds
 - Edge list: O(E) space, good for edge-focused algorithms
 - Hash map graphs allow named vertices (strings) instead of indices
-- Choose representation based on graph density and required operations
-- Sparse graphs are most common in practice, making adjacency lists popular
+- Dynamic graphs can add/remove vertices - adjacency list is more efficient than matrix
+- Graph statistics (density, degree distribution) help analyze graph structure
+- Graph validation ensures data integrity and catches errors early
+- Graph serialization enables persistence and data exchange (JSON format)
+- Choose representation based on graph density, operations needed, and memory constraints
+- Sparse graphs are most common in practice, making adjacency lists/sets popular
 
+## Wrap-up
+
+Congratulations! You've completed a comprehensive exploration of graph representations. Here's what you've accomplished:
+
+- ✓ Understood graph terminology (vertices, edges, directed, weighted, dense, sparse)
+- ✓ Implemented adjacency matrix representation with O(1) edge lookups
+- ✓ Built adjacency list representation with O(V + E) space efficiency
+- ✓ Created edge list representation for edge-focused algorithms
+- ✓ Implemented weighted variants of all three representations
+- ✓ Built hash map graphs for named vertices (real-world applications)
+- ✓ Implemented adjacency set for O(1) edge lookups in sparse graphs
+- ✓ Created dynamic graph implementations that support adding/removing vertices
+- ✓ Added graph statistics utilities (density, degree distribution, completeness checks)
+- ✓ Implemented graph validation methods to ensure data integrity
+- ✓ Added graph serialization for persistence and data exchange
+- ✓ Analyzed performance characteristics and complexity trade-offs
+- ✓ Applied graph representations to social networks and dependency resolution
+- ✓ Learned decision criteria for choosing the right representation
+
+You now have the foundational knowledge needed to implement graph algorithms efficiently. The representation you choose will significantly impact the performance of algorithms like depth-first search, breadth-first search, shortest path algorithms, and minimum spanning trees that we'll explore in upcoming chapters.
+
+## Further Reading
+
+- [Graph Theory Fundamentals](https://en.wikipedia.org/wiki/Graph_theory) — Comprehensive overview of graph theory concepts
+- [Adjacency Matrix vs Adjacency List](https://www.geeksforgeeks.org/comparison-between-adjacency-list-and-adjacency-matrix-representation-of-graph/) — Detailed comparison with examples
+- [Graph Data Structures](https://www.programiz.com/dsa/graph) — Visual explanations of graph representations
+- [Network Analysis](https://networkx.org/documentation/stable/) — Python library documentation (concepts apply to PHP implementations)
+
+<ChapterCheckbox 
+  seriesId="php-algorithms"
+  chapterId="21"
+  label="Graph Representations understood!"
+/>
 ## 💻 Code Samples
 
 All code examples from this chapter are available in the GitHub repository:
 
-**[View Chapter 21 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-21)**
+**[View Chapter 21 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/php-algorithms/chapter-21)**
 
 Clone the repository to run examples:
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
-cd codewithphp/code-samples/php-algorithms/chapter-21
+cd codewithphp/code/php-algorithms/chapter-21
 php 01-*.php
 ```
 

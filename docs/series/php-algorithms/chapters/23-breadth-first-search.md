@@ -1,12 +1,17 @@
 ---
-title: "Breadth-First Search (BFS)"
+title: "23: Breadth-First Search (BFS)"
 description: "Learn Breadth-First Search for level-order graph traversal, finding shortest paths in unweighted graphs, and solving problems like connected components and bipartite detection"
 series: "php-algorithms"
 chapter: 23
 order: 23
-difficulty: "intermediate"
-prerequisites: ["Graph Representations", "Stacks & Queues"]
+difficulty: "Intermediate"
+prerequisites:
+  - "/series/php-algorithms/chapters/21-graph-representations"
+  - "/series/php-algorithms/chapters/17-stacks-queues"
+  - "/series/php-algorithms/chapters/22-depth-first-search"
 ---
+
+![Breadth-First Search (BFS)](/images/php-algorithms/chapter-23-breadth-first-search-hero-full.webp)
 
 <div class="breadcrumbs">
   <a href="/">Home</a>
@@ -18,9 +23,41 @@ prerequisites: ["Graph Representations", "Stacks & Queues"]
   <span>Chapter 23</span>
 </div>
 
-# Breadth-First Search (BFS) <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
+# 23: Breadth-First Search (BFS) <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
 
-## What You'll Learn
+## Overview
+
+Breadth-First Search explores a graph level by level, visiting all neighbors of a vertex before moving to the next level—like ripples spreading out from a stone dropped in water. It's optimal for finding shortest paths in unweighted graphs and forms the foundation for many important algorithms in networking, social media, and AI.
+
+Unlike Depth-First Search which explores deeply before backtracking, BFS systematically explores all vertices at the current level before moving to the next level. This level-by-level approach guarantees that when BFS finds a path, it's the shortest possible path in an unweighted graph. The algorithm uses a queue data structure to maintain the order of exploration, ensuring that vertices are processed in the exact order they're discovered.
+
+In this chapter, you'll master BFS implementation using queues, learn how to find shortest paths, detect connected components and bipartite graphs, and apply BFS to solve real-world problems like social network analysis and grid-based pathfinding. You'll build practical applications including a social graph service, a grid pathfinding system, and a word ladder solver, gaining deep insight into one of computer science's most practical graph algorithms.
+
+By the end of this chapter, you'll understand when BFS is the right choice over depth-first search, how to optimize it for different graph structures, and how it forms the basis for advanced algorithms like Dijkstra's shortest path algorithm for weighted graphs.
+
+## Prerequisites
+
+Before starting this chapter, you should have:
+
+- Complete understanding of [graph representations](/series/php-algorithms/chapters/21-graph-representations) (Chapter 21)
+- Strong knowledge of [queues](/series/php-algorithms/chapters/17-stacks-queues) (Chapter 17)
+- Familiarity with [DFS](/series/php-algorithms/chapters/22-depth-first-search) (Chapter 22) for comparison
+- Understanding of visited/distance tracking patterns
+
+**Estimated Time**: ~50 minutes
+
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- A complete BFS implementation with level tracking
+- Shortest path finder for unweighted graphs
+- Bipartite graph detector using BFS coloring
+- Grid-based pathfinding system
+- Social network analysis tools using BFS
+- Multi-source BFS for finding nearest sources
+
+## Objectives
 
 - Master breadth-first search for level-order graph traversal
 - Find shortest paths in unweighted graphs with BFS
@@ -28,22 +65,10 @@ prerequisites: ["Graph Representations", "Stacks & Queues"]
 - Implement BFS using queues for efficient exploration
 - Apply BFS to solve real-world problems like social network analysis
 
-**Estimated Time**: ~50 minutes
-
-## Prerequisites
-
-Before starting this chapter, you should have:
-
-- ✓ Complete understanding of graph representations (Chapter 21)
-- ✓ Strong knowledge of queues (Chapter 17)
-- ✓ Familiarity with DFS (Chapter 22) for comparison
-- ✓ Understanding of visited/distance tracking
-
-Breadth-First Search explores a graph level by level, visiting all neighbors of a vertex before moving to the next level—like ripples spreading out from a stone dropped in water. It's optimal for finding shortest paths in unweighted graphs and forms the foundation for many important algorithms in networking, social media, and AI.
-
 ## How BFS Works
 
 BFS explores a graph by:
+
 1. Starting at a source vertex
 2. Visiting all immediate neighbors (level 1)
 3. Visiting all neighbors of those neighbors (level 2)
@@ -66,7 +91,10 @@ Order: [0, 1, 3, 2, 4]
 Understanding BFS execution through detailed visualization:
 
 ```php
+# filename: bfs-visualizer.php
 <?php
+
+declare(strict_types=1);
 
 class BFSVisualizer
 {
@@ -262,7 +290,10 @@ Like ripples in water, BFS expands outward level by level
 Understanding how the queue changes during BFS:
 
 ```php
+# filename: bfs-queue-visualizer.php
 <?php
+
+declare(strict_types=1);
 
 class BFSQueueVisualizer
 {
@@ -366,7 +397,10 @@ Step 5: ENQUEUE vertex 3 (From vertex 1)
 ## Basic BFS Implementation
 
 ```php
+# filename: bfs-basic.php
 <?php
+
+declare(strict_types=1);
 
 class BFS
 {
@@ -488,7 +522,10 @@ print_r($bfs->traverseAll($disconnected));  // [[0, 1], [2, 3]]
 BFS finds the shortest path in graphs where all edges have equal weight.
 
 ```php
+# filename: bfs-shortest-path.php
 <?php
+
+declare(strict_types=1);
 
 class BFSShortestPath
 {
@@ -583,12 +620,302 @@ print_r($pathFinder->findAllDistances($graph, 0));
 // [0 => 0, 1 => 1, 2 => 1, 3 => 2, 4 => 2]
 ```
 
+## Finding All Shortest Paths
+
+Sometimes you need to find all shortest paths between two vertices, not just one. This is useful for network routing (multiple equal-cost paths), game pathfinding (multiple valid routes), or analyzing path diversity.
+
+```php
+# filename: bfs-all-shortest-paths.php
+<?php
+
+declare(strict_types=1);
+
+class BFSAllShortestPaths
+{
+    // Find all shortest paths from start to end
+    public function findAllPaths(array $graph, int $start, int $end): array
+    {
+        if ($start === $end) {
+            return [[$start]];
+        }
+
+        $distances = [$start => 0];
+        $parents = [$start => []];
+        $queue = [$start];
+
+        // First BFS: Find shortest distance and all possible parents
+        while (!empty($queue)) {
+            $vertex = array_shift($queue);
+            $currentDistance = $distances[$vertex];
+
+            foreach ($graph[$vertex] ?? [] as $neighbor) {
+                if (!isset($distances[$neighbor])) {
+                    $distances[$neighbor] = $currentDistance + 1;
+                    $parents[$neighbor] = [$vertex];
+                    $queue[] = $neighbor;
+                } elseif ($distances[$neighbor] === $currentDistance + 1) {
+                    // Same distance - add as another parent
+                    $parents[$neighbor][] = $vertex;
+                }
+            }
+        }
+
+        // If end is unreachable
+        if (!isset($distances[$end])) {
+            return [];
+        }
+
+        // Second phase: Reconstruct all paths using DFS
+        $allPaths = [];
+        $this->reconstructAllPaths($parents, $start, $end, [$end], $allPaths);
+
+        return $allPaths;
+    }
+
+    private function reconstructAllPaths(
+        array $parents,
+        int $start,
+        int $current,
+        array $path,
+        array &$allPaths
+    ): void {
+        if ($current === $start) {
+            $allPaths[] = array_reverse($path);
+            return;
+        }
+
+        foreach ($parents[$current] ?? [] as $parent) {
+            $this->reconstructAllPaths($parents, $start, $parent, [...$path, $parent], $allPaths);
+        }
+    }
+
+    // Count number of shortest paths
+    public function countShortestPaths(array $graph, int $start, int $end): int
+    {
+        $distances = [$start => 0];
+        $pathCounts = [$start => 1];
+        $queue = [$start];
+
+        while (!empty($queue)) {
+            $vertex = array_shift($queue);
+            $currentDistance = $distances[$vertex];
+
+            foreach ($graph[$vertex] ?? [] as $neighbor) {
+                if (!isset($distances[$neighbor])) {
+                    $distances[$neighbor] = $currentDistance + 1;
+                    $pathCounts[$neighbor] = $pathCounts[$vertex];
+                    $queue[] = $neighbor;
+                } elseif ($distances[$neighbor] === $currentDistance + 1) {
+                    // Same distance - add to path count
+                    $pathCounts[$neighbor] += $pathCounts[$vertex];
+                }
+            }
+        }
+
+        return $pathCounts[$end] ?? 0;
+    }
+}
+
+// Example
+$graph = [
+    0 => [1, 2],
+    1 => [0, 3],
+    2 => [0, 3, 4],
+    3 => [1, 2, 4],
+    4 => [2, 3]
+];
+
+$allPaths = new BFSAllShortestPaths();
+$paths = $allPaths->findAllPaths($graph, 0, 4);
+print_r($paths);
+// [
+//   [0, 2, 4],
+//   [0, 1, 3, 4]
+// ]
+
+echo "Number of shortest paths: " . $allPaths->countShortestPaths($graph, 0, 4) . "\n";  // 2
+```
+
+## Bidirectional BFS
+
+Bidirectional BFS searches from both the start and end simultaneously, meeting in the middle. This dramatically reduces the search space from O(b^d) to O(b^(d/2)) where b is the branching factor and d is the depth, making it much faster for large graphs.
+
+```php
+# filename: bidirectional-bfs.php
+<?php
+
+declare(strict_types=1);
+
+class BidirectionalBFS
+{
+    // Find shortest path using bidirectional BFS
+    public function findPath(array $graph, int $start, int $end): ?array
+    {
+        if ($start === $end) {
+            return [$start];
+        }
+
+        // Forward search from start
+        $forwardVisited = [$start => 0];  // vertex => distance
+        $forwardParent = [$start => null];
+        $forwardQueue = [$start];
+
+        // Backward search from end
+        $backwardVisited = [$end => 0];
+        $backwardParent = [$end => null];
+        $backwardQueue = [$end];
+
+        $meetingPoint = null;
+
+        while (!empty($forwardQueue) && !empty($backwardQueue)) {
+            // Expand forward search
+            $forwardSize = count($forwardQueue);
+            for ($i = 0; $i < $forwardSize; $i++) {
+                $vertex = array_shift($forwardQueue);
+                $distance = $forwardVisited[$vertex];
+
+                foreach ($graph[$vertex] ?? [] as $neighbor) {
+                    if (!isset($forwardVisited[$neighbor])) {
+                        $forwardVisited[$neighbor] = $distance + 1;
+                        $forwardParent[$neighbor] = $vertex;
+                        $forwardQueue[] = $neighbor;
+
+                        // Check if backward search has visited this vertex
+                        if (isset($backwardVisited[$neighbor])) {
+                            $meetingPoint = $neighbor;
+                            break 2;  // Break out of both loops
+                        }
+                    }
+                }
+            }
+
+            if ($meetingPoint !== null) {
+                break;
+            }
+
+            // Expand backward search
+            $backwardSize = count($backwardQueue);
+            for ($i = 0; $i < $backwardSize; $i++) {
+                $vertex = array_shift($backwardQueue);
+                $distance = $backwardVisited[$vertex];
+
+                foreach ($graph[$vertex] ?? [] as $neighbor) {
+                    if (!isset($backwardVisited[$neighbor])) {
+                        $backwardVisited[$neighbor] = $distance + 1;
+                        $backwardParent[$neighbor] = $vertex;
+                        $backwardQueue[] = $neighbor;
+
+                        // Check if forward search has visited this vertex
+                        if (isset($forwardVisited[$neighbor])) {
+                            $meetingPoint = $neighbor;
+                            break 2;  // Break out of both loops
+                        }
+                    }
+                }
+            }
+        }
+
+        if ($meetingPoint === null) {
+            return null;  // No path found
+        }
+
+        // Reconstruct path: start -> meeting point -> end
+        $path = $this->reconstructPath($forwardParent, $start, $meetingPoint);
+        $pathEnd = $this->reconstructPath($backwardParent, $end, $meetingPoint);
+        array_shift($pathEnd);  // Remove meeting point duplicate
+        $pathEnd = array_reverse($pathEnd);
+
+        return array_merge($path, $pathEnd);
+    }
+
+    private function reconstructPath(array $parent, int $start, int $end): array
+    {
+        $path = [];
+        $current = $end;
+
+        while ($current !== null) {
+            array_unshift($path, $current);
+            $current = $parent[$current] ?? null;
+        }
+
+        return $path;
+    }
+
+    // Find shortest distance using bidirectional BFS
+    public function findDistance(array $graph, int $start, int $end): ?int
+    {
+        if ($start === $end) {
+            return 0;
+        }
+
+        $forwardVisited = [$start => 0];
+        $backwardVisited = [$end => 0];
+        $forwardQueue = [$start];
+        $backwardQueue = [$end];
+
+        while (!empty($forwardQueue) && !empty($backwardQueue)) {
+            // Expand forward
+            $vertex = array_shift($forwardQueue);
+            $distance = $forwardVisited[$vertex];
+
+            foreach ($graph[$vertex] ?? [] as $neighbor) {
+                if (!isset($forwardVisited[$neighbor])) {
+                    $forwardVisited[$neighbor] = $distance + 1;
+                    $forwardQueue[] = $neighbor;
+
+                    if (isset($backwardVisited[$neighbor])) {
+                        return $forwardVisited[$neighbor] + $backwardVisited[$neighbor];
+                    }
+                }
+            }
+
+            // Expand backward
+            $vertex = array_shift($backwardQueue);
+            $distance = $backwardVisited[$vertex];
+
+            foreach ($graph[$vertex] ?? [] as $neighbor) {
+                if (!isset($backwardVisited[$neighbor])) {
+                    $backwardVisited[$neighbor] = $distance + 1;
+                    $backwardQueue[] = $neighbor;
+
+                    if (isset($forwardVisited[$neighbor])) {
+                        return $forwardVisited[$neighbor] + $backwardVisited[$neighbor];
+                    }
+                }
+            }
+        }
+
+        return null;  // No path found
+    }
+}
+
+// Example
+$graph = [
+    0 => [1, 2],
+    1 => [0, 3, 4],
+    2 => [0, 5],
+    3 => [1, 6],
+    4 => [1, 6],
+    5 => [2, 6],
+    6 => [3, 4, 5]
+];
+
+$bidirectional = new BidirectionalBFS();
+$path = $bidirectional->findPath($graph, 0, 6);
+print_r($path);  // [0, 1, 3, 6] or [0, 1, 4, 6] or [0, 2, 5, 6]
+
+echo "Distance: " . $bidirectional->findDistance($graph, 0, 6) . "\n";  // 3
+```
+
 ## Bipartite Graph Detection
 
 Checking if a graph can be colored with two colors such that no adjacent vertices have the same color.
 
 ```php
+# filename: bipartite-detector.php
 <?php
+
+declare(strict_types=1);
 
 class BipartiteDetector
 {
@@ -693,12 +1020,178 @@ echo $detector->isBipartite($notBipartite) ? "Bipartite\n" : "Not bipartite\n";
 // Not bipartite
 ```
 
-## 0-1 BFS
+## Kahn's Algorithm (BFS-based Topological Sort)
 
-Optimized BFS for graphs with edge weights of only 0 and 1.
+While DFS-based topological sort is common, Kahn's algorithm uses BFS and is often more intuitive. It works by repeatedly removing vertices with no incoming edges (in-degree 0), maintaining a queue of such vertices. This is particularly useful when you need level-by-level processing or when dealing with dependency graphs.
 
 ```php
+# filename: kahns-topological-sort.php
 <?php
+
+declare(strict_types=1);
+
+class KahnsTopologicalSort
+{
+    // Topological sort using Kahn's algorithm (BFS-based)
+    public function topologicalSort(array $graph): ?array
+    {
+        // Calculate in-degrees for all vertices
+        $inDegree = [];
+
+        // Initialize in-degrees
+        foreach (array_keys($graph) as $vertex) {
+            $inDegree[$vertex] = 0;
+        }
+
+        // Count in-degrees
+        foreach ($graph as $vertex => $neighbors) {
+            foreach ($neighbors as $neighbor) {
+                $inDegree[$neighbor] = ($inDegree[$neighbor] ?? 0) + 1;
+            }
+        }
+
+        // Find all vertices with in-degree 0
+        $queue = [];
+        foreach ($inDegree as $vertex => $degree) {
+            if ($degree === 0) {
+                $queue[] = $vertex;
+            }
+        }
+
+        $result = [];
+        $processedCount = 0;
+
+        // Process vertices with no incoming edges
+        while (!empty($queue)) {
+            $vertex = array_shift($queue);
+            $result[] = $vertex;
+            $processedCount++;
+
+            // Reduce in-degree of neighbors
+            foreach ($graph[$vertex] ?? [] as $neighbor) {
+                $inDegree[$neighbor]--;
+
+                // If in-degree becomes 0, add to queue
+                if ($inDegree[$neighbor] === 0) {
+                    $queue[] = $neighbor;
+                }
+            }
+        }
+
+        // Check for cycle (if not all vertices processed, there's a cycle)
+        if ($processedCount !== count($graph)) {
+            return null;  // Graph has cycle
+        }
+
+        return $result;
+    }
+
+    // Check if graph is a DAG (Directed Acyclic Graph)
+    public function isDAG(array $graph): bool
+    {
+        return $this->topologicalSort($graph) !== null;
+    }
+
+    // Get topological sort levels (vertices at same level can be processed in parallel)
+    public function topologicalSortLevels(array $graph): ?array
+    {
+        $inDegree = [];
+
+        foreach (array_keys($graph) as $vertex) {
+            $inDegree[$vertex] = 0;
+        }
+
+        foreach ($graph as $vertex => $neighbors) {
+            foreach ($neighbors as $neighbor) {
+                $inDegree[$neighbor] = ($inDegree[$neighbor] ?? 0) + 1;
+            }
+        }
+
+        $levels = [];
+        $currentLevel = [];
+
+        // Find initial level (in-degree 0)
+        foreach ($inDegree as $vertex => $degree) {
+            if ($degree === 0) {
+                $currentLevel[] = $vertex;
+            }
+        }
+
+        $processedCount = 0;
+
+        while (!empty($currentLevel)) {
+            $levels[] = $currentLevel;
+            $nextLevel = [];
+
+            foreach ($currentLevel as $vertex) {
+                $processedCount++;
+
+                foreach ($graph[$vertex] ?? [] as $neighbor) {
+                    $inDegree[$neighbor]--;
+
+                    if ($inDegree[$neighbor] === 0) {
+                        $nextLevel[] = $neighbor;
+                    }
+                }
+            }
+
+            $currentLevel = $nextLevel;
+        }
+
+        if ($processedCount !== count($graph)) {
+            return null;  // Cycle detected
+        }
+
+        return $levels;
+    }
+}
+
+// Example - Course prerequisites
+$courses = [
+    'CS101' => ['CS201'],           // CS101 is prerequisite for CS201
+    'CS201' => ['CS301', 'CS302'],
+    'MATH101' => ['CS201', 'CS202'],
+    'CS301' => [],
+    'CS302' => [],
+    'CS202' => []
+];
+
+$kahn = new KahnsTopologicalSort();
+$order = $kahn->topologicalSort($courses);
+print_r($order);
+// ['CS101', 'MATH101', 'CS201', 'CS202', 'CS301', 'CS302']
+// or ['MATH101', 'CS101', 'CS201', 'CS301', 'CS302', 'CS202']
+// (CS101 and MATH101 can be in any order)
+
+$levels = $kahn->topologicalSortLevels($courses);
+print_r($levels);
+// [
+//   ['CS101', 'MATH101'],  // Level 0: Can take these first
+//   ['CS201'],              // Level 1: After level 0
+//   ['CS202', 'CS301', 'CS302']  // Level 2: After level 1
+// ]
+
+// Example - Graph with cycle
+$cyclic = [
+    0 => [1],
+    1 => [2],
+    2 => [0]  // Cycle: 0 -> 1 -> 2 -> 0
+];
+
+$result = $kahn->topologicalSort($cyclic);
+echo $result === null ? "Graph has cycle\n" : "Valid topological order\n";
+// Graph has cycle
+```
+
+## 0-1 BFS
+
+Optimized BFS for graphs with edge weights of only 0 and 1. This variant uses a deque (double-ended queue) to prioritize zero-weight edges, adding them to the front of the queue while adding one-weight edges to the back. This ensures we always process vertices with the shortest distance first, making it more efficient than standard BFS for this special case.
+
+```php
+# filename: zero-one-bfs.php
+<?php
+
+declare(strict_types=1);
 
 class ZeroOneBFS
 {
@@ -755,10 +1248,13 @@ echo "Shortest distance: " . $bfs01->shortestPath($grid, 0, 4) . "\n";  // 1
 
 ## Multi-Source BFS
 
-Starting BFS from multiple source vertices simultaneously.
+Starting BFS from multiple source vertices simultaneously. This technique is useful when you need to find the nearest source to each vertex, such as finding the nearest hospital in a city map or the nearest server in a network. All sources are initialized with distance 0 and added to the queue, then BFS proceeds normally.
 
 ```php
+# filename: multi-source-bfs.php
 <?php
+
+declare(strict_types=1);
 
 class MultiSourceBFS
 {
@@ -844,10 +1340,13 @@ print_r($nearest);
 
 ## BFS on 2D Grid
 
-Common application of BFS for grid-based problems.
+Common application of BFS for grid-based problems. Grids are a special type of graph where each cell is a vertex connected to its four (or eight) neighbors. BFS is ideal for grid problems because it naturally finds the shortest path in terms of number of moves, making it perfect for pathfinding, flood fill, and island counting problems.
 
 ```php
+# filename: grid-bfs.php
 <?php
+
+declare(strict_types=1);
 
 class GridBFS
 {
@@ -1005,12 +1504,470 @@ $islandGrid = [
 echo "Number of islands: " . $gridBFS->countIslands($islandGrid) . "\n";  // 5
 ```
 
-## Word Ladder Problem
+## Finding Nodes at Distance K
 
-Transform one word to another changing one letter at a time.
+BFS naturally finds all nodes at a specific distance from a source. This is useful for social network analysis (friends within N degrees), network routing (nodes within N hops), and game mechanics (units within range).
 
 ```php
+# filename: nodes-at-distance-k.php
 <?php
+
+declare(strict_types=1);
+
+class NodesAtDistanceK
+{
+    // Find all nodes exactly K distance away from start
+    public function findNodesAtDistance(array $graph, int $start, int $k): array
+    {
+        if ($k === 0) {
+            return [$start];
+        }
+
+        $distances = [$start => 0];
+        $queue = [$start];
+        $result = [];
+
+        while (!empty($queue)) {
+            $vertex = array_shift($queue);
+            $currentDistance = $distances[$vertex];
+
+            if ($currentDistance === $k) {
+                $result[] = $vertex;
+                continue; // Don't explore further
+            }
+
+            foreach ($graph[$vertex] ?? [] as $neighbor) {
+                if (!isset($distances[$neighbor])) {
+                    $distances[$neighbor] = $currentDistance + 1;
+                    $queue[] = $neighbor;
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    // Find all nodes within distance K (inclusive)
+    public function findNodesWithinDistance(array $graph, int $start, int $k): array
+    {
+        $distances = [$start => 0];
+        $queue = [$start];
+        $result = [$start]; // Include start if k >= 0
+
+        while (!empty($queue)) {
+            $vertex = array_shift($queue);
+            $currentDistance = $distances[$vertex];
+
+            if ($currentDistance < $k) {
+                foreach ($graph[$vertex] ?? [] as $neighbor) {
+                    if (!isset($distances[$neighbor])) {
+                        $distances[$neighbor] = $currentDistance + 1;
+                        $queue[] = $neighbor;
+                        $result[] = $neighbor;
+                    }
+                }
+            }
+        }
+
+        return $result;
+    }
+}
+
+// Example - Social network: find friends within 2 degrees
+$socialNetwork = [
+    'Alice' => ['Bob', 'Charlie'],
+    'Bob' => ['Alice', 'David', 'Eve'],
+    'Charlie' => ['Alice', 'Frank'],
+    'David' => ['Bob', 'Grace'],
+    'Eve' => ['Bob'],
+    'Frank' => ['Charlie'],
+    'Grace' => ['David']
+];
+
+$finder = new NodesAtDistanceK();
+$friendsAtDistance2 = $finder->findNodesAtDistance($socialNetwork, 'Alice', 2);
+print_r($friendsAtDistance2);
+// ['David', 'Eve', 'Frank'] - friends of friends
+
+$friendsWithin2 = $finder->findNodesWithinDistance($socialNetwork, 'Alice', 2);
+print_r($friendsWithin2);
+// ['Alice', 'Bob', 'Charlie', 'David', 'Eve', 'Frank'] - all within 2 degrees
+```
+
+## BFS for Tree Diameter
+
+The diameter of a tree is the longest path between any two nodes. We can find it using two BFS passes: first find the farthest node from any node, then find the farthest node from that node. The distance between these two nodes is the diameter.
+
+```php
+# filename: tree-diameter-bfs.php
+<?php
+
+declare(strict_types=1);
+
+class TreeDiameterBFS
+{
+    // Find diameter of tree using two BFS passes
+    public function findDiameter(array $tree, int $start): int
+    {
+        // First BFS: Find farthest node from start
+        [$farthestNode, $distance] = $this->findFarthestNode($tree, $start);
+
+        // Second BFS: Find farthest node from the farthest node
+        [, $diameter] = $this->findFarthestNode($tree, $farthestNode);
+
+        return $diameter;
+    }
+
+    // Find the farthest node and its distance from start
+    private function findFarthestNode(array $tree, int $start): array
+    {
+        $distances = [$start => 0];
+        $queue = [$start];
+        $farthestNode = $start;
+        $maxDistance = 0;
+
+        while (!empty($queue)) {
+            $vertex = array_shift($queue);
+            $currentDistance = $distances[$vertex];
+
+            if ($currentDistance > $maxDistance) {
+                $maxDistance = $currentDistance;
+                $farthestNode = $vertex;
+            }
+
+            foreach ($tree[$vertex] ?? [] as $neighbor) {
+                if (!isset($distances[$neighbor])) {
+                    $distances[$neighbor] = $currentDistance + 1;
+                    $queue[] = $neighbor;
+                }
+            }
+        }
+
+        return [$farthestNode, $maxDistance];
+    }
+
+    // Find the actual diameter path
+    public function findDiameterPath(array $tree, int $start): array
+    {
+        // Find one end of diameter
+        [$end1] = $this->findFarthestNode($tree, $start);
+
+        // Find path to farthest node from end1
+        $path = $this->findPathToFarthest($tree, $end1);
+
+        return $path;
+    }
+
+    private function findPathToFarthest(array $tree, int $start): array
+    {
+        $distances = [$start => 0];
+        $parent = [$start => null];
+        $queue = [$start];
+        $farthestNode = $start;
+        $maxDistance = 0;
+
+        while (!empty($queue)) {
+            $vertex = array_shift($queue);
+            $currentDistance = $distances[$vertex];
+
+            if ($currentDistance > $maxDistance) {
+                $maxDistance = $currentDistance;
+                $farthestNode = $vertex;
+            }
+
+            foreach ($tree[$vertex] ?? [] as $neighbor) {
+                if (!isset($distances[$neighbor])) {
+                    $distances[$neighbor] = $currentDistance + 1;
+                    $parent[$neighbor] = $vertex;
+                    $queue[] = $neighbor;
+                }
+            }
+        }
+
+        // Reconstruct path
+        $path = [];
+        $current = $farthestNode;
+        while ($current !== null) {
+            array_unshift($path, $current);
+            $current = $parent[$current] ?? null;
+        }
+
+        return $path;
+    }
+}
+
+// Example - Tree structure
+$tree = [
+    0 => [1, 2],
+    1 => [0, 3, 4],
+    2 => [0, 5],
+    3 => [1],
+    4 => [1],
+    5 => [2]
+];
+
+$diameterFinder = new TreeDiameterBFS();
+echo "Tree diameter: " . $diameterFinder->findDiameter($tree, 0) . "\n";  // 4
+$path = $diameterFinder->findDiameterPath($tree, 0);
+echo "Diameter path: " . implode(' → ', $path) . "\n";  // 3 → 1 → 0 → 2 → 5
+```
+
+## Shortest Cycle Detection
+
+BFS can find the shortest cycle in a graph by checking if a neighbor has been visited and is not the parent. For undirected graphs, we need to track parent to avoid false positives.
+
+```php
+# filename: shortest-cycle-bfs.php
+<?php
+
+declare(strict_types=1);
+
+class ShortestCycleBFS
+{
+    // Find shortest cycle length in undirected graph
+    public function findShortestCycle(array $graph): ?int
+    {
+        $minCycle = null;
+
+        // Try BFS from each vertex
+        foreach (array_keys($graph) as $start) {
+            $cycleLength = $this->bfsCycle($graph, $start);
+            if ($cycleLength !== null) {
+                $minCycle = $minCycle === null ? $cycleLength : min($minCycle, $cycleLength);
+            }
+        }
+
+        return $minCycle;
+    }
+
+    private function bfsCycle(array $graph, int $start): ?int
+    {
+        $distances = [$start => 0];
+        $parent = [$start => -1]; // Use -1 to indicate no parent
+        $queue = [$start];
+        $minCycle = null;
+
+        while (!empty($queue)) {
+            $vertex = array_shift($queue);
+            $currentDistance = $distances[$vertex];
+
+            foreach ($graph[$vertex] ?? [] as $neighbor) {
+                if (!isset($distances[$neighbor])) {
+                    // New vertex
+                    $distances[$neighbor] = $currentDistance + 1;
+                    $parent[$neighbor] = $vertex;
+                    $queue[] = $neighbor;
+                } elseif ($parent[$vertex] !== $neighbor) {
+                    // Found a cycle (neighbor is visited but not parent)
+                    $cycleLength = $distances[$vertex] + $distances[$neighbor] + 1;
+                    $minCycle = $minCycle === null ? $cycleLength : min($minCycle, $cycleLength);
+                }
+            }
+        }
+
+        return $minCycle;
+    }
+
+    // Find shortest cycle in directed graph
+    public function findShortestCycleDirected(array $graph): ?int
+    {
+        $minCycle = null;
+
+        foreach (array_keys($graph) as $start) {
+            $cycleLength = $this->bfsCycleDirected($graph, $start);
+            if ($cycleLength !== null) {
+                $minCycle = $minCycle === null ? $cycleLength : min($minCycle, $cycleLength);
+            }
+        }
+
+        return $minCycle;
+    }
+
+    private function bfsCycleDirected(array $graph, int $start): ?int
+    {
+        $distances = [$start => 0];
+        $queue = [$start];
+        $minCycle = null;
+
+        while (!empty($queue)) {
+            $vertex = array_shift($queue);
+            $currentDistance = $distances[$vertex];
+
+            foreach ($graph[$vertex] ?? [] as $neighbor) {
+                if ($neighbor === $start) {
+                    // Found cycle back to start
+                    $cycleLength = $currentDistance + 1;
+                    $minCycle = $minCycle === null ? $cycleLength : min($minCycle, $cycleLength);
+                } elseif (!isset($distances[$neighbor])) {
+                    $distances[$neighbor] = $currentDistance + 1;
+                    $queue[] = $neighbor;
+                }
+            }
+        }
+
+        return $minCycle;
+    }
+}
+
+// Example - Undirected graph with cycles
+$graph = [
+    0 => [1, 2],
+    1 => [0, 2, 3],
+    2 => [0, 1],
+    3 => [1, 4],
+    4 => [3]
+];
+
+$cycleFinder = new ShortestCycleBFS();
+echo "Shortest cycle length: " . $cycleFinder->findShortestCycle($graph) . "\n";  // 3 (0-1-2-0)
+
+// Example - Directed graph
+$directedGraph = [
+    0 => [1],
+    1 => [2],
+    2 => [0, 3],
+    3 => [4],
+    4 => [2]
+];
+
+echo "Shortest cycle (directed): " . $cycleFinder->findShortestCycleDirected($directedGraph) . "\n";  // 3 (0-1-2-0)
+```
+
+## BFS on Directed vs Undirected Graphs
+
+BFS works on both directed and undirected graphs, but there are important differences in behavior and applications.
+
+```php
+# filename: bfs-directed-undirected.php
+<?php
+
+declare(strict_types=1);
+
+class BFSDirectedUndirected
+{
+    // Key differences when using BFS:
+
+    public function compare(): array
+    {
+        return [
+            'Undirected Graphs' => [
+                'Neighbor Access' => 'Both directions accessible',
+                'Cycle Detection' => 'Need parent tracking to avoid false positives',
+                'Connected Components' => 'All reachable vertices form one component',
+                'Path Finding' => 'Bidirectional paths always exist',
+                'Use Case' => 'Social networks, road networks, friendship graphs'
+            ],
+            'Directed Graphs' => [
+                'Neighbor Access' => 'Only outgoing edges accessible',
+                'Cycle Detection' => 'Can detect cycles by checking if start is reachable',
+                'Connected Components' => 'Need strongly connected components (SCC) algorithm',
+                'Path Finding' => 'Paths only exist in direction of edges',
+                'Use Case' => 'Dependency graphs, web links, state machines'
+            ]
+        ];
+    }
+
+    // BFS on undirected graph - can traverse both ways
+    public function bfsUndirected(array $graph, int $start): array
+    {
+        $visited = [$start => true];
+        $result = [$start];
+        $queue = [$start];
+
+        while (!empty($queue)) {
+            $vertex = array_shift($queue);
+
+            // In undirected graph, neighbors array contains all connected vertices
+            foreach ($graph[$vertex] ?? [] as $neighbor) {
+                if (!isset($visited[$neighbor])) {
+                    $visited[$neighbor] = true;
+                    $result[] = $neighbor;
+                    $queue[] = $neighbor;
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    // BFS on directed graph - only follows edge directions
+    public function bfsDirected(array $graph, int $start): array
+    {
+        $visited = [$start => true];
+        $result = [$start];
+        $queue = [$start];
+
+        while (!empty($queue)) {
+            $vertex = array_shift($queue);
+
+            // In directed graph, only follow outgoing edges
+            foreach ($graph[$vertex] ?? [] as $neighbor) {
+                if (!isset($visited[$neighbor])) {
+                    $visited[$neighbor] = true;
+                    $result[] = $neighbor;
+                    $queue[] = $neighbor;
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    // Check reachability in directed graph (one-way)
+    public function isReachable(array $graph, int $from, int $to): bool
+    {
+        $visited = [$from => true];
+        $queue = [$from];
+
+        while (!empty($queue)) {
+            $vertex = array_shift($queue);
+
+            if ($vertex === $to) {
+                return true;
+            }
+
+            foreach ($graph[$vertex] ?? [] as $neighbor) {
+                if (!isset($visited[$neighbor])) {
+                    $visited[$neighbor] = true;
+                    $queue[] = $neighbor;
+                }
+            }
+        }
+
+        return false;
+    }
+}
+
+// Example - Undirected graph
+$undirected = [
+    0 => [1, 2],
+    1 => [0, 2],  // Bidirectional
+    2 => [0, 1]
+];
+
+// Example - Directed graph
+$directed = [
+    0 => [1, 2],
+    1 => [2],     // One-way only
+    2 => []        // No outgoing edges
+];
+
+$bfs = new BFSDirectedUndirected();
+print_r($bfs->bfsUndirected($undirected, 0));  // [0, 1, 2]
+print_r($bfs->bfsDirected($directed, 0));     // [0, 1, 2]
+echo $bfs->isReachable($directed, 0, 2) ? "Reachable\n" : "Not reachable\n";  // Reachable
+echo $bfs->isReachable($directed, 2, 0) ? "Reachable\n" : "Not reachable\n";  // Not reachable
+```
+
+## Word Ladder Problem
+
+Transform one word to another changing one letter at a time. This classic problem models words as vertices in a graph, where two words are connected if they differ by exactly one letter. BFS finds the shortest transformation sequence, making it perfect for this problem since we want the minimum number of steps.
+
+```php
+# filename: word-ladder.php
+<?php
+
+declare(strict_types=1);
 
 class WordLadder
 {
@@ -1099,24 +2056,37 @@ echo "Transformation: " . implode(' -> ', $sequence) . "\n";
 
 ## Complexity Analysis
 
-| Operation | Time Complexity | Space Complexity |
-|-----------|----------------|------------------|
-| BFS Traversal | O(V + E) | O(V) |
-| Shortest Path | O(V + E) | O(V) |
-| Bipartite Check | O(V + E) | O(V) |
-| 0-1 BFS | O(V + E) | O(V) |
-| Multi-source BFS | O(V + E) | O(V) |
-| Grid BFS (m×n grid) | O(m × n) | O(m × n) |
+| Operation               | Time Complexity | Space Complexity |
+| ----------------------- | --------------- | ---------------- |
+| BFS Traversal           | O(V + E)        | O(V)             |
+| Shortest Path           | O(V + E)        | O(V)             |
+| All Shortest Paths      | O(V + E + P)    | O(V + P)         |
+| Bidirectional BFS       | O(b^(d/2))      | O(b^(d/2))       |
+| Bipartite Check         | O(V + E)        | O(V)             |
+| Kahn's Topological Sort | O(V + E)        | O(V)             |
+| 0-1 BFS                 | O(V + E)        | O(V)             |
+| Multi-source BFS        | O(V + E)        | O(V)             |
+| Grid BFS (m×n grid)     | O(m × n)        | O(m × n)         |
+| Nodes at Distance K     | O(V + E)        | O(V)             |
+| Tree Diameter (2 BFS)   | O(V + E)        | O(V)             |
+| Shortest Cycle          | O(V × (V + E))  | O(V)             |
 
 **Where**:
+
 - V = number of vertices
 - E = number of edges
+- P = number of shortest paths (for all shortest paths)
+- b = branching factor (for bidirectional BFS)
+- d = depth/distance (for bidirectional BFS)
 - m, n = grid dimensions
 
 ## BFS vs DFS Comparison
 
 ```php
+# filename: bfs-vs-dfs-comparison.php
 <?php
+
+declare(strict_types=1);
 
 class BFSvsDFS
 {
@@ -1159,7 +2129,10 @@ class BFSvsDFS
 Real-world integration of BFS in a Laravel application:
 
 ```php
+# filename: SocialGraphService.php
 <?php
+
+declare(strict_types=1);
 
 namespace App\Services;
 
@@ -1500,7 +2473,10 @@ Route::middleware('auth:sanctum')->group(function () {
 ### Symfony Content Recommendation System
 
 ```php
+# filename: ContentRecommendationService.php
 <?php
+
+declare(strict_types=1);
 
 namespace App\Service;
 
@@ -1637,7 +2613,10 @@ class ContentRecommendationService
 ### 1. Social Network Friend Suggestions
 
 ```php
+# filename: friend-suggestions.php
 <?php
+
+declare(strict_types=1);
 
 class FriendSuggestions
 {
@@ -1673,7 +2652,10 @@ class FriendSuggestions
 ### 2. Shortest Route in City Map
 
 ```php
+# filename: city-router.php
 <?php
+
+declare(strict_types=1);
 
 class CityRouter
 {
@@ -1727,14 +2709,17 @@ class CityRouter
 ## Best Practices
 
 1. **Use Queue for BFS**
+
    - Always use FIFO queue (array_shift + array_push)
    - Don't use stack (would be DFS)
 
 2. **Mark as Visited When Enqueued**
+
    - Prevents duplicates in queue
    - More efficient than checking during dequeue
 
 3. **Track Parent/Distance**
+
    - For path reconstruction, maintain parent array
    - For distances, maintain distance array
 
@@ -1744,25 +2729,293 @@ class CityRouter
 
 ## Practice Exercises
 
-1. **Shortest Bridge**
-   - Find shortest bridge connecting two islands
-   - Multi-source BFS from one island to find other
+### Exercise 1: Shortest Bridge
 
-2. **Rotting Oranges**
-   - Fresh oranges rot if adjacent to rotten (multi-source)
-   - Find minimum time for all oranges to rot
+**Goal**: Find the shortest bridge connecting two islands in a 2D grid.
 
-3. **Snakes and Ladders**
-   - Shortest path to reach end of board
-   - BFS treating snakes/ladders as edges
+**Requirements**:
 
-4. **Binary Tree Level Order Traversal**
-   - Return nodes level by level
-   - BFS on tree structure
+- Grid contains two islands (connected 1s) separated by water (0s)
+- Use multi-source BFS starting from all cells of one island
+- Find minimum distance to reach any cell of the other island
+- Return the number of cells in the shortest bridge
 
-5. **Open the Lock**
-   - 4-digit lock, rotate wheels, avoid deadends
-   - BFS through possible combinations
+**Validation**: Test with a grid where islands are separated by water:
+
+```php
+$grid = [
+    [1, 1, 0, 0, 0],
+    [1, 0, 0, 0, 0],
+    [1, 0, 0, 0, 1],
+    [0, 0, 0, 0, 1],
+    [0, 0, 0, 1, 1]
+];
+// Expected: shortest bridge length is 2
+```
+
+### Exercise 2: Rotting Oranges
+
+**Goal**: Find minimum time for all fresh oranges to rot.
+
+**Requirements**:
+
+- Grid contains: 0 (empty), 1 (fresh orange), 2 (rotten orange)
+- Rotten oranges rot adjacent fresh oranges each minute
+- Use multi-source BFS starting from all rotten oranges
+- Return minimum minutes to rot all oranges, or -1 if impossible
+
+**Validation**: Test with grid containing fresh and rotten oranges:
+
+```php
+$grid = [
+    [2, 1, 1],
+    [1, 1, 0],
+    [0, 1, 1]
+];
+// Expected: 4 minutes
+```
+
+### Exercise 3: Binary Tree Level Order Traversal
+
+**Goal**: Return tree nodes organized by level.
+
+**Requirements**:
+
+- Implement BFS on binary tree structure
+- Return array of arrays: each inner array contains nodes at that level
+- Handle empty trees gracefully
+
+**Validation**: Test with a binary tree:
+
+```php
+// Tree:     3
+//         / \
+//        9   20
+//           /  \
+//          15   7
+// Expected: [[3], [9, 20], [15, 7]]
+```
+
+### Exercise 4: Open the Lock
+
+**Goal**: Find minimum turns to open a 4-digit lock.
+
+**Requirements**:
+
+- Lock has 4 wheels, each 0-9
+- Each turn changes one wheel by ±1 (wraps around: 9→0, 0→9)
+- Avoid deadend combinations (provided in array)
+- Use BFS to find shortest path from "0000" to target
+
+**Validation**: Test with deadends and target:
+
+```php
+$deadends = ["0201", "0101", "0102", "1212", "2002"];
+$target = "0202";
+// Expected: 6 turns
+```
+
+### Exercise 5: Word Ladder II
+
+**Goal**: Find all shortest transformation sequences between two words.
+
+**Requirements**:
+
+- Extend the Word Ladder problem to find ALL shortest paths
+- Use BFS to find shortest distance, then DFS to reconstruct all paths
+- Return all valid transformation sequences
+
+**Validation**: Test with word list:
+
+```php
+$wordList = ["hot", "dot", "dog", "lot", "log", "cog"];
+// From "hit" to "cog"
+// Expected: Multiple paths of length 5
+```
+
+## Troubleshooting
+
+### Error: "Queue grows too large, memory exhausted"
+
+**Symptom**: `Fatal error: Allowed memory size exhausted` when running BFS on large graphs
+
+**Cause**: BFS stores entire levels in the queue, which can be very large for wide graphs (high branching factor)
+
+**Solution**:
+
+- Use iterative deepening BFS (ID-BFS) for memory-constrained environments
+- Consider bidirectional BFS to reduce search space
+- For very wide graphs, DFS might be more memory-efficient:
+
+```php
+// For wide graphs, consider DFS instead
+if ($this->isWideGraph($graph)) {
+    $dfs = new DFS();
+    $result = $dfs->traverse($graph, $start);
+} else {
+    $bfs = new BFS();
+    $result = $bfs->traverse($graph, $start);
+}
+```
+
+### Problem: BFS finds path but it's not the shortest
+
+**Symptom**: Path found by BFS is longer than expected
+
+**Cause**: Not marking vertices as visited when enqueued, allowing them to be added multiple times
+
+**Solution**: Always mark as visited when enqueuing, not when dequeuing:
+
+```php
+// Correct - mark when enqueuing
+foreach ($graph[$vertex] ?? [] as $neighbor) {
+    if (!isset($visited[$neighbor])) {
+        $visited[$neighbor] = true;  // Mark immediately
+        $queue[] = $neighbor;
+    }
+}
+
+// Wrong - marking when dequeuing allows duplicates
+foreach ($graph[$vertex] ?? [] as $neighbor) {
+    if (!isset($visited[$neighbor])) {
+        $queue[] = $neighbor;  // Not marked yet!
+    }
+}
+// Later when dequeuing:
+$visited[$vertex] = true;  // Too late - duplicates already in queue
+```
+
+### Problem: Infinite loop in BFS
+
+**Symptom**: Algorithm runs forever, never terminates
+
+**Cause**: Missing visited check or not resetting visited set between calls
+
+**Solution**: Always check visited before enqueuing and reset between calls:
+
+```php
+public function traverse(array $graph, int $start): array
+{
+    $visited = [];  // Reset visited
+    $queue = [$start];
+    $visited[$start] = true;  // Mark start immediately
+
+    while (!empty($queue)) {
+        $vertex = array_shift($queue);
+        // Process vertex...
+
+        foreach ($graph[$vertex] ?? [] as $neighbor) {
+            if (!isset($visited[$neighbor])) {  // Always check
+                $visited[$neighbor] = true;
+                $queue[] = $neighbor;
+            }
+        }
+    }
+}
+```
+
+### Problem: Wrong path reconstruction
+
+**Symptom**: Reconstructed path is incorrect or incomplete
+
+**Cause**: Not properly tracking parent relationships or incorrect path reconstruction logic
+
+**Solution**: Ensure parent array is updated correctly and path reconstruction follows parent chain:
+
+```php
+// Correct path reconstruction
+private function reconstructPath(array $parent, int $start, int $end): array
+{
+    $path = [];
+    $current = $end;
+
+    while ($current !== null) {
+        array_unshift($path, $current);
+        $current = $parent[$current] ?? null;  // Use null coalescing
+    }
+
+    return $path;
+}
+
+// Ensure parent is set when discovering vertex
+if (!isset($visited[$neighbor])) {
+    $visited[$neighbor] = true;
+    $parent[$neighbor] = $vertex;  // Set parent
+    $queue[] = $neighbor;
+}
+```
+
+### Problem: BFS too slow for large graphs
+
+**Symptom**: BFS takes too long on graphs with many vertices
+
+**Cause**: Exploring entire graph when target might be nearby, or inefficient queue operations
+
+**Solution**:
+
+- Use bidirectional BFS to reduce search space
+- Early termination when target is found
+- Use efficient queue implementation (SplQueue for large graphs):
+
+```php
+// Use SplQueue for better performance
+use SplQueue;
+
+$queue = new SplQueue();
+$queue->enqueue($start);
+
+while (!$queue->isEmpty()) {
+    $vertex = $queue->dequeue();
+    // Process...
+}
+```
+
+### Problem: Multi-source BFS gives wrong distances
+
+**Symptom**: Distances from multi-source BFS are incorrect
+
+**Cause**: Not initializing all sources with distance 0, or processing sources incorrectly
+
+**Solution**: Initialize all sources properly:
+
+```php
+// Correct initialization
+$distances = [];
+$queue = [];
+
+foreach ($sources as $source) {
+    $distances[$source] = 0;  // All sources start at distance 0
+    $queue[] = $source;
+}
+
+// Process normally - BFS will find nearest source automatically
+```
+
+### Problem: Grid BFS out of bounds errors
+
+**Symptom**: `Undefined array key` or index out of bounds errors in grid BFS
+
+**Cause**: Not checking array bounds before accessing grid cells
+
+**Solution**: Always validate bounds before accessing:
+
+```php
+// Correct bounds checking
+foreach (self::DIRECTIONS as [$dr, $dc]) {
+    $newRow = $row + $dr;
+    $newCol = $col + $dc;
+
+    // Check bounds FIRST
+    if ($newRow >= 0 && $newRow < $rows &&
+        $newCol >= 0 && $newCol < $cols &&
+        $grid[$newRow][$newCol] === 1 &&
+        !isset($visited["$newRow,$newCol"])) {
+
+        $visited["$newRow,$newCol"] = true;
+        $queue[] = [$newRow, $newCol, $distance + 1];
+    }
+}
+```
 
 ## Key Takeaways
 
@@ -1774,18 +3027,62 @@ class CityRouter
 - Essential for problems requiring minimum steps/distance
 - Natural choice for grid-based pathfinding
 - Can start from multiple sources simultaneously
+- Bidirectional BFS reduces search space from O(b^d) to O(b^(d/2))
+- Kahn's algorithm provides intuitive BFS-based topological sort
 - Mark vertices as visited when enqueued, not when dequeued
+
+## Wrap-up
+
+Congratulations! You've mastered Breadth-First Search, one of the most practical graph traversal algorithms. Here's what you've accomplished:
+
+- ✓ Implemented complete BFS traversal with level tracking
+- ✓ Built visualization tools to understand BFS execution and queue operations
+- ✓ Created shortest path finder for unweighted graphs
+- ✓ Developed all shortest paths finder for path diversity analysis
+- ✓ Implemented bidirectional BFS for efficient pathfinding
+- ✓ Built bipartite graph detector using BFS coloring
+- ✓ Implemented Kahn's algorithm for BFS-based topological sort
+- ✓ Created 0-1 BFS for graphs with binary edge weights
+- ✓ Built multi-source BFS for finding nearest sources
+- ✓ Implemented grid-based BFS for pathfinding and flood fill
+- ✓ Developed word ladder solver using BFS
+- ✓ Found nodes at specific distances for social network analysis
+- ✓ Calculated tree diameter using two BFS passes
+- ✓ Detected shortest cycles in both directed and undirected graphs
+- ✓ Understood differences between BFS on directed vs undirected graphs
+- ✓ Analyzed performance characteristics: O(V + E) time, O(V) space
+- ✓ Compared BFS vs DFS to understand when to use each algorithm
+- ✓ Built practical applications: social graph service, grid pathfinding, content recommendation
+- ✓ Understood when BFS is optimal (shortest paths) vs when DFS is better (deep exploration)
+
+You now have a deep understanding of how BFS explores graphs level by level, guaranteeing shortest paths in unweighted graphs. This makes BFS perfect for problems requiring minimum steps, level-order processing, or finding nearby solutions. This foundation will serve you well as you tackle more advanced algorithms like Dijkstra's shortest path for weighted graphs.
+
+## Further Reading
+
+- [Depth-First Search (DFS)](/series/php-algorithms/chapters/22-depth-first-search) — Compare BFS with DFS and understand when to use each
+- [Dijkstra's Algorithm](/series/php-algorithms/chapters/24-dijkstra-shortest-path) — Extend BFS concepts to weighted graphs
+- [Graph Representations](/series/php-algorithms/chapters/21-graph-representations) — Review different ways to represent graphs
+- [Stacks & Queues](/series/php-algorithms/chapters/17-stacks-queues) — Deep dive into the data structures BFS relies on
+- [Breadth-First Search - Wikipedia](https://en.wikipedia.org/wiki/Breadth-first_search) — Comprehensive overview of BFS algorithm
+- [Graph Traversal Algorithms - GeeksforGeeks](https://www.geeksforgeeks.org/breadth-first-search-or-bfs-for-a-graph/) — Visual explanations and practice problems
+
+<ChapterCheckbox 
+  seriesId="php-algorithms"
+  chapterId="23"
+  label="Breadth-First Search mastered!"
+/>
 
 ## 💻 Code Samples
 
 All code examples from this chapter are available in the GitHub repository:
 
-**[View Chapter 23 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/php-algorithms/chapter-23)**
+**[View Chapter 23 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/php-algorithms/chapter-23)**
 
 Clone the repository to run examples:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
-cd codewithphp/code-samples/php-algorithms/chapter-23
+cd codewithphp/code/php-algorithms/chapter-23
 php 01-*.php
 ```
 
