@@ -10,30 +10,141 @@ prerequisites: ["Arrays", "Algorithm analysis", "Recursion"]
 
 # Chapter 07: Sorting Algorithms
 
-## Introduction
+## Overview
 
-Sorting is one of the most fundamental operations in computer science. Understanding different sorting algorithms—their strengths, weaknesses, and appropriate use cases—is essential for every developer.
+Sorting is the cornerstone of efficient computing—transforming chaos into order. Every time you search Google, browse Amazon by price, or view your social media feed chronologically, you're benefiting from sophisticated sorting algorithms working behind the scenes. Understanding sorting isn't just academic; it's the foundation for database query optimization, search algorithms, duplicate detection, and countless other real-world applications.
 
-In this chapter, you'll learn:
+This chapter takes you from simple O(n²) algorithms like bubble sort (great for learning but terrible in production) to elegant O(n log n) divide-and-conquer techniques like merge sort and quick sort that power modern systems. You'll discover why Python uses Tim Sort, why C++ uses Intro Sort, and why choosing the right algorithm can make your code 100x faster. The difference between O(n²) and O(n log n) isn't abstract—it's the difference between 1 second and 100 seconds when sorting 10,000 items.
 
-- Common sorting algorithms and their implementations
-- Time and space complexity analysis
-- When to use each algorithm
-- Stability and in-place sorting
+Beyond theory, you'll build real implementations: a stable merge sort for multi-key database sorting, a randomized quick sort that never degrades to O(n²), and hybrid algorithms that switch strategies based on data characteristics. By the end, you'll understand not just how to sort, but when to sort, which algorithm to choose, and how production systems combine multiple techniques into hybrid algorithms that dominate in practice.
 
-## Why Sorting Matters
+## Prerequisites
 
-Sorted data enables:
-- Binary search (O(log n) instead of O(n))
-- Efficient duplicate detection
-- Database query optimization
-- Better data visualization
+::: tip Prerequisites
+Before starting this chapter, ensure you have:
 
-## Comparison-Based Sorting
+- ✅ Completed [Chapter 02: Arrays and Lists](/series/computer-science/chapters/02-arrays-and-lists)
+- ✅ Understanding of Big O notation and algorithm analysis
+- ✅ Familiarity with recursion concepts (for merge/quick sort)
+- ✅ Basic understanding of divide-and-conquer strategies
+- ✅ Comfort with array manipulation and indexing
 
-### 1. Bubble Sort — O(n²)
+**Optional but helpful:**
+- Experience with [Chapter 05: Trees](/series/computer-science/chapters/05-trees-and-binary-trees) (for heap sort)
+- Understanding of stability in sorting
+- Familiarity with comparison functions
+:::
 
-Repeatedly swap adjacent elements if they're in the wrong order.
+## Estimated Time
+
+⏱️ **~120 minutes** total
+
+- Reading and understanding: ~40 minutes
+- Running and studying code examples: ~50 minutes
+- Exercises and experimentation: ~30 minutes
+
+## What You'll Build
+
+By completing this chapter, you'll create:
+
+✅ **Bubble Sort** - Simple O(n²) algorithm with optimization and stability
+✅ **Selection Sort** - O(n²) with minimal swaps for expensive swap scenarios
+✅ **Insertion Sort** - Adaptive O(n²) perfect for nearly-sorted data
+✅ **Merge Sort** - Guaranteed O(n log n) divide-and-conquer with stability
+✅ **Quick Sort** - Fast O(n log n) average with multiple pivot strategies
+✅ **Heap Sort** - O(n log n) guaranteed using heap data structure
+✅ **Non-Comparison Sorts** - Counting, Radix, Bucket sorts for specialized data
+✅ **Performance Benchmarks** - Comprehensive comparison across all algorithms
+✅ **Real-World Applications** - Top-k elements, median finding, interval scheduling
+✅ **Hybrid Algorithms** - Intro Sort and Tim Sort production techniques
+
+**Plus**: Understanding when to use each algorithm, stability trade-offs, and how production systems combine multiple techniques.
+
+## Quick Start
+
+Try this 5-minute introduction to sorting performance:
+
+```php
+<?php
+
+// Compare O(n²) vs O(n log n) on 1000 elements
+$arr = range(1, 1000);
+shuffle($arr);
+
+// Insertion sort: O(n²)
+$test1 = $arr;
+$start = microtime(true);
+for ($i = 1; $i < count($test1); $i++) {
+    $key = $test1[$i];
+    $j = $i - 1;
+    while ($j >= 0 && $test1[$j] > $key) {
+        $test1[$j + 1] = $test1[$j];
+        $j--;
+    }
+    $test1[$j + 1] = $key;
+}
+$insertionTime = (microtime(true) - $start) * 1000;
+
+// PHP's sort (typically quick sort): O(n log n)
+$test2 = $arr;
+$start = microtime(true);
+sort($test2);
+$quickTime = (microtime(true) - $start) * 1000;
+
+echo "Insertion Sort (O(n²)):  " . number_format($insertionTime, 1) . " ms\n";
+echo "Quick Sort (O(n log n)): " . number_format($quickTime, 1) . " ms\n";
+echo "Speedup: " . number_format($insertionTime / $quickTime, 0) . "x faster!\n";
+```
+
+**Output:**
+```
+Insertion Sort (O(n²)):  50.2 ms
+Quick Sort (O(n log n)): 0.8 ms
+Speedup: 63x faster!
+```
+
+The right algorithm makes a massive difference!
+
+## Objectives
+
+### Foundational Understanding
+- Understand sorting problem and why it's fundamental
+- Learn difference between stable and unstable sorts
+- Recognize in-place vs extra-space algorithms
+- Identify when O(n²) vs O(n log n) vs O(n) applies
+
+### Core Skills
+- Implement O(n²) sorts: Bubble, Selection, Insertion
+- Implement O(n log n) sorts: Merge, Quick, Heap
+- Implement non-comparison sorts: Counting, Radix, Bucket
+- Analyze time/space complexity of each algorithm
+- Choose appropriate algorithm for different scenarios
+
+### Advanced Techniques
+- Build hybrid algorithms (Intro Sort, Tim Sort concepts)
+- Optimize quick sort with randomization and median-of-three
+- Implement stable vs unstable sorting
+- Understand adaptive sorting for nearly-sorted data
+- Apply sorting to real-world problems (top-k, median, scheduling)
+
+::: info Code Examples
+All code examples for this chapter are available in the repository:
+[📁 Chapter 07 Code Examples](https://github.com/dalehurley/codewithphp/tree/main/code/computer-science/chapter-07)
+
+Run them locally:
+```bash
+cd code/computer-science/chapter-07
+php 01-bubble-sort.php
+```
+:::
+
+## Step 1: Simple O(n²) Sorts (20 minutes)
+
+These algorithms are simple to understand but inefficient for large datasets. Learn them for foundational knowledge, but use O(n log n) algorithms in production.
+
+### Bubble Sort
+
+Repeatedly swap adjacent elements if they're in wrong order. Largest elements "bubble up" to the end.
 
 ```mermaid
 graph TB
@@ -55,8 +166,6 @@ graph TB
     style P4 fill:#4CAF50
 ```
 
-**How it works**: Largest elements "bubble up" to the end in each pass.
-
 ```php
 <?php
 
@@ -68,13 +177,12 @@ function bubbleSort(array $arr): array {
 
         for ($j = 0; $j < $n - $i - 1; $j++) {
             if ($arr[$j] > $arr[$j + 1]) {
-                // Swap
                 [$arr[$j], $arr[$j + 1]] = [$arr[$j + 1], $arr[$j]];
                 $swapped = true;
             }
         }
 
-        // Optimization: If no swaps, already sorted
+        // Optimization: early termination
         if (!$swapped) break;
     }
 
@@ -88,11 +196,22 @@ print_r(bubbleSort($numbers));
 
 **Complexity**: O(n²) time, O(1) space
 **Stable**: Yes
-**Use**: Educational purposes only
+**Use**: Educational only (never in production)
 
-### 2. Selection Sort — O(n²)
+::: info Code Example
+See complete bubble sort with optimization and performance analysis:
+[📄 01-bubble-sort.php](https://github.com/dalehurley/codewithphp/tree/main/code/computer-science/chapter-07/01-bubble-sort.php)
 
-Find the minimum element and place it at the beginning.
+Demonstrates:
+- Basic and optimized versions
+- Step-by-step visualization
+- Stability verification
+- Performance benchmarks
+:::
+
+### Selection Sort
+
+Find minimum element from unsorted portion, swap with first unsorted element.
 
 ```mermaid
 graph TB
@@ -116,41 +235,25 @@ graph TB
     style S4 fill:#4CAF50
 ```
 
-**How it works**: Select minimum from unsorted portion, swap with first unsorted element.
-
-```php
-<?php
-
-function selectionSort(array $arr): array {
-    $n = count($arr);
-
-    for ($i = 0; $i < $n - 1; $i++) {
-        $minIndex = $i;
-
-        // Find minimum in remaining array
-        for ($j = $i + 1; $j < $n; $j++) {
-            if ($arr[$j] < $arr[$minIndex]) {
-                $minIndex = $j;
-            }
-        }
-
-        // Swap with current position
-        if ($minIndex !== $i) {
-            [$arr[$i], $arr[$minIndex]] = [$arr[$minIndex], $arr[$i]];
-        }
-    }
-
-    return $arr;
-}
-```
-
 **Complexity**: O(n²) time, O(1) space
-**Stable**: No (can be made stable)
+**Stable**: No
 **Use**: Small datasets with expensive swaps
 
-### 3. Insertion Sort — O(n²)
+**Advantage**: Minimizes number of swaps (O(n) swaps vs O(n²) for bubble)
 
-Build sorted array one element at a time.
+::: info Code Example
+See selection sort with swap counting:
+[📄 02-selection-sort.php](https://github.com/dalehurley/codewithphp/tree/main/code/computer-science/chapter-07/02-selection-sort.php)
+
+Demonstrates:
+- Minimal swap count
+- Input-independent performance
+- Instability example
+:::
+
+### Insertion Sort
+
+Build sorted array one element at a time by inserting each element into correct position.
 
 ```mermaid
 graph TB
@@ -177,78 +280,55 @@ graph TB
     style I5 fill:#4CAF50
 ```
 
-**How it works**: Pick each element and insert it into its correct position in the sorted portion.
-
-```php
-<?php
-
-function insertionSort(array $arr): array {
-    $n = count($arr);
-
-    for ($i = 1; $i < $n; $i++) {
-        $key = $arr[$i];
-        $j = $i - 1;
-
-        // Move elements greater than key one position ahead
-        while ($j >= 0 && $arr[$j] > $key) {
-            $arr[$j + 1] = $arr[$j];
-            $j--;
-        }
-
-        $arr[$j + 1] = $key;
-    }
-
-    return $arr;
-}
-```
-
-**Complexity**: O(n²) time, O(1) space, O(n) best case
+**Complexity**: O(n²) worst, O(n) best
 **Stable**: Yes
-**Use**: Small datasets, nearly sorted data, online sorting
+**Use**: Small datasets, nearly-sorted data, online sorting
 
-### 4. Merge Sort — O(n log n)
+**Key Feature**: Adaptive—O(n) when data is nearly sorted!
 
-Divide array in half, sort each half, merge them.
+::: info Code Example
+See insertion sort with adaptive behavior:
+[📄 03-insertion-sort.php](https://github.com/dalehurley/codewithphp/tree/main/code/computer-science/chapter-07/03-insertion-sort.php)
+
+Demonstrates:
+- Adaptive performance
+- Online sorting capability
+- Binary insertion sort variant
+:::
+
+## Step 2: Merge Sort - Divide and Conquer (20 minutes)
+
+Merge sort uses divide-and-conquer: split array in half, recursively sort each half, then merge sorted halves.
+
+### How Merge Sort Works
 
 ```mermaid
-graph TB
-    subgraph "Merge Sort: Divide and Conquer"
-        M0["[38, 27, 43, 3]"]
-        M1["[38, 27]"]
-        M2["[43, 3]"]
-        M3["[38]"]
-        M4["[27]"]
-        M5["[43]"]
-        M6["[3]"]
-        M7["[27, 38]"]
-        M8["[3, 43]"]
-        M9["[3, 27, 38, 43]"]
+graph TD
+    A["[38, 27, 43, 3]"] --> B["[38, 27]"]
+    A --> C["[43, 3]"]
 
-        M0 -->|"Divide"| M1
-        M0 -->|"Divide"| M2
-        M1 -->|"Divide"| M3
-        M1 -->|"Divide"| M4
-        M2 -->|"Divide"| M5
-        M2 -->|"Divide"| M6
-        M3 -->|"Merge"| M7
-        M4 -->|"Merge"| M7
-        M5 -->|"Merge"| M8
-        M6 -->|"Merge"| M8
-        M7 -->|"Merge"| M9
-        M8 -->|"Merge"| M9
-    end
+    B --> D["[38]"]
+    B --> E["[27]"]
 
-    style M0 fill:#FF6B6B,color:#fff
-    style M3 fill:#90EE90
-    style M4 fill:#90EE90
-    style M5 fill:#90EE90
-    style M6 fill:#90EE90
-    style M7 fill:#FFD700
-    style M8 fill:#FFD700
-    style M9 fill:#4CAF50
+    C --> F["[43]"]
+    C --> G["[3]"]
+
+    D --> H["[27, 38]"]
+    E --> H
+
+    F --> I["[3, 43]"]
+    G --> I
+
+    H --> J["[3, 27, 38, 43]"]
+    I --> J
+
+    style A fill:#FF6B6B,color:#fff
+    style B fill:#FFA500
+    style C fill:#FFA500
+    style J fill:#4CAF50
 ```
 
-**How it works**: Recursively divide, then merge sorted halves. O(n log n) guaranteed!
+### Implementation
 
 ```php
 <?php
@@ -258,17 +338,20 @@ function mergeSort(array $arr): array {
         return $arr;
     }
 
+    // Divide
     $mid = (int)(count($arr) / 2);
-    $left = array_slice($arr, 0, $mid);
-    $right = array_slice($arr, $mid);
+    $left = mergeSort(array_slice($arr, 0, $mid));
+    $right = mergeSort(array_slice($arr, $mid));
 
-    return merge(mergeSort($left), mergeSort($right));
+    // Conquer (merge)
+    return merge($left, $right);
 }
 
 function merge(array $left, array $right): array {
     $result = [];
     $i = $j = 0;
 
+    // Merge while both arrays have elements
     while ($i < count($left) && $j < count($right)) {
         if ($left[$i] <= $right[$j]) {
             $result[] = $left[$i++];
@@ -278,83 +361,66 @@ function merge(array $left, array $right): array {
     }
 
     // Append remaining elements
-    while ($i < count($left)) {
-        $result[] = $left[$i++];
-    }
-    while ($j < count($right)) {
-        $result[] = $right[$j++];
-    }
-
-    return $result;
+    return array_merge($result, array_slice($left, $i), array_slice($right, $j));
 }
 
-$numbers = [64, 34, 25, 12, 22, 11, 90];
+$numbers = [38, 27, 43, 3, 9, 82, 10];
 print_r(mergeSort($numbers));
+// [3, 9, 10, 27, 38, 43, 82]
 ```
 
 **Complexity**: O(n log n) time, O(n) space
 **Stable**: Yes
-**Use**: Large datasets, linked lists, external sorting
+**Use**: When stability required, guaranteed O(n log n) needed
 
-### 5. Quick Sort — O(n log n) average
+**Advantages**:
+- Guaranteed O(n log n) performance
+- Stable sorting
+- Predictable performance (no worst case degradation)
+- Excellent for external sorting (large datasets)
 
-Choose a pivot, partition array around it, recursively sort partitions.
+::: info Code Example
+See complete merge sort implementation:
+[📄 04-merge-sort.php](https://github.com/dalehurley/codewithphp/tree/main/code/computer-science/chapter-07/04-merge-sort.php)
 
-```mermaid
-graph TB
-    subgraph "Quick Sort: Partition Around Pivot"
-        Q0["[7, 2, 1, 6, 8, 5, 3]<br/>Pivot: 3"]
-        Q1["[2, 1, 3] | [6, 8, 5, 7]<br/>Partition: < 3 | > 3"]
-        Q2["[1, 2] | [3] | [5, 6, 7, 8]<br/>Recursively sort"]
-        Q3["[1, 2, 3, 5, 6, 7, 8]<br/>✓ Sorted"]
+Demonstrates:
+- Divide-and-conquer visualization
+- External sorting concept
+- Stability verification
+- Performance consistency
+:::
 
-        Q0 -->|"Partition"| Q1
-        Q1 -->|"Recurse"| Q2
-        Q2 -->|"Combine"| Q3
-    end
+## Step 3: Quick Sort - Fast In-Place Sorting (20 minutes)
 
-    style Q0 fill:#FF6B6B,color:#fff
-    style Q1 fill:#FFA500
-    style Q2 fill:#FFD700
-    style Q3 fill:#4CAF50
+Quick sort picks a pivot, partitions array so elements < pivot are left, >= pivot are right, then recursively sorts partitions.
+
+### Partitioning Process
+
+```
+Array: [10, 7, 8, 9, 1, 5]  Pivot: 5
+
+Step 1: Partition
+  [1] | [5] | [10, 7, 8, 9]
+  < 5   pivot   >= 5
+
+Step 2: Recursively sort left and right
+  Left: [1] (already sorted)
+  Right: [10, 7, 8, 9] → pivot 9 → [7, 8] | [9] | [10]
+
+Result: [1, 5, 7, 8, 9, 10]
 ```
 
-**How it works**: Pick pivot, partition into smaller/larger, recursively sort both sides.
+### Implementation
 
 ```php
 <?php
 
-function quickSort(array $arr): array {
-    if (count($arr) <= 1) {
-        return $arr;
-    }
-
-    $pivot = $arr[0];
-    $left = [];
-    $right = [];
-
-    for ($i = 1; $i < count($arr); $i++) {
-        if ($arr[$i] < $pivot) {
-            $left[] = $arr[$i];
-        } else {
-            $right[] = $arr[$i];
-        }
-    }
-
-    return array_merge(
-        quickSort($left),
-        [$pivot],
-        quickSort($right)
-    );
-}
-
-// In-place version (more efficient)
-function quickSortInPlace(array &$arr, int $low, int $high): void {
+function quickSort(array &$arr, int $low, int $high): void {
     if ($low < $high) {
-        $pi = partition($arr, $low, $high);
+        $pivotIndex = partition($arr, $low, $high);
 
-        quickSortInPlace($arr, $low, $pi - 1);
-        quickSortInPlace($arr, $pi + 1, $high);
+        quickSort($arr, $low, $pivotIndex - 1);
+        quickSort($arr, $pivotIndex + 1, $high);
     }
 }
 
@@ -363,7 +429,7 @@ function partition(array &$arr, int $low, int $high): int {
     $i = $low - 1;
 
     for ($j = $low; $j < $high; $j++) {
-        if ($arr[$j] < $pivot) {
+        if ($arr[$j] <= $pivot) {
             $i++;
             [$arr[$i], $arr[$j]] = [$arr[$j], $arr[$i]];
         }
@@ -373,141 +439,96 @@ function partition(array &$arr, int $low, int $high): int {
     return $i + 1;
 }
 
-$numbers = [64, 34, 25, 12, 22, 11, 90];
-print_r(quickSort($numbers));
+$numbers = [10, 7, 8, 9, 1, 5];
+quickSort($numbers, 0, count($numbers) - 1);
+print_r($numbers);
+// [1, 5, 7, 8, 9, 10]
 ```
 
-**Complexity**: O(n log n) average, O(n²) worst, O(log n) space
-**Stable**: No (can be made stable)
-**Use**: General purpose, when average case matters
+**Complexity**: O(n log n) average, O(n²) worst
+**Stable**: No
+**Use**: General-purpose sorting (fastest in practice)
 
-### 6. Heap Sort — O(n log n)
+**Critical Optimization**: Use randomized pivot to avoid O(n²) on sorted data!
 
-Build a max heap, repeatedly extract maximum.
+::: info Code Example
+See quick sort with multiple pivot strategies:
+[📄 05-quick-sort.php](https://github.com/dalehurley/codewithphp/tree/main/code/computer-science/chapter-07/05-quick-sort.php)
 
-```mermaid
-graph TB
-    subgraph "Heap Sort: Max Heap Structure"
-        H0["Build Max Heap:<br/>[4,10,3,5,1]"]
-        H1["Max Heap:<br/>[10,5,3,4,1]"]
-        H2["Extract 10:<br/>[5,4,3,1] + [10]"]
-        H3["Extract 5:<br/>[4,1,3] + [5,10]"]
-        H4["Extract 4:<br/>[3,1] + [4,5,10]"]
-        H5["Extract 3:<br/>[1] + [3,4,5,10]"]
-        H6["✓ Sorted:<br/>[1,3,4,5,10]"]
+Demonstrates:
+- Lomuto and Hoare partitioning
+- Randomized quick sort
+- Three-way partitioning
+- Worst-case scenarios
+:::
 
-        H0 --> H1
-        H1 --> H2
-        H2 --> H3
-        H3 --> H4
-        H4 --> H5
-        H5 --> H6
-    end
+## Step 4: Heap Sort - Guaranteed O(n log n) (15 minutes)
 
-    style H0 fill:#FF6B6B,color:#fff
-    style H1 fill:#FFA500
-    style H2 fill:#FFD700
-    style H3 fill:#FFE082
-    style H4 fill:#C5E1A5
-    style H5 fill:#90EE90
-    style H6 fill:#4CAF50
+Heap sort uses heap data structure: build max heap, repeatedly extract maximum to end.
+
+### Heap Sort Process
+
 ```
+Array: [4, 10, 3, 5, 1]
 
-**How it works**: Build max heap, repeatedly extract max (root) and heapify. O(1) space!
+Step 1: Build max heap
+  [10, 5, 3, 4, 1]
+       10
+      /  \
+     5    3
+    / \
+   4   1
 
-```php
-<?php
+Step 2: Extract max, heapify
+  Swap 10 with 1: [1, 5, 3, 4 | 10]
+  Heapify:        [5, 4, 3, 1 | 10]
 
-function heapSort(array $arr): array {
-    $n = count($arr);
+Step 3: Repeat
+  [4, 1, 3 | 5, 10]
+  [3, 1 | 4, 5, 10]
+  [1 | 3, 4, 5, 10]
 
-    // Build max heap
-    for ($i = (int)($n / 2) - 1; $i >= 0; $i--) {
-        heapify($arr, $n, $i);
-    }
-
-    // Extract elements from heap one by one
-    for ($i = $n - 1; $i > 0; $i--) {
-        // Move current root to end
-        [$arr[0], $arr[$i]] = [$arr[$i], $arr[0]];
-
-        // Heapify reduced heap
-        heapify($arr, $i, 0);
-    }
-
-    return $arr;
-}
-
-function heapify(array &$arr, int $n, int $i): void {
-    $largest = $i;
-    $left = 2 * $i + 1;
-    $right = 2 * $i + 2;
-
-    if ($left < $n && $arr[$left] > $arr[$largest]) {
-        $largest = $left;
-    }
-
-    if ($right < $n && $arr[$right] > $arr[$largest]) {
-        $largest = $right;
-    }
-
-    if ($largest !== $i) {
-        [$arr[$i], $arr[$largest]] = [$arr[$largest], $arr[$i]];
-        heapify($arr, $n, $largest);
-    }
-}
+Result: [1, 3, 4, 5, 10]
 ```
 
 **Complexity**: O(n log n) time, O(1) space
 **Stable**: No
-**Use**: Memory-constrained environments
+**Use**: Guaranteed O(n log n), in-place, memory-limited
 
-## Non-Comparison Sorts
+::: info Code Example
+See heap sort with visualization:
+[📄 06-heap-sort.php](https://github.com/dalehurley/codewithphp/tree/main/code/computer-science/chapter-07/06-heap-sort.php)
 
-### Counting Sort — O(n + k)
+Demonstrates:
+- Heap construction
+- Heapify operation
+- Top-k elements application
+:::
 
-Count occurrences of each value.
+## Step 5: Non-Comparison Sorts (15 minutes)
 
-```mermaid
-graph TB
-    subgraph "Counting Sort Example: [4, 2, 2, 8, 3, 3, 1]"
-        C0["Input:<br/>[4, 2, 2, 8, 3, 3, 1]"]
-        C1["Count array:<br/>1→1, 2→2, 3→2, 4→1, 8→1"]
-        C2["Build output:<br/>[1] + [2,2] + [3,3] + [4] + [8]"]
-        C3["✓ Sorted:<br/>[1, 2, 2, 3, 3, 4, 8]"]
+These sorts don't use comparisons—they exploit properties of the data for O(n) or O(n+k) performance.
 
-        C0 -->|"Count"| C1
-        C1 -->|"Reconstruct"| C2
-        C2 --> C3
-    end
+### Counting Sort
 
-    style C0 fill:#FF6B6B,color:#fff
-    style C1 fill:#FFA500
-    style C2 fill:#FFD700
-    style C3 fill:#4CAF50
-```
-
-**How it works**: Count frequency of each value, reconstruct sorted array. O(n+k) where k is range!
+For integers in small range k:
 
 ```php
 <?php
 
 function countingSort(array $arr): array {
-    if (empty($arr)) return $arr;
-
-    $max = max($arr);
     $min = min($arr);
+    $max = max($arr);
     $range = $max - $min + 1;
 
-    $count = array_fill(0, $range, 0);
-    $output = [];
-
     // Count occurrences
+    $count = array_fill(0, $range, 0);
     foreach ($arr as $num) {
         $count[$num - $min]++;
     }
 
-    // Build output array
+    // Build output
+    $output = [];
     for ($i = 0; $i < $range; $i++) {
         for ($j = 0; $j < $count[$i]; $j++) {
             $output[] = $i + $min;
@@ -519,114 +540,258 @@ function countingSort(array $arr): array {
 
 $numbers = [4, 2, 2, 8, 3, 3, 1];
 print_r(countingSort($numbers));
+// [1, 2, 2, 3, 3, 4, 8]
 ```
 
-**Complexity**: O(n + k) time, O(k) space (k = range)
-**Use**: Small range of integers
+**Complexity**: O(n + k) time, O(k) space
+**Stable**: Yes
+**Use**: Small integer ranges (k ≈ n)
 
-## Sorting Algorithm Comparison
+### Radix Sort
 
-| Algorithm | Best | Average | Worst | Space | Stable |
-|-----------|------|---------|-------|-------|--------|
-| Bubble | O(n) | O(n²) | O(n²) | O(1) | Yes |
-| Selection | O(n²) | O(n²) | O(n²) | O(1) | No |
-| Insertion | O(n) | O(n²) | O(n²) | O(1) | Yes |
-| Merge | O(n log n) | O(n log n) | O(n log n) | O(n) | Yes |
-| Quick | O(n log n) | O(n log n) | O(n²) | O(log n) | No |
-| Heap | O(n log n) | O(n log n) | O(n log n) | O(1) | No |
-| Counting | O(n+k) | O(n+k) | O(n+k) | O(k) | Yes |
+For multi-digit integers:
 
-## PHP's Built-in Sorting
+**Complexity**: O(d × (n + k)) where d = number of digits
+**Use**: Fixed-length integers (phone numbers, IDs)
+
+### Bucket Sort
+
+For uniformly distributed data:
+
+**Complexity**: O(n) average
+**Use**: Uniformly distributed floats, timestamps
+
+::: info Code Example
+See all non-comparison sorts:
+[📄 07-counting-radix-bucket-sort.php](https://github.com/dalehurley/codewithphp/tree/main/code/computer-science/chapter-07/07-counting-radix-bucket-sort.php)
+
+Demonstrates:
+- Counting sort for small ranges
+- Radix sort for large integers
+- Bucket sort for uniform data
+- Performance comparisons
+:::
+
+## Step 6: Algorithm Comparison (15 minutes)
+
+### Performance Summary
+
+| Algorithm | Best | Average | Worst | Space | Stable | In-Place |
+|-----------|------|---------|-------|-------|--------|----------|
+| Bubble | O(n) | O(n²) | O(n²) | O(1) | Yes | Yes |
+| Selection | O(n²) | O(n²) | O(n²) | O(1) | No | Yes |
+| Insertion | O(n) | O(n²) | O(n²) | O(1) | Yes | Yes |
+| Merge | O(n log n) | O(n log n) | O(n log n) | O(n) | Yes | No |
+| Quick | O(n log n) | O(n log n) | O(n²) | O(log n) | No | Yes |
+| Heap | O(n log n) | O(n log n) | O(n log n) | O(1) | No | Yes |
+| Counting | O(n+k) | O(n+k) | O(n+k) | O(k) | Yes | No |
+| Radix | O(nk) | O(nk) | O(nk) | O(n+k) | Yes | No |
+
+### When to Use Each
+
+**Small datasets (< 50 elements)**:
+→ Insertion Sort (simple, fast for small n)
+
+**Nearly sorted data**:
+→ Insertion Sort (O(n) when mostly sorted)
+
+**General purpose (large datasets)**:
+→ Quick Sort with randomization (fastest in practice)
+
+**Guaranteed O(n log n) required**:
+→ Merge Sort or Heap Sort (no worst-case degradation)
+
+**Stability required**:
+→ Merge Sort or Tim Sort
+
+**Memory limited**:
+→ Heap Sort or Quick Sort (in-place)
+
+**Small integer range**:
+→ Counting Sort (O(n+k) when k ≈ n)
+
+**Multi-digit integers**:
+→ Radix Sort (O(d×n) for d digits)
+
+::: info Code Example
+See comprehensive algorithm comparison:
+[📄 08-sorting-comparison.php](https://github.com/dalehurley/codewithphp/tree/main/code/computer-science/chapter-07/08-sorting-comparison.php)
+
+Demonstrates:
+- Small vs large dataset performance
+- Different input types (sorted, random, reversed)
+- Scaling behavior analysis
+- Algorithm selection guide
+:::
+
+## Step 7: Real-World Applications (15 minutes)
+
+Sorting enables many algorithmic techniques:
+
+### Multi-Key Sorting
 
 ```php
-<?php
-
-$arr = [3, 1, 4, 1, 5, 9, 2, 6];
-
-// Sort values (maintains keys)
-sort($arr);        // [1, 1, 2, 3, 4, 5, 6, 9]
-
-// Sort associative array by value
-asort($arr);
-
-// Sort associative array by key
-ksort($arr);
-
-// Custom comparison
-usort($arr, function($a, $b) {
-    return $a <=> $b; // Spaceship operator
+// Sort employees: department → salary (desc) → name
+usort($employees, function($a, $b) {
+    if ($a->department !== $b->department) {
+        return $a->department <=> $b->department;
+    }
+    if ($a->salary !== $b->salary) {
+        return $b->salary <=> $a->salary; // Descending
+    }
+    return $a->name <=> $b->name;
 });
 ```
 
-PHP uses **Timsort** (hybrid of merge sort and insertion sort) for its sorting functions.
+### Finding Top K Elements
 
-## When to Use Each Algorithm
-
-```mermaid
-graph TB
-    START["Which sorting<br/>algorithm?"]
-    Q1{"Dataset size?"}
-    Q2{"Stability<br/>required?"}
-    Q3{"Memory<br/>constrained?"}
-    Q4{"Integer data<br/>with small range?"}
-    Q5{"Linked list?"}
-
-    START --> Q1
-    Q1 -->|"< 50 elements"| INS["Insertion Sort<br/>O(n²) - Simple"]
-    Q1 -->|"> 50 elements"| Q4
-    Q4 -->|"Yes"| CNT["Counting Sort<br/>O(n+k) - Fast!"]
-    Q4 -->|"No"| Q2
-    Q2 -->|"Yes"| Q5
-    Q5 -->|"Yes"| MRG["Merge Sort<br/>O(n log n) - Stable"]
-    Q5 -->|"No"| MRG2["Merge Sort<br/>or Timsort"]
-    Q2 -->|"No"| Q3
-    Q3 -->|"Yes"| HEP["Heap Sort<br/>O(n log n) - O(1) space"]
-    Q3 -->|"No"| QCK["Quick Sort<br/>O(n log n) avg - Fast"]
-
-    style START fill:#2196F3,color:#fff
-    style INS fill:#4CAF50
-    style CNT fill:#9C27B0,color:#fff
-    style MRG fill:#FF9800
-    style MRG2 fill:#FF9800
-    style HEP fill:#F44336,color:#fff
-    style QCK fill:#FFD700
+```php
+// Use heap to find top k (O(n + k log n))
+// Build max heap, extract k times
+// Much faster than full sort for small k
 ```
 
-**Quick Selection Guide**:
-- **Bubble/Selection/Insertion**: Small datasets (< 50 elements), educational
-- **Merge Sort**: Stable sort needed, linked lists, external sorting
-- **Quick Sort**: General purpose, average case important
-- **Heap Sort**: Memory constrained, predictable performance
-- **Counting/Radix**: Integer data with limited range
+### Finding Median
+
+```php
+function findMedian(array $arr): float {
+    sort($arr);
+    $n = count($arr);
+
+    return $n % 2 === 1
+        ? $arr[(int)($n / 2)]
+        : ($arr[$n / 2 - 1] + $arr[$n / 2]) / 2;
+}
+```
+
+### Interval Scheduling
+
+```php
+// Sort by end time, greedily select non-overlapping
+usort($intervals, fn($a, $b) => $a->end <=> $b->end);
+
+$selected = [];
+$lastEnd = -1;
+
+foreach ($intervals as $interval) {
+    if ($interval->start >= $lastEnd) {
+        $selected[] = $interval;
+        $lastEnd = $interval->end;
+    }
+}
+```
+
+::: info Code Example
+See real-world sorting applications:
+[📄 09-sorting-applications.php](https://github.com/dalehurley/codewithphp/tree/main/code/computer-science/chapter-07/09-sorting-applications.php)
+
+Demonstrates:
+- Multi-key sorting
+- Top-k elements
+- Median finding
+- Interval scheduling
+- Duplicate detection
+- Merge operations
+:::
+
+## Step 8: Hybrid Algorithms (Production) (15 minutes)
+
+Real-world implementations combine multiple algorithms:
+
+### Intro Sort (C++ std::sort)
+
+```
+1. Start with quick sort
+2. If recursion depth > 2 × log(n):
+   Switch to heap sort (prevent O(n²))
+3. For partitions < 16 elements:
+   Switch to insertion sort
+```
+
+**Result**: Fast average-case + guaranteed O(n log n) + optimized small arrays
+
+### Tim Sort (Python sorted)
+
+```
+1. Detect natural runs (already sorted sequences)
+2. Extend runs to minimum size with insertion sort
+3. Merge runs using merge sort
+```
+
+**Result**: Adaptive (fast on real data) + stable + O(n log n) guaranteed
+
+::: info Code Example
+See hybrid algorithm implementations:
+[📄 10-advanced-sorting.php](https://github.com/dalehurley/codewithphp/tree/main/code/computer-science/chapter-07/10-advanced-sorting.php)
+
+Demonstrates:
+- Intro Sort concept
+- Tim Sort simplified
+- Custom comparison functions
+- Stability considerations
+:::
 
 ## Key Takeaways
 
-- **O(n²)** algorithms are simple but slow for large datasets
-- **O(n log n)** algorithms are efficient for general use
-- **Merge sort** is stable and consistent
-- **Quick sort** is fast on average but has worst-case O(n²)
-- **Heap sort** uses O(1) space
-- **Counting sort** beats O(n log n) for specific data types
+- **O(n²) sorts** (Bubble, Selection, Insertion) are simple but only for small data
+- **O(n log n) sorts** (Merge, Quick, Heap) are efficient for large datasets
+- **Non-comparison sorts** (Counting, Radix, Bucket) can be faster for specialized data
+- **Stability** matters when sorting on multiple keys
+- **In-place** algorithms save memory but may sacrifice stability
+- **Hybrid algorithms** (Intro Sort, Tim Sort) dominate in production
+- **Choose algorithm** based on data size, distribution, and requirements
 
 ## Exercises
 
-1. **Implement selection sort** that finds both min and max in each pass.
+Try these challenges to reinforce your learning:
 
-2. **Kth largest element**: Find the kth largest element using quickselect.
+### Basic Level
 
-3. **Sort colors**: Sort an array of 0s, 1s, and 2s in one pass (Dutch National Flag problem).
+1. **Implement Bubble Sort Optimization**
+   Add early termination when no swaps occur
+   [Solution: 01-bubble-sort.php](https://github.com/dalehurley/codewithphp/tree/main/code/computer-science/chapter-07/01-bubble-sort.php)
 
-4. **Merge k sorted arrays**: Merge multiple sorted arrays efficiently.
+2. **Compare Swap Counts**
+   Count swaps in bubble vs selection vs insertion sort
+   [Solution: 02-selection-sort.php](https://github.com/dalehurley/codewithphp/tree/main/code/computer-science/chapter-07/02-selection-sort.php)
 
-5. **Custom sort**: Sort strings by length, then alphabetically.
+### Intermediate Level
+
+3. **Implement Merge Sort**
+   Build complete merge sort from scratch
+   [Solution: 04-merge-sort.php](https://github.com/dalehurley/codewithphp/tree/main/code/computer-science/chapter-07/04-merge-sort.php)
+
+4. **Quick Sort with Randomization**
+   Implement randomized pivot selection
+   [Solution: 05-quick-sort.php](https://github.com/dalehurley/codewithphp/tree/main/code/computer-science/chapter-07/05-quick-sort.php)
+
+5. **Find Kth Largest** (LeetCode #215)
+   Use heap or quick select
+   [Solution: 06-heap-sort.php](https://github.com/dalehurley/codewithphp/tree/main/code/computer-science/chapter-07/06-heap-sort.php)
+
+### Advanced Level
+
+6. **Sort Colors** (LeetCode #75)
+   Dutch National Flag problem using 3-way partitioning
+   Hint: See `05-quick-sort.php` (3-way partition)
+
+7. **Merge Intervals** (LeetCode #56)
+   Sort by start time, then merge overlapping
+   [Solution: 09-sorting-applications.php](https://github.com/dalehurley/codewithphp/tree/main/code/computer-science/chapter-07/09-sorting-applications.php)
+
+8. **Top K Frequent Elements** (LeetCode #347)
+   Combine counting + heap
+   Hint: Count frequencies, then find top-k
 
 ## What's Next?
 
-Now that data is sorted, searching becomes much faster. In Chapter 08, we'll explore **Searching Algorithms**, including binary search and its variations.
+Now that you understand sorting, you're ready to explore **searching algorithms**. In Chapter 08, we'll learn binary search, interpolation search, and how sorted data enables O(log n) lookups instead of O(n) linear scans.
 
 ---
 
 **Further Reading**:
-- [Sorting Algorithm Animations](https://www.toptal.com/developers/sorting-algorithms)
-- [Timsort Explained](https://en.wikipedia.org/wiki/Timsort)
-- [Comparison of Sorting Algorithms](https://en.wikipedia.org/wiki/Sorting_algorithm)
+- [Sorting Algorithm Visualizations](https://www.toptal.com/developers/sorting-algorithms)
+- [Tim Sort - Python's Algorithm](https://github.com/python/cpython/blob/main/Objects/listsort.txt)
+- [Intro Sort - Musser's Paper](https://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.14.5196)
+- [Quick Sort Analysis](https://algs4.cs.princeton.edu/23quicksort/)
+- [Sorting in Practice](https://queue.acm.org/detail.cfm?id=2984631)
