@@ -153,7 +153,9 @@ export default withMermaid(
           items: [
             { text: 'PHP Basics', link: '/series/php-basics/' },
             { text: 'Algorithms for PHP Developers', link: '/series/php-algorithms/' },
+            { text: 'PHP for Java Developers', link: '/series/php-for-java-developers/' },
             { text: 'AI/ML for PHP Developers', link: '/series/ai-ml-php-developers/' },
+            { text: 'PHP for TypeScript Developers', link: '/series/php-typescript-developers/' },
             { text: 'Why Python Developers Will Love PHP and Laravel', link: '/series/python-developers-love-php-laravel/' },
             { text: 'Build a CRM with Laravel 12', link: '/series/build-crm-laravel-12/' },
             { text: 'Why Ruby on Rails Developers Will Love Laravel', link: '/series/rails-developers-love-laravel/' },
@@ -351,6 +353,30 @@ export default withMermaid(
                 text: '10 — Bonus: Hands-On Mini Project',
                 link: '/series/python-developers-love-php-laravel/chapters/10-bonus-hands-on-mini-project'
               }
+            ]
+          }
+        ],
+
+        '/series/php-typescript-developers/': [
+          { text: 'Overview', link: '/series/php-typescript-developers/' },
+          {
+            text: 'Chapters',
+            items: [
+              { text: '01 — TypeScript to PHP: Type Systems Compared', link: '/series/php-typescript-developers/chapters/01-type-systems-compared' },
+              { text: '02 — Modern PHP Syntax for TS Developers', link: '/series/php-typescript-developers/chapters/02-modern-php-syntax' },
+              { text: '03 — Functions & Closures: From JS to PHP', link: '/series/php-typescript-developers/chapters/03-functions-and-closures' },
+              { text: '04 — OOP: Classes, Interfaces & Generics', link: '/series/php-typescript-developers/chapters/04-oop-classes-interfaces' },
+              { text: '05 — Error Handling: Try/Catch & Type Safety', link: '/series/php-typescript-developers/chapters/05-error-handling' },
+              { text: '06 — Package Management: npm vs Composer', link: '/series/php-typescript-developers/chapters/06-package-management' },
+              { text: '07 — Testing: Jest Patterns in PHPUnit', link: '/series/php-typescript-developers/chapters/07-testing' },
+              { text: '08 — Code Quality: ESLint meets PHP_CodeSniffer', link: '/series/php-typescript-developers/chapters/08-code-quality' },
+              { text: '09 — Build Tools: TypeScript Compiler vs PHP', link: '/series/php-typescript-developers/chapters/09-build-tools' },
+              { text: '10 — Debugging: Node Inspector vs Xdebug', link: '/series/php-typescript-developers/chapters/10-debugging' },
+              { text: '11 — Async in PHP: Promises vs Fibers', link: '/series/php-typescript-developers/chapters/11-async-in-php' },
+              { text: '12 — REST APIs: Express.js vs PHP Native', link: '/series/php-typescript-developers/chapters/12-rest-apis' },
+              { text: '13 — Laravel Foundations: The PHP Framework', link: '/series/php-typescript-developers/chapters/13-laravel-foundations' },
+              { text: '14 — Database & ORMs: TypeORM meets Eloquent', link: '/series/php-typescript-developers/chapters/14-database-and-orms' },
+              { text: '15 — Full-Stack: Inertia.js (React/Vue + Laravel)', link: '/series/php-typescript-developers/chapters/15-full-stack-inertia' }
             ]
           }
         ],
@@ -821,6 +847,69 @@ export default withMermaid(
                 text: '10 — Bonus: Hands-On Mini Project',
                 link: '/series/rails-developers-love-laravel/chapters/10-hands-on-mini-project'
               }
+            ]
+          }
+        ],
+
+        '/series/php-for-java-developers/': [
+          { text: 'Overview', link: '/series/php-for-java-developers/' },
+          {
+            text: 'Part 1: Language Fundamentals',
+            collapsed: false,
+            items: [
+              { text: '00 — Setup & First Comparison', link: '/series/php-for-java-developers/chapters/00-setup-and-first-comparison' },
+              { text: '01 — Types, Variables & Operators', link: '/series/php-for-java-developers/chapters/01-types-variables-and-operators' },
+              { text: '02 — Control Flow & Functions', link: '/series/php-for-java-developers/chapters/02-control-flow-and-functions' },
+              { text: '03 — OOP Basics', link: '/series/php-for-java-developers/chapters/03-oop-basics' }
+            ]
+          },
+          {
+            text: 'Part 2: Object-Oriented PHP',
+            collapsed: false,
+            items: [
+              { text: '04 — Classes & Inheritance', link: '/series/php-for-java-developers/chapters/04-classes-and-inheritance' },
+              { text: '05 — Interfaces & Traits', link: '/series/php-for-java-developers/chapters/05-interfaces-and-traits' },
+              { text: '06 — Namespaces & Autoloading', link: '/series/php-for-java-developers/chapters/06-namespaces-and-autoloading' },
+              { text: '07 — Error Handling', link: '/series/php-for-java-developers/chapters/07-error-handling' }
+            ]
+          },
+          {
+            text: 'Part 3: Modern PHP Development',
+            collapsed: true,
+            items: [
+              { text: '08 — Composer & Dependencies', link: '/series/php-for-java-developers/chapters/08-composer-and-dependencies' },
+              { text: '09 — Working with Databases', link: '/series/php-for-java-developers/chapters/09-working-with-databases' },
+              { text: '10 — Building REST APIs', link: '/series/php-for-java-developers/chapters/10-building-rest-apis' },
+              { text: '11 — Dependency Injection', link: '/series/php-for-java-developers/chapters/11-dependency-injection' }
+            ]
+          },
+          {
+            text: 'Part 4: Testing & Quality',
+            collapsed: true,
+            items: [
+              { text: '12 — Unit Testing with PHPUnit', link: '/series/php-for-java-developers/chapters/12-unit-testing-with-phpunit' },
+              { text: '13 — Integration Testing', link: '/series/php-for-java-developers/chapters/13-integration-testing' },
+              { text: '14 — Code Quality Tools', link: '/series/php-for-java-developers/chapters/14-code-quality-tools' }
+            ]
+          },
+          {
+            text: 'Part 5: Web Development',
+            collapsed: true,
+            items: [
+              { text: '15 — HTTP & Request/Response', link: '/series/php-for-java-developers/chapters/15-http-and-request-response' },
+              { text: '16 — Sessions & Authentication', link: '/series/php-for-java-developers/chapters/16-sessions-and-authentication' },
+              { text: '17 — Forms & Validation', link: '/series/php-for-java-developers/chapters/17-forms-and-validation' },
+              { text: '18 — Security Best Practices', link: '/series/php-for-java-developers/chapters/18-security-best-practices' }
+            ]
+          },
+          {
+            text: 'Part 6: Frameworks & Beyond',
+            collapsed: true,
+            items: [
+              { text: '19 — Framework Comparison', link: '/series/php-for-java-developers/chapters/19-framework-comparison' },
+              { text: '20 — Laravel Fundamentals', link: '/series/php-for-java-developers/chapters/20-laravel-fundamentals' },
+              { text: '21 — Symfony Components', link: '/series/php-for-java-developers/chapters/21-symfony-components' },
+              { text: '22 — Micro-frameworks (Slim)', link: '/series/php-for-java-developers/chapters/22-micro-frameworks-slim' }
             ]
           }
         ],
