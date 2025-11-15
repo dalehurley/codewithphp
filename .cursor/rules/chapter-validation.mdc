@@ -1,0 +1,263 @@
+---
+globs: docs/series/**/chapters/*.md
+description: Chapter validation checker - ensures all chapters meet quality standards
+---
+
+# Chapter Validation Checklist
+
+This rule provides a systematic checklist for validating all tutorial chapters before publication. Every chapter in the `/docs/series/*/chapters/` directory should pass these checks.
+
+## Frontmatter Validation
+
+Every chapter MUST have complete and valid frontmatter:
+
+- [ ] **Title Format**: `"NN: Chapter Title"` (zero-padded chapter number + colon + title)
+- [ ] **Description**: Single sentence, present tense, no period at end
+- [ ] **Series**: Matches the series directory name exactly
+- [ ] **Chapter Number**: Matches the filename number (e.g., `01-filename.md` has `chapter: 1`)
+- [ ] **Order**: Usually matches chapter number (may differ for special chapters like `15b`)
+- [ ] **Difficulty**: One of: `Beginner`, `Intermediate`, `Advanced`
+- [ ] **Prerequisites**: Valid links to existing chapters (if applicable)
+
+Example of valid frontmatter:
+```yaml
+---
+title: "01: Your First PHP Script"
+description: "Write and execute your first PHP program"
+series: "php-basics"
+chapter: 1
+order: 1
+difficulty: "Beginner"
+prerequisites: []
+---
+```
+
+## Content Structure Validation
+
+- [ ] **Hero Image**: Present after frontmatter, before main heading
+  - Format: `![Chapter Title](/images/{series}/chapter-{nn}-{slug}-full.webp)`
+  - Image exists at `/docs/public/images/{series}/`
+  
+- [ ] **Main Heading**: Single H1 heading matching title format
+  - Should be: `# NN: Chapter Title`
+  
+- [ ] **Overview Section**: 2-4 paragraphs explaining what will be learned
+  - States learning objectives clearly
+  - Connects to previous chapters
+  - Previews final outcome
+  
+- [ ] **Prerequisites Section**: Lists requirements before starting
+  - Software versions specified
+  - Previous chapters linked
+  - **Estimated Time**: Included
+  
+- [ ] **What You'll Build**: Bulleted deliverables
+  
+- [ ] **Objectives**: 4-7 action-oriented learning goals
+  
+- [ ] **Step-by-Step Sections**: Each step includes:
+  - Goal (one sentence)
+  - Actions (numbered list)
+  - Expected Result (code output or behavior)
+  - Why It Works (2-4 sentence explanation)
+  - Troubleshooting (2-3 common errors)
+  
+- [ ] **Exercises**: Practical challenges with:
+  - Clear requirements
+  - Validation criteria
+  - Expected output examples
+  
+- [ ] **Wrap-up**: Summary with checklist of achievements
+  
+- [ ] **Further Reading**: Links to external resources
+  - Official documentation
+  - Related chapters
+  - PSR standards (if applicable)
+
+## Code Quality Validation
+
+- [ ] **No Incomplete Code**: All examples are runnable
+- [ ] **PHP 8.4 Compatible**: Modern syntax and features
+- [ ] **Type Declarations**: Functions have proper type hints
+- [ ] **Comments**: Key concepts explained
+- [ ] **No Smart Quotes**: All quotes are straight `"` or `'`, not curly `" '`
+- [ ] **No Em-dashes**: Use regular hyphens `-`, not em-dashes `—`
+- [ ] **Proper Escaping**: Apostrophes in JavaScript strings use `\'`
+
+### Character Encoding Check
+
+Run this to find problematic characters:
+```bash
+grep -P '[""''–—]' docs/series/*/chapters/*.md
+```
+
+If found, replace with:
+- `"` or `"` → `"`
+- `'` or `'` → `'`
+- `–` or `—` → `-`
+
+## Vue Component Validation
+
+- [ ] **No Multiline Attributes**: Keep Vue attribute values on single lines or use proper escaping
+- [ ] **Proper Quote Escaping**: Single quotes in JavaScript strings: `\'`
+- [ ] **No Unescaped Special Characters**: Test build locally
+- [ ] **Components Close Properly**: All `<Component ... />` tags properly closed
+
+### Testing Vue Components
+
+```bash
+npm run build
+```
+
+If you see "Error parsing JavaScript expression", the issue is with a Vue component. Check:
+1. String delimiters are balanced
+2. Quotes are properly escaped
+3. No multiline attribute values with complex JavaScript
+
+## Linking Validation
+
+- [ ] **Internal Links**: Use absolute paths `/series/series-slug/chapters/nn-slug`
+- [ ] **Code References**: Use full GitHub URLs in format:
+  - `https://github.com/dalehurley/codewithphp/blob/main/code/series-slug/chapter-nn/filename.php`
+- [ ] **Edit Link**: File should be editable via GitHub (no special encoding)
+- [ ] **No Broken Links**: All links point to existing resources
+
+## File Organization
+
+- [ ] **Code Samples**: Located in `/code/{series-slug}/{chapter-nn}-topic/`
+- [ ] **README.md**: Exists in code directory explaining samples
+- [ ] **Solution Files**: In `solutions/` subdirectory if provided
+- [ ] **Image Files**: In `/docs/public/images/{series}/`
+
+## Time Estimates
+
+- [ ] **Prerequisites Section**: Includes `**Estimated Time**: ~XX minutes`
+- [ ] **Each Step**: Includes `(~X min)` in heading
+- [ ] **Exercises**: Noted if longer than 10 minutes
+- [ ] **Total Chapter**: Usually 1-2 hours for comprehensive chapters
+
+## Consistency Checks
+
+- [ ] **Terminology**: Consistent throughout chapter and across series
+- [ ] **Code Style**: Matches series standards (PSR-12 for PHP)
+- [ ] **Formatting**: Consistent use of bold, italics, code formatting
+- [ ] **Voice**: Second person, encouraging, professional
+
+## Pre-Publication Checklist
+
+Before committing a chapter:
+
+```
+FRONTMATTER:
+  ☐ Title format correct
+  ☐ Description present and accurate
+  ☐ Series, chapter, order match filename
+  ☐ Difficulty appropriate
+  ☐ Prerequisites valid
+
+CONTENT:
+  ☐ Hero image present and correct path
+  ☐ All required sections present
+  ☐ Code examples complete and tested
+  ☐ No smart quotes or em-dashes
+  ☐ All links working
+
+CODE QUALITY:
+  ☐ PHP 8.4 compatible
+  ☐ Type hints present
+  ☐ Comments explain concepts
+  ☐ Examples runnable
+
+VALIDATION:
+  ☐ `npm run build` succeeds
+  ☐ Chapter displays correctly in browser
+  ☐ Links work in browser
+  ☐ Images load properly
+
+TECHNICAL:
+  ☐ No Vue parsing errors
+  ☐ No encoding issues
+  ☐ File tested locally
+```
+
+## Quick Validation Script
+
+Create a script to validate chapters:
+
+```bash
+#!/bin/bash
+# validate-chapter.sh
+
+CHAPTER_FILE="$1"
+
+if [ ! -f "$CHAPTER_FILE" ]; then
+  echo "File not found: $CHAPTER_FILE"
+  exit 1
+fi
+
+echo "Checking: $CHAPTER_FILE"
+
+# Check for smart quotes
+if grep -q '[""''–—]' "$CHAPTER_FILE"; then
+  echo "❌ ERROR: Found smart quotes or em-dashes"
+  exit 1
+fi
+
+# Check for frontmatter
+if ! head -1 "$CHAPTER_FILE" | grep -q '^---'; then
+  echo "❌ ERROR: Missing frontmatter"
+  exit 1
+fi
+
+# Check for main heading
+if ! grep -q '^# [0-9][0-9]: ' "$CHAPTER_FILE"; then
+  echo "❌ ERROR: Main heading not in correct format"
+  exit 1
+fi
+
+# Check for hero image
+if ! grep -q '\[.*\](/images/.*-full\.webp)' "$CHAPTER_FILE"; then
+  echo "❌ WARNING: Hero image might be missing"
+fi
+
+echo "✅ Chapter passed validation checks"
+```
+
+## Common Issues and Fixes
+
+### Issue: "Error parsing JavaScript expression"
+- **Cause**: Vue component with unescaped quotes or improper formatting
+- **Fix**: Remove Quiz components or ensure proper escaping with `\'`
+- **Prevention**: Keep Vue attributes on single lines; use proper quote escaping
+
+### Issue: Smart quotes breaking build
+- **Cause**: Copy-paste from rich text editors (Word, Google Docs)
+- **Fix**: Replace `"` → `"`, `'` → `'`, `—` → `-`
+- **Prevention**: Type manually or use plain text editors
+
+### Issue: Broken internal links
+- **Cause**: Wrong path format or non-existent chapters
+- **Fix**: Use absolute paths and verify chapter exists
+- **Prevention**: Test all links before committing
+
+### Issue: Image not displaying
+- **Cause**: Wrong path format or image not generated
+- **Fix**: Verify image exists at `/docs/public/images/{series}/chapter-{nn}-{slug}-full.webp`
+- **Prevention**: Generate images before creating chapter reference
+
+## Integration with CI/CD
+
+These checks should be incorporated into:
+1. Pre-commit hooks (run locally before staging)
+2. GitHub Actions (run on pull request)
+3. Build process (fail build if critical issues found)
+
+## When to Skip Checks
+
+Some checks may be intentionally skipped for specific chapter types:
+
+- **Stub Chapters**: May have minimal content (clearly marked as stubs)
+- **Bonus Content**: May have different structure
+- **Interactive Elements**: May require special handling
+
+Always document why a check was skipped in a comment or commit message.
