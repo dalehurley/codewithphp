@@ -1,0 +1,16 @@
+{
+    "name": "claude-php/chapter-15-structured-outputs",
+    "description": "Structured outputs and JSON schema validation",
+    "type": "project",
+    "require": {
+        "php": "^8.2",
+        "guzzlehttp/guzzle": "^7.8",
+        "vlucas/phpdotenv": "^5.6",
+        "justinrainbow/json-schema": "^5.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "ClaudePHP\\StructuredOutputs\\": "src/"
+        }
+    }
+}
