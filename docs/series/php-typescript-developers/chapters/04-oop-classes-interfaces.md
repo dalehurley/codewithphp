@@ -28,6 +28,23 @@ By the end of this chapter, you'll be able to:
 - ✅ Add generic type annotations with PHPStan/Psalm
 - ✅ Use readonly and static properties
 
+## Code Examples
+
+📁 **[View Code Examples on GitHub](https://github.com/dalehurley/codewithphp/tree/main/code/php-typescript-developers/chapter-04)**
+
+This chapter includes OOP examples:
+- Classes with property promotion
+- Interfaces and abstract classes
+- Traits for code reuse
+- Magic methods
+
+Run the examples:
+```bash
+cd code/php-typescript-developers/chapter-04
+php classes.php
+php traits.php
+```
+
 ## Class Basics
 
 ### TypeScript

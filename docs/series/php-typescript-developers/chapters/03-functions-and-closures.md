@@ -27,6 +27,23 @@ By the end of this chapter, you'll be able to:
 - ✅ Implement generator functions (yield)
 - ✅ Apply functional programming patterns
 
+## Code Examples
+
+📁 **[View Code Examples on GitHub](https://github.com/dalehurley/codewithphp/tree/main/code/php-typescript-developers/chapter-03)**
+
+This chapter includes comprehensive function and closure examples:
+- Closure variable capture patterns
+- Higher-order functions
+- Generators and lazy evaluation
+- Currying and memoization techniques
+
+Run the examples:
+```bash
+cd code/php-typescript-developers/chapter-03
+php closures.php
+php generators.php
+```
+
 ## Function Declarations
 
 ### TypeScript

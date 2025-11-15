@@ -28,6 +28,23 @@ By the end of this chapter, you'll be able to:
 - ✅ Publish packages to Packagist
 - ✅ Use popular PHP packages
 
+## Code Examples
+
+📁 **[View Code Examples on GitHub](https://github.com/dalehurley/codewithphp/tree/main/code/php-typescript-developers/chapter-06)**
+
+This chapter includes package management examples:
+- Sample composer.json configurations
+- PSR-4 autoloading setup
+- Package creation examples
+- CLI tool development
+
+Explore the examples:
+```bash
+cd code/php-typescript-developers/chapter-06
+cat composer.json
+composer install
+```
+
 ## Quick Comparison
 
 | Feature | npm | Composer |
