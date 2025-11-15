@@ -37,7 +37,19 @@
 - Constants and statics
 - Type casting and conversions
 - 3 practical exercises
-- **Status**: Complete and ready for review
+- **Status**: Complete and published
+
+### ✅ Chapter 03: Ownership and Borrowing
+- The three ownership rules
+- Stack vs heap memory
+- Move semantics (vs PHP's copy/reference semantics)
+- Borrowing with &T (immutable borrows)
+- Mutable borrowing with &mut T
+- The borrow checker (prevents dangling references)
+- Common ownership patterns
+- Practical examples with vectors, strings, structs
+- 3 hands-on exercises
+- **Status**: Complete and published
 
 ## Completed Appendices
 
@@ -67,16 +79,6 @@
 - Serialization, HTTP, validation
 - PHP package equivalents
 - **Status**: Complete
-
-## In Progress
-
-### 🚧 Chapter 03: Ownership and Borrowing
-- The ownership rules
-- Stack vs heap memory
-- Move semantics
-- Borrowing (&T and &mut T)
-- The borrow checker
-- **Status**: Outlined, development in progress
 
 ## Next Up
 
@@ -146,21 +148,21 @@
 
 ## Metrics
 
-- **Chapters Completed**: 3/40 (7.5%)
+- **Chapters Completed**: 4/40 (10%)
 - **Appendices Completed**: 4/4 (100%)
-- **Total Content Created**: ~12,000+ lines
-- **Code Examples**: 50+ working examples
-- **Exercises**: 9 hands-on exercises
+- **Total Content Created**: ~18,000+ lines
+- **Code Examples**: 80+ working examples
+- **Exercises**: 12 hands-on exercises
 
 ## Next Milestones
 
 ### Milestone 1: Foundation Complete (Target: Chapters 00-05)
-- ✅ Chapter 00
-- ✅ Chapter 01
-- ✅ Chapter 02
-- 🚧 Chapter 03 (In Progress)
-- 📋 Chapter 04
-- 📋 Chapter 05
+- ✅ Chapter 00 (Complete)
+- ✅ Chapter 01 (Complete)
+- ✅ Chapter 02 (Complete)
+- ✅ Chapter 03 (Complete)
+- 📋 Chapter 04 (Next)
+- 📋 Chapter 05 (Planned)
 
 ### Milestone 2: Core Language (Target: Chapters 06-10)
 - All chapters outlined
@@ -190,7 +192,9 @@ docs/series/rust-php-developers/
 │   ├── 00-quick-start-guide.md ✅
 │   ├── 01-why-rust-for-php-developers.md ✅
 │   ├── 02-variables-and-types.md ✅
-│   └── 03-ownership-and-borrowing.md 🚧
+│   ├── 03-ownership-and-borrowing.md ✅
+│   ├── 04-functions-and-control-flow.md 📋
+│   └── 05-structs-and-enums.md 📋
 └── appendices/
     ├── appendix-a-rust-php-reference.md ✅
     ├── appendix-b-cargo-cheat-sheet.md ✅
