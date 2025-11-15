@@ -1,28 +1,190 @@
 ---
 title: "05: Trees and Binary Search Trees"
-description: "Explore hierarchical data structures. Implement binary trees, binary search trees, and tree traversal algorithms (inorder, preorder, postorder). Understand balanced trees and their importance."
+description: "Build hierarchical data structures from scratch: implement binary trees, master tree traversals, create a production-ready BST with insert/search/delete, and understand when balanced trees matter for O(log n) performance"
 series: "computer-science"
 chapter: 5
 order: 5
 difficulty: "Intermediate"
-prerequisites: ["Linked Lists", "Recursion basics"]
+prerequisites:
+  - "/series/computer-science/chapters/04-linked-lists"
+  - "/series/computer-science/chapters/09-recursion"
 ---
 
 # Chapter 05: Trees and Binary Search Trees
 
-## Introduction
+## Overview
 
-Trees are **hierarchical data structures** that branch out from a root node. Unlike linear structures (arrays, lists), trees represent relationships with parent-child connections. They're fundamental to computer science, powering file systems, databases, compilers, and more.
+Trees are hierarchical data structures that branch out from a root node, representing parent-child relationships fundamentally different from linear structures like arrays and linked lists. They power file systems, databases, compilers, DOM manipulation, and decision-making algorithms across computer science.
 
-In this chapter, you'll learn:
+In this chapter, you'll move beyond linear thinking to master hierarchical structures. You'll implement binary trees from scratch using PHP classes, understand why Binary Search Trees (BSTs) provide O(log n) operations when balanced, and build a complete BST with insert, search, and delete operations. Unlike hash tables that sacrifice ordering for speed, BSTs give you both fast lookups AND sorted traversal—making them ideal for range queries and ordered data.
 
-- Tree terminology and concepts
-- Binary trees and their properties
-- Binary search trees (BST)
-- Tree traversal algorithms
-- BST operations and complexity
+You'll write all four tree traversal algorithms (inorder, preorder, postorder, level-order), understand when each is useful, and see how inorder traversal magically produces sorted output for BSTs. You'll validate tree properties, solve classic problems like finding the lowest common ancestor, and compare BST performance against arrays and hash tables with real benchmarks.
 
-## Tree Terminology
+By the end of this chapter, you'll understand why balanced trees are critical for production systems, how database indexes use B-trees (a variant of BSTs), and when to choose trees over other data structures.
+
+## Prerequisites
+
+Before starting this chapter, you should have:
+
+- ✅ Completed [Chapter 04: Linked Lists](/series/computer-science/chapters/04-linked-lists) or understand pointer-based data structures
+- ✅ Basic understanding of recursion (covered in [Chapter 09](/series/computer-science/chapters/09-recursion) but simple recursion introduced here)
+- ✅ Familiarity with Big O notation from [Chapter 01](/series/computer-science/chapters/01-algorithm-analysis-big-o)
+- ✅ PHP 8.2+ installed with object-oriented programming knowledge
+- ✅ Understanding of classes, objects, and constructor property promotion
+
+**Estimated Time**: ~90 minutes (reading, coding, and running examples)
+
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- **TreeNode class** with left/right pointers for building binary trees
+- **4 tree traversal algorithms**: inorder (sorted), preorder (copy), postorder (delete), level-order (BFS)
+- **Complete BinarySearchTree class** with insert, search, delete, findMin/Max, height, and validation
+- **Tree validation functions**: Check if valid BST, balanced, symmetric, or complete
+- **Common tree problem solvers**: Maximum depth, path sum, lowest common ancestor, invert tree, diameter
+- **Balanced BST builder** that converts sorted arrays to height-balanced trees in O(n)
+- **Range query operations**: Find values in range, kth smallest/largest element, closest value
+- **Serialization system** to convert trees to/from strings for storage
+- **Tree visualizer** with 4 different console output formats
+- **Performance benchmarking tool** comparing BST vs Array vs Hash Table at scale
+
+All examples include complete, runnable code with clear output demonstrating tree concepts.
+
+::: info Code Examples
+Complete, runnable examples for this chapter:
+
+- [`01-tree-node-basics.php`](https://github.com/dalehurley/codewithphp/blob/main/code/computer-science/chapter-05/01-tree-node-basics.php) — TreeNode class and basic tree operations
+- [`02-tree-traversals.php`](https://github.com/dalehurley/codewithphp/blob/main/code/computer-science/chapter-05/02-tree-traversals.php) — All 4 traversal algorithms with examples
+- [`03-bst-implementation.php`](https://github.com/dalehurley/codewithphp/blob/main/code/computer-science/chapter-05/03-bst-implementation.php) — Full BST with insert/search/delete
+- [`04-tree-validation.php`](https://github.com/dalehurley/codewithphp/blob/main/code/computer-science/chapter-05/04-tree-validation.php) — Validate BST, balanced, symmetric, complete
+- [`05-common-tree-problems.php`](https://github.com/dalehurley/codewithphp/blob/main/code/computer-science/chapter-05/05-common-tree-problems.php) — Classic tree algorithms
+- [`06-build-bst-from-array.php`](https://github.com/dalehurley/codewithphp/blob/main/code/computer-science/chapter-05/06-build-bst-from-array.php) — Sorted array to balanced BST
+- [`07-bst-range-queries.php`](https://github.com/dalehurley/codewithphp/blob/main/code/computer-science/chapter-05/07-bst-range-queries.php) — Range searches and kth element
+- [`08-serialize-deserialize.php`](https://github.com/dalehurley/codewithphp/blob/main/code/computer-science/chapter-05/08-serialize-deserialize.php) — Tree serialization formats
+- [`09-tree-visualization.php`](https://github.com/dalehurley/codewithphp/blob/main/code/computer-science/chapter-05/09-tree-visualization.php) — Console tree visualization
+- [`10-performance-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/code/computer-science/chapter-05/10-performance-comparison.php) — BST vs Array vs Hash Table benchmarks
+
+All files are in [`code/computer-science/chapter-05/`](https://github.com/dalehurley/codewithphp/tree/main/code/computer-science/chapter-05)
+:::
+
+## Quick Start
+
+Want to see trees in action right now? Here's a 5-minute Binary Search Tree:
+
+```php
+<?php
+
+class TreeNode {
+    public function __construct(
+        public mixed $value,
+        public ?TreeNode $left = null,
+        public ?TreeNode $right = null
+    ) {}
+}
+
+class BinarySearchTree {
+    private ?TreeNode $root = null;
+
+    public function insert(mixed $value): void {
+        $this->root = $this->insertNode($this->root, $value);
+    }
+
+    private function insertNode(?TreeNode $node, mixed $value): TreeNode {
+        if ($node === null) {
+            return new TreeNode($value);
+        }
+
+        if ($value < $node->value) {
+            $node->left = $this->insertNode($node->left, $value);
+        } elseif ($value > $node->value) {
+            $node->right = $this->insertNode($node->right, $value);
+        }
+
+        return $node;
+    }
+
+    public function search(mixed $value): bool {
+        return $this->searchNode($this->root, $value);
+    }
+
+    private function searchNode(?TreeNode $node, mixed $value): bool {
+        if ($node === null) return false;
+        if ($value === $node->value) return true;
+
+        return $value < $node->value
+            ? $this->searchNode($node->left, $value)
+            : $this->searchNode($node->right, $value);
+    }
+
+    public function inorder(): array {
+        return $this->inorderTraversal($this->root);
+    }
+
+    private function inorderTraversal(?TreeNode $node): array {
+        if ($node === null) return [];
+
+        return array_merge(
+            $this->inorderTraversal($node->left),
+            [$node->value],
+            $this->inorderTraversal($node->right)
+        );
+    }
+}
+
+// Demo
+$bst = new BinarySearchTree();
+foreach ([5, 3, 7, 2, 4, 8, 6] as $value) {
+    $bst->insert($value);
+}
+
+echo "Sorted output: " . json_encode($bst->inorder()) . "\n";
+// [2, 3, 4, 5, 6, 7, 8] - automatically sorted!
+
+echo "Search for 4: " . ($bst->search(4) ? "Found!" : "Not found") . "\n";
+echo "Search for 10: " . ($bst->search(10) ? "Found!" : "Not found") . "\n";
+```
+
+Save as `quick-bst.php` and run:
+```bash
+php quick-bst.php
+```
+
+Now let's dive deeper into how trees work.
+
+## Objectives
+
+By completing this chapter, you will be able to:
+
+**Foundational**:
+- Explain tree terminology: root, parent, child, leaf, depth, height
+- Implement a TreeNode class with left/right child pointers
+- Build binary trees manually and understand their structure
+- Distinguish between binary trees and binary search trees
+- Calculate tree height and count nodes recursively
+
+**Core Skills**:
+- Implement all 4 tree traversal algorithms (inorder, preorder, postorder, level-order)
+- Understand when to use each traversal method
+- Create a complete BST class with insert, search, and delete operations
+- Handle all 3 delete cases: leaf nodes, one child, two children
+- Find minimum and maximum values in BST in O(h) time
+
+**Advanced Techniques**:
+- Validate if a tree maintains the BST property
+- Check if a tree is height-balanced
+- Build balanced BSTs from sorted arrays
+- Perform range queries and find kth smallest element
+- Serialize and deserialize trees for storage
+- Compare BST performance vs arrays and hash tables
+
+## Step 1: Understanding Tree Terminology (~10 min)
+
+### Goal
+
+Learn the vocabulary used to describe tree structures and understand tree properties.
+
+### Concepts
 
 ```mermaid
 graph TD
@@ -40,14 +202,6 @@ graph TD
     style L2C fill:#95E1D3
 ```
 
-```
-        1         ← root (depth: 0, height: 2)
-       / \
-      2   3       ← level 1 (depth: 1, height: 1)
-     / \   \
-    4   5   6     ← level 2 (depth: 2, height: 0) - leaves
-```
-
 **Key Terms:**
 - **Root**: The topmost node (1)
 - **Parent**: Node with children (1, 2, 3)
@@ -58,14 +212,31 @@ graph TD
 - **Height**: Distance from a node to its deepest leaf (root has height 2)
 - **Subtree**: A tree formed by a node and its descendants
 
-## Binary Trees
+### Why This Matters
 
-A **binary tree** is a tree where each node has **at most two children** (left and right).
+Understanding tree terminology is essential for:
+- Communicating about tree algorithms
+- Analyzing time complexity (often expressed as O(h) where h = height)
+- Recognizing tree properties that affect performance
 
-### Binary Tree Node Implementation
+## Step 2: Implementing Binary Tree Nodes (~15 min)
+
+### Goal
+
+Create a TreeNode class and build a simple binary tree manually.
+
+### Actions
+
+1. **Create file** `tree-basics.php` or use the example code:
+
+::: tip Try It Yourself
+Run [`01-tree-node-basics.php`](https://github.com/dalehurley/codewithphp/blob/main/code/computer-science/chapter-05/01-tree-node-basics.php) to see TreeNode in action.
+:::
 
 ```php
 <?php
+
+declare(strict_types=1);
 
 class TreeNode {
     public function __construct(
@@ -87,55 +258,75 @@ $root->right = new TreeNode(7);
 $root->left->left = new TreeNode(2);
 $root->left->right = new TreeNode(4);
 $root->right->right = new TreeNode(8);
+
+// Calculate height
+function getHeight(?TreeNode $node): int {
+    if ($node === null) {
+        return -1;
+    }
+
+    return 1 + max(
+        getHeight($node->left),
+        getHeight($node->right)
+    );
+}
+
+echo "Tree height: " . getHeight($root) . "\n"; // 2
 ```
 
-### Types of Binary Trees
+2. **Run the code**:
+```bash
+php tree-basics.php
+```
+
+### Key Insights
+
+✅ **TreeNode uses constructor property promotion** (PHP 8.0+) for concise syntax
+✅ **Recursive structure**: Each node can have left/right children of type TreeNode
+✅ **Null represents absence**: Missing children are null, not empty objects
+✅ **Height calculation is recursive**: Base case (null = -1) + recursive case (1 + max of children)
+
+## Step 3: Mastering Tree Traversals (~20 min)
+
+### Goal
+
+Implement all 4 tree traversal algorithms and understand their use cases.
+
+### The 4 Traversal Methods
 
 ```mermaid
-graph TD
-    subgraph "Full Binary Tree"
-        F1[1] --> F2[2]
-        F1 --> F3[3]
-        F2 --> F4[4]
-        F2 --> F5[5]
-        F3 --> F6[6]
-        F3 --> F7[7]
+graph TB
+    subgraph "Tree Example"
+        R[5] --> L[3]
+        R --> RN[7]
+        L --> LL[2]
+        L --> LR[4]
+        RN --> RR[8]
     end
 
-    subgraph "Complete Binary Tree"
-        C1[1] --> C2[2]
-        C1 --> C3[3]
-        C2 --> C4[4]
-        C2 --> C5[5]
-        C3 --> C6[6]
-    end
-
-    subgraph "Perfect Binary Tree"
-        P1[1] --> P2[2]
-        P1 --> P3[3]
-        P2 --> P4[4]
-        P2 --> P5[5]
-        P3 --> P6[6]
-        P3 --> P7[7]
-    end
-
-    style F1 fill:#4CAF50
-    style C1 fill:#2196F3
-    style P1 fill:#FF9800
+    style R fill:#FF6B6B,color:#fff
+    style L fill:#4ECDC4
+    style RN fill:#95E1D3
 ```
 
-1. **Full Binary Tree**: Every node has 0 or 2 children (no node has only 1 child)
-2. **Complete Binary Tree**: All levels filled except possibly the last, filled left to right
-3. **Perfect Binary Tree**: All internal nodes have 2 children, all leaves at same level (height h has 2^h - 1 nodes)
-4. **Balanced Binary Tree**: Height difference between left and right subtrees ≤ 1 for every node
+**Tree:** 5 → (3, 7) → (2, 4, null, 8)
 
-## Tree Traversal Algorithms
+| Traversal | Order | Result | Use Case |
+|-----------|-------|--------|----------|
+| **Inorder** | Left → Root → Right | [2, 3, 4, 5, 7, 8] | Get sorted sequence (BST) |
+| **Preorder** | Root → Left → Right | [5, 3, 2, 4, 7, 8] | Copy tree structure |
+| **Postorder** | Left → Right → Root | [2, 4, 3, 8, 7, 5] | Delete tree (children first) |
+| **Level Order** | Top to bottom, left to right | [5, 3, 7, 2, 4, 8] | BFS, level-by-level processing |
 
-### 1. Inorder Traversal (Left → Root → Right)
+### Implementation
+
+::: tip Complete Examples
+Run [`02-tree-traversals.php`](https://github.com/dalehurley/codewithphp/blob/main/code/computer-science/chapter-05/02-tree-traversals.php) to see all 4 traversals with output.
+:::
+
+**1. Inorder Traversal** (produces sorted output for BST):
 
 ```php
-<?php
-
 function inorderTraversal(?TreeNode $node): array {
     if ($node === null) {
         return [];
@@ -148,64 +339,13 @@ function inorderTraversal(?TreeNode $node): array {
     );
 }
 
-// For BST, produces sorted output
 $result = inorderTraversal($root);
-// [2, 3, 4, 5, 7, 8]
+// [2, 3, 4, 5, 7, 8] - sorted!
 ```
 
-**Complexity**: O(n) time, O(h) space (h = height for recursion stack)
-
-### 2. Preorder Traversal (Root → Left → Right)
+**2. Level Order Traversal** (BFS using queue):
 
 ```php
-<?php
-
-function preorderTraversal(?TreeNode $node): array {
-    if ($node === null) {
-        return [];
-    }
-
-    return array_merge(
-        [$node->value],
-        preorderTraversal($node->left),
-        preorderTraversal($node->right)
-    );
-}
-
-$result = preorderTraversal($root);
-// [5, 3, 2, 4, 7, 8]
-```
-
-**Use case**: Create a copy of the tree, expression tree evaluation
-
-### 3. Postorder Traversal (Left → Right → Root)
-
-```php
-<?php
-
-function postorderTraversal(?TreeNode $node): array {
-    if ($node === null) {
-        return [];
-    }
-
-    return array_merge(
-        postorderTraversal($node->left),
-        postorderTraversal($node->right),
-        [$node->value]
-    );
-}
-
-$result = postorderTraversal($root);
-// [2, 4, 3, 8, 7, 5]
-```
-
-**Use case**: Delete a tree, postfix expression evaluation
-
-### 4. Level Order Traversal (Breadth-First)
-
-```php
-<?php
-
 function levelOrderTraversal(?TreeNode $root): array {
     if ($root === null) {
         return [];
@@ -230,17 +370,29 @@ function levelOrderTraversal(?TreeNode $root): array {
 }
 
 $result = levelOrderTraversal($root);
-// [5, 3, 7, 2, 4, 8]
+// [5, 3, 7, 2, 4, 8] - level by level
 ```
 
-**Complexity**: O(n) time, O(w) space (w = maximum width)
+### Complexity
 
-## Binary Search Tree (BST)
+| Traversal | Time | Space |
+|-----------|------|-------|
+| Inorder | O(n) | O(h) for recursion stack |
+| Preorder | O(n) | O(h) for recursion stack |
+| Postorder | O(n) | O(h) for recursion stack |
+| Level Order | O(n) | O(w) where w = max width |
 
-A **Binary Search Tree** is a binary tree with the **BST property**:
-- All nodes in the **left subtree** are **less than** the root
-- All nodes in the **right subtree** are **greater than** the root
-- This property applies recursively to all subtrees
+## Step 4: Building a Binary Search Tree (~25 min)
+
+### Goal
+
+Implement a complete BST class with insert, search, and delete operations.
+
+### The BST Property
+
+A **Binary Search Tree** maintains this property at every node:
+- All nodes in **left subtree** are **less than** the root
+- All nodes in **right subtree** are **greater than** the root
 
 ```mermaid
 graph TD
@@ -253,31 +405,19 @@ graph TD
     style R fill:#FF6B6B,color:#fff
     style L fill:#4ECDC4
     style RN fill:#95E1D3
-    style LL fill:#F7DC6F
-    style LR fill:#F7DC6F
-    style RR fill:#BB8FCE
 ```
 
-```
-        5           ← root
-       / \
-      3   7         ← 3 < 5 < 7  ✓
-     / \   \
-    2   4   8       ← 2 < 3 < 4 < 5 < 7 < 8  ✓
+This property enables **O(log n) search** in balanced trees!
 
-Inorder traversal gives sorted sequence: [2, 3, 4, 5, 7, 8]
-```
+### Complete Implementation
 
-**Why BST is useful:**
-- **Efficient search**: O(log n) average case (balanced tree)
-- **Sorted iteration**: Inorder traversal gives elements in sorted order
-- **Dynamic**: Easy insertion and deletion compared to sorted arrays
+::: tip Full Working Code
+Run [`03-bst-implementation.php`](https://github.com/dalehurley/codewithphp/blob/main/code/computer-science/chapter-05/03-bst-implementation.php) for the complete BST with all operations.
+:::
 
-### BST Implementation
+**Key Operations:**
 
 ```php
-<?php
-
 class BinarySearchTree {
     private ?TreeNode $root = null;
 
@@ -307,13 +447,8 @@ class BinarySearchTree {
     }
 
     private function searchNode(?TreeNode $node, mixed $value): bool {
-        if ($node === null) {
-            return false;
-        }
-
-        if ($value === $node->value) {
-            return true;
-        }
+        if ($node === null) return false;
+        if ($value === $node->value) return true;
 
         if ($value < $node->value) {
             return $this->searchNode($node->left, $value);
@@ -322,7 +457,7 @@ class BinarySearchTree {
         return $this->searchNode($node->right, $value);
     }
 
-    // Delete - O(h)
+    // Delete - O(h) - handles 3 cases
     public function delete(mixed $value): void {
         $this->root = $this->deleteNode($this->root, $value);
     }
@@ -361,93 +496,35 @@ class BinarySearchTree {
 
         return $node;
     }
-
-    // Find minimum value node
-    private function findMin(TreeNode $node): TreeNode {
-        while ($node->left !== null) {
-            $node = $node->left;
-        }
-        return $node;
-    }
-
-    // Find maximum value node
-    private function findMax(TreeNode $node): TreeNode {
-        while ($node->right !== null) {
-            $node = $node->right;
-        }
-        return $node;
-    }
-
-    // Get height
-    public function height(): int {
-        return $this->getHeight($this->root);
-    }
-
-    private function getHeight(?TreeNode $node): int {
-        if ($node === null) {
-            return -1;
-        }
-
-        return 1 + max(
-            $this->getHeight($node->left),
-            $this->getHeight($node->right)
-        );
-    }
-
-    // Check if tree is valid BST
-    public function isValidBST(): bool {
-        return $this->isValidBSTNode($this->root, null, null);
-    }
-
-    private function isValidBSTNode(?TreeNode $node, $min, $max): bool {
-        if ($node === null) {
-            return true;
-        }
-
-        if (($min !== null && $node->value <= $min) ||
-            ($max !== null && $node->value >= $max)) {
-            return false;
-        }
-
-        return $this->isValidBSTNode($node->left, $min, $node->value) &&
-               $this->isValidBSTNode($node->right, $node->value, $max);
-    }
-
-    // Get all values in sorted order
-    public function inorder(): array {
-        return inorderTraversal($this->root);
-    }
 }
 
 // Usage
 $bst = new BinarySearchTree();
-$bst->insert(5);
-$bst->insert(3);
-$bst->insert(7);
-$bst->insert(2);
-$bst->insert(4);
-$bst->insert(8);
+foreach ([5, 3, 7, 2, 4, 8] as $value) {
+    $bst->insert($value);
+}
 
 echo $bst->search(4) ? "Found" : "Not found";  // Found
 echo $bst->search(10) ? "Found" : "Not found"; // Not found
 
 print_r($bst->inorder()); // [2, 3, 4, 5, 7, 8] - sorted!
-
-$bst->delete(3);
-print_r($bst->inorder()); // [2, 4, 5, 7, 8]
 ```
 
-## BST Complexity Analysis
+### Delete Operation - 3 Cases
 
-| Operation | Average | Worst Case |
-|-----------|---------|------------|
+**Case 1: Leaf node** (no children) → Simply remove
+**Case 2: One child** → Replace node with its child
+**Case 3: Two children** → Replace with inorder successor (smallest value in right subtree)
+
+### Complexity Analysis
+
+| Operation | Average | Worst Case (Skewed) |
+|-----------|---------|---------------------|
 | Search | O(log n) | O(n) |
 | Insert | O(log n) | O(n) |
 | Delete | O(log n) | O(n) |
-| Space | O(n) | O(n) |
 
-**Note**: Worst case occurs when tree becomes skewed (like a linked list):
-
+**Worst case** occurs when tree becomes skewed (like a linked list):
 ```
 1
  \
@@ -455,40 +532,42 @@ print_r($bst->inorder()); // [2, 4, 5, 7, 8]
    \
     3
      \
-      4  ← Degrades to O(n)
+      4  ← O(n) search!
 ```
 
-## Balanced BSTs (Self-Balancing Trees)
+**Solution**: Use self-balancing trees (AVL, Red-Black) for guaranteed O(log n).
 
-To maintain O(log n) operations, use self-balancing trees:
-- **AVL Trees**: Strict balancing (height difference ≤ 1)
-- **Red-Black Trees**: Relaxed balancing, faster insertions
-- **B-Trees**: Used in databases
+## Step 5: Validating Tree Properties (~10 min)
 
-## Common Tree Problems
+### Goal
 
-### 1. Maximum Depth
+Implement functions to check if a tree is valid, balanced, or symmetric.
+
+::: tip Complete Validation Suite
+Run [`04-tree-validation.php`](https://github.com/dalehurley/codewithphp/blob/main/code/computer-science/chapter-05/04-tree-validation.php) for all validation checks with examples.
+:::
+
+**Check if Valid BST:**
 
 ```php
-<?php
-
-function maxDepth(?TreeNode $node): int {
+function isValidBST(?TreeNode $node, $min = null, $max = null): bool {
     if ($node === null) {
-        return 0;
+        return true;
     }
 
-    return 1 + max(
-        maxDepth($node->left),
-        maxDepth($node->right)
-    );
+    if (($min !== null && $node->value <= $min) ||
+        ($max !== null && $node->value >= $max)) {
+        return false;
+    }
+
+    return isValidBST($node->left, $min, $node->value) &&
+           isValidBST($node->right, $node->value, $max);
 }
 ```
 
-### 2. Check if Balanced
+**Check if Balanced:**
 
 ```php
-<?php
-
 function isBalanced(?TreeNode $node): bool {
     return checkBalance($node) !== -1;
 }
@@ -505,36 +584,151 @@ function checkBalance(?TreeNode $node): int {
     if ($rightHeight === -1) return -1;
 
     if (abs($leftHeight - $rightHeight) > 1) {
-        return -1;
+        return -1; // Unbalanced
     }
 
     return 1 + max($leftHeight, $rightHeight);
 }
 ```
 
-### 3. Lowest Common Ancestor (BST)
+## Step 6: Common Tree Problems (~15 min)
+
+### Goal
+
+Solve classic tree algorithm problems that appear in interviews.
+
+::: tip Problem Solutions
+Run [`05-common-tree-problems.php`](https://github.com/dalehurley/codewithphp/blob/main/code/computer-science/chapter-05/05-common-tree-problems.php) for 7 common problems solved.
+:::
+
+**1. Maximum Depth:**
 
 ```php
-<?php
-
-function lowestCommonAncestor(
-    TreeNode $root,
-    TreeNode $p,
-    TreeNode $q
-): TreeNode {
-    if ($p->value < $root->value && $q->value < $root->value) {
-        return lowestCommonAncestor($root->left, $p, $q);
+function maxDepth(?TreeNode $node): int {
+    if ($node === null) {
+        return 0;
     }
 
-    if ($p->value > $root->value && $q->value > $root->value) {
-        return lowestCommonAncestor($root->right, $p, $q);
+    return 1 + max(
+        maxDepth($node->left),
+        maxDepth($node->right)
+    );
+}
+```
+
+**2. Path Sum** (does root-to-leaf path with target sum exist?):
+
+```php
+function hasPathSum(?TreeNode $node, int $targetSum): bool {
+    if ($node === null) {
+        return false;
+    }
+
+    // Leaf node check
+    if ($node->left === null && $node->right === null) {
+        return $targetSum === $node->value;
+    }
+
+    $remainingSum = $targetSum - $node->value;
+    return hasPathSum($node->left, $remainingSum) ||
+           hasPathSum($node->right, $remainingSum);
+}
+```
+
+**3. Lowest Common Ancestor (BST version):**
+
+```php
+function lowestCommonAncestorBST(
+    TreeNode $root,
+    int $p,
+    int $q
+): TreeNode {
+    if ($p < $root->value && $q < $root->value) {
+        return lowestCommonAncestorBST($root->left, $p, $q);
+    }
+
+    if ($p > $root->value && $q > $root->value) {
+        return lowestCommonAncestorBST($root->right, $p, $q);
     }
 
     return $root; // Split point
 }
 ```
 
-## BST vs. Hash Table vs. Array
+## Step 7: Advanced Operations (~15 min)
+
+### Goal
+
+Perform advanced BST operations like range queries and serialization.
+
+::: tip Advanced Techniques
+- [`06-build-bst-from-array.php`](https://github.com/dalehurley/codewithphp/blob/main/code/computer-science/chapter-05/06-build-bst-from-array.php) — Build balanced BST from sorted array
+- [`07-bst-range-queries.php`](https://github.com/dalehurley/codewithphp/blob/main/code/computer-science/chapter-05/07-bst-range-queries.php) — Range searches and kth element
+- [`08-serialize-deserialize.php`](https://github.com/dalehurley/codewithphp/blob/main/code/computer-science/chapter-05/08-serialize-deserialize.php) — Save/load trees
+:::
+
+**Build Balanced BST from Sorted Array:**
+
+```php
+function sortedArrayToBST(array $nums): ?TreeNode {
+    if (empty($nums)) {
+        return null;
+    }
+
+    return buildBST($nums, 0, count($nums) - 1);
+}
+
+function buildBST(array $nums, int $left, int $right): ?TreeNode {
+    if ($left > $right) {
+        return null;
+    }
+
+    // Use middle element as root to ensure balance
+    $mid = intval(($left + $right) / 2);
+    $root = new TreeNode($nums[$mid]);
+
+    $root->left = buildBST($nums, $left, $mid - 1);
+    $root->right = buildBST($nums, $mid + 1, $right);
+
+    return $root;
+}
+
+$sortedArray = [1, 2, 3, 4, 5, 6, 7];
+$balancedBST = sortedArrayToBST($sortedArray);
+// Creates perfectly balanced tree with height = log(7) = 2
+```
+
+**Find Kth Smallest Element:**
+
+```php
+function kthSmallest(?TreeNode $root, int $k): ?int {
+    $count = 0;
+    $result = null;
+
+    function inorderWithCounter(?TreeNode $node, int $k, int &$count, &$result): void {
+        if ($node === null || $result !== null) {
+            return;
+        }
+
+        inorderWithCounter($node->left, $k, $count, $result);
+
+        $count++;
+        if ($count === $k) {
+            $result = $node->value;
+            return;
+        }
+
+        inorderWithCounter($node->right, $k, $count, $result);
+    }
+
+    inorderWithCounter($root, $k, $count, $result);
+    return $result;
+}
+```
+
+## BST vs Hash Table vs Array
+
+Understanding when to use each data structure:
 
 | Operation | BST (balanced) | Hash Table | Sorted Array |
 |-----------|----------------|------------|--------------|
@@ -543,47 +737,87 @@ function lowestCommonAncestor(
 | Delete | O(log n) | O(1) average | O(n) |
 | Ordered traversal | O(n) | N/A | O(n) |
 | Range query | O(log n + k) | O(n) | O(log n + k) |
+| Space | O(n) | O(n) | O(n) |
 
-## When to Use BSTs
+::: tip Performance Comparison
+Run [`10-performance-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/code/computer-science/chapter-05/10-performance-comparison.php) to see real benchmarks at 100, 1000, and 10000 elements.
+:::
 
-**Use BSTs when**:
-- You need sorted data
-- Range queries are common
-- You need both fast search and sorted order
-- Space is limited (no hash table overhead)
+**Use BST when:**
+- ✅ Need sorted data
+- ✅ Range queries are common
+- ✅ Need both fast search AND sorted order
+- ✅ Space is limited (no hash table overhead)
 
-**Avoid BSTs when**:
-- Only simple lookups needed (use hash tables)
-- Tree might become unbalanced
-- Memory overhead is a concern
+**Use Hash Table when:**
+- ✅ Only simple lookups needed
+- ✅ No need for ordering
+- ✅ Fastest possible search required
+
+**Use Sorted Array when:**
+- ✅ Data is mostly static (few inserts/deletes)
+- ✅ Memory efficiency critical
+
+## Balanced Trees in Production
+
+**Problem**: Unbalanced BSTs degrade to O(n) operations.
+
+**Solution**: Self-balancing trees maintain height = O(log n):
+
+- **AVL Trees**: Strict balancing (height difference ≤ 1), more rotations
+- **Red-Black Trees**: Relaxed balancing, faster insertions (used in Linux, Java TreeMap)
+- **B-Trees**: Disk-optimized, used in databases (MySQL, PostgreSQL indexes)
+
+## Real-World Applications
+
+**File Systems**: Directory structure is a tree
+```
+/
+├── home
+│   ├── user
+│   │   ├── documents
+│   │   └── downloads
+└── etc
+```
+
+**Database Indexes**: B-tree indexes for O(log n) queries
+**DOM (Document Object Model)**: HTML structure is a tree
+**Compilers**: Abstract Syntax Trees (AST) for parsing code
+**Decision Trees**: Machine learning classification
 
 ## Key Takeaways
 
-- Trees are **hierarchical data structures** with parent-child relationships
-- **Binary trees** have at most 2 children per node
-- **BSTs** maintain sorted order with O(log n) operations when balanced
-- **Traversals**: Inorder (sorted), Preorder (copy), Postorder (delete), Level-order (BFS)
-- Unbalanced trees degrade to O(n) - use self-balancing trees in production
+- **Trees are hierarchical**: Parent-child relationships, not linear
+- **Binary trees**: At most 2 children per node
+- **BST property**: Left < Root < Right enables O(log n) search
+- **4 traversals**: Inorder (sorted), Preorder (copy), Postorder (delete), Level-order (BFS)
+- **Balance matters**: Unbalanced trees → O(n), Balanced trees → O(log n)
+- **Delete is tricky**: 3 cases (leaf, one child, two children)
+- **Self-balancing trees**: Production systems use AVL or Red-Black trees
+- **Use cases**: BSTs excel at ordered data with range queries
 
 ## Exercises
 
-1. **Invert a binary tree**: Swap left and right children recursively.
+Test your understanding:
 
-2. **Path sum**: Find if there's a root-to-leaf path with a given sum.
+1. **Invert a binary tree**: Swap left and right children recursively ([Solution](https://github.com/dalehurley/codewithphp/blob/main/code/computer-science/chapter-05/05-common-tree-problems.php))
 
-3. **Serialize and deserialize**: Convert a tree to/from a string.
+2. **Check if two trees are identical**: Compare structure and values
 
-4. **Kth smallest element**: Find the kth smallest value in a BST.
+3. **Serialize and deserialize**: Convert tree to string and back ([Solution](https://github.com/dalehurley/codewithphp/blob/main/code/computer-science/chapter-05/08-serialize-deserialize.php))
 
-5. **Build BST from sorted array**: Create a balanced BST from a sorted array.
+4. **Kth smallest element**: Find kth smallest value in BST ([Solution](https://github.com/dalehurley/codewithphp/blob/main/code/computer-science/chapter-05/07-bst-range-queries.php))
+
+5. **Build BST from sorted array**: Create balanced BST ([Solution](https://github.com/dalehurley/codewithphp/blob/main/code/computer-science/chapter-05/06-build-bst-from-array.php))
 
 ## What's Next?
 
-Trees are powerful, but sometimes we need even faster lookups. In Chapter 06, we'll explore **Hash Tables**—a data structure that provides O(1) average-case operations.
+Trees are powerful for hierarchical data, but what if you need O(1) lookups? In [Chapter 06: Hash Tables](/series/computer-science/chapters/06-hash-tables), you'll explore the data structure behind PHP's associative arrays that provides constant-time operations.
 
 ---
 
 **Further Reading**:
-- [Binary Search Tree (Wikipedia)](https://en.wikipedia.org/wiki/Binary_search_tree)
+- [Binary Search Tree - Wikipedia](https://en.wikipedia.org/wiki/Binary_search_tree)
 - [Tree Traversal Algorithms](https://en.wikipedia.org/wiki/Tree_traversal)
 - [AVL Trees and Red-Black Trees](https://www.geeksforgeeks.org/avl-tree-set-1-insertion/)
+- [LeetCode Tree Problems](https://leetcode.com/tag/tree/)
