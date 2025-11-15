@@ -1,0 +1,15 @@
+{
+    "name": "claude-php/chapter-13-vision",
+    "description": "Vision API - Working with images in Claude",
+    "type": "project",
+    "require": {
+        "php": "^8.2",
+        "guzzlehttp/guzzle": "^7.8",
+        "vlucas/phpdotenv": "^5.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "ClaudePHP\\Vision\\": "src/"
+        }
+    }
+}

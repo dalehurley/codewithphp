@@ -1,0 +1,32 @@
+{
+    "name": "claude-php/chapter-11-tool-use",
+    "description": "Tool use fundamentals for Claude API",
+    "type": "project",
+    "require": {
+        "php": "^8.2",
+        "guzzlehttp/guzzle": "^7.8",
+        "vlucas/phpdotenv": "^5.6"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "ClaudePHP\\ToolUse\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ClaudePHP\\ToolUse\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
