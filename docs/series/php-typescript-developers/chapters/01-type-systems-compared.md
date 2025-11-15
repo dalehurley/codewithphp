@@ -28,6 +28,21 @@ By the end of this chapter, you'll be able to:
 - ✅ Use strict typing modes in PHP
 - ✅ Recognize when PHP's type system is more permissive or restrictive than TypeScript's
 
+## Code Examples
+
+📁 **[View Code Examples on GitHub](https://github.com/dalehurley/codewithphp/tree/main/code/php-typescript-developers/chapter-01)**
+
+This chapter includes working code examples:
+- `basic-types.php` - Basic type annotations and demonstrations
+- `nullable-union-types.php` - Nullable types, union types, and advanced patterns
+
+Clone the repository and run the examples:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code/php-typescript-developers/chapter-01
+php basic-types.php
+```
+
 ## Key Concepts
 
 ### The Fundamental Difference

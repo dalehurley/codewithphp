@@ -28,6 +28,25 @@ By the end of this chapter, you'll be able to:
 - ✅ Apply RESTful best practices
 - ✅ Handle errors properly
 
+## Code Examples
+
+📁 **[View Code Examples on GitHub](https://github.com/dalehurley/codewithphp/tree/main/code/php-typescript-developers/chapter-12)**
+
+This chapter includes complete REST API examples:
+- `01-native-api.php` - Basic REST API without frameworks
+- `02-router-class.php` - Custom router implementation
+- `03-request-response.php` - Clean request/response objects
+- `04-middleware.php` - Middleware pipeline pattern
+- `05-slim-api/` - Full CRUD API with Slim Framework
+- `06-validation.php` - Input validation examples
+
+Run the examples:
+```bash
+cd code/php-typescript-developers/chapter-12
+php -S localhost:8000 01-native-api.php
+curl http://localhost:8000/api/users
+```
+
 ## Quick Comparison
 
 | Feature | Express.js | PHP Native | Slim Framework |

@@ -27,6 +27,26 @@ By the end of this chapter, you'll be able to:
 - ✅ Seed databases with test data
 - ✅ Apply database best practices
 
+## Code Examples
+
+📁 **[View Code Examples on GitHub](https://github.com/dalehurley/codewithphp/tree/main/code/php-typescript-developers/chapter-14)**
+
+This chapter includes comprehensive Eloquent ORM examples:
+- `01-eloquent-basics.php` - Complete guide to Eloquent (models, CRUD, relationships, scopes, accessors)
+
+Setup a Laravel project to run these examples:
+```bash
+composer create-project laravel/laravel eloquent-demo
+cd eloquent-demo
+
+# Review the code examples
+cat ../code/php-typescript-developers/chapter-14/01-eloquent-basics.php
+
+# Create migrations and models as shown in examples
+php artisan make:model User -m
+php artisan migrate
+```
+
 ## ORM Comparison
 
 | Feature | TypeORM | Eloquent |
