@@ -28,6 +28,25 @@ By the end of this chapter, you'll be able to:
 - ✅ Use middleware and service providers
 - ✅ Apply Laravel best practices
 
+## Code Examples
+
+📁 **[View Code Examples on GitHub](https://github.com/dalehurley/codewithphp/tree/main/code/php-typescript-developers/chapter-13)**
+
+This chapter includes Laravel foundation examples:
+- `01-setup-guide.md` - Complete Laravel setup instructions
+- `02-routes.php` - Comprehensive routing patterns
+- `03-controllers.php` - Controller examples and comparisons
+- `04-dependency-injection.php` - Service container and DI
+- `05-middleware.php` - Middleware patterns
+- `06-form-requests.php` - Form validation examples
+
+Get started:
+```bash
+cd code/php-typescript-developers/chapter-13
+# Review the setup guide for creating a Laravel project
+cat 01-setup-guide.md
+```
+
 ## Framework Comparison
 
 | Laravel | Nest.js | Express | Purpose |

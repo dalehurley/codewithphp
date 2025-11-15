@@ -86,7 +86,43 @@ php example-file.php
 
 ### Phase 3: Advanced (Chapters 11-15)
 
-*Coming soon*
+**✅ Chapter 11:** Async in PHP - Promises vs Fibers
+- Fibers for cooperative multitasking
+- ReactPHP event loop and HTTP server
+- Promise patterns
+- Concurrent HTTP requests with Guzzle
+- WebSocket server with Ratchet
+
+**✅ Chapter 12:** REST APIs - Express.js vs PHP Native
+- Native PHP REST API
+- Custom router implementation
+- Request/Response objects
+- Middleware pipeline
+- Slim Framework (PHP's Express)
+- Input validation
+
+**✅ Chapter 13:** Laravel Foundations
+- Laravel setup guide
+- Routing patterns
+- Controllers and dependency injection
+- Middleware
+- Form request validation
+- Service providers
+
+**✅ Chapter 14:** Database & ORMs
+- Eloquent ORM basics
+- Models and relationships
+- Query builder
+- Eager loading (N+1 prevention)
+- Accessors and mutators
+- Scopes
+
+**✅ Chapter 15:** Full-Stack with Inertia.js
+- Inertia.js setup guide
+- Laravel + React/Vue integration
+- Server-side routing with SPA experience
+- Form handling
+- TypeScript configuration
 
 ## 🎯 Prerequisites
 

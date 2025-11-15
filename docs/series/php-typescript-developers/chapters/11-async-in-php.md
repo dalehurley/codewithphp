@@ -27,6 +27,25 @@ By the end of this chapter, you'll be able to:
 - ✅ Know when async PHP makes sense
 - ✅ Use async libraries effectively
 
+## Code Examples
+
+📁 **[View Code Examples on GitHub](https://github.com/dalehurley/codewithphp/tree/main/code/php-typescript-developers/chapter-11)**
+
+This chapter includes comprehensive async examples:
+- `01-basic-fibers.php` - Introduction to PHP Fibers
+- `02-fiber-tasks.php` - Practical task management with Fibers
+- `03-reactphp-server.php` - Async HTTP server with ReactPHP
+- `04-promises.php` - Promise patterns in PHP
+- `05-guzzle-async.php` - Concurrent HTTP requests with Guzzle
+- `06-websocket-server.php` - Real-time WebSocket server
+
+Run the examples:
+```bash
+cd code/php-typescript-developers/chapter-11
+composer install
+php 01-basic-fibers.php
+```
+
 ## The Fundamental Difference
 
 ### JavaScript: Async by Default

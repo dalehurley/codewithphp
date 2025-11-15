@@ -27,6 +27,29 @@ By the end of this chapter, you'll be able to:
 - ✅ Implement forms with validation
 - ✅ Use TypeScript with Inertia
 
+## Code Examples
+
+📁 **[View Code Examples on GitHub](https://github.com/dalehurley/codewithphp/tree/main/code/php-typescript-developers/chapter-15)**
+
+This chapter includes Inertia.js setup and examples - comprehensive guide for building full-stack applications with Laravel + React/Vue.
+
+Get started with Inertia.js:
+```bash
+# View the complete setup guide on GitHub
+# The README includes:
+# - Complete installation steps
+# - Basic example with React
+# - Form handling
+# - TypeScript configuration
+# - Architecture diagrams
+
+# Quick start:
+composer create-project laravel/laravel inertia-app
+cd inertia-app
+composer require inertiajs/inertia-laravel
+npm install @inertiajs/react react react-dom
+```
+
 ## What is Inertia.js?
 
 **Problem:**
