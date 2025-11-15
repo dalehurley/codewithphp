@@ -27,6 +27,23 @@ By the end of this chapter, you'll be able to:
 - ✅ Use named arguments (like object parameters in TS)
 - ✅ Destructure arrays (PHP's equivalent to array destructuring)
 
+## Code Examples
+
+📁 **[View Code Examples on GitHub](https://github.com/dalehurley/codewithphp/tree/main/code/php-typescript-developers/chapter-02)**
+
+This chapter includes working examples of modern PHP syntax:
+- Arrow functions and closures
+- Match expressions
+- Spread operators and named arguments
+- Array methods and TypeScript-style helpers
+
+Run the examples:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code/php-typescript-developers/chapter-02
+php arrow-functions.php
+```
+
 ## Arrow Functions
 
 ### TypeScript

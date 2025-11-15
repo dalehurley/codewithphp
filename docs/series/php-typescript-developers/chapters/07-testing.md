@@ -27,6 +27,26 @@ By the end of this chapter, you'll be able to:
 - ✅ Run tests with filters and options
 - ✅ Apply testing best practices
 
+## Code Examples
+
+📁 **[View Code Examples on GitHub](https://github.com/dalehurley/codewithphp/tree/main/code/php-typescript-developers/chapter-07)**
+
+This chapter includes comprehensive testing examples:
+- PHPUnit setup and configuration
+- Unit test examples
+- Mocking and assertions
+- Data providers
+- Integration tests
+
+Run the examples:
+```bash
+cd code/php-typescript-developers/chapter-07
+composer install
+composer test
+# or
+vendor/bin/phpunit
+```
+
 ## Installation
 
 ### Jest

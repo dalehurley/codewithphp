@@ -27,6 +27,25 @@ By the end of this chapter, you'll be able to:
 - ✅ Profile PHP applications
 - ✅ Understand error handling and logging
 
+## Code Examples
+
+📁 **[View Code Examples on GitHub](https://github.com/dalehurley/codewithphp/tree/main/code/php-typescript-developers/chapter-10)**
+
+This chapter includes debugging examples:
+- Xdebug configuration
+- VS Code launch.json setup
+- Debugging scenarios
+- Logging examples
+
+Setup debugging:
+```bash
+cd code/php-typescript-developers/chapter-10
+# Review Xdebug configuration
+cat xdebug.ini
+# Review VS Code debug config
+cat .vscode/launch.json
+```
+
 ## Debugging Tools Comparison
 
 | Feature | Node.js | PHP |

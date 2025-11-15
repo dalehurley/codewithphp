@@ -26,6 +26,24 @@ By the end of this chapter, you'll be able to:
 - ✅ Set up production-ready deployments
 - ✅ Use Docker for consistent environments
 
+## Code Examples
+
+📁 **[View Code Examples on GitHub](https://github.com/dalehurley/codewithphp/tree/main/code/php-typescript-developers/chapter-09)**
+
+This chapter includes build tool examples:
+- Vite configuration for Laravel
+- PHAR creation scripts
+- OPcache configuration
+- Docker setup examples
+
+Explore the examples:
+```bash
+cd code/php-typescript-developers/chapter-09
+# Review configurations
+cat vite.config.js
+cat docker-compose.yml
+```
+
 ## The Fundamental Difference
 
 ### TypeScript/JavaScript Build Process

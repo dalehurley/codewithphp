@@ -27,6 +27,23 @@ By the end of this chapter, you'll be able to:
 - ✅ Set up pre-commit hooks
 - ✅ Run quality checks in CI/CD
 
+## Code Examples
+
+📁 **[View Code Examples on GitHub](https://github.com/dalehurley/codewithphp/tree/main/code/php-typescript-developers/chapter-08)**
+
+This chapter includes code quality tool examples:
+- PHP_CodeSniffer configuration
+- PHPStan/Psalm setup
+- PHP-CS-Fixer configuration
+- Quality check scripts
+
+Setup the tools:
+```bash
+cd code/php-typescript-developers/chapter-08
+composer install
+composer check
+```
+
 ## Tool Ecosystem Comparison
 
 | TypeScript/JavaScript | PHP | Purpose |

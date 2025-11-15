@@ -27,6 +27,23 @@ By the end of this chapter, you'll be able to:
 - ✅ Implement Result types for functional error handling
 - ✅ Apply error handling best practices
 
+## Code Examples
+
+📁 **[View Code Examples on GitHub](https://github.com/dalehurley/codewithphp/tree/main/code/php-typescript-developers/chapter-05)**
+
+This chapter includes error handling examples:
+- Custom exception classes
+- Exception chaining
+- Result type pattern
+- Validation examples
+
+Run the examples:
+```bash
+cd code/php-typescript-developers/chapter-05
+php custom-exceptions.php
+php result-type.php
+```
+
 ## Basic Try/Catch
 
 ### TypeScript
