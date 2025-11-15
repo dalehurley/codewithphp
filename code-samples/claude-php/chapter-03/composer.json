@@ -1,0 +1,23 @@
+{
+    "name": "codewithphp/claude-php-chapter-03",
+    "description": "Chapter 03: Your First Claude Request - Claude for PHP Developers",
+    "type": "project",
+    "require": {
+        "php": "^8.2",
+        "anthropic-ai/sdk": "^1.0",
+        "vlucas/phpdotenv": "^5.5",
+        "monolog/monolog": "^3.5",
+        "guzzlehttp/guzzle": "^7.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "ClaudePhp\\FirstRequest\\": "src/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
