@@ -4,45 +4,33 @@ description: "Get Claude running in PHP in 5 minutes. Practical examples for tex
 series: "claude-php-developers"
 chapter: 0
 order: 0
-difficulty: "Expert"
-prerequisites:
-  - "PHP 8.2+ installed"
-  - "Composer installed"
-  - "Anthropic API key"
+difficulty: "Beginner"
+prerequisites: []
 ---
 
 ![00: Quick Start Guide](/images/claude-php/chapter-00-hero-full.webp)
 
-<div class="breadcrumbs">
-  <a href="/">Home</a>
-  <span class="breadcrumbs-separator">›</span>
-  <a href="/series">Series</a>
-  <span class="breadcrumbs-separator">›</span>
-  <a href="/series/claude-php-developers">Claude for PHP Developers</a>
-  <span class="breadcrumbs-separator">›</span>
-  <span>Chapter 00</span>
-</div>
-
 # Chapter 00: Quick Start Guide
 
-## Overview
+**Got 5 minutes?** This guide gets you from zero to making your first Claude API call in PHP. You'll see practical examples of text generation, code analysis, and data extraction—the three most common use cases for Claude in PHP applications.
 
-Want to get started with Claude and PHP right now? This chapter gets you from zero to making your first AI-powered API call in 5 minutes. You'll see practical examples of text generation, code analysis, and data extraction—the three most common use cases for Claude in PHP applications.
-
-By the end of this quick start, you'll have Claude integrated into a PHP script, understand the basic API structure, and have working code you can immediately adapt for your projects.
+::: info
+This is a reference guide, not a traditional tutorial. For step-by-step learning and deeper understanding, start with [Chapter 01: Introduction to Claude API](/series/claude-php-developers/chapters/01-introduction-to-claude-api).
+:::
 
 ## Prerequisites
 
-Before starting, ensure you have:
+**No prerequisites required** - dive right in! But you'll need:
 
-- ✓ **PHP 8.2+** installed (`php --version`)
-- ✓ **Composer** installed (`composer --version`)
-- ✓ **Anthropic API key** (we'll show you how to get one)
-- ✓ Basic command line familiarity
+- **PHP 8.4+** installed (`php --version`)
+- **Composer** installed (`composer --version`)
+- **Anthropic API key** (we'll show you how to get one below)
 
 **Estimated Time**: 5-10 minutes
 
-## Step 1: Get Your API Key (~2 min)
+## Quick Setup
+
+### Get Your API Key
 
 1. **Sign up** at [console.anthropic.com](https://console.anthropic.com)
 2. **Add payment method** (required for API access)
@@ -53,10 +41,11 @@ Before starting, ensure you have:
 Keep your API key secret! Never commit it to version control.
 :::
 
-## Step 2: Install the PHP SDK (~1 min)
+### Install the PHP SDK
 
 Create a new project directory and install the Anthropic PHP SDK:
 
+**Unix/Mac/Linux:**
 ```bash
 # Create project directory
 mkdir claude-quickstart && cd claude-quickstart
@@ -68,7 +57,20 @@ composer init --no-interaction
 composer require anthropic-ai/sdk
 ```
 
-## Step 3: Your First Claude Request (~2 min)
+**Windows (PowerShell):**
+```powershell
+# Create project directory
+New-Item -ItemType Directory -Path claude-quickstart
+Set-Location claude-quickstart
+
+# Initialize composer
+composer init --no-interaction
+
+# Install Anthropic SDK
+composer require anthropic-ai/sdk
+```
+
+### Your First Claude Request
 
 Create a file called `quickstart.php`:
 
@@ -104,6 +106,7 @@ echo $response->content[0]->text;
 
 Run it with your API key:
 
+**Unix/Mac/Linux:**
 ```bash
 # Set your API key (replace with your actual key)
 export ANTHROPIC_API_KEY="sk-ant-your-key-here"
@@ -112,15 +115,60 @@ export ANTHROPIC_API_KEY="sk-ant-your-key-here"
 php quickstart.php
 ```
 
+**Windows (PowerShell):**
+```powershell
+# Set your API key (replace with your actual key)
+$env:ANTHROPIC_API_KEY="sk-ant-your-key-here"
+
+# Run the script
+php quickstart.php
+```
+
 **Expected output:** Claude will explain PHP generators in a clear, concise paragraph.
 
-## Common Use Cases
+### Verify Your Setup
 
-Now that you have the basics working, here are three common patterns you'll use in real applications:
+Test that everything works:
 
-### Use Case 1: Text Generation
+```bash
+# Verify PHP version (should be 8.4+)
+php --version
 
-Generate content, summaries, or creative text:
+# Verify Composer is installed
+composer --version
+
+# Verify API key is set
+echo $ANTHROPIC_API_KEY | head -c 20  # Shows first 20 chars (Unix/Mac)
+# Or on Windows PowerShell:
+# $env:ANTHROPIC_API_KEY.Substring(0, 20)
+```
+
+If all checks pass, you're ready to go!
+
+## 🚦 Which Use Case Do You Need?
+
+```
+Need Claude in PHP?
+├─ Generate text content?
+│  └─ → Use Case 1: Text Generation
+├─ Analyze or review code?
+│  └─ → Use Case 2: Code Analysis
+├─ Extract structured data?
+│  └─ → Use Case 3: Data Extraction
+├─ Need specialized AI assistant?
+│  └─ → Use System Prompts
+├─ Need real-time responses?
+│  └─ → Use Streaming
+└─ Not sure? → Start with Use Case 1
+```
+
+## 🎯 "I Need To..."
+
+### Generate Text Content
+
+Need to generate product descriptions, summaries, or creative text? Here's the pattern:
+
+**→ [Full Guide: Text Generation](/series/claude-php-developers/chapters/05-prompt-engineering-basics)**
 
 ```php
 <?php
@@ -135,10 +183,8 @@ $client = Anthropic::factory()
     ->withApiKey(getenv('ANTHROPIC_API_KEY'))
     ->make();
 
-function generateProductDescription(string $productName, array $features): string
+function generateProductDescription(Anthropic $client, string $productName, array $features): string
 {
-    global $client;
-
     $featuresList = implode("\n", array_map(fn($f) => "- $f", $features));
 
     $response = $client->messages()->create([
@@ -155,6 +201,7 @@ function generateProductDescription(string $productName, array $features): strin
 
 // Example usage
 $description = generateProductDescription(
+    client: $client,
     productName: 'Laravel Cloud',
     features: [
         'One-click deployment',
@@ -167,9 +214,11 @@ $description = generateProductDescription(
 echo "Generated Description:\n\n{$description}\n";
 ```
 
-### Use Case 2: Code Analysis
+### Analyze Code
 
-Analyze, review, or explain code:
+Need to review code for security issues, bugs, or improvements?
+
+**→ [Full Guide: Code Analysis](/series/claude-php-developers/chapters/06-code-analysis-and-review)**
 
 ```php
 <?php
@@ -184,10 +233,8 @@ $client = Anthropic::factory()
     ->withApiKey(getenv('ANTHROPIC_API_KEY'))
     ->make();
 
-function analyzeCode(string $code): string
+function analyzeCode(Anthropic $client, string $code): string
 {
-    global $client;
-
     $response = $client->messages()->create([
         'model' => 'claude-sonnet-4-20250514',
         'max_tokens' => 2000,
@@ -210,12 +257,14 @@ function getUserData($userId) {
 PHP;
 
 echo "Code Analysis:\n\n";
-echo analyzeCode($codeToAnalyze);
+echo analyzeCode($client, $codeToAnalyze);
 ```
 
-### Use Case 3: Data Extraction
+### Extract Structured Data
 
-Extract structured data from unstructured text:
+Need to extract contact info, product details, or other structured data from text?
+
+**→ [Full Guide: Data Extraction](/series/claude-php-developers/chapters/07-structured-data-extraction)**
 
 ```php
 <?php
@@ -230,10 +279,8 @@ $client = Anthropic::factory()
     ->withApiKey(getenv('ANTHROPIC_API_KEY'))
     ->make();
 
-function extractContactInfo(string $text): array
+function extractContactInfo(Anthropic $client, string $text): array
 {
-    global $client;
-
     $response = $client->messages()->create([
         'model' => 'claude-sonnet-4-20250514',
         'max_tokens' => 1024,
@@ -264,21 +311,98 @@ Email: john.smith@acme.com
 Mobile: +1 (555) 123-4567
 TEXT;
 
-$contact = extractContactInfo($businessCard);
+$contact = extractContactInfo($client, $businessCard);
 
 echo "Extracted Contact Information:\n";
 print_r($contact);
 ```
 
-## Understanding the Response Structure
+### Use System Prompts
+
+Define Claude's role and expertise for specialized responses:
+
+**→ [Full Guide: System Prompts](/series/claude-php-developers/chapters/07-system-prompts-roles)**
+
+```php
+<?php
+# filename: examples/04-system-prompt.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Anthropic;
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
+// System prompt defines Claude's role and expertise
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-20250514',
+    'max_tokens' => 500,
+    'system' => 'You are a senior PHP code reviewer. Analyze code for type safety, security issues, and best practices. Always suggest improvements using PHP 8.4+ features.',
+    'messages' => [[
+        'role' => 'user',
+        'content' => 'Review this function: function getUser($id) { return $db->query("SELECT * FROM users WHERE id = " . $id); }'
+    ]]
+]);
+
+echo $response->content[0]->text;
+```
+
+### Stream Responses
+
+Get real-time responses for better UX:
+
+**→ [Full Guide: Streaming](/series/claude-php-developers/chapters/06-streaming-responses)**
+
+```php
+<?php
+# filename: examples/05-streaming.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Anthropic;
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
+// Stream responses for real-time output
+$stream = $client->messages()->createStreamed([
+    'model' => 'claude-sonnet-4-20250514',
+    'max_tokens' => 1024,
+    'messages' => [[
+        'role' => 'user',
+        'content' => 'Explain PHP generators in detail.'
+    ]]
+]);
+
+foreach ($stream as $event) {
+    if (isset($event->type) && $event->type === 'content_block_delta') {
+        echo $event->delta->text;
+        flush(); // Send output immediately
+    }
+}
+```
+
+## Quick Reference: Response Structure
 
 Every Claude API response follows this structure:
 
 ```php
 $response = $client->messages()->create([...]);
 
-// Access the text content
+// Access the text content (most common)
 $text = $response->content[0]->text;
+
+// Handle multiple content blocks (if any)
+foreach ($response->content as $block) {
+    if ($block->type === 'text') {
+        echo $block->text;
+    }
+}
 
 // Check usage (for cost tracking)
 $inputTokens = $response->usage->inputTokens;
@@ -290,9 +414,10 @@ $model = $response->model;
 // Response metadata
 $id = $response->id;
 $role = $response->role; // Always 'assistant'
+$stopReason = $response->stopReason; // 'end_turn', 'max_tokens', etc.
 ```
 
-## Model Selection Quick Reference
+## 🚦 Model Selection Guide
 
 Choose the right model for your use case:
 
@@ -304,7 +429,11 @@ Choose the right model for your use case:
 
 For most PHP applications, start with **Sonnet**—it provides excellent quality at reasonable cost.
 
-## Error Handling Basics
+**→ [Full Guide: Model Selection](/series/claude-php-developers/chapters/02-model-selection-and-capabilities)**
+
+## 💡 Quick Wins
+
+### Error Handling
 
 Always handle errors in production:
 
@@ -352,7 +481,9 @@ try {
 }
 ```
 
-## Cost Tracking
+**→ [Full Guide: Error Handling](/series/claude-php-developers/chapters/10-error-handling-and-retries)**
+
+### Cost Tracking
 
 Monitor your API usage and costs:
 
@@ -397,7 +528,9 @@ echo "Output tokens: {$outputTokens}\n";
 echo "Estimated cost: $" . number_format($totalCost, 6) . "\n";
 ```
 
-## Environment Setup Best Practices
+**→ [Full Guide: Cost Management](/series/claude-php-developers/chapters/09-cost-optimization)**
+
+### Environment Configuration
 
 For production applications, use environment variables:
 
@@ -448,7 +581,9 @@ $response = $client->messages()->create([
 echo $response->content[0]->text;
 ```
 
-## Quick Reference: Common Parameters
+**→ [Full Guide: Production Setup](/series/claude-php-developers/chapters/08-production-best-practices)**
+
+## 📖 Quick Reference: Common Parameters
 
 ```php
 $response = $client->messages()->create([
@@ -468,82 +603,40 @@ $response = $client->messages()->create([
 ]);
 ```
 
-## Next Steps
+## 📖 Learning Paths
 
 Now that you have Claude working in PHP, here's what to explore next:
 
-1. **[Chapter 01: Introduction to Claude API](/series/claude-php-developers/chapters/01-introduction-to-claude-api)** — Understand models, capabilities, and architecture
-2. **[Chapter 03: Your First Claude Request](/series/claude-php-developers/chapters/03-first-claude-request)** — Deep dive into request/response structure
-3. **[Chapter 05: Prompt Engineering Basics](/series/claude-php-developers/chapters/05-prompt-engineering-basics)** — Learn to write effective prompts
-4. **[Chapter 11: Tool Use Fundamentals](/series/claude-php-developers/chapters/11-tool-use-fundamentals)** — Extend Claude with function calling
+**If you have 30 minutes:**
+1. Read this guide
+2. [Chapter 01: Introduction to Claude API](/series/claude-php-developers/chapters/01-introduction-to-claude-api) — Understand models and capabilities
+3. [Chapter 05: Prompt Engineering Basics](/series/claude-php-developers/chapters/05-prompt-engineering-basics) — Write effective prompts
 
-## Exercises
+**For deep learning:**
+- Start with [Chapter 01: Introduction to Claude API](/series/claude-php-developers/chapters/01-introduction-to-claude-api) for comprehensive understanding
+- [Chapter 03: Your First Claude Request](/series/claude-php-developers/chapters/03-first-claude-request) — Deep dive into request/response structure
+- [Chapter 11: Tool Use Fundamentals](/series/claude-php-developers/chapters/11-tool-use-fundamentals) — Extend Claude with function calling
 
-Before moving on, try these exercises:
+## ❓ FAQs
 
-### Exercise 1: Custom Text Generator
-
-Build a function that generates blog post outlines:
-
-```php
-function generateBlogOutline(string $topic, int $sections = 5): string
-{
-    // Your implementation here
-    // Should return a structured outline with intro, sections, conclusion
-}
-```
-
-### Exercise 2: Code Formatter
-
-Create a function that takes messy code and returns formatted, documented code:
-
-```php
-function formatAndDocumentCode(string $code, string $language = 'php'): string
-{
-    // Your implementation here
-    // Should return formatted code with PHPDoc comments
-}
-```
-
-### Exercise 3: JSON Validator
-
-Build a data extractor that always returns valid JSON:
-
-```php
-function extractToJSON(string $text, array $schema): array
-{
-    // Your implementation here
-    // Should validate against schema and return structured data
-}
-```
-
-<details>
-<summary>Solution Hints</summary>
-
-For Exercise 1, use a system prompt that defines Claude as a blog outline expert. For Exercise 2, include code formatting rules in the prompt. For Exercise 3, specify the JSON schema in the prompt and use `json_decode()` with error handling.
-
-</details>
-
-## Troubleshooting
-
-**API key not working?**
+**Q: API key not working?**
 - Ensure you've added a payment method to your Anthropic account
 - Check the key starts with `sk-ant-`
 - Verify the environment variable is set correctly
 
-**Rate limit errors?**
+**Q: Rate limit errors?**
 - You've exceeded your API rate limit
-- Implement exponential backoff retry logic (see Chapter 10)
+- Implement exponential backoff retry logic → [Chapter 10: Error Handling](/series/claude-php-developers/chapters/10-error-handling-and-retries)
 - Consider upgrading your API tier
 
-**Empty or unexpected responses?**
+**Q: Empty or unexpected responses?**
 - Check your `max_tokens` value (might be too low)
-- Review your prompt for clarity and specificity
+- Review your prompt for clarity and specificity → [Chapter 05: Prompt Engineering](/series/claude-php-developers/chapters/05-prompt-engineering-basics)
 - Try a different model (Sonnet vs Haiku)
 
-**JSON parsing fails?**
+**Q: JSON parsing fails?**
 - Claude may wrap JSON in markdown code blocks
-- Use regex to extract JSON from response
+- Use regex to extract JSON from response (see data extraction example above)
 - Add "Return only valid JSON, no explanation" to your prompt
 
 ## Key Takeaways
@@ -558,12 +651,16 @@ For Exercise 1, use a system prompt that defines Claude as a blog outline expert
 <ChapterCheckbox
   seriesId="claude-php-developers"
   chapterId="00"
-  label="You've made your first Claude API call in PHP!"
+  label="I've reviewed the Quick Start Guide and made my first Claude API call!"
 />
 
 ---
 
-Continue to [Chapter 01: Introduction to Claude API](/series/claude-php-developers/chapters/01-introduction-to-claude-api) for comprehensive understanding.
+<div class="series-cta">
+  <h2>Ready for More?</h2>
+  <p>Continue with the full series for comprehensive understanding.</p>
+  <a href="/series/claude-php-developers/chapters/01-introduction-to-claude-api" class="cta-button">Start Course →</a>
+</div>
 
 ## 💻 Code Samples
 

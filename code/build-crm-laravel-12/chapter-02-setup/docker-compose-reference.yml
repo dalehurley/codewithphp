@@ -99,3 +99,7 @@ volumes:
 # From inside Laravel container: Use DB_HOST=mysql (not 127.0.0.1)
 # From your machine: Use localhost:3306 (port mapping)
 
+
+
+
+

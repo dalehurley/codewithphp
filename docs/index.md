@@ -19,8 +19,8 @@ No frameworks, no shortcuts—just deep understanding that prepares you for Lara
 
 ✓ **100% Free**
 ✓ **Self-Paced**
-✓ **72+ Chapters**
-✓ **4 Series**
+✓ **112+ Chapters**
+✓ **5 Series**
 
 </div>
 
@@ -46,17 +46,17 @@ No credit card • No signup • Start immediately
 
 <div class="stat-card">
 
-### 72+ Chapters
+### 112+ Chapters
 
-Complete tutorials covering everything from basics to AI/ML
+Complete tutorials covering everything from basics to AI/ML and Claude integration
 
 </div>
 
 <div class="stat-card">
 
-### 4 Series
+### 5 Series
 
-From beginner basics to advanced AI/ML, plus Python & Rails transitions
+From beginner basics to advanced AI/ML, Claude API, plus Python & Rails transitions
 
 </div>
 
@@ -194,6 +194,7 @@ We believe in understanding the fundamentals before using abstractions. By build
 | --------------------------------------------------------- | ------------ | ----------------------- | ---------------------------------------------- |
 | **[PHP Basics](#php-basics)** ⭐                          | Beginner     | 25 chapters • 20–30 hrs | Build a complete blog application from scratch |
 | **[AI/ML for PHP Developers](#ai-ml-for-php-developers)** | Intermediate | 25 chapters • 40–50 hrs | Build AI-powered PHP applications              |
+| **[Claude for PHP Developers](#claude-for-php-developers)** | Expert     | 40 chapters • 60–80 hrs | Build production-ready Claude AI applications   |
 | **[Python to Laravel](#python-to-laravel)**               | Intermediate | 11 chapters • 15–20 hrs | Transition confidently from Python to Laravel  |
 | **[Rails to Laravel](#rails-to-laravel)**                 | Intermediate | 11 chapters • 15–20 hrs | Transition confidently from Rails to Laravel   |
 
@@ -362,10 +363,51 @@ Post::where('published', true)->orderBy('created_at')->get();
 
 </div>
 
+<div id="claude-for-php-developers" class="series-card series-card-claude">
+
+### 🤖 Claude for PHP Developers
+
+**For expert PHP developers** — Master Anthropic's Claude AI integration
+
+Build production-ready AI applications using Claude. From your first API call to deploying sophisticated multi-agent systems.
+
+**What you'll learn:**
+
+- Claude API integration and authentication
+- Tool use (function calling) and custom tools
+- Vision API for image and document analysis
+- RAG (Retrieval Augmented Generation) with vector databases
+- Multi-agent systems and workflow orchestration
+- Production deployment, security, and cost optimization
+
+**📊 Course Details:**
+
+- **40 chapters** | **60–80 hours** | **Expert level**
+- **Prerequisites**: Expert PHP 8.4+ knowledge, Laravel/Symfony experience
+- **Outcome**: Build production-ready Claude AI applications
+
+**💻 What You'll Build:**
+
+```php
+// Chatbots, code review assistants, documentation generators
+$claude->messages()->create([
+    'model' => 'claude-sonnet-4-20250514',
+    'messages' => [['role' => 'user', 'content' => $prompt]]
+]);
+```
+
+<div class="series-cta">
+
+[Explore Claude Series →](/series/claude-php-developers/)
+
+</div>
+
+</div>
+
 </div>
 
 ::: tip Not Sure Where to Start?
-If you're completely new to programming, start with **[PHP Basics](/series/php-basics/)**. If you know Python web development, try **[Python to Laravel](/series/python-developers-love-php-laravel/)**. If you're a Rails developer, explore **[Rails to Laravel](/series/rails-developers-love-laravel/)**. Each series is independent and self-contained.
+If you're completely new to programming, start with **[PHP Basics](/series/php-basics/)**. If you're an expert PHP developer wanting to integrate Claude AI, check out **[Claude for PHP Developers](/series/claude-php-developers/)**. If you know Python web development, try **[Python to Laravel](/series/python-developers-love-php-laravel/)**. If you're a Rails developer, explore **[Rails to Laravel](/series/rails-developers-love-laravel/)**. Each series is independent and self-contained.
 :::
 
 ## What You'll Build
@@ -682,6 +724,8 @@ _Helping developers fall in love with PHP, one tutorial at a time._
   --python-cyan: #06b6d4;
   --rails-red: #dc2626;
   --rails-ruby: #ef4444;
+  --claude-purple: #7c3aed;
+  --claude-violet: #8b5cf6;
   --neutral-gray: #64748b;
   --bg-light: #f8fafc;
 }
@@ -909,6 +953,11 @@ _Helping developers fall in love with PHP, one tutorial at a time._
   background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%);
 }
 
+.series-card-claude {
+  border: 2px solid var(--claude-purple);
+  background: linear-gradient(135deg, #f5f3ff 0%, #ffffff 100%);
+}
+
 .popular-badge {
   position: absolute;
   top: -12px;
@@ -977,6 +1026,17 @@ _Helping developers fall in love with PHP, one tutorial at a time._
 
 .series-card-rails .series-cta a:hover {
   box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+  transform: translateY(-2px);
+}
+
+.series-card-claude .series-cta a {
+  background: linear-gradient(135deg, var(--claude-purple) 0%, var(--claude-violet) 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+}
+
+.series-card-claude .series-cta a:hover {
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
   transform: translateY(-2px);
 }
 
@@ -1142,6 +1202,10 @@ h2::before {
 
 .series-card-rails code {
   border-left-color: var(--rails-red);
+}
+
+.series-card-claude code {
+  border-left-color: var(--claude-purple);
 }
 
 /* Testimonials styling */

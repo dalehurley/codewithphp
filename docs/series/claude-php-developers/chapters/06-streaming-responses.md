@@ -4,11 +4,12 @@ description: "Master real-time streaming with Claude API. Build responsive chatb
 series: "claude-php-developers"
 chapter: 6
 order: 6
-difficulty: "Expert"
+difficulty: "Intermediate"
 prerequisites:
-  - "Chapter 00-05 completed"
-  - "Understanding of HTTP streaming"
-  - "Basic knowledge of async PHP patterns"
+  - "/series/claude-php-developers/chapters/05-prompt-engineering-basics"
+  - "HTTP request/response lifecycle understanding"
+  - "JavaScript Fetch API and EventSource basics"
+  - "PHP output buffering concepts"
 ---
 
 ![06: Streaming Responses in PHP](/images/claude-php/chapter-06-hero-full.webp)
@@ -43,6 +44,126 @@ Before starting, ensure you understand:
 - ✓ PHP output buffering concepts
 
 **Estimated Time**: 45-60 minutes
+
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- A `StreamEventHandler` class for processing streaming events with callbacks
+- A `StreamingService` class for managing SSE responses
+- A `ConversationalStreamingService` for maintaining chat history during streams
+- A `BudgetedStreamingService` for tracking API costs across streams
+- A `TimeoutAwareStreamingService` for enforcing time limits
+- A `RecoverableStreamingService` for recovering from partial responses
+- A production-ready chatbot interface with full streaming support
+- A robust client-side streaming consumer with automatic reconnection
+- Multiple streaming patterns from simple to advanced
+
+## Objectives
+
+By the end of this chapter, you will be able to:
+
+- Understand the difference between blocking and streaming API responses
+- Implement Server-Sent Events (SSE) in PHP for real-time communication
+- Disable PHP output buffering correctly for streaming contexts
+- Build streaming endpoints that work across Apache, Nginx, and PHP development server
+- Handle streaming events with callbacks for text, completion, and errors
+- Implement client-side streaming consumers with EventSource or fetch API
+- Build conversational streaming with full message history
+- Track and manage API costs across streaming responses
+- Implement reconnection logic for resilient streaming clients
+- Handle edge cases including timeouts, disconnections, and partial responses
+- Test streaming implementations effectively
+
+## Quick Start: 5-Minute Streaming Example (~5 min)
+
+Get up and running with streaming immediately. This minimal example shows the core pattern:
+
+**Backend** (`stream.php`):
+```php
+<?php
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Anthropic\Anthropic;
+
+header('Content-Type: text/event-stream');
+header('Cache-Control: no-cache');
+header('Connection: keep-alive');
+
+if (ob_get_level()) {
+    ob_end_clean();
+}
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
+$stream = $client->messages()->createStreamed([
+    'model' => 'claude-sonnet-4-20250514',
+    'max_tokens' => 1024,
+    'messages' => [[
+        'role' => 'user',
+        'content' => 'Explain quantum computing in 3 sentences.'
+    ]]
+]);
+
+foreach ($stream as $event) {
+    echo "data: " . json_encode($event) . "\n\n";
+    flush();
+}
+
+echo "data: {\"type\": \"done\"}\n\n";
+flush();
+```
+
+**Frontend** (`index.html`):
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Streaming Chat</title>
+</head>
+<body>
+    <div id="output"></div>
+
+    <script>
+        const output = document.getElementById('output');
+        let text = '';
+
+        fetch('stream.php').then(response => {
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+
+            const read = async () => {
+                const { done, value } = await reader.read();
+                if (done) return;
+
+                const chunk = decoder.decode(value, { stream: true });
+                const lines = chunk.split('\n');
+
+                lines.forEach(line => {
+                    if (line.startsWith('data: ')) {
+                        const data = JSON.parse(line.substring(6));
+                        if (data.type === 'content_block_delta') {
+                            text += data.delta.text;
+                            output.textContent = text;
+                        }
+                    }
+                });
+
+                await read();
+            };
+
+            read();
+        });
+    </script>
+</body>
+</html>
+```
+
+**Result**: Open `index.html` in your browser and see Claude's response stream in real-time! That's streaming in its simplest form.
 
 ## Why Streaming Matters
 
@@ -94,6 +215,55 @@ The user waited 8+ seconds staring at a loading spinner. With streaming, they'd 
 2. **Better UX** — Interactive feel like ChatGPT
 3. **Cancellable** — Users can stop long responses
 4. **Progressive Rendering** — Display partial results while generating
+
+## Key Concepts: Streaming, Buffering, and Events
+
+Before diving into code, understand these three core concepts:
+
+### 1. **Streaming** — The Pattern
+
+Streaming means sending data incrementally as it becomes available, instead of waiting for complete results. Instead of:
+
+```
+Client: "Send me a 10,000 word essay" → Wait 10 seconds → Server: "Here's the complete essay"
+```
+
+You get:
+
+```
+Client: "Send me a 10,000 word essay"
+Server: "The essay is about..." → "...the benefits of..." → "...streaming responses" → "...done."
+(User sees text appear word-by-word!)
+```
+
+**Why it matters**: Users feel instant feedback and can start reading before the response completes.
+
+### 2. **Output Buffering** — PHP's Hidden Feature
+
+PHP doesn't send responses immediately. It buffers (collects) output and sends it all at once when the script ends. For streaming, we **must disable buffering** so each piece can be sent independently.
+
+```php
+// With buffering (default):
+echo "Hello"; // Held in memory
+echo " World"; // Still held
+// Script ends → Both sent together
+
+// Without buffering:
+echo "Hello"; flush(); // Sent immediately
+echo " World"; flush(); // Sent immediately
+```
+
+### 3. **Events** — The Message Format
+
+SSE defines how to send messages: each message is JSON preceded by `data: ` and followed by a blank line:
+
+```
+data: {"type": "text_delta", "delta": "Hello"}\n\n
+data: {"type": "text_delta", "delta": " world"}\n\n
+data: {"type": "message_stop"}\n\n
+```
+
+The client reads and parses these, handling each event as it arrives.
 
 ## Understanding Server-Sent Events (SSE)
 
@@ -768,7 +938,7 @@ $wordCount = 0;
 $charCount = 0;
 
 $service->streamToSSE(
-    message: 'Write a comprehensive guide to PHP 8.2 features',
+    message: 'Write a comprehensive guide to PHP 8.4 features',
     options: [
         'max_tokens' => 4096,
         'onText' => function (string $delta, string $fullText) use (&$wordCount, &$charCount, $startTime) {
@@ -1581,6 +1751,215 @@ foreach ($stream as $event) {
 }
 ```
 
+## Best Practices for Production Streaming
+
+### 1. Always Disable Output Buffering Completely
+
+```php
+// Clear ALL output buffers
+while (ob_get_level()) {
+    ob_end_clean();
+}
+
+// Set headers before any output
+header('Content-Type: text/event-stream');
+header('Cache-Control: no-cache');
+header('Connection: keep-alive');
+```
+
+### 2. Implement Graceful Degradation
+
+If streaming fails, fall back to polling or regular requests:
+
+```php
+try {
+    $stream = $client->messages()->createStreamed($config);
+    // Stream events...
+} catch (Exception $e) {
+    // Fallback: Send complete response
+    echo "data: " . json_encode([
+        'type' => 'fallback',
+        'message' => 'Streaming unavailable, showing complete response...',
+    ]) . "\n\n";
+    // Return full response instead
+}
+```
+
+### 3. Monitor and Log Stream Interruptions
+
+```php
+$startTime = time();
+$eventsProcessed = 0;
+
+foreach ($stream as $event) {
+    $eventsProcessed++;
+    
+    // Detect timeout
+    if (time() - $startTime > 60) {
+        error_log("Stream timeout after {$eventsProcessed} events");
+        break;
+    }
+    
+    echo "data: " . json_encode($event) . "\n\n";
+    flush();
+}
+```
+
+### 4. Security: Validate Before Streaming
+
+```php
+// Never trust client input
+$userMessage = filter_var($_POST['message'] ?? '', FILTER_SANITIZE_STRING);
+
+if (strlen($userMessage) > 10000) {
+    http_response_code(400);
+    echo "data: " . json_encode(['type' => 'error', 'message' => 'Message too long']) . "\n\n";
+    exit;
+}
+```
+
+### 5. Handle Web Server Specific Issues
+
+**For Nginx**:
+```php
+// Prevent Nginx buffering
+header('X-Accel-Buffering: no');
+header('X-Accel-Charset: utf-8');
+```
+
+**For Apache with mod_deflate**:
+```
+# Add to .htaccess
+<IfModule mod_deflate.c>
+    SetEnvIfNoCase Request_URI ^/stream\.php$ no-gzip dont-vary
+</IfModule>
+```
+
+## Testing Streaming Implementations
+
+### Unit Testing Streaming Service
+
+```php
+<?php
+# filename: tests/StreamingServiceTest.php
+declare(strict_types=1);
+
+use PHPUnit\Framework\TestCase;
+use CodeWithPHP\Claude\StreamingService;
+
+class StreamingServiceTest extends TestCase
+{
+    private StreamingService $service;
+
+    protected function setUp(): void
+    {
+        $this->service = new StreamingService(getenv('ANTHROPIC_API_KEY'));
+    }
+
+    public function testStreamInitializesWithoutError(): void
+    {
+        $callbackFired = false;
+
+        $this->service->stream(
+            message: 'Hello',
+            options: [
+                'onText' => function () use (&$callbackFired) {
+                    $callbackFired = true;
+                },
+            ]
+        );
+
+        $this->assertTrue($callbackFired);
+    }
+
+    public function testStreamGathersCompleteText(): void
+    {
+        $fullText = '';
+
+        $handler = $this->service->stream(
+            message: 'Count to 3',
+            options: [
+                'onText' => function ($delta, $text) use (&$fullText) {
+                    $fullText = $text;
+                },
+            ]
+        );
+
+        $this->assertStringContainsString('1', $handler->getText());
+    }
+
+    public function testErrorCallbackTriggersOnException(): void
+    {
+        $errorMessage = '';
+
+        // This will fail gracefully
+        try {
+            $this->service->stream(
+                message: 'test',
+                options: [
+                    'onError' => function ($error) use (&$errorMessage) {
+                        $errorMessage = $error;
+                    },
+                ]
+            );
+        } catch (Exception $e) {
+            // Expected
+        }
+    }
+}
+```
+
+### Integration Testing with curl
+
+```bash
+#!/bin/bash
+# test-streaming.sh
+
+# Test 1: Basic streaming works
+echo "Testing basic streaming..."
+curl -X POST http://localhost:8000/stream.php \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Hello"}' \
+  | grep -q "data: " && echo "✓ Streaming works" || echo "✗ Streaming failed"
+
+# Test 2: Response contains complete message
+echo "Testing response completeness..."
+RESPONSE=$(curl -s -X POST http://localhost:8000/stream.php \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Say DONE when complete"}')
+
+echo "$RESPONSE" | grep -q "DONE" && echo "✓ Complete response" || echo "✗ Incomplete"
+
+# Test 3: Streaming doesn't buffer all output at once
+echo "Testing non-buffering..."
+START=$(date +%s%N)
+curl -s -X POST http://localhost:8000/stream.php \
+  -H "Content-Type: application/json" \
+  -d '{"message": "test"}' &
+PID=$!
+
+# Check if data arrives incrementally (not all at once)
+sleep 0.5
+if ps -p $PID > /dev/null; then
+  echo "✓ Streaming (not buffered)"
+else
+  echo "✗ Buffered response"
+fi
+wait $PID
+```
+
+### Browser Developer Tools Testing
+
+1. **Open DevTools** → Network tab
+2. **Send message** in your chat interface
+3. **Look for SSE request** (usually named `stream.php` or similar)
+4. **Check Response** tab:
+   - Should show incremental data with `data: {...}` messages
+   - **Not** a single large response
+5. **Monitor timing**:
+   - Data should arrive continuously
+   - Not everything at once after 5 seconds
+
 ## Troubleshooting
 
 ### Issue: No Streaming Output
@@ -1654,54 +2033,418 @@ ini_set('memory_limit', '128M');
 
 Build a streaming chat room where multiple users can see messages in real-time:
 
-**Requirements:**
-- Multiple users can connect simultaneously
-- Messages stream to all connected users
-- Show typing indicators
-- Display user join/leave notifications
+**Goal**: Extend streaming beyond single users to support collaborative real-time chat
+
+Create a file called `multi-user-chat.php` and implement:
+
+- Multiple concurrent SSE connections from different users
+- Broadcast mechanism to send updates to all connected clients
+- User presence tracking (who's online, typing indicators)
+- Message history persistence
 
 **Hints:**
-- Use file-based or Redis pub/sub for message distribution
-- Each user gets their own SSE endpoint
-- Implement long-polling or WebSocket fallback
+- Use a temporary file or Redis as a message queue
+- Implement a client registry to track open connections
+- Send presence updates (user joined, user typing, user left)
+- Implement session-based user identification
 
-### Exercise 2: Streaming Code Generator
+**Validation**: Test with multiple browser tabs/windows:
 
-Create a tool that streams generated code with syntax highlighting:
+```bash
+# Terminal 1: Start PHP server
+php -S localhost:8000
 
-**Requirements:**
-- Generate multi-file code projects
-- Stream each file as it's generated
-- Apply syntax highlighting on-the-fly
-- Show progress (current file, completion %)
+# Open browser tabs and open chat.html multiple times
+# Send message in one tab → should appear in all tabs in real-time
+```
+
+### Exercise 2: Streaming Code Generator with Syntax Highlighting
+
+Create a tool that streams generated code with incremental syntax highlighting:
+
+**Goal**: Build an interactive code generation tool that highlights code as it streams
+
+Create a file called `code-generator.php` and implement:
+
+- Accept requests for code generation (e.g., "Generate a PDF merger class")
+- Stream code blocks with language markers
+- Parse code fence markers from streaming response
+- Send syntax-highlighted HTML incrementally
+- Show progress: "Generating class methods... 45%"
 
 **Hints:**
-- Parse code blocks from Claude's response
-- Use a PHP syntax highlighter library
-- Send metadata about current file being generated
+- Use regex to detect ````php markers in streaming text
+- Apply a PHP syntax highlighter (like `highlight_string()` or a library)
+- Send partial HTML snippets as code is generated
+- Track estimated completion based on response length
 
-### Exercise 3: Streaming Document Processor
+**Validation**: Request a complex class:
 
-Build a document analysis tool that streams results:
+```php
+// Check that code appears highlighted as it streams
+// Verify all language blocks are properly formatted
+// Confirm progress updates are shown
+```
 
-**Requirements:**
-- Upload PDF/text documents
-- Stream analysis results (summary, key points, entities)
-- Show progress bar based on document length
-- Allow user to stop processing mid-stream
+### Exercise 3: Streaming Document Processor with Cancellation
+
+Build a document analysis tool that streams results and can be cancelled mid-stream:
+
+**Goal**: Process large documents with Claude while allowing user interruption
+
+Create a file called `doc-processor.php` and implement:
+
+- Accept file uploads (text, markdown, or plain text)
+- Stream analysis results: summary → key points → entities → recommendations
+- Show progress updates ("Processing section 3/8...")
+- Implement cancellation: user can stop processing and get partial results
+- Save partial results even if cancelled
 
 **Hints:**
-- Split document into chunks
-- Process each chunk with Claude
-- Aggregate results as they arrive
-- Implement cancellation token pattern
+- Use session ID to track cancellation state
+- Split documents into sections/chunks
+- Process each chunk and stream results incrementally
+- Check a cancellation flag before processing each chunk
+- Save progress to temporary file after each chunk
+
+**Validation**: Upload a document and test:
+
+```bash
+# Start processing
+curl -X POST -F "file=@document.txt" http://localhost:8000/doc-processor.php
+
+# In another tab, trigger cancellation
+curl http://localhost:8000/doc-processor.php?action=cancel&session=abc123
+
+# Verify: Partial results returned, saved for resume
+```
 
 <details>
 <summary>Solution Hints</summary>
 
-For Exercise 1, use Redis pub/sub or file-based message queue. For Exercise 2, detect code fence markers in streaming text and apply highlighting incrementally. For Exercise 3, chunk documents and track progress, implementing a session-based cancellation flag.
+**Exercise 1**: Store open connections in a file with their session IDs. When a message arrives, read all connections and send to each. Use `flock()` for concurrency safety.
+
+**Exercise 2**: Use `preg_match_all()` to find code blocks as they arrive. Apply `highlight_string()` to each block and send HTML-wrapped output. Track character count to estimate progress.
+
+**Exercise 3**: Store cancellation flag in Redis or temp file. Before processing each chunk, check flag. If cancelled, send current results and exit gracefully. Use transaction-like semantics to handle concurrent requests safely.
 
 </details>
+
+## Wrap-Up
+
+In this chapter, you've built a complete streaming infrastructure for Claude API integration. Here's what you accomplished:
+
+### ✓ What You've Learned
+
+- **Streaming fundamentals**: Understood the difference between blocking and streaming responses
+- **SSE protocol**: Implemented Server-Sent Events correctly in PHP
+- **Buffering management**: Mastered PHP output buffering for streaming contexts
+- **Event handling**: Built callback-based systems for processing streaming events
+- **Client-side streaming**: Created robust streaming consumers with fetch API
+- **Production patterns**: Implemented conversational history, budget tracking, and timeouts
+- **Error handling**: Built recovery mechanisms for failed or partial responses
+- **Real-world application**: Created a complete chatbot with full streaming support
+
+### ✓ You Can Now
+
+- Explain when and why to use streaming responses
+- Build streaming endpoints that work across different web servers
+- Handle all streaming edge cases (timeouts, reconnections, errors)
+- Optimize streaming for performance and cost
+- Implement production-ready streaming chatbots
+- Debug streaming issues effectively
+- Test streaming implementations thoroughly
+
+### ✓ Next Steps
+
+You're ready to explore:
+- **System Prompts and Roles** (Chapter 07): Shape Claude's behavior and personality
+- **Temperature and Sampling** (Chapter 08): Control response creativity and randomness
+- **Tool Use** (Chapter 11+): Give Claude the ability to call functions and APIs
+- **Multi-agent Systems** (Chapter 33): Build complex streaming workflows with multiple agents
+
+This streaming foundation unlocks real-time, interactive Claude applications that feel instant and responsive to users.
+
+## Advanced Topics: Streaming + Other Features
+
+### Streaming with Tool Use (Chapter 11)
+
+When using tool use with streaming, Claude sends tool calls as they're generated:
+
+```php
+<?php
+# filename: examples/14-streaming-with-tools.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Anthropic;
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
+// Define a weather tool
+$tools = [[
+    'name' => 'get_weather',
+    'description' => 'Get weather for a location',
+    'input_schema' => [
+        'type' => 'object',
+        'properties' => [
+            'location' => ['type' => 'string', 'description' => 'City name'],
+            'unit' => ['type' => 'string', 'enum' => ['celsius', 'fahrenheit']]
+        ],
+        'required' => ['location']
+    ]
+]];
+
+// Stream with tools
+header('Content-Type: text/event-stream');
+if (ob_get_level()) ob_end_clean();
+
+$stream = $client->messages()->createStreamed([
+    'model' => 'claude-sonnet-4-20250514',
+    'max_tokens' => 1024,
+    'tools' => $tools,
+    'messages' => [[
+        'role' => 'user',
+        'content' => 'What\'s the weather in Paris?'
+    ]]
+]);
+
+$toolCalls = [];
+
+foreach ($stream as $event) {
+    echo "data: " . json_encode($event) . "\n\n";
+    
+    // Collect tool calls as they arrive
+    if ($event->type === 'content_block_delta' && 
+        $event->delta->type === 'input_json_delta') {
+        $toolCalls[] = $event->delta->partial_json;
+    }
+    
+    flush();
+}
+
+echo "data: {\"type\": \"done\", \"tool_calls\": " . 
+     json_encode($toolCalls) . "}\n\n";
+flush();
+```
+
+**Next Step**: For full tool use workflows, see Chapter 11: Tool Use (Function Calling) Fundamentals.
+
+### Streaming + Token Counting (Chapter 9)
+
+When streaming, tokens are consumed incrementally. Track them for cost management:
+
+```php
+<?php
+# filename: examples/15-streaming-with-token-tracking.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Anthropic;
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
+header('Content-Type: text/event-stream');
+if (ob_get_level()) ob_end_clean();
+
+$tokenCount = 0;
+$maxTokens = 1000;
+$outputTokens = 0;
+
+$stream = $client->messages()->createStreamed([
+    'model' => 'claude-sonnet-4-20250514',
+    'max_tokens' => $maxTokens,
+    'messages' => [[
+        'role' => 'user',
+        'content' => 'List 5 Python tips'
+    ]]
+]);
+
+foreach ($stream as $event) {
+    // Estimate tokens from response chunks
+    if ($event->type === 'content_block_delta' && 
+        isset($event->delta->text)) {
+        $text = $event->delta->text;
+        // Rough estimate: 1 token ≈ 4 characters
+        $outputTokens += strlen($text) / 4;
+    }
+    
+    // Stop if approaching limit
+    if ($outputTokens > $maxTokens * 0.9) {
+        echo "data: " . json_encode([
+            'type' => 'warning',
+            'message' => 'Approaching token limit'
+        ]) . "\n\n";
+        break;
+    }
+    
+    echo "data: " . json_encode($event) . "\n\n";
+    flush();
+}
+
+echo "data: {\"type\": \"done\", \"estimated_tokens\": " . 
+     round($outputTokens) . "}\n\n";
+flush();
+```
+
+**Next Step**: For comprehensive token management, see Chapter 9: Token Management and Counting.
+
+### Streaming Structured Outputs (Chapter 15)
+
+Stream JSON responses for real-time parsing:
+
+```php
+<?php
+# filename: examples/16-streaming-structured-json.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Anthropic;
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
+header('Content-Type: text/event-stream');
+if (ob_get_level()) ob_end_clean();
+
+// Request structured JSON
+$stream = $client->messages()->createStreamed([
+    'model' => 'claude-sonnet-4-20250514',
+    'max_tokens' => 1024,
+    'messages' => [[
+        'role' => 'user',
+        'content' => 'Return a JSON with { "name": "...", "age": 0, "skills": ["..."] }'
+    ]]
+]);
+
+$jsonBuffer = '';
+
+foreach ($stream as $event) {
+    if ($event->type === 'content_block_delta' && 
+        isset($event->delta->text)) {
+        $jsonBuffer .= $event->delta->text;
+        
+        // Try to parse complete JSON objects
+        try {
+            $decoded = json_decode($jsonBuffer, true, flags: JSON_THROW_ON_ERROR);
+            
+            // Valid JSON found!
+            echo "data: " . json_encode([
+                'type' => 'json_complete',
+                'data' => $decoded
+            ]) . "\n\n";
+            
+            $jsonBuffer = ''; // Reset for next object
+        } catch (JsonException $e) {
+            // JSON not complete yet, keep buffering
+            // Send partial update
+            echo "data: " . json_encode([
+                'type' => 'json_partial',
+                'buffer' => substr($jsonBuffer, 0, 50)
+            ]) . "\n\n";
+        }
+    }
+    
+    flush();
+}
+
+echo "data: {\"type\": \"done\"}\n\n";
+flush();
+```
+
+**Next Step**: For schema validation and error handling, see Chapter 15: Structured Outputs with JSON.
+
+### Caching Streamed Responses
+
+Cache the complete response after streaming completes:
+
+```php
+<?php
+# filename: examples/17-streaming-with-cache.php
+declare(strict_types=1);
+
+use Psr\SimpleCache\CacheInterface;
+
+class StreamingCacheService
+{
+    public function __construct(
+        private CacheInterface $cache,
+        private \Anthropic\Anthropic $client
+    ) {}
+
+    public function streamWithCache(string $message): void
+    {
+        $cacheKey = 'stream_' . md5($message);
+        
+        // Check cache first
+        if ($this->cache->has($cacheKey)) {
+            $cached = $this->cache->get($cacheKey);
+            
+            // Replay cached response
+            echo "data: " . json_encode([
+                'type' => 'cached',
+                'text' => $cached
+            ]) . "\n\n";
+            
+            flush();
+            return;
+        }
+        
+        // Stream and cache
+        $fullText = '';
+        
+        $stream = $this->client->messages()->createStreamed([
+            'model' => 'claude-sonnet-4-20250514',
+            'max_tokens' => 1024,
+            'messages' => [['role' => 'user', 'content' => $message]]
+        ]);
+        
+        foreach ($stream as $event) {
+            echo "data: " . json_encode($event) . "\n\n";
+            
+            if ($event->type === 'content_block_delta') {
+                $fullText .= $event->delta->text ?? '';
+            }
+            
+            flush();
+        }
+        
+        // Cache the complete response for 1 hour
+        $this->cache->set($cacheKey, $fullText, 3600);
+        
+        echo "data: {\"type\": \"done\", \"cached\": true}\n\n";
+        flush();
+    }
+}
+```
+
+**Next Step**: For comprehensive caching strategies, see Chapter 18: Caching Strategies for API Calls.
+
+## When NOT to Use Streaming
+
+Streaming isn't always the right choice. Use regular (non-streaming) requests when:
+
+| Scenario | Why | Alternative |
+|----------|-----|-------------|
+| **Small responses** (~100 words) | Overhead of SSE > benefit of streaming | Regular blocking request |
+| **Multiple parallel requests** | Each needs its own connection | Batch API with `model: "batch"` |
+| **Simple backend-to-backend** | No UI to update in real-time | Standard async/queue processing |
+| **Unreliable networks** | Streams break easily on poor connections | Message queue + async processing |
+| **Structured data extraction** | JSON parsing harder with streaming | Chapter 15 (Structured Outputs) |
+| **Response caching critical** | Streaming defeats many cache strategies | Redis caching + regular requests |
+| **Load testing/benchmarking** | Streaming adds complexity to measurements | Use non-streaming for baseline |
+
+### Cost Consideration
+
+Streaming costs the same as regular requests—there's **no cost savings**. The value is UX/perceived performance, not price.
 
 ## Key Takeaways
 
@@ -1712,12 +2455,24 @@ For Exercise 1, use Redis pub/sub or file-based message queue. For Exercise 2, d
 - ✓ Track partial responses for recovery from failures
 - ✓ Use chunked transfer encoding for better performance
 - ✓ Test streaming behavior across different web servers (Apache, Nginx)
+- ✓ Streaming integrates with tool use, token counting, and caching
+- ✓ Choose streaming for UX benefits, not cost savings
+- ✓ Not every use case benefits from streaming—evaluate carefully
 
 <ChapterCheckbox
   seriesId="claude-php-developers"
   chapterId="06"
   label="You've mastered streaming responses in PHP!"
 />
+
+## Further Reading
+
+- [Claude API Documentation](https://docs.claude.com) — Complete API reference and guides
+- [Server-Sent Events (MDN)](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) — Standard SSE protocol reference
+- [PHP Output Buffering](https://www.php.net/manual/en/function.ob-start.php) — PHP output buffering documentation
+- [HTTP/1.1 Chunked Transfer Encoding](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Transfer-Encoding) — Transfer encoding specification
+- [Fetch API Stream Reading](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream) — Client-side streaming with fetch
+- [Anthropic PHP SDK](https://github.com/anthropics/anthropic-sdk-php) — Official PHP SDK repository
 
 ---
 

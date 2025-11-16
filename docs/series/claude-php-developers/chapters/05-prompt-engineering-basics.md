@@ -1,12 +1,12 @@
 ---
 title: "05: Prompt Engineering Basics"
-description: "Master the art of prompt engineering for Claude. Learn effective prompting techniques, few-shot learning, chain-of-thought reasoning, role-playing, structured outputs, and best practices for PHP applications."
+description: "Master the art of prompt engineering for Claude. Learn effective prompting techniques, few-shot learning (including negative examples), chain-of-thought reasoning, role-playing, structured outputs, prompt optimization, iterative refinement, and systematic testing for PHP applications."
 series: "claude-php-developers"
 chapter: 5
 order: 5
 difficulty: "Intermediate"
 prerequisites:
-  - "PHP 8.2+ installed"
+  - "PHP 8.4+ installed"
   - "Completion of Chapters 01-04"
   - "Understanding of Claude's message structure"
 ---
@@ -32,24 +32,63 @@ Prompt engineering is the art and science of crafting effective instructions for
 This chapter provides comprehensive coverage of prompt engineering fundamentals, including clear instruction writing, few-shot learning, chain-of-thought reasoning, role-playing techniques, structured output formats, and practical PHP implementation patterns. You'll learn to write prompts that consistently produce high-quality results.
 
 **What You'll Learn:**
+
 - Core principles of effective prompting
-- Few-shot learning with examples
+- Few-shot learning with positive and negative examples
 - Chain-of-thought reasoning techniques
 - Role-playing and persona assignment
 - Structured output formatting (JSON, XML, CSV)
 - Prompt templates and reusability
+- Prompt length optimization and token management
+- Iterative prompt refinement methodologies
+- Systematic prompt testing and evaluation
 - Common pitfalls and how to avoid them
-
-**Estimated Time**: 45-55 minutes
 
 ## Prerequisites
 
 Before starting, ensure you have:
 
 - ✓ **Completed Chapters 01-04**
-- ✓ **PHP 8.2+** with good understanding
+- ✓ **PHP 8.4+** with good understanding
 - ✓ **Anthropic API key** configured
 - ✓ **Experience with Claude API** from previous chapters
+
+**Estimated Time**: ~45-55 minutes
+
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- A `FewShotClassifier` class for sentiment analysis and text classification
+- A `ChainOfThoughtSolver` class for complex problem-solving with reasoning
+- A `PersonaBuilder` class for creating dynamic AI personas and roles
+- A `PromptTemplate` class for reusable prompt templates with variable substitution
+- A `PromptLibrary` class for managing a collection of pre-built prompts
+- A `PromptLengthManager` class for optimizing prompt size and token usage
+- A `PromptRefiner` class for iterative prompt improvement
+- A `PromptTester` class for systematic prompt testing and evaluation
+- A `PromptVersionTracker` class for tracking prompt changes over time
+- Multiple example scripts demonstrating prompt engineering techniques
+- Understanding of few-shot learning (including negative examples), chain-of-thought reasoning, and role-playing
+- Knowledge of structured output formats (JSON, XML, CSV, Markdown)
+- Skills in prompt optimization, iterative refinement, and testing methodologies
+- Best practices for writing effective prompts that produce consistent results
+
+## Objectives
+
+By the end of this chapter, you will be able to:
+
+- Write clear, specific, and context-rich prompts that produce high-quality results
+- Implement few-shot learning techniques including positive and negative examples
+- Apply chain-of-thought reasoning for complex problem-solving tasks
+- Create dynamic personas and role-based prompts for specialized use cases
+- Generate structured outputs in JSON, XML, CSV, and Markdown formats
+- Build reusable prompt templates and libraries for consistent prompting
+- Optimize prompt length and manage token usage effectively
+- Refine prompts iteratively using systematic testing and analysis
+- Test prompts systematically with proper metrics and A/B testing
+- Identify and avoid common prompt engineering pitfalls
+- Track prompt versions and measure improvements over time
 
 ## Principles of Effective Prompts
 
@@ -89,7 +128,7 @@ $specificResponse = $client->messages()->create([
     'max_tokens' => 1024,
     'messages' => [[
         'role' => 'user',
-        'content' => 'Explain the benefits of PHP 8.3\'s typed class constants in 3 bullet points. Include one code example.'
+        'content' => 'Explain the benefits of PHP 8.4\'s typed class constants in 3 bullet points. Include one code example.'
     ]]
 ]);
 
@@ -150,7 +189,7 @@ echo $withContextResponse->content[0]->text . "\n";
 
 Tell Claude exactly how you want the response formatted.
 
-```php
+````php
 <?php
 # filename: examples/03-output-format.php
 declare(strict_types=1);
@@ -184,7 +223,7 @@ if (preg_match('/```json\s*(\{.*?\}|\[.*?\])\s*```/s', $text, $matches)) {
 
 $data = json_decode($json, true);
 print_r($data);
-```
+````
 
 ### 4. Use Delimiters for Clarity
 
@@ -438,6 +477,112 @@ $result = $classifier->classify(
 );
 
 echo "Classification: {$result}\n";
+```
+
+### Negative Examples (What NOT to Do)
+
+Sometimes showing Claude what **not** to do is as effective as showing what to do. Negative examples help establish boundaries and clarify edge cases.
+
+```php
+<?php
+# filename: examples/08b-negative-examples.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Anthropic;
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
+// Classification with negative examples
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-20250514',
+    'max_tokens' => 512,
+    'messages' => [[
+        'role' => 'user',
+        'content' => <<<PROMPT
+Classify customer feedback as: positive, negative, or neutral.
+
+Positive examples:
+Input: "This product exceeded my expectations! Absolutely love it."
+Output: positive
+
+Input: "Fast shipping and excellent customer service."
+Output: positive
+
+Negative examples (what NOT to classify as positive):
+Input: "It's okay, nothing special."
+Output: neutral (NOT positive - this is neutral feedback)
+
+Input: "The product works but I expected more."
+Output: neutral (NOT positive - mixed sentiment)
+
+Now classify this:
+Input: "Not what I expected, but it works fine."
+Output:
+PROMPT
+    ]]
+]);
+
+echo "Classification with negative examples:\n";
+echo $response->content[0]->text . "\n\n";
+```
+
+**When to use negative examples:**
+
+- **Edge case clarification**: When boundaries between categories are unclear
+- **Error prevention**: To prevent common misclassifications
+- **Constraint definition**: To establish what responses are unacceptable
+- **Quality control**: To filter out low-quality or inappropriate outputs
+
+```php
+<?php
+# filename: examples/08c-negative-examples-code-review.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Anthropic;
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
+$code = <<<'PHP'
+function getUser($id) {
+    return DB::query("SELECT * FROM users WHERE id = " . $id);
+}
+PHP;
+
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-20250514',
+    'max_tokens' => 1024,
+    'messages' => [[
+        'role' => 'user',
+        'content' => <<<PROMPT
+Review this PHP code for security issues.
+
+Good security practices:
+- Use prepared statements
+- Validate and sanitize input
+- Use parameterized queries
+
+Bad practices (what NOT to do):
+- String concatenation in SQL queries (SQL injection risk)
+- Direct user input in database queries
+- No input validation
+
+Code to review:
+{$code}
+
+Identify security issues and explain why they're problematic.
+PROMPT
+    ]]
+]);
+
+echo $response->content[0]->text . "\n";
 ```
 
 ## Chain-of-Thought Reasoning
@@ -871,7 +1016,7 @@ echo $response->content[0]->text . "\n";
 
 ### JSON Output
 
-```php
+````php
 <?php
 # filename: examples/14-json-output.php
 declare(strict_types=1);
@@ -922,11 +1067,11 @@ $data = json_decode($jsonText, true);
 
 echo "Extracted data:\n";
 print_r($data);
-```
+````
 
 ### XML Output
 
-```php
+````php
 <?php
 # filename: examples/15-xml-output.php
 declare(strict_types=1);
@@ -971,11 +1116,11 @@ $doc = new DOMDocument();
 if ($doc->loadXML($xml)) {
     echo "\n✓ Valid XML generated\n";
 }
-```
+````
 
 ### CSV Output
 
-```php
+````php
 <?php
 # filename: examples/16-csv-output.php
 declare(strict_types=1);
@@ -1019,7 +1164,7 @@ $data = array_map('str_getcsv', $lines);
 
 echo "\nParsed data:\n";
 print_r($data);
-```
+````
 
 ### Markdown Output
 
@@ -1304,6 +1449,786 @@ $response = $client->messages()->create([
 echo "Generated tests:\n{$response->content[0]->text}\n";
 ```
 
+## Prompt Length and Token Management
+
+Understanding prompt length and token limits is crucial for effective prompt engineering. Claude has a context window limit, and managing your prompt size ensures you have room for responses and can control costs.
+
+### Understanding Token Limits
+
+Claude models have different context window sizes:
+
+- **Claude Sonnet 4**: Up to 200,000 tokens (~150,000 words)
+- **Claude Opus 4**: Up to 200,000 tokens
+- **Claude Haiku 3**: Up to 200,000 tokens
+
+**Important considerations:**
+
+- Both input (prompt) and output (response) count toward token usage
+- Longer prompts = higher costs
+- Very long prompts may reduce response quality
+- Reserve tokens for the response (`max_tokens`)
+
+### Estimating Prompt Length
+
+```php
+<?php
+# filename: examples/20-token-estimation.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Anthropic;
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
+// Simple token estimation (rough: 1 token ≈ 4 characters)
+function estimateTokens(string $text): int
+{
+    return (int) ceil(strlen($text) / 4);
+}
+
+$prompt = <<<PROMPT
+You are a PHP code reviewer. Review this code for security issues:
+
+function getUser(\$id) {
+    return DB::query("SELECT * FROM users WHERE id = " . \$id);
+}
+PROMPT;
+
+$estimatedTokens = estimateTokens($prompt);
+echo "Estimated prompt tokens: {$estimatedTokens}\n";
+echo "Recommended max_tokens: " . max(512, 200000 - $estimatedTokens - 1000) . "\n";
+```
+
+### Optimizing Prompt Length
+
+**Strategy 1: Remove Redundancy**
+
+```php
+<?php
+# filename: examples/21-prompt-optimization.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Anthropic;
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
+// ✗ Bad: Verbose and repetitive
+$verbosePrompt = <<<PROMPT
+You are a PHP developer. You need to review PHP code.
+Please review the following PHP code.
+Look for security issues in the PHP code.
+Review the code carefully for any security vulnerabilities.
+PROMPT;
+
+// ✓ Good: Concise and clear
+$concisePrompt = <<<PROMPT
+Review this PHP code for security vulnerabilities:
+
+function getUser(\$id) {
+    return DB::query("SELECT * FROM users WHERE id = " . \$id);
+}
+PROMPT;
+
+echo "Verbose: " . strlen($verbosePrompt) . " chars\n";
+echo "Concise: " . strlen($concisePrompt) . " chars\n";
+echo "Saved: " . (strlen($verbosePrompt) - strlen($concisePrompt)) . " characters\n";
+```
+
+**Strategy 2: Use Abbreviations and Shorthand**
+
+```php
+<?php
+# filename: examples/22-prompt-compression.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Anthropic;
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
+// For classification tasks, use compact format
+$compactPrompt = <<<PROMPT
+Classify sentiment: pos/neg/neu
+
+Examples:
+"Great!" → pos
+"Terrible" → neg
+"Okay" → neu
+
+Classify: "Not bad, could be better"
+PROMPT;
+
+// Claude understands abbreviations in context
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-20250514',
+    'max_tokens' => 50,
+    'messages' => [['role' => 'user', 'content' => $compactPrompt]]
+]);
+
+echo $response->content[0]->text . "\n";
+```
+
+**Strategy 3: Prioritize Important Information**
+
+```php
+<?php
+# filename: examples/23-prompt-prioritization.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Anthropic;
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
+// Put critical instructions first
+$optimizedPrompt = <<<PROMPT
+Extract: name, email, phone from text below. Return JSON only.
+
+Text:
+John Doe, john@example.com, 555-1234
+PROMPT;
+
+// Less important context can be shortened or omitted if space is tight
+```
+
+### Managing Long Contexts
+
+When working with long documents or codebases:
+
+```php
+<?php
+# filename: src/Services/PromptLengthManager.php
+declare(strict_types=1);
+
+namespace App\Services;
+
+class PromptLengthManager
+{
+    private const MAX_PROMPT_TOKENS = 150000; // Reserve space for response
+    private const TOKENS_PER_CHAR = 4; // Rough estimate
+
+    public function truncateIfNeeded(string $prompt, int $maxTokens = self::MAX_PROMPT_TOKENS): string
+    {
+        $estimatedTokens = $this->estimateTokens($prompt);
+
+        if ($estimatedTokens <= $maxTokens) {
+            return $prompt;
+        }
+
+        // Truncate intelligently (preserve structure)
+        $maxChars = ($maxTokens * self::TOKENS_PER_CHAR) - 100; // Safety margin
+
+        // Try to preserve important parts (instructions, examples)
+        if (preg_match('/^(.*?)(Examples?:.*?)(Text:|Code:.*)$/s', $prompt, $matches)) {
+            $instructions = $matches[1];
+            $examples = $matches[2];
+            $data = $matches[3];
+
+            $availableForData = $maxChars - strlen($instructions) - strlen($examples);
+            $truncatedData = substr($data, 0, $availableForData) . "\n\n[... truncated ...]";
+
+            return $instructions . $examples . $truncatedData;
+        }
+
+        // Fallback: simple truncation
+        return substr($prompt, 0, $maxChars) . "\n\n[... truncated ...]";
+    }
+
+    private function estimateTokens(string $text): int
+    {
+        return (int) ceil(strlen($text) / self::TOKENS_PER_CHAR);
+    }
+
+    public function getRecommendedMaxTokens(string $prompt): int
+    {
+        $promptTokens = $this->estimateTokens($prompt);
+        $available = self::MAX_PROMPT_TOKENS - $promptTokens - 1000; // Safety margin
+        return max(512, min(8192, $available)); // Reasonable range
+    }
+}
+```
+
+**Usage:**
+
+```php
+<?php
+# filename: examples/24-manage-prompt-length.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use App\Services\PromptLengthManager;
+use Anthropic\Anthropic;
+
+$manager = new PromptLengthManager();
+$longPrompt = str_repeat("This is a very long prompt. ", 10000);
+
+$optimized = $manager->truncateIfNeeded($longPrompt);
+$maxTokens = $manager->getRecommendedMaxTokens($optimized);
+
+echo "Original length: " . strlen($longPrompt) . " chars\n";
+echo "Optimized length: " . strlen($optimized) . " chars\n";
+echo "Recommended max_tokens: {$maxTokens}\n";
+```
+
+### Best Practices
+
+- **Keep prompts focused**: Remove unnecessary words and redundancy
+- **Put instructions first**: Most important information at the beginning
+- **Use examples efficiently**: 3-5 examples usually sufficient
+- **Monitor token usage**: Track costs and optimize long-running applications
+- **Reserve response space**: Set `max_tokens` appropriately based on prompt length
+- **Split when necessary**: For very long contexts, consider chunking or summarization
+
+## Iterative Prompt Refinement
+
+Prompt engineering is an iterative process. Rarely does the first prompt produce perfect results. This section covers a systematic approach to improving prompts.
+
+### The Refinement Cycle
+
+The iterative refinement process follows this cycle:
+
+1. **Write** initial prompt
+2. **Test** with sample inputs
+3. **Analyze** results for issues
+4. **Refine** prompt based on findings
+5. **Repeat** until quality meets requirements
+
+```php
+<?php
+# filename: src/Services/PromptRefiner.php
+declare(strict_types=1);
+
+namespace App\Services;
+
+use Anthropic\Anthropic;
+
+class PromptRefiner
+{
+    public function __construct(
+        private readonly Anthropic $client
+    ) {}
+
+    public function refine(
+        string $initialPrompt,
+        array $testCases,
+        int $iterations = 3
+    ): string {
+        $currentPrompt = $initialPrompt;
+
+        for ($i = 0; $i < $iterations; $i++) {
+            echo "Iteration " . ($i + 1) . ":\n";
+
+            // Test current prompt
+            $results = $this->testPrompt($currentPrompt, $testCases);
+
+            // Analyze results
+            $issues = $this->analyzeResults($results);
+
+            if (empty($issues)) {
+                echo "✓ Prompt quality acceptable\n";
+                break;
+            }
+
+            // Refine based on issues
+            $currentPrompt = $this->suggestImprovements($currentPrompt, $issues);
+            echo "\n";
+        }
+
+        return $currentPrompt;
+    }
+
+    private function testPrompt(string $prompt, array $testCases): array
+    {
+        $results = [];
+
+        foreach ($testCases as $testCase) {
+            $response = $this->client->messages()->create([
+                'model' => 'claude-sonnet-4-20250514',
+                'max_tokens' => 512,
+                'messages' => [[
+                    'role' => 'user',
+                    'content' => $prompt . "\n\nInput: " . $testCase['input']
+                ]]
+            ]);
+
+            $results[] = [
+                'input' => $testCase['input'],
+                'expected' => $testCase['expected'],
+                'actual' => trim($response->content[0]->text),
+                'match' => $this->matches($testCase['expected'], trim($response->content[0]->text))
+            ];
+        }
+
+        return $results;
+    }
+
+    private function analyzeResults(array $results): array
+    {
+        $issues = [];
+        $matchCount = 0;
+
+        foreach ($results as $result) {
+            if (!$result['match']) {
+                $issues[] = [
+                    'input' => $result['input'],
+                    'expected' => $result['expected'],
+                    'actual' => $result['actual'],
+                    'type' => 'mismatch'
+                ];
+            } else {
+                $matchCount++;
+            }
+        }
+
+        echo "Accuracy: {$matchCount}/" . count($results) . "\n";
+
+        return $issues;
+    }
+
+    private function suggestImprovements(string $prompt, array $issues): string
+    {
+        // Ask Claude to suggest improvements
+        $issueSummary = $this->formatIssues($issues);
+
+        $refinementPrompt = <<<PROMPT
+Analyze this prompt and suggest improvements based on these test failures:
+
+Current prompt:
+{$prompt}
+
+Test failures:
+{$issueSummary}
+
+Suggest specific improvements to the prompt that would fix these issues.
+Return only the improved prompt, no explanation.
+PROMPT;
+
+        $response = $this->client->messages()->create([
+            'model' => 'claude-sonnet-4-20250514',
+            'max_tokens' => 1024,
+            'messages' => [['role' => 'user', 'content' => $refinementPrompt]]
+        ]);
+
+        return trim($response->content[0]->text);
+    }
+
+    private function formatIssues(array $issues): string
+    {
+        $formatted = [];
+        foreach ($issues as $issue) {
+            $formatted[] = "Input: {$issue['input']}\nExpected: {$issue['expected']}\nGot: {$issue['actual']}";
+        }
+        return implode("\n\n", $formatted);
+    }
+
+    private function matches(string $expected, string $actual): bool
+    {
+        // Simple matching - can be enhanced
+        return strtolower(trim($expected)) === strtolower(trim($actual));
+    }
+}
+```
+
+**Usage:**
+
+```php
+<?php
+# filename: examples/25-iterative-refinement.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use App\Services\PromptRefiner;
+use Anthropic\Anthropic;
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
+$refiner = new PromptRefiner($client);
+
+$initialPrompt = "Classify sentiment: positive or negative";
+
+$testCases = [
+    ['input' => 'Great product!', 'expected' => 'positive'],
+    ['input' => 'Terrible service', 'expected' => 'negative'],
+    ['input' => 'It\'s okay', 'expected' => 'neutral'], // This will fail initially
+];
+
+$refinedPrompt = $refiner->refine($initialPrompt, $testCases, iterations: 3);
+
+echo "\nFinal refined prompt:\n{$refinedPrompt}\n";
+```
+
+### Refinement Strategies
+
+**1. Add Missing Context**
+
+```php
+// Initial (too vague)
+$v1 = "Review this code";
+
+// Refined (adds context)
+$v2 = "You are a security expert. Review this PHP code for SQL injection vulnerabilities.";
+```
+
+**2. Clarify Output Format**
+
+```php
+// Initial (unclear format)
+$v1 = "List the issues";
+
+// Refined (specific format)
+$v2 = "List security issues as JSON array: [{\"issue\": \"description\", \"severity\": \"high|medium|low\"}]";
+```
+
+**3. Add Examples**
+
+```php
+// Initial (no examples)
+$v1 = "Classify sentiment";
+
+// Refined (with examples)
+$v2 = "Classify sentiment:\n\nExamples:\n\"Great!\" → positive\n\"Terrible\" → negative\n\nClassify: {text}";
+```
+
+**4. Fix Edge Cases**
+
+```php
+// Initial (misses edge cases)
+$v1 = "Extract email addresses";
+
+// Refined (handles edge cases)
+$v2 = "Extract email addresses. Handle formats: user@domain.com, user+tag@domain.co.uk. Return empty array if none found.";
+```
+
+### Tracking Prompt Versions
+
+```php
+<?php
+# filename: src/Services/PromptVersionTracker.php
+declare(strict_types=1);
+
+namespace App\Services;
+
+class PromptVersionTracker
+{
+    private array $versions = [];
+
+    public function saveVersion(string $prompt, array $metrics = []): string
+    {
+        $version = [
+            'id' => uniqid('v', true),
+            'prompt' => $prompt,
+            'timestamp' => time(),
+            'metrics' => $metrics,
+            'length' => strlen($prompt),
+            'estimated_tokens' => (int) ceil(strlen($prompt) / 4)
+        ];
+
+        $this->versions[] = $version;
+        return $version['id'];
+    }
+
+    public function getVersion(string $id): ?array
+    {
+        foreach ($this->versions as $version) {
+            if ($version['id'] === $id) {
+                return $version;
+            }
+        }
+        return null;
+    }
+
+    public function compareVersions(string $id1, string $id2): array
+    {
+        $v1 = $this->getVersion($id1);
+        $v2 = $this->getVersion($id2);
+
+        if (!$v1 || !$v2) {
+            throw new \InvalidArgumentException('Version not found');
+        }
+
+        return [
+            'length_diff' => $v2['length'] - $v1['length'],
+            'token_diff' => $v2['estimated_tokens'] - $v1['estimated_tokens'],
+            'metrics_diff' => $this->compareMetrics($v1['metrics'], $v2['metrics'])
+        ];
+    }
+
+    private function compareMetrics(array $m1, array $m2): array
+    {
+        $diff = [];
+        foreach ($m2 as $key => $value) {
+            if (isset($m1[$key])) {
+                $diff[$key] = $value - $m1[$key];
+            } else {
+                $diff[$key] = $value;
+            }
+        }
+        return $diff;
+    }
+
+    public function getLatestVersion(): ?array
+    {
+        return end($this->versions) ?: null;
+    }
+}
+```
+
+## Prompt Testing Methodology
+
+Systematic testing ensures your prompts work reliably across different inputs. This section covers testing strategies and metrics.
+
+### Testing Framework
+
+```php
+<?php
+# filename: src/Services/PromptTester.php
+declare(strict_types=1);
+
+namespace App\Services;
+
+use Anthropic\Anthropic;
+
+class PromptTester
+{
+    public function __construct(
+        private readonly Anthropic $client
+    ) {}
+
+    public function test(
+        string $prompt,
+        array $testCases,
+        array $options = []
+    ): array {
+        $results = [];
+        $temperature = $options['temperature'] ?? 0.0;
+        $runs = $options['runs_per_case'] ?? 1;
+
+        foreach ($testCases as $testCase) {
+            $caseResults = [];
+
+            for ($i = 0; $i < $runs; $i++) {
+                $response = $this->client->messages()->create([
+                    'model' => 'claude-sonnet-4-20250514',
+                    'max_tokens' => $options['max_tokens'] ?? 512,
+                    'temperature' => $temperature,
+                    'messages' => [[
+                        'role' => 'user',
+                        'content' => $this->formatPrompt($prompt, $testCase['input'])
+                    ]]
+                ]);
+
+                $caseResults[] = [
+                    'response' => trim($response->content[0]->text),
+                    'tokens' => $response->usage->inputTokens + $response->usage->outputTokens,
+                    'latency_ms' => $this->estimateLatency($response)
+                ];
+            }
+
+            $results[] = [
+                'input' => $testCase['input'],
+                'expected' => $testCase['expected'] ?? null,
+                'runs' => $caseResults,
+                'consistency' => $this->checkConsistency($caseResults),
+                'accuracy' => $this->checkAccuracy($caseResults, $testCase['expected'] ?? null)
+            ];
+        }
+
+        return [
+            'results' => $results,
+            'summary' => $this->generateSummary($results)
+        ];
+    }
+
+    private function formatPrompt(string $prompt, string $input): string
+    {
+        return str_replace('{input}', $input, $prompt);
+    }
+
+    private function checkConsistency(array $runs): float
+    {
+        if (count($runs) < 2) {
+            return 1.0;
+        }
+
+        $responses = array_map(fn($r) => $r['response'], $runs);
+        $unique = count(array_unique($responses));
+
+        return 1.0 - (($unique - 1) / count($runs));
+    }
+
+    private function checkAccuracy(array $runs, ?string $expected): ?float
+    {
+        if ($expected === null) {
+            return null;
+        }
+
+        $matches = 0;
+        foreach ($runs as $run) {
+            if ($this->matches($expected, $run['response'])) {
+                $matches++;
+            }
+        }
+
+        return $matches / count($runs);
+    }
+
+    private function matches(string $expected, string $actual): bool
+    {
+        return strtolower(trim($expected)) === strtolower(trim($actual));
+    }
+
+    private function estimateLatency($response): int
+    {
+        // Estimate based on response time (would need actual timing in production)
+        return 0;
+    }
+
+    private function generateSummary(array $results): array
+    {
+        $totalCases = count($results);
+        $consistentCases = 0;
+        $accurateCases = 0;
+        $totalTokens = 0;
+
+        foreach ($results as $result) {
+            if ($result['consistency'] >= 0.8) {
+                $consistentCases++;
+            }
+            if ($result['accuracy'] !== null && $result['accuracy'] >= 0.8) {
+                $accurateCases++;
+            }
+            foreach ($result['runs'] as $run) {
+                $totalTokens += $run['tokens'];
+            }
+        }
+
+        return [
+            'total_cases' => $totalCases,
+            'consistency_rate' => $consistentCases / $totalCases,
+            'accuracy_rate' => $accurateCases / $totalCases,
+            'avg_tokens_per_case' => $totalTokens / ($totalCases * count($results[0]['runs']))
+        ];
+    }
+}
+```
+
+**Usage:**
+
+```php
+<?php
+# filename: examples/26-prompt-testing.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use App\Services\PromptTester;
+use Anthropic\Anthropic;
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
+$tester = new PromptTester($client);
+
+$prompt = "Classify sentiment as positive or negative:\n\nInput: {input}\nOutput:";
+
+$testCases = [
+    ['input' => 'Great product!', 'expected' => 'positive'],
+    ['input' => 'Terrible service', 'expected' => 'negative'],
+    ['input' => 'It works fine', 'expected' => 'positive'], // Ambiguous
+];
+
+$results = $tester->test($prompt, $testCases, [
+    'runs_per_case' => 3,
+    'temperature' => 0.0
+]);
+
+echo "Test Summary:\n";
+print_r($results['summary']);
+
+echo "\nDetailed Results:\n";
+foreach ($results['results'] as $result) {
+    echo "Input: {$result['input']}\n";
+    echo "Consistency: " . ($result['consistency'] * 100) . "%\n";
+    echo "Accuracy: " . ($result['accuracy'] * 100 ?? 'N/A') . "%\n\n";
+}
+```
+
+### Key Testing Metrics
+
+- **Accuracy**: Percentage of correct outputs
+- **Consistency**: How often same input produces same output
+- **Latency**: Response time
+- **Token Usage**: Cost per request
+- **Edge Case Handling**: Performance on unusual inputs
+
+### A/B Testing Prompts
+
+```php
+<?php
+# filename: examples/27-ab-testing.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use App\Services\PromptTester;
+use Anthropic\Anthropic;
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
+$tester = new PromptTester($client);
+
+// Version A: Simple prompt
+$promptA = "Classify: {input}";
+
+// Version B: Detailed prompt with examples
+$promptB = <<<PROMPT
+Classify sentiment as positive or negative.
+
+Examples:
+"Great!" → positive
+"Terrible" → negative
+
+Classify: {input}
+PROMPT;
+
+$testCases = [
+    ['input' => 'Amazing product!', 'expected' => 'positive'],
+    ['input' => 'Very disappointed', 'expected' => 'negative'],
+];
+
+$resultsA = $tester->test($promptA, $testCases);
+$resultsB = $tester->test($promptB, $testCases);
+
+echo "Version A Accuracy: " . ($resultsA['summary']['accuracy_rate'] * 100) . "%\n";
+echo "Version B Accuracy: " . ($resultsB['summary']['accuracy_rate'] * 100) . "%\n";
+
+if ($resultsB['summary']['accuracy_rate'] > $resultsA['summary']['accuracy_rate']) {
+    echo "\n✓ Version B performs better\n";
+} else {
+    echo "\n✓ Version A performs better\n";
+}
+```
+
 ## Common Pitfalls and Solutions
 
 ### Pitfall 1: Ambiguous Instructions
@@ -1336,7 +2261,7 @@ $good = "Review this user authentication function for security vulnerabilities. 
 $bad = "List the benefits.";
 
 # ✓ Good: Specific format
-$good = "List 5 benefits of using PHP 8.3. Format as JSON array with fields: benefit (string), impact (string), example (string).";
+$good = "List 5 benefits of using PHP 8.4. Format as JSON array with fields: benefit (string), impact (string), example (string).";
 ```
 
 ### Pitfall 4: Too Many Instructions
@@ -1474,41 +2399,87 @@ class PromptABTester
 ## Troubleshooting
 
 **Inconsistent responses?**
+
 - Lower temperature (0.0-0.3) for deterministic outputs
 - Add more specific instructions
 - Use few-shot examples to guide behavior
 - Check for ambiguous language in prompt
 
 **Response doesn't match format?**
+
 - Explicitly state format requirements
 - Provide example of desired output
 - Add "Return only [format], no explanation"
 - Use delimiters to separate instructions from data
 
 **Claude refuses to follow instructions?**
+
 - Check if instructions conflict with safety guidelines
 - Rephrase to be clearer and more specific
 - Break complex tasks into smaller steps
 - Provide context for why you need the output
 
 **Poor quality outputs?**
+
 - Add relevant context
 - Use appropriate model (Opus for complex tasks)
 - Implement chain-of-thought reasoning
 - Provide few-shot examples
 
+## Wrap-up
+
+Congratulations! You've completed a comprehensive guide to prompt engineering for Claude. Here's what you've accomplished:
+
+- ✓ **Mastered prompt engineering fundamentals** including clarity, context, and format specification
+- ✓ **Built reusable prompt components** including `FewShotClassifier`, `ChainOfThoughtSolver`, and `PersonaBuilder`
+- ✓ **Created prompt template systems** with `PromptTemplate` and `PromptLibrary` for consistent prompting
+- ✓ **Learned advanced techniques** including few-shot learning (with negative examples), chain-of-thought reasoning, and role-playing
+- ✓ **Implemented structured output generation** for JSON, XML, CSV, and Markdown formats
+- ✓ **Optimized prompt length** and learned token management strategies
+- ✓ **Mastered iterative refinement** with systematic testing and version tracking
+- ✓ **Built testing frameworks** for evaluating prompt quality and consistency
+- ✓ **Identified common pitfalls** and learned how to avoid them in your prompts
+
+### Key Concepts Learned
+
+- **Prompt Quality**: Clear, specific, and context-rich prompts produce significantly better results
+- **Few-Shot Learning**: Providing examples (both positive and negative) guides Claude's responses and improves accuracy
+- **Chain-of-Thought**: Encouraging step-by-step reasoning helps with complex problem-solving
+- **Personas**: Assigning roles and expertise improves response quality for specialized tasks
+- **Structured Outputs**: Explicit format requirements ensure consistent, parseable responses
+- **Templates**: Reusable prompt templates save time and ensure consistency across applications
+- **Token Management**: Optimizing prompt length reduces costs and improves response quality
+- **Iterative Refinement**: Systematic testing and refinement cycles improve prompt effectiveness
+- **Testing Methodology**: Proper metrics and A/B testing validate prompt improvements
+
+### Next Steps
+
+You now have the foundation to write effective prompts that consistently produce high-quality results. In the next chapter, you'll learn about streaming responses, which allow you to display Claude's output in real-time as it's generated, creating a more interactive user experience.
+
 ## Key Takeaways
 
 - ✓ **Clarity is crucial** - Be specific about what you want
 - ✓ **Context matters** - Provide relevant background information
-- ✓ **Examples guide** - Few-shot learning improves accuracy
+- ✓ **Examples guide** - Few-shot learning (including negative examples) improves accuracy
 - ✓ **Format explicitly** - Always specify desired output format
 - ✓ **Roles work** - Persona assignment improves responses
 - ✓ **Chain-of-thought** - Helps with complex reasoning tasks
 - ✓ **Templates save time** - Reusable prompts ensure consistency
-- ✓ **Test variations** - A/B test prompts to find what works best
+- ✓ **Optimize length** - Shorter prompts are often more effective and cost less
+- ✓ **Iterate systematically** - Test, analyze, refine, repeat
+- ✓ **Test thoroughly** - Use proper metrics and A/B testing to validate improvements
+- ✓ **Track versions** - Monitor prompt changes and measure impact
 - ✓ **Delimiters help** - Separate instructions from data clearly
 - ✓ **Temperature matters** - Lower for consistency, higher for creativity
+
+## Further Reading
+
+- [Anthropic Prompt Engineering Guide](https://docs.claude.com/en/docs/prompt-engineering) — Official guide to prompt engineering best practices
+- [Anthropic System Prompts Documentation](https://docs.claude.com/en/docs/prompt-engineering/use-prompt-templates) — Learn about system prompts and role assignment
+- [Chain-of-Thought Prompting Research](https://arxiv.org/abs/2201.11903) — Original research paper on chain-of-thought reasoning
+- [Chapter 06: Streaming Responses](/series/claude-php-developers/chapters/06-streaming-responses) — Learn to stream Claude's responses in real-time
+- [Chapter 07: System Prompts and Roles](/series/claude-php-developers/chapters/07-system-prompts-roles) — Advanced system prompt techniques
+- [Chapter 15: Structured Outputs](/series/claude-php-developers/chapters/15-structured-outputs) — Deep dive into generating structured data
 
 <ChapterCheckbox
   seriesId="claude-php-developers"
@@ -1518,7 +2489,7 @@ class PromptABTester
 
 ---
 
-Continue to [Chapter 06: System Prompts and Configuration](/series/claude-php-developers/chapters/06-system-prompts) to learn advanced configuration techniques.
+Continue to [Chapter 06: Streaming Responses](/series/claude-php-developers/chapters/06-streaming-responses) to learn how to stream Claude's responses in real-time.
 
 ## 💻 Code Samples
 
@@ -1527,6 +2498,7 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 05 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-05)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-05

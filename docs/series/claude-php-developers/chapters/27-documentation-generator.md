@@ -32,7 +32,18 @@ Great documentation is essential but often neglected due to the time and effort 
 
 Your system will parse PHP code, extract meaningful information, generate API references, create user guides, and even produce step-by-step tutorials. Claude's understanding of code and natural language makes it perfect for creating documentation that's both technically accurate and easy to understand.
 
-**What You'll Build**: A production-ready documentation system that generates API docs, README files, user guides, code examples, and interactive tutorials from your PHP codebase.
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- **Code Parser**: AST-based parser that extracts classes, methods, properties, and functions from PHP codebases
+- **API Documentation Generator**: Produces comprehensive API docs with method signatures, parameters, return types, and examples
+- **User Guide Generator**: Creates getting started guides, cookbooks, advanced topics, and migration guides
+- **README Generator**: Automatically generates professional README files with installation, usage, and examples
+- **Tutorial Generator**: Produces step-by-step tutorials with code examples and explanations
+- **Example Generator**: Creates basic, advanced, and pattern-based code examples
+- **CLI Tool**: Command-line interface for generating all documentation types
+- **Complete Documentation System**: Production-ready system that analyzes codebases and generates multiple documentation formats
 
 ## Prerequisites
 
@@ -44,6 +55,18 @@ Before starting, ensure you have:
 - ✓ **Static site generator familiarity** (VitePress, MkDocs, etc.)
 
 **Estimated Time**: 90-120 minutes
+
+## Objectives
+
+By completing this chapter, you will:
+
+- **Understand** how to parse PHP code using Abstract Syntax Trees (AST) with PHP-Parser
+- **Implement** code structure extraction from PHP files (classes, methods, properties, functions)
+- **Create** API documentation generators that produce comprehensive technical documentation
+- **Build** user guide generators for different documentation types (getting started, cookbooks, advanced topics)
+- **Develop** automated README generation with project metadata extraction
+- **Generate** step-by-step tutorials and code examples using Claude's natural language capabilities
+- **Master** the integration of code analysis with AI-powered documentation generation
 
 ## Architecture Overview
 
@@ -153,6 +176,111 @@ When documenting:
 
 Always generate complete, production-ready documentation.
 SYSTEM;
+    }
+
+    /**
+     * Extract code structure from parsed files
+     */
+    private function extractStructure(array $files): CodeStructure
+    {
+        $allClasses = [];
+        $allFiles = [];
+
+        foreach ($files as $filepath => $fileStructure) {
+            $allFiles[] = $fileStructure;
+            $allClasses = array_merge($allClasses, $fileStructure->classes);
+        }
+
+        return new CodeStructure(
+            files: $allFiles,
+            classes: $allClasses
+        );
+    }
+
+    /**
+     * Generate code examples from structure
+     */
+    private function generateExamples(CodeStructure $structure): array
+    {
+        $examples = [];
+        $exampleGen = new ExampleGenerator($this->claude);
+
+        foreach ($structure->classes as $class) {
+            $examples[$class->name] = $exampleGen->generateClassExamples($class);
+        }
+
+        return $examples;
+    }
+
+    /**
+     * Generate tutorials from structure
+     */
+    private function generateTutorials(CodeStructure $structure): array
+    {
+        $tutorialGen = new TutorialGenerator($this->claude);
+
+        $topics = [
+            'Getting Started',
+            'Common Patterns',
+            'Advanced Usage'
+        ];
+
+        $tutorials = [];
+        foreach ($topics as $topic) {
+            $tutorials[$topic] = $tutorialGen->generateTutorial($topic, $structure);
+        }
+
+        return $tutorials;
+    }
+
+    /**
+     * Extract project metadata
+     */
+    private function extractMetadata(string $projectPath): array
+    {
+        $composerPath = $projectPath . '/composer.json';
+        $readmePath = $projectPath . '/README.md';
+
+        $metadata = [
+            'package' => basename($projectPath),
+            'description' => 'PHP Library',
+            'version' => '1.0.0',
+            'license' => 'MIT'
+        ];
+
+        if (file_exists($composerPath)) {
+            $composer = json_decode(file_get_contents($composerPath), true);
+            $metadata['package'] = $composer['name'] ?? $metadata['package'];
+            $metadata['description'] = $composer['description'] ?? $metadata['description'];
+            $metadata['version'] = $composer['version'] ?? $metadata['version'];
+            $metadata['license'] = is_array($composer['license'] ?? null)
+                ? implode(', ', $composer['license'])
+                : ($composer['license'] ?? $metadata['license']);
+        }
+
+        return $metadata;
+    }
+
+    /**
+     * Build prompt for class documentation
+     */
+    private function buildClassDocPrompt(ClassInfo $class): string
+    {
+        $methods = array_filter($class->methods, fn($m) => $m->visibility === 'public');
+        $methodList = implode(', ', array_map(fn($m) => $m->name, $methods));
+        $implements = implode(', ', $class->implements);
+        $extends = $class->extends ?? 'None';
+
+        return <<<PROMPT
+Generate comprehensive API documentation for this PHP class.
+
+Class: {$class->name}
+Extends: {$extends}
+Implements: {$implements}
+Public Methods: {$methodList}
+
+Create detailed documentation following PHPDoc standards.
+PROMPT;
     }
 }
 ```
@@ -366,7 +494,7 @@ class StructureVisitor extends NodeVisitorAbstract
 
 ## API Documentation Generator
 
-```php
+````php
 <?php
 # filename: src/Documentation/ApiDocGenerator.php
 declare(strict_types=1);
@@ -410,10 +538,8 @@ class ApiDocGenerator
 Generate comprehensive API documentation for this PHP class.
 
 Class:
-```php
 {$classCode}
-```
-
+`
 Methods:
 {$methods}
 
@@ -433,7 +559,7 @@ Create documentation in Markdown format with:
 
 Use proper Markdown formatting with code blocks, tables, and sections.
 PROMPT;
-    }
+}
 
     private function formatClassSignature(ClassInfo $class): string
     {
@@ -503,6 +629,7 @@ PROMPT;
         $docBlock = $method->docComment ?? 'No documentation available';
 
         $prompt = <<<PROMPT
+
 Generate detailed documentation for this PHP method.
 
 Class: {$className}
@@ -510,6 +637,7 @@ Method: {$signature}
 Existing DocBlock: {$docBlock}
 
 Create comprehensive method documentation including:
+
 1. Clear description of what the method does
 2. Parameter descriptions (name, type, purpose)
 3. Return value description
@@ -553,8 +681,10 @@ PROMPT;
 
         return $signature;
     }
+
 }
-```
+
+````
 
 ## User Guide Generator
 
@@ -719,6 +849,56 @@ Use technical depth with code examples.
 PROMPT;
     }
 
+    private function buildMigrationGuidePrompt(CodeStructure $structure): string
+    {
+        return <<<PROMPT
+Create a migration guide for upgrading to a new version or migrating from another library.
+
+Library structure:
+{$this->formatClassList($structure->classes)}
+
+The migration guide should include:
+
+1. **Overview**
+   - What changed
+   - Why migrate
+   - Benefits of upgrading
+
+2. **Breaking Changes**
+   - List of breaking changes
+   - Impact assessment
+   - Migration steps for each
+
+3. **Deprecated Features**
+   - Features being removed
+   - Alternatives available
+   - Timeline for removal
+
+4. **New Features**
+   - What's new
+   - How to use new features
+   - Examples
+
+5. **Step-by-Step Migration**
+   - Pre-migration checklist
+   - Migration process
+   - Testing after migration
+   - Rollback plan
+
+6. **Code Examples**
+   - Before/after comparisons
+   - Common migration patterns
+   - Edge cases
+
+7. **Troubleshooting**
+   - Common issues
+   - Solutions
+   - Getting help
+
+Format in Markdown with clear before/after code examples.
+PROMPT;
+    }
+
     private function formatClassList(array $classes): string
     {
         $formatted = [];
@@ -759,11 +939,11 @@ Always produce publication-ready documentation.
 SYSTEM;
     }
 }
-```
+````
 
 ## README Generator
 
-```php
+````php
 <?php
 # filename: src/Documentation/ReadmeGenerator.php
 declare(strict_types=1);
@@ -812,48 +992,53 @@ Create a README with:
 - Dependencies
 
 ## Installation
-```bash
 composer require ...
-```
-
+`
 ## Quick Start
-```php
+
 // Simplest possible example
-```
 
 ## Usage
+
 ### Basic Usage
+
 - Common use cases with examples
 
 ### Advanced Usage
+
 - More complex scenarios
 
 ## Configuration
+
 - How to configure
 - Available options
 
 ## Examples
+
 - Practical examples
 - Real-world scenarios
 
 ## API Documentation
+
 - Link to full docs
 - Quick reference
 
 ## Testing
-```bash
+
 ./vendor/bin/phpunit
-```
 
 ## Contributing
+
 - How to contribute
 - Development setup
 - Guidelines
 
 ## License
+
 - License type
 
 ## Credits
+
 - Authors
 - Contributors
 
@@ -908,12 +1093,141 @@ PROMPT;
         }
         return null;
     }
+
 }
-```
+
+````
+
+## Example Generator
+
+```php
+<?php
+# filename: src/Documentation/ExampleGenerator.php
+declare(strict_types=1);
+
+namespace App\Documentation;
+
+use Anthropic\Anthropic;
+
+class ExampleGenerator
+{
+    public function __construct(
+        private Anthropic $claude
+    ) {}
+
+    /**
+     * Generate code examples for a class
+     */
+    public function generateClassExamples(ClassInfo $class): array
+    {
+        $examples = [];
+
+        // Generate basic usage example
+        $examples['basic'] = $this->generateBasicExample($class);
+
+        // Generate advanced example
+        $examples['advanced'] = $this->generateAdvancedExample($class);
+
+        // Generate common patterns
+        $examples['patterns'] = $this->generatePatternExamples($class);
+
+        return $examples;
+    }
+
+    private function generateBasicExample(ClassInfo $class): string
+    {
+        $publicMethods = array_filter($class->methods, fn($m) => $m->visibility === 'public');
+        $methodNames = implode(', ', array_slice(array_map(fn($m) => $m->name, $publicMethods), 0, 3));
+
+        $prompt = <<<PROMPT
+Generate a basic usage example for this PHP class.
+
+Class: {$class->name}
+Public Methods: {$methodNames}
+
+Create a simple, beginner-friendly example showing:
+1. How to instantiate the class
+2. Basic method calls
+3. Expected output
+4. Brief explanation
+
+Format as Markdown with PHP code blocks.
+PROMPT;
+
+        $response = $this->claude->messages()->create([
+            'model' => 'claude-sonnet-4-20250514',
+            'max_tokens' => 2048,
+            'temperature' => 0.3,
+            'messages' => [[
+                'role' => 'user',
+                'content' => $prompt
+            ]]
+        ]);
+
+        return $response->content[0]->text;
+    }
+
+    private function generateAdvancedExample(ClassInfo $class): string
+    {
+        $prompt = <<<PROMPT
+Generate an advanced usage example for this PHP class: {$class->name}
+
+Show:
+1. Complex use case
+2. Integration with other classes
+3. Error handling
+4. Best practices
+5. Performance considerations
+
+Format as Markdown with complete, runnable code.
+PROMPT;
+
+        $response = $this->claude->messages()->create([
+            'model' => 'claude-sonnet-4-20250514',
+            'max_tokens' => 3072,
+            'temperature' => 0.4,
+            'messages' => [[
+                'role' => 'user',
+                'content' => $prompt
+            ]]
+        ]);
+
+        return $response->content[0]->text;
+    }
+
+    private function generatePatternExamples(ClassInfo $class): string
+    {
+        $prompt = <<<PROMPT
+Generate common usage patterns and recipes for this PHP class: {$class->name}
+
+Include 3-5 common patterns:
+1. Pattern name and description
+2. When to use it
+3. Complete code example
+4. Explanation
+5. Variations
+
+Format as Markdown with clear sections.
+PROMPT;
+
+        $response = $this->claude->messages()->create([
+            'model' => 'claude-sonnet-4-20250514',
+            'max_tokens' => 4096,
+            'temperature' => 0.4,
+            'messages' => [[
+                'role' => 'user',
+                'content' => $prompt
+            ]]
+        ]);
+
+        return $response->content[0]->text;
+    }
+}
+````
 
 ## Tutorial Generator
 
-```php
+````php
 <?php
 # filename: src/Documentation/TutorialGenerator.php
 declare(strict_types=1);
@@ -956,77 +1270,81 @@ Tutorial format:
 ## Step 1: [First Step]
 **Goal:** What this step accomplishes
 
-```php
 // Complete code for this step
-```
-
+`
 **Explanation:**
+
 - What this code does
 - Why we do it this way
 - Key concepts introduced
 
 ## Step 2: [Second Step]
+
 ... continue ...
 
 ## Final Code
-```php
+
 // Complete, working final version
-```
 
 ## Testing
+
 How to test what you built
 
 ## Next Steps
+
 - What to explore next
 - Related tutorials
 - Advanced topics
 
 ## Troubleshooting
+
 Common issues and solutions
 
 Create an engaging, educational tutorial with:
+
 - Clear learning progression
 - Complete, runnable code at each step
 - Explanations of concepts
 - Best practices
 - Real-world context
-PROMPT;
+  PROMPT;
 
-        $response = $this->claude->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
-            'max_tokens' => 8192,
-            'temperature' => 0.5,
-            'messages' => [[
-                'role' => 'user',
-                'content' => $prompt
-            ]]
-        ]);
+          $response = $this->claude->messages()->create([
+              'model' => 'claude-sonnet-4-20250514',
+              'max_tokens' => 8192,
+              'temperature' => 0.5,
+              'messages' => [[
+                  'role' => 'user',
+                  'content' => $prompt
+              ]]
+          ]);
 
-        return $response->content[0]->text;
-    }
+          return $response->content[0]->text;
+      }
 
-    private function formatStructure(CodeStructure $structure): string
-    {
-        $output = [];
-        foreach ($structure->classes as $class) {
-            $output[] = "- {$class->name}";
-            $methods = array_filter($class->methods, fn($m) => $m->visibility === 'public');
-            foreach (array_slice($methods, 0, 3) as $method) {
-                $output[] = "  - {$method->name}()";
-            }
-        }
-        return implode("\n", $output);
-    }
+      private function formatStructure(CodeStructure $structure): string
+      {
+          $output = [];
+          foreach ($structure->classes as $class) {
+              $output[] = "- {$class->name}";
+              $methods = array_filter($class->methods, fn($m) => $m->visibility === 'public');
+              foreach (array_slice($methods, 0, 3) as $method) {
+                  $output[] = "  - {$method->name}()";
+              }
+          }
+          return implode("\n", $output);
+      }
 
-    /**
-     * Generate interactive example
-     */
-    public function generateInteractiveExample(
-        string $feature,
-        ClassInfo $class
-    ): string {
-        $prompt = <<<PROMPT
-Create an interactive code example demonstrating: {$feature}
+      /**
+       * Generate interactive example
+       */
+      public function generateInteractiveExample(
+          string $feature,
+          ClassInfo $class
+      ): string {
+          $prompt = <<<PROMPT
+
+  Create an interactive code example demonstrating: {$feature}
 
 Using class: {$class->name}
 
@@ -1036,17 +1354,17 @@ Generate:
    What this example demonstrates
 
 2. **The Code**
-```php
+
 <?php
 // Complete, runnable example
 // Include comments explaining each part
-```
 
 3. **How It Works**
    Step-by-step breakdown
 
 4. **Try It Yourself**
    Challenges or modifications to try:
+
    - Easy variation
    - Medium challenge
    - Advanced modification
@@ -1072,8 +1390,10 @@ PROMPT;
 
         return $response->content[0]->text;
     }
+
 }
-```
+
+````
 
 ## Complete Documentation Generator CLI
 
@@ -1236,6 +1556,220 @@ if ($type === 'all' || $type === 'tutorials') {
 
 echo "🎉 Documentation generation complete!\n";
 echo "📁 Output directory: {$outputPath}\n";
+````
+
+## Best Practices
+
+### Performance Optimization
+
+**1. Batch Processing for Large Codebases**
+
+Instead of generating docs for each class individually, batch multiple classes in a single API request:
+
+```php
+// Instead of this (slower):
+foreach ($classes as $class) {
+    $doc = $apiDocGen->generateClassDocumentation($class);
+    // Save individually
+}
+
+// Do this (faster):
+$batchSize = 5;
+for ($i = 0; $i < count($classes); $i += $batchSize) {
+    $batch = array_slice($classes, $i, $batchSize);
+    $docs = $this->generateBatchDocs($batch);
+    // Save batch
+}
+```
+
+**2. Caching Generated Documentation**
+
+Cache generated documentation to avoid regenerating unchanged code:
+
+```php
+private function generateClassDoc(ClassInfo $class): string
+{
+    $cacheKey = "doc_{$class->name}_" . md5(json_encode($class));
+
+    // Check cache first
+    if ($cached = $this->cache->get($cacheKey)) {
+        return $cached;
+    }
+
+    // Generate if not cached
+    $doc = $this->callClaude($class);
+
+    // Cache for future use
+    $this->cache->set($cacheKey, $doc, 3600); // 1 hour TTL
+
+    return $doc;
+}
+```
+
+**3. Streaming for Real-Time Feedback**
+
+Use streaming for immediate feedback on long documentation generation:
+
+```php
+$response = $this->claude->messages()->create([
+    'model' => 'claude-sonnet-4-20250514',
+    'max_tokens' => 4096,
+    'stream' => true,  // Enable streaming
+    'messages' => [[
+        'role' => 'user',
+        'content' => $prompt
+    ]]
+]);
+
+foreach ($response as $chunk) {
+    echo $chunk->delta->text ?? '';
+    flush(); // Send immediately
+}
+```
+
+### Cost Optimization
+
+**1. Model Selection**
+
+Choose the right model for each documentation type:
+
+```php
+// Use Haiku for simple class documentation
+if (count($class->methods) < 5) {
+    $model = 'claude-haiku-4-20250514'; // Faster, cheaper
+} else {
+    $model = 'claude-sonnet-4-20250514'; // More capable
+}
+```
+
+**2. Token Limiting**
+
+Set appropriate `max_tokens` based on documentation type:
+
+```php
+// README - typically shorter
+'max_tokens' => 4096,
+
+// API documentation - more detailed
+'max_tokens' => 6144,
+
+// Tutorial - comprehensive
+'max_tokens' => 8192,
+```
+
+**3. Prompt Caching**
+
+Use prompt caching for frequently referenced context:
+
+```php
+$systemPrompt = $this->getDocumentationSystemPrompt();
+$cachedSystemPrompt = [
+    'type' => 'text',
+    'text' => $systemPrompt,
+    'cache_control' => ['type' => 'ephemeral']
+];
+
+$response = $this->claude->messages()->create([
+    'model' => 'claude-sonnet-4-20250514',
+    'max_tokens' => 4096,
+    'system' => [$cachedSystemPrompt],
+    'messages' => [[
+        'role' => 'user',
+        'content' => $prompt
+    ]]
+]);
+```
+
+### Quality Assurance
+
+**1. Validate Generated Code Examples**
+
+Always validate code examples are runnable:
+
+```php
+private function validateCodeExample(string $code): bool
+{
+    $tmpFile = tempnam(sys_get_temp_dir(), 'test_');
+    file_put_contents($tmpFile, "<?php\n" . $code);
+
+    $output = shell_exec("php -l {$tmpFile} 2>&1");
+    unlink($tmpFile);
+
+    return strpos($output, 'No syntax errors') !== false;
+}
+```
+
+**2. Check Documentation Completeness**
+
+Verify all public methods are documented:
+
+```php
+private function checkCompleteness(ClassInfo $class, string $docs): array
+{
+    $publicMethods = array_filter($class->methods, fn($m) => $m->visibility === 'public');
+    $missing = [];
+
+    foreach ($publicMethods as $method) {
+        if (stripos($docs, $method->name) === false) {
+            $missing[] = $method->name;
+        }
+    }
+
+    return $missing;
+}
+```
+
+**3. Version Control for Documentation**
+
+Track documentation changes:
+
+```php
+if (file_exists($outputPath)) {
+    $previous = file_get_contents($outputPath);
+    if ($previous !== $newDoc) {
+        // Log changes
+        error_log("Documentation changed for {$class->name}");
+    }
+}
+```
+
+### Security Considerations
+
+**1. Sanitize Generated Content**
+
+Sanitize AI-generated documentation before output:
+
+```php
+$sanitized = htmlspecialchars($generatedDoc, ENT_QUOTES, 'UTF-8');
+$sanitized = strip_tags($sanitized, '<p><code><pre><em><strong><h1><h2><h3><a>');
+```
+
+**2. Protect API Keys**
+
+Never hardcode API keys:
+
+```php
+// ✗ Bad
+$apiKey = 'sk-ant-...';
+
+// ✓ Good
+$apiKey = getenv('ANTHROPIC_API_KEY');
+if (!$apiKey) {
+    throw new Exception('ANTHROPIC_API_KEY environment variable not set');
+}
+```
+
+**3. Validate Input Paths**
+
+Prevent directory traversal attacks:
+
+```php
+$realPath = realpath($sourcePath);
+$projectRoot = realpath(dirname(__FILE__) . '/../..');
+
+if (strpos($realPath, $projectRoot) !== 0) {
+    throw new Exception('Invalid source path');
+}
 ```
 
 ## Data Structures
@@ -1338,6 +1872,198 @@ readonly class DocumentationProject
 }
 ```
 
+## Exercises
+
+### Exercise 1: Custom Documentation Template
+
+**Goal**: Create a custom template system for documentation generation
+
+Create a `TemplateEngine` class that:
+
+- Accepts template files with placeholders (e.g., `\{\{class_name\}\}`, `\{\{methods\}\}`)
+- Supports template inheritance and includes
+- Allows custom formatting for different output formats (Markdown, HTML, PDF)
+- Integrates with the `DocumentationGenerator` class
+
+**Validation**: Generate documentation using your custom templates and verify the output matches your template structure.
+
+```php
+# filename: src/Documentation/TemplateEngine.php
+<?php
+declare(strict_types=1);
+
+namespace App\Documentation;
+
+class TemplateEngine
+{
+    // Your implementation here
+}
+```
+
+### Exercise 2: Documentation Quality Scoring
+
+**Goal**: Build a system to evaluate and score generated documentation quality
+
+Implement a `DocumentationQualityScorer` that:
+
+- Analyzes documentation completeness (coverage of methods, parameters, examples)
+- Checks for clarity and readability
+- Validates code examples are runnable
+- Provides improvement suggestions
+- Generates quality reports
+
+**Validation**: Score existing documentation and verify the metrics are accurate.
+
+### Exercise 3: Incremental Documentation Updates
+
+**Goal**: Create a system that only regenerates changed documentation
+
+Build an `IncrementalDocGenerator` that:
+
+- Tracks file modification times
+- Compares current code structure with previous version
+- Only regenerates docs for changed classes/methods
+- Maintains a cache of generated documentation
+- Supports diff view of documentation changes
+
+**Validation**: Make changes to a class, regenerate docs, and verify only changed classes are updated.
+
+## Troubleshooting
+
+### Error: "Failed to parse file"
+
+**Symptom**: `Failed to parse {filepath}: Syntax error`
+
+**Cause**: The PHP file contains syntax errors or uses features not supported by PHP-Parser
+
+**Solution**:
+
+1. Validate PHP syntax first:
+
+```bash
+php -l filename.php
+```
+
+2. Update PHP-Parser version if using newer PHP features:
+
+```bash
+composer require nikic/php-parser:^5.0
+```
+
+3. Add error handling to skip problematic files:
+
+```php
+try {
+    $parsed[$file] = $this->parseFile($file);
+} catch (\Exception $e) {
+    error_log("Skipping {$file}: " . $e->getMessage());
+    continue;
+}
+```
+
+### Problem: Generated Documentation is Too Generic
+
+**Symptom**: Claude generates generic documentation that doesn't reflect your specific codebase
+
+**Cause**: Insufficient context provided in prompts
+
+**Solution**:
+
+1. Include more code context in prompts:
+
+````php
+$prompt = <<<PROMPT
+Generate documentation for this class:
+
+Full source code:
+{$fullSourceCode}
+`
+Existing PHPDoc comments:
+{$existingDocComments}
+
+Create documentation that reflects the actual implementation.
+PROMPT;
+
+````
+
+2. Use more specific system prompts tailored to your domain
+3. Provide examples of desired documentation style
+
+### Problem: Documentation Generation is Slow
+
+**Symptom**: Generating docs for large codebases takes too long
+
+**Cause**: Processing all classes sequentially, making individual API calls
+
+**Solution**:
+
+1. Batch multiple classes in a single request:
+```php
+$prompt = "Generate docs for these classes:\n";
+foreach ($classes as $class) {
+    $prompt .= $this->formatClass($class) . "\n\n";
+}
+````
+
+2. Use parallel processing:
+
+```php
+$promises = [];
+foreach ($classes as $class) {
+    $promises[] = $this->claude->messages()->createAsync([...]);
+}
+$results = Promise\all($promises)->wait();
+```
+
+3. Cache generated documentation and only regenerate when code changes
+
+## Wrap-up
+
+Congratulations! You've built a comprehensive documentation generation system. Here's what you've accomplished:
+
+- ✓ **Code Parsing**: Implemented AST-based code parsing with PHP-Parser to extract structural information
+- ✓ **API Documentation**: Created a generator that produces comprehensive API docs with examples
+- ✓ **User Guides**: Built generators for getting started guides, cookbooks, and advanced topics
+- ✓ **README Generation**: Automated README creation with project analysis
+- ✓ **Tutorial Generation**: Created a system that generates step-by-step tutorials
+- ✓ **Example Generation**: Implemented basic, advanced, and pattern-based example generation
+- ✓ **CLI Tool**: Built a command-line interface for easy documentation generation
+- ✓ **Metadata Extraction**: Automatically extracts project information from composer.json
+
+**Key Concepts Learned**:
+
+- Code parsing with Abstract Syntax Trees (AST) provides accurate structural analysis
+- Claude's natural language understanding excels at generating educational documentation
+- Different documentation types serve different audiences (developers, users, beginners)
+- Automated documentation keeps code and docs in sync
+- Template systems allow customization while maintaining consistency
+
+**Real-World Applications**:
+
+- Generate API documentation for libraries and frameworks
+- Create user guides for applications and tools
+- Maintain README files automatically
+- Produce tutorials for onboarding new developers
+- Keep documentation up-to-date with code changes
+
+**Next Steps**:
+
+- Integrate documentation generation into your CI/CD pipeline
+- Add support for multiple output formats (HTML, PDF, EPUB)
+- Implement documentation versioning and change tracking
+- Create custom templates for your organization's style guide
+- Add interactive documentation features (search, navigation)
+
+## Further Reading
+
+- [PHP-Parser Documentation](https://github.com/nikic/PHP-Parser) - Complete guide to parsing PHP code with AST
+- [PHPDoc Standards](https://docs.phpdoc.org/) - Official PHPDoc documentation standards
+- [Markdown Guide](https://www.markdownguide.org/) - Comprehensive Markdown syntax reference
+- [Documentation Best Practices](https://www.writethedocs.org/guide/) - Write the Docs community resources
+- [Claude API Documentation](https://docs.claude.com/en/api/overview) - Official Claude API reference
+- [Chapter 11: Tool Use](/series/claude-php-developers/chapters/11-tool-use) - Learn about Claude's tool use capabilities
+- [Chapter 15: Structured Outputs](/series/claude-php-developers/chapters/15-structured-outputs) - Generate structured documentation formats
+
 ## Key Takeaways
 
 - ✓ Automated documentation saves time and ensures consistency
@@ -1368,6 +2094,7 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 27 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-27)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-27

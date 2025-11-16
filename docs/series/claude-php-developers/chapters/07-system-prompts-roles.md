@@ -6,9 +6,10 @@ chapter: 7
 order: 7
 difficulty: "Expert"
 prerequisites:
-  - "Chapter 00-06 completed"
+  - "PHP 8.4+ installed"
+  - "Completion of Chapters 00-06"
   - "Understanding of prompt engineering basics"
-  - "Familiarity with PHP string handling"
+  - "Familiarity with PHP classes and namespaces"
 ---
 
 ![07: System Prompts and Role Definition](/images/claude-php/chapter-07-hero-full.webp)
@@ -37,12 +38,55 @@ By the end, you'll create specialized Claude instances for different use cases: 
 
 Before starting, ensure you understand:
 
-- ✓ Basic Claude API usage (Chapters 00-03)
-- ✓ Prompt engineering fundamentals (Chapter 05)
-- ✓ Message structure and conversation flow
-- ✓ Security best practices
+- ✓ **Completed Chapters 00-06** — Basic Claude API usage, authentication, messages, and prompt engineering
+- ✓ **PHP 8.4+** with good understanding of classes and namespaces
+- ✓ **Anthropic API key** configured and working
+- ✓ **Understanding of prompt engineering** from Chapter 05
+- ✓ **Message structure and conversation flow** from Chapter 04
 
 **Estimated Time**: 45-60 minutes
+
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- A `SystemPromptBuilder` class for constructing structured system prompts
+- A `CodeReviewerAssistant` class for automated PHP code review
+- A `TechnicalWriterAssistant` class for generating documentation
+- A `CustomerSupportAssistant` class with knowledge base integration
+- A `MultiPersonaAssistant` class for dynamic role switching
+- A `PromptSanitizer` class for preventing prompt injection attacks
+- A `SafeAssistant` class with input encapsulation and validation
+- A `SystemPromptABTest` class for comparing prompt effectiveness
+- A `SystemPromptOptimizer` class for token cost optimization
+- A `SystemPromptVersion` and `SystemPromptRepository` for version control
+- A `PromptTemplate` system with inheritance and composition
+- A `SystemPromptAnalyzer` for length and structure validation
+- A `SystemPromptDebugger` for troubleshooting prompt issues
+- A `PromptMonitor` system for tracking effectiveness metrics
+- Multiple example scripts demonstrating system prompt patterns
+- Understanding of system prompt architecture and best practices
+- Knowledge of prompt injection prevention techniques
+- Skills to build specialized AI assistants for specific domains
+- Production-ready prompt management and monitoring systems
+
+## Objectives
+
+By the end of this chapter, you will be able to:
+
+- Write effective system prompts using structured components (role, expertise, task, constraints, style)
+- Build specialized AI assistants tailored to specific domains and use cases
+- Implement dynamic role switching with multi-persona assistants
+- Prevent prompt injection attacks through input sanitization and encapsulation
+- Create defensive system prompts that resist manipulation attempts
+- Test and optimize system prompts using A/B testing and validation suites
+- Apply advanced patterns including structured output enforcement and constraint-based prompts
+- Optimize system prompts for token costs and context window efficiency
+- Implement version control and management systems for production prompts
+- Create reusable prompt templates with inheritance and composition
+- Debug and troubleshoot system prompt issues effectively
+- Monitor and track prompt effectiveness in production environments
+- Choose appropriate system prompt architectures for different application requirements
 
 ## What is a System Prompt?
 
@@ -79,7 +123,7 @@ echo str_repeat('-', 80) . "\n\n";
 $response2 = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
     'max_tokens' => 500,
-    'system' => 'You are a senior PHP code reviewer. Analyze code for type safety, best practices, and potential bugs. Always suggest improvements using modern PHP 8.2+ features.',
+    'system' => 'You are a senior PHP code reviewer. Analyze code for type safety, best practices, and potential bugs. Always suggest improvements using modern PHP 8.4+ features.',
     'messages' => [[
         'role' => 'user',
         'content' => 'Review this code: function sum($a, $b) { return $a + $b; }'
@@ -238,12 +282,12 @@ $systemPrompt = (new SystemPromptBuilder())
         'Laravel 11.x framework internals',
         'Eloquent ORM and query optimization',
         'Service container and dependency injection',
-        'Modern PHP 8.2+ features',
+        'Modern PHP 8.4+ features',
         'Database design and migrations',
     ])
     ->task('Help developers write clean, efficient Laravel code following best practices.')
     ->constraints([
-        'Always use PHP 8.2+ syntax',
+        'Always use PHP 8.4+ syntax',
         'Recommend type hints and return types',
         'Suggest testable, SOLID code',
         'Consider performance implications',
@@ -269,14 +313,14 @@ You are a Laravel expert and technical mentor.
 - Laravel 11.x framework internals
 - Eloquent ORM and query optimization
 - Service container and dependency injection
-- Modern PHP 8.2+ features
+- Modern PHP 8.4+ features
 - Database design and migrations
 
 # Task
 Help developers write clean, efficient Laravel code following best practices.
 
 # Constraints
-- Always use PHP 8.2+ syntax
+- Always use PHP 8.4+ syntax
 - Recommend type hints and return types
 - Suggest testable, SOLID code
 - Consider performance implications
@@ -309,7 +353,7 @@ class CodeReviewerAssistant
 You are a senior PHP code reviewer with 10+ years of experience in enterprise applications.
 
 # Expertise
-- PHP 8.2+ features and best practices
+- PHP 8.4+ features and best practices
 - SOLID principles and design patterns
 - Security vulnerabilities (SQL injection, XSS, CSRF)
 - Performance optimization
@@ -341,7 +385,7 @@ List issues by severity:
 Provide specific, actionable improvements with code examples.
 
 ## Refactored Code
-Show improved version using PHP 8.2+ features.
+Show improved version using PHP 8.4+ features.
 
 # Constraints
 - Be constructive, not harsh
@@ -468,7 +512,7 @@ Common issues and solutions
 - Use consistent terminology
 
 # Code Examples
-- Always use PHP 8.2+ syntax
+- Always use PHP 8.4+ syntax
 - Include declare(strict_types=1)
 - Show proper error handling
 - Demonstrate best practices
@@ -765,6 +809,14 @@ echo $assistant->chat("How would you structure user data access in a large appli
 # filename: examples/03-structured-output.php
 declare(strict_types=1);
 
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Anthropic;
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
 $systemPrompt = <<<'PROMPT'
 You are a code analysis tool that ALWAYS returns valid JSON in this exact format:
 
@@ -993,6 +1045,14 @@ $cleanInput = $sanitizer->sanitize($userInput);
 # filename: examples/05-defensive-system-prompt.php
 declare(strict_types=1);
 
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Anthropic;
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
 $defensiveSystemPrompt = <<<'PROMPT'
 # Role
 You are a PHP code assistant.
@@ -1108,6 +1168,16 @@ PROMPT;
 }
 
 // Usage
+require __DIR__ . '/../../vendor/autoload.php';
+
+use Anthropic\Anthropic;
+use CodeWithPHP\Claude\Security\SafeAssistant;
+use CodeWithPHP\Claude\Security\PromptSanitizer;
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
 $assistant = new SafeAssistant($client, new PromptSanitizer());
 
 $result = $assistant->safeQuery(
@@ -1118,6 +1188,789 @@ $result = $assistant->safeQuery(
 );
 
 echo $result;
+```
+
+## System Prompt Management and Optimization
+
+### Token Costs and Optimization
+
+System prompts consume tokens and count toward your context window. Understanding this helps optimize costs and maximize available context for user messages.
+
+```php
+<?php
+# filename: examples/07-token-optimization.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Anthropic;
+
+/**
+ * System prompts count toward context window
+ * 
+ * Example: If your system prompt is 1,000 tokens and context limit is 200,000 tokens,
+ * you have 199,000 tokens available for messages.
+ * 
+ * Strategies:
+ * 1. Keep system prompts concise but complete
+ * 2. Move detailed examples to user messages when possible
+ * 3. Use placeholders for dynamic content
+ * 4. Cache system prompts to avoid regeneration
+ */
+
+class SystemPromptOptimizer
+{
+    public function __construct(
+        private Anthropic $client
+    ) {}
+
+    /**
+     * Estimate token count for system prompt
+     * Rough estimate: 1 token ≈ 4 characters
+     */
+    public function estimateTokens(string $prompt): int
+    {
+        return (int) ceil(mb_strlen($prompt) / 4);
+    }
+
+    /**
+     * Optimize system prompt by removing redundancy
+     */
+    public function optimize(string $prompt): string
+    {
+        // Remove excessive whitespace
+        $prompt = preg_replace('/\n{3,}/', "\n\n", $prompt);
+        
+        // Remove redundant phrases
+        $redundancies = [
+            '/You are a .*? You are a /' => 'You are a ',
+            '/Always .*? Always /' => 'Always ',
+        ];
+        
+        foreach ($redundancies as $pattern => $replacement) {
+            $prompt = preg_replace($pattern, $replacement, $prompt);
+        }
+        
+        return trim($prompt);
+    }
+
+    /**
+     * Split large system prompt into core + examples
+     * Core stays in system prompt, examples move to user messages
+     */
+    public function splitPrompt(string $fullPrompt): array
+    {
+        // Extract examples section
+        if (preg_match('/# Examples\n(.*?)(?=\n#|$)/s', $fullPrompt, $matches)) {
+            $examples = trim($matches[1]);
+            $corePrompt = preg_replace('/# Examples\n.*/s', '', $fullPrompt);
+            
+            return [
+                'core' => trim($corePrompt),
+                'examples' => $examples
+            ];
+        }
+        
+        return ['core' => $fullPrompt, 'examples' => ''];
+    }
+}
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
+$optimizer = new SystemPromptOptimizer($client);
+
+$longPrompt = <<<'PROMPT'
+# Role
+You are a PHP code reviewer.
+
+# Expertise
+- PHP 8.4+ features
+- Security best practices
+- Performance optimization
+
+# Examples
+Example 1: Good code
+function sum(int $a, int $b): int {
+    return $a + $b;
+}
+
+Example 2: Bad code
+function sum($a, $b) {
+    return $a + $b;
+}
+PROMPT;
+
+echo "Original tokens: " . $optimizer->estimateTokens($longPrompt) . "\n";
+
+$split = $optimizer->splitPrompt($longPrompt);
+echo "Core tokens: " . $optimizer->estimateTokens($split['core']) . "\n";
+echo "Examples tokens: " . $optimizer->estimateTokens($split['examples']) . "\n";
+echo "Savings: " . ($optimizer->estimateTokens($longPrompt) - $optimizer->estimateTokens($split['core'])) . " tokens\n";
+```
+
+### System Prompt Versioning and Management
+
+Version control for system prompts enables safe updates, rollbacks, and A/B testing in production.
+
+```php
+<?php
+# filename: src/Management/SystemPromptVersion.php
+declare(strict_types=1);
+
+namespace CodeWithPHP\Claude\Management;
+
+class SystemPromptVersion
+{
+    public function __construct(
+        private string $id,
+        private string $content,
+        private string $version,
+        private ?string $description = null,
+        private array $metadata = [],
+        private ?\DateTimeImmutable $createdAt = null
+    ) {
+        $this->createdAt = $createdAt ?? new \DateTimeImmutable();
+    }
+
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    public function getContent(): string
+    {
+        return $this->content;
+    }
+
+    public function getVersion(): string
+    {
+        return $this->version;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function getMetadata(): array
+    {
+        return $this->metadata;
+    }
+
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'content' => $this->content,
+            'version' => $this->version,
+            'description' => $this->description,
+            'metadata' => $this->metadata,
+            'created_at' => $this->createdAt->format('c'),
+        ];
+    }
+}
+
+class SystemPromptRepository
+{
+    private array $prompts = [];
+
+    public function save(SystemPromptVersion $prompt): void
+    {
+        $this->prompts[$prompt->getId()] = $prompt;
+    }
+
+    public function find(string $id, ?string $version = null): ?SystemPromptVersion
+    {
+        if (!isset($this->prompts[$id])) {
+            return null;
+        }
+
+        $prompt = $this->prompts[$id];
+        
+        if ($version && $prompt->getVersion() !== $version) {
+            return null;
+        }
+
+        return $prompt;
+    }
+
+    public function findAllVersions(string $id): array
+    {
+        return array_filter(
+            $this->prompts,
+            fn($p) => $p->getId() === $id
+        );
+    }
+
+    public function getLatest(string $id): ?SystemPromptVersion
+    {
+        $versions = $this->findAllVersions($id);
+        
+        if (empty($versions)) {
+            return null;
+        }
+
+        usort($versions, fn($a, $b) => 
+            version_compare($b->getVersion(), $a->getVersion())
+        );
+
+        return $versions[0];
+    }
+}
+
+// Usage
+$repo = new SystemPromptRepository();
+
+$v1 = new SystemPromptVersion(
+    id: 'code-reviewer',
+    content: 'You are a PHP code reviewer.',
+    version: '1.0.0',
+    description: 'Initial version'
+);
+
+$v2 = new SystemPromptVersion(
+    id: 'code-reviewer',
+    content: 'You are a senior PHP code reviewer with 10+ years experience.',
+    version: '1.1.0',
+    description: 'Added experience requirement'
+);
+
+$repo->save($v1);
+$repo->save($v2);
+
+$latest = $repo->getLatest('code-reviewer');
+echo "Latest version: " . $latest->getVersion() . "\n";
+```
+
+### System Prompt Templates and Composition
+
+Create reusable prompt templates with inheritance and composition for maintainability.
+
+```php
+<?php
+# filename: src/Management/PromptTemplate.php
+declare(strict_types=1);
+
+namespace CodeWithPHP\Claude\Management;
+
+class PromptTemplate
+{
+    private array $variables = [];
+    private ?PromptTemplate $parent = null;
+
+    public function __construct(
+        private string $name,
+        private string $template,
+        private array $defaults = []
+    ) {
+        $this->variables = $defaults;
+    }
+
+    public function setParent(PromptTemplate $parent): self
+    {
+        $this->parent = $parent;
+        return $this;
+    }
+
+    public function setVariable(string $key, string $value): self
+    {
+        $this->variables[$key] = $value;
+        return $this;
+    }
+
+    public function setVariables(array $variables): self
+    {
+        $this->variables = array_merge($this->variables, $variables);
+        return $this;
+    }
+
+    public function render(): string
+    {
+        $content = $this->template;
+        
+        // Inherit from parent if exists
+        if ($this->parent) {
+            $parentContent = $this->parent->render();
+            $content = $parentContent . "\n\n" . $content;
+        }
+
+        // Replace variables
+        foreach ($this->variables as $key => $value) {
+            $content = str_replace("{{{$key}}}", $value, $content);
+        }
+
+        return $content;
+    }
+
+    public function extend(string $name, string $additionalContent): PromptTemplate
+    {
+        $child = new PromptTemplate($name, $additionalContent, $this->variables);
+        $child->setParent($this);
+        return $child;
+    }
+}
+
+class PromptTemplateLibrary
+{
+    private array $templates = [];
+
+    public function register(string $name, PromptTemplate $template): void
+    {
+        $this->templates[$name] = $template;
+    }
+
+    public function get(string $name): ?PromptTemplate
+    {
+        return $this->templates[$name] ?? null;
+    }
+
+    public function create(string $name, array $variables = []): ?string
+    {
+        $template = $this->get($name);
+        if (!$template) {
+            return null;
+        }
+
+        $template->setVariables($variables);
+        return $template->render();
+    }
+}
+
+// Usage: Base template
+$baseTemplate = new PromptTemplate(
+    name: 'base-code-reviewer',
+    template: <<<'TEMPLATE'
+# Role
+You are a {{{role}}}.
+
+# Expertise
+{{{expertise}}}
+
+# Task
+{{{task}}}
+TEMPLATE,
+    defaults: [
+        'role' => 'PHP code reviewer',
+        'expertise' => '- PHP 8.4+ features\n- Security best practices',
+        'task' => 'Review code for issues and improvements'
+    ]
+);
+
+// Extend base template
+$seniorReviewer = $baseTemplate->extend(
+    name: 'senior-code-reviewer',
+    additionalContent: <<<'TEMPLATE'
+# Additional Constraints
+- Provide detailed explanations
+- Suggest modern PHP features
+- Consider performance implications
+TEMPLATE
+);
+
+// Library usage
+$library = new PromptTemplateLibrary();
+$library->register('base', $baseTemplate);
+$library->register('senior', $seniorReviewer);
+
+$prompt = $library->create('senior', [
+    'role' => 'Senior PHP Architect',
+    'expertise' => '- Enterprise PHP applications\n- Microservices architecture',
+    'task' => 'Review code for architecture and design patterns'
+]);
+
+echo $prompt;
+```
+
+### System Prompt Length Best Practices
+
+Guidelines for optimal system prompt length and when to restructure.
+
+```php
+<?php
+# filename: examples/08-prompt-length-guidelines.php
+declare(strict_types=1);
+
+class SystemPromptAnalyzer
+{
+    private const OPTIMAL_LENGTH = 500;  // ~2000 tokens
+    private const MAX_LENGTH = 2000;     // ~8000 tokens
+    private const MIN_LENGTH = 50;       // ~200 tokens
+
+    public function analyze(string $prompt): array
+    {
+        $length = mb_strlen($prompt);
+        $estimatedTokens = (int) ceil($length / 4);
+        $wordCount = str_word_count($prompt);
+        $sections = $this->countSections($prompt);
+
+        $analysis = [
+            'length' => $length,
+            'estimated_tokens' => $estimatedTokens,
+            'word_count' => $wordCount,
+            'sections' => $sections,
+            'status' => $this->getStatus($length),
+            'recommendations' => $this->getRecommendations($length, $sections),
+        ];
+
+        return $analysis;
+    }
+
+    private function countSections(string $prompt): int
+    {
+        return preg_match_all('/^#+\s+/m', $prompt);
+    }
+
+    private function getStatus(int $length): string
+    {
+        if ($length < self::MIN_LENGTH) {
+            return 'too_short';
+        }
+        if ($length > self::MAX_LENGTH) {
+            return 'too_long';
+        }
+        if ($length <= self::OPTIMAL_LENGTH) {
+            return 'optimal';
+        }
+        return 'acceptable';
+    }
+
+    private function getRecommendations(int $length, int $sections): array
+    {
+        $recommendations = [];
+
+        if ($length < self::MIN_LENGTH) {
+            $recommendations[] = 'Prompt is too short. Add more context about role, expertise, and constraints.';
+        }
+
+        if ($length > self::MAX_LENGTH) {
+            $recommendations[] = 'Prompt is too long. Consider moving examples to user messages.';
+            $recommendations[] = 'Split into core prompt + dynamic content loaded per request.';
+        }
+
+        if ($length > self::OPTIMAL_LENGTH && $length <= self::MAX_LENGTH) {
+            $recommendations[] = 'Prompt is acceptable but could be optimized. Review for redundancy.';
+        }
+
+        if ($sections > 8) {
+            $recommendations[] = 'Too many sections. Consider consolidating related sections.';
+        }
+
+        if ($sections < 3) {
+            $recommendations[] = 'Consider adding more structure (Role, Expertise, Task, Constraints).';
+        }
+
+        return $recommendations;
+    }
+}
+
+// Usage
+$analyzer = new SystemPromptAnalyzer();
+
+$prompt = <<<'PROMPT'
+# Role
+You are a PHP code reviewer.
+
+# Expertise
+- PHP 8.4+ features
+- Security best practices
+
+# Task
+Review code for issues.
+PROMPT;
+
+$analysis = $analyzer->analyze($prompt);
+print_r($analysis);
+```
+
+### System Prompt Debugging Techniques
+
+Debug why system prompts aren't working as expected.
+
+```php
+<?php
+# filename: examples/09-prompt-debugging.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Anthropic;
+
+class SystemPromptDebugger
+{
+    public function __construct(
+        private Anthropic $client
+    ) {}
+
+    /**
+     * Test individual components of a system prompt
+     */
+    public function testComponent(string $component, string $testInput): string
+    {
+        $testPrompt = <<<PROMPT
+# Role
+You are a PHP code assistant.
+
+# Test Component
+{$component}
+
+# Task
+Respond to this test input: {$testInput}
+PROMPT;
+
+        $response = $this->client->messages()->create([
+            'model' => 'claude-sonnet-4-20250514',
+            'max_tokens' => 500,
+            'system' => $testPrompt,
+            'messages' => [[
+                'role' => 'user',
+                'content' => $testInput
+            ]]
+        ]);
+
+        return $response->content[0]->text;
+    }
+
+    /**
+     * Compare prompt variations to identify what's working
+     */
+    public function compareVariations(array $variations, string $testInput): array
+    {
+        $results = [];
+
+        foreach ($variations as $name => $prompt) {
+            $response = $this->client->messages()->create([
+                'model' => 'claude-sonnet-4-20250514',
+                'max_tokens' => 500,
+                'system' => $prompt,
+                'messages' => [[
+                    'role' => 'user',
+                    'content' => $testInput
+                ]]
+            ]);
+
+            $results[$name] = [
+                'prompt' => $prompt,
+                'response' => $response->content[0]->text,
+                'length' => mb_strlen($response->content[0]->text),
+            ];
+        }
+
+        return $results;
+    }
+
+    /**
+     * Validate prompt structure
+     */
+    public function validateStructure(string $prompt): array
+    {
+        $issues = [];
+
+        // Check for required sections
+        $requiredSections = ['Role', 'Task'];
+        foreach ($requiredSections as $section) {
+            if (!preg_match("/#\s+{$section}/i", $prompt)) {
+                $issues[] = "Missing required section: {$section}";
+            }
+        }
+
+        // Check for clarity
+        if (preg_match('/\b(very|really|quite|somewhat)\b/i', $prompt)) {
+            $issues[] = "Contains vague qualifiers - be more specific";
+        }
+
+        // Check for contradictions
+        if (preg_match('/always.*never|never.*always/i', $prompt)) {
+            $issues[] = "Potential contradiction detected";
+        }
+
+        // Check for proper formatting
+        if (!preg_match('/^#\s+/m', $prompt)) {
+            $issues[] = "Missing proper section headers (use # Section Name)";
+        }
+
+        return $issues;
+    }
+}
+
+// Usage
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
+$debugger = new SystemPromptDebugger($client);
+
+$prompt = <<<'PROMPT'
+# Role
+You are a PHP code reviewer.
+
+# Task
+Review code for issues.
+PROMPT;
+
+$issues = $debugger->validateStructure($prompt);
+if (!empty($issues)) {
+    echo "Issues found:\n";
+    foreach ($issues as $issue) {
+        echo "- {$issue}\n";
+    }
+}
+```
+
+### System Prompt Monitoring and Logging
+
+Track system prompt effectiveness in production.
+
+```php
+<?php
+# filename: src/Management/PromptMonitor.php
+declare(strict_types=1);
+
+namespace CodeWithPHP\Claude\Management;
+
+class PromptMetrics
+{
+    public function __construct(
+        private string $promptId,
+        private string $version,
+        private int $totalRequests = 0,
+        private int $successfulRequests = 0,
+        private float $averageResponseTime = 0.0,
+        private float $averageTokensUsed = 0.0,
+        private array $errorCounts = [],
+        private array $userRatings = []
+    ) {}
+
+    public function recordRequest(bool $success, float $responseTime, int $tokensUsed, ?string $error = null): void
+    {
+        $this->totalRequests++;
+        
+        if ($success) {
+            $this->successfulRequests++;
+            $this->averageResponseTime = ($this->averageResponseTime * ($this->successfulRequests - 1) + $responseTime) / $this->successfulRequests;
+            $this->averageTokensUsed = ($this->averageTokensUsed * ($this->successfulRequests - 1) + $tokensUsed) / $this->successfulRequests;
+        } else {
+            if ($error) {
+                $this->errorCounts[$error] = ($this->errorCounts[$error] ?? 0) + 1;
+            }
+        }
+    }
+
+    public function recordRating(int $rating): void
+    {
+        $this->userRatings[] = $rating;
+    }
+
+    public function getSuccessRate(): float
+    {
+        if ($this->totalRequests === 0) {
+            return 0.0;
+        }
+        return ($this->successfulRequests / $this->totalRequests) * 100;
+    }
+
+    public function getAverageRating(): float
+    {
+        if (empty($this->userRatings)) {
+            return 0.0;
+        }
+        return array_sum($this->userRatings) / count($this->userRatings);
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'prompt_id' => $this->promptId,
+            'version' => $this->version,
+            'total_requests' => $this->totalRequests,
+            'successful_requests' => $this->successfulRequests,
+            'success_rate' => $this->getSuccessRate(),
+            'average_response_time' => $this->averageResponseTime,
+            'average_tokens_used' => $this->averageTokensUsed,
+            'error_counts' => $this->errorCounts,
+            'average_rating' => $this->getAverageRating(),
+            'total_ratings' => count($this->userRatings),
+        ];
+    }
+}
+
+class PromptMonitor
+{
+    private array $metrics = [];
+
+    public function getMetrics(string $promptId, string $version): PromptMetrics
+    {
+        $key = "{$promptId}:{$version}";
+        
+        if (!isset($this->metrics[$key])) {
+            $this->metrics[$key] = new PromptMetrics($promptId, $version);
+        }
+
+        return $this->metrics[$key];
+    }
+
+    public function logRequest(
+        string $promptId,
+        string $version,
+        bool $success,
+        float $responseTime,
+        int $tokensUsed,
+        ?string $error = null
+    ): void {
+        $metrics = $this->getMetrics($promptId, $version);
+        $metrics->recordRequest($success, $responseTime, $tokensUsed, $error);
+    }
+
+    public function logRating(string $promptId, string $version, int $rating): void
+    {
+        $metrics = $this->getMetrics($promptId, $version);
+        $metrics->recordRating($rating);
+    }
+
+    public function getReport(string $promptId, string $version): array
+    {
+        $metrics = $this->getMetrics($promptId, $version);
+        return $metrics->toArray();
+    }
+
+    public function compareVersions(string $promptId, array $versions): array
+    {
+        $comparison = [];
+        
+        foreach ($versions as $version) {
+            $comparison[$version] = $this->getReport($promptId, $version);
+        }
+
+        return $comparison;
+    }
+}
+
+// Usage
+$monitor = new PromptMonitor();
+
+// Log requests
+$monitor->logRequest('code-reviewer', '1.0.0', true, 1.2, 500);
+$monitor->logRequest('code-reviewer', '1.0.0', true, 1.5, 600);
+$monitor->logRequest('code-reviewer', '1.1.0', true, 1.1, 550);
+
+// Log ratings
+$monitor->logRating('code-reviewer', '1.0.0', 4);
+$monitor->logRating('code-reviewer', '1.0.0', 5);
+$monitor->logRating('code-reviewer', '1.1.0', 5);
+
+// Get reports
+$report = $monitor->getReport('code-reviewer', '1.0.0');
+print_r($report);
+
+// Compare versions
+$comparison = $monitor->compareVersions('code-reviewer', ['1.0.0', '1.1.0']);
+print_r($comparison);
 ```
 
 ## Testing System Prompts
@@ -1199,6 +2052,11 @@ PHP;
 # filename: examples/06-ab-test-prompts.php
 declare(strict_types=1);
 
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Anthropic;
+use Anthropic\Contracts\ClientContract;
+
 class SystemPromptABTest
 {
     public function __construct(
@@ -1248,6 +2106,10 @@ class SystemPromptABTest
 }
 
 // Usage
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
 $tester = new SystemPromptABTest($client);
 
 $promptA = 'You are a PHP expert. Review code for issues.';
@@ -1314,6 +2176,40 @@ For Exercise 1, create a knowledge base of domain-specific information and inclu
 
 </details>
 
+## Wrap-up
+
+Congratulations! You've completed a comprehensive guide to system prompts and role definition for Claude. Here's what you've accomplished:
+
+- ✓ **Mastered system prompt architecture** including role, expertise, task, constraints, and style components
+- ✓ **Built specialized AI assistants** including code reviewers, technical writers, and customer support agents
+- ✓ **Created dynamic persona systems** with the `MultiPersonaAssistant` for role switching
+- ✓ **Implemented security measures** including prompt injection prevention and input sanitization
+- ✓ **Developed testing frameworks** for validating and optimizing system prompts
+- ✓ **Learned advanced patterns** including structured output enforcement and constraint-based prompts
+- ✓ **Applied defensive techniques** to protect against prompt injection attacks
+- ✓ **Optimized system prompts** for token costs and context window efficiency
+- ✓ **Implemented version control** and management systems for production-ready prompts
+- ✓ **Created reusable templates** with inheritance and composition patterns
+- ✓ **Built monitoring systems** to track prompt effectiveness in production
+
+### Key Concepts Learned
+
+- **System Prompts**: Define Claude's identity, expertise, and behavior more powerfully than user messages
+- **Role Definition**: Clear role statements transform Claude into specialized experts
+- **Expertise Boundaries**: Explicitly listing skills helps Claude stay within its domain
+- **Constraints**: Well-defined constraints ensure consistent, safe behavior
+- **Prompt Injection**: User input must be sanitized and encapsulated to prevent instruction hijacking
+- **Testing**: A/B testing and validation suites ensure prompt effectiveness
+- **Specialization**: Domain-specific assistants outperform general-purpose configurations
+- **Token Optimization**: System prompts consume context window - optimize for cost and efficiency
+- **Version Control**: Track changes, rollback, and A/B test different prompt versions
+- **Templates**: Reusable prompt templates with inheritance enable maintainability
+- **Monitoring**: Track metrics to measure prompt effectiveness in production
+
+### Next Steps
+
+You now have the knowledge to create powerful, specialized AI assistants tailored to specific use cases. In the next chapter, you'll learn about temperature and sampling parameters, which control Claude's creativity and output style, allowing you to fine-tune responses for different scenarios.
+
 ## Key Takeaways
 
 - ✓ System prompts define Claude's role, expertise, and behavior
@@ -1323,6 +2219,20 @@ For Exercise 1, create a knowledge base of domain-specific information and inclu
 - ✓ Encapsulate user input to prevent instruction injection
 - ✓ Test system prompts with diverse inputs
 - ✓ A/B test different prompts to optimize performance
+- ✓ Optimize system prompts for token costs and context efficiency
+- ✓ Implement version control for production prompt management
+- ✓ Use templates and composition for reusable prompt systems
+- ✓ Monitor prompt effectiveness with metrics and logging
+
+## Further Reading
+
+- [Anthropic System Prompts Documentation](https://docs.claude.com/en/docs/prompt-engineering/use-prompt-templates) — Official guide to system prompts and role definition
+- [Anthropic Prompt Engineering Guide](https://docs.claude.com/en/docs/prompt-engineering) — Comprehensive prompt engineering best practices
+- [OWASP Prompt Injection Guide](https://owasp.org/www-community/attacks/Prompt_Injection) — Security best practices for preventing prompt injection
+- [Chapter 05: Prompt Engineering Basics](/series/claude-php-developers/chapters/05-prompt-engineering-basics) — Review prompt engineering fundamentals
+- [Chapter 08: Temperature and Sampling Parameters](/series/claude-php-developers/chapters/08-temperature-sampling) — Learn to control Claude's creativity and output style
+- [Chapter 15: Structured Outputs](/series/claude-php-developers/chapters/15-structured-outputs) — Deep dive into generating structured data formats
+- [Chapter 26: Code Review Assistant](/series/claude-php-developers/chapters/26-code-review-assistant) — Build a production-ready code review system
 
 <ChapterCheckbox
   seriesId="claude-php-developers"

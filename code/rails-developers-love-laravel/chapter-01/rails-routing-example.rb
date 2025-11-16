@@ -35,3 +35,7 @@ Rails.application.routes.draw do
   match '*path', to: 'pages#not_found', via: :all
 end
 
+
+
+
+

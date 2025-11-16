@@ -44,6 +44,37 @@ Before starting, ensure you understand:
 
 **Estimated Time**: 45-60 minutes
 
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- A `TemperatureGuide` class that recommends optimal temperature settings for different use cases
+- A `SamplingConfigManager` for managing and validating sampling parameter configurations
+- A `DataExtractor` class using deterministic settings (temperature 0.0) for reliable data extraction
+- A `CreativeWriter` class using high temperature (1.5+) for generating unique content variations
+- A `CodeGenerator` class using focused settings (temperature 0.3) for consistent code generation
+- An `AdaptiveAssistant` that automatically adjusts temperature based on message content
+- A `ConsistencyTester` tool for measuring output consistency across different temperature settings
+- A `SamplingABTester` for systematically testing and comparing different parameter configurations
+- A `SamplingCostAnalyzer` to understand cost implications of different sampling strategies
+- Understanding of how stop sequences interact with sampling parameters
+
+## Objectives
+
+By the end of this chapter, you will:
+
+- Understand how language model sampling works at the token level
+- Master temperature parameter control (0.0 = deterministic, 2.0 = creative)
+- Learn top-p (nucleus sampling) and how it filters token choices
+- Understand top-k sampling and when to use it
+- Combine temperature, top_p, and top_k for fine-grained control
+- Choose optimal sampling parameters for different use cases (extraction, generation, code)
+- Build adaptive systems that adjust parameters based on context
+- Measure and validate output consistency for production applications
+- Test sampling parameters systematically using A/B testing frameworks
+- Understand cost and performance implications of different sampling strategies
+- Apply model-specific optimal parameters for different Claude models
+
 ## How Language Model Sampling Works
 
 ### Token Prediction Fundamentals
@@ -140,6 +171,10 @@ echo temperatureSampling($tokenProbabilities, 2.0) . "\n";
 ```
 
 **Key Insight:** Temperature doesn't change *what* Claude knows, it changes *which* tokens get selected from the probability distribution.
+
+::: tip Best Practice
+Start with the default temperature (1.0) and adjust based on your needs. Lower temperature for consistency, higher for creativity. Most production applications use temperatures between 0.0 and 1.5.
+:::
 
 ## Temperature Parameter
 
@@ -302,6 +337,10 @@ foreach ($useCases as $useCase) {
 
 Top-p (also called nucleus sampling) considers only the most probable tokens whose cumulative probability reaches the threshold p.
 
+::: info
+The default `top_p` value is typically 0.9, which works well for most use cases. Lower values (0.5-0.8) create more focused outputs, while higher values (0.95-1.0) allow more diversity.
+:::
+
 ```php
 <?php
 # filename: examples/04-top-p-visualization.php
@@ -391,6 +430,7 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use Anthropic\Anthropic;
+use Anthropic\Contracts\ClientContract;
 
 $client = Anthropic::factory()
     ->withApiKey(getenv('ANTHROPIC_API_KEY'))
@@ -515,8 +555,16 @@ top_k = 10:
 # filename: examples/07-top-k-usage.php
 declare(strict_types=1);
 
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Anthropic;
+
 // Note: Claude API doesn't expose top_k as directly as some models
 // But understanding it helps grasp sampling mechanics
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
 
 // Conceptual usage (if supported):
 $response = $client->messages()->create([
@@ -542,6 +590,14 @@ $response = $client->messages()->create([
 <?php
 # filename: examples/08-parameter-combinations.php
 declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Anthropic;
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
 
 class SamplingStrategy
 {
@@ -721,6 +777,14 @@ class SamplingConfigManager
 }
 
 // Usage
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Anthropic;
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
 $manager = new SamplingConfigManager();
 
 // Register custom config
@@ -752,6 +816,10 @@ $response = $client->messages()->create([
 <?php
 # filename: examples/09-deterministic-extraction.php
 declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Contracts\ClientContract;
 
 class DataExtractor
 {
@@ -787,6 +855,14 @@ class DataExtractor
 }
 
 // Usage
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Anthropic;
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
 $extractor = new DataExtractor($client);
 
 $businessCard = <<<TEXT
@@ -820,6 +896,10 @@ print_r($data);
 <?php
 # filename: examples/10-creative-generation.php
 declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Contracts\ClientContract;
 
 class CreativeWriter
 {
@@ -893,6 +973,14 @@ class CreativeWriter
 }
 
 // Usage
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Anthropic;
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
 $writer = new CreativeWriter($client);
 
 echo "Generating 5 creative taglines:\n\n";
@@ -914,6 +1002,10 @@ foreach ($taglines as $i => $tagline) {
 <?php
 # filename: examples/11-focused-code-generation.php
 declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Contracts\ClientContract;
 
 class CodeGenerator
 {
@@ -939,7 +1031,7 @@ class CodeGenerator
             'max_tokens' => 1024,
             'temperature' => 0.3,  // Low for consistent, reliable code
             'top_p' => 0.85,       // Focused on conventional patterns
-            'system' => 'Generate clean PHP 8.2+ code following PSR-12 standards. Include type hints, return types, and PHPDoc comments.',
+            'system' => 'Generate clean PHP 8.4+ code following PSR-12 standards. Include type hints, return types, and PHPDoc comments.',
             'messages' => [[
                 'role' => 'user',
                 'content' => "Generate a PHP function:\n\nDescription: {$description}\nParameters: {$paramsList}\nReturn type: {$returnHint}\n\nUse declare(strict_types=1) and modern PHP features."
@@ -970,6 +1062,14 @@ class CodeGenerator
 }
 
 // Usage
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Anthropic;
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
 $generator = new CodeGenerator($client);
 
 $function = $generator->generateFunction(
@@ -989,6 +1089,10 @@ echo $function;
 <?php
 # filename: examples/12-adaptive-temperature.php
 declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Contracts\ClientContract;
 
 class AdaptiveAssistant
 {
@@ -1073,6 +1177,14 @@ class AdaptiveAssistant
 }
 
 // Usage
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Anthropic;
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
 $assistant = new AdaptiveAssistant($client);
 
 // This will use low temperature (deterministic)
@@ -1085,6 +1197,325 @@ echo $assistant->respond('Generate creative marketing taglines for...') . "\n\n"
 echo $assistant->respond('Review this PHP code for issues...') . "\n\n";
 ```
 
+## Stop Sequences and Sampling Interaction
+
+### How Stop Sequences Affect Sampling
+
+Stop sequences interact with sampling parameters in important ways:
+
+```php
+<?php
+# filename: examples/14-stop-sequences-sampling.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Anthropic;
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
+// Stop sequences can help control output length with high temperature
+// High temperature might generate longer outputs, but stop sequences provide a safety net
+
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-20250514',
+    'max_tokens' => 1000,
+    'temperature' => 1.5,  // High creativity
+    'top_p' => 0.95,
+    'stop_sequences' => ['</response>', '---END---'],  // Stop when these appear
+    'messages' => [[
+        'role' => 'user',
+        'content' => 'Generate a creative product description. End with </response>'
+    ]]
+]);
+
+// Stop sequences work independently of sampling parameters
+// They provide deterministic stopping points regardless of temperature
+```
+
+::: tip Best Practice
+Use stop sequences with high temperature to prevent runaway generation. Stop sequences provide deterministic control over output length, complementing the creative randomness of high temperature.
+:::
+
+## A/B Testing Sampling Parameters
+
+### Systematic Parameter Testing
+
+For production applications, systematically test different sampling parameters to find optimal settings:
+
+```php
+<?php
+# filename: examples/15-ab-testing-sampling.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Anthropic;
+use Anthropic\Contracts\ClientContract;
+
+class SamplingABTester
+{
+    public function __construct(
+        private ClientContract $client
+    ) {}
+
+    public function testConfigurations(
+        string $prompt,
+        array $configurations,
+        int $samplesPerConfig = 5
+    ): array {
+        $results = [];
+
+        foreach ($configurations as $name => $config) {
+            $responses = [];
+            $totalTokens = 0;
+            $totalTime = 0;
+
+            for ($i = 0; $i < $samplesPerConfig; $i++) {
+                $start = microtime(true);
+
+                $response = $this->client->messages()->create([
+                    'model' => 'claude-sonnet-4-20250514',
+                    'max_tokens' => 500,
+                    'temperature' => $config['temperature'] ?? 1.0,
+                    'top_p' => $config['top_p'] ?? 0.9,
+                    'messages' => [[
+                        'role' => 'user',
+                        'content' => $prompt
+                    ]]
+                ]);
+
+                $totalTime += microtime(true) - $start;
+                $totalTokens += $response->usage->outputTokens ?? 0;
+                $responses[] = $response->content[0]->text;
+            }
+
+            $results[$name] = [
+                'config' => $config,
+                'responses' => $responses,
+                'avg_length' => array_sum(array_map('strlen', $responses)) / count($responses),
+                'avg_tokens' => $totalTokens / $samplesPerConfig,
+                'avg_time' => $totalTime / $samplesPerConfig,
+                'consistency' => $this->calculateConsistency($responses),
+                'uniqueness' => count(array_unique($responses)) / count($responses),
+            ];
+        }
+
+        return $results;
+    }
+
+    private function calculateConsistency(array $responses): float
+    {
+        if (count($responses) < 2) {
+            return 1.0;
+        }
+
+        $similarities = [];
+        $count = count($responses);
+
+        for ($i = 0; $i < $count; $i++) {
+            for ($j = $i + 1; $j < $count; $j++) {
+                similar_text($responses[$i], $responses[$j], $percent);
+                $similarities[] = $percent;
+            }
+        }
+
+        return array_sum($similarities) / count($similarities);
+    }
+
+    public function recommendBestConfig(array $results, string $priority = 'balanced'): string
+    {
+        $scored = [];
+
+        foreach ($results as $name => $result) {
+            $score = match($priority) {
+                'consistency' => $result['consistency'],
+                'creativity' => 1 - $result['consistency'],
+                'cost' => 1 / ($result['avg_tokens'] + 1),
+                'balanced' => ($result['consistency'] + (1 - $result['consistency']) + (1 / ($result['avg_tokens'] + 1))) / 3,
+                default => $result['consistency'],
+            };
+
+            $scored[$name] = $score;
+        }
+
+        arsort($scored);
+        return array_key_first($scored);
+    }
+}
+
+// Usage
+$tester = new SamplingABTester($client);
+
+$configurations = [
+    'deterministic' => ['temperature' => 0.0, 'top_p' => 1.0],
+    'focused' => ['temperature' => 0.3, 'top_p' => 0.8],
+    'balanced' => ['temperature' => 1.0, 'top_p' => 0.9],
+    'creative' => ['temperature' => 1.5, 'top_p' => 0.95],
+];
+
+$results = $tester->testConfigurations(
+    prompt: 'Generate a product tagline for a PHP framework',
+    configurations: $configurations,
+    samplesPerConfig: 5
+);
+
+// Find best config for your priority
+$best = $tester->recommendBestConfig($results, priority: 'balanced');
+
+echo "Recommended configuration: {$best}\n";
+print_r($results[$best]);
+```
+
+## Model-Specific Considerations
+
+### Optimal Parameters by Model
+
+Different Claude models may have slightly different optimal temperature ranges:
+
+```php
+<?php
+# filename: examples/16-model-specific-parameters.php
+declare(strict_types=1);
+
+class ModelSpecificSampling
+{
+    public const MODEL_GUIDELINES = [
+        'claude-3-haiku-20240307' => [
+            'deterministic' => ['temperature' => 0.0, 'top_p' => 1.0],
+            'balanced' => ['temperature' => 1.0, 'top_p' => 0.9],
+            'creative' => ['temperature' => 1.3, 'top_p' => 0.95],
+            'note' => 'Haiku is faster and cheaper - good for high-volume tasks',
+        ],
+        'claude-3-sonnet-20240229' => [
+            'deterministic' => ['temperature' => 0.0, 'top_p' => 1.0],
+            'balanced' => ['temperature' => 1.0, 'top_p' => 0.9],
+            'creative' => ['temperature' => 1.5, 'top_p' => 0.95],
+            'note' => 'Sonnet balances quality and cost - default for most tasks',
+        ],
+        'claude-sonnet-4-20250514' => [
+            'deterministic' => ['temperature' => 0.0, 'top_p' => 1.0],
+            'balanced' => ['temperature' => 1.0, 'top_p' => 0.9],
+            'creative' => ['temperature' => 1.5, 'top_p' => 0.95],
+            'note' => 'Latest Sonnet model - best quality, use for complex tasks',
+        ],
+        'claude-3-opus-20240229' => [
+            'deterministic' => ['temperature' => 0.0, 'top_p' => 1.0],
+            'balanced' => ['temperature' => 1.0, 'top_p' => 0.9],
+            'creative' => ['temperature' => 1.5, 'top_p' => 0.95],
+            'note' => 'Most capable model - use for complex reasoning tasks',
+        ],
+    ];
+
+    public static function getRecommendedConfig(string $model, string $useCase): array
+    {
+        $guidelines = self::MODEL_GUIDELINES[$model] ?? self::MODEL_GUIDELINES['claude-sonnet-4-20250514'];
+        
+        return match($useCase) {
+            'extraction', 'parsing', 'classification' => $guidelines['deterministic'],
+            'code', 'review', 'documentation' => ['temperature' => 0.3, 'top_p' => 0.8],
+            'conversation', 'qa', 'explanation' => $guidelines['balanced'],
+            'generation', 'brainstorming', 'creative' => $guidelines['creative'],
+            default => $guidelines['balanced'],
+        };
+    }
+}
+
+// Usage
+$config = ModelSpecificSampling::getRecommendedConfig(
+    model: 'claude-sonnet-4-20250514',
+    useCase: 'extraction'
+);
+
+echo "Recommended config: ";
+print_r($config);
+```
+
+::: info Model Differences
+While sampling parameters work similarly across Claude models, newer models (like Sonnet 4) may handle high temperatures more gracefully. Always test with your specific model and use case.
+:::
+
+## Performance and Cost Implications
+
+### Sampling Parameters and Token Usage
+
+Higher temperature can lead to longer outputs, which increases token usage and costs:
+
+```php
+<?php
+# filename: examples/17-cost-implications.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Anthropic;
+use Anthropic\Contracts\ClientContract;
+
+class SamplingCostAnalyzer
+{
+    public function __construct(
+        private ClientContract $client
+    ) {}
+
+    public function analyzeCostImpact(
+        string $prompt,
+        array $temperatures = [0.0, 0.5, 1.0, 1.5, 2.0],
+        int $samples = 5
+    ): array {
+        $results = [];
+
+        foreach ($temperatures as $temp) {
+            $tokens = [];
+            $lengths = [];
+
+            for ($i = 0; $i < $samples; $i++) {
+                $response = $this->client->messages()->create([
+                    'model' => 'claude-sonnet-4-20250514',
+                    'max_tokens' => 1000,
+                    'temperature' => $temp,
+                    'messages' => [[
+                        'role' => 'user',
+                        'content' => $prompt
+                    ]]
+                ]);
+
+                $tokens[] = $response->usage->outputTokens ?? 0;
+                $lengths[] = strlen($response->content[0]->text);
+            }
+
+            $results[] = [
+                'temperature' => $temp,
+                'avg_tokens' => array_sum($tokens) / count($tokens),
+                'avg_length' => array_sum($lengths) / count($lengths),
+                'cost_per_1k_requests' => (array_sum($tokens) / count($tokens)) * 1000 * 0.003, // Example pricing
+            ];
+        }
+
+        return $results;
+    }
+}
+
+// Usage
+$analyzer = new SamplingCostAnalyzer($client);
+
+$results = $analyzer->analyzeCostImpact(
+    prompt: 'Write a detailed product description',
+    temperatures: [0.0, 1.0, 1.5, 2.0]
+);
+
+foreach ($results as $result) {
+    echo "Temperature {$result['temperature']}: ";
+    echo "Avg {$result['avg_tokens']} tokens, ";
+    echo "Est. cost per 1K requests: \${$result['cost_per_1k_requests']}\n";
+}
+```
+
+::: warning Cost Consideration
+Higher temperature often produces longer, more varied outputs, which increases token usage and costs. For high-volume applications, test whether lower temperature with better prompts achieves similar results at lower cost.
+:::
+
 ## Measuring Output Consistency
 
 ### Consistency Tester
@@ -1093,6 +1524,10 @@ echo $assistant->respond('Review this PHP code for issues...') . "\n\n";
 <?php
 # filename: examples/13-consistency-tester.php
 declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Contracts\ClientContract;
 
 class ConsistencyTester
 {
@@ -1170,6 +1605,14 @@ class ConsistencyTester
 }
 
 // Usage
+require __DIR__ . '/../vendor/autoload.php';
+
+use Anthropic\Anthropic;
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
 $tester = new ConsistencyTester($client);
 
 echo "Testing consistency at different temperatures:\n\n";
@@ -1188,6 +1631,59 @@ foreach ([0.0, 0.5, 1.0, 1.5] as $temp) {
     echo "  Avg length: " . round($result['average_length'], 0) . " chars\n\n";
 }
 ```
+
+## Troubleshooting
+
+### Error: "Call to undefined method messages()"
+
+**Symptom**: `Fatal error: Call to undefined method Anthropic\Anthropic::messages()`
+
+**Cause**: The client wasn't properly instantiated using the factory pattern.
+
+**Solution**: Always use the factory to create the client:
+
+```php
+// Wrong
+$client = new Anthropic();
+
+// Correct
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+```
+
+### Problem: Inconsistent Outputs at Temperature 0.0
+
+**Symptom**: Even with `temperature => 0.0`, outputs vary slightly between runs.
+
+**Cause**: While temperature 0.0 is highly deterministic, some variation can occur due to:
+- Model updates from Anthropic
+- Context window differences
+- Floating-point precision in calculations
+
+**Solution**: For absolute determinism, use `temperature => 0.0` with `top_p => 1.0` and consider caching results for identical inputs. For production data extraction, implement result validation and retry logic.
+
+### Error: "Temperature must be between 0 and 2"
+
+**Symptom**: `InvalidArgumentException: Temperature must be between 0 and 2`
+
+**Cause**: Temperature value outside the valid range (0.0 to 2.0).
+
+**Solution**: Validate temperature before API calls:
+
+```php
+if ($temperature < 0 || $temperature > 2) {
+    throw new \InvalidArgumentException('Temperature must be between 0 and 2');
+}
+```
+
+### Problem: High Temperature Produces Nonsensical Output
+
+**Symptom**: With `temperature => 2.0`, outputs are creative but sometimes incoherent or off-topic.
+
+**Cause**: Very high temperature increases randomness, which can reduce coherence.
+
+**Solution**: For creative tasks, use moderate temperature (1.3-1.5) with appropriate `top_p` (0.95). Combine with clear system prompts and constraints to maintain quality.
 
 ## Exercises
 
@@ -1228,6 +1724,22 @@ For Exercise 1, create a test suite that runs prompts at different temperatures 
 
 </details>
 
+## Wrap-up
+
+Congratulations! You've mastered temperature and sampling parameters. Here's what you accomplished:
+
+- ✓ **Understood token-level sampling** — You learned how Claude predicts and selects tokens
+- ✓ **Mastered temperature control** — You can now configure Claude for deterministic (0.0) to creative (2.0) outputs
+- ✓ **Learned top-p and top-k** — You understand how these parameters filter token choices
+- ✓ **Built practical tools** — Created classes for data extraction, content generation, and code generation with optimal settings
+- ✓ **Implemented adaptive systems** — Built assistants that automatically adjust parameters based on context
+- ✓ **Measured consistency** — Created tools to validate deterministic behavior for production use
+- ✓ **Tested systematically** — Built A/B testing frameworks to find optimal parameters
+- ✓ **Understood costs** — Analyzed how sampling parameters affect token usage and costs
+- ✓ **Applied model-specific guidance** — Learned optimal parameters for different Claude models
+
+These sampling parameters are essential for production AI applications. Whether you're extracting structured data, generating creative content, or writing code, choosing the right parameters ensures Claude produces exactly the output you need.
+
 ## Key Takeaways
 
 - ✓ Temperature controls creativity vs determinism (0.0 = deterministic, 2.0 = creative)
@@ -1238,6 +1750,18 @@ For Exercise 1, create a test suite that runs prompts at different temperatures 
 - ✓ Use temperature 1.5+ for creative content generation
 - ✓ Match sampling parameters to your use case requirements
 - ✓ Test consistency for production deterministic tasks
+- ✓ Use stop sequences with high temperature to control output length
+- ✓ A/B test different configurations to find optimal settings
+- ✓ Consider cost implications: higher temperature often means more tokens
+- ✓ Apply model-specific guidelines for different Claude models
+
+## Further Reading
+
+- [Anthropic API Documentation — Sampling Parameters](https://docs.claude.com/en/docs/build-with-claude/temperature-sampling) — Official guide to temperature, top_p, and top_k
+- [Chapter 09: Token Management and Counting](/series/claude-php-developers/chapters/09-token-management) — Learn about optimizing context windows and managing costs
+- [Chapter 15: Structured Outputs](/series/claude-php-developers/chapters/15-structured-outputs) — See deterministic sampling in action for structured data extraction
+- [Chapter 26: Code Review Assistant](/series/claude-php-developers/chapters/26-code-review-assistant) — Example of focused temperature settings for code analysis
+- [Language Model Sampling Explained](https://lilianweng.github.io/posts/2021-01-02-controllable-text-generation/) — Deep dive into sampling techniques and theory
 
 <ChapterCheckbox
   seriesId="claude-php-developers"

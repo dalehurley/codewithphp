@@ -3,7 +3,7 @@
 > Master Anthropic's Claude AI from basics to production—learn prompting, tool use, vision, RAG, and deployment of full-featured AI applications with PHP.
 
 [![Difficulty: Expert](https://img.shields.io/badge/Difficulty-Expert-red.svg)](https://github.com/dalehurley/codewithphp)
-[![PHP 8.2+](https://img.shields.io/badge/PHP-8.2+-777BB4.svg)](https://www.php.net/)
+[![PHP 8.4+](https://img.shields.io/badge/PHP-8.4+-777BB4.svg)](https://www.php.net/)
 [![Laravel 11](https://img.shields.io/badge/Laravel-11-FF2D20.svg)](https://laravel.com/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
@@ -22,7 +22,7 @@ This comprehensive **40-chapter series** teaches expert PHP developers how to bu
 - **Enterprise developers** integrating Claude into existing applications
 
 **Prerequisites:**
-- Expert PHP knowledge (PHP 8.2+)
+- Expert PHP knowledge (PHP 8.4+)
 - Modern framework experience (Laravel or Symfony)
 - Understanding of APIs and HTTP requests
 - Familiarity with asynchronous processing
@@ -146,7 +146,7 @@ Chapters: 00-30 + Appendices
 
 **Goal**: Build complete AI-powered applications from scratch.
 
-### Complete Mastery Path (~80 hours)
+### Complete Mastery Path (60-80 hours)
 All Chapters: 00-39 + All Appendices
 
 **Goal**: Master every aspect of Claude integration for PHP.
@@ -200,7 +200,7 @@ By completing this series, you'll build:
 ## 🛠️ Technology Stack
 
 ### Required
-- **PHP 8.2+** with modern features
+- **PHP 8.4+** with modern features
 - **Composer** for dependency management
 - **Anthropic API Key** (sign up at console.anthropic.com)
 
@@ -249,6 +249,11 @@ By the end of this series, you will:
 - ✅ **Implement RAG systems** for knowledge-grounded responses
 - ✅ **Create tool use functions** for dynamic capabilities
 - ✅ **Process images and documents** with vision API
+- ✅ **Use Agent Skills** (Beta) to extend Claude with custom capabilities
+- ✅ **Implement Memory Tool** (Beta) for cross-conversation memory
+- ✅ **Leverage Files API** (Beta) for persistent file uploads
+- ✅ **Use prompt caching** (5m/1hr) for cost optimization
+- ✅ **Implement batch processing** for 50% cost savings
 - ✅ **Design multi-agent systems** for complex workflows
 - ✅ **Deploy production applications** with monitoring and scaling
 - ✅ **Optimize costs** while maintaining quality
@@ -256,7 +261,7 @@ By the end of this series, you will:
 ## 📚 Additional Resources
 
 ### Official Anthropic Resources
-- [Anthropic Documentation](https://docs.anthropic.com)
+- [Anthropic Documentation](https://docs.claude.com)
 - [Claude Console](https://console.anthropic.com)
 - [Anthropic Cookbook](https://github.com/anthropics/anthropic-cookbook)
 - [Anthropic Blog](https://www.anthropic.com/news)
@@ -297,13 +302,19 @@ This series is released under the [MIT License](LICENSE).
 ## 🌟 What Makes This Series Special
 
 ✨ **Expert-Level Content** - Written for experienced PHP developers, not beginners
-✨ **Production-Ready Code** - Every example follows PHP 8.2+ best practices
+✨ **Production-Ready Code** - Every example follows PHP 8.4+ best practices
 ✨ **Complete Applications** - Build real, deployable AI applications
 ✨ **Framework Integration** - Deep Laravel and Symfony examples
 ✨ **Cost Optimization** - Learn to save 95% on API costs
 ✨ **Security First** - GDPR, HIPAA, and enterprise compliance covered
 ✨ **Proven Patterns** - Architectures from real production applications
 ✨ **Comprehensive Coverage** - 40 chapters from basics to advanced deployment
+
+## 📚 Additional Learning Resources
+
+- **[Learning Roadmap](/series/claude-php-developers/LEARNING-ROADMAP.md)** — Choose your learning path and track progress
+- **[Quick Reference](/series/claude-php-developers/QUICK-REFERENCE.md)** — Essential syntax and patterns cheat sheet
+- **[Completion Certificate](/series/claude-php-developers/CERTIFICATE.md)** — Celebrate your achievement
 
 ## 🚀 Get Started Now
 

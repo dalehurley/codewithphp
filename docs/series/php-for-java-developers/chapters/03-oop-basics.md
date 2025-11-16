@@ -28,6 +28,7 @@ In this chapter, we'll explore PHP's core OOP features, always comparing them to
 :::
 
 **What you need:**
+
 - Completed [Chapter 2: Control Flow & Functions](/series/php-for-java-developers/chapters/02-control-flow-and-functions)
 - Solid understanding of Java's OOP concepts
 - Familiarity with Java classes, objects, and methods
@@ -35,6 +36,7 @@ In this chapter, we'll explore PHP's core OOP features, always comparing them to
 ## What You'll Build
 
 In this chapter, you'll create:
+
 - A Product class with various property types
 - A ShoppingCart class demonstrating encapsulation
 - A Logger class with static methods
@@ -138,14 +140,14 @@ product.display();
 
 ### Key Differences
 
-| Feature | PHP | Java |
-|---------|-----|------|
-| **Property declaration** | `public string $name;` | `public String name;` |
-| **Constructor name** | `__construct` | Class name |
-| **This reference** | `$this->property` | `this.property` |
-| **Member access** | `->` operator | `.` operator |
-| **Type hints** | Optional (but recommended) | Required |
-| **Visibility** | Same (public, private, protected) | Same |
+| Feature                  | PHP                               | Java                  |
+| ------------------------ | --------------------------------- | --------------------- |
+| **Property declaration** | `public string $name;`            | `public String name;` |
+| **Constructor name**     | `__construct`                     | Class name            |
+| **This reference**       | `$this->property`                 | `this.property`       |
+| **Member access**        | `->` operator                     | `.` operator          |
+| **Type hints**           | Optional (but recommended)        | Required              |
+| **Visibility**           | Same (public, private, protected) | Same                  |
 
 ::: tip Constructor Naming
 In PHP, all constructors are named `__construct()`, regardless of the class name. This is different from Java where the constructor shares the class name. This makes refactoring easier—rename your class without changing constructor code!
@@ -242,16 +244,18 @@ public record Product(
 :::
 
 ::: tip Constructor Promotion Benefits
+
 1. **Less boilerplate**: No need to declare properties separately
 2. **Less repetition**: Don't write property name 3 times
 3. **Cleaner code**: Intent is immediately clear
 4. **Same functionality**: Works exactly like traditional constructors
 
 **When to use:**
+
 - Simple data classes (DTOs, value objects)
 - When properties map directly to constructor parameters
 - When you want concise, readable code
-:::
+  :::
 
 ---
 
@@ -375,12 +379,13 @@ Money price3 = Money.parse("$42.99");
 :::
 
 ::: tip Named Constructor Benefits
+
 1. **Descriptive names**: `Money::fromDollars()` is clearer than `new Money(100, 'USD')`
 2. **Multiple ways to create**: Different static methods for different input types
 3. **Validation**: Centralized in factory methods
 4. **Flexibility**: Can return cached instances or subclasses
 5. **Private constructor**: Force use of factory methods
-:::
+   :::
 
 ### Readonly Properties (PHP 8.1+)
 
@@ -480,12 +485,13 @@ public record Point(int x, int y) {
 :::
 
 ::: tip When to Use Readonly
+
 1. **Value objects**: Money, Date, Point, Color
 2. **DTOs**: Data Transfer Objects
 3. **Configuration**: Immutable settings
 4. **Thread safety**: Immutable objects are thread-safe
 5. **Predictability**: Values can't change unexpectedly
-:::
+   :::
 
 ---
 
@@ -616,11 +622,11 @@ public class BankAccount {
 
 ### Visibility Rules
 
-| Modifier | Same Class | Subclass | Outside Class | PHP Package | Java Package |
-|----------|-----------|----------|---------------|-------------|--------------|
-| **public** | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **protected** | ✅ | ✅ | ❌ | ❌ | ✅ (same package) |
-| **private** | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Modifier      | Same Class | Subclass | Outside Class | PHP Package | Java Package      |
+| ------------- | ---------- | -------- | ------------- | ----------- | ----------------- |
+| **public**    | ✅         | ✅       | ✅            | ✅          | ✅                |
+| **protected** | ✅         | ✅       | ❌            | ❌          | ✅ (same package) |
+| **private**   | ✅         | ❌       | ❌            | ❌          | ❌                |
 
 ::: warning Key Difference: Protected
 In Java, `protected` also grants access to classes in the same package. PHP doesn't have packages (it has namespaces, covered in Chapter 6), so `protected` only applies to the class hierarchy.
@@ -629,6 +635,7 @@ In Java, `protected` also grants access to classes in the same package. PHP does
 ### Best Practices
 
 ```php
+# filename: user-encapsulation.php
 <?php
 
 declare(strict_types=1);
@@ -676,16 +683,17 @@ class User
 ```
 
 ::: tip Encapsulation Guidelines
+
 1. **Make properties private** by default
 2. **Provide getters/setters** only when needed
 3. **Validate in setters** to maintain object integrity
 4. **Use private methods** for internal logic
 5. **Keep public API minimal** - easier to maintain
-:::
+   :::
 
 ---
 
-## Section 4: Static Members
+## Section 5: Static Members
 
 ### Goal
 
@@ -815,15 +823,17 @@ System.out.println(Database.getQueryCount());  // 2
 
 ### Key Points
 
-| Feature | PHP | Java |
-|---------|-----|------|
-| **Access static property** | `self::$property` | `ClassName.field` |
-| **Access static method** | `self::method()` or `ClassName::method()` | `ClassName.method()` |
-| **From instance** | `self::$property` (not `$this->property`) | `this.staticField` (works but discouraged) |
-| **Inheritance** | Can be overridden (late static binding with `static::`) | Can be hidden, not overridden |
+| Feature                    | PHP                                                     | Java                                       |
+| -------------------------- | ------------------------------------------------------- | ------------------------------------------ |
+| **Access static property** | `self::$property`                                       | `ClassName.field`                          |
+| **Access static method**   | `self::method()` or `ClassName::method()`               | `ClassName.method()`                       |
+| **From instance**          | `self::$property` (not `$this->property`)               | `this.staticField` (works but discouraged) |
+| **Inheritance**            | Can be overridden (late static binding with `static::`) | Can be hidden, not overridden              |
 
 ::: warning Common Mistake
+
 ```php
+# filename: static-access-example.php
 <?php
 
 class Example
@@ -847,6 +857,7 @@ You must use `self::` or `static::` to access static members, never `$this->`.
 An important difference from Java: PHP has two ways to reference the current class in static context:
 
 ```php
+# filename: late-static-binding.php
 <?php
 
 declare(strict_types=1);
@@ -902,20 +913,23 @@ var_dump($cat instanceof Cat);  // true
 
 ::: tip When to Use static::
 Use `static::` instead of `self::` when:
+
 1. You want subclasses to override the behavior
 2. Implementing factory methods that return instances of the called class
 3. Building extensible frameworks or base classes
 4. You need "runtime class resolution" behavior
 
 Use `self::` when:
+
 1. You specifically want the current class, not subclasses
 2. The behavior should NOT be overridden
 3. Accessing constants that shouldn't change in subclasses
-:::
+   :::
 
 **Practical Example: Active Record Pattern**
 
 ```php
+# filename: active-record-pattern.php
 <?php
 
 declare(strict_types=1);
@@ -1153,12 +1167,13 @@ System.out.println(status.canCancel());
 :::
 
 ::: tip Enum Benefits
+
 1. **Type safety**: Can't use invalid values
 2. **IDE autocomplete**: See all possible values
 3. **Methods**: Add behavior to enum cases
 4. **Pattern matching**: Works great with `match` expressions
 5. **Backed enums**: Store in database as string/int
-:::
+   :::
 
 ---
 
@@ -1173,6 +1188,7 @@ Understand PHP's special "magic methods" that provide advanced functionality.
 PHP has special methods that are automatically called in certain situations:
 
 ```php
+# filename: magic-methods.php
 <?php
 
 declare(strict_types=1);
@@ -1312,6 +1328,7 @@ $clone = clone $product;
 ### Advanced Magic Method Example: Fluent API Builder
 
 ```php
+# filename: fluent-query-builder.php
 <?php
 
 declare(strict_types=1);
@@ -1368,25 +1385,26 @@ echo $sql;  // SELECT id, name, email FROM users WHERE age > 18 ORDER BY name AS
 
 ### Useful Magic Methods
 
-| Method | Purpose | Java Equivalent |
-|--------|---------|-----------------|
-| `__construct()` | Initialize object | Constructor |
-| `__destruct()` | Cleanup before destruction | `finalize()` (deprecated) |
-| `__toString()` | String representation | `toString()` |
-| `__get()` | Dynamic property access | No direct equivalent |
-| `__set()` | Dynamic property setting | No direct equivalent |
-| `__isset()` | Check dynamic property | No direct equivalent |
-| `__unset()` | Unset dynamic property | No direct equivalent |
-| `__call()` | Dynamic method calls | No direct equivalent |
-| `__callStatic()` | Dynamic static method calls | No direct equivalent |
-| `__invoke()` | Call object as function | Functional interface |
-| `__clone()` | Customize object cloning | `clone()` |
-| `__debugInfo()` | Customize debug output | No direct equivalent |
-| `__serialize()` | Custom serialization | `writeObject()` |
-| `__unserialize()` | Custom deserialization | `readObject()` |
+| Method            | Purpose                     | Java Equivalent           |
+| ----------------- | --------------------------- | ------------------------- |
+| `__construct()`   | Initialize object           | Constructor               |
+| `__destruct()`    | Cleanup before destruction  | `finalize()` (deprecated) |
+| `__toString()`    | String representation       | `toString()`              |
+| `__get()`         | Dynamic property access     | No direct equivalent      |
+| `__set()`         | Dynamic property setting    | No direct equivalent      |
+| `__isset()`       | Check dynamic property      | No direct equivalent      |
+| `__unset()`       | Unset dynamic property      | No direct equivalent      |
+| `__call()`        | Dynamic method calls        | No direct equivalent      |
+| `__callStatic()`  | Dynamic static method calls | No direct equivalent      |
+| `__invoke()`      | Call object as function     | Functional interface      |
+| `__clone()`       | Customize object cloning    | `clone()`                 |
+| `__debugInfo()`   | Customize debug output      | No direct equivalent      |
+| `__serialize()`   | Custom serialization        | `writeObject()`           |
+| `__unserialize()` | Custom deserialization      | `readObject()`            |
 
 ::: warning Use Magic Methods Sparingly
 Magic methods are powerful but can make code harder to understand and debug. Use them when:
+
 - Building frameworks or ORMs
 - Creating flexible APIs
 - Implementing specific patterns (like Active Record)
@@ -1491,6 +1509,7 @@ class Person implements Cloneable {
 ### Deep Clone Example: Complex Object Graph
 
 ```php
+# filename: deep-clone-example.php
 <?php
 
 declare(strict_types=1);
@@ -1566,12 +1585,13 @@ echo $order1->getItems()[0]->quantity;  // 1
 ```
 
 ::: tip Cloning Best Practices
-1. **Always implement __clone()** for objects containing other objects
+
+1. **Always implement \_\_clone()** for objects containing other objects
 2. **Deep clone nested objects** to avoid shared references
 3. **Be careful with resources** (file handles, database connections) - they can't be cloned
 4. **Consider using serialization** for very complex deep clones: `unserialize(serialize($object))`
 5. **Document cloning behavior** so users know what to expect
-:::
+   :::
 
 ---
 
@@ -1586,6 +1606,7 @@ Learn about PHP's anonymous classes for quick, one-off object creation.
 PHP 7.0+ supports anonymous classes, useful for creating objects on the fly:
 
 ```php
+# filename: anonymous-classes.php
 <?php
 
 declare(strict_types=1);
@@ -1654,6 +1675,7 @@ display(new class implements Renderer {
 **1. Mock Objects in Tests**
 
 ```php
+# filename: anonymous-mock-objects.php
 <?php
 
 declare(strict_types=1);
@@ -1691,6 +1713,7 @@ echo $service->getUserName(1);  // "Test User"
 **2. Event Listeners**
 
 ```php
+# filename: anonymous-event-listeners.php
 <?php
 
 declare(strict_types=1);
@@ -1740,6 +1763,7 @@ $dispatcher->dispatch(['user' => 'alice@example.com']);
 **3. Strategy Pattern**
 
 ```php
+# filename: anonymous-strategy-pattern.php
 <?php
 
 declare(strict_types=1);
@@ -1780,27 +1804,29 @@ $cart->checkout(50, new class implements PaymentStrategy {
 
 ### Anonymous Classes vs Java
 
-| Feature | PHP | Java |
-|---------|-----|------|
-| **Syntax** | `new class { }` | `new Interface() { }` |
-| **Can extend** | Yes | Yes |
-| **Can implement** | Yes | Yes |
-| **Constructor** | Yes | No (uses initializer blocks) |
-| **Use case** | Testing, callbacks, strategy | Event handlers, comparators |
+| Feature           | PHP                          | Java                         |
+| ----------------- | ---------------------------- | ---------------------------- |
+| **Syntax**        | `new class { }`              | `new Interface() { }`        |
+| **Can extend**    | Yes                          | Yes                          |
+| **Can implement** | Yes                          | Yes                          |
+| **Constructor**   | Yes                          | No (uses initializer blocks) |
+| **Use case**      | Testing, callbacks, strategy | Event handlers, comparators  |
 
 ::: tip When to Use Anonymous Classes
 **Good for:**
+
 - Quick mock objects in tests
 - One-off implementations of interfaces
 - Event listeners or callbacks
 - Simple strategy pattern implementations
 
 **Avoid for:**
+
 - Complex logic that needs debugging
 - Reusable code (use named classes)
 - When you need to reference the class type
 - Production code that needs maintenance
-:::
+  :::
 
 ---
 
@@ -1815,6 +1841,7 @@ Understand how PHP compares objects vs Java.
 ::: code-group
 
 ```php [PHP Object Comparison]
+# filename: object-comparison.php
 <?php
 
 declare(strict_types=1);
@@ -1879,11 +1906,197 @@ System.out.println(p1 instanceof Point);  // true
 
 ### Key Differences
 
-| Comparison | PHP | Java |
-|------------|-----|------|
-| **Value equality** | `==` | `equals()` (must override) |
-| **Reference equality** | `===` | `==` |
-| **Type check** | `instanceof` | `instanceof` |
+| Comparison             | PHP          | Java                       |
+| ---------------------- | ------------ | -------------------------- |
+| **Value equality**     | `==`         | `equals()` (must override) |
+| **Reference equality** | `===`        | `==`                       |
+| **Type check**         | `instanceof` | `instanceof`               |
+
+---
+
+## Section 11: Comprehensive Example - Shopping Cart System
+
+### Goal
+
+Build a complete shopping cart system that demonstrates multiple OOP concepts covered in this chapter.
+
+### Complete Shopping Cart Implementation
+
+This example combines encapsulation, static members, readonly properties, and magic methods:
+
+```php
+# filename: shopping-cart.php
+<?php
+
+declare(strict_types=1);
+
+// Logger class with static methods
+class Logger
+{
+    private static array $logs = [];
+    private static int $logCount = 0;
+
+    public static function log(string $message, string $level = 'INFO'): void
+    {
+        $timestamp = date('Y-m-d H:i:s');
+        self::$logs[] = [
+            'timestamp' => $timestamp,
+            'level' => $level,
+            'message' => $message
+        ];
+        self::$logCount++;
+    }
+
+    public static function getLogs(): array
+    {
+        return self::$logs;
+    }
+
+    public static function getLogCount(): int
+    {
+        return self::$logCount;
+    }
+
+    public static function clearLogs(): void
+    {
+        self::$logs = [];
+        self::$logCount = 0;
+    }
+}
+
+// Product class with readonly properties
+readonly class Product
+{
+    public function __construct(
+        public string $id,
+        public string $name,
+        public float $price
+    ) {}
+
+    public function __toString(): string
+    {
+        return "{$this->name} (\${$this->price})";
+    }
+}
+
+// ShoppingCart class demonstrating encapsulation
+class ShoppingCart
+{
+    /** @var array<string, int> */
+    private array $items = [];  // productId => quantity
+    private float $taxRate = 0.10;  // 10% tax
+
+    public function __construct(
+        private string $cartId
+    ) {
+        Logger::log("Shopping cart {$this->cartId} created");
+    }
+
+    public function addItem(Product $product, int $quantity = 1): void
+    {
+        if ($quantity <= 0) {
+            throw new InvalidArgumentException("Quantity must be positive");
+        }
+
+        $this->items[$product->id] = ($this->items[$product->id] ?? 0) + $quantity;
+        Logger::log("Added {$quantity}x {$product->name} to cart {$this->cartId}");
+    }
+
+    public function removeItem(string $productId, int $quantity = 1): void
+    {
+        if (!isset($this->items[$productId])) {
+            throw new InvalidArgumentException("Product not in cart");
+        }
+
+        $this->items[$productId] -= $quantity;
+
+        if ($this->items[$productId] <= 0) {
+            unset($this->items[$productId]);
+        }
+
+        Logger::log("Removed {$quantity}x product {$productId} from cart");
+    }
+
+    public function getSubtotal(array $products): float
+    {
+        $subtotal = 0.0;
+
+        foreach ($this->items as $productId => $quantity) {
+            $product = $products[$productId] ?? null;
+            if ($product) {
+                $subtotal += $product->price * $quantity;
+            }
+        }
+
+        return $subtotal;
+    }
+
+    public function getTax(array $products): float
+    {
+        return $this->getSubtotal($products) * $this->taxRate;
+    }
+
+    public function getTotal(array $products): float
+    {
+        return $this->getSubtotal($products) + $this->getTax($products);
+    }
+
+    public function getItemCount(): int
+    {
+        return array_sum($this->items);
+    }
+
+    public function getCartId(): string
+    {
+        return $this->cartId;
+    }
+
+    public function clear(): void
+    {
+        $this->items = [];
+        Logger::log("Cart {$this->cartId} cleared");
+    }
+
+    public function __toString(): string
+    {
+        return "Cart {$this->cartId}: {$this->getItemCount()} items";
+    }
+}
+
+// Usage example
+$products = [
+    'laptop-001' => new Product('laptop-001', 'Laptop', 999.99),
+    'mouse-001' => new Product('mouse-001', 'Wireless Mouse', 29.99),
+    'keyboard-001' => new Product('keyboard-001', 'Mechanical Keyboard', 79.99),
+];
+
+$cart = new ShoppingCart('CART-12345');
+$cart->addItem($products['laptop-001'], 1);
+$cart->addItem($products['mouse-001'], 2);
+$cart->addItem($products['keyboard-001'], 1);
+
+echo $cart . "\n";  // Cart CART-12345: 4 items
+echo "Subtotal: \${$cart->getSubtotal($products)}\n";  // Subtotal: $1139.97
+echo "Tax: \${$cart->getTax($products)}\n";  // Tax: $113.997
+echo "Total: \${$cart->getTotal($products)}\n";  // Total: $1253.967
+
+// View logs
+echo "\nLogs:\n";
+foreach (Logger::getLogs() as $log) {
+    echo "[{$log['timestamp']}] {$log['level']}: {$log['message']}\n";
+}
+
+echo "\nTotal log entries: " . Logger::getLogCount() . "\n";
+```
+
+### Key Concepts Demonstrated
+
+1. **Encapsulation**: `ShoppingCart` uses private properties and public methods
+2. **Static Members**: `Logger` class uses static properties and methods
+3. **Readonly Properties**: `Product` class is immutable
+4. **Magic Methods**: `__toString()` for string representation
+5. **Type Hints**: All methods have proper type declarations
+6. **Error Handling**: Validation with exceptions
 
 ---
 
@@ -1894,6 +2107,7 @@ System.out.println(p1 instanceof Point);  // true
 Create a `BankAccount` class with proper encapsulation.
 
 **Requirements:**
+
 - Private balance property
 - Public methods: deposit, withdraw, getBalance
 - Validate amounts (positive, sufficient balance)
@@ -1903,6 +2117,7 @@ Create a `BankAccount` class with proper encapsulation.
 <summary>Solution</summary>
 
 ```php
+# filename: bank-account-exercise.php
 <?php
 
 declare(strict_types=1);
@@ -1989,6 +2204,7 @@ echo "Total transactions: " . BankAccount::getTotalTransactions() . "\n";  // 2
 Create a `Shape` base class with `Circle` and `Rectangle` subclasses.
 
 **Requirements:**
+
 - Abstract `getArea()` and `getPerimeter()` methods
 - Concrete implementations in subclasses
 - `__toString()` for display
@@ -1997,6 +2213,7 @@ Create a `Shape` base class with `Circle` and `Rectangle` subclasses.
 <summary>Solution (Preview - Full implementation in Chapter 4)</summary>
 
 ```php
+# filename: shape-hierarchy-exercise.php
 <?php
 
 declare(strict_types=1);
@@ -2061,11 +2278,18 @@ Before moving to the next chapter, ensure you can:
 In [Chapter 4: Classes & Inheritance](/series/php-for-java-developers/chapters/04-classes-and-inheritance), we'll explore inheritance, abstract classes, method overriding, and more advanced OOP concepts.
 :::
 
+<ChapterCheckbox 
+  seriesId="php-for-java-developers"
+  chapterId="03"
+  label="Mastered PHP OOP basics with Java comparisons!"
+/>
+
 ---
 
 ## Further Reading
 
 **PHP Documentation:**
+
 - [Classes and Objects](https://www.php.net/manual/en/language.oop5.php)
 - [Constructor Property Promotion](https://www.php.net/manual/en/language.oop5.decon.php#language.oop5.decon.constructor.promotion)
 - [Enumerations](https://www.php.net/manual/en/language.enumerations.php)

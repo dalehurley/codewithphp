@@ -32,16 +32,82 @@ A well-designed service class abstracts Claude API complexity behind a clean int
 
 You'll learn to create framework-agnostic services that can be used in Laravel, Symfony, plain PHP, or any other framework, following SOLID principles and modern PHP best practices.
 
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- A `ClaudeServiceInterface` that defines a clean contract for Claude API interactions
+- A production-ready `ClaudeService` implementation with dependency injection
+- A `ClaudeConfig` class for type-safe configuration management
+- A `ClaudeServiceFactory` for centralized service creation with middleware
+- Standalone PHP usage examples demonstrating framework-agnostic patterns
+- Laravel integration examples with service providers and controllers
+- A `ConversationService` for managing multi-turn conversations
+- A `PromptTemplate` system for reusable prompt generation
+- Comprehensive PHPUnit tests with mocked dependencies
+- Error handling with retry logic and exponential backoff
+
 ## Prerequisites
 
 Before diving in, ensure you have:
 
-- ✓ **Chapter 16** completed (SDK knowledge)
-- ✓ **SOLID principles** understanding
-- ✓ **Dependency injection** experience
-- ✓ **Unit testing** familiarity (PHPUnit)
+- ✓ Completed [Chapter 16: The Official PHP SDK](/series/claude-php-developers/chapters/16-official-php-sdk) or equivalent SDK knowledge
+- ✓ Understanding of **SOLID principles** (especially dependency inversion)
+- ✓ Experience with **dependency injection** patterns
+- ✓ Familiarity with **unit testing** using PHPUnit
+- ✓ PHP 8.4+ with strict typing enabled
+- ✓ Composer for dependency management
 
 **Estimated Time**: 60-75 minutes
+
+## Objectives
+
+By completing this chapter, you will:
+
+- Design and implement a service interface that abstracts Claude API complexity
+- Build a framework-agnostic service layer following SOLID principles
+- Create type-safe configuration classes with validation
+- Implement the factory pattern for complex object creation
+- Integrate services into Laravel applications using service providers
+- Build conversation management and prompt templating systems
+- Write comprehensive unit tests with mocked dependencies
+- Apply dependency injection patterns for testability and maintainability
+
+## Quick Start (~5 minutes)
+
+Want to get up and running immediately? Here's a minimal working example:
+
+```php
+<?php
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Anthropic\Anthropic;
+use App\Services\ClaudeService;
+use App\Contracts\ClaudeServiceInterface;
+
+// Initialize the SDK client
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
+// Create a simple service instance
+$service = new ClaudeService(
+    client: $client,
+    config: [
+        'model' => 'claude-sonnet-4-20250514',
+        'max_tokens' => 1024,
+        'temperature' => 0.7,
+    ]
+);
+
+// Use it!
+$response = $service->generate('Explain PHP type system in 2 sentences.');
+echo $response;
+```
+
+That's it! In the sections below, you'll learn to build production-ready services with full configuration, testing, and framework integration.
 
 ## Service Layer Architecture
 
@@ -316,6 +382,14 @@ class ClaudeService implements ClaudeServiceInterface
 }
 ```
 
+### Why It Works
+
+The service implementation follows the **Dependency Inversion Principle** by depending on the `ClaudeServiceInterface` abstraction rather than concrete implementations. The constructor accepts a `ClientContract` (from the SDK) and an optional logger, allowing you to inject mock objects for testing.
+
+The `createMessage()` private method implements retry logic with exponential backoff, automatically retrying failed requests up to 3 times for server errors (5xx status codes). This makes the service resilient to transient network issues.
+
+Default configuration values are set in the constructor, but can be overridden per-method call, providing flexibility while maintaining sensible defaults. The logger uses PSR-3's `LoggerInterface`, making it compatible with any logging library.
+
 ## Configuration Management
 
 ### Configuration Class
@@ -381,6 +455,12 @@ class ClaudeConfig
     }
 }
 ```
+
+### Why It Works
+
+The `ClaudeConfig` class uses PHP 8.1+ readonly properties and constructor property promotion, ensuring immutability once created. Validation happens in the constructor, failing fast if invalid configuration is provided.
+
+The `fromArray()` static method provides a convenient way to create configuration from arrays (useful for loading from config files), while `toArray()` enables serialization for caching or storage. Type validation ensures `maxTokens` and `temperature` are within acceptable ranges, preventing runtime errors.
 
 ## Factory Pattern for Service Creation
 
@@ -460,6 +540,12 @@ class ClaudeServiceFactory
     }
 }
 ```
+
+### Why It Works
+
+The factory pattern centralizes complex object creation logic. The `createClient()` method builds a Guzzle HTTP client with middleware configured for retries and logging. The retry middleware uses exponential backoff (1s, 2s, 4s delays) and only retries on server errors (5xx) or exceptions.
+
+By using `HandlerStack`, middleware is applied in order: retry logic first, then logging. This ensures retries are logged, and failed requests are automatically retried before giving up. The factory returns a `ClaudeServiceInterface`, allowing you to swap implementations without changing consuming code.
 
 ## Usage Examples
 
@@ -622,6 +708,12 @@ class AiController extends Controller
     }
 }
 ```
+
+### Why It Works
+
+The Laravel service provider registers both the configuration and service as singletons, ensuring the same instance is reused throughout a request lifecycle. This improves performance and ensures consistent behavior.
+
+The controller uses Laravel's dependency injection to receive the `ClaudeServiceInterface`, which is automatically resolved from the container. Request validation ensures data integrity before making API calls, and proper error handling returns JSON responses with appropriate status codes.
 
 ## Advanced Service Features
 
@@ -804,6 +896,67 @@ class ProductDescriptionGenerator
 }
 ```
 
+## Best Practices for Service Layer Design
+
+### 1. **Always Use Interfaces**
+Use interfaces (`ClaudeServiceInterface`) to define contracts, not implementations. This enables:
+- Easy testing with mock implementations
+- Swapping implementations without changing consumers
+- Clear API contracts for other developers
+
+### 2. **Immutable Configuration**
+Use readonly properties and constructor validation:
+```php
+public readonly string $apiKey;  // Can't be changed after creation
+```
+This prevents bugs from accidental configuration mutations.
+
+### 3. **PSR Compliance**
+- Use `Psr\Log\LoggerInterface` for logging (not specific implementations)
+- Use `Psr\Http\Client\ClientInterface` for HTTP clients
+- This makes your service work with any PSR-compliant library
+
+### 4. **Comprehensive Error Handling**
+- Catch specific exceptions (not generic `Exception`)
+- Log errors with sufficient context (what was requested, which model, etc.)
+- Provide meaningful error messages to consumers
+
+### 5. **Service Locator Anti-Pattern**
+❌ **DON'T** pass container/service locator to service classes:
+```php
+// BAD - Service depends on container
+class BadService {
+    public function __construct(private Container $container) {}
+}
+```
+
+✅ **DO** inject dependencies explicitly:
+```php
+// GOOD - Service depends on interfaces
+class GoodService {
+    public function __construct(
+        private ClientContract $client,
+        private LoggerInterface $logger
+    ) {}
+}
+```
+
+### 6. **Testing Strategy**
+- Unit test service methods with mocked dependencies
+- Integration test with real SDK in separate test suite
+- Mock API responses in CI/CD to avoid API calls during tests
+
+### 7. **Monitoring Considerations**
+Add simple metrics collection to service:
+```php
+private int $requestCount = 0;
+private float $totalTime = 0.0;
+
+public function getAverageResponseTime(): float {
+    return $this->requestCount > 0 ? $this->totalTime / $this->requestCount : 0.0;
+}
+```
+
 ## Comprehensive Testing
 
 ```php
@@ -958,6 +1111,64 @@ class ClaudeServiceTest extends TestCase
 }
 ```
 
+## Exercises
+
+### Exercise 1: Create a Metrics Service (~10 min)
+
+**Goal**: Extend `ClaudeService` to track response times and token usage
+
+Create a `MetricsCollectorInterface` that the service can use to record:
+- Request count per model
+- Average response time
+- Token usage statistics
+- Error rates
+
+**Validation**: Your service should call metrics methods for each request.
+
+```php
+interface MetricsCollectorInterface {
+    public function recordRequest(string $model, int $inputTokens, int $outputTokens, float $duration): void;
+    public function recordError(string $error): void;
+    public function getStats(): array;
+}
+```
+
+### Exercise 2: Build a Mock Service Implementation (~8 min)
+
+**Goal**: Create a `MockClaudeService` for testing without API calls
+
+Implement `ClaudeServiceInterface` with hardcoded responses:
+- `generate()` returns predefined strings
+- `stream()` yields mock content chunks
+- `healthCheck()` returns true
+- No API calls needed for testing
+
+**Validation**: You should be able to use `MockClaudeService` wherever `ClaudeServiceInterface` is type-hinted.
+
+### Exercise 3: Implement Configuration Validation (~10 min)
+
+**Goal**: Add more sophisticated validation to `ClaudeConfig`
+
+Add validation for:
+- Model name against allowed models list
+- Valid temperature values with clear error messages
+- Reasonable token limits based on model
+- Custom validation rules
+
+**Validation**: Your config should throw descriptive exceptions for invalid inputs.
+
+### Exercise 4: Add Retry Strategy Options (~12 min)
+
+**Goal**: Extend the service to support different retry strategies
+
+Currently it uses exponential backoff. Add:
+- Linear backoff (fixed delay between retries)
+- Jittered exponential backoff (with random variance)
+- No retry strategy (for testing)
+- Custom retry strategy interface
+
+**Validation**: Service should accept retry strategy in constructor.
+
 ## Troubleshooting
 
 **Service not found in Laravel?**
@@ -980,15 +1191,31 @@ class ClaudeServiceTest extends TestCase
 - Check PSR-4 namespaces in `composer.json`
 - Verify test file namespaces match directory structure
 
-## Key Takeaways
+## Wrap-up
 
-- ✓ Service layer separates business logic from API implementation details
-- ✓ Interfaces enable testing and allow swapping implementations
-- ✓ Configuration classes provide type safety and validation
-- ✓ Factory pattern centralizes complex object creation
-- ✓ Framework-agnostic design allows code reuse across projects
-- ✓ Proper logging and error handling are essential for production
-- ✓ Comprehensive tests ensure reliability and enable refactoring
+Congratulations! You've built a production-ready Claude service class. Here's what you've accomplished:
+
+- ✓ **Designed a service interface** — Created `ClaudeServiceInterface` that abstracts API complexity
+- ✓ **Built framework-agnostic service** — Implemented `ClaudeService` that works in any PHP application
+- ✓ **Created type-safe configuration** — Built `ClaudeConfig` with validation and sensible defaults
+- ✓ **Implemented factory pattern** — Centralized service creation with middleware and HTTP client configuration
+- ✓ **Integrated with Laravel** — Created service providers and controllers for framework integration
+- ✓ **Added advanced features** — Built conversation management and prompt templating systems
+- ✓ **Wrote comprehensive tests** — Created PHPUnit tests with mocked dependencies
+- ✓ **Applied SOLID principles** — Used dependency injection and separation of concerns throughout
+
+Your service layer now provides a clean, testable interface for Claude API interactions. The framework-agnostic design means you can reuse this code across different projects, and the comprehensive testing ensures reliability and maintainability.
+
+In the next chapter, you'll learn caching strategies to optimize API call performance and reduce costs.
+
+## Further Reading
+
+- [SOLID Principles in PHP](https://www.php.net/manual/en/language.oop5.solid.php) — Understanding SOLID principles for better code design
+- [PSR-11: Container Interface](https://www.php-fig.org/psr/psr-11/) — Standard dependency injection container interface
+- [PHPUnit Documentation](https://phpunit.de/documentation.html) — Comprehensive testing framework documentation
+- [Laravel Service Providers](https://laravel.com/docs/providers) — Official Laravel documentation on service providers
+- [Dependency Injection in PHP](https://www.php.net/manual/en/language.oop5.decon.php) — PHP constructor and dependency injection patterns
+- [Factory Pattern](https://refactoring.guru/design-patterns/factory-method) — Design pattern for object creation
 
 <ChapterCheckbox
   seriesId="claude-php-developers"

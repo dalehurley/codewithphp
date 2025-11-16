@@ -12,36 +12,53 @@ prerequisites: []
 
 # Chapter 0: Setup & First Comparison
 
-<Badge type="tip">Beginner</Badge> <Badge type="info">45-60 min</Badge>
-
 ## Overview
 
-Welcome to PHP! As a Java developer, you're already familiar with setting up development environments, compilers, and IDEs. PHP's setup is refreshingly simple compared to Java—no need for complex build tools or JVM configuration. In this chapter, we'll get you up and running with PHP and write your first script, comparing it side-by-side with Java code you already know.
+Welcome to PHP! As a Java developer, you're already familiar with setting up development environments, compilers, and IDEs. PHP's setup is refreshingly simple compared to Java - no need for complex build tools or JVM configuration. In this chapter, we'll get you up and running with PHP and write your first script, comparing it side-by-side with Java code you already know.
 
 By the end of this chapter, you'll have a working PHP environment and understand the fundamental differences between PHP and Java execution models.
 
 ## Prerequisites
 
-::: info Time Estimate
-⏱️ **45-60 minutes** to complete this chapter
-:::
+Before starting this chapter, you should have:
 
-**What you'll need:**
 - A computer running Windows, macOS, or Linux
 - Administrator/sudo access to install software
 - Your favorite text editor or IDE (we'll show you how to configure it)
 - Basic command line familiarity (you already have this!)
 
+**Estimated Time**: ~45-60 minutes
+
 ## What You'll Build
 
 In this chapter, you'll:
-- Install PHP 8.3 (the latest stable version)
+- Install PHP 8.4 (the latest stable version)
 - Configure your IDE for PHP development
 - Write a "Hello, World!" program in both Java and PHP
 - Create a simple REST API endpoint in both languages
 - Run PHP scripts from command line and web server
 
-## Learning Objectives
+## Quick Start
+
+If you're already familiar with command-line tools and want to get up and running quickly:
+
+```bash
+# macOS (with Homebrew)
+brew install php@8.4
+
+# Verify installation
+php --version
+
+# Create your first PHP script
+echo '<?php echo "Hello, PHP!";' > hello.php
+
+# Run it
+php hello.php
+```
+
+For detailed setup instructions and comparisons with Java, continue reading below.
+
+## Objectives
 
 By the end of this chapter, you'll be able to:
 
@@ -53,7 +70,7 @@ By the end of this chapter, you'll be able to:
 
 ---
 
-## Section 1: Understanding PHP's Execution Model
+## Step 1: Understanding PHP's Execution Model (~10 min)
 
 ### Goal
 
@@ -98,11 +115,11 @@ This execution model difference affects:
 
 ---
 
-## Section 2: Installing PHP
+## Step 2: Installing PHP (~15 min)
 
 ### Goal
 
-Install PHP 8.3 on your development machine.
+Install PHP 8.4 on your development machine.
 
 ### Actions
 
@@ -112,13 +129,13 @@ Install PHP 8.3 on your development machine.
 # Install Homebrew if you don't have it
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-# Install PHP 8.3
-brew install php@8.3
+# Install PHP 8.4
+brew install php@8.4
 
 # Verify installation
 php --version
 
-# Should output: PHP 8.3.x (cli)...
+# Should output: PHP 8.4.x (cli)...
 ```
 
 ```bash [Ubuntu/Debian]
@@ -129,8 +146,8 @@ sudo apt update
 sudo apt install software-properties-common
 sudo add-apt-repository ppa:ondrej/php
 
-# Install PHP 8.3
-sudo apt install php8.3 php8.3-cli php8.3-common php8.3-mbstring php8.3-xml php8.3-curl
+# Install PHP 8.4
+sudo apt install php8.4 php8.4-cli php8.4-common php8.4-mbstring php8.4-xml php8.4-curl
 
 # Verify installation
 php --version
@@ -138,11 +155,11 @@ php --version
 
 ```bash [Windows]
 # Option 1: Using Chocolatey
-choco install php --version=8.3
+choco install php --version=8.4
 
 # Option 2: Download from windows.php.net
 # 1. Visit https://windows.php.net/download/
-# 2. Download "Thread Safe" ZIP for PHP 8.3
+# 2. Download "Thread Safe" ZIP for PHP 8.4
 # 3. Extract to C:\php
 # 4. Add C:\php to your PATH
 
@@ -154,9 +171,9 @@ php --version
 # Enable REMI repository
 sudo dnf install https://rpms.remirepo.net/fedora/remi-release-XX.rpm
 
-# Install PHP 8.3
+# Install PHP 8.4
 sudo dnf module reset php
-sudo dnf module install php:remi-8.3
+sudo dnf module install php:remi-8.4
 
 # Verify installation
 php --version
@@ -169,10 +186,10 @@ php --version
 Running `php --version` should display:
 
 ```
-PHP 8.3.x (cli) (built: ...)
+PHP 8.4.x (cli) (built: ...)
 Copyright (c) The PHP Group
-Zend Engine v4.3.x, Copyright (c) Zend Technologies
-    with Zend OPcache v8.3.x, Copyright (c), by Zend Technologies
+Zend Engine v4.4.x, Copyright (c) Zend Technologies
+    with Zend OPcache v8.4.x, Copyright (c), by Zend Technologies
 ```
 
 ::: tip OPcache
@@ -204,14 +221,14 @@ PHP's installation includes:
 - **Solution**: Multiple PHP versions installed. Specify the version:
   ```bash
   # macOS with Homebrew
-  brew unlink php@8.2 && brew link php@8.3
+  brew unlink php@8.3 && brew link php@8.4
   ```
 
 **Problem: Missing extensions**
 - **Solution**: Install required extensions:
   ```bash
   # Ubuntu/Debian
-  sudo apt install php8.3-<extension-name>
+  sudo apt install php8.4-<extension-name>
 
   # macOS
   pecl install <extension-name>
@@ -219,7 +236,7 @@ PHP's installation includes:
 
 ---
 
-## Section 2.5: Docker Installation (Alternative)
+## Step 2.5: Docker Installation (Alternative) (~5 min)
 
 ### Goal
 
@@ -237,16 +254,16 @@ As a Java developer, you might already be familiar with Docker. Using Docker for
 
 ```bash
 # Pull official PHP image
-docker pull php:8.3-cli
+docker pull php:8.4-cli
 
 # Run PHP in Docker
-docker run --rm php:8.3-cli php --version
+docker run --rm php:8.4-cli php --version
 
 # Run a PHP script
-docker run --rm -v $(pwd):/app php:8.3-cli php /app/hello.php
+docker run --rm -v $(pwd):/app php:8.4-cli php /app/hello.php
 
 # Interactive PHP shell
-docker run --rm -it php:8.3-cli php -a
+docker run --rm -it php:8.4-cli php -a
 ```
 
 ### Docker Compose for Development
@@ -257,7 +274,7 @@ Create `docker-compose.yml`:
 version: '3.8'
 services:
   php:
-    image: php:8.3-apache
+    image: php:8.4-apache
     ports:
       - "8000:80"
     volumes:
@@ -286,7 +303,7 @@ docker-compose up
 
 ---
 
-## Section 2.6: Installing Composer
+## Step 2.6: Installing Composer (~5 min)
 
 ### Goal
 
@@ -349,7 +366,7 @@ ls vendor/  # Should see monolog and other dependencies
 
 ---
 
-## Section 2.7: PHP Extensions Overview
+## Step 2.7: PHP Extensions Overview (~5 min)
 
 ### Goal
 
@@ -382,13 +399,13 @@ php -m
 
 ```bash [Ubuntu/Debian]
 # Database drivers
-sudo apt install php8.3-mysql php8.3-pgsql php8.3-sqlite3
+sudo apt install php8.4-mysql php8.4-pgsql php8.4-sqlite3
 
 # Web development
-sudo apt install php8.3-curl php8.3-gd php8.3-xml
+sudo apt install php8.4-curl php8.4-gd php8.4-xml
 
 # Performance
-sudo apt install php8.3-opcache php8.3-apcu
+sudo apt install php8.4-opcache php8.4-apcu
 
 # Verify
 php -m | grep -i mysql
@@ -417,6 +434,7 @@ extension=pdo_mysql
 Create `check-extensions.php`:
 
 ```php
+# filename: check-extensions.php
 <?php
 
 $required = ['json', 'mbstring', 'xml', 'curl', 'pdo', 'openssl'];
@@ -450,7 +468,150 @@ php check-extensions.php
 
 ---
 
-## Section 3: Hello World Comparison
+## Step 2.8: PHP Configuration Basics (~5 min)
+
+### Goal
+
+Understand PHP's configuration system and how it compares to Java's configuration approach.
+
+### Finding Your php.ini File
+
+Unlike Java's `application.properties` or `application.yml`, PHP uses a single `php.ini` file for configuration. However, PHP can have multiple `php.ini` files (one for CLI, one for web server).
+
+```bash
+# Find which php.ini file PHP is using
+php --ini
+
+# Output example:
+# Configuration File (php.ini) Path: /usr/local/etc/php/8.4
+# Loaded Configuration File: /usr/local/etc/php/8.4/php.ini
+# Scan for additional .ini files in: /usr/local/etc/php/8.4/conf.d
+```
+
+### Key Configuration Settings for Development
+
+For Java developers, here's how PHP configuration compares:
+
+::: code-group
+
+```ini [php.ini (PHP)]
+; Error reporting (similar to Java logging levels)
+error_reporting = E_ALL
+display_errors = On          ; Show errors in development
+display_startup_errors = On  ; Show startup errors
+log_errors = On              ; Log errors to file
+error_log = /var/log/php_errors.log
+
+; Memory and execution limits
+memory_limit = 256M          ; Like -Xmx in Java
+max_execution_time = 30      ; Script timeout (seconds)
+
+; File uploads
+upload_max_filesize = 10M
+post_max_size = 20M
+
+; Date and timezone (important!)
+date.timezone = America/New_York
+```
+
+```properties [application.properties (Java/Spring Boot)]
+# Error handling
+logging.level.root=INFO
+logging.level.com.example=DEBUG
+
+# Server configuration
+server.port=8080
+spring.servlet.multipart.max-file-size=10MB
+spring.servlet.multipart.max-request-size=20MB
+
+# Memory (JVM arguments)
+# -Xmx256m
+```
+
+:::
+
+### Setting Configuration Programmatically
+
+Unlike Java where you typically configure via properties files or annotations, PHP allows runtime configuration:
+
+```php
+# filename: config-example.php
+<?php
+
+// Set configuration at runtime (like System.setProperty in Java)
+ini_set('display_errors', '1');
+ini_set('error_reporting', E_ALL);
+ini_set('memory_limit', '512M');
+
+// Get current configuration
+$memoryLimit = ini_get('memory_limit');
+echo "Memory limit: $memoryLimit\n";
+
+// Check if a setting is changeable
+if (ini_get('display_errors') === false) {
+    echo "display_errors cannot be changed\n";
+}
+```
+
+**Java Comparison:**
+```java
+// Java uses System properties or application config
+System.setProperty("log.level", "DEBUG");
+String logLevel = System.getProperty("log.level");
+```
+
+### Development vs Production Settings
+
+**Development (php.ini):**
+```ini
+display_errors = On
+display_startup_errors = On
+error_reporting = E_ALL
+log_errors = On
+```
+
+**Production (php.ini):**
+```ini
+display_errors = Off          ; Never show errors to users
+display_startup_errors = Off
+error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT
+log_errors = On               ; Always log, but don't display
+```
+
+::: warning Security Note
+Never set `display_errors = On` in production! This exposes sensitive information. Always log errors instead of displaying them.
+:::
+
+### Why It Works
+
+PHP's configuration system differs from Java:
+
+| Aspect | Java | PHP |
+|--------|------|-----|
+| **Configuration Files** | Multiple (properties, YAML, XML) | Single `php.ini` (with includes) |
+| **Runtime Changes** | Limited (System properties) | Extensive (`ini_set()`) |
+| **Per-Request Config** | Application-level | Can change per script |
+| **Environment-Specific** | Spring profiles, Maven profiles | Separate `php.ini` files or `ini_set()` |
+| **CLI vs Web** | Same JVM settings | Different `php.ini` files possible |
+
+### Troubleshooting
+
+**Problem: Changes to php.ini not taking effect**
+- **Solution**: Restart your web server (Apache/Nginx) or use `php --ini` to verify which file is loaded
+  ```bash
+  # Find loaded config
+  php --ini
+  
+  # For web server, restart:
+  sudo systemctl restart apache2  # or nginx
+  ```
+
+**Problem: Need different settings for CLI vs web**
+- **Solution**: PHP can use different `php.ini` files. Check with `php --ini` for CLI and `phpinfo()` for web server.
+
+---
+
+## Step 3: Hello World Comparison (~10 min)
 
 ### Goal
 
@@ -465,6 +626,7 @@ Create a file named `hello.php`:
 ::: code-group
 
 ```php [hello.php]
+# filename: hello.php
 <?php
 
 // This is a comment in PHP
@@ -555,7 +717,168 @@ PHP's lack of required boilerplate (no classes, no main method) makes it great f
 
 ---
 
-## Section 4: Creating a Simple Class
+## Step 3.5: PHP Tags and Syntax Basics (~5 min)
+
+### Goal
+
+Understand PHP's tag syntax and how it differs from Java's file structure.
+
+### PHP Opening and Closing Tags
+
+PHP code must be enclosed in special tags. Unlike Java where the entire file is code, PHP can mix with HTML:
+
+```php
+# filename: tags-example.php
+<?php
+// Pure PHP file - all code here
+echo "Hello, World!\n";
+```
+
+```php
+# filename: mixed-html.php
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PHP Example</title>
+</head>
+<body>
+    <?php
+    // PHP code embedded in HTML
+    $name = "Java Developer";
+    echo "<h1>Welcome, $name!</h1>";
+    ?>
+</body>
+</html>
+```
+
+### Closing Tags: When to Omit
+
+**PSR-12 Standard (Recommended):**
+
+For pure PHP files (no HTML), **omit the closing tag** `?>`:
+
+```php
+# filename: person.php
+<?php
+
+declare(strict_types=1);
+
+class Person
+{
+    // Class code
+}
+// No closing tag - this is correct!
+```
+
+**Why omit the closing tag?**
+- Prevents accidental whitespace/newlines after `?>` from being sent to output
+- Avoids "headers already sent" errors
+- Follows PSR-12 coding standard
+
+**When to include closing tag:**
+- Only when mixing PHP with HTML/other content
+- In template files (`.phtml` files)
+
+### Short Echo Syntax
+
+PHP provides a shorthand for `echo`:
+
+```php
+# filename: short-echo.php
+<?php
+$name = "Alice";
+?>
+
+<!-- Long form -->
+<?php echo $name; ?>
+
+<!-- Short form (recommended in templates) -->
+<?= $name ?>
+
+<!-- Both output: Alice -->
+```
+
+**Java Comparison:**
+```java
+// Java doesn't have template syntax built-in
+// You'd use JSP, Thymeleaf, or similar:
+// <c:out value="${name}" />
+```
+
+### PHP Tags Comparison
+
+| Tag Type | Syntax | Use Case |
+|----------|--------|----------|
+| **Standard** | `<?php ... ?>` | Always works, recommended |
+| **Short Echo** | `<?= ... ?>` | Templates only (must enable `short_open_tag`) |
+| **Short Tags** | `<? ... ?>` | Deprecated, don't use |
+
+::: warning Short Tags
+Avoid `<? ... ?>` (short tags). They're deprecated and may not work on all servers. Always use `<?php ... ?>` or `<?= ... ?>` for echo.
+:::
+
+### File Organization: No Classpath
+
+Unlike Java where classes are automatically found via the classpath, PHP requires explicit file inclusion:
+
+**Java:**
+```java
+// Java automatically finds classes via classpath
+import com.example.User;
+User user = new User();  // ClassLoader finds it
+```
+
+**PHP (without autoloading):**
+```php
+# filename: main.php
+<?php
+
+// Must explicitly include/require the file
+require_once 'Person.php';  // Like import, but loads the file
+
+$person = new Person("Alice", 30);
+```
+
+**PHP (with autoloading - covered in Chapter 6):**
+```php
+<?php
+
+// With Composer autoloader (like Java's classpath)
+require 'vendor/autoload.php';
+
+use App\Models\Person;  // Now works like Java import
+$person = new Person("Alice", 30);
+```
+
+### Why It Works
+
+PHP's tag system allows:
+- **Pure PHP files**: Just code, no HTML
+- **Mixed files**: PHP embedded in HTML (like JSP)
+- **Templates**: PHP generating HTML dynamically
+
+This flexibility is different from Java where:
+- `.java` files are always pure Java code
+- Templates use separate technologies (JSP, Thymeleaf, etc.)
+- No mixing of code and markup in source files
+
+### Troubleshooting
+
+**Problem: "Parse error: syntax error, unexpected '?'"**
+- **Cause**: Short tags `<?` not enabled or using wrong syntax
+- **Solution**: Use `<?php` instead of `<?`
+
+**Problem: "Headers already sent" error**
+- **Cause**: Whitespace or output before `<?php` tag or after `?>` tag
+- **Solution**: Remove closing `?>` tag in pure PHP files, check for whitespace before opening tag
+
+**Problem: Short echo `<?=` not working**
+- **Cause**: `short_open_tag` disabled in php.ini
+- **Solution**: Enable it or use `<?php echo` instead
+
+---
+
+## Step 4: Creating a Simple Class (~10 min)
 
 ### Goal
 
@@ -568,6 +891,7 @@ Create a `Person` class in both languages:
 ::: code-group
 
 ```php [Person.php]
+# filename: Person.php
 <?php
 
 declare(strict_types=1);  // Enable strict type checking (optional but recommended)
@@ -684,7 +1008,7 @@ This makes PHP's OOP model very similar to Java's, with the main difference bein
 
 ---
 
-## Section 5: Setting Up Your IDE
+## Step 5: Setting Up Your IDE (~10 min)
 
 ### Goal
 
@@ -703,9 +1027,9 @@ Choose your preferred IDE:
    - Go to Settings/Preferences → PHP
    - Click "..." next to CLI Interpreter
    - Click "+" and select your PHP installation
-   - Verify version shows PHP 8.3
-4. Enable PHP 8.3 language level:
-   - Settings → PHP → PHP Language Level → 8.3
+   - Verify version shows PHP 8.4
+4. Enable PHP 8.4 language level:
+   - Settings → PHP → PHP Language Level → 8.4
 
 PhpStorm Features for Java Developers:
 ✅ Familiar JetBrains interface
@@ -744,8 +1068,8 @@ PhpStorm Features for Java Developers:
    - Enable "PHP" plugin
 3. Configure PHP interpreter:
    - Settings → PHP → CLI Interpreter
-   - Add your PHP 8.3 installation
-4. Set language level to PHP 8.3
+   - Add your PHP 8.4 installation
+4. Set language level to PHP 8.4
 
 Benefits for Java developers:
 ✅ Same IDE for Java and PHP
@@ -770,6 +1094,7 @@ After setup, you should have:
 Create a new PHP file and test autocomplete:
 
 ```php
+# filename: test-ide.php
 <?php
 
 // Type this and test autocomplete:
@@ -795,7 +1120,7 @@ Most shortcuts you know from Java development work in PHP:
 
 ---
 
-## Section 6: Your First Web Response
+## Step 6: Your First Web Response (~10 min)
 
 ### Goal
 
@@ -808,6 +1133,7 @@ Create a simple web endpoint in PHP and compare it to a Java servlet.
 Create `index.php`:
 
 ```php
+# filename: index.php
 <?php
 
 declare(strict_types=1);
@@ -840,7 +1166,7 @@ if ($method === 'GET') {
 php -S localhost:8000
 
 # You should see:
-# PHP 8.3.x Development Server (http://localhost:8000) started
+# PHP 8.4.x Development Server (http://localhost:8000) started
 ```
 
 **Step 3: Test the endpoint**
@@ -880,7 +1206,7 @@ public class HelloServlet extends HttpServlet {
 {
     "message": "Hello from PHP!",
     "timestamp": 1701234567,
-    "version": "8.3.0"
+    "version": "8.4.0"
 }
 ```
 
@@ -913,7 +1239,7 @@ public class HelloServlet extends HttpServlet {
 
 ---
 
-## Section 7: Project Structure Comparison
+## Step 7: Project Structure Comparison (~5 min)
 
 ### Goal
 
@@ -1007,6 +1333,7 @@ php hello.php
 <summary>Solution</summary>
 
 ```php
+# filename: hello.php
 <?php
 
 // Get name from command line, default to "World"
@@ -1049,12 +1376,14 @@ echo $calc->divide(10, 0);    // Exception thrown
 <summary>Solution</summary>
 
 ```php
+# filename: Calculator.php
 <?php
 
 declare(strict_types=1);
 
 class Calculator
 {
+```
     public function add(int|float $a, int|float $b): int|float
     {
         return $a + $b;
@@ -1113,6 +1442,7 @@ Create a simple REST API endpoint that returns information about a product.
 <summary>Solution</summary>
 
 ```php
+# filename: product.php
 <?php
 
 declare(strict_types=1);
@@ -1162,7 +1492,7 @@ curl http://localhost:8000/product.php         # 400
 
 Before moving to the next chapter, make sure you can:
 
-- [ ] Run `php --version` and see PHP 8.3
+- [ ] Run `php --version` and see PHP 8.4
 - [ ] Execute PHP scripts from the command line
 - [ ] Create and instantiate PHP classes with type hints
 - [ ] Understand the differences between Java and PHP syntax
@@ -1176,6 +1506,12 @@ In [Chapter 1: Types, Variables & Operators](/series/php-for-java-developers/cha
 :::
 
 ---
+
+<ChapterCheckbox 
+  seriesId="php-for-java-developers"
+  chapterId="00"
+  label="Setup complete! You're ready to start learning PHP."
+/>
 
 ## Further Reading
 

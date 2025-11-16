@@ -47,6 +47,21 @@ You'll implement API authentication, rate limiting, usage tracking, batch genera
 
 **Estimated Time**: 120-150 minutes
 
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- A complete RESTful API for AI content generation
+- Template system with variables and constraints
+- Brand voice management system
+- Batch content generation with job queuing
+- API authentication with Laravel Sanctum
+- Rate limiting and usage tracking
+- Cost calculation and billing integration
+- Webhook notifications for async operations
+- API resources and request validation
+- Database schema for templates, generations, and brand voices
+
 ## Prerequisites
 
 Before starting, ensure you have:
@@ -57,6 +72,75 @@ Before starting, ensure you have:
 - ✓ **Claude service** from Chapter 21
 - ✓ **Database** configured
 - ✓ **Understanding of REST APIs**
+
+## Objectives
+
+By completing this chapter, you will:
+
+- Design and implement a RESTful API for content generation
+- Create a flexible template system with variable substitution
+- Build brand voice management with style guide enforcement
+- Implement batch generation with async job processing
+- Set up API authentication and authorization
+- Configure rate limiting and usage tracking
+- Calculate costs and integrate billing systems
+- Send webhook notifications for async operations
+- Write API resources and request validation classes
+- Design database schema for scalable content generation
+
+## Quick Start
+
+Here's a quick example of generating content via the API:
+
+```bash
+# 1. Get your API token (after authentication)
+TOKEN="your-sanctum-token"
+
+# 2. List available templates
+curl -H "Authorization: Bearer $TOKEN" \
+  http://localhost:8000/api/v1/templates
+
+# 3. Generate content
+curl -X POST http://localhost:8000/api/v1/generate \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "template_id": 1,
+    "topic": "Laravel Best Practices",
+    "target_audience": "PHP developers",
+    "tone": "professional",
+    "key_points": "Service containers, facades, eloquent ORM"
+  }'
+
+# 4. Check generation status
+curl -H "Authorization: Bearer $TOKEN" \
+  http://localhost:8000/api/v1/generations/123
+```
+
+This gives you a working API endpoint that generates AI content. Now let's build it step by step.
+
+## Step 1: Set Up Database Schema (~15 min)
+
+### Goal
+
+Create the database tables needed for templates, content generations, and brand voices.
+
+### Actions
+
+1. **Create the migrations** for the three main tables:
+
+The migrations define the structure for storing templates, tracking generations, and managing brand voices. Each table includes proper indexes for performance and foreign key constraints for data integrity.
+
+### Expected Result
+
+After running `php artisan migrate`, you'll have three tables:
+- `content_templates` - Stores reusable content templates
+- `content_generations` - Tracks all content generation requests
+- `brand_voices` - Manages brand voice configurations per user
+
+### Why It Works
+
+The schema design separates concerns: templates define reusable patterns, generations track individual requests with status and costs, and brand voices ensure consistency. The `json` columns store flexible data structures (variables, constraints, parameters) without requiring schema changes for new features. Indexes on `user_id` and `status` optimize common queries like "show my pending generations."
 
 ## Database Schema
 
@@ -172,7 +256,21 @@ return new class extends Migration
 };
 ```
 
-## Models
+## Step 2: Create Models (~10 min)
+
+### Goal
+
+Build Eloquent models with relationships and helper methods for template rendering and status management.
+
+### Actions
+
+1. **Create the ContentTemplate model** with prompt rendering logic:
+
+The `renderPrompt()` method replaces template variables with actual data and appends constraints and style guides. This keeps prompt construction logic in the model where it belongs.
+
+### Why It Works
+
+Template variables use `{variable}` syntax that's replaced with actual values. Constraints and style guides are appended as structured text that Claude can parse. This approach allows templates to be stored in the database while keeping prompt construction logic in PHP for flexibility.
 
 ### ContentTemplate Model
 
@@ -400,6 +498,36 @@ class BrandVoice extends Model
 }
 ```
 
+### Why It Works
+
+The `ContentGeneration` model uses status methods (`markAsProcessing()`, `markAsCompleted()`, `markAsFailed()`) to encapsulate state transitions. This ensures status changes always update related fields like `completed_at` and `error_message` consistently. The `BelongsTo` relationships enable eager loading to reduce database queries.
+
+The `BrandVoice` model's `getSystemPrompt()` method builds a comprehensive system prompt from stored characteristics, examples, and preferences. This prompt is passed to Claude to ensure all generated content follows the brand voice guidelines.
+
+## Step 3: Build Content Generation Service (~20 min)
+
+### Goal
+
+Create a service class that handles the core content generation logic, cost calculation, and batch processing.
+
+### Actions
+
+1. **Create the ContentGenerationService** with generation, cost calculation, and batch processing methods:
+
+The service encapsulates all Claude API interactions, handles errors gracefully, and calculates costs based on token usage. Batch generation queues jobs for async processing to avoid blocking API requests.
+
+### Why It Works
+
+The service pattern separates business logic from controllers, making the code testable and reusable. Cost calculation uses per-million-token pricing from Anthropic's pricing model. The `generateFromTemplate()` method creates a generation record, processes it synchronously, and returns the completed result—perfect for simple API calls. `batchGenerate()` creates records and queues jobs for async processing, ideal for bulk operations.
+
+### Expected Result
+
+You'll have a service that can:
+- Generate content from templates with brand voice
+- Calculate accurate costs based on token usage
+- Process batches asynchronously via queues
+- Handle errors and update generation status
+
 ## Content Generation Service
 
 ```php
@@ -523,6 +651,30 @@ class ContentGenerationService
 }
 ```
 
+## Step 4: Create API Controllers (~25 min)
+
+### Goal
+
+Build RESTful controllers that handle HTTP requests, validate input, and return properly formatted API responses.
+
+### Actions
+
+1. **Create ContentGenerationController** for content generation endpoints:
+
+The controller uses dependency injection to receive the service, validates requests using form request classes, and returns API resources for consistent response formatting.
+
+### Why It Works
+
+Controllers are thin—they handle HTTP concerns (request/response) while delegating business logic to services. Form request validation runs before controller methods execute, ensuring data integrity. API resources transform models into consistent JSON responses, hiding internal structure and including only relevant data based on context (e.g., showing prompts only to owners).
+
+### Expected Result
+
+You'll have controllers that:
+- Validate all inputs before processing
+- Return consistent JSON responses
+- Handle authorization properly
+- Support pagination and filtering
+
 ## API Controllers
 
 ### ContentGenerationController
@@ -614,10 +766,35 @@ class ContentGenerationController extends Controller
      */
     public function index(Request $request)
     {
-        $generations = ContentGeneration::where('user_id', $request->user()->id)
-            ->with('template')
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
+        $query = ContentGeneration::where('user_id', $request->user()->id)
+            ->with('template');
+
+        // Filter by status
+        if ($request->has('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Filter by type
+        if ($request->has('type')) {
+            $query->where('type', $request->type);
+        }
+
+        // Filter by date range
+        if ($request->has('from_date')) {
+            $query->whereDate('created_at', '>=', $request->from_date);
+        }
+
+        if ($request->has('to_date')) {
+            $query->whereDate('created_at', '<=', $request->to_date);
+        }
+
+        // Search in generated content
+        if ($request->has('search')) {
+            $query->where('generated_content', 'like', '%' . $request->search . '%');
+        }
+
+        $generations = $query->orderBy('created_at', 'desc')
+            ->paginate($request->get('per_page', 20));
 
         return ContentGenerationResource::collection($generations);
     }
@@ -745,7 +922,188 @@ class BrandVoiceController extends Controller
 }
 ```
 
+## Step 5: Add Request Validation and API Resources (~15 min)
+
+### Goal
+
+Create form request classes for validation and API resources for consistent response formatting.
+
+### Actions
+
+1. **Create GenerateContentRequest** to validate content generation requests:
+
+The request dynamically adds validation rules based on the selected template's required variables. This ensures all template variables are provided before generation starts.
+
+### Why It Works
+
+Form requests centralize validation logic and provide clear error messages. Dynamic rule generation based on template variables makes the API flexible—different templates can require different fields without code changes. The `authorize()` method returns `true` because Sanctum middleware handles authentication before the request reaches validation.
+
+### Expected Result
+
+You'll have validation that:
+- Ensures all required template variables are provided
+- Validates model names, temperature, and token limits
+- Returns clear error messages for missing or invalid data
+
+## Request Validation Classes
+
+### GenerateContentRequest
+
+```php
+<?php
+# filename: app/Http/Requests/Api/GenerateContentRequest.php
+declare(strict_types=1);
+
+namespace App\Http\Requests\Api;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class GenerateContentRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true; // Authorization handled by Sanctum middleware
+    }
+
+    public function rules(): array
+    {
+        $template = \App\Models\ContentTemplate::find($this->template_id);
+
+        $rules = [
+            'template_id' => 'required|exists:content_templates,id',
+            'brand_voice_id' => 'nullable|exists:brand_voices,id',
+            'parameters' => 'nullable|array',
+            'parameters.model' => 'nullable|string|in:claude-opus-4-20250514,claude-sonnet-4-20250514,claude-haiku-4-20250514',
+            'parameters.temperature' => 'nullable|numeric|min:0|max:1',
+            'parameters.max_tokens' => 'nullable|integer|min:1|max:4096',
+        ];
+
+        // Add rules for template variables
+        if ($template) {
+            foreach ($template->variables as $variable) {
+                $rules[$variable] = 'required|string';
+            }
+        }
+
+        return $rules;
+    }
+
+    public function messages(): array
+    {
+        return [
+            'template_id.required' => 'Please select a content template.',
+            'template_id.exists' => 'The selected template does not exist.',
+        ];
+    }
+}
+```
+
+### StoreBrandVoiceRequest
+
+```php
+<?php
+# filename: app/Http/Requests/Api/StoreBrandVoiceRequest.php
+declare(strict_types=1);
+
+namespace App\Http\Requests\Api;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class StoreBrandVoiceRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true; // Authorization handled by Sanctum middleware
+    }
+
+    public function rules(): array
+    {
+        return [
+            'name' => 'required|string|max:255',
+            'description' => 'required|string|max:1000',
+            'characteristics' => 'required|array',
+            'characteristics.tone' => 'required|string',
+            'characteristics.style' => 'required|string',
+            'characteristics.language_level' => 'nullable|string',
+            'do_examples' => 'nullable|array',
+            'do_examples.*' => 'string|max:500',
+            'dont_examples' => 'nullable|array',
+            'dont_examples.*' => 'string|max:500',
+            'keywords' => 'nullable|array',
+            'keywords.*' => 'string|max:50',
+            'avoid_words' => 'nullable|array',
+            'avoid_words.*' => 'string|max:50',
+            'is_default' => 'nullable|boolean',
+        ];
+    }
+}
+```
+
 ## API Resources
+
+### ContentTemplateResource
+
+```php
+<?php
+# filename: app/Http/Resources/ContentTemplateResource.php
+declare(strict_types=1);
+
+namespace App\Http\Resources;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class ContentTemplateResource extends JsonResource
+{
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'type' => $this->type,
+            'description' => $this->description,
+            'variables' => $this->variables,
+            'constraints' => $this->constraints,
+            'style_guide' => $this->style_guide,
+            'is_active' => $this->is_active,
+            'created_at' => $this->created_at,
+        ];
+    }
+}
+```
+
+### BrandVoiceResource
+
+```php
+<?php
+# filename: app/Http/Resources/BrandVoiceResource.php
+declare(strict_types=1);
+
+namespace App\Http\Resources;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class BrandVoiceResource extends JsonResource
+{
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'description' => $this->description,
+            'characteristics' => $this->characteristics,
+            'do_examples' => $this->do_examples,
+            'dont_examples' => $this->dont_examples,
+            'keywords' => $this->keywords,
+            'avoid_words' => $this->avoid_words,
+            'is_default' => $this->is_default,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+        ];
+    }
+}
+```
 
 ### ContentGenerationResource
 
@@ -787,6 +1145,34 @@ class ContentGenerationResource extends JsonResource
 }
 ```
 
+### Why It Works
+
+API Resources transform Eloquent models into JSON responses with conditional fields. The `when()` method only includes data when conditions are met (e.g., showing generated content only when status is 'completed'). This keeps responses clean and secure—users only see data they're authorized to view.
+
+## Step 6: Configure API Routes and Middleware (~10 min)
+
+### Goal
+
+Set up API routes with proper authentication, rate limiting, and versioning.
+
+### Actions
+
+1. **Add routes to `routes/api.php`**:
+
+Routes are grouped under `/api/v1` prefix for versioning. Sanctum middleware ensures only authenticated users can access endpoints. Rate limiting prevents abuse—60 requests per minute for single generation, 10 per minute for batch operations.
+
+### Why It Works
+
+Route versioning (`/v1`) allows future API changes without breaking existing clients. Sanctum provides token-based authentication perfect for API access. Rate limiting uses Laravel's throttle middleware to prevent abuse and ensure fair usage. The `apiResource` helper automatically creates RESTful routes for brand voices (index, store, show, update, destroy).
+
+### Expected Result
+
+You'll have API endpoints that:
+- Require authentication via Bearer tokens
+- Enforce rate limits to prevent abuse
+- Follow RESTful conventions
+- Support versioning for future changes
+
 ## API Routes
 
 ```php
@@ -815,6 +1201,30 @@ Route::prefix('v1')->middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('brand-voices', BrandVoiceController::class);
 });
 ```
+
+## Step 7: Implement Async Job Processing (~10 min)
+
+### Goal
+
+Create a queue job for asynchronous content generation to avoid blocking API requests.
+
+### Actions
+
+1. **Create GenerateContentJob** for async processing:
+
+The job receives generation and brand voice IDs (not full models) to minimize serialization size. After generation completes, it dispatches a webhook notification job if the user has configured a webhook URL.
+
+### Why It Works
+
+Queue jobs allow long-running operations (like AI generation) to run in the background without blocking HTTP requests. This improves API response times and user experience. Jobs are serialized and stored in the queue, so only IDs are passed to minimize payload size. The webhook notification is dispatched as a separate job to avoid blocking the generation job if webhook delivery is slow.
+
+### Expected Result
+
+You'll have async processing that:
+- Handles long-running generations without blocking
+- Sends webhook notifications when complete
+- Retries automatically on failure
+- Scales horizontally with multiple queue workers
 
 ## Job for Async Generation
 
@@ -867,6 +1277,91 @@ class GenerateContentJob implements ShouldQueue
     }
 }
 ```
+
+### Webhook Notification Job
+
+The webhook job is referenced but not implemented. Here's the complete implementation:
+
+```php
+<?php
+# filename: app/Jobs/SendWebhookNotification.php
+declare(strict_types=1);
+
+namespace App\Jobs;
+
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+
+class SendWebhookNotification implements ShouldQueue
+{
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public int $tries = 3;
+    public int $backoff = 60; // Wait 60 seconds between retries
+
+    public function __construct(
+        private readonly string $webhookUrl,
+        private readonly array $payload
+    ) {}
+
+    public function handle(): void
+    {
+        try {
+            $response = Http::timeout(10)
+                ->retry(2, 100) // Retry 2 more times (3 total)
+                ->post($this->webhookUrl, $this->payload);
+
+            if (!$response->successful()) {
+                Log::warning('Webhook delivery failed', [
+                    'url' => $this->webhookUrl,
+                    'status' => $response->status(),
+                    'payload' => $this->payload,
+                ]);
+                throw new \RuntimeException("Webhook delivery failed with status: {$response->status()}");
+            }
+        } catch (\Exception $e) {
+            Log::error('Webhook notification error', [
+                'url' => $this->webhookUrl,
+                'error' => $e->getMessage(),
+                'payload' => $this->payload,
+            ]);
+            throw $e; // Re-throw to trigger job retry
+        }
+    }
+}
+```
+
+### Why It Works
+
+The webhook job runs in a separate queue, so failures don't block content generation. The `$tries` property limits retry attempts, and `$backoff` adds delays between retries to avoid overwhelming webhook endpoints. HTTP retries handle transient network issues, while job retries handle persistent failures. Logging helps debug webhook delivery issues.
+
+## Step 8: Create Template Seeders (~5 min)
+
+### Goal
+
+Seed the database with example templates that users can immediately use.
+
+### Actions
+
+1. **Create ContentTemplateSeeder** with example templates:
+
+The seeder creates three common template types: blog posts, product descriptions, and social media posts. Each template includes variables, constraints, and style guides that demonstrate the system's capabilities.
+
+### Why It Works
+
+Seeders provide example data that helps users understand the system quickly. Templates use HEREDOC syntax for multi-line prompt templates, making them easy to read and modify. Variables are defined as arrays, constraints and style guides as associative arrays—this structure matches how the `renderPrompt()` method processes them.
+
+### Expected Result
+
+After running `php artisan db:seed --class=ContentTemplateSeeder`, you'll have:
+- Three ready-to-use content templates
+- Examples of different template types
+- Demonstrations of variables, constraints, and style guides
 
 ## Seeder for Templates
 
@@ -971,6 +1466,118 @@ PROMPT,
 }
 ```
 
+## Step 9: Add Result Caching (~10 min)
+
+### Goal
+
+Implement caching for identical generation requests to reduce API costs and improve response times.
+
+### Actions
+
+1. **Add caching to ContentGenerationService**:
+
+```php
+<?php
+# Add to ContentGenerationService.php
+
+use Illuminate\Support\Facades\Cache;
+
+public function generateFromTemplate(
+    ContentTemplate $template,
+    array $data,
+    int $userId,
+    ?BrandVoice $brandVoice = null
+): ContentGeneration {
+    // Create cache key from template, data, and brand voice
+    $cacheKey = 'generation:' . md5(
+        $template->id . 
+        serialize($data) . 
+        ($brandVoice?->id ?? 'none')
+    );
+
+    // Check cache first
+    $cached = Cache::get($cacheKey);
+    if ($cached) {
+        // Return existing generation
+        return ContentGeneration::findOrFail($cached);
+    }
+
+    $prompt = $template->renderPrompt($data);
+
+    $generation = ContentGeneration::create([
+        'user_id' => $userId,
+        'template_id' => $template->id,
+        'type' => $template->type,
+        'prompt' => $prompt,
+        'parameters' => $data['parameters'] ?? [],
+        'status' => 'pending',
+    ]);
+
+    $this->generate($generation, $brandVoice);
+
+    // Cache successful generations for 24 hours
+    if ($generation->status === 'completed') {
+        Cache::put($cacheKey, $generation->id, now()->addHours(24));
+    }
+
+    return $generation->fresh();
+}
+```
+
+### Why It Works
+
+Caching identical requests prevents redundant API calls. The cache key includes template ID, data, and brand voice ID, ensuring different configurations get different results. Only completed generations are cached to avoid caching failures. The 24-hour TTL balances freshness with cost savings.
+
+### Expected Result
+
+You'll have caching that:
+- Reduces API costs for repeated requests
+- Improves response times for cached results
+- Only caches successful generations
+- Respects different configurations
+
+## Step 10: Test the API (~10 min)
+
+### Goal
+
+Verify the API works end-to-end by making actual requests.
+
+### Actions
+
+1. **Run migrations and seeders**:
+
+```bash
+php artisan migrate
+php artisan db:seed --class=ContentTemplateSeeder
+```
+
+2. **Create a test user and generate a token** (or use Sanctum's token generation):
+
+```bash
+php artisan tinker
+```
+
+```php
+$user = \App\Models\User::first();
+$token = $user->createToken('api-token')->plainTextToken;
+echo $token;
+```
+
+3. **Test the API** using the curl commands in the Usage Example section below.
+
+### Why It Works
+
+Testing with real requests validates the entire stack: authentication, validation, service logic, and response formatting. The token-based authentication allows testing without browser sessions, perfect for API development.
+
+### Expected Result
+
+You'll be able to:
+- Authenticate with Bearer tokens
+- List available templates
+- Generate content from templates
+- View generation status and results
+- See usage statistics and costs
+
 ## Usage Example
 
 ```bash
@@ -1005,6 +1612,10 @@ curl -X POST https://api.example.com/v1/generate \
   }
 }
 ```
+
+### Why It Works
+
+The API returns a structured JSON response with generation data, status, usage statistics, and costs. The `ContentGenerationResource` formats the response consistently, including conditional fields based on status and authorization. This makes it easy for API clients to parse responses and display results to users.
 
 ## Exercises
 
@@ -1086,6 +1697,286 @@ public function getAnalytics(int $userId, string $period = '30days'): array
 - Implement aggressive result caching
 - Offer preview mode with truncated output
 
+**Webhook not firing?**
+- Verify queue worker is running: `php artisan queue:work`
+- Check job failed table: `php artisan queue:failed`
+- Ensure user has `webhook_url` set in database
+- Check webhook job exists: `app/Jobs/SendWebhookNotification.php`
+
+**Template variables not replacing?**
+- Verify variable names match exactly (case-sensitive)
+- Check template has variables defined in JSON array
+- Ensure data array includes all required variables
+- Use `{variable}` syntax, not `{{variable}}` or `$variable`
+
+**Authorization failing?**
+- Verify policy is registered in `AuthServiceProvider`
+- Check user owns the resource (policy checks `user_id`)
+- Ensure Sanctum middleware is applied to routes
+- Check token is valid and not expired
+
+**Tests failing?**
+- Ensure database is migrated: `php artisan migrate --env=testing`
+- Check factories exist for models
+- Verify Sanctum is configured in test setup
+- Mock Claude API calls to avoid real API usage
+
+## Step 11: Add API Tests (~15 min)
+
+### Goal
+
+Write comprehensive tests for the API endpoints to ensure reliability and catch regressions.
+
+### Actions
+
+1. **Create feature tests** for the API:
+
+```php
+<?php
+# filename: tests/Feature/Api/ContentGenerationTest.php
+declare(strict_types=1);
+
+namespace Tests\Feature\Api;
+
+use App\Models\ContentGeneration;
+use App\Models\ContentTemplate;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
+
+class ContentGenerationTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_can_generate_content_from_template(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $template = ContentTemplate::factory()->create([
+            'variables' => ['topic', 'audience'],
+        ]);
+
+        $response = $this->postJson('/api/v1/generate', [
+            'template_id' => $template->id,
+            'topic' => 'Laravel Best Practices',
+            'audience' => 'PHP developers',
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'type',
+                    'status',
+                    'generated_content',
+                ],
+            ]);
+
+        $this->assertDatabaseHas('content_generations', [
+            'user_id' => $user->id,
+            'template_id' => $template->id,
+            'status' => 'completed',
+        ]);
+    }
+
+    public function test_requires_authentication(): void
+    {
+        $template = ContentTemplate::factory()->create();
+
+        $response = $this->postJson('/api/v1/generate', [
+            'template_id' => $template->id,
+        ]);
+
+        $response->assertStatus(401);
+    }
+
+    public function test_validates_required_template_variables(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $template = ContentTemplate::factory()->create([
+            'variables' => ['topic', 'audience'],
+        ]);
+
+        $response = $this->postJson('/api/v1/generate', [
+            'template_id' => $template->id,
+            'topic' => 'Test',
+            // Missing 'audience'
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['audience']);
+    }
+
+    public function test_user_can_only_view_own_generations(): void
+    {
+        $user1 = User::factory()->create();
+        $user2 = User::factory()->create();
+        Sanctum::actingAs($user1);
+
+        $generation = ContentGeneration::factory()->create([
+            'user_id' => $user2->id,
+        ]);
+
+        $response = $this->getJson("/api/v1/generations/{$generation->id}");
+
+        $response->assertStatus(403);
+    }
+
+    public function test_can_filter_generations_by_status(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        ContentGeneration::factory()->create([
+            'user_id' => $user->id,
+            'status' => 'completed',
+        ]);
+
+        ContentGeneration::factory()->create([
+            'user_id' => $user->id,
+            'status' => 'pending',
+        ]);
+
+        $response = $this->getJson('/api/v1/generations?status=completed');
+
+        $response->assertStatus(200)
+            ->assertJsonCount(1, 'data');
+    }
+}
+```
+
+### Why It Works
+
+Feature tests verify the entire request/response cycle, including authentication, validation, authorization, and database interactions. Using factories creates test data without manual setup. Sanctum's `actingAs()` method simulates authenticated requests. Testing edge cases (missing variables, unauthorized access) ensures the API behaves correctly.
+
+### Expected Result
+
+You'll have tests that:
+- Verify successful content generation
+- Test authentication requirements
+- Validate input data
+- Check authorization policies
+- Test filtering and pagination
+
+## Step 12: Add Authorization Policies (~5 min)
+
+### Goal
+
+Implement authorization policies to ensure users can only access their own content generations.
+
+### Actions
+
+1. **Create ContentGenerationPolicy**:
+
+The policy checks that the user owns the generation before allowing access. This prevents users from viewing or modifying other users' content.
+
+### Why It Works
+
+Laravel policies provide a clean way to centralize authorization logic. The `authorize()` method in controllers automatically uses the policy, making authorization checks consistent across the application. Policies can be easily tested and modified without touching controller code.
+
+### Expected Result
+
+You'll have authorization that:
+- Prevents users from accessing others' generations
+- Works automatically via `authorize()` calls
+- Is easy to test and maintain
+- Can be extended for more complex rules
+
+## Policies
+
+### ContentGenerationPolicy
+
+```php
+<?php
+# filename: app/Policies/ContentGenerationPolicy.php
+declare(strict_types=1);
+
+namespace App\Policies;
+
+use App\Models\ContentGeneration;
+use App\Models\User;
+
+class ContentGenerationPolicy
+{
+    /**
+     * Determine if the user can view the generation.
+     */
+    public function view(User $user, ContentGeneration $generation): bool
+    {
+        return $user->id === $generation->user_id;
+    }
+
+    /**
+     * Determine if the user can update the generation.
+     */
+    public function update(User $user, ContentGeneration $generation): bool
+    {
+        return $user->id === $generation->user_id;
+    }
+
+    /**
+     * Determine if the user can delete the generation.
+     */
+    public function delete(User $user, ContentGeneration $generation): bool
+    {
+        return $user->id === $generation->user_id;
+    }
+}
+```
+
+Register the policy in `app/Providers/AuthServiceProvider.php`:
+
+```php
+<?php
+# filename: app/Providers/AuthServiceProvider.php
+namespace App\Providers;
+
+use App\Models\ContentGeneration;
+use App\Policies\ContentGenerationPolicy;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+
+class AuthServiceProvider extends ServiceProvider
+{
+    protected $policies = [
+        ContentGeneration::class => ContentGenerationPolicy::class,
+    ];
+
+    public function boot(): void
+    {
+        // Policy registration happens automatically
+    }
+}
+```
+
+### Why It Works
+
+Laravel automatically discovers policies when they follow naming conventions (`ModelPolicy` for `Model`). Registering policies in `AuthServiceProvider` makes them available throughout the application. The `authorize()` method in controllers uses these policies automatically.
+
+## Wrap-up
+
+Congratulations! You've built a production-ready content generation API. Here's what you've accomplished:
+
+- ✓ **RESTful API Design** — Clean, versioned API endpoints following REST principles
+- ✓ **Template System** — Flexible templates with variable substitution and constraints
+- ✓ **Brand Voice Management** — Consistent brand voice enforcement across all content
+- ✓ **Batch Generation** — Efficient batch processing with async job queuing
+- ✓ **API Authentication** — Secure authentication using Laravel Sanctum
+- ✓ **Rate Limiting** — Protection against abuse with configurable limits
+- ✓ **Usage Tracking** — Complete tracking of tokens, costs, and generation history
+- ✓ **Cost Calculation** — Transparent pricing based on model usage
+- ✓ **Webhook Notifications** — Async notifications for completed generations
+- ✓ **Request Validation** — Comprehensive validation for all API inputs
+- ✓ **API Resources** — Clean, consistent API response formatting
+- ✓ **Authorization Policies** — Proper access control for user resources
+
+Your content generation API is now ready for production use. The template system enables reusable content patterns, brand voice ensures consistency, and the async job system handles high-volume generation efficiently.
+
+In the next chapter, you'll add AI superpowers to Laravel admin panels, bringing intelligent features to content management systems.
+
 ## Key Takeaways
 
 - ✓ **Template System** enables reusable content patterns
@@ -1096,6 +1987,16 @@ public function getAnalytics(int $userId, string $period = '30days'): array
 - ✓ **Usage Tracking** enables billing
 - ✓ **Async Jobs** handle long operations
 - ✓ **Cost Calculation** supports transparent pricing
+
+## Further Reading
+
+- [Laravel API Resources](https://laravel.com/docs/eloquent-resources) — Official guide to API resource formatting
+- [Laravel Sanctum](https://laravel.com/docs/sanctum) — API authentication for SPAs and mobile applications
+- [Laravel Queue System](https://laravel.com/docs/queues) — Asynchronous job processing
+- [RESTful API Design](https://restfulapi.net/) — Best practices for REST API design
+- [Laravel Request Validation](https://laravel.com/docs/validation) — Form request validation
+- [Laravel Policies](https://laravel.com/docs/authorization#creating-policies) — Authorization policies for resource access
+- [API Rate Limiting](https://laravel.com/docs/routing#rate-limiting) — Throttling API requests
 
 <ChapterCheckbox
   seriesId="claude-php-developers"

@@ -7,6 +7,12 @@ description: Essential syntax, patterns, and examples for rapid development with
 
 > A concise, printable reference for working with Claude AI in PHP applications.
 
+**💡 Tip**: Print this page (Ctrl/Cmd+P) or save as PDF for offline reference. Use browser's "Print to PDF" for best results.
+
+**📚 Need More Details?**
+- [Full Series Index](/series/claude-php-developers/) - Complete 40-chapter series
+- [Learning Roadmap](/series/claude-php-developers/LEARNING-ROADMAP.md) - Structured learning paths
+
 ## 📋 Table of Contents
 
 1. [Basic Setup](#basic-setup)
@@ -15,8 +21,14 @@ description: Essential syntax, patterns, and examples for rapid development with
 4. [Prompt Patterns](#prompt-patterns)
 5. [Tool Use](#tool-use)
 6. [Error Handling](#error-handling)
-7. [Cost Optimization](#cost-optimization)
-8. [Common Patterns](#common-patterns)
+7. [Prompt Caching](#prompt-caching)
+8. [Batch Processing](#batch-processing)
+9. [Cost Optimization](#cost-optimization)
+10. [Vision API](#vision-api-images)
+11. [Structured Outputs](#structured-outputs)
+12. [Common Patterns](#common-patterns)
+13. [Common Gotchas](#common-gotchas)
+14. [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -146,7 +158,7 @@ $prompt = "Write a PHP function that:
 3. [Edge case handling]
 
 Requirements:
-- Use PHP 8.2+ features
+- Use PHP 8.4+ features
 - Include type hints
 - Add PHPDoc comments
 - Handle errors gracefully";
@@ -332,6 +344,65 @@ $response = callClaudeWithRetry(fn() =>
 
 ---
 
+## Prompt Caching
+
+### Use Prompt Caching (5-minute cache)
+```php
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-20250514',
+    'max_tokens' => 1024,
+    'system' => [
+        [
+            'type' => 'text',
+            'text' => 'You are a helpful assistant.',
+            'cache_control' => ['type' => 'ephemeral', 'ttl' => 300] // 5 minutes
+        ]
+    ],
+    'messages' => [
+        ['role' => 'user', 'content' => 'Hello!']
+    ]
+]);
+```
+
+### Use Prompt Caching (1-hour cache)
+```php
+'system' => [
+    [
+        'type' => 'text',
+        'text' => 'Long documentation that repeats...',
+        'cache_control' => ['type' => 'ephemeral', 'ttl' => 3600] // 1 hour
+    ]
+]
+```
+
+---
+
+## Batch Processing
+
+### Create Batch Request
+```php
+// Batch processing saves 50% on costs for async workloads
+$batch = $client->batches()->create([
+    'requests' => [
+        ['model' => 'claude-sonnet-4-20250514', 'max_tokens' => 1024, 'messages' => [...]],
+        ['model' => 'claude-sonnet-4-20250514', 'max_tokens' => 1024, 'messages' => [...]],
+        // ... up to 1000 requests
+    ]
+]);
+
+// Check status
+$status = $client->batches()->retrieve($batch->id);
+
+// Get results when complete
+if ($status->status === 'completed') {
+    foreach ($status->results as $result) {
+        // Process each result
+    }
+}
+```
+
+---
+
 ## Cost Optimization
 
 ### Calculate Cost
@@ -386,11 +457,83 @@ echo "Cost: $" . number_format($cost, 6);
    'max_tokens' => 500  // Instead of 4096 when you only need short responses
    ```
 
-5. **Batch requests**
+5. **Use batch processing API**
    ```php
-   // Process 100 items in one request instead of 100 separate requests
-   $prompt = "Process these items:\n" . implode("\n", $items);
+   // Use Anthropic's batch API for 50% cost savings on async workloads
+   $batch = $client->batches()->create(['requests' => [...]]);
    ```
+
+6. **Use prompt caching**
+   ```php
+   // Cache repeated system prompts for 5 minutes or 1 hour
+   'cache_control' => ['type' => 'ephemeral', 'ttl' => 300]
+   ```
+
+---
+
+## Vision API (Images)
+
+### Analyze Image
+```php
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-20250514',
+    'max_tokens' => 1024,
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => [
+                [
+                    'type' => 'image',
+                    'source' => [
+                        'type' => 'base64',
+                        'media_type' => 'image/jpeg',
+                        'data' => base64_encode(file_get_contents('image.jpg'))
+                    ]
+                ],
+                ['type' => 'text', 'text' => 'What is in this image?']
+            ]
+        ]
+    ]
+]);
+```
+
+### Extract Text from Image
+```php
+$prompt = 'Extract all text from this image and return as structured JSON.';
+// Use same image format as above
+```
+
+---
+
+## Structured Outputs
+
+### With JSON Schema
+```php
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-20250514',
+    'max_tokens' => 1024,
+    'messages' => [
+        ['role' => 'user', 'content' => 'Extract user data from: John Doe, john@example.com']
+    ],
+    'response_format' => [
+        'type' => 'json_schema',
+        'json_schema' => [
+            'name' => 'user_data',
+            'strict' => true,
+            'schema' => [
+                'type' => 'object',
+                'properties' => [
+                    'name' => ['type' => 'string'],
+                    'email' => ['type' => 'string']
+                ],
+                'required' => ['name', 'email']
+            ]
+        ]
+    ]
+]);
+
+$data = json_decode($response->content[0]->text, true);
+```
 
 ---
 
@@ -496,7 +639,7 @@ CLAUDE_TIMEOUT=120
 ```json
 {
     "require": {
-        "php": "^8.2",
+        "php": "^8.4",
         "anthropic-ai/sdk": "^1.0",
         "vlucas/phpdotenv": "^5.5",
         "predis/predis": "^2.0"
@@ -543,13 +686,86 @@ var_dump([
 
 ---
 
+## Common Gotchas
+
+### Response Structure
+```php
+// ✅ CORRECT - Access text content
+$text = $response->content[0]->text;
+
+// ❌ WRONG - content is an array, not a string
+$text = $response->content; // This is an array!
+```
+
+### Tool Use Response Handling
+```php
+// ✅ CORRECT - Check stop_reason first
+if ($response->stopReason === 'tool_use') {
+    // Find tool_use block in content array
+    foreach ($response->content as $block) {
+        if ($block->type === 'tool_use') {
+            // Handle tool call
+        }
+    }
+}
+```
+
+### Token Counting
+```php
+// ✅ CORRECT - Use usage object
+$inputTokens = $response->usage->inputTokens;
+$outputTokens = $response->usage->outputTokens;
+
+// ❌ WRONG - Don't estimate manually
+$estimatedTokens = strlen($prompt) / 4; // Inaccurate!
+```
+
+### Error Handling
+```php
+// ✅ CORRECT - Catch specific exceptions
+use Anthropic\Exceptions\RateLimitException;
+use Anthropic\Exceptions\ErrorException;
+
+try {
+    $response = $client->messages()->create([...]);
+} catch (RateLimitException $e) {
+    // Handle rate limit specifically
+} catch (ErrorException $e) {
+    // Handle API errors
+}
+```
+
+---
+
+## Troubleshooting
+
+### Issue: "Class 'Anthropic\Anthropic' not found"
+**Solution**: Run `composer require anthropic-ai/sdk` and ensure `vendor/autoload.php` is included.
+
+### Issue: "Invalid API key"
+**Solution**: Verify your API key starts with `sk-ant-` and is set in environment variables.
+
+### Issue: "Rate limit exceeded"
+**Solution**: Implement exponential backoff (see Error Handling section) or upgrade your API tier.
+
+### Issue: "Content is empty"
+**Solution**: Check `$response->content` is an array. Access text with `$response->content[0]->text`.
+
+### Issue: "Tool use not working"
+**Solution**: Ensure `tools` array is included in the request and `stopReason` is checked before accessing content.
+
+---
+
 ## Links
 
-- **Full Series**: [Claude for PHP Developers](index.md)
-- **API Docs**: [Anthropic Documentation](https://docs.anthropic.com)
+- **Full Series**: [Claude for PHP Developers](/series/claude-php-developers/)
+- **Learning Roadmap**: [Choose Your Path](/series/claude-php-developers/LEARNING-ROADMAP.md)
+- **API Docs**: [Anthropic Documentation](https://docs.claude.com)
 - **SDK**: [Anthropic PHP SDK](https://github.com/anthropics/anthropic-sdk-php)
 - **Console**: [console.anthropic.com](https://console.anthropic.com)
 
 ---
 
 **Print this reference and keep it handy while developing!** 📄
+
+*Last Updated: 2025*

@@ -4,6 +4,10 @@ import { generateSocialImagePath, getCanonicalUrl } from './theme/utils/seo'
 import { generateCourseSchema, generateLearningResourceSchema, generateWebSiteSchema, generateOrganizationSchema } from './theme/composables/useStructuredData'
 import { generateBreadcrumbSchema } from './theme/composables/useBreadcrumb'
 import mathjax3 from 'markdown-it-mathjax3'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default withMermaid(
   defineConfig({
@@ -155,6 +159,7 @@ export default withMermaid(
             { text: 'Algorithms for PHP Developers', link: '/series/php-algorithms/' },
             { text: 'PHP for Java Developers', link: '/series/php-for-java-developers/' },
             { text: 'AI/ML for PHP Developers', link: '/series/ai-ml-php-developers/' },
+            { text: 'Claude for PHP Developers', link: '/series/claude-php-developers/' },
             { text: 'PHP for TypeScript Developers', link: '/series/php-typescript-developers/' },
             { text: 'Why Python Developers Will Love PHP and Laravel', link: '/series/python-developers-love-php-laravel/' },
             { text: 'Build a CRM with Laravel 12', link: '/series/build-crm-laravel-12/' },
@@ -851,6 +856,104 @@ export default withMermaid(
           }
         ],
 
+        '/series/claude-php-developers/': [
+          { text: 'Overview', link: '/series/claude-php-developers/' },
+          {
+            text: 'Part 0: Getting Started',
+            items: [
+              { text: '00 — Quick Start Guide', link: '/series/claude-php-developers/chapters/00-quick-start-guide' }
+            ]
+          },
+          {
+            text: 'Part 1: Foundation',
+            items: [
+              { text: '01 — Introduction to Claude API', link: '/series/claude-php-developers/chapters/01-introduction-to-claude-api' },
+              { text: '02 — Authentication and API Keys', link: '/series/claude-php-developers/chapters/02-authentication-api-keys' },
+              { text: '03 — Your First Claude Request in PHP', link: '/series/claude-php-developers/chapters/03-first-claude-request' },
+              { text: '04 — Understanding Messages and Conversations', link: '/series/claude-php-developers/chapters/04-messages-conversations' },
+              { text: '05 — Prompt Engineering Basics', link: '/series/claude-php-developers/chapters/05-prompt-engineering-basics' }
+            ]
+          },
+          {
+            text: 'Part 2: Core Concepts',
+            items: [
+              { text: '06 — Streaming Responses in PHP', link: '/series/claude-php-developers/chapters/06-streaming-responses' },
+              { text: '07 — System Prompts and Role Definition', link: '/series/claude-php-developers/chapters/07-system-prompts-roles' },
+              { text: '08 — Temperature and Sampling Parameters', link: '/series/claude-php-developers/chapters/08-temperature-sampling' },
+              { text: '09 — Token Management and Counting', link: '/series/claude-php-developers/chapters/09-token-management' },
+              { text: '10 — Error Handling and Rate Limiting', link: '/series/claude-php-developers/chapters/10-error-handling-rate-limiting' }
+            ]
+          },
+          {
+            text: 'Part 3: Advanced Features',
+            items: [
+              { text: '11 — Tool Use (Function Calling) Fundamentals', link: '/series/claude-php-developers/chapters/11-tool-use-fundamentals' },
+              { text: '12 — Building Custom Tools in PHP', link: '/series/claude-php-developers/chapters/12-building-custom-tools' },
+              { text: '13 — Vision - Working with Images', link: '/series/claude-php-developers/chapters/13-vision-images' },
+              { text: '14 — Document Processing and PDF Analysis', link: '/series/claude-php-developers/chapters/14-document-processing' },
+              { text: '15 — Structured Outputs with JSON', link: '/series/claude-php-developers/chapters/15-structured-outputs' }
+            ]
+          },
+          {
+            text: 'Part 4: PHP Integration Patterns',
+            items: [
+              { text: '16 — The Official PHP SDK', link: '/series/claude-php-developers/chapters/16-official-php-sdk' },
+              { text: '17 — Building a Claude Service Class', link: '/series/claude-php-developers/chapters/17-claude-service-class' },
+              { text: '18 — Caching Strategies for API Calls', link: '/series/claude-php-developers/chapters/18-caching-strategies' },
+              { text: '19 — Queue-Based Processing with Laravel', link: '/series/claude-php-developers/chapters/19-queue-processing-laravel' },
+              { text: '20 — Real-time Chat with WebSockets', link: '/series/claude-php-developers/chapters/20-realtime-chat-websockets' }
+            ]
+          },
+          {
+            text: 'Part 5: Laravel Deep Dive',
+            items: [
+              { text: '21 — Laravel Integration Patterns', link: '/series/claude-php-developers/chapters/21-laravel-integration' },
+              { text: '22 — Building a Chatbot with Laravel', link: '/series/claude-php-developers/chapters/22-chatbot-laravel' },
+              { text: '23 — Claude-Powered Form Validation', link: '/series/claude-php-developers/chapters/23-ai-form-validation' },
+              { text: '24 — Content Generation API', link: '/series/claude-php-developers/chapters/24-content-generation-api' },
+              { text: '25 — Admin Panel with AI Features', link: '/series/claude-php-developers/chapters/25-admin-panel-ai' }
+            ]
+          },
+          {
+            text: 'Part 6: Real-World Applications',
+            items: [
+              { text: '26 — Building a Code Review Assistant', link: '/series/claude-php-developers/chapters/26-code-review-assistant' },
+              { text: '27 — Documentation Generator', link: '/series/claude-php-developers/chapters/27-documentation-generator' },
+              { text: '28 — Customer Support Bot', link: '/series/claude-php-developers/chapters/28-customer-support-bot' },
+              { text: '29 — Content Moderation System', link: '/series/claude-php-developers/chapters/29-content-moderation' },
+              { text: '30 — Data Extraction and Analysis', link: '/series/claude-php-developers/chapters/30-data-extraction' }
+            ]
+          },
+          {
+            text: 'Part 7: Advanced Techniques',
+            items: [
+              { text: '31 — Retrieval Augmented Generation (RAG)', link: '/series/claude-php-developers/chapters/31-retrieval-augmented-generation' },
+              { text: '32 — Vector Databases in PHP', link: '/series/claude-php-developers/chapters/32-vector-databases' },
+              { text: '33 — Multi-Agent Systems', link: '/series/claude-php-developers/chapters/33-multi-agent-systems' },
+              { text: '34 — Prompt Chaining and Workflows', link: '/series/claude-php-developers/chapters/34-prompt-chaining-workflows' },
+              { text: '35 — Fine-tuning Strategies', link: '/series/claude-php-developers/chapters/35-fine-tuning-strategies' }
+            ]
+          },
+          {
+            text: 'Part 8: Production & Deployment',
+            items: [
+              { text: '36 — Security Best Practices', link: '/series/claude-php-developers/chapters/36-security-best-practices' },
+              { text: '37 — Monitoring and Observability', link: '/series/claude-php-developers/chapters/37-monitoring-observability' },
+              { text: '38 — Scaling Claude Applications', link: '/series/claude-php-developers/chapters/38-scaling-applications' },
+              { text: '39 — Cost Optimization and Billing', link: '/series/claude-php-developers/chapters/39-cost-optimization' }
+            ]
+          },
+          {
+            text: 'Appendices',
+            items: [
+              { text: 'Appendix A — API Reference Quick Guide', link: '/series/claude-php-developers/appendices/a-api-reference' },
+              { text: 'Appendix B — Common Prompting Patterns', link: '/series/claude-php-developers/appendices/b-prompting-patterns' },
+              { text: 'Appendix C — Error Codes and Troubleshooting', link: '/series/claude-php-developers/appendices/c-error-codes' },
+              { text: 'Appendix D — Resources and Further Reading', link: '/series/claude-php-developers/appendices/d-resources' }
+            ]
+          }
+        ],
+
         '/series/php-for-java-developers/': [
           { text: 'Overview', link: '/series/php-for-java-developers/' },
           {
@@ -980,6 +1083,16 @@ export default withMermaid(
     },
     mermaid: {
       theme: 'default'
+    },
+    vite: {
+      server: {
+        hmr: {
+          overlay: false // Disable error overlay for HMR type cache issues
+        }
+      },
+      optimizeDeps: {
+        include: ['vue']
+      }
     }
   })
 )

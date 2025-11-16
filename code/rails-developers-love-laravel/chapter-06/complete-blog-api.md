@@ -394,3 +394,7 @@ $posts = Post::select('id', 'title', 'excerpt', 'published_at')
 - [ ] Set up backups
 - [ ] Configure HTTPS/SSL
 
+
+
+
+

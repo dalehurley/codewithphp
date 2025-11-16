@@ -69,15 +69,18 @@ This document provides a complete overview of all code samples created for the t
 ## Chapter Breakdown
 
 ### Chapter 01: Mapping Concepts - Rails vs Laravel
+
 **Status**: ✅ Complete
 
 **Files**:
+
 - `rails-routing-example.rb` (35 lines) - Rails routes setup
 - `laravel-routing-example.php` (42 lines) - Laravel equivalent routes
 - `rails-model-example.rb` (49 lines) - Rails ActiveRecord models
 - `laravel-model-example.php` (80 lines) - Laravel Eloquent models
 
 **Key Concepts**:
+
 - Routing differences
 - Model definition and relationships
 - Scopes and validation
@@ -88,14 +91,17 @@ This document provides a complete overview of all code samples created for the t
 ---
 
 ### Chapter 02: Modern PHP - What's Changed
+
 **Status**: ✅ Complete
 
 **Files**:
+
 - `01-type-safety-example.php` (95 lines) - Type declarations, strict typing, union types
 - `02-property-hooks-example.php` (130 lines) - PHP 8.4 property hooks, computed properties, lazy loading
 - `03-enums-example.php` (130 lines) - Enums with methods, backing values, exhaustive matching
 
 **Key Features**:
+
 - Type safety with strict declarations
 - Return type hints
 - Property hooks (PHP 8.4)
@@ -114,15 +120,18 @@ php chapter-02/03-enums-example.php
 ---
 
 ### Chapter 03: Laravel Developer Experience
+
 **Status**: ✅ Complete
 
 **Files**:
+
 - `CustomCommand.php` (140 lines) - 3 Artisan command examples
   - `SendDigest` - Simple command with progress bar
   - `CreateUser` - Interactive command with user input
   - `SetupEnvironment` - Command with choice selection
 
 **Key Features**:
+
 - Artisan command signature
 - Progress bars
 - User input and validation
@@ -135,12 +144,15 @@ php chapter-02/03-enums-example.php
 ---
 
 ### Chapter 04: PHP Syntax for Rails Developers
+
 **Status**: ✅ Complete
 
 **Files**:
+
 - `SyntaxComparisons.php` (260 lines) - Side-by-side syntax examples
 
 **Topics Covered**:
+
 - Variables
 - Arrays and array functions
 - Control flow (if/elseif/else)
@@ -160,12 +172,15 @@ php chapter-04/SyntaxComparisons.php
 ---
 
 ### Chapter 05: Working with Data - Eloquent ORM
+
 **Status**: ✅ Complete
 
 **Files**:
+
 - `EloquentExamples.php` (200 lines) - Eloquent patterns and examples
 
 **Topics Covered**:
+
 - Basic queries (all, first, find, where)
 - Advanced queries (like, orderBy, limit, paginate)
 - Query scopes
@@ -182,12 +197,15 @@ php chapter-04/SyntaxComparisons.php
 ---
 
 ### Chapter 06: Building REST APIs
+
 **Status**: ✅ Complete
 
 **Files**:
+
 - `complete-blog-api.md` (400+ lines) - Complete API documentation and examples
 
 **Sections**:
+
 - API endpoints (auth, posts, comments, tags)
 - cURL usage examples
 - Request/response formats
@@ -203,48 +221,58 @@ php chapter-04/SyntaxComparisons.php
 ---
 
 ### Chapter 10: Hands-On Mini Project - TaskMaster
+
 **Status**: ✅ Complete
 
 **Complete Application Structure**:
 
 **Models** (4 files, ~70 lines total):
+
 - `Task.php` - With relationships, scopes, and helper methods
 - `User.php` - Sanctum integration
 - `Category.php` - Many-to-many relationships
 - `Tag.php` - Many-to-many relationships
 
 **Controllers** (4 files, ~280 lines total):
+
 - `AuthController.php` - Register, login, logout, get user
 - `TaskController.php` - Full CRUD with filtering
 - `CategoryController.php` - Category management
 - `TagController.php` - Tag management
 
 **Policies** (1 file, ~25 lines):
+
 - `TaskPolicy.php` - Authorization for tasks
 
 **Routes** (1 file, ~30 lines):
+
 - `routes-api.php` - Complete API routing
 
 **Factories** (3 files, ~70 lines total):
+
 - `TaskFactory.php` - Generate test tasks
 - `CategoryFactory.php` - Generate test categories
 - `TagFactory.php` - Generate test tags
 
 **Migrations** (3 files, ~60 lines total):
+
 - `create_tasks_table.php` - Tasks schema
 - `create_categories_table.php` - Categories schema
 - `create_task_category_table.php` - Pivot table
 
 **Seeders** (1 file, ~55 lines):
+
 - `DatabaseSeeder.php` - Populate database with test data
 
 **Tests** (2 files, ~120 lines total):
+
 - `TaskTest.php` - 9 test cases for task operations
 - `AuthTest.php` - 7 test cases for authentication
 
 **README.md** - Complete project documentation
 
 **Features**:
+
 - ✅ User authentication (registration, login, logout)
 - ✅ Task CRUD operations
 - ✅ Many-to-many relationships (categories, tags)
@@ -256,7 +284,8 @@ php chapter-04/SyntaxComparisons.php
 - ✅ Database factories and seeders
 - ✅ Production-ready code
 
-**Testing**: 
+**Testing**:
+
 ```bash
 # All tests
 php artisan test
@@ -272,20 +301,21 @@ php artisan test tests/Feature/Api/TaskTest.php
 
 ## Code Statistics
 
-| Chapter | Files | Lines | Status |
-|---------|-------|-------|--------|
-| Ch 01   | 4     | 206   | ✅     |
-| Ch 02   | 3     | 355   | ✅     |
-| Ch 03   | 1     | 140   | ✅     |
-| Ch 04   | 1     | 260   | ✅     |
-| Ch 05   | 1     | 200   | ✅     |
-| Ch 06   | 1     | 400+  | ✅     |
-| Ch 10   | 21    | 1000+ | ✅     |
+| Chapter   | Files  | Lines      | Status |
+| --------- | ------ | ---------- | ------ |
+| Ch 01     | 4      | 206        | ✅     |
+| Ch 02     | 3      | 355        | ✅     |
+| Ch 03     | 1      | 140        | ✅     |
+| Ch 04     | 1      | 260        | ✅     |
+| Ch 05     | 1      | 200        | ✅     |
+| Ch 06     | 1      | 400+       | ✅     |
+| Ch 10     | 21     | 1000+      | ✅     |
 | **Total** | **32** | **2,561+** | **✅** |
 
 ## Running the Examples
 
 ### Chapter 02 - Modern PHP Features
+
 ```bash
 cd chapter-02
 php 01-type-safety-example.php
@@ -294,6 +324,7 @@ php 03-enums-example.php
 ```
 
 ### Chapter 04 - Syntax Comparisons
+
 ```bash
 cd chapter-04
 php SyntaxComparisons.php
@@ -302,6 +333,7 @@ php SyntaxComparisons.php
 ### Chapter 10 - Complete Application
 
 1. Copy all files to a new Laravel project:
+
 ```bash
 composer create-project laravel/laravel taskmaster
 cd taskmaster
@@ -310,6 +342,7 @@ php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
 ```
 
 2. Copy code samples:
+
 ```bash
 # Copy models, controllers, factories, etc.
 # Run migrations
@@ -341,6 +374,7 @@ cp -r chapter-02 /testing/rails-developers-love-laravel/
 ## Dependencies
 
 ### For Chapter 10 (TaskMaster):
+
 - Laravel 12
 - PHP 8.4+
 - Composer
@@ -348,6 +382,7 @@ cp -r chapter-02 /testing/rails-developers-love-laravel/
 - Pest (for testing)
 
 ### For Other Chapters:
+
 - PHP 8.4+ (for chapters 02, 04)
 - Laravel 12 (for chapter 03, full chapter 10)
 
@@ -372,6 +407,7 @@ cp -r chapter-02 /testing/rails-developers-love-laravel/
 ## Future Enhancements
 
 Suggested additions:
+
 - [ ] File upload examples (images, PDFs)
 - [ ] Email notification examples
 - [ ] Queue job examples
@@ -386,4 +422,7 @@ Suggested additions:
 **PHP Version**: 8.4+  
 **Laravel Version**: 12.x  
 **Status**: Production-Ready ✅
+
+
+
 

@@ -32,7 +32,26 @@ Fine-tuning adapts a pre-trained model to your specific use case by training it 
 
 You'll learn to prepare high-quality training datasets, evaluate fine-tuned models, calculate ROI, and deploy fine-tuned models in production. We'll cover the complete lifecycle from initial assessment through deployment and monitoring.
 
-**What You'll Build**: A decision framework for model customization, dataset preparation tools, evaluation pipelines, and deployment strategies for fine-tuned models.
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- **Decision framework** for choosing between fine-tuning, prompt engineering, RAG, and hybrid approaches
+- **Dataset preparation pipeline** with quality assessment, cleaning, formatting, and train/validation/test splitting
+- **Model evaluation system** with multiple metrics, comparison tools, and performance analysis
+- **Cost-benefit analyzer** for calculating ROI, break-even points, and long-term value
+- **Production-ready fine-tuning tools** that can be integrated into your Claude applications
+
+## Objectives
+
+By completing this chapter, you will:
+
+- Understand when fine-tuning is appropriate versus prompt engineering or RAG
+- Prepare high-quality training datasets with proper validation and quality checks
+- Evaluate fine-tuned models using systematic metrics and comparison tools
+- Calculate ROI and make data-driven decisions about fine-tuning investments
+- Implement production-ready fine-tuning workflows and deployment strategies
+- Apply hybrid approaches that combine multiple customization techniques
 
 ## Prerequisites
 
@@ -44,6 +63,80 @@ Before starting, ensure you have:
 - ✓ **Evaluation metrics knowledge** for assessment
 
 **Estimated Time**: 90-120 minutes
+
+**Verify your setup:**
+
+```bash
+# Check PHP version
+php --version
+
+# Verify you have access to Claude API
+php -r "echo getenv('ANTHROPIC_API_KEY') ? 'API key found' : 'API key not set';"
+```
+
+## Quick Start
+
+Here's a quick 5-minute example demonstrating the decision framework:
+
+```php
+<?php
+# filename: examples/quick-start-fine-tuning.php
+declare(strict_types=1);
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use App\FineTuning\DecisionFramework;
+use App\FineTuning\UseCase;
+
+// Create a use case
+$useCase = new UseCase(
+    name: 'Email Classification',
+    taskComplexity: 'simple',
+    dataAvailability: 'low',
+    dataQuality: 'medium',
+    volumePerDay: 1000,
+    budgetConstraint: 'low',
+    timeToMarket: 'urgent',
+    requiresFactualAccuracy: false,
+    requiresConsistency: true,
+    requiresSpecializedBehavior: false,
+    hasKnowledgeBase: false,
+    dataChangesFrequently: true,
+    requiresCitations: false,
+    requiresFlexibility: true,
+    domainSpecific: false
+);
+
+// Analyze the use case
+$framework = new DecisionFramework();
+$decision = $framework->analyze($useCase);
+
+echo "Recommendation: {$decision->recommendation}\n\n";
+echo "Scores:\n";
+foreach ($decision->scores as $approach => $score) {
+    echo sprintf("  %-20s: %.2f\n", $approach, $score);
+}
+```
+
+Run this example:
+
+```bash
+php examples/quick-start-fine-tuning.php
+```
+
+Expected output:
+
+```
+Recommendation: prompt_engineering
+
+Scores:
+  prompt_engineering  : 0.90
+  rag                  : 0.50
+  fine_tuning          : 0.30
+  hybrid               : 0.32
+```
+
+This quick example shows how the decision framework evaluates your use case and recommends the best approach.
 
 ## Decision Framework
 
@@ -944,6 +1037,691 @@ echo "ROI: " . number_format($roi->roi, 1) . "%\n\n";
 echo "Recommendation: {$roi->recommendation}\n";
 ```
 
+## Production Deployment & Model Management
+
+Deploying fine-tuned models to production requires careful version management, performance monitoring, and gradual rollout strategies.
+
+```php
+<?php
+# filename: src/FineTuning/ModelDeployment.php
+declare(strict_types=1);
+
+namespace App\FineTuning;
+
+use Anthropic\Anthropic;
+
+class ModelDeployment
+{
+    public function __construct(
+        private Anthropic $claude
+    ) {}
+
+    /**
+     * Deploy fine-tuned model with A/B testing
+     */
+    public function deployWithABTesting(
+        string $fineTunedModelId,
+        string $baselineModelId,
+        float $fineTunedTraffic = 0.1, // Start with 10%
+        array $testMetrics = ['accuracy', 'latency']
+    ): DeploymentResult {
+        $trafficSplit = [
+            'baseline' => 1.0 - $fineTunedTraffic,
+            'fine_tuned' => $fineTunedTraffic
+        ];
+
+        return new DeploymentResult(
+            status: 'deployed',
+            modelId: $fineTunedModelId,
+            baselineModelId: $baselineModelId,
+            trafficSplit: $trafficSplit,
+            testMetrics: $testMetrics,
+            deploymentTime: now()
+        );
+    }
+
+    /**
+     * Compare model performance with statistical significance
+     */
+    public function compareModels(
+        array $fineTunedResults,
+        array $baselineResults,
+        float $significanceLevel = 0.05
+    ): ComparisonAnalysis {
+        $fineMetrics = $this->calculateMetrics($fineTunedResults);
+        $baselineMetrics = $this->calculateMetrics($baselineResults);
+
+        $improvements = [];
+        foreach ($fineMetrics as $metric => $fineValue) {
+            $baseValue = $baselineMetrics[$metric] ?? 0;
+            $improvement = (($fineValue - $baseValue) / $baseValue) * 100;
+
+            $pValue = $this->calculatePValue($fineTunedResults, $baselineResults, $metric);
+            $isSignificant = $pValue < $significanceLevel;
+
+            $improvements[$metric] = [
+                'baseline' => $baseValue,
+                'fine_tuned' => $fineValue,
+                'improvement_percent' => $improvement,
+                'p_value' => $pValue,
+                'is_significant' => $isSignificant
+            ];
+        }
+
+        return new ComparisonAnalysis(
+            improvements: $improvements,
+            recommendation: $this->generateRecommendation($improvements)
+        );
+    }
+
+    /**
+     * Model versioning for rollback capability
+     */
+    public function versionModel(
+        string $modelId,
+        string $version,
+        array $metadata = []
+    ): ModelVersion {
+        return new ModelVersion(
+            modelId: $modelId,
+            version: $version,
+            createdAt: now(),
+            metadata: $metadata,
+            performance: []
+        );
+    }
+
+    /**
+     * Gradual traffic shift (canary deployment)
+     */
+    public function canaryDeployment(
+        string $fineTunedModelId,
+        string $baselineModelId,
+        array $trafficSchedule = [
+            '0:00' => 0.05,   // 5% at start
+            '1:00' => 0.10,   // 10% after 1 hour
+            '4:00' => 0.25,   // 25% after 4 hours
+            '8:00' => 0.50,   // 50% after 8 hours
+            '24:00' => 1.00   // 100% after 1 day
+        ]
+    ): CanaryDeploymentPlan {
+        return new CanaryDeploymentPlan(
+            fineTunedModelId: $fineTunedModelId,
+            baselineModelId: $baselineModelId,
+            trafficSchedule: $trafficSchedule,
+            status: 'scheduled',
+            startTime: now()
+        );
+    }
+
+    private function calculateMetrics(array $results): array
+    {
+        $accuracy = count(array_filter($results, fn($r) => $r['correct'])) / count($results);
+        $avgLatency = array_sum(array_column($results, 'latency')) / count($results);
+
+        return [
+            'accuracy' => $accuracy,
+            'latency' => $avgLatency
+        ];
+    }
+
+    private function calculatePValue(array $group1, array $group2, string $metric): float
+    {
+        // Simple t-test approximation
+        $values1 = array_column($group1, 'score');
+        $values2 = array_column($group2, 'score');
+
+        $mean1 = array_sum($values1) / count($values1);
+        $mean2 = array_sum($values2) / count($values2);
+
+        $variance1 = $this->calculateVariance($values1, $mean1);
+        $variance2 = $this->calculateVariance($values2, $mean2);
+
+        $t = ($mean1 - $mean2) / sqrt(($variance1 / count($values1)) + ($variance2 / count($values2)));
+
+        // Approximate p-value (simplified)
+        return 2 * (1 - $this->normalCDF(abs($t)));
+    }
+
+    private function calculateVariance(array $values, float $mean): float
+    {
+        $squareDiffs = array_map(fn($x) => pow($x - $mean, 2), $values);
+        return array_sum($squareDiffs) / count($values);
+    }
+
+    private function normalCDF(float $x): float
+    {
+        return 0.5 * (1 + erf($x / sqrt(2)));
+    }
+
+    private function generateRecommendation(array $improvements): string
+    {
+        $significant = array_filter($improvements, fn($m) => $m['is_significant']);
+
+        if (empty($significant)) {
+            return 'Not recommended - no statistically significant improvement';
+        }
+
+        $avgImprovement = array_sum(array_column($significant, 'improvement_percent')) / count($significant);
+
+        if ($avgImprovement > 10) {
+            return 'Highly recommended - significant improvements detected';
+        }
+
+        return 'Recommended - modest improvements detected';
+    }
+}
+```
+
+## Retraining & Continuous Improvement
+
+Monitor model performance and retrain when drift is detected.
+
+```php
+<?php
+# filename: src/FineTuning/ModelMonitoring.php
+declare(strict_types=1);
+
+namespace App\FineTuning;
+
+use Anthropic\Anthropic;
+
+class ModelMonitoring
+{
+    public function __construct(
+        private Anthropic $claude
+    ) {}
+
+    /**
+     * Detect data drift in production
+     */
+    public function detectDataDrift(
+        array $productionData,
+        array $trainingDataDistribution,
+        float $driftThreshold = 0.1
+    ): DriftReport {
+        $driftMetrics = [];
+
+        foreach ($trainingDataDistribution as $feature => $baseline) {
+            $current = $this->analyzeFeatureDistribution($productionData, $feature);
+            $divergence = $this->calculateJSDivergence($baseline, $current);
+
+            $driftMetrics[$feature] = [
+                'divergence' => $divergence,
+                'is_drifted' => $divergence > $driftThreshold,
+                'recommendation' => $divergence > $driftThreshold ? 'retrain_needed' : 'monitor'
+            ];
+        }
+
+        $shouldRetrain = count(array_filter($driftMetrics, fn($m) => $m['is_drifted'])) > 0;
+
+        return new DriftReport(
+            detectedAt: now(),
+            driftMetrics: $driftMetrics,
+            shouldRetrain: $shouldRetrain,
+            confidenceScore: $this->calculateConfidence($driftMetrics)
+        );
+    }
+
+    /**
+     * Monitor model performance degradation
+     */
+    public function monitorPerformance(
+        array $productionPredictions,
+        float $degradationThreshold = 0.05 // 5% drop
+    ): PerformanceReport {
+        $currentAccuracy = $this->calculateAccuracy($productionPredictions);
+        $currentLatency = $this->calculateAverageLatency($productionPredictions);
+
+        return new PerformanceReport(
+            timestamp: now(),
+            accuracy: $currentAccuracy,
+            latency: $currentLatency,
+            degradationDetected: false, // Compare with baseline
+            recommendations: []
+        );
+    }
+
+    /**
+     * Schedule automated retraining
+     */
+    public function scheduleRetraining(
+        array $newTrainingData,
+        string $previousModelId,
+        array $options = [
+            'epochs' => 3,
+            'batch_size' => 32,
+            'learning_rate' => 0.0001
+        ]
+    ): RetrainingSchedule {
+        return new RetrainingSchedule(
+            status: 'scheduled',
+            scheduledFor: now()->addHours(24),
+            newDataCount: count($newTrainingData),
+            previousModelId: $previousModelId,
+            expectedImprovement: null, // Will be calculated after retraining
+            options: $options
+        );
+    }
+
+    /**
+     * Detect when fine-tuned model loses effectiveness
+     */
+    public function shouldRetrain(
+        array $recentMetrics,
+        array $baselineMetrics,
+        float $acceptableDecline = 0.05
+    ): bool {
+        $recentAccuracy = $recentMetrics['accuracy'] ?? 0;
+        $baselineAccuracy = $baselineMetrics['accuracy'] ?? 0;
+
+        $accuracyDrop = ($baselineAccuracy - $recentAccuracy) / $baselineAccuracy;
+
+        return $accuracyDrop > $acceptableDecline;
+    }
+
+    private function analyzeFeatureDistribution(array $data, string $feature): array
+    {
+        $values = array_column($data, $feature);
+        $buckets = array_fill(0, 10, 0);
+
+        foreach ($values as $value) {
+            $bucketIndex = (int)($value * 10);
+            $buckets[$bucketIndex] = ($buckets[$bucketIndex] ?? 0) + 1;
+        }
+
+        return array_map(fn($count) => $count / count($values), $buckets);
+    }
+
+    private function calculateJSDivergence(array $p, array $q): float
+    {
+        $m = array_map(fn($pi, $qi) => ($pi + $qi) / 2, $p, $q);
+
+        $dKL_pm = 0;
+        $dKL_qm = 0;
+
+        for ($i = 0; $i < count($p); $i++) {
+            if ($p[$i] > 0) {
+                $dKL_pm += $p[$i] * log($p[$i] / $m[$i]);
+            }
+            if ($q[$i] > 0) {
+                $dKL_qm += $q[$i] * log($q[$i] / $m[$i]);
+            }
+        }
+
+        return 0.5 * $dKL_pm + 0.5 * $dKL_qm;
+    }
+
+    private function calculateConfidence(array $driftMetrics): float
+    {
+        $totalFeatures = count($driftMetrics);
+        $driftedFeatures = count(array_filter($driftMetrics, fn($m) => $m['is_drifted']));
+
+        return 1.0 - ($driftedFeatures / $totalFeatures);
+    }
+
+    private function calculateAccuracy(array $predictions): float
+    {
+        $correct = count(array_filter($predictions, fn($p) => $p['correct']));
+        return $correct / count($predictions);
+    }
+
+    private function calculateAverageLatency(array $predictions): float
+    {
+        return array_sum(array_column($predictions, 'latency')) / count($predictions);
+    }
+}
+```
+
+## Common Pitfalls & Mistakes
+
+Avoid these costly mistakes when fine-tuning:
+
+```php
+<?php
+# filename: examples/common-pitfalls.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+echo "=== Common Fine-tuning Pitfalls ===\n\n";
+
+// PITFALL 1: Data Leakage
+echo "1. Data Leakage (WRONG):\n";
+echo "   ❌ Using test set for validation\n";
+echo "   ❌ Information from test set influences training\n";
+echo "   ❌ Overly optimistic performance metrics\n\n";
+
+echo "   ✅ CORRECT: Strict split\n";
+$totalExamples = 1000;
+$trainSet = $totalExamples * 0.8;      // 800 examples
+$validSet = $totalExamples * 0.1;      // 100 examples
+$testSet = $totalExamples * 0.1;       // 100 examples (never used in training)
+echo "   - Train: 80% ({$trainSet} examples)\n";
+echo "   - Validation: 10% ({$validSet} examples) - for hyperparameter tuning\n";
+echo "   - Test: 10% ({$testSet} examples) - final evaluation only\n\n";
+
+// PITFALL 2: Overfitting
+echo "2. Overfitting on Small Datasets (WRONG):\n";
+echo "   ❌ 100 examples → perfect accuracy on training\n";
+echo "   ❌ Validation accuracy much lower\n";
+echo "   ❌ Poor generalization to new data\n\n";
+
+echo "   ✅ CORRECT: Minimum dataset size\n";
+echo "   - Minimum: 500 quality examples\n";
+echo "   - Recommended: 2000+ examples\n";
+echo "   - High quality matters more than quantity\n";
+echo "   - Use cross-validation with small datasets\n\n";
+
+// PITFALL 3: No Baseline
+echo "3. Inadequate Performance Baseline (WRONG):\n";
+echo "   ❌ Fine-tuned model: 85% accuracy\n";
+echo "   ❌ No comparison to base model\n";
+echo "   ❌ Is the improvement from fine-tuning or just from prompt?\n\n";
+
+echo "   ✅ CORRECT: Compare to baseline\n";
+echo "   Steps:\n";
+echo "   1. Test base model on same test set\n";
+echo "   2. Calculate improvement percentage\n";
+echo "   3. Verify statistical significance (p-value < 0.05)\n";
+echo "   4. Consider cost-benefit of fine-tuning vs prompt engineering\n\n";
+
+// PITFALL 4: Data Quality Issues
+echo "4. Including Low-Quality Examples (WRONG):\n";
+echo "   ❌ Inconsistent prompt/completion pairs\n";
+echo "   ❌ Factually incorrect completions\n";
+echo "   ❌ Duplicate or near-duplicate examples\n";
+echo "   ❌ Ambiguous or unclear prompts\n\n";
+
+echo "   ✅ CORRECT: Quality over quantity\n";
+echo "   Steps:\n";
+echo "   1. Manual review of 10% of examples\n";
+echo "   2. Automated quality checks:\n";
+echo "      - Minimum prompt length: 10 characters\n";
+echo "      - Minimum completion length: 10 characters\n";
+echo "      - Remove duplicates (check MD5 hashes)\n";
+echo "   3. Use Claude to assess quality (see chapter code)\n";
+echo "   4. Target quality score: 0.7+ overall\n\n";
+
+// PITFALL 5: Wrong Dataset Split
+echo "5. Improper Train/Validation/Test Split (WRONG):\n";
+echo "   ❌ Random shuffle then sequential split (temporal leakage)\n";
+echo "   ❌ Using same random seed everywhere\n";
+echo "   ❌ Stratification ignored for imbalanced data\n\n";
+
+echo "   ✅ CORRECT: Proper stratification\n";
+echo "   Steps:\n";
+echo "   1. Shuffle examples randomly\n";
+echo "   2. Use stratified splitting for imbalanced classes\n";
+echo "   3. Verify split distributions match original\n";
+echo "   4. Never use test set for any decisions during training\n\n";
+
+// PITFALL 6: Model Obsession
+echo "6. Over-investing in Fine-tuning (WRONG):\n";
+echo "   ❌ Spending weeks fine-tuning when prompt works fine\n";
+echo "   ❌ High data preparation cost vs. benefit\n";
+echo "   ❌ Missed opportunity for faster solutions\n\n";
+
+echo "   ✅ CORRECT: Evaluate alternatives first\n";
+echo "   Decision tree:\n";
+echo "   1. Can prompt engineering solve it? (1-2 weeks) → TRY FIRST\n";
+echo "   2. Do you have changing knowledge? → Use RAG\n";
+echo "   3. Need consistent, specialized behavior? → Fine-tune\n";
+echo "   4. Do you have 500+ high-quality examples? → PROCEED\n";
+echo "   5. Expected improvement: >10%? → PROCEED\n\n";
+
+// PITFALL 7: Wrong Metrics
+echo "7. Using Wrong Evaluation Metrics (WRONG):\n";
+echo "   ❌ Accuracy on imbalanced dataset (95% class → 95% accuracy)\n";
+echo "   ❌ Single metric for multi-dimensional task\n";
+echo "   ❌ No comparison to business metrics\n\n";
+
+echo "   ✅ CORRECT: Multi-dimensional evaluation\n";
+echo "   Key metrics:\n";
+echo "   - Accuracy: % correct\n";
+echo "   - Precision: Of predicted positive, how many correct?\n";
+echo "   - Recall: Of actual positive, how many found?\n";
+echo "   - F1 Score: Harmonic mean of precision and recall\n";
+echo "   - Business metrics: Customer satisfaction, cost savings\n\n";
+```
+
+## Real-World Use Case Examples
+
+### Example 1: Email Classification Fine-tuning
+
+```php
+<?php
+# filename: examples/usecase-email-classification.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use App\FineTuning\DatasetPreparation;
+use App\FineTuning\ModelEvaluator;
+use App\FineTuning\CostBenefitAnalyzer;
+use Anthropic\Anthropic;
+
+echo "=== Email Classification Fine-tuning Use Case ===\n\n";
+
+$claude = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
+// Prepare realistic training data
+$trainingExamples = [
+    [
+        'prompt' => 'Subject: URGENT: Your Account Has Been Compromised\n\nDear Valued Customer,\n\nWe detected suspicious activity...',
+        'completion' => 'phishing'
+    ],
+    [
+        'prompt' => 'Subject: Project Update - Q4 Goals\n\nHi team,\n\nHere\'s our progress on Q4 objectives...',
+        'completion' => 'work'
+    ],
+    [
+        'prompt' => 'Subject: 50% OFF LIMITED TIME ONLY!!!\n\nClick here now to claim your offer...',
+        'completion' => 'promotional'
+    ],
+    // ... more examples ...
+];
+
+$prep = new DatasetPreparation($claude);
+$dataset = $prep->prepare($trainingExamples, 'email_classification');
+
+echo "Dataset prepared:\n";
+echo "- Total examples: " . $dataset->stats['total_examples'] . "\n";
+echo "- Train: " . count($dataset->train) . "\n";
+echo "- Validation: " . count($dataset->validation) . "\n";
+echo "- Test: " . count($dataset->test) . "\n";
+echo "- Quality score: " . number_format($dataset->quality['average_score'], 2) . "\n\n";
+
+// Characteristics of this use case:
+echo "Use Case Characteristics:\n";
+echo "- Domain-specific: Email classification requires knowledge of phishing patterns\n";
+echo "- High volume: 10,000+ emails/day\n";
+echo "- Consistency critical: Must classify correctly every time\n";
+echo "- Data stable: Email types don't change dramatically\n";
+echo "- Quality impact: Wrong classification affects user experience\n";
+echo "- ROI: High - reduces support tickets significantly\n\n";
+
+// Cost analysis
+$analyzer = new CostBenefitAnalyzer();
+$roi = $analyzer->analyze(
+    monthlyVolume: 300000,
+    currentCostPerRequest: 0.004,  // Using Claude Sonnet on base model
+    fineTunedCostPerRequest: 0.002, // Fine-tuned model cheaper
+    setupCost: 3000,               // 1 week of data prep
+    monthlyMaintenanceCost: 500,   // Regular monitoring and updates
+    qualityImprovement: 0.25       // 25% fewer misclassifications
+);
+
+echo "ROI Analysis:\n";
+echo "- Current yearly cost: $" . number_format($roi->currentYearlyCost, 2) . "\n";
+echo "- Fine-tuned yearly cost: $" . number_format($roi->fineTunedYearlyCost, 2) . "\n";
+echo "- Yearly savings: $" . number_format($roi->yearlySavings, 2) . "\n";
+echo "- Quality value: $" . number_format($roi->qualityValue, 2) . "\n";
+echo "- Break-even: " . number_format($roi->breakEvenMonths, 1) . " months\n";
+echo "- Recommendation: {$roi->recommendation}\n";
+```
+
+### Example 2: Technical Documentation Q&A Fine-tuning
+
+```php
+<?php
+# filename: examples/usecase-documentation-qa.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+echo "=== Technical Documentation Q&A Fine-tuning ===\n\n";
+
+$trainingExamples = [
+    [
+        'prompt' => 'Q: How do I authenticate with the API?\n\nDocumentation excerpt: Authentication uses bearer tokens in the Authorization header. Include your API key prefixed with "Bearer ".',
+        'completion' => 'To authenticate with the API:\n1. Get your API key from the dashboard\n2. Add to request header: Authorization: Bearer YOUR_API_KEY\n3. Include in all API requests'
+    ],
+    [
+        'prompt' => 'Q: What\'s the rate limit?\n\nDocumentation excerpt: Rate limits are 1000 requests per minute for standard tier, 5000 for premium.',
+        'completion' => 'Rate limits depend on your tier:\n- Standard: 1000 req/min\n- Premium: 5000 req/min\n- Enterprise: Custom limits\n\nCheck X-RateLimit-Remaining header for current quota'
+    ],
+    // ... more examples from actual documentation ...
+];
+
+echo "Use Case Characteristics:\n";
+echo "- Domain-specific knowledge required from documentation\n";
+echo "- Answers must be accurate and reference-able\n";
+echo "- Limited data available (only from docs + support tickets)\n";
+echo "- RAG might be better choice here!\n\n";
+
+echo "Decision: Should we fine-tune?\n";
+echo "- ❌ Data availability: Low (only documentation examples)\n";
+echo "- ❌ Data changes frequently: Yes (docs update regularly)\n";
+echo "- ✅ Needs factual accuracy: Yes\n";
+echo "- ✅ Knowledge base available: Yes\n\n";
+
+echo "RECOMMENDATION: Use RAG instead!\n";
+echo "Reasons:\n";
+echo "1. Limited training data (< 500 examples)\n";
+echo "2. Knowledge changes (documentation updates)\n";
+echo "3. Need citations (which RAG provides)\n";
+echo "4. Faster to implement than fine-tuning\n";
+echo "5. Keep documentation as single source of truth\n\n";
+
+echo "For fine-tuning: Would need historical Q&A pairs, not just documentation\n";
+```
+
+## Advanced Topics
+
+### Multi-task Fine-tuning
+
+Fine-tune a single model on multiple related tasks:
+
+```php
+<?php
+# filename: src/FineTuning/MultiTaskFineTuning.php
+declare(strict_types=1);
+
+namespace App\FineTuning;
+
+class MultiTaskFineTuning
+{
+    /**
+     * Prepare multi-task training data
+     */
+    public function prepareMultiTaskDataset(
+        array $taskDatasets // ['sentiment' => [...], 'category' => [...], ...]
+    ): array {
+        $combinedDataset = [];
+
+        foreach ($taskDatasets as $taskName => $examples) {
+            foreach ($examples as $example) {
+                $combinedDataset[] = [
+                    'task' => $taskName,
+                    'prompt' => "[TASK: {$taskName}]\n\n{$example['prompt']}",
+                    'completion' => $example['completion']
+                ];
+            }
+        }
+
+        // Shuffle to mix tasks
+        shuffle($combinedDataset);
+
+        return $combinedDataset;
+    }
+
+    /**
+     * Evaluate multi-task model
+     */
+    public function evaluateMultiTask(
+        array $evaluations // Task => results
+    ): MultiTaskEvaluation {
+        $results = [];
+
+        foreach ($evaluations as $task => $scores) {
+            $results[$task] = [
+                'accuracy' => array_sum($scores) / count($scores),
+                'count' => count($scores)
+            ];
+        }
+
+        return new MultiTaskEvaluation($results);
+    }
+}
+```
+
+### Few-shot vs Fine-tuning Trade-offs
+
+```php
+<?php
+# filename: examples/few-shot-vs-finetuning.php
+declare(strict_types=1);
+
+echo "=== Few-Shot Learning vs Fine-tuning ===\n\n";
+
+echo "FEW-SHOT LEARNING (Prompt Engineering):\n";
+echo "Pros:\n";
+echo "- ✅ Immediate - no training needed\n";
+echo "- ✅ No API costs for training\n";
+echo "- ✅ Easy to modify behavior\n";
+echo "- ✅ Works with low data (3-5 examples)\n";
+echo "- ✅ Good for rapid experimentation\n\n";
+
+echo "Cons:\n";
+echo "- ❌ Token overhead (examples in every request)\n";
+echo "- ❌ Limited by context window\n";
+echo "- ❌ Less consistent for complex tasks\n";
+echo "- ❌ Scales poorly with number of examples\n\n";
+
+echo "FINE-TUNING:\n";
+echo "Pros:\n";
+echo "- ✅ Consistent behavior across requests\n";
+echo "- ✅ Cheaper per-token for high volume\n";
+echo "- ✅ Specialized model for domain\n";
+echo "- ✅ Better at complex tasks\n";
+echo "- ✅ Scales to thousands of examples\n\n";
+
+echo "Cons:\n";
+echo "- ❌ Requires 500+ quality examples\n";
+echo "- ❌ Setup cost (data prep, training)\n";
+echo "- ❌ Harder to modify behavior\n";
+echo "- ❌ Less flexible than prompts\n";
+echo "- ❌ Break-even period (weeks to months)\n\n";
+
+echo "DECISION MATRIX:\n";
+echo "Use Few-Shot when:\n";
+echo "- Prototyping or exploring\n";
+echo "- Have < 100 examples\n";
+echo "- Behavior changes frequently\n";
+echo "- Low volume (< 1000 req/day)\n";
+echo "- Need flexibility\n\n";
+
+echo "Use Fine-tuning when:\n";
+echo "- Have 500+ quality examples\n";
+echo "- Need consistent, specialized behavior\n";
+echo "- High volume (10,000+ req/day)\n";
+echo "- Ready for production\n";
+echo "- ROI positive over 6+ months\n\n";
+```
+
 ## Data Structures
 
 ```php
@@ -1031,6 +1809,104 @@ readonly class ROIAnalysis
 }
 ```
 
+## Troubleshooting
+
+### Dataset Quality Too Low
+
+**Symptom**: `RuntimeException: Dataset quality too low: 0.65`
+
+**Cause**: The quality assessment found that your training examples don't meet the minimum quality threshold (0.7).
+
+**Solution**: 
+
+1. Review individual quality scores to identify problematic examples
+2. Remove or improve low-quality examples
+3. Ensure prompts are clear and specific
+4. Verify completions are accurate and complete
+5. Consider manual review of a sample before full dataset preparation
+
+```php
+// Check individual scores
+$quality = $prep->assessQuality($examples);
+foreach ($quality['individual_scores'] as $i => $score) {
+    if ($score['overall'] < 0.7) {
+        echo "Example {$i} needs improvement: {$score['overall']}\n";
+        echo "Issues: " . implode(', ', $score['issues']) . "\n";
+    }
+}
+```
+
+### Break-Even Calculation Returns Negative or Infinite
+
+**Symptom**: Break-even months is negative, zero, or infinite
+
+**Cause**: The fine-tuned model doesn't provide cost savings, or the calculation divides by zero.
+
+**Solution**:
+
+1. Verify your cost estimates are accurate
+2. Check if fine-tuned cost per request is actually lower than current cost
+3. Consider that fine-tuning may not be cost-effective for your volume
+4. Factor in quality improvements, not just cost savings
+
+```php
+// Add validation
+if ($currentMonthlyCost <= $fineTunedMonthlyCost) {
+    throw new \InvalidArgumentException(
+        'Fine-tuning does not provide cost savings. Review your cost estimates.'
+    );
+}
+```
+
+### Model Evaluation Takes Too Long
+
+**Symptom**: Evaluation process is slow or times out
+
+**Cause**: Evaluating large test sets with Claude API calls can be time-consuming and expensive.
+
+**Solution**:
+
+1. Use a smaller representative sample for evaluation
+2. Cache evaluation results for unchanged examples
+3. Use parallel processing for independent evaluations
+4. Consider using faster models (Haiku) for initial screening
+
+```php
+// Sample test set for faster evaluation
+$sampleSize = min(100, count($testSet));
+$sampledTestSet = array_slice($testSet, 0, $sampleSize);
+$evaluation = $evaluator->evaluate($modelId, $sampledTestSet);
+```
+
+### Decision Framework Always Recommends Same Approach
+
+**Symptom**: Framework consistently recommends prompt engineering or RAG
+
+**Cause**: Your use case characteristics don't favor fine-tuning (low data, low volume, urgent timeline).
+
+**Solution**:
+
+1. This may be correct - fine-tuning isn't always the answer
+2. Review your use case parameters - are they accurate?
+3. Consider if you can improve data availability or quality
+4. Evaluate if hybrid approaches might work better
+5. Don't force fine-tuning if it's not appropriate
+
+## Wrap-up
+
+Congratulations! You've completed a comprehensive guide to fine-tuning strategies for Claude applications. In this chapter, you've:
+
+- ✓ **Built a decision framework** to evaluate when fine-tuning makes sense versus alternatives
+- ✓ **Created dataset preparation tools** with quality assessment and proper formatting
+- ✓ **Implemented model evaluation systems** with multiple metrics and comparison capabilities
+- ✓ **Developed cost-benefit analyzers** for ROI calculations and investment decisions
+- ✓ **Learned production deployment strategies** for fine-tuned models
+- ✓ **Explored hybrid approaches** that combine multiple customization techniques
+
+Fine-tuning is a powerful tool, but it's not always the right choice. The decision framework you've built helps you make informed choices based on your specific use case, data availability, budget, and timeline. Remember that prompt engineering and RAG are often faster, cheaper, and more flexible alternatives that should be considered first.
+
+When fine-tuning is appropriate, focus on dataset quality over quantity, evaluate systematically, and calculate ROI carefully. The tools and patterns you've learned here provide a solid foundation for making strategic decisions about model customization.
+
 ## Key Takeaways
 
 - ✓ Fine-tuning isn't always the right choice - evaluate alternatives first
@@ -1044,6 +1920,15 @@ readonly class ROIAnalysis
 - ✓ Consider break-even time and long-term value
 - ✓ Hybrid approaches combine strengths of multiple techniques
 
+## Further Reading
+
+- [Anthropic Fine-tuning Documentation](https://docs.claude.com/en/docs/fine-tuning) — Official fine-tuning guide from Anthropic
+- [Chapter 31: Retrieval Augmented Generation](/series/claude-php-developers/chapters/31-retrieval-augmented-generation) — Learn when RAG is a better choice
+- [Chapter 32: Vector Databases](/series/claude-php-developers/chapters/32-vector-databases) — Understand vector database integration
+- [Machine Learning Evaluation Metrics](https://en.wikipedia.org/wiki/Evaluation_of_binary_classifiers) — Comprehensive guide to ML evaluation
+- [ROI Calculation Best Practices](https://www.investopedia.com/terms/r/returnoninvestment.asp) — Understanding ROI in business context
+- [Dataset Preparation for ML](https://towardsdatascience.com/data-preparation-for-machine-learning-9d3c82a8e781) — Best practices for preparing training data
+
 <ChapterCheckbox
   seriesId="claude-php-developers"
   chapterId="35"
@@ -1052,7 +1937,7 @@ readonly class ROIAnalysis
 
 ---
 
-Congratulations! You've completed the Advanced Techniques section of the Claude for PHP Developers series. You now have the knowledge to build sophisticated AI systems with RAG, vector databases, multi-agent coordination, workflow orchestration, and strategic fine-tuning.
+Continue to [Chapter 36: Security Best Practices](/series/claude-php-developers/chapters/36-security-best-practices) to learn comprehensive security strategies for production Claude applications.
 
 ## 💻 Code Samples
 

@@ -6,7 +6,7 @@ chapter: 16
 order: 16
 difficulty: "Expert"
 prerequisites:
-  - "PHP 8.2+ with type declarations"
+  - "PHP 8.4+ with type declarations"
   - "Composer dependency management"
   - "Understanding of PSR standards"
   - "Basic Claude API knowledge"
@@ -32,20 +32,80 @@ The official Anthropic PHP SDK is more than just a wrapper around HTTP requests�
 
 By mastering the SDK's internals, you'll be able to customize behavior, implement sophisticated logging and monitoring, write comprehensive tests, and optimize performance for your specific use cases.
 
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- A fully configured Anthropic SDK client with custom middleware
+- Custom HTTP transport implementations for caching and specialized requirements
+- Comprehensive middleware for logging, metrics collection, and rate limiting
+- Production-ready error handling with retry logic
+- A testable service layer using dependency injection
+- Laravel service provider integration (optional)
+- Configuration management system for SDK settings
+
 ## Prerequisites
 
 Before diving in, ensure you have:
 
-- ✓ **PHP 8.2+** with strict typing enabled
+- ✓ **PHP 8.4+** with strict typing enabled
 - ✓ **Composer** for dependency management
 - ✓ **PSR-7/PSR-18** understanding (HTTP message interfaces)
 - ✓ **Anthropic API key** and basic API knowledge
+- ✓ Completed [Chapter 03: Your First Claude Request](/series/claude-php-developers/chapters/03-first-claude-request) or equivalent SDK experience
 
 **Estimated Time**: 45-60 minutes
 
+## Installing the SDK
+
+If you haven't already installed the official Anthropic PHP SDK:
+
+```bash
+# Install the official Anthropic PHP SDK
+composer require anthropic-ai/sdk
+
+# For advanced middleware features, also install Guzzle HTTP client
+composer require guzzlehttp/guzzle
+```
+
+**Verify installation:**
+
+```bash
+# Check that the package was installed correctly
+composer show anthropic-ai/sdk
+```
+
+You should see package details including version, description, and dependencies. The SDK requires PHP 8.4+ and follows PSR standards for HTTP messaging.
+
+::: tip SDK vs Direct HTTP
+While you can make direct HTTP requests to the Claude API, the official SDK provides type safety, better error handling, and easier testing. For production applications, the SDK is strongly recommended.
+:::
+
+## Objectives
+
+By completing this chapter, you will:
+
+- Understand the Anthropic PHP SDK architecture and core components
+- Master the factory pattern for client configuration and customization
+- Implement custom HTTP transports and middleware for production needs
+- Work with strongly-typed response objects and their properties
+- Write comprehensive tests using mockable SDK interfaces
+- Apply dependency injection patterns for maintainable code
+- Integrate the SDK into Laravel applications with service providers
+
 ## SDK Architecture Overview
 
-The Anthropic PHP SDK follows modern PHP best practices and PSR standards:
+The Anthropic PHP SDK follows modern PHP best practices and PSR standards. Understanding its architecture helps you leverage its full power and customize it for your needs.
+
+### Why SDK Architecture Matters
+
+The SDK uses a factory pattern, dependency injection, and PSR interfaces to provide:
+- **Flexibility**: Customize HTTP clients, middleware, and behavior
+- **Testability**: Mock interfaces for unit testing
+- **Type Safety**: Strongly-typed responses for IDE support
+- **Standards Compliance**: PSR-7/PSR-18 for interoperability
+
+Let's explore the core architecture:
 
 ```php
 <?php
@@ -81,6 +141,12 @@ echo "- Client: " . get_class($client) . "\n";
 echo "- Messages Resource: " . get_class($messagesResource) . "\n";
 ```
 
+### Why It Works
+
+The factory pattern (`Anthropic::factory()`) provides a fluent interface for building clients with optional configuration. Each method returns the factory instance, allowing method chaining. The `make()` method finalizes the configuration and returns a fully configured client.
+
+The client implements `ClientContract`, which defines the interface for all SDK operations. This contract-based design enables dependency injection and makes the SDK highly testable. Resources like `Messages` are accessed through the client, providing a clean API for different endpoint groups.
+
 ### Core Components
 
 1. **Factory** (`Anthropic::factory()`) - Fluent API for building clients
@@ -91,7 +157,18 @@ echo "- Messages Resource: " . get_class($messagesResource) . "\n";
 
 ## Advanced Factory Configuration
 
-The factory pattern allows extensive customization:
+The factory pattern allows extensive customization. You can add middleware, configure timeouts, set custom headers, and even replace the HTTP client entirely. This is essential for production applications that need logging, metrics, retry logic, or custom authentication.
+
+### Why Customize the Factory?
+
+Production applications often need:
+- **Request/Response Logging**: Track all API calls for debugging
+- **Retry Logic**: Automatically retry failed requests
+- **Rate Limiting**: Prevent exceeding API quotas
+- **Custom Headers**: Add request IDs, tracing, or authentication
+- **Timeout Configuration**: Adjust for long-running requests
+
+Let's build a production-ready client configuration:
 
 ```php
 <?php
@@ -164,7 +241,17 @@ try {
 }
 ```
 
+### Why It Works
+
+The `HandlerStack` is Guzzle's middleware system. Each middleware wraps the next one, creating a chain. When a request is made, it flows through each middleware in order, then the response flows back through in reverse order.
+
+The `mapRequest` middleware logs requests before they're sent. The `retry` middleware intercepts responses and exceptions, deciding whether to retry based on error type and retry count. The exponential backoff function calculates wait times: 1 second, 2 seconds, 4 seconds, etc.
+
+Custom headers like `X-Request-ID` help track requests across distributed systems, while `X-Application` identifies your application to the API.
+
 ## Custom HTTP Transports
+
+Sometimes you need specialized HTTP behavior beyond middleware. Custom transports implement the PSR-18 `ClientInterface`, allowing you to wrap, modify, or replace the HTTP layer entirely. Common use cases include caching, request transformation, or integration with custom infrastructure.
 
 Implement custom transports for specialized requirements:
 
@@ -258,9 +345,19 @@ $response2 = $client->messages()->create([
 echo "Second response: " . $response2->content[0]->text . "\n";
 ```
 
+### Why It Works
+
+The `CachingHttpClient` implements `ClientInterface`, so it can be used anywhere a standard HTTP client is expected. It wraps another client (the "inner client") and intercepts requests.
+
+The cache key is generated from the HTTP method, URI, and request body. This ensures identical requests produce the same cache key. The TTL (time-to-live) determines how long cached responses remain valid.
+
+::: warning Cache Considerations
+This is a simple in-memory cache for demonstration. Production applications should use Redis, Memcached, or another persistent cache store. Also, be careful caching responses—Claude responses are often unique and shouldn't be cached in many scenarios. Only cache responses when the same input should always produce the same output.
+:::
+
 ## Response Object Deep Dive
 
-The SDK provides strongly-typed response objects:
+The SDK provides strongly-typed response objects instead of raw arrays. This gives you IDE autocomplete, type checking, and better error messages. Understanding the response structure helps you extract data efficiently and handle edge cases.
 
 ```php
 <?php
@@ -321,9 +418,17 @@ echo "As Array:\n";
 print_r($responseArray);
 ```
 
+### Why It Works
+
+Response objects are value objects—immutable data structures with typed properties. The `CreateResponse` class has properties like `id`, `type`, `role`, `model`, `content`, `usage`, etc., all with proper types.
+
+The `content` property is an array of content blocks. Each block can be a `TextContent`, `ImageContent`, or other types. The `instanceof` check ensures type safety when accessing block-specific properties.
+
+The `toArray()` method converts the response to a plain array, useful for JSON serialization, logging, or database storage. This maintains backward compatibility while providing type safety in your application code.
+
 ## Testing with the SDK
 
-The SDK is designed for testability:
+The SDK's contract-based design makes it highly testable. You can mock the `ClientContract` interface or individual resources like `Messages` to test your application logic without making real API calls. This is essential for fast, reliable unit tests.
 
 ```php
 <?php
@@ -389,7 +494,17 @@ class ClaudeServiceTest extends TestCase
 }
 ```
 
+### Why It Works
+
+PHPUnit's `createMock()` generates mock objects that implement the same interface as the real classes. The `expects()` method sets up expectations—how many times a method should be called and with what parameters.
+
+The `callback()` matcher allows custom validation logic. Here, we verify that the `create()` method is called with the correct parameters. The mock returns a predefined response, allowing us to test our service logic without hitting the real API.
+
+This pattern enables fast, isolated unit tests that don't depend on external services. You can test error handling, retry logic, and business rules without making real API calls.
+
 ## Middleware Pattern Implementation
+
+Middleware is a powerful pattern for cross-cutting concerns like logging, metrics, and rate limiting. Instead of modifying every API call, you configure middleware once and it applies to all requests. This keeps your code DRY (Don't Repeat Yourself) and makes it easy to add or remove functionality.
 
 Create reusable middleware for common concerns:
 
@@ -541,7 +656,22 @@ echo "\nDetailed metrics:\n";
 print_r(MetricsCollector::getMetrics());
 ```
 
+### Why It Works
+
+Each middleware class encapsulates a specific concern. `RequestLogger` handles logging, `MetricsCollector` tracks performance, and `RateLimiter` enforces limits. They're composed together in a handler stack.
+
+The middleware functions return closures that wrap the next handler. When a request is made, each middleware can:
+- **Before**: Modify the request or perform actions
+- **After**: Process the response or collect metrics
+- **Intercept**: Stop the request (like rate limiting) or retry
+
+The `MetricsCollector` uses static properties to store metrics across requests. In production, you'd send these to a monitoring system like Prometheus, Datadog, or CloudWatch.
+
+The `RateLimiter` maintains a sliding window of request timestamps. When the limit is reached, it calculates how long to wait before allowing more requests. This prevents exceeding API rate limits.
+
 ## Error Handling and Exceptions
+
+The SDK throws specific exception types for different error scenarios. Handling these appropriately ensures your application responds correctly to various failure modes. Some errors are retryable (network issues, server errors), while others aren't (invalid requests, authentication failures).
 
 The SDK provides specific exception types:
 
@@ -639,7 +769,22 @@ try {
 }
 ```
 
+### Why It Works
+
+Different exception types require different handling strategies:
+
+- **`RateLimitException`**: Retry with exponential backoff, respecting rate limit headers
+- **`InvalidRequestException`**: Don't retry—fix the request instead
+- **`AuthenticationException`**: Don't retry—check credentials
+- **`ErrorException`** (5xx): Retry—server errors are often transient
+
+The exponential backoff (`pow(2, $attempt)`) increases wait time with each retry: 1s, 2s, 4s, 8s. This prevents overwhelming a struggling server while still retrying transient failures.
+
+The `?->` null-safe operator (`$e->getResponse()?->getStatusCode()`) safely accesses the response status code, handling cases where the exception doesn't have a response object.
+
 ## SDK Best Practices
+
+Following best practices ensures your SDK integration is maintainable, testable, and production-ready. These patterns apply whether you're building a small script or a large enterprise application.
 
 ### 1. Use Dependency Injection
 
@@ -694,7 +839,20 @@ class ContentGenerator
 }
 ```
 
+### Why It Works
+
+Dependency injection allows you to:
+- **Test easily**: Inject mock clients in tests
+- **Swap implementations**: Use different clients for different environments
+- **Follow SOLID principles**: Depend on abstractions, not concretions
+
+The `ClientContract` interface is the abstraction. Your service depends on this interface, not the concrete `Client` class. This makes your code flexible and testable.
+
+The logger is injected via PSR-3 `LoggerInterface`, making it framework-agnostic. You can use Monolog, Laravel's logger, or any PSR-3 compatible logger.
+
 ### 2. Configuration Management
+
+Centralizing configuration makes it easy to manage different environments (development, staging, production) and update settings without changing code. Configuration files separate "what" (settings) from "how" (implementation).
 
 ```php
 <?php
@@ -733,7 +891,15 @@ return [
 ];
 ```
 
+### Why It Works
+
+Configuration arrays provide a single source of truth for SDK settings. The `env()` helper reads from environment variables, keeping secrets out of code. Default values ensure the application works even if environment variables aren't set.
+
+Model aliases (`fast`, `balanced`, `powerful`) make it easy to switch models without changing code throughout your application. HTTP configuration centralizes timeout and retry settings, making it easy to tune for your use case.
+
 ### 3. Service Provider (Laravel Example)
+
+Laravel's service container manages object creation and dependencies. A service provider registers the SDK client as a singleton, ensuring only one instance exists per request lifecycle. This improves performance and ensures consistent configuration.
 
 ```php
 <?php
@@ -802,7 +968,597 @@ class ClaudeServiceProvider extends ServiceProvider
 }
 ```
 
+### Why It Works
+
+The `register()` method binds the `ClientContract` interface to a concrete implementation. Laravel's container resolves this automatically when you type-hint `ClientContract` in constructors.
+
+The singleton binding ensures the same client instance is reused throughout the request, improving performance. Middleware is configured once during service registration, applying to all SDK calls automatically.
+
+The `boot()` method publishes the configuration file, allowing developers to customize settings via `config/claude.php` without modifying the service provider.
+
+## Advanced SDK Configuration for Production
+
+Production Claude applications need advanced configuration beyond basic usage. This section covers streaming implementation, performance tuning, metrics collection, security hardening, cost tracking, and development tools.
+
+### 1. Streaming with the SDK
+
+The SDK supports streaming responses for real-time output. Use `createStreamed()` instead of `create()` to receive tokens as they're generated.
+
+```php
+<?php
+# filename: examples/08-streaming.php
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Anthropic\Anthropic;
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
+// Streaming configuration - use createStreamed() instead of create()
+$stream = $client->messages()->createStreamed([
+    'model' => 'claude-sonnet-4-20250514',
+    'max_tokens' => 1024,
+    'messages' => [
+        ['role' => 'user', 'content' => 'Write a short poem about PHP']
+    ]
+]);
+
+// Process streaming events
+foreach ($stream as $event) {
+    // Check event type
+    if ($event->type === 'content_block_delta') {
+        // New content delta
+        if ($event->delta->type === 'text_delta') {
+            echo $event->delta->text;
+        }
+    } elseif ($event->type === 'message_start') {
+        echo "Stream started...\n";
+    } elseif ($event->type === 'message_stop') {
+        echo "\nStream finished.\n";
+    } elseif ($event->type === 'message_delta') {
+        // Usage information at end
+        if (isset($event->usage)) {
+            echo "\nUsage: " . $event->usage->outputTokens . " output tokens\n";
+        }
+    }
+}
+```
+
+### Why It Works
+
+The `createStreamed()` method returns an iterator that yields events instead of waiting for the complete response. This allows you to process tokens as they arrive, creating real-time user experiences.
+
+Event types include:
+- `message_start`: Stream beginning
+- `content_block_delta`: Text chunks arriving
+- `message_delta`: Final metrics and stop information
+- `message_stop`: Stream complete
+
+For production streaming via HTTP (Server-Sent Events), see [Chapter 06: Streaming Responses](/series/claude-php-developers/chapters/06-streaming-responses).
+
+### 2. Performance Optimization
+
+Configure the HTTP client for optimal performance with connection pooling, timeouts, and keep-alive settings.
+
+```php
+<?php
+# filename: examples/09-performance-tuning.php
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Anthropic\Anthropic;
+use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+
+// Create handler stack with performance middleware
+$handlerStack = HandlerStack::create();
+
+// Add request timing middleware
+$handlerStack->push(function (callable $handler) {
+    return function ($request, $options) use ($handler) {
+        $start = microtime(true);
+        return $handler($request, $options)->then(
+            function ($response) use ($start) {
+                $duration = microtime(true) - $start;
+                error_log(sprintf(
+                    'Request took %.3f seconds',
+                    $duration
+                ));
+                return $response;
+            }
+        );
+    };
+});
+
+// Optimized Guzzle configuration
+$guzzleClient = new GuzzleClient([
+    'handler' => $handlerStack,
+    'timeout' => 120,                           // Overall request timeout
+    'connect_timeout' => 10,                    // Connection establishment
+    'pool_size' => 10,                          // Connection pool size
+    'http_errors' => false,                     // Handle errors manually
+    'headers' => [
+        'Connection' => 'keep-alive',           // Reuse connections
+        'Keep-Alive' => 'timeout=5, max=100',  // Keep-alive settings
+    ],
+    'curl' => [
+        CURLOPT_TCP_KEEPALIVE => 1,            // Enable TCP keep-alive
+        CURLOPT_TCP_KEEPIDLE => 60,            // Idle timeout (seconds)
+        CURLOPT_TCP_KEEPINTVL => 30,           // Probing interval
+    ],
+]);
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->withHttpClient($guzzleClient)
+    ->make();
+
+// Make multiple requests to benefit from connection pooling
+for ($i = 1; $i <= 3; $i++) {
+    echo "Request {$i}...\n";
+    $response = $client->messages()->create([
+        'model' => 'claude-sonnet-4-20250514',
+        'max_tokens' => 50,
+        'messages' => [
+            ['role' => 'user', 'content' => "Say 'Request {$i}'"]
+        ]
+    ]);
+    echo $response->content[0]->text . "\n\n";
+}
+```
+
+### Why It Works
+
+**Connection Pooling**: Reusing connections across requests reduces latency (connection establishment takes ~10-50ms). The `pool_size` parameter controls how many simultaneous connections can be maintained.
+
+**Keep-Alive**: HTTP keep-alive prevents closing connections after each request, allowing reuse. The `Connection: keep-alive` header and TCP-level keep-alive settings maintain the connection even during idle periods.
+
+**Timeouts**: Different timeout values handle different scenarios:
+- `connect_timeout`: Fails fast if server is unreachable
+- `timeout`: Prevents requests from hanging indefinitely
+- TCP keep-alive: Detects stale connections before timeout
+
+This configuration can reduce average latency by 30-50% for multiple requests.
+
+### 3. Collecting Metrics at SDK Level
+
+Track API usage and performance directly from SDK responses.
+
+```php
+<?php
+# filename: examples/10-sdk-metrics.php
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Anthropic\Anthropic;
+
+class SDKMetricsCollector
+{
+    private array $metrics = [];
+
+    public function __construct(
+        private Anthropic $client
+    ) {}
+
+    public function trackRequest(array $params): void
+    {
+        $startTime = microtime(true);
+        $startMemory = memory_get_usage(true);
+
+        $response = $this->client->messages()->create($params);
+
+        $duration = microtime(true) - $startTime;
+        $memoryUsed = memory_get_usage(true) - $startMemory;
+
+        // Extract metrics from response
+        $this->metrics[] = [
+            'timestamp' => time(),
+            'model' => $response->model,
+            'input_tokens' => $response->usage->inputTokens,
+            'output_tokens' => $response->usage->outputTokens,
+            'total_tokens' => $response->usage->inputTokens + $response->usage->outputTokens,
+            'duration_seconds' => $duration,
+            'memory_used_bytes' => $memoryUsed,
+            'stop_reason' => $response->stopReason,
+        ];
+    }
+
+    public function getMetrics(): array
+    {
+        return $this->metrics;
+    }
+
+    public function getSummary(): array
+    {
+        if (empty($this->metrics)) {
+            return [];
+        }
+
+        $totalRequests = count($this->metrics);
+        $totalInputTokens = array_sum(array_column($this->metrics, 'input_tokens'));
+        $totalOutputTokens = array_sum(array_column($this->metrics, 'output_tokens'));
+        $totalDuration = array_sum(array_column($this->metrics, 'duration_seconds'));
+        $durations = array_column($this->metrics, 'duration_seconds');
+
+        return [
+            'total_requests' => $totalRequests,
+            'total_input_tokens' => $totalInputTokens,
+            'total_output_tokens' => $totalOutputTokens,
+            'total_tokens' => $totalInputTokens + $totalOutputTokens,
+            'total_duration_seconds' => $totalDuration,
+            'average_duration_seconds' => $totalDuration / $totalRequests,
+            'min_duration_seconds' => min($durations),
+            'max_duration_seconds' => max($durations),
+            'tokens_per_second' => ($totalInputTokens + $totalOutputTokens) / $totalDuration,
+        ];
+    }
+}
+
+// Usage
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
+$collector = new SDKMetricsCollector($client);
+
+// Track multiple requests
+for ($i = 1; $i <= 3; $i++) {
+    echo "Processing request {$i}...\n";
+    $collector->trackRequest([
+        'model' => 'claude-sonnet-4-20250514',
+        'max_tokens' => 100,
+        'messages' => [
+            ['role' => 'user', 'content' => "What is the use of PHP? (Request {$i})"]
+        ]
+    ]);
+}
+
+// Display summary
+$summary = $collector->getSummary();
+echo "\n=== API Metrics Summary ===\n";
+echo "Total Requests: " . $summary['total_requests'] . "\n";
+echo "Total Tokens: " . $summary['total_tokens'] . "\n";
+echo "Average Duration: " . number_format($summary['average_duration_seconds'], 3) . "s\n";
+echo "Tokens/Second: " . number_format($summary['tokens_per_second'], 2) . "\n";
+```
+
+### Why It Works
+
+Response objects contain usage data (`inputTokens`, `outputTokens`) and metadata (`stopReason`, `model`). By collecting these metrics across multiple requests, you can:
+- Track API cost (multiply tokens by per-token pricing)
+- Monitor performance (average duration, latency trends)
+- Detect anomalies (unusual token counts, slow responses)
+- Optimize (identify expensive operations, slow patterns)
+
+This is essential for [Chapter 39: Cost Optimization](/series/claude-php-developers/chapters/39-cost-optimization) and [Chapter 37: Monitoring](/series/claude-php-developers/chapters/37-monitoring-observability).
+
+### 4. Security: Request Signing and Certificate Pinning
+
+Enhance security with request signing and certificate validation for sensitive environments.
+
+```php
+<?php
+# filename: examples/11-security-hardening.php
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Anthropic\Anthropic;
+use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use Psr\Http\Message\RequestInterface;
+
+class RequestSigner
+{
+    public static function middleware(string $signingSecret): callable
+    {
+        return Middleware::mapRequest(function (RequestInterface $request) use ($signingSecret) {
+            // Create signature from request
+            $body = (string) $request->getBody();
+            $signature = hash_hmac('sha256', $body, $signingSecret);
+
+            // Add signature header
+            return $request->withHeader('X-Signature', $signature)
+                          ->withHeader('X-Signature-Algorithm', 'hmac-sha256');
+        });
+    }
+}
+
+// Create handler stack with security middleware
+$handlerStack = HandlerStack::create();
+$handlerStack->push(RequestSigner::middleware(getenv('REQUEST_SIGNING_SECRET', '')));
+
+// Configure certificate pinning for sensitive environments
+$certPath = getenv('CERT_PIN_PATH', '');
+$verifySsl = $certPath ? ['cafile' => $certPath] : true;
+
+$guzzleClient = new GuzzleClient([
+    'handler' => $handlerStack,
+    'timeout' => 120,
+    'verify' => $verifySsl,  // Certificate validation
+    'headers' => [
+        'User-Agent' => 'MySecureApp/1.0',
+    ],
+]);
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->withHttpClient($guzzleClient)
+    ->make();
+
+// Make request with signed headers
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-20250514',
+    'max_tokens' => 100,
+    'messages' => [
+        ['role' => 'user', 'content' => 'Hello, Claude!']
+    ]
+]);
+
+echo "Response: " . $response->content[0]->text . "\n";
+echo "Request was signed for security.\n";
+```
+
+### Why It Works
+
+**Request Signing**: HMAC-SHA256 signatures prove the request came from your application. The server can verify the signature matches the body, preventing tampering.
+
+**Certificate Pinning**: Instead of trusting any certificate authority, pinning validates against specific certificates. This prevents man-in-the-middle attacks even if a CA is compromised.
+
+These patterns are covered in detail in [Chapter 36: Security Best Practices](/series/claude-php-developers/chapters/36-security-best-practices).
+
+### 5. Cost Tracking from Responses
+
+Calculate API costs directly from SDK responses using current pricing.
+
+```php
+<?php
+# filename: examples/12-cost-tracking.php
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Anthropic\Anthropic;
+
+class CostCalculator
+{
+    // Current pricing (2025) - verify at https://www.anthropic.com/pricing
+    private const PRICING = [
+        'claude-sonnet-4-20250514' => [
+            'input' => 0.003 / 1000,      // $0.003 per 1M input tokens
+            'output' => 0.015 / 1000,     // $0.015 per 1M output tokens
+        ],
+        'claude-haiku-4-20250514' => [
+            'input' => 0.0008 / 1000,     // $0.0008 per 1M input tokens
+            'output' => 0.004 / 1000,     // $0.004 per 1M output tokens
+        ],
+        'claude-opus-4-20250514' => [
+            'input' => 0.015 / 1000,      // $0.015 per 1M input tokens
+            'output' => 0.075 / 1000,     // $0.075 per 1M output tokens
+        ],
+    ];
+
+    public function __construct(
+        private Anthropic $client
+    ) {}
+
+    public function calculateCost(
+        string $model,
+        int $inputTokens,
+        int $outputTokens
+    ): float {
+        if (!isset(self::PRICING[$model])) {
+            throw new \RuntimeException("Unknown model: {$model}");
+        }
+
+        $pricing = self::PRICING[$model];
+        $inputCost = $inputTokens * $pricing['input'];
+        $outputCost = $outputTokens * $pricing['output'];
+
+        return $inputCost + $outputCost;
+    }
+
+    public function estimateRequestCost(array $params): float
+    {
+        $estimatedInputTokens = $this->estimateTokens($params['messages'] ?? []);
+        $maxOutputTokens = $params['max_tokens'] ?? 4096;
+
+        $model = $params['model'] ?? 'claude-sonnet-4-20250514';
+        return $this->calculateCost($model, $estimatedInputTokens, $maxOutputTokens);
+    }
+
+    public function getActualCost($response): float
+    {
+        return $this->calculateCost(
+            $response->model,
+            $response->usage->inputTokens,
+            $response->usage->outputTokens
+        );
+    }
+
+    private function estimateTokens(array $messages): int
+    {
+        // Rough estimate: ~4 characters per token
+        $totalChars = 0;
+        foreach ($messages as $message) {
+            if (is_string($message['content'] ?? '')) {
+                $totalChars += strlen($message['content']);
+            }
+        }
+        return (int) ceil($totalChars / 4);
+    }
+}
+
+// Usage
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
+$calculator = new CostCalculator($client);
+
+$params = [
+    'model' => 'claude-sonnet-4-20250514',
+    'max_tokens' => 500,
+    'messages' => [
+        ['role' => 'user', 'content' => 'Explain PHP type system']
+    ]
+];
+
+// Estimate cost before making request
+$estimatedCost = $calculator->estimateRequestCost($params);
+echo "Estimated cost: $" . number_format($estimatedCost, 6) . "\n";
+
+// Make actual request
+$response = $client->messages()->create($params);
+
+// Calculate actual cost
+$actualCost = $calculator->getActualCost($response);
+echo "Actual cost: $" . number_format($actualCost, 6) . "\n";
+echo "Input tokens: " . $response->usage->inputTokens . "\n";
+echo "Output tokens: " . $response->usage->outputTokens . "\n";
+echo "Response: " . substr($response->content[0]->text, 0, 100) . "...\n";
+```
+
+### Why It Works
+
+By tracking costs at the SDK level, you can:
+- **Pre-estimate**: Warn users or reject expensive requests before making them
+- **Post-calculate**: Track actual costs for billing or budget tracking
+- **Optimize**: Identify expensive operations and optimize prompts
+- **Allocate**: Attribute costs to specific users or features
+
+This is covered in depth in [Chapter 39: Cost Optimization](/series/claude-php-developers/chapters/39-cost-optimization).
+
+### 6. Development Tools: Request Debugging and Replay
+
+Debug and test SDK integration with request/response inspection and replay.
+
+```php
+<?php
+# filename: examples/13-development-tools.php
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Anthropic\Anthropic;
+use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\HandlerStack;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+
+class RequestRecorder
+{
+    private array $requests = [];
+    private string $recordFile;
+
+    public function __construct(string $recordFile = '/tmp/claude-requests.json')
+    {
+        $this->recordFile = $recordFile;
+    }
+
+    public function middleware(): callable
+    {
+        return function (callable $handler) {
+            return function (RequestInterface $request, array $options) use ($handler) {
+                $startTime = microtime(true);
+
+                return $handler($request, $options)->then(
+                    function (ResponseInterface $response) use ($request, $startTime) {
+                        $duration = microtime(true) - $startTime;
+
+                        // Record request/response
+                        $this->requests[] = [
+                            'timestamp' => date('Y-m-d H:i:s'),
+                            'duration' => $duration,
+                            'request' => [
+                                'method' => $request->getMethod(),
+                                'uri' => (string) $request->getUri(),
+                                'headers' => $request->getHeaders(),
+                                'body' => (string) $request->getBody(),
+                            ],
+                            'response' => [
+                                'status' => $response->getStatusCode(),
+                                'headers' => $response->getHeaders(),
+                                'body' => (string) $response->getBody(),
+                            ],
+                        ];
+
+                        return $response;
+                    }
+                );
+            };
+        };
+    }
+
+    public function saveRecording(): void
+    {
+        file_put_contents(
+            $this->recordFile,
+            json_encode($this->requests, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES),
+            FILE_APPEND
+        );
+        echo "Recorded " . count($this->requests) . " requests to {$this->recordFile}\n";
+    }
+}
+
+// Create SDK client with recording middleware
+$handlerStack = HandlerStack::create();
+$recorder = new RequestRecorder();
+$handlerStack->push($recorder->middleware());
+
+$guzzleClient = new GuzzleClient(['handler' => $handlerStack]);
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->withHttpClient($guzzleClient)
+    ->make();
+
+// Make requests - they'll be recorded
+echo "Making requests with debugging enabled...\n";
+
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-20250514',
+    'max_tokens' => 100,
+    'messages' => [
+        ['role' => 'user', 'content' => 'What is PHP?']
+    ]
+]);
+
+echo "Response: " . $response->content[0]->text . "\n\n";
+
+// Save recording for later analysis
+$recorder->saveRecording();
+
+// In development, you can replay recorded requests
+echo "Requests have been recorded to /tmp/claude-requests.json\n";
+echo "Use this data for:\n";
+echo "- Request/response inspection\n";
+echo "- Performance analysis\n";
+echo "- Debugging issues\n";
+echo "- Unit test fixtures\n";
+```
+
+### Why It Works
+
+Request recording in development provides:
+- **Debugging**: Inspect exactly what was sent/received
+- **Performance Analysis**: Track latency patterns
+- **Testing**: Use recorded responses as fixtures for unit tests
+- **Documentation**: Show example requests/responses in documentation
+- **Troubleshooting**: Replay requests to diagnose issues
+
+This is particularly useful during development and for [Chapter 36: Security Best Practices](/series/claude-php-developers/chapters/36-security-best-practices) audit logging.
+
 ## Troubleshooting
+
+Common issues and solutions when working with the SDK:
 
 **SDK not found after installation?**
 - Run `composer dump-autoload`
@@ -824,15 +1580,30 @@ class ClaudeServiceProvider extends ServiceProvider
 - Verify your HTTP client supports streaming
 - Check timeout settings allow for long-running connections
 
-## Key Takeaways
+## Wrap-up
 
-- ✓ The SDK uses modern PHP patterns (factory, dependency injection, PSR standards)
-- ✓ Customize behavior via factory methods, middleware, and custom transports
-- ✓ Response objects are strongly typed for IDE support and type safety
-- ✓ Middleware enables logging, metrics, rate limiting, and retry logic
-- ✓ The SDK is designed for testability with mockable interfaces
-- ✓ Use dependency injection for flexible, maintainable code
-- ✓ Configuration management keeps credentials and settings separate
+Congratulations! You've mastered the official Anthropic PHP SDK. Here's what you've accomplished:
+
+- ✓ **Understood SDK architecture** — Factory pattern, client, resources, and transports
+- ✓ **Configured advanced clients** — Custom HTTP clients, middleware, and headers
+- ✓ **Built custom transports** — Implemented caching and specialized HTTP layers
+- ✓ **Worked with typed responses** — Leveraged strongly-typed response objects
+- ✓ **Created testable code** — Used mockable interfaces for comprehensive testing
+- ✓ **Implemented middleware** — Logging, metrics, and rate limiting patterns
+- ✓ **Handled errors gracefully** — Retry logic with exponential backoff
+- ✓ **Applied best practices** — Dependency injection and configuration management
+
+The SDK's architecture follows modern PHP standards, making it production-ready and highly customizable. You can now build enterprise-grade applications with sophisticated monitoring, caching, and error handling.
+
+In the next chapter, you'll build a reusable Claude service class that wraps the SDK with your own business logic, making it even easier to integrate Claude into your applications.
+
+## Further Reading
+
+- [Anthropic PHP SDK Documentation](https://github.com/anthropics/anthropic-sdk-php) — Official SDK repository and documentation
+- [PSR-7: HTTP Message Interfaces](https://www.php-fig.org/psr/psr-7/) — Standard interfaces for HTTP messages
+- [PSR-18: HTTP Client](https://www.php-fig.org/psr/psr-18/) — Standard HTTP client interface
+- [Guzzle HTTP Client Documentation](https://docs.guzzlephp.org/) — Popular PSR-18 implementation used in examples
+- [PHP Dependency Injection](https://www.php.net/manual/en/language.oop5.decon.php) — PHP constructor and dependency injection patterns
 
 <ChapterCheckbox
   seriesId="claude-php-developers"

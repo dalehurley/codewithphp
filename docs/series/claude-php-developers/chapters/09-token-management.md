@@ -27,7 +27,7 @@ prerequisites:
 
 ## Overview
 
-Tokens are the currency of Claude API—they determine both your costs and what you can accomplish. Understanding how tokenization works, accurately counting tokens, optimizing context window usage, and implementing effective budget controls transforms Claude from an unpredictable expense into a cost-effective tool.
+Tokens are the currency of Claude API - they determine both your costs and what you can accomplish. Understanding how tokenization works, accurately counting tokens, optimizing context window usage, and implementing effective budget controls transforms Claude from an unpredictable expense into a cost-effective tool.
 
 This chapter teaches you what tokens are and how they're calculated, how to count tokens before making API calls, strategies for staying within context limits, cost optimization techniques, and budget management systems.
 
@@ -44,11 +44,37 @@ Before starting, ensure you understand:
 
 **Estimated Time**: 45-60 minutes
 
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- A `TokenCounter` class that accurately estimates token counts for text, messages, and API requests
+- A `TokenTracker` system that monitors real-time token usage and calculates costs
+- A `ConversationContextManager` that manages context windows and prunes conversations intelligently
+- A `SmartContextPruner` with multiple pruning strategies (recent, important, balanced, summarize)
+- A `BudgetManager` that enforces spending limits and tracks costs per request
+- A `CostOptimizer` that selects cost-effective models and optimizes requests
+- A complete `TokenManagementService` that combines all components for production use
+
+## Objectives
+
+By the end of this chapter, you will:
+
+- Understand what tokens are and how Claude tokenizes text
+- Learn Claude's token limits and pricing across different models
+- Implement accurate token counting before making API calls
+- Build systems to track token usage and costs in real-time
+- Manage context windows effectively within Claude's 200K token limit
+- Implement strategic conversation pruning to maximize context efficiency
+- Create budget management systems to prevent cost overruns
+- Optimize costs by choosing the right model for each task
+- Build production-ready token management systems
+
 ## Understanding Tokenization
 
 ### What Are Tokens?
 
-Tokens are not words—they're chunks of text that language models process.
+Tokens are not words - they're chunks of text that language models process.
 
 ```php
 <?php
@@ -119,6 +145,8 @@ echo "Actual tokens would need precise counting...\n";
 ```
 
 ### Claude's Token Limits
+
+Claude models have consistent context windows but vary significantly in pricing. Understanding these limits helps you choose the right model and estimate costs accurately.
 
 ```php
 <?php
@@ -197,6 +225,8 @@ foreach (ClaudeModelLimits::MODELS as $model => $specs) {
 ```
 
 ## Accurate Token Counting
+
+Accurate token counting is essential for cost estimation and staying within context limits. While exact tokenization requires Claude's tokenizer, we can build reliable estimation systems that get you within 5-10% accuracy.
 
 ### Token Counter Implementation
 
@@ -349,6 +379,8 @@ print_r($breakdown);
 
 ### Real-Time Token Tracking
 
+Tracking actual token usage after API calls helps you refine your estimates and understand real costs. This system compares estimated vs actual tokens to improve accuracy over time.
+
 ```php
 <?php
 # filename: src/TokenTracker.php
@@ -475,6 +507,8 @@ $tracker->exportCSV('token_usage.csv');
 
 ## Context Window Management
 
+Claude's 200K token context window is generous, but long conversations can still exceed it. Effective context management involves tracking usage, pruning strategically, and summarizing when needed.
+
 ### Conversation Context Manager
 
 ```php
@@ -483,6 +517,8 @@ $tracker->exportCSV('token_usage.csv');
 declare(strict_types=1);
 
 namespace CodeWithPHP\Claude;
+
+use Anthropic\Contracts\ClientContract;
 
 class ConversationContextManager
 {
@@ -815,7 +851,453 @@ echo "Original messages: " . count($messages) . "\n";
 echo "Pruned messages: " . count($pruned) . "\n";
 ```
 
+## Prompt Caching for Token Savings
+
+Anthropic's native prompt caching reduces input tokens on repeated requests by **up to 90%**. When you have large, static context (documentation, system instructions, lengthy examples), caching lets Claude reuse processed tokens instead of reprocessing them.
+
+### Understanding Prompt Caching
+
+Prompt caching works by flagging blocks of your prompt as cacheable:
+
+```php
+<?php
+# filename: src/PromptCacheManager.php
+declare(strict_types=1);
+
+namespace CodeWithPHP\Claude;
+
+use Anthropic\Contracts\ClientContract;
+
+class PromptCacheManager
+{
+    private const CACHE_CONTROL = ['type' => 'ephemeral'];  // 5-minute cache
+    // For longer caching (1 hour), use: ['type' => 'session']
+
+    public function __construct(
+        private ClientContract $client,
+        private TokenCounter $counter
+    ) {}
+
+    /**
+     * Make a request with prompt caching enabled
+     */
+    public function query(
+        string $userPrompt,
+        string $staticContext,
+        array $examples = [],
+        string $model = 'claude-sonnet-4-20250514'
+    ): object {
+        // Build messages with cache control
+        $systemBlocks = [];
+
+        // Static context is always cached
+        $systemBlocks[] = [
+            'type' => 'text',
+            'text' => $staticContext,
+            'cache_control' => self::CACHE_CONTROL,
+        ];
+
+        // Examples (often repeated) are cached
+        if (!empty($examples)) {
+            $examplesText = "Examples:\n" . implode("\n\n", $examples);
+            $systemBlocks[] = [
+                'type' => 'text',
+                'text' => $examplesText,
+                'cache_control' => self::CACHE_CONTROL,
+            ];
+        }
+
+        // Dynamic instruction (not cached)
+        $systemBlocks[] = [
+            'type' => 'text',
+            'text' => 'Respond concisely and accurately.',
+        ];
+
+        // Make request with cache-enabled system prompt
+        $response = $this->client->messages()->create([
+            'model' => $model,
+            'max_tokens' => 1024,
+            'system' => $systemBlocks,
+            'messages' => [
+                [
+                    'role' => 'user',
+                    'content' => $userPrompt,
+                ]
+            ],
+        ]);
+
+        return $response;
+    }
+
+    /**
+     * Calculate cache savings
+     *
+     * Usage object includes:
+     * - input_tokens: Actual input tokens used
+     * - cache_creation_input_tokens: Tokens cached for future use
+     * - cache_read_input_tokens: Tokens read from cache
+     */
+    public function analyzeCacheSavings(object $usage): array
+    {
+        $inputTokens = $usage->inputTokens ?? 0;
+        $cacheCreateTokens = $usage->cacheCreationInputTokens ?? 0;
+        $cacheReadTokens = $usage->cacheReadInputTokens ?? 0;
+
+        // On first request: pay for all tokens + cache creation overhead
+        // cache_creation_input_tokens = 25% more than normal input tokens
+        $firstRequestCost = ($inputTokens + $cacheCreateTokens) * 0.003 / 1_000_000;
+
+        // On subsequent requests: only 10% of cached token cost
+        $subsequentRequestCost = ($cacheReadTokens * 0.1) * 0.003 / 1_000_000;
+
+        // Breakeven point
+        $savingsPerRequest = ($cacheReadTokens * 0.9) * 0.003 / 1_000_000;
+
+        return [
+            'first_request_cost_usd' => $firstRequestCost,
+            'subsequent_request_cost_usd' => $subsequentRequestCost,
+            'savings_per_cached_request_usd' => $savingsPerRequest,
+            'cache_read_tokens' => $cacheReadTokens,
+            'breakeven_requests' => $cacheCreateTokens > 0 ? (int) ceil($cacheCreateTokens / ($cacheReadTokens * 0.9)) : 0,
+        ];
+    }
+}
+
+// Usage
+$cacheManager = new PromptCacheManager($client, new TokenCounter());
+
+$largeDocumentation = file_get_contents('api-documentation.md');
+$examples = [
+    "Example 1: Extract email\nInput: Contact me at john@example.com\nOutput: john@example.com",
+    "Example 2: Extract phone\nInput: Call +1-555-0123\nOutput: +1-555-0123",
+];
+
+// First request: creates cache (25% overhead)
+$response1 = $cacheManager->query(
+    'Extract email from: "Reach out to alice@company.com"',
+    $largeDocumentation,
+    $examples
+);
+
+echo "First request tokens: " . $response1->usage->inputTokens . "\n";
+echo "Cache creation tokens: " . ($response1->usage->cacheCreationInputTokens ?? 0) . "\n\n";
+
+// Subsequent requests: use cache (90% savings)
+$response2 = $cacheManager->query(
+    'Extract email from: "Contact bob@work.com"',
+    $largeDocumentation,
+    $examples
+);
+
+echo "Second request tokens: " . $response2->usage->inputTokens . "\n";
+echo "Cache read tokens: " . ($response2->usage->cacheReadInputTokens ?? 0) . "\n";
+echo "Savings: " . number_format($cacheManager->analyzeCacheSavings($response2->usage)['savings_per_cached_request_usd'], 4) . " USD\n";
+```
+
+### When to Use Prompt Caching
+
+✅ **Use when:**
+- You have large, static context (>1024 tokens) that doesn't change frequently
+- You make multiple requests with the same system prompt or examples
+- Context consists of documentation, API specs, or reference materials
+- You need 5-minute or 1-hour cache durations
+
+❌ **Avoid when:**
+- Context changes frequently (defeats cache efficiency)
+- Single one-off requests (overhead not worth it)
+- You need real-time context updates
+
+**Cost-benefit:** Cache breaks even after ~3-5 requests with large context, then saves 90% on input tokens.
+
+## Batch Processing for Cost-Effective Operations
+
+Batch processing reduces Claude API costs by **50%** when you need to process multiple requests asynchronously. Perfect for bulk operations that don't need real-time responses.
+
+### Batch Processing Strategy
+
+```php
+<?php
+# filename: src/BatchProcessor.php
+declare(strict_types=1);
+
+namespace CodeWithPHP\Claude;
+
+use Anthropic\Contracts\ClientContract;
+
+class BatchProcessor
+{
+    private const BATCH_COST_MULTIPLIER = 0.5;  // 50% discount
+
+    public function __construct(
+        private ClientContract $client,
+        private TokenCounter $counter
+    ) {}
+
+    /**
+     * Submit batch of requests for processing
+     */
+    public function submitBatch(array $requests): object
+    {
+        // Format requests for batch API
+        $batchRequests = array_map(function ($request, $index) {
+            return [
+                'custom_id' => "request-{$index}",
+                'params' => [
+                    'model' => $request['model'] ?? 'claude-sonnet-4-20250514',
+                    'max_tokens' => $request['max_tokens'] ?? 1024,
+                    'system' => $request['system'] ?? null,
+                    'messages' => $request['messages'],
+                ]
+            ];
+        }, $requests, array_keys($requests));
+
+        // Submit batch
+        $batch = $this->client->batches()->create([
+            'requests' => $batchRequests,
+        ]);
+
+        return $batch;
+    }
+
+    /**
+     * Check batch processing status
+     */
+    public function getBatchStatus(string $batchId): object
+    {
+        return $this->client->batches()->retrieve($batchId);
+    }
+
+    /**
+     * Retrieve batch results when complete
+     */
+    public function getBatchResults(string $batchId): array
+    {
+        $batch = $this->client->batches()->retrieve($batchId);
+
+        if ($batch->processingStatus !== 'completed') {
+            throw new \RuntimeException(
+                "Batch {$batchId} not ready. Status: {$batch->processingStatus}"
+            );
+        }
+
+        $results = [];
+        foreach ($batch->requestCounts->succeeded as $result) {
+            $results[] = $result;
+        }
+
+        return $results;
+    }
+
+    /**
+     * Calculate cost savings for batch processing
+     */
+    public function calculateBatchSavings(
+        array $requests,
+        string $model = 'claude-sonnet-4-20250514'
+    ): array {
+        $totalInputTokens = 0;
+        $totalOutputTokens = 0;
+
+        // Estimate tokens for each request
+        foreach ($requests as $request) {
+            $tokenCounts = $this->counter->countRequest($request);
+            $totalInputTokens += $tokenCounts['total'];
+            $totalOutputTokens += $request['max_tokens'] ?? 1024;
+        }
+
+        // Standard API cost
+        $standardCost = ClaudeModelLimits::calculateCost(
+            $model,
+            $totalInputTokens,
+            $totalOutputTokens
+        );
+
+        // Batch cost (50% discount)
+        $batchCost = $standardCost * self::BATCH_COST_MULTIPLIER;
+
+        $savings = $standardCost - $batchCost;
+        $savingsPercent = ($savings / $standardCost) * 100;
+
+        return [
+            'request_count' => count($requests),
+            'total_input_tokens' => $totalInputTokens,
+            'total_output_tokens' => $totalOutputTokens,
+            'standard_cost_usd' => $standardCost,
+            'batch_cost_usd' => $batchCost,
+            'savings_usd' => $savings,
+            'savings_percent' => round($savingsPercent, 2),
+        ];
+    }
+}
+
+// Usage
+$batchProcessor = new BatchProcessor($client, new TokenCounter());
+
+// Prepare bulk requests
+$requests = [
+    [
+        'model' => 'claude-sonnet-4-20250514',
+        'max_tokens' => 200,
+        'system' => 'Summarize the following text in one sentence.',
+        'messages' => [
+            ['role' => 'user', 'content' => 'Long article text 1...']
+        ]
+    ],
+    [
+        'model' => 'claude-sonnet-4-20250514',
+        'max_tokens' => 200,
+        'system' => 'Summarize the following text in one sentence.',
+        'messages' => [
+            ['role' => 'user', 'content' => 'Long article text 2...']
+        ]
+    ],
+    // ... more requests
+];
+
+// Calculate savings
+$savings = $batchProcessor->calculateBatchSavings($requests);
+echo "Batch Processing Savings:\n";
+echo "Requests: " . $savings['request_count'] . "\n";
+echo "Standard cost: $" . number_format($savings['standard_cost_usd'], 4) . "\n";
+echo "Batch cost: $" . number_format($savings['batch_cost_usd'], 4) . "\n";
+echo "Total savings: $" . number_format($savings['savings_usd'], 4) . " (" . $savings['savings_percent'] . "%)\n\n";
+
+// Submit batch
+$batch = $batchProcessor->submitBatch($requests);
+echo "Batch ID: " . $batch->id . "\n";
+echo "Status: " . $batch->processingStatus . "\n";
+
+// Check status later
+// $status = $batchProcessor->getBatchStatus($batch->id);
+// if ($status->processingStatus === 'completed') {
+//     $results = $batchProcessor->getBatchResults($batch->id);
+// }
+```
+
+### When to Use Batch Processing
+
+✅ **Perfect for:**
+- Daily/weekly bulk analysis (document processing, data extraction)
+- Non-time-sensitive operations (content generation, summarization)
+- Bulk customer analysis or feedback processing
+- Report generation from large datasets
+
+❌ **Not suitable for:**
+- Real-time user interactions (users won't wait 1+ hour)
+- Complex workflows with dependencies
+- Requests needing immediate responses
+
+**Process time:** Usually completes within 1 minute, up to 24 hours for large batches.
+
+## Enhanced Image Token Calculation
+
+Images consume varying tokens based on their dimensions, not just a flat ~1000 tokens. Here's a more accurate calculation:
+
+```php
+<?php
+# filename: src/ImageTokenCalculator.php
+declare(strict_types=1);
+
+namespace CodeWithPHP\Claude;
+
+class ImageTokenCalculator
+{
+    /**
+     * Calculate tokens for an image more accurately
+     *
+     * Token cost = 1100 base tokens + dimension-based tokens
+     * Dimension tokens scale with image complexity
+     */
+    public static function calculateImageTokens(
+        int $width,
+        int $height,
+        string $mediaType = 'image/jpeg'
+    ): int {
+        // Base tokens for any image
+        $baseTokens = 1100;
+
+        // Dimension-based tokens (~0.75 tokens per pixel for processed image)
+        $scaledDimensions = self::scaleImageDimensions($width, $height);
+        $dimensionTokens = (int) ceil(
+            ($scaledDimensions['width'] * $scaledDimensions['height']) / 750
+        );
+
+        return $baseTokens + $dimensionTokens;
+    }
+
+    /**
+     * Scale image to Claude's processing dimensions
+     * Claude processes images in tiles of up to 1024×1024
+     */
+    private static function scaleImageDimensions(int $width, int $height): array
+    {
+        $maxDimension = 1024;
+
+        if ($width <= $maxDimension && $height <= $maxDimension) {
+            return ['width' => $width, 'height' => $height];
+        }
+
+        // Scale down larger images
+        $aspectRatio = $width / $height;
+        if ($width > $height) {
+            return [
+                'width' => $maxDimension,
+                'height' => (int) ($maxDimension / $aspectRatio),
+            ];
+        } else {
+            return [
+                'width' => (int) ($maxDimension * $aspectRatio),
+                'height' => $maxDimension,
+            ];
+        }
+    }
+
+    /**
+     * Real-world examples
+     */
+    public static function examples(): void
+    {
+        $examples = [
+            ['width' => 400, 'height' => 300, 'description' => 'Small thumbnail'],
+            ['width' => 800, 'height' => 600, 'description' => 'Mobile photo'],
+            ['width' => 1920, 'height' => 1080, 'description' => 'HD screenshot'],
+            ['width' => 4000, 'height' => 3000, 'description' => 'High-res camera'],
+        ];
+
+        echo "Image Token Costs:\n\n";
+        foreach ($examples as $image) {
+            $tokens = self::calculateImageTokens($image['width'], $image['height']);
+            echo "{$image['description']}: {$image['width']}×{$image['height']} = {$tokens} tokens\n";
+        }
+    }
+}
+
+// Show examples
+ImageTokenCalculator::examples();
+```
+
+Update your `TokenCounter` to use this improved calculation:
+
+```php
+// In TokenCounter class
+if (isset($part['image'])) {
+    // More accurate image token calculation
+    if (isset($part['image']['width']) && isset($part['image']['height'])) {
+        $total += ImageTokenCalculator::calculateImageTokens(
+            $part['image']['width'],
+            $part['image']['height'],
+            $part['image']['media_type'] ?? 'image/jpeg'
+        );
+    } else {
+        // Fallback if dimensions not available
+        $total += 1100;
+    }
+}
+```
+
 ## Cost Management
+
+Preventing cost overruns requires proactive budget management and cost optimization. These systems help you stay within budget while maximizing Claude's capabilities.
 
 ### Budget Manager
 
@@ -1296,6 +1778,171 @@ For Exercise 1, create a class that stores usage data in a database and provides
 
 </details>
 
+## Cache Key Design Patterns
+
+When combining this chapter with caching strategies (Chapter 18), design cache keys that account for token patterns:
+
+```php
+<?php
+# filename: src/TokenAwareCacheKey.php
+declare(strict_types=1);
+
+namespace CodeWithPHP\Claude;
+
+class TokenAwareCacheKey
+{
+    /**
+     * Generate cache key that accounts for semantic similarity
+     * Similar prompts should ideally share cache entries
+     */
+    public static function generate(
+        array $request,
+        TokenCounter $counter
+    ): string {
+        // Extract key components
+        $model = $request['model'] ?? 'claude-sonnet-4-20250514';
+        $system = $request['system'] ?? '';
+        $userMessage = $request['messages'][0]['content'] ?? '';
+
+        // Normalize for comparison (remove extra whitespace)
+        $normalizedSystem = self::normalize($system);
+        $normalizedMessage = self::normalize($userMessage);
+
+        // Create semantic fingerprint
+        $systemHash = substr(hash('sha256', $normalizedSystem), 0, 8);
+        $messageTokens = $counter->count($normalizedMessage);
+        $messageHash = substr(hash('sha256', $normalizedMessage), 0, 8);
+
+        // Cache key includes:
+        // - Model (different models = different caches)
+        // - System prompt hash (identifies unique instructions)
+        // - Message token count (similar-length messages = similar complexity)
+        // - Message hash (exact content)
+        return "claude:{$model}:system:{$systemHash}:tokens:{$messageTokens}:msg:{$messageHash}";
+    }
+
+    /**
+     * Normalize text for semantic comparison
+     */
+    private static function normalize(string $text): string
+    {
+        // Remove extra whitespace
+        $text = preg_replace('/\s+/', ' ', trim($text));
+
+        // Remove common filler words that don't affect meaning
+        $fillers = ['please', 'thank you', 'kindly', 'could you'];
+        foreach ($fillers as $filler) {
+            $text = preg_replace('/\b' . $filler . '\b/i', '', $text);
+        }
+
+        return strtolower($text);
+    }
+
+    /**
+     * Estimate if two requests are semantically similar
+     * (would benefit from shared cached result)
+     */
+    public static function isSimilar(
+        array $request1,
+        array $request2,
+        TokenCounter $counter,
+        float $similarityThreshold = 0.8
+    ): bool {
+        $msg1 = $request1['messages'][0]['content'] ?? '';
+        $msg2 = $request2['messages'][0]['content'] ?? '';
+
+        // If token counts differ significantly, not similar
+        $tokens1 = $counter->count($msg1);
+        $tokens2 = $counter->count($msg2);
+        if (abs($tokens1 - $tokens2) / max($tokens1, $tokens2) > 0.2) {
+            return false;
+        }
+
+        // Calculate similarity score using simple word overlap
+        $words1 = array_unique(preg_split('/\W+/', strtolower($msg1)));
+        $words2 = array_unique(preg_split('/\W+/', strtolower($msg2)));
+
+        $intersection = count(array_intersect($words1, $words2));
+        $union = count(array_union($words1, $words2));
+
+        $similarity = $union > 0 ? $intersection / $union : 0;
+
+        return $similarity >= $similarityThreshold;
+    }
+}
+
+// Usage
+$key1 = TokenAwareCacheKey::generate([
+    'model' => 'claude-sonnet-4-20250514',
+    'system' => 'You are a helpful assistant.',
+    'messages' => [['role' => 'user', 'content' => 'What is PHP?']]
+], $counter);
+
+echo "Cache key: {$key1}\n";
+
+// Check similarity for deduplication
+$similar = TokenAwareCacheKey::isSimilar(
+    [
+        'model' => 'claude-sonnet-4-20250514',
+        'messages' => [['role' => 'user', 'content' => 'What is PHP?']]
+    ],
+    [
+        'model' => 'claude-sonnet-4-20250514',
+        'messages' => [['role' => 'user', 'content' => 'Tell me about PHP']]
+    ],
+    $counter
+);
+
+echo "Similar requests: " . ($similar ? "Yes" : "No") . "\n";
+```
+
+## Troubleshooting
+
+### Token Count Estimates Are Too High
+
+**Symptom**: Your token counter estimates significantly more tokens than Claude actually uses.
+
+**Cause**: The estimation formula may be too conservative, especially for code or structured text.
+
+**Solution**: Adjust the `CHARS_PER_TOKEN` constant or add language-specific multipliers:
+
+```php
+// More accurate for English prose
+private const CHARS_PER_TOKEN = 4.5;
+
+// More accurate for code
+private const CODE_MULTIPLIER = 1.2;  // Reduce from 1.3
+```
+
+### Context Window Exceeded Errors
+
+**Symptom**: API returns errors about exceeding context window limits.
+
+**Cause**: Conversation history has grown too large, or a single message is too long.
+
+**Solution**: Implement proactive pruning before making requests:
+
+```php
+// Check before adding message
+if (!$contextManager->canFit($newMessage)) {
+    $contextManager->pruneStrategic([0]); // Keep first message
+}
+```
+
+### Budget Exceeded Unexpectedly
+
+**Symptom**: Budget runs out faster than expected.
+
+**Cause**: Output tokens may be higher than estimated, or multiple requests accumulate quickly.
+
+**Solution**: Track actual costs and adjust estimates:
+
+```php
+// Use actual output tokens for future estimates
+$avgOutputTokens = $tracker->getStats()['total_output_tokens'] / 
+                   $tracker->getStats()['total_requests'];
+```
+
 ## Key Takeaways
 
 - ✓ Tokens are chunks of text (~4 chars each), not words
@@ -1306,6 +1953,18 @@ For Exercise 1, create a class that stores usage data in a database and provides
 - ✓ Choose the right model for each task to optimize costs
 - ✓ Track token usage to understand patterns and optimize
 - ✓ Use Haiku for simple tasks, Sonnet for most, Opus for complex
+
+## Further Reading
+
+- [Anthropic Pricing Documentation](https://docs.claude.com/en/docs/models-and-pricing/pricing) — Official pricing information for Claude models
+- [Anthropic Token Limits](https://docs.claude.com/en/docs/models-and-pricing/models-overview) — Model specifications and context window limits
+- [Anthropic Prompt Caching](https://docs.claude.com/en/docs/capabilities/prompt-caching) — Reduce costs 90% with cached prompts and examples
+- [Anthropic Batch Processing](https://docs.claude.com/en/docs/capabilities/batch-processing) — 50% cost reduction for async bulk operations
+- [Chapter 08: Temperature and Sampling Parameters](/series/claude-php-developers/chapters/08-temperature-sampling) — Learn how sampling affects token usage
+- [Chapter 10: Error Handling and Rate Limiting](/series/claude-php-developers/chapters/10-error-handling-rate-limiting) — Build resilient applications with proper error handling
+- [Chapter 18: Caching Strategies](/series/claude-php-developers/chapters/18-caching-strategies) — Response caching, cache invalidation, and semantic matching
+- [Chapter 39: Cost Optimization and Billing](/series/claude-php-developers/chapters/39-cost-optimization-billing) — Complete cost optimization strategies for production
+- [Anthropic API Reference](https://docs.claude.com/en/api/messages) — Complete API documentation for messages endpoint
 
 <ChapterCheckbox
   seriesId="claude-php-developers"

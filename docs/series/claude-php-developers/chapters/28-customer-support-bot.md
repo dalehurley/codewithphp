@@ -30,9 +30,21 @@ prerequisites:
 
 Customer support is essential but resource-intensive. In this chapter, you'll build an intelligent support bot that handles common inquiries, classifies tickets, analyzes sentiment, and knows when to escalate to human agents. Your bot will integrate with knowledge bases, CRM systems, and ticketing platforms.
 
-Claude's natural language understanding makes it perfect for support scenarios—it can interpret customer intent, maintain conversation context, access documentation, and provide helpful, empathetic responses while maintaining your brand voice.
+Claude's natural language understanding makes it perfect for support scenarios - it can interpret customer intent, maintain conversation context, access documentation, and provide helpful, empathetic responses while maintaining your brand voice.
 
 **What You'll Build**: A production-ready support system that handles multi-channel conversations, integrates with knowledge bases, classifies and routes tickets, analyzes sentiment, and seamlessly hands off to human agents when needed.
+
+## Objectives
+
+By the end of this chapter, you will:
+
+- **Understand** how to build an intelligent support bot with Claude that maintains conversation context
+- **Implement** knowledge base integration with semantic search and re-ranking
+- **Create** a ticket classification system that automatically routes issues to appropriate teams
+- **Build** sentiment analysis capabilities to detect customer frustration and urgency
+- **Design** an escalation engine that seamlessly hands off complex issues to human agents
+- **Integrate** multi-channel support (email, chat) with unified conversation management
+- **Develop** analytics and metrics tracking for bot performance monitoring
 
 ## Prerequisites
 
@@ -134,6 +146,145 @@ class SupportBot
             suggestedActions: $this->extractActions($response),
             escalationNeeded: $this->detectEscalationIntent($response)
         );
+    }
+
+    private function formatConversationHistory(Conversation $conversation): array
+    {
+        $messages = [];
+        foreach ($conversation->messages as $msg) {
+            $messages[] = [
+                'role' => $msg['role'],
+                'content' => $msg['content']
+            ];
+        }
+        return $messages;
+    }
+
+    private function formatArticles(array $articles): string
+    {
+        if (empty($articles)) {
+            return 'No relevant articles found.';
+        }
+
+        $formatted = [];
+        foreach ($articles as $article) {
+            $formatted[] = "Title: {$article['title']}\nContent: {$article['content']}";
+        }
+
+        return implode("\n\n---\n\n", $formatted);
+    }
+
+    private function formatCustomerContext(array $context): string
+    {
+        $info = [];
+        if (isset($context['customer_name'])) {
+            $info[] = "Name: {$context['customer_name']}";
+        }
+        if (isset($context['account_type'])) {
+            $info[] = "Account Type: {$context['account_type']}";
+        }
+        if (isset($context['previous_tickets'])) {
+            $info[] = "Previous Tickets: {$context['previous_tickets']}";
+        }
+
+        return !empty($info) ? implode("\n", $info) : 'No additional customer information available.';
+    }
+
+    private function calculateConfidence($response): float
+    {
+        // Simple confidence calculation based on response length and structure
+        $text = $response->content[0]->text;
+        $length = strlen($text);
+
+        // Longer, structured responses tend to be more confident
+        if ($length > 200 && str_contains($text, '.')) {
+            return 0.8;
+        }
+        if ($length > 100) {
+            return 0.6;
+        }
+        return 0.4;
+    }
+
+    private function extractActions($response): array
+    {
+        // Extract suggested actions from response text
+        $text = $response->content[0]->text;
+        $actions = [];
+
+        // Look for action patterns
+        if (preg_match_all('/you can (.+?)(?:\.|$)/i', $text, $matches)) {
+            foreach ($matches[1] as $match) {
+                $actions[] = trim($match);
+            }
+        }
+
+        return array_slice($actions, 0, 3); // Limit to 3 actions
+    }
+
+    private function detectEscalationIntent($response): bool
+    {
+        $text = strtolower($response->content[0]->text);
+        $escalationPhrases = [
+            'connect you with',
+            'transfer you to',
+            'escalate',
+            'specialist',
+            'human agent'
+        ];
+
+        foreach ($escalationPhrases as $phrase) {
+            if (str_contains($text, $phrase)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function detectHumanRequest(string $message): bool
+    {
+        $lowerMessage = strtolower($message);
+        $humanRequestPhrases = [
+            'speak to a person',
+            'talk to someone',
+            'human agent',
+            'real person',
+            'customer service',
+            'support agent',
+            'can\'t help',
+            'not helpful'
+        ];
+
+        foreach ($humanRequestPhrases as $phrase) {
+            if (str_contains($lowerMessage, $phrase)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function extractSubject(Conversation $conversation): string
+    {
+        if (empty($conversation->messages)) {
+            return 'Support Request';
+        }
+
+        $firstMessage = $conversation->messages[0]['content'] ?? '';
+        return substr($firstMessage, 0, 100);
+    }
+
+    private function calculatePriority(Conversation $conversation): string
+    {
+        // Simple priority calculation based on conversation length and sentiment
+        if ($conversation->turnCount > 8) {
+            return 'high';
+        }
+        if ($conversation->turnCount > 5) {
+            return 'medium';
+        }
+        return 'low';
     }
 
     private function buildSystemPrompt(array $articles, array $context): string
@@ -564,7 +715,7 @@ PROMPT;
      */
     public function analyzeConversationTrend(Conversation $conversation): array
     {
-        $messages = $conversation->getMessages();
+        $messages = $conversation->messages;
         $scores = [];
 
         foreach ($messages as $msg) {
@@ -1119,6 +1270,56 @@ class SupportAnalytics
         ]);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
+
+    private function getAverageResolutionTime(\DateTime $start, \DateTime $end): float
+    {
+        $stmt = $this->db->prepare(
+            "SELECT AVG(TIMESTAMPDIFF(MINUTE, created_at, updated_at)) as avg_minutes
+             FROM conversations
+             WHERE created_at BETWEEN :start AND :end
+             AND status = 'closed'"
+        );
+        $stmt->execute([
+            ':start' => $start->format('Y-m-d H:i:s'),
+            ':end' => $end->format('Y-m-d H:i:s')
+        ]);
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return (float)($result['avg_minutes'] ?? 0);
+    }
+
+    private function getCustomerSatisfaction(\DateTime $start, \DateTime $end): float
+    {
+        $stmt = $this->db->prepare(
+            "SELECT AVG(satisfaction_score) as avg_score
+             FROM support_interactions
+             WHERE created_at BETWEEN :start AND :end
+             AND satisfaction_score IS NOT NULL"
+        );
+        $stmt->execute([
+            ':start' => $start->format('Y-m-d H:i:s'),
+            ':end' => $end->format('Y-m-d H:i:s')
+        ]);
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return (float)($result['avg_score'] ?? 0);
+    }
+
+    private function getSentimentDistribution(\DateTime $start, \DateTime $end): array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT
+                SUM(CASE WHEN sentiment_score < -0.5 THEN 1 ELSE 0 END) as negative,
+                SUM(CASE WHEN sentiment_score BETWEEN -0.5 AND 0.5 THEN 1 ELSE 0 END) as neutral,
+                SUM(CASE WHEN sentiment_score > 0.5 THEN 1 ELSE 0 END) as positive
+             FROM support_interactions
+             WHERE created_at BETWEEN :start AND :end
+             AND sentiment_score IS NOT NULL"
+        );
+        $stmt->execute([
+            ':start' => $start->format('Y-m-d H:i:s'),
+            ':end' => $end->format('Y-m-d H:i:s')
+        ]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC) ?: ['negative' => 0, 'neutral' => 0, 'positive' => 0];
+    }
 }
 ```
 
@@ -1177,6 +1378,11 @@ class Conversation
         return $this->messages;
     }
 
+    public function getMessages(): array
+    {
+        return $this->messages;
+    }
+
     public function getSummary(): string
     {
         $summary = '';
@@ -1220,6 +1426,1064 @@ readonly class TicketClassification
 }
 ```
 
+## Quality Assurance & Evaluation
+
+### Bot Response Quality Scoring
+
+```php
+<?php
+# filename: src/Support/QualityAssurance.php
+declare(strict_types=1);
+
+namespace App\Support;
+
+use Anthropic\Anthropic;
+
+class QualityAssurance
+{
+    public function __construct(
+        private Anthropic $claude,
+        private \PDO $db
+    ) {}
+
+    /**
+     * Score bot response quality
+     */
+    public function scoreResponse(string $botResponse, string $customerMessage): array
+    {
+        $prompt = <<<PROMPT
+Evaluate this customer support bot response on multiple quality dimensions.
+
+Customer Message: {$customerMessage}
+
+Bot Response: {$botResponse}
+
+Rate on a scale of 0-10 and return JSON:
+{
+  "clarity_score": number (0-10, is response clear and understandable?),
+  "helpfulness_score": number (0-10, does it answer the customer's question?),
+  "tone_score": number (0-10, is tone professional and empathetic?),
+  "accuracy_score": number (0-10, is information accurate?),
+  "actionability_score": number (0-10, can customer act on this advice?),
+  "overall_score": number (0-10, overall quality rating),
+  "issues": ["list of identified problems"],
+  "recommendations": ["suggestions for improvement"],
+  "requires_review": boolean (flag for human review if problematic)
+}
+
+Return ONLY valid JSON.
+PROMPT;
+
+        $response = $this->claude->messages()->create([
+            'model' => 'claude-haiku-4-20250514',
+            'max_tokens' => 1024,
+            'temperature' => 0.2,
+            'messages' => [[
+                'role' => 'user',
+                'content' => $prompt
+            ]]
+        ]);
+
+        $jsonText = $response->content[0]->text;
+        if (preg_match('/\{.*\}/s', $jsonText, $matches)) {
+            return json_decode($matches[0], true) ?? [];
+        }
+
+        return [];
+    }
+
+    /**
+     * Track satisfaction scores
+     */
+    public function recordSatisfactionScore(int $conversationId, int $score, ?string $feedback = null): void
+    {
+        $stmt = $this->db->prepare(
+            "INSERT INTO conversation_satisfaction (conversation_id, score, feedback, created_at)
+             VALUES (:conversation_id, :score, :feedback, NOW())"
+        );
+
+        $stmt->execute([
+            ':conversation_id' => $conversationId,
+            ':score' => $score,
+            ':feedback' => $feedback
+        ]);
+    }
+
+    /**
+     * Calculate satisfaction metrics
+     */
+    public function getSatisfactionMetrics(\DateTime $start, \DateTime $end): array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT
+                COUNT(*) as total_ratings,
+                AVG(score) as average_score,
+                SUM(CASE WHEN score >= 4 THEN 1 ELSE 0 END) as satisfied,
+                SUM(CASE WHEN score <= 2 THEN 1 ELSE 0 END) as unsatisfied,
+                MIN(score) as lowest_score,
+                MAX(score) as highest_score
+             FROM conversation_satisfaction
+             WHERE created_at BETWEEN :start AND :end"
+        );
+
+        $stmt->execute([
+            ':start' => $start->format('Y-m-d H:i:s'),
+            ':end' => $end->format('Y-m-d H:i:s')
+        ]);
+
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ($result['total_ratings'] > 0) {
+            $result['satisfaction_rate'] = ($result['satisfied'] / $result['total_ratings']) * 100;
+        }
+
+        return $result ?: [];
+    }
+
+    /**
+     * Get responses flagged for review
+     */
+    public function getFlaggedResponses(int $limit = 20): array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT cr.*, c.customer_id, c.messages
+             FROM conversation_responses cr
+             JOIN conversations c ON cr.conversation_id = c.id
+             WHERE cr.quality_score < 5 OR cr.requires_review = 1
+             ORDER BY cr.created_at DESC
+             LIMIT :limit"
+        );
+
+        $stmt->execute([':limit' => $limit]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+}
+```
+
+### Conversation Quality Tracking
+
+```php
+<?php
+# filename: src/Support/ConversationQuality.php
+declare(strict_types=1);
+
+namespace App\Support;
+
+class ConversationQuality
+{
+    public function __construct(
+        private \PDO $db,
+        private QualityAssurance $qa
+    ) {}
+
+    /**
+     * Track resolution metrics
+     */
+    public function recordResolution(int $conversationId, string $resolutionType, bool $resolved): void
+    {
+        $stmt = $this->db->prepare(
+            "INSERT INTO resolution_tracking (conversation_id, type, resolved, created_at)
+             VALUES (:conversation_id, :type, :resolved, NOW())"
+        );
+
+        $stmt->execute([
+            ':conversation_id' => $conversationId,
+            ':type' => $resolutionType,
+            ':resolved' => $resolved ? 1 : 0
+        ]);
+    }
+
+    /**
+     * Get resolution effectiveness
+     */
+    public function getResolutionEffectiveness(\DateTime $start, \DateTime $end): array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT
+                type,
+                COUNT(*) as total,
+                SUM(CASE WHEN resolved = 1 THEN 1 ELSE 0 END) as successful,
+                (SUM(CASE WHEN resolved = 1 THEN 1 ELSE 0 END) / COUNT(*)) * 100 as success_rate
+             FROM resolution_tracking
+             WHERE created_at BETWEEN :start AND :end
+             GROUP BY type
+             ORDER BY success_rate DESC"
+        );
+
+        $stmt->execute([
+            ':start' => $start->format('Y-m-d H:i:s'),
+            ':end' => $end->format('Y-m-d H:i:s')
+        ]);
+
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get average resolution time by type
+     */
+    public function getAverageResolutionTime(string $type, \DateTime $start, \DateTime $end): float
+    {
+        $stmt = $this->db->prepare(
+            "SELECT AVG(TIMESTAMPDIFF(MINUTE, c.created_at, c.updated_at)) as avg_minutes
+             FROM resolution_tracking rt
+             JOIN conversations c ON rt.conversation_id = c.id
+             WHERE rt.type = :type
+             AND rt.resolved = 1
+             AND rt.created_at BETWEEN :start AND :end"
+        );
+
+        $stmt->execute([
+            ':type' => $type,
+            ':start' => $start->format('Y-m-d H:i:s'),
+            ':end' => $end->format('Y-m-d H:i:s')
+        ]);
+
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return (float)($result['avg_minutes'] ?? 0);
+    }
+}
+```
+
+## Prompt Caching for Cost Optimization
+
+```php
+<?php
+# filename: src/Support/CachingStrategy.php
+declare(strict_types=1);
+
+namespace App\Support;
+
+use Anthropic\Anthropic;
+
+class CachingStrategy
+{
+    public function __construct(
+        private Anthropic $claude,
+        private \Redis $redis
+    ) {}
+
+    /**
+     * Generate response with cached system prompt
+     */
+    public function generateWithCachedPrompt(
+        string $systemPrompt,
+        array $articles,
+        array $messages
+    ): string {
+        // Cache key for this specific knowledge base + articles
+        $cacheKey = 'kb_cache_' . md5($systemPrompt . json_encode(array_keys($articles)));
+
+        // Check if cache exists
+        $cached = $this->redis->get($cacheKey);
+        if ($cached) {
+            return $this->usesCachedContext($cached, $messages);
+        }
+
+        // Use with prompt caching to save tokens on repeated queries
+        $articleText = $this->formatArticles($articles);
+
+        $response = $this->claude->messages()->create([
+            'model' => 'claude-sonnet-4-20250514',
+            'max_tokens' => 2048,
+            'temperature' => 0.7,
+            'system' => [
+                [
+                    'type' => 'text',
+                    'text' => $systemPrompt,
+                    'cache_control' => ['type' => 'ephemeral'] // 5-minute cache
+                ],
+                [
+                    'type' => 'text',
+                    'text' => "Knowledge Base:\n{$articleText}",
+                    'cache_control' => ['type' => 'ephemeral']
+                ]
+            ],
+            'messages' => $messages
+        ]);
+
+        // Store indication that cache is available
+        $this->redis->setex($cacheKey, 300, json_encode([
+            'cached_at' => time(),
+            'article_count' => count($articles)
+        ]));
+
+        return $response->content[0]->text;
+    }
+
+    /**
+     * Cache knowledge base articles in Redis
+     */
+    public function cacheKnowledgeBase(array $articles, int $ttl = 86400): void
+    {
+        $cacheKey = 'kb_articles_' . md5(json_encode(array_column($articles, 'id')));
+
+        $this->redis->setex(
+            $cacheKey,
+            $ttl,
+            json_encode($articles)
+        );
+    }
+
+    /**
+     * Get cached knowledge base
+     */
+    public function getCachedKnowledgeBase(array $articleIds): ?array
+    {
+        $cacheKey = 'kb_articles_' . md5(json_encode($articleIds));
+
+        $cached = $this->redis->get($cacheKey);
+        if ($cached) {
+            return json_decode($cached, true);
+        }
+
+        return null;
+    }
+
+    private function usesCachedContext(string $cacheInfo, array $messages): string
+    {
+        $cached = json_decode($cacheInfo, true);
+        // Logic to use cached context for faster responses
+        return "Response using cached KB (cached at: {$cached['cached_at']})";
+    }
+
+    private function formatArticles(array $articles): string
+    {
+        $formatted = [];
+        foreach ($articles as $article) {
+            $formatted[] = "Title: {$article['title']}\nContent: {$article['content']}";
+        }
+        return implode("\n\n---\n\n", $formatted);
+    }
+}
+```
+
+## Memory Tool for Persistent Customer Context
+
+```php
+<?php
+# filename: src/Support/CustomerMemory.php
+declare(strict_types=1);
+
+namespace App\Support;
+
+use Anthropic\Anthropic;
+
+class CustomerMemory
+{
+    public function __construct(
+        private Anthropic $claude,
+        private \PDO $db
+    ) {}
+
+    /**
+     * Extract and store customer context using Memory Tool
+     */
+    public function updateCustomerMemory(string $customerId, string $conversationText): void
+    {
+        $prompt = <<<PROMPT
+Extract important customer information from this conversation that should be remembered for future interactions.
+
+Conversation:
+{$conversationText}
+
+Extract and return JSON:
+{
+  "preferences": ["customer preferences mentioned"],
+  "issues_history": ["past issues mentioned"],
+  "customer_name": "if mentioned",
+  "account_type": "subscription level or tier",
+  "vip_status": boolean,
+  "special_notes": "any special handling requests",
+  "communication_style": "formal/casual/technical",
+  "preferred_solutions": ["solutions this customer prefers"]
+}
+
+Return ONLY valid JSON.
+PROMPT;
+
+        $response = $this->claude->messages()->create([
+            'model' => 'claude-haiku-4-20250514',
+            'max_tokens' => 1024,
+            'temperature' => 0.2,
+            'messages' => [[
+                'role' => 'user',
+                'content' => $prompt
+            ]]
+        ]);
+
+        $jsonText = $response->content[0]->text;
+        if (preg_match('/\{.*\}/s', $jsonText, $matches)) {
+            $memory = json_decode($matches[0], true);
+            $this->storeCustomerMemory($customerId, $memory);
+        }
+    }
+
+    /**
+     * Store customer memory for future use
+     */
+    private function storeCustomerMemory(string $customerId, array $memory): void
+    {
+        $stmt = $this->db->prepare(
+            "INSERT INTO customer_memory (customer_id, memory_data, updated_at)
+             VALUES (:customer_id, :memory_data, NOW())
+             ON DUPLICATE KEY UPDATE
+                memory_data = :memory_data,
+                updated_at = NOW()"
+        );
+
+        $stmt->execute([
+            ':customer_id' => $customerId,
+            ':memory_data' => json_encode($memory)
+        ]);
+    }
+
+    /**
+     * Retrieve customer memory for context
+     */
+    public function getCustomerMemory(string $customerId): ?array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT memory_data FROM customer_memory WHERE customer_id = :customer_id"
+        );
+
+        $stmt->execute([':customer_id' => $customerId]);
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if ($result) {
+            return json_decode($result['memory_data'], true);
+        }
+
+        return null;
+    }
+
+    /**
+     * Use customer memory in system prompt
+     */
+    public function buildContextAwareSystemPrompt(string $basePompt, ?array $memory): string
+    {
+        if (!$memory) {
+            return $basePompt;
+        }
+
+        $memoryContext = "## Customer Profile\n";
+        if ($memory['customer_name'] ?? null) {
+            $memoryContext .= "Name: {$memory['customer_name']}\n";
+        }
+        if ($memory['vip_status'] ?? false) {
+            $memoryContext .= "VIP Customer - Provide priority support\n";
+        }
+        if ($memory['preferences'] ?? null) {
+            $memoryContext .= "Preferences: " . implode(", ", $memory['preferences']) . "\n";
+        }
+        if ($memory['communication_style'] ?? null) {
+            $memoryContext .= "Communication Style: {$memory['communication_style']}\n";
+        }
+
+        return $basePompt . "\n\n" . $memoryContext;
+    }
+}
+```
+
+## Files API for Attachment Handling
+
+```php
+<?php
+# filename: src/Support/AttachmentHandler.php
+declare(strict_types=1);
+
+namespace App\Support;
+
+use Anthropic\Anthropic;
+
+class AttachmentHandler
+{
+    public function __construct(
+        private Anthropic $claude,
+        private \PDO $db,
+        private string $uploadDir
+    ) {}
+
+    /**
+     * Process customer attachment/file
+     */
+    public function processAttachment(string $conversationId, string $filePath): array
+    {
+        $fileName = basename($filePath);
+        $fileType = mime_content_type($filePath);
+
+        // Handle different file types
+        $analysis = match (true) {
+            str_contains($fileType, 'image') => $this->analyzeImage($filePath),
+            str_contains($fileType, 'pdf') => $this->analyzePdf($filePath),
+            str_contains($fileType, 'text') => $this->analyzeText($filePath),
+            default => $this->analyzeGeneric($filePath, $fileType)
+        };
+
+        // Store attachment record
+        $this->storeAttachment($conversationId, $fileName, $fileType, $analysis);
+
+        return $analysis;
+    }
+
+    /**
+     * Analyze image attachment
+     */
+    private function analyzeImage(string $filePath): array
+    {
+        $imageData = base64_encode(file_get_contents($filePath));
+        $mimeType = mime_content_type($filePath);
+
+        $response = $this->claude->messages()->create([
+            'model' => 'claude-sonnet-4-20250514',
+            'max_tokens' => 1024,
+            'messages' => [[
+                'role' => 'user',
+                'content' => [
+                    [
+                        'type' => 'image',
+                        'source' => [
+                            'type' => 'base64',
+                            'media_type' => $mimeType,
+                            'data' => $imageData
+                        ]
+                    ],
+                    [
+                        'type' => 'text',
+                        'text' => 'Analyze this support ticket attachment. What issue does it show? Return JSON: {"description": "...", "severity": "low|medium|high", "suggested_resolution": "..."}'
+                    ]
+                ]
+            ]]
+        ]);
+
+        $jsonText = $response->content[0]->text;
+        if (preg_match('/\{.*\}/s', $jsonText, $matches)) {
+            return json_decode($matches[0], true) ?? [];
+        }
+
+        return [];
+    }
+
+    /**
+     * Analyze PDF attachment
+     */
+    private function analyzePdf(string $filePath): array
+    {
+        $pdfData = base64_encode(file_get_contents($filePath));
+
+        $response = $this->claude->messages()->create([
+            'model' => 'claude-sonnet-4-20250514',
+            'max_tokens' => 2048,
+            'messages' => [[
+                'role' => 'user',
+                'content' => [
+                    [
+                        'type' => 'document',
+                        'source' => [
+                            'type' => 'base64',
+                            'media_type' => 'application/pdf',
+                            'data' => $pdfData
+                        ]
+                    ],
+                    [
+                        'type' => 'text',
+                        'text' => 'Extract and summarize key information from this document. Return JSON: {"summary": "...", "key_points": [...], "action_items": [...]}'
+                    ]
+                ]
+            ]]
+        ]);
+
+        $jsonText = $response->content[0]->text;
+        if (preg_match('/\{.*\}/s', $jsonText, $matches)) {
+            return json_decode($matches[0], true) ?? [];
+        }
+
+        return [];
+    }
+
+    /**
+     * Analyze text attachment
+     */
+    private function analyzeText(string $filePath): array
+    {
+        $content = file_get_contents($filePath);
+
+        $response = $this->claude->messages()->create([
+            'model' => 'claude-haiku-4-20250514',
+            'max_tokens' => 1024,
+            'temperature' => 0.3,
+            'messages' => [[
+                'role' => 'user',
+                'content' => "Analyze this support document:\n\n{$content}\n\nReturn JSON: {\"analysis\": \"...\", \"key_issues\": [...], \"recommendations\": [...]}"
+            ]]
+        ]);
+
+        $jsonText = $response->content[0]->text;
+        if (preg_match('/\{.*\}/s', $jsonText, $matches)) {
+            return json_decode($matches[0], true) ?? [];
+        }
+
+        return [];
+    }
+
+    /**
+     * Generic file analysis
+     */
+    private function analyzeGeneric(string $filePath, string $fileType): array
+    {
+        return [
+            'file_type' => $fileType,
+            'size' => filesize($filePath),
+            'note' => 'File type requires manual review'
+        ];
+    }
+
+    /**
+     * Store attachment metadata
+     */
+    private function storeAttachment(string $conversationId, string $fileName, string $fileType, array $analysis): void
+    {
+        $stmt = $this->db->prepare(
+            "INSERT INTO conversation_attachments (conversation_id, file_name, file_type, analysis, created_at)
+             VALUES (:conversation_id, :file_name, :file_type, :analysis, NOW())"
+        );
+
+        $stmt->execute([
+            ':conversation_id' => $conversationId,
+            ':file_name' => $fileName,
+            ':file_type' => $fileType,
+            ':analysis' => json_encode($analysis)
+        ]);
+    }
+}
+```
+
+## Testing & Mocking
+
+```php
+<?php
+# filename: tests/Support/SupportBotTest.php
+declare(strict_types=1);
+
+namespace Tests\Support;
+
+use PHPUnit\Framework\TestCase;
+use App\Support\SupportBot;
+use App\Support\BotResponse;
+use Anthropic\Anthropic;
+
+class SupportBotTest extends TestCase
+{
+    private Anthropic $claudeMock;
+    private SupportBot $bot;
+
+    protected function setUp(): void
+    {
+        $this->claudeMock = $this->createMock(Anthropic::class);
+        // Initialize bot with mocks
+    }
+
+    public function testBotRespondsToSimpleQuery(): void
+    {
+        $response = new BotResponse(
+            text: 'Here is how to solve your problem...',
+            confidence: 0.85,
+            escalationNeeded: false
+        );
+
+        $this->assertEquals('Here is how to solve your problem...', $response->text);
+        $this->assertFalse($response->escalationNeeded);
+    }
+
+    public function testBotEscalatesOnComplexIssue(): void
+    {
+        $response = new BotResponse(
+            text: 'I will connect you with a specialist...',
+            escalationNeeded: true,
+            ticketId: 12345
+        );
+
+        $this->assertTrue($response->escalationNeeded);
+        $this->assertEquals(12345, $response->ticketId);
+    }
+
+    public function testSentimentAnalysisDetectsFrustration(): void
+    {
+        // Mock sentiment analyzer
+        $sentiment = -0.8; // Very negative
+
+        $this->assertLessThan(-0.7, $sentiment);
+    }
+
+    public function testConversationMemoryPersists(): void
+    {
+        // Mock conversation storage
+        $conversationId = 123;
+        $messages = [
+            ['role' => 'user', 'content' => 'Hello'],
+            ['role' => 'assistant', 'content' => 'Hi there!']
+        ];
+
+        $this->assertCount(2, $messages);
+    }
+}
+```
+
+## CRM Integration Example
+
+```php
+<?php
+# filename: src/Support/CrmIntegration.php
+declare(strict_types=1);
+
+namespace App\Support;
+
+class CrmIntegration
+{
+    public function __construct(
+        private string $crmApiKey,
+        private string $crmBaseUrl
+    ) {}
+
+    /**
+     * Fetch customer data from CRM (Salesforce example)
+     */
+    public function getCustomerFromCrm(string $email): ?array
+    {
+        $query = urlencode("SELECT Id, Name, Email, Phone, Account_Type__c FROM Contact WHERE Email = '{$email}'");
+
+        $response = $this->makeApiCall(
+            'GET',
+            "/services/data/v59.0/query?q={$query}"
+        );
+
+        if ($response['records'] ?? null) {
+            return $response['records'][0];
+        }
+
+        return null;
+    }
+
+    /**
+     * Log support interaction to CRM
+     */
+    public function logSupportInteraction(string $customerId, array $interaction): bool
+    {
+        $payload = [
+            'Subject' => 'Support Bot Interaction',
+            'Description' => $interaction['summary'],
+            'Type' => 'Support',
+            'Status' => 'Logged',
+            'WhoId' => $customerId,
+            'Priority' => $this->mapPriority($interaction['priority'] ?? 'medium')
+        ];
+
+        $response = $this->makeApiCall(
+            'POST',
+            '/services/data/v59.0/sobjects/Task',
+            $payload
+        );
+
+        return $response['id'] ?? null;
+    }
+
+    /**
+     * Create case in CRM
+     */
+    public function createCrmCase(string $customerId, array $ticketData): ?string
+    {
+        $payload = [
+            'AccountId' => $customerId,
+            'Subject' => $ticketData['subject'],
+            'Description' => $ticketData['description'],
+            'Priority' => $this->mapPriority($ticketData['priority']),
+            'Origin' => 'Support Bot',
+            'Status' => 'New'
+        ];
+
+        $response = $this->makeApiCall(
+            'POST',
+            '/services/data/v59.0/sobjects/Case',
+            $payload
+        );
+
+        return $response['id'] ?? null;
+    }
+
+    /**
+     * Update case with bot analysis
+     */
+    public function updateCaseWithAnalysis(string $caseId, array $analysis): bool
+    {
+        $payload = [
+            'Bot_Analysis__c' => json_encode($analysis),
+            'Sentiment__c' => $analysis['sentiment'] ?? 'neutral',
+            'Confidence__c' => $analysis['confidence'] ?? 0.5
+        ];
+
+        $response = $this->makeApiCall(
+            'PATCH',
+            "/services/data/v59.0/sobjects/Case/{$caseId}",
+            $payload
+        );
+
+        return (bool)$response;
+    }
+
+    /**
+     * Make authenticated API call to CRM
+     */
+    private function makeApiCall(string $method, string $endpoint, ?array $data = null): array
+    {
+        $url = $this->crmBaseUrl . $endpoint;
+
+        $context = stream_context_create([
+            'http' => [
+                'method' => $method,
+                'header' => [
+                    "Authorization: Bearer {$this->crmApiKey}",
+                    'Content-Type: application/json'
+                ],
+                'content' => $data ? json_encode($data) : null
+            ]
+        ]);
+
+        $response = file_get_contents($url, false, $context);
+        return json_decode($response, true) ?? [];
+    }
+
+    private function mapPriority(string $priority): string
+    {
+        return match ($priority) {
+            'high', 'critical' => 'High',
+            'medium' => 'Medium',
+            'low' => 'Low',
+            default => 'Medium'
+        };
+    }
+}
+```
+
+## Monitoring & Observability
+
+```php
+<?php
+# filename: src/Support/SupportMonitoring.php
+declare(strict_types=1);
+
+namespace App\Support;
+
+class SupportMonitoring
+{
+    public function __construct(
+        private \PDO $db,
+        private string $sentryDsn = ''
+    ) {}
+
+    /**
+     * Log bot metrics
+     */
+    public function logBotMetric(string $conversationId, array $metric): void
+    {
+        $stmt = $this->db->prepare(
+            "INSERT INTO bot_metrics (conversation_id, response_time, tokens_used, cost_estimate, quality_score, created_at)
+             VALUES (:conversation_id, :response_time, :tokens_used, :cost_estimate, :quality_score, NOW())"
+        );
+
+        $stmt->execute([
+            ':conversation_id' => $conversationId,
+            ':response_time' => $metric['response_time'] ?? 0,
+            ':tokens_used' => $metric['tokens_used'] ?? 0,
+            ':cost_estimate' => $metric['cost_estimate'] ?? 0,
+            ':quality_score' => $metric['quality_score'] ?? 0
+        ]);
+    }
+
+    /**
+     * Track API performance
+     */
+    public function getPerformanceMetrics(\DateTime $start, \DateTime $end): array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT
+                COUNT(*) as total_requests,
+                AVG(response_time) as avg_response_time,
+                MAX(response_time) as max_response_time,
+                MIN(response_time) as min_response_time,
+                SUM(tokens_used) as total_tokens,
+                SUM(cost_estimate) as total_cost,
+                AVG(quality_score) as avg_quality
+             FROM bot_metrics
+             WHERE created_at BETWEEN :start AND :end"
+        );
+
+        $stmt->execute([
+            ':start' => $start->format('Y-m-d H:i:s'),
+            ':end' => $end->format('Y-m-d H:i:s')
+        ]);
+
+        return $stmt->fetch(\PDO::FETCH_ASSOC) ?: [];
+    }
+
+    /**
+     * Alert on performance degradation
+     */
+    public function checkAlerts(): void
+    {
+        $oneHourAgo = new \DateTime('-1 hour');
+
+        $stmt = $this->db->prepare(
+            "SELECT AVG(response_time) as avg_time
+             FROM bot_metrics
+             WHERE created_at > :time"
+        );
+
+        $stmt->execute([':time' => $oneHourAgo->format('Y-m-d H:i:s')]);
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        // Alert if response time exceeds 5 seconds
+        if ($result['avg_time'] > 5000) {
+            $this->triggerAlert('High response time detected: ' . $result['avg_time'] . 'ms');
+        }
+    }
+
+    private function triggerAlert(string $message): void
+    {
+        // Send to Sentry, Slack, or monitoring service
+        error_log("ALERT: {$message}");
+    }
+}
+```
+
+## Wrap-up
+
+Congratulations! You've built a comprehensive customer support bot system. Here's what you've accomplished:
+
+- ✓ **Support Bot Core**: Created an intelligent bot that handles customer inquiries with context awareness
+- ✓ **Knowledge Base Integration**: Implemented semantic search with query analysis and result re-ranking
+- ✓ **Ticket Classification**: Built an automated system that classifies and routes tickets to appropriate departments
+- ✓ **Sentiment Analysis**: Developed sentiment tracking to identify frustrated customers and prioritize escalations
+- ✓ **Conversation Management**: Implemented persistent conversation storage with Redis caching for performance
+- ✓ **Multi-Channel Support**: Created handlers for email and live chat with unified bot processing
+- ✓ **Escalation Engine**: Designed seamless handoff to human agents when needed
+- ✓ **Analytics Dashboard**: Built metrics tracking for bot performance, resolution rates, and customer satisfaction
+
+### Key Concepts Learned
+
+- **Context Management**: Maintaining conversation history across multiple turns enables natural, coherent interactions
+- **Semantic Search**: Using embeddings and vector stores provides more relevant knowledge base results than keyword matching
+- **Sentiment Detection**: Analyzing emotional tone helps prioritize urgent issues and improve customer experience
+- **Multi-Channel Architecture**: Unified bot processing across channels maintains consistency while allowing channel-specific optimizations
+- **Intelligent Escalation**: Automated detection of when to escalate ensures complex issues reach human experts
+
+### Next Steps
+
+Your support bot is production-ready, but consider these enhancements:
+
+- Add more channels (SMS, social media, phone)
+- Implement A/B testing for different response strategies
+- Add machine learning to improve classification accuracy over time
+- Integrate with CRM systems for richer customer context
+- Build a dashboard UI for monitoring bot performance in real-time
+
+## Troubleshooting
+
+### Issue: Knowledge Base Returns No Results
+
+**Symptom**: `search()` method returns empty array even with relevant articles
+
+**Cause**: Vector store not properly initialized or embeddings not generated
+
+**Solution**: Ensure vector store is set up and articles have embeddings:
+
+```php
+// After adding article, verify embedding was created
+$articleId = $knowledgeBase->addArticle($title, $content, $category);
+$embedding = $vectorStore->getEmbedding($articleId);
+if (!$embedding) {
+    // Regenerate embedding
+    $vectorStore->addDocument($articleId, $title . "\n\n" . $content);
+}
+```
+
+### Issue: Conversations Not Persisting
+
+**Symptom**: Conversation history lost on page refresh
+
+**Cause**: Redis connection failing or cache expiration too short
+
+**Solution**: Add error handling and fallback to database:
+
+```php
+try {
+    $cached = $this->redis->get("conversation:{$customerId}");
+} catch (\Exception $e) {
+    error_log("Redis error: " . $e->getMessage());
+    // Fallback to database only
+    return $this->loadFromDatabase($customerId);
+}
+```
+
+### Issue: Sentiment Analysis Always Returns 0.0
+
+**Symptom**: `analyze()` method returns neutral score regardless of message tone
+
+**Cause**: JSON parsing failing or Claude response format changed
+
+**Solution**: Add better error handling and logging:
+
+```php
+$jsonText = $response->content[0]->text;
+if (preg_match('/\{.*\}/s', $jsonText, $matches)) {
+    $data = json_decode($matches[0], true);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        error_log("JSON decode error: " . json_last_error_msg());
+        error_log("Response text: " . $jsonText);
+    }
+    $score = $data['sentiment_score'] ?? 0.0;
+    // ...
+}
+```
+
+### Issue: Escalation Not Triggering
+
+**Symptom**: Bot doesn't escalate even when customer requests human agent
+
+**Cause**: `detectHumanRequest()` method not matching customer phrases
+
+**Solution**: Expand phrase matching and add logging:
+
+```php
+private function detectHumanRequest(string $message): bool
+{
+    $lowerMessage = strtolower($message);
+    // Add more variations
+    $humanRequestPhrases = [
+        'speak to a person', 'talk to someone', 'human agent',
+        'real person', 'customer service', 'support agent',
+        'can\'t help', 'not helpful', 'need help', 'want to talk',
+        'speak with someone', 'get a person'
+    ];
+
+    foreach ($humanRequestPhrases as $phrase) {
+        if (str_contains($lowerMessage, $phrase)) {
+            error_log("Human request detected: {$message}");
+            return true;
+        }
+    }
+
+    return false;
+}
+```
+
+## Further Reading
+
+- [Anthropic Claude API Documentation](https://docs.claude.com) — Official Claude API reference and best practices
+- [Customer Support Best Practices](https://www.zendesk.com/blog/customer-support-best-practices/) — Industry standards for support workflows
+- [Semantic Search with Embeddings](https://platform.openai.com/docs/guides/embeddings) — Understanding vector embeddings for search
+- [Redis Caching Strategies](https://redis.io/docs/manual/patterns/) — Performance optimization patterns
+- [WebSocket Real-time Communication](https://www.php.net/manual/en/book.websockets.php) — PHP WebSocket implementation
+- [Chapter 20: Real-time Chat with WebSockets](/series/claude-php-developers/chapters/20-realtime-chat-websockets) — Related chapter on real-time systems
+- [Chapter 18: Caching Strategies](/series/claude-php-developers/chapters/18-caching-strategies) — Advanced caching techniques
+
 ## Key Takeaways
 
 - ✓ AI support bots can handle 60-80% of common inquiries automatically
@@ -1250,6 +2514,7 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 28 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-28)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-28

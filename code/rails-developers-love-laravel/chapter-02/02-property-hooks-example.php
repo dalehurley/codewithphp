@@ -148,3 +148,7 @@ echo "After deposit: {$account->balance}\n";
 
 echo "\n✓ All property hook examples completed successfully!\n";
 
+
+
+
+

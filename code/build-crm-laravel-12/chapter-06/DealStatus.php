@@ -24,3 +24,7 @@ enum DealStatus: string
     }
 }
 
+
+
+
+

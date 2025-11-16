@@ -363,3 +363,7 @@ GROUP BY c.id;
 
 **Data Isolation**: ✓ Team-Scoped
 
+
+
+
+

@@ -6,7 +6,7 @@ chapter: 2
 order: 2
 difficulty: "Beginner"
 prerequisites:
-  - "PHP 8.2+ installed"
+  - "PHP 8.4+ installed"
   - "Composer installed"
   - "Completion of Chapter 01"
 ---
@@ -36,19 +36,60 @@ You'll learn how to properly set up your Anthropic account, generate and manage 
 - Generating and managing API keys
 - Secure authentication patterns in PHP
 - Environment variable management
+- CI/CD integration for automated pipelines
+- Secrets management services for enterprise applications
+- Key validation and testing strategies
+- Multi-tenant API key management
 - Key rotation strategies
+- Testing strategies with API keys
 - Security best practices and common pitfalls
-
-**Estimated Time**: 25-35 minutes
 
 ## Prerequisites
 
 Before starting, ensure you have:
 
-- ✓ **Completed Chapter 01** (Introduction to Claude API)
+- ✓ **Completed [Chapter 01](/series/claude-php-developers/chapters/01-introduction-to-claude-api)** (Introduction to Claude API)
 - ✓ **Email address** for account creation
 - ✓ **Payment method** (required for API access)
-- ✓ **PHP 8.2+** with Composer installed
+- ✓ **PHP 8.4+** with Composer installed
+
+**Estimated Time**: ~25-35 minutes
+
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- A secure authentication system using environment variables
+- A `ClaudeConfig` class for centralized configuration management
+- A `ClaudeService` class with dependency injection support
+- An `EnvironmentValidator` class for startup validation
+- A `DualKeyClaudeService` class for zero-downtime key rotation
+- An `ApiKeyMonitor` class for usage tracking and anomaly detection
+- A `RateLimiter` class for protecting against abuse
+- A `KeyEncryption` class for secure key storage
+- An `ApiKeyAudit` class for comprehensive audit logging
+- CI/CD integration examples for GitHub Actions, GitLab CI, and CircleCI
+- AWS Secrets Manager integration for enterprise applications
+- An `ApiKeyValidator` class for key validation and testing
+- A `MultiTenantClaudeService` class for SaaS applications
+- Testing strategies with mocks and real API calls
+- Understanding of production-ready security best practices
+
+## Objectives
+
+- Set up your Anthropic account with proper billing and budget limits
+- Generate and manage API keys with descriptive naming conventions
+- Implement secure authentication patterns using environment variables
+- Integrate API keys into CI/CD pipelines (GitHub Actions, GitLab CI, CircleCI)
+- Use secrets management services for enterprise applications
+- Validate API keys before use in production
+- Manage API keys in multi-tenant SaaS applications
+- Create a centralized configuration management system
+- Build a zero-downtime key rotation system
+- Implement monitoring and rate limiting for API key protection
+- Write tests that safely handle API keys with mocks and real API calls
+- Understand and apply security best practices for API key management
+- Avoid common security pitfalls that lead to key exposure
 
 ## Setting Up Your Anthropic Account
 
@@ -130,6 +171,10 @@ Start with Tier 1, upgrade automatically as you use more. Contact Anthropic for 
    - Permissions: Full access (default)
    - Click "Create Key"
 
+::: info
+**API Key Permissions**: Currently, Anthropic API keys provide full access to all API endpoints. There's no granular permission system (e.g., read-only vs read-write). All keys have the same permissions. Use separate keys per environment/team for better tracking and security isolation.
+:::
+
 3. **Save the Key**
    - Copy the key immediately (starts with `sk-ant-`)
    - Store securely (you won't see it again)
@@ -183,6 +228,123 @@ ANTHROPIC_API_KEY=sk-ant-api03-development-key-here
 - **Tracking**: Monitor usage by environment
 - **Security**: Revoke compromised keys without affecting others
 - **Team Management**: Individual keys for team members
+
+### Multi-Tenant API Key Management
+
+For SaaS applications serving multiple clients, manage API keys per tenant:
+
+```php
+<?php
+# filename: src/Services/MultiTenantClaudeService.php
+declare(strict_types=1);
+
+namespace App\Services;
+
+use Anthropic\Anthropic;
+use App\Models\Tenant;
+
+class MultiTenantClaudeService
+{
+    private array $clients = [];
+
+    public function __construct(
+        private readonly string $defaultApiKey
+    ) {}
+
+    /**
+     * Get Claude client for specific tenant
+     */
+    public function getClientForTenant(Tenant $tenant): Anthropic
+    {
+        // Check if tenant has custom API key
+        $apiKey = $tenant->anthropic_api_key ?? $this->defaultApiKey;
+
+        // Cache clients per API key
+        if (!isset($this->clients[$apiKey])) {
+            $this->clients[$apiKey] = Anthropic::factory()
+                ->withApiKey($apiKey)
+                ->make();
+        }
+
+        return $this->clients[$apiKey];
+    }
+
+    /**
+     * Make request on behalf of tenant
+     */
+    public function chatForTenant(Tenant $tenant, string $prompt): string
+    {
+        $client = $this->getClientForTenant($tenant);
+
+        $response = $client->messages()->create([
+            'model' => 'claude-sonnet-4-20250514',
+            'max_tokens' => 2048,
+            'messages' => [
+                ['role' => 'user', 'content' => $prompt]
+            ]
+        ]);
+
+        // Track usage per tenant
+        $this->trackUsage($tenant, $response->usage);
+
+        return $response->content[0]->text;
+    }
+
+    private function trackUsage(Tenant $tenant, object $usage): void
+    {
+        // Log usage for billing/analytics
+        // Implementation depends on your tracking system
+    }
+}
+```
+
+**Database Schema:**
+
+```sql
+-- tenants table
+CREATE TABLE tenants (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    anthropic_api_key VARCHAR(255) NULL, -- NULL = use default key
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_api_key (anthropic_api_key)
+);
+
+-- Usage tracking
+CREATE TABLE tenant_api_usage (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    tenant_id INT NOT NULL,
+    input_tokens INT NOT NULL,
+    output_tokens INT NOT NULL,
+    cost DECIMAL(10, 6) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (tenant_id) REFERENCES tenants(id),
+    INDEX idx_tenant_date (tenant_id, created_at)
+);
+```
+
+**Usage:**
+
+```php
+<?php
+use App\Models\Tenant;
+use App\Services\MultiTenantClaudeService;
+
+$service = new MultiTenantClaudeService(getenv('ANTHROPIC_API_KEY_DEFAULT'));
+
+$tenant = Tenant::find($tenantId);
+$response = $service->chatForTenant($tenant, "Generate a product description");
+```
+
+**Benefits:**
+- **Cost Allocation**: Track usage per tenant for accurate billing
+- **Custom Keys**: Allow enterprise tenants to use their own API keys
+- **Isolation**: Separate rate limits and usage per tenant
+- **Security**: Revoke tenant-specific keys without affecting others
+
+::: tip
+For high-volume multi-tenant applications, consider using Anthropic's organization-level API keys or implementing a key pool system for better rate limit management.
+:::
 
 ### Viewing and Revoking Keys
 
@@ -675,6 +837,205 @@ aws lambda update-function-configuration \
   --environment Variables={ANTHROPIC_API_KEY=sk-ant-api03-prod-key-here}
 ```
 
+### CI/CD Integration
+
+For automated testing and deployment pipelines, securely inject API keys as secrets:
+
+**GitHub Actions:**
+
+```yaml
+# .github/workflows/test.yml
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+      
+      - name: Install dependencies
+        run: composer install
+      
+      - name: Run tests
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: php vendor/bin/phpunit
+```
+
+**Setting up GitHub Secrets:**
+
+1. Go to repository Settings → Secrets and variables → Actions
+2. Click "New repository secret"
+3. Name: `ANTHROPIC_API_KEY`
+4. Value: Your API key (starts with `sk-ant-`)
+5. Click "Add secret"
+
+**GitLab CI:**
+
+```yaml
+# .gitlab-ci.yml
+test:
+  script:
+    - composer install
+    - php vendor/bin/phpunit
+  variables:
+    ANTHROPIC_API_KEY: $ANTHROPIC_API_KEY
+```
+
+**Setting up GitLab CI Variables:**
+
+1. Go to Settings → CI/CD → Variables
+2. Click "Add variable"
+3. Key: `ANTHROPIC_API_KEY`
+4. Value: Your API key
+5. Check "Mask variable" and "Protect variable"
+6. Click "Add variable"
+
+**CircleCI:**
+
+```yaml
+# .circleci/config.yml
+version: 2.1
+
+jobs:
+  test:
+    docker:
+      - image: cimg/php:8.2
+    steps:
+      - checkout
+      - run: composer install
+      - run:
+          name: Run tests
+          environment:
+            ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+          command: php vendor/bin/phpunit
+```
+
+**Setting up CircleCI Environment Variables:**
+
+1. Go to Project Settings → Environment Variables
+2. Click "Add Environment Variable"
+3. Name: `ANTHROPIC_API_KEY`
+4. Value: Your API key
+5. Click "Add Environment Variable"
+
+::: tip
+Use different API keys for CI/CD pipelines. Create a dedicated key named `ci-pipeline` or `github-actions` for better tracking and easier revocation if needed.
+:::
+
+### Secrets Management Services
+
+For enterprise applications, consider using dedicated secrets management services instead of environment variables:
+
+**When to Use Secrets Management:**
+
+- **High-security requirements**: Compliance with SOC 2, HIPAA, or PCI-DSS
+- **Multi-environment deployments**: Centralized secret management across environments
+- **Automatic rotation**: Built-in key rotation capabilities
+- **Audit requirements**: Comprehensive access logging and audit trails
+- **Team collaboration**: Fine-grained access control for team members
+
+**Available Services:**
+
+| Service | Provider | Best For |
+|---------|----------|----------|
+| **AWS Secrets Manager** | Amazon | AWS-hosted applications |
+| **Azure Key Vault** | Microsoft | Azure-hosted applications |
+| **Google Secret Manager** | Google | GCP-hosted applications |
+| **HashiCorp Vault** | HashiCorp | Multi-cloud, on-premises |
+| **1Password Secrets Automation** | 1Password | Team collaboration |
+
+**Example: AWS Secrets Manager Integration**
+
+```php
+<?php
+# filename: src/Security/AwsSecretsProvider.php
+declare(strict_types=1);
+
+namespace App\Security;
+
+use Aws\SecretsManager\SecretsManagerClient;
+use Aws\Exception\AwsException;
+
+class AwsSecretsProvider
+{
+    private ?string $cachedKey = null;
+    private ?int $cacheExpiry = null;
+    private const CACHE_TTL = 3600; // 1 hour
+
+    public function __construct(
+        private readonly SecretsManagerClient $client,
+        private readonly string $secretName
+    ) {}
+
+    public function getApiKey(): string
+    {
+        // Return cached key if still valid
+        if ($this->cachedKey && $this->cacheExpiry > time()) {
+            return $this->cachedKey;
+        }
+
+        try {
+            $result = $this->client->getSecretValue([
+                'SecretId' => $this->secretName,
+            ]);
+
+            if (isset($result['SecretString'])) {
+                $secret = json_decode($result['SecretString'], true);
+                $this->cachedKey = $secret['ANTHROPIC_API_KEY'] ?? throw new \RuntimeException('ANTHROPIC_API_KEY not found in secret');
+                $this->cacheExpiry = time() + self::CACHE_TTL;
+
+                return $this->cachedKey;
+            }
+
+            throw new \RuntimeException('Secret not found in expected format');
+
+        } catch (AwsException $e) {
+            error_log("[SECURITY] Failed to retrieve API key from Secrets Manager: {$e->getMessage()}");
+            throw new \RuntimeException('Failed to retrieve API credentials', 0, $e);
+        }
+    }
+}
+```
+
+**Installation:**
+
+```bash
+composer require aws/aws-sdk-php
+```
+
+**Usage:**
+
+```php
+<?php
+use App\Security\AwsSecretsProvider;
+use Aws\SecretsManager\SecretsManagerClient;
+use Anthropic\Anthropic;
+
+$secretsProvider = new AwsSecretsProvider(
+    new SecretsManagerClient([
+        'region' => 'us-east-1',
+        'version' => 'latest'
+    ]),
+    'prod/anthropic/api-key'
+);
+
+$client = Anthropic::factory()
+    ->withApiKey($secretsProvider->getApiKey())
+    ->make();
+```
+
+::: info
+For detailed secrets management integration patterns, see [Chapter 36: Security Best Practices](/series/claude-php-developers/chapters/36-security-best-practices) which covers advanced security patterns including comprehensive secrets management.
+:::
+
 ### Environment Variable Validation
 
 Always validate environment variables on startup:
@@ -788,6 +1149,177 @@ try {
 
 // Application continues...
 ```
+
+### Key Validation and Testing
+
+Before using an API key in production, validate that it's active and has proper permissions:
+
+```php
+<?php
+# filename: src/Security/ApiKeyValidator.php
+declare(strict_types=1);
+
+namespace App\Security;
+
+use Anthropic\Anthropic;
+use Anthropic\Exceptions\AnthropicException;
+
+class ApiKeyValidator
+{
+    public function __construct(
+        private readonly Anthropic $client
+    ) {}
+
+    /**
+     * Validate API key by making a lightweight test request
+     */
+    public function validateKey(string $apiKey): array
+    {
+        $testClient = Anthropic::factory()
+            ->withApiKey($apiKey)
+            ->make();
+
+        try {
+            // Make minimal test request (1 token, cheapest model)
+            $response = $testClient->messages()->create([
+                'model' => 'claude-haiku-4-20250514', // Cheapest model for validation
+                'max_tokens' => 1, // Minimal token usage
+                'messages' => [
+                    ['role' => 'user', 'content' => 'Hi']
+                ]
+            ]);
+
+            return [
+                'valid' => true,
+                'model' => $response->model ?? 'unknown',
+                'tokens_used' => $response->usage->input_tokens + $response->usage->output_tokens,
+            ];
+
+        } catch (AnthropicException $e) {
+            return [
+                'valid' => false,
+                'error' => $e->getMessage(),
+                'error_type' => get_class($e),
+            ];
+        }
+    }
+
+    /**
+     * Quick format validation (doesn't make API call)
+     */
+    public function validateFormat(string $apiKey): bool
+    {
+        return str_starts_with($apiKey, 'sk-ant-') && strlen($apiKey) > 20;
+    }
+
+    /**
+     * Check if key has sufficient permissions
+     */
+    public function checkPermissions(string $apiKey): array
+    {
+        $validation = $this->validateKey($apiKey);
+
+        if (!$validation['valid']) {
+            return [
+                'has_permissions' => false,
+                'error' => $validation['error'] ?? 'Key validation failed',
+            ];
+        }
+
+        // If validation succeeded, key has basic permissions
+        return [
+            'has_permissions' => true,
+            'can_read' => true,
+            'can_write' => true, // Anthropic API keys are all-or-nothing
+        ];
+    }
+}
+```
+
+**Usage:**
+
+```php
+<?php
+# filename: examples/validate-key.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use App\Security\ApiKeyValidator;
+use Anthropic\Anthropic;
+
+$apiKey = getenv('ANTHROPIC_API_KEY');
+
+if (!$apiKey) {
+    die("Error: ANTHROPIC_API_KEY not set\n");
+}
+
+$client = Anthropic::factory()
+    ->withApiKey($apiKey)
+    ->make();
+
+$validator = new ApiKeyValidator($client);
+
+// Quick format check (no API call)
+if (!$validator->validateFormat($apiKey)) {
+    die("Error: Invalid API key format\n");
+}
+
+echo "✓ API key format is valid\n";
+
+// Full validation (makes lightweight API call)
+$result = $validator->validateKey($apiKey);
+
+if ($result['valid']) {
+    echo "✓ API key is valid and active\n";
+    echo "  Model tested: {$result['model']}\n";
+    echo "  Tokens used: {$result['tokens_used']}\n";
+} else {
+    echo "✗ API key validation failed: {$result['error']}\n";
+    exit(1);
+}
+```
+
+**Bootstrap Validation:**
+
+```php
+<?php
+# filename: bootstrap.php
+declare(strict_types=1);
+
+require __DIR__ . '/vendor/autoload.php';
+
+use App\Security\ApiKeyValidator;
+use Anthropic\Anthropic;
+
+$apiKey = getenv('ANTHROPIC_API_KEY');
+
+if (!$apiKey) {
+    throw new RuntimeException('ANTHROPIC_API_KEY not set');
+}
+
+// Quick format validation (no API call)
+if (!str_starts_with($apiKey, 'sk-ant-')) {
+    throw new InvalidArgumentException('Invalid API key format');
+}
+
+// Optional: Full validation (makes API call - use sparingly)
+if (getenv('VALIDATE_API_KEY_ON_STARTUP') === 'true') {
+    $client = Anthropic::factory()->withApiKey($apiKey)->make();
+    $validator = new ApiKeyValidator($client);
+    $result = $validator->validateKey($apiKey);
+
+    if (!$result['valid']) {
+        throw new RuntimeException("API key validation failed: {$result['error']}");
+    }
+}
+
+// Application continues...
+```
+
+::: warning
+Key validation makes an API call, which costs tokens. Use format validation for startup checks, and full validation only when necessary (e.g., after key rotation or in health checks).
+:::
 
 ## Key Rotation Strategies
 
@@ -1304,6 +1836,210 @@ class ApiKeyAudit
 }
 ```
 
+## Testing Strategies
+
+When writing tests for code that uses Claude API, you need strategies for handling API keys safely.
+
+### Using Test API Keys
+
+Create dedicated API keys for testing:
+
+```bash
+# .env.testing
+ANTHROPIC_API_KEY=sk-ant-api03-test-key-here
+ANTHROPIC_MODEL=claude-haiku-4-20250514  # Cheapest for testing
+```
+
+**PHPUnit Configuration:**
+
+```php
+<?php
+# filename: phpunit.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit>
+    <php>
+        <env name="APP_ENV" value="testing"/>
+        <env name="ANTHROPIC_API_KEY" value="sk-ant-api03-test-key-here"/>
+    </php>
+</phpunit>
+```
+
+### Mocking API Keys for Unit Tests
+
+For unit tests that don't need real API calls:
+
+```php
+<?php
+# filename: tests/Unit/ClaudeServiceTest.php
+declare(strict_types=1);
+
+namespace Tests\Unit;
+
+use PHPUnit\Framework\TestCase;
+use App\Services\ClaudeService;
+use App\Config\ClaudeConfig;
+use Mockery;
+
+class ClaudeServiceTest extends TestCase
+{
+    protected function tearDown(): void
+    {
+        Mockery::close();
+    }
+
+    public function testServiceInitializesWithConfig(): void
+    {
+        // Mock configuration
+        $config = Mockery::mock(ClaudeConfig::class);
+        $config->shouldReceive('getApiKey')
+            ->andReturn('sk-ant-api03-test-key');
+
+        // Create service with mocked config
+        $service = new ClaudeService($config);
+
+        $this->assertInstanceOf(ClaudeService::class, $service);
+    }
+}
+```
+
+### Integration Testing with Real API
+
+For integration tests that verify actual API behavior:
+
+```php
+<?php
+# filename: tests/Integration/ClaudeApiTest.php
+declare(strict_types=1);
+
+namespace Tests\Integration;
+
+use PHPUnit\Framework\TestCase;
+use Anthropic\Anthropic;
+
+class ClaudeApiTest extends TestCase
+{
+    private Anthropic $client;
+
+    protected function setUp(): void
+    {
+        $apiKey = getenv('ANTHROPIC_API_KEY_TEST');
+
+        if (!$apiKey) {
+            $this->markTestSkipped('ANTHROPIC_API_KEY_TEST not set');
+        }
+
+        $this->client = Anthropic::factory()
+            ->withApiKey($apiKey)
+            ->make();
+    }
+
+    public function testCanMakeApiRequest(): void
+    {
+        $response = $this->client->messages()->create([
+            'model' => 'claude-haiku-4-20250514',
+            'max_tokens' => 10,
+            'messages' => [
+                ['role' => 'user', 'content' => 'Say "test"']
+            ]
+        ]);
+
+        $this->assertNotEmpty($response->content[0]->text);
+        $this->assertEquals('claude-haiku-4-20250514', $response->model);
+    }
+}
+```
+
+**Running Tests:**
+
+```bash
+# Unit tests (no API calls)
+php vendor/bin/phpunit tests/Unit
+
+# Integration tests (requires API key)
+ANTHROPIC_API_KEY_TEST=sk-ant-api03-test-key-here php vendor/bin/phpunit tests/Integration
+```
+
+### Mocking API Responses
+
+For tests that need predictable responses:
+
+```php
+<?php
+# filename: tests/Unit/ClaudeServiceMockTest.php
+declare(strict_types=1);
+
+namespace Tests\Unit;
+
+use PHPUnit\Framework\TestCase;
+use Anthropic\Anthropic;
+use Anthropic\Resources\Messages;
+use Mockery;
+
+class ClaudeServiceMockTest extends TestCase
+{
+    public function testHandlesApiResponse(): void
+    {
+        // Mock the Anthropic client
+        $client = Mockery::mock(Anthropic::class);
+        $messages = Mockery::mock(Messages::class);
+
+        $client->shouldReceive('messages')
+            ->andReturn($messages);
+
+        // Mock API response
+        $mockResponse = (object)[
+            'content' => [
+                (object)['text' => 'Mocked response']
+            ],
+            'model' => 'claude-sonnet-4-20250514',
+            'usage' => (object)[
+                'input_tokens' => 10,
+                'output_tokens' => 5,
+            ],
+        ];
+
+        $messages->shouldReceive('create')
+            ->once()
+            ->andReturn($mockResponse);
+
+        // Test your service with mocked client
+        // ... your test code ...
+    }
+}
+```
+
+### Test Environment Setup
+
+**Separate Test Configuration:**
+
+```php
+<?php
+# filename: tests/bootstrap.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+// Load test environment variables
+if (file_exists(__DIR__ . '/../.env.testing')) {
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..', '.env.testing');
+    $dotenv->load();
+}
+
+// Validate test API key exists
+if (!getenv('ANTHROPIC_API_KEY_TEST')) {
+    throw new RuntimeException('ANTHROPIC_API_KEY_TEST must be set for integration tests');
+}
+```
+
+**Best Practices:**
+
+- **Use separate test keys**: Never use production keys in tests
+- **Use cheapest model**: Use `claude-haiku-4-20250514` for testing to minimize costs
+- **Limit token usage**: Set `max_tokens` to minimum needed (e.g., 10-50)
+- **Mock when possible**: Use mocks for unit tests, real API only for integration tests
+- **Skip expensive tests**: Use `markTestSkipped()` if test key not available
+- **Track test costs**: Monitor usage of test API keys separately
+
 ## Common Security Pitfalls
 
 ### Pitfall 1: Committing .env Files
@@ -1500,6 +2236,36 @@ class UsageMonitor
 - Implement exponential backoff
 - Contact Anthropic support for limit increase
 
+## Wrap-up
+
+Congratulations! You've completed a comprehensive guide to secure authentication with the Claude API. Here's what you've accomplished:
+
+- ✓ **Set up your Anthropic account** with proper billing and budget limits
+- ✓ **Generated and managed API keys** with descriptive naming conventions
+- ✓ **Implemented secure authentication patterns** using environment variables
+- ✓ **Created a centralized configuration management system** with validation
+- ✓ **Built a zero-downtime key rotation system** for production environments
+- ✓ **Implemented monitoring and rate limiting** for API key protection
+- ✓ **Applied security best practices** to protect your API keys and budget
+- ✓ **Avoided common security pitfalls** that lead to key exposure
+
+### Key Concepts Learned
+
+- **Environment Variables**: Never hardcode API keys; always use environment variables or secure configuration systems
+- **Key Management**: Use descriptive names, separate keys per environment, and implement regular rotation (90 days minimum)
+- **Configuration Patterns**: Centralize configuration with validation classes, use dependency injection for services
+- **Key Rotation**: Implement zero-downtime rotation with dual-key periods and monitoring
+- **Security Monitoring**: Track usage, detect anomalies, implement rate limiting, and maintain audit logs
+- **Production Practices**: Encrypt stored keys, restrict file permissions, never log full keys, and use system-level environment variables
+
+### Real-World Application
+
+The authentication patterns and security practices you've learned in this chapter are essential for any production Claude application. The `ClaudeConfig` class provides centralized, validated configuration, `EnvironmentValidator` ensures proper setup, and the monitoring/audit classes help protect against abuse and track usage. These patterns form the security foundation that all subsequent chapters will build upon.
+
+### Next Steps
+
+You now have a secure authentication system in place. In the next chapter, you'll use these secure credentials to make your first Claude API requests and learn how to structure requests, parse responses, and handle errors effectively.
+
 ## Key Takeaways
 
 - ✓ **Never hardcode API keys** in source code
@@ -1512,6 +2278,15 @@ class UsageMonitor
 - ✓ **Implement rate limiting** to protect against abuse
 - ✓ **Encrypt stored keys** if database storage is required
 - ✓ **Maintain audit logs** for key access and usage
+
+## Further Reading
+
+- [Anthropic API Keys Documentation](https://docs.claude.com/en/docs/get-started/quickstart) — Official guide to managing API keys and account settings
+- [Environment Variables Best Practices](https://12factor.net/config) — The Twelve-Factor App methodology for configuration management
+- [PHP Dotenv Documentation](https://github.com/vlucas/phpdotenv) — Complete guide to using vlucas/phpdotenv for .env file management
+- [OWASP API Security Top 10](https://owasp.org/www-project-api-security/) — Security best practices for API development
+- [Chapter 01: Introduction to Claude API](/series/claude-php-developers/chapters/01-introduction-to-claude-api) — Review Claude's capabilities and architecture
+- [Chapter 03: Your First Claude Request in PHP](/series/claude-php-developers/chapters/03-first-claude-request) — Start making API calls with your secure credentials
 
 <ChapterCheckbox
   seriesId="claude-php-developers"

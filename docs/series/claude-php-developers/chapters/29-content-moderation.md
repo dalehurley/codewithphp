@@ -34,6 +34,18 @@ Claude excels at understanding context and nuance in content moderation—distin
 
 **What You'll Build**: A production-ready content moderation platform that analyzes text, images, and user behavior, enforces community guidelines, manages moderation queues, and provides detailed violation reports.
 
+## Objectives
+
+By the end of this chapter, you will:
+
+- **Understand** how to build a comprehensive content moderation system using Claude's context-aware analysis
+- **Implement** multi-layered content analysis that detects toxic language, spam, PII, and policy violations
+- **Create** a policy engine that enforces customizable community guidelines with severity scoring
+- **Build** PII detection and redaction capabilities to protect user privacy and ensure legal compliance
+- **Design** a moderation queue system with priority-based processing and human review workflows
+- **Develop** spam detection that combines content analysis with behavioral pattern recognition
+- **Integrate** audit logging and analytics for accountability and continuous improvement
+
 ## Prerequisites
 
 Before starting, ensure you have:
@@ -1171,6 +1183,371 @@ class PolicyEngine
 }
 ```
 
+## Audit Logger
+
+```php
+<?php
+# filename: src/Moderation/AuditLogger.php
+declare(strict_types=1);
+
+namespace App\Moderation;
+
+class AuditLogger
+{
+    public function __construct(
+        private \PDO $db
+    ) {}
+
+    /**
+     * Log moderation decision for audit trail
+     */
+    public function log(
+        string $content,
+        ModerationResult $result,
+        ModerationAction $action,
+        array $context = []
+    ): int {
+        $stmt = $this->db->prepare(
+            "INSERT INTO moderation_audit_log
+             (content_hash, content_preview, approved, action, severity, violations, 
+              explanation, confidence, context, user_id, ip_address, created_at)
+             VALUES (:hash, :preview, :approved, :action, :severity, :violations,
+                     :explanation, :confidence, :context, :user_id, :ip, NOW())"
+        );
+
+        $contentHash = hash('sha256', $content);
+        $contentPreview = mb_substr($content, 0, 200);
+
+        $stmt->execute([
+            ':hash' => $contentHash,
+            ':preview' => $contentPreview,
+            ':approved' => $result->approved ? 1 : 0,
+            ':action' => $action->type,
+            ':severity' => $result->severity,
+            ':violations' => json_encode($result->violations),
+            ':explanation' => $result->explanation,
+            ':confidence' => $result->confidence,
+            ':context' => json_encode($context),
+            ':user_id' => $context['user_id'] ?? null,
+            ':ip' => $context['ip_address'] ?? null
+        ]);
+
+        return (int)$this->db->lastInsertId();
+    }
+
+    /**
+     * Get audit log entries for a user
+     */
+    public function getUserLog(string $userId, int $limit = 100): array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT * FROM moderation_audit_log
+             WHERE user_id = :user_id
+             ORDER BY created_at DESC
+             LIMIT :limit"
+        );
+        $stmt->bindValue(':user_id', $userId);
+        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get audit statistics
+     */
+    public function getStats(array $filters = []): array
+    {
+        $where = [];
+        $params = [];
+
+        if (isset($filters['user_id'])) {
+            $where[] = "user_id = :user_id";
+            $params[':user_id'] = $filters['user_id'];
+        }
+
+        if (isset($filters['date_from'])) {
+            $where[] = "created_at >= :date_from";
+            $params[':date_from'] = $filters['date_from'];
+        }
+
+        if (isset($filters['date_to'])) {
+            $where[] = "created_at <= :date_to";
+            $params[':date_to'] = $filters['date_to'];
+        }
+
+        $whereClause = !empty($where) ? 'WHERE ' . implode(' AND ', $where) : '';
+
+        $stmt = $this->db->prepare(
+            "SELECT
+                COUNT(*) as total_decisions,
+                SUM(CASE WHEN approved = 1 THEN 1 ELSE 0 END) as approved_count,
+                SUM(CASE WHEN approved = 0 THEN 1 ELSE 0 END) as blocked_count,
+                AVG(confidence) as avg_confidence,
+                COUNT(DISTINCT user_id) as unique_users
+             FROM moderation_audit_log
+             {$whereClause}"
+        );
+
+        $stmt->execute($params);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Search audit log by content hash or preview
+     */
+    public function search(string $query, int $limit = 50): array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT * FROM moderation_audit_log
+             WHERE content_preview LIKE :query
+             OR content_hash = :hash
+             ORDER BY created_at DESC
+             LIMIT :limit"
+        );
+
+        $stmt->bindValue(':query', '%' . $query . '%');
+        $stmt->bindValue(':hash', hash('sha256', $query));
+        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+}
+```
+
+## Moderator Workflow System
+
+```php
+<?php
+# filename: src/Moderation/ModeratorWorkflow.php
+declare(strict_types=1);
+
+namespace App\Moderation;
+
+class ModeratorWorkflow
+{
+    public function __construct(
+        private \PDO $db,
+        private ModerationQueue $queue,
+        private AuditLogger $auditLogger
+    ) {}
+
+    /**
+     * Get moderator dashboard with queued items
+     */
+    public function getDashboard(string $moderatorId, array $filters = []): array
+    {
+        return [
+            'statistics' => $this->getStatistics($moderatorId),
+            'pending_queue' => $this->getPendingQueue($filters),
+            'recent_decisions' => $this->getRecentDecisions($moderatorId),
+            'performance_metrics' => $this->getPerformanceMetrics($moderatorId)
+        ];
+    }
+
+    /**
+     * Get moderator statistics
+     */
+    private function getStatistics(string $moderatorId): array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT
+                COUNT(*) as total_decisions,
+                AVG(TIMESTAMPDIFF(MINUTE, claimed_at, resolved_at)) as avg_resolution_minutes,
+                SUM(CASE WHEN decision = 'approve' THEN 1 ELSE 0 END) as approved,
+                SUM(CASE WHEN decision = 'reject' THEN 1 ELSE 0 END) as rejected,
+                SUM(CASE WHEN decision = 'flag' THEN 1 ELSE 0 END) as flagged
+             FROM moderation_queue
+             WHERE moderator_id = :moderator_id
+             AND status = 'resolved'
+             AND resolved_at > DATE_SUB(NOW(), INTERVAL 7 DAY)"
+        );
+        $stmt->execute([':moderator_id' => $moderatorId]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC) ?: [];
+    }
+
+    /**
+     * Get pending items for moderator review
+     */
+    private function getPendingQueue(array $filters = []): array
+    {
+        $where = ['status = ?'];
+        $params = ['in_review'];
+
+        if (isset($filters['severity'])) {
+            $where[] = 'severity = ?';
+            $params[] = $filters['severity'];
+        }
+
+        if (isset($filters['user_id'])) {
+            $where[] = 'user_id = ?';
+            $params[] = $filters['user_id'];
+        }
+
+        $whereClause = implode(' AND ', $where);
+
+        $stmt = $this->db->prepare(
+            "SELECT * FROM moderation_queue
+             WHERE {$whereClause}
+             ORDER BY severity DESC, created_at ASC
+             LIMIT 50"
+        );
+        $stmt->execute($params);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get moderator's recent decisions
+     */
+    private function getRecentDecisions(string $moderatorId, int $limit = 20): array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT * FROM moderation_queue
+             WHERE moderator_id = :moderator_id
+             AND status = 'resolved'
+             ORDER BY resolved_at DESC
+             LIMIT :limit"
+        );
+        $stmt->bindValue(':moderator_id', $moderatorId);
+        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get moderator performance metrics
+     */
+    private function getPerformanceMetrics(string $moderatorId): array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT
+                COUNT(*) as total_items_reviewed,
+                COUNT(DISTINCT user_id) as unique_users_reviewed,
+                COUNT(DISTINCT DATE(resolved_at)) as days_active,
+                MIN(TIMESTAMPDIFF(MINUTE, claimed_at, resolved_at)) as min_review_time,
+                MAX(TIMESTAMPDIFF(MINUTE, claimed_at, resolved_at)) as max_review_time
+             FROM moderation_queue
+             WHERE moderator_id = :moderator_id
+             AND status = 'resolved'"
+        );
+        $stmt->execute([':moderator_id' => $moderatorId]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC) ?: [];
+    }
+
+    /**
+     * Submit moderator decision
+     */
+    public function submitDecision(
+        int $queueId,
+        string $moderatorId,
+        string $decision,
+        string $notes = '',
+        array $reasoning = []
+    ): bool {
+        try {
+            $this->db->beginTransaction();
+
+            // Update queue item
+            $stmt = $this->db->prepare(
+                "UPDATE moderation_queue
+                 SET decision = :decision,
+                     status = 'resolved',
+                     moderator_id = :moderator_id,
+                     moderator_notes = :notes,
+                     resolved_at = NOW()
+                 WHERE id = :id"
+            );
+
+            $stmt->execute([
+                ':decision' => $decision,
+                ':moderator_id' => $moderatorId,
+                ':notes' => $notes,
+                ':id' => $queueId
+            ]);
+
+            // Log in audit trail
+            $this->auditLogger->log(
+                content: $this->getContentPreview($queueId),
+                result: new ModerationResult(
+                    approved: $decision === 'approve',
+                    violations: [],
+                    severity: 'none',
+                    action: $decision,
+                    explanation: "Moderator decision: {$notes}",
+                    confidence: 1.0
+                ),
+                action: new ModerationAction(
+                    approved: $decision === 'approve',
+                    type: $decision,
+                    severity: 'none',
+                    requiresHumanReview: false,
+                    explanation: "Moderated by {$moderatorId}"
+                ),
+                context: ['moderator_reasoning' => $reasoning]
+            );
+
+            $this->db->commit();
+            return true;
+        } catch (\Exception $e) {
+            $this->db->rollBack();
+            error_log("Decision submission error: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Appeal moderation decision
+     */
+    public function createAppeal(
+        int $queueId,
+        string $userId,
+        string $reason,
+        string $evidence = ''
+    ): int {
+        $stmt = $this->db->prepare(
+            "INSERT INTO moderation_appeals
+             (queue_id, user_id, reason, evidence, status, created_at)
+             VALUES (:queue_id, :user_id, :reason, :evidence, 'pending', NOW())"
+        );
+
+        $stmt->execute([
+            ':queue_id' => $queueId,
+            ':user_id' => $userId,
+            ':reason' => $reason,
+            ':evidence' => $evidence
+        ]);
+
+        return (int)$this->db->lastInsertId();
+    }
+
+    /**
+     * Get appeal details
+     */
+    public function getAppeal(int $appealId): ?array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT mq.*, ma.reason, ma.evidence, ma.status as appeal_status
+             FROM moderation_appeals ma
+             JOIN moderation_queue mq ON ma.queue_id = mq.id
+             WHERE ma.id = :id"
+        );
+        $stmt->execute([':id' => $appealId]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    private function getContentPreview(int $queueId): string
+    {
+        $stmt = $this->db->prepare(
+            "SELECT content FROM moderation_queue WHERE id = :id"
+        );
+        $stmt->execute([':id' => $queueId]);
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result['content'] ?? '';
+    }
+}
+```
+
 ## Complete Moderation API
 
 ```php
@@ -1244,6 +1621,433 @@ try {
     http_response_code(500);
     echo json_encode(['error' => $e->getMessage()]);
 }
+```
+
+## Database Schema
+
+```sql
+-- Moderation queue table
+CREATE TABLE moderation_queue (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    content TEXT NOT NULL,
+    content_type VARCHAR(50) DEFAULT 'text',
+    user_id VARCHAR(255) NULL,
+    violations JSON NULL,
+    severity ENUM('none', 'low', 'medium', 'high', 'critical') DEFAULT 'none',
+    context JSON NULL,
+    status ENUM('pending', 'in_review', 'resolved') DEFAULT 'pending',
+    moderator_id VARCHAR(255) NULL,
+    decision ENUM('approve', 'reject', 'flag') NULL,
+    moderator_notes TEXT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    claimed_at TIMESTAMP NULL,
+    resolved_at TIMESTAMP NULL,
+    INDEX idx_status (status),
+    INDEX idx_severity (severity),
+    INDEX idx_user_id (user_id),
+    INDEX idx_created_at (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Audit log table
+CREATE TABLE moderation_audit_log (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    content_hash VARCHAR(64) NOT NULL,
+    content_preview VARCHAR(200) NOT NULL,
+    approved BOOLEAN NOT NULL,
+    action VARCHAR(50) NOT NULL,
+    severity ENUM('none', 'low', 'medium', 'high', 'critical') NOT NULL,
+    violations JSON NULL,
+    explanation TEXT NULL,
+    confidence DECIMAL(3,2) DEFAULT 0.00,
+    context JSON NULL,
+    user_id VARCHAR(255) NULL,
+    ip_address VARCHAR(45) NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_content_hash (content_hash),
+    INDEX idx_user_id (user_id),
+    INDEX idx_approved (approved),
+    INDEX idx_action (action),
+    INDEX idx_created_at (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- User content table (for spam detection)
+CREATE TABLE user_content (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    content_type VARCHAR(50) DEFAULT 'text',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_user_id (user_id),
+    INDEX idx_created_at (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Users table (for account age tracking)
+CREATE TABLE users (
+    id VARCHAR(255) PRIMARY KEY,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_created_at (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Moderation appeals table
+CREATE TABLE moderation_appeals (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    queue_id INT NOT NULL,
+    user_id VARCHAR(255) NOT NULL,
+    reason TEXT NOT NULL,
+    evidence TEXT NULL,
+    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    reviewed_by VARCHAR(255) NULL,
+    reviewed_at TIMESTAMP NULL,
+    reviewer_notes TEXT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (queue_id) REFERENCES moderation_queue(id),
+    INDEX idx_status (status),
+    INDEX idx_user_id (user_id),
+    INDEX idx_created_at (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+```
+
+## Analytics and Metrics
+
+```php
+<?php
+# filename: src/Moderation/ModerationAnalytics.php
+declare(strict_types=1);
+
+namespace App\Moderation;
+
+class ModerationAnalytics
+{
+    public function __construct(
+        private \PDO $db
+    ) {}
+
+    /**
+     * Get comprehensive moderation metrics
+     */
+    public function getMetrics(\DateTime $startDate, \DateTime $endDate): array
+    {
+        return [
+            'total_moderated' => $this->getTotalModerated($startDate, $endDate),
+            'approval_rate' => $this->getApprovalRate($startDate, $endDate),
+            'block_rate' => $this->getBlockRate($startDate, $endDate),
+            'average_confidence' => $this->getAverageConfidence($startDate, $endDate),
+            'violation_distribution' => $this->getViolationDistribution($startDate, $endDate),
+            'severity_distribution' => $this->getSeverityDistribution($startDate, $endDate),
+            'queue_stats' => $this->getQueueStats($startDate, $endDate),
+            'top_violations' => $this->getTopViolations($startDate, $endDate),
+            'pii_detections' => $this->getPIIDetections($startDate, $endDate),
+            'spam_detections' => $this->getSpamDetections($startDate, $endDate)
+        ];
+    }
+
+    private function getTotalModerated(\DateTime $start, \DateTime $end): int
+    {
+        $stmt = $this->db->prepare(
+            "SELECT COUNT(*) as count FROM moderation_audit_log
+             WHERE created_at BETWEEN :start AND :end"
+        );
+        $stmt->execute([
+            ':start' => $start->format('Y-m-d H:i:s'),
+            ':end' => $end->format('Y-m-d H:i:s')
+        ]);
+        return (int)$stmt->fetch(\PDO::FETCH_ASSOC)['count'];
+    }
+
+    private function getApprovalRate(\DateTime $start, \DateTime $end): float
+    {
+        $total = $this->getTotalModerated($start, $end);
+        if ($total === 0) {
+            return 0.0;
+        }
+
+        $stmt = $this->db->prepare(
+            "SELECT COUNT(*) as count FROM moderation_audit_log
+             WHERE created_at BETWEEN :start AND :end
+             AND approved = 1"
+        );
+        $stmt->execute([
+            ':start' => $start->format('Y-m-d H:i:s'),
+            ':end' => $end->format('Y-m-d H:i:s')
+        ]);
+        $approved = (int)$stmt->fetch(\PDO::FETCH_ASSOC)['count'];
+
+        return ($approved / $total) * 100;
+    }
+
+    private function getBlockRate(\DateTime $start, \DateTime $end): float
+    {
+        $total = $this->getTotalModerated($start, $end);
+        if ($total === 0) {
+            return 0.0;
+        }
+
+        $stmt = $this->db->prepare(
+            "SELECT COUNT(*) as count FROM moderation_audit_log
+             WHERE created_at BETWEEN :start AND :end
+             AND approved = 0"
+        );
+        $stmt->execute([
+            ':start' => $start->format('Y-m-d H:i:s'),
+            ':end' => $end->format('Y-m-d H:i:s')
+        ]);
+        $blocked = (int)$stmt->fetch(\PDO::FETCH_ASSOC)['count'];
+
+        return ($blocked / $total) * 100;
+    }
+
+    private function getAverageConfidence(\DateTime $start, \DateTime $end): float
+    {
+        $stmt = $this->db->prepare(
+            "SELECT AVG(confidence) as avg_confidence FROM moderation_audit_log
+             WHERE created_at BETWEEN :start AND :end"
+        );
+        $stmt->execute([
+            ':start' => $start->format('Y-m-d H:i:s'),
+            ':end' => $end->format('Y-m-d H:i:s')
+        ]);
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return (float)($result['avg_confidence'] ?? 0);
+    }
+
+    private function getViolationDistribution(\DateTime $start, \DateTime $end): array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT violations FROM moderation_audit_log
+             WHERE created_at BETWEEN :start AND :end
+             AND violations IS NOT NULL"
+        );
+        $stmt->execute([
+            ':start' => $start->format('Y-m-d H:i:s'),
+            ':end' => $end->format('Y-m-d H:i:s')
+        ]);
+
+        $distribution = [];
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $violations = json_decode($row['violations'], true) ?? [];
+            foreach ($violations as $violation) {
+                $category = $violation['category'] ?? 'unknown';
+                $distribution[$category] = ($distribution[$category] ?? 0) + 1;
+            }
+        }
+
+        arsort($distribution);
+        return $distribution;
+    }
+
+    private function getSeverityDistribution(\DateTime $start, \DateTime $end): array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT severity, COUNT(*) as count
+             FROM moderation_audit_log
+             WHERE created_at BETWEEN :start AND :end
+             GROUP BY severity"
+        );
+        $stmt->execute([
+            ':start' => $start->format('Y-m-d H:i:s'),
+            ':end' => $end->format('Y-m-d H:i:s')
+        ]);
+
+        $distribution = [];
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $distribution[$row['severity']] = (int)$row['count'];
+        }
+
+        return $distribution;
+    }
+
+    private function getQueueStats(\DateTime $start, \DateTime $end): array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT
+                COUNT(*) as total,
+                SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) as pending,
+                SUM(CASE WHEN status = 'in_review' THEN 1 ELSE 0 END) as in_review,
+                SUM(CASE WHEN status = 'resolved' THEN 1 ELSE 0 END) as resolved,
+                AVG(TIMESTAMPDIFF(MINUTE, created_at, resolved_at)) as avg_resolution_minutes
+             FROM moderation_queue
+             WHERE created_at BETWEEN :start AND :end"
+        );
+        $stmt->execute([
+            ':start' => $start->format('Y-m-d H:i:s'),
+            ':end' => $end->format('Y-m-d H:i:s')
+        ]);
+
+        return $stmt->fetch(\PDO::FETCH_ASSOC) ?: [];
+    }
+
+    private function getTopViolations(\DateTime $start, \DateTime $end, int $limit = 10): array
+    {
+        $distribution = $this->getViolationDistribution($start, $end);
+        return array_slice($distribution, 0, $limit, true);
+    }
+
+    private function getPIIDetections(\DateTime $start, \DateTime $end): int
+    {
+        $stmt = $this->db->prepare(
+            "SELECT COUNT(*) as count FROM moderation_audit_log
+             WHERE created_at BETWEEN :start AND :end
+             AND violations LIKE '%pii%'"
+        );
+        $stmt->execute([
+            ':start' => $start->format('Y-m-d H:i:s'),
+            ':end' => $end->format('Y-m-d H:i:s')
+        ]);
+        return (int)$stmt->fetch(\PDO::FETCH_ASSOC)['count'];
+    }
+
+    private function getSpamDetections(\DateTime $start, \DateTime $end): int
+    {
+        $stmt = $this->db->prepare(
+            "SELECT COUNT(*) as count FROM moderation_audit_log
+             WHERE created_at BETWEEN :start AND :end
+             AND violations LIKE '%spam%'"
+        );
+        $stmt->execute([
+            ':start' => $start->format('Y-m-d H:i:s'),
+            ':end' => $end->format('Y-m-d H:i:s')
+        ]);
+        return (int)$stmt->fetch(\PDO::FETCH_ASSOC)['count'];
+    }
+}
+```
+
+## Usage Examples
+
+```php
+<?php
+# filename: examples/moderate-content.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use App\Moderation\ModerationSystem;
+use App\Moderation\ContentAnalyzer;
+use App\Moderation\PolicyEngine;
+use App\Moderation\ModerationQueue;
+use App\Moderation\AuditLogger;
+use App\Moderation\ToxicityDetector;
+use App\Moderation\PIIDetector;
+use App\Moderation\SpamDetector;
+use Anthropic\Anthropic;
+
+// Initialize components
+$db = new PDO(getenv('DATABASE_DSN'));
+$redis = new Redis();
+$redis->connect('localhost', 6379);
+
+$claude = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+
+$analyzer = new ContentAnalyzer($claude);
+$policyEngine = new PolicyEngine();
+$queue = new ModerationQueue($db, $redis);
+$auditLogger = new AuditLogger($db);
+
+$moderationSystem = new ModerationSystem(
+    claude: $claude,
+    analyzer: $analyzer,
+    policyEngine: $policyEngine,
+    queue: $queue,
+    auditLogger: $auditLogger
+);
+
+// Example 1: Moderate text content
+echo "Example 1: Moderate Text Content\n";
+echo str_repeat('=', 50) . "\n";
+
+$result = $moderationSystem->moderateContent(
+    content: "This is a great product! I love it.",
+    contentType: 'text',
+    context: ['user_id' => 'user123', 'ip_address' => '192.168.1.1']
+);
+
+echo "Approved: " . ($result->approved ? 'Yes' : 'No') . "\n";
+echo "Action: {$result->action}\n";
+echo "Severity: {$result->severity}\n";
+echo "Confidence: " . round($result->confidence * 100, 2) . "%\n";
+echo "Explanation: {$result->explanation}\n";
+echo "\n";
+
+// Example 2: Detect toxic language
+echo "Example 2: Detect Toxic Language\n";
+echo str_repeat('=', 50) . "\n";
+
+$toxicityDetector = new ToxicityDetector($claude);
+$toxicityReport = $toxicityDetector->detect(
+    "This is educational content discussing hate speech patterns."
+);
+
+echo "Is Toxic: " . ($toxicityReport->isToxic ? 'Yes' : 'No') . "\n";
+echo "Toxicity Score: " . round($toxicityReport->toxicityScore * 100, 2) . "%\n";
+echo "Categories: " . implode(', ', $toxicityReport->categories) . "\n";
+echo "Recommendation: {$toxicityReport->recommendation}\n";
+echo "\n";
+
+// Example 3: Detect and redact PII
+echo "Example 3: Detect and Redact PII\n";
+echo str_repeat('=', 50) . "\n";
+
+$piiDetector = new PIIDetector($claude);
+$textWithPII = "Contact me at john.doe@example.com or call 555-123-4567";
+$piiReport = $piiDetector->detect($textWithPII);
+
+echo "Has PII: " . ($piiReport->hasPII ? 'Yes' : 'No') . "\n";
+echo "Risk Level: {$piiReport->riskLevel}\n";
+echo "Original: {$textWithPII}\n";
+
+if ($piiReport->hasPII) {
+    $redacted = $piiDetector->redact($textWithPII, $piiReport);
+    echo "Redacted: {$redacted}\n";
+}
+echo "\n";
+
+// Example 4: Detect spam
+echo "Example 4: Detect Spam\n";
+echo str_repeat('=', 50) . "\n";
+
+$spamDetector = new SpamDetector($claude, $db);
+$spamReport = $spamDetector->detect(
+    content: "Click here now! Amazing deals! Buy now!",
+    userId: 'user456',
+    context: []
+);
+
+echo "Is Spam: " . ($spamReport->isSpam ? 'Yes' : 'No') . "\n";
+echo "Spam Score: " . round($spamReport->spamScore * 100, 2) . "%\n";
+echo "Type: {$spamReport->type}\n";
+echo "Indicators: " . implode(', ', $spamReport->indicators) . "\n";
+echo "\n";
+
+// Example 5: Batch moderation
+echo "Example 5: Batch Moderation\n";
+echo str_repeat('=', 50) . "\n";
+
+$items = [
+    ['id' => '1', 'content' => 'Great post!', 'type' => 'text'],
+    ['id' => '2', 'content' => 'Spam content here', 'type' => 'text'],
+    ['id' => '3', 'content' => 'Normal discussion', 'type' => 'text']
+];
+
+$batchResults = $moderationSystem->moderateBatch($items);
+
+foreach ($batchResults as $itemId => $result) {
+    echo "Item {$itemId}: " . ($result->approved ? 'Approved' : 'Blocked') . "\n";
+    echo "  Action: {$result->action}, Severity: {$result->severity}\n";
+}
+echo "\n";
+
+// Example 6: Get queue statistics
+echo "Example 6: Queue Statistics\n";
+echo str_repeat('=', 50) . "\n";
+
+$stats = $queue->getStats();
+echo "Total Items: {$stats['total']}\n";
+echo "Pending: {$stats['pending']}\n";
+echo "In Review: {$stats['in_review']}\n";
+echo "Resolved: {$stats['resolved']}\n";
+echo "Avg Resolution Time: " . round($stats['avg_resolution_minutes'] ?? 0, 2) . " minutes\n";
 ```
 
 ## Data Structures
@@ -1354,6 +2158,247 @@ readonly class SpamReport
     ) {}
 }
 ```
+
+## Wrap-up
+
+Congratulations! You've built a comprehensive content moderation system. Here's what you've accomplished:
+
+- ✓ **Moderation System Core**: Created an intelligent moderation platform that analyzes content with context awareness
+- ✓ **Content Analyzer**: Implemented multi-category violation detection (toxic language, spam, PII, inappropriate content, misinformation, copyright)
+- ✓ **Toxicity Detection**: Built context-aware toxic language detection that distinguishes legitimate discussion from harmful content
+- ✓ **PII Detection**: Developed pattern-based and AI-enhanced PII detection with automatic redaction capabilities
+- ✓ **Spam Detection**: Created behavioral analysis that combines content patterns with user behavior indicators
+- ✓ **Moderation Queue**: Implemented priority-based queue system with Redis for real-time processing
+- ✓ **Policy Engine**: Designed flexible policy enforcement with customizable rules and severity scoring
+- ✓ **Audit Logging**: Built comprehensive audit trails for accountability and appeal processes
+- ✓ **Database Schema**: Designed normalized database tables for queue management, audit logging, and appeals
+- ✓ **Analytics Dashboard**: Created metrics tracking for moderation performance, violation distribution, and queue statistics
+- ✓ **Moderator Workflow**: Implemented moderator dashboards, decision submission, and performance metrics
+- ✓ **Appeal System**: Developed user appeal workflows with moderator review process
+- ✓ **Usage Examples**: Provided practical examples demonstrating all moderation features
+
+### Key Concepts Learned
+
+- **Context-Aware Analysis**: Claude's understanding of nuance reduces false positives by distinguishing satire, quotes, and educational content from actual violations
+- **Multi-Layered Detection**: Combining pattern matching (fast) with AI analysis (accurate) provides both speed and precision
+- **Severity Scoring**: Quantitative severity scores enable automated decision-making while maintaining human oversight for edge cases
+- **Priority Queues**: Redis sorted sets enable efficient priority-based processing of moderation items
+- **Policy Flexibility**: Configurable policy engine allows different rules for different content types and contexts
+- **Privacy Protection**: PII detection and redaction protect user privacy and ensure GDPR/CCPA compliance
+- **Behavioral Analysis**: User behavior patterns (posting frequency, account age, repetitive content) enhance spam detection accuracy
+
+### Next Steps
+
+Your moderation system is production-ready, but consider these enhancements:
+
+- Add image moderation using vision models for inappropriate visual content
+- Implement machine learning to improve detection accuracy from moderator feedback
+- Build a moderator dashboard UI for reviewing flagged content
+- Add appeal workflows allowing users to contest moderation decisions
+- Integrate with user reputation systems to adjust moderation thresholds
+- Create automated reporting for compliance and legal requirements
+- Add multi-language support with language-specific policy rules
+- Implement rate limiting and throttling to prevent abuse
+
+### Unique Features of Content Moderation
+
+Unlike customer support (Chapter 28) or data extraction (Chapter 30), content moderation includes:
+
+- **Policy Enforcement**: Customizable policy engines with severity scoring
+- **PII Detection & Redaction**: Privacy-first approach protecting user data
+- **Behavioral Analysis**: User behavior pattern detection for spam (account age, posting frequency)
+- **Multi-Layered Detection**: Combining pattern matching + AI for accuracy and speed
+- **Human Review Workflows**: Queue prioritization for moderator review
+- **Audit Trails**: Complete logging for compliance, appeals, and accountability
+- **Severity Scoring**: Quantitative metrics for automated decision-making
+- **False Positive Reduction**: Context-aware analysis reducing legitimate content flagging
+
+## Troubleshooting
+
+### Issue: Content Analysis Returns No Violations When Violations Exist
+
+**Symptom**: `analyze()` method returns empty violations array even when content clearly violates policies
+
+**Cause**: JSON parsing failing or Claude response format changed
+
+**Solution**: Add better error handling and logging:
+
+```php
+private function parseAnalysis(string $jsonText): ContentAnalysis
+{
+    // Extract JSON from response
+    if (preg_match('/\{.*\}/s', $jsonText, $matches)) {
+        $data = json_decode($matches[0], true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            error_log("JSON decode error: " . json_last_error_msg());
+            error_log("Response text: " . $jsonText);
+            throw new \RuntimeException('Failed to parse analysis: ' . json_last_error_msg());
+        }
+        return new ContentAnalysis($data);
+    }
+
+    error_log("No JSON found in response: " . $jsonText);
+    throw new \RuntimeException('Failed to parse analysis: No JSON found');
+}
+```
+
+### Issue: PII Detection Misses Complex Cases
+
+**Symptom**: Pattern-based detection works but AI detection returns empty results
+
+**Cause**: AI detection prompt not specific enough or model selection incorrect
+
+**Solution**: Use more specific prompts and verify model selection:
+
+```php
+private function aiDetect(string $text): array
+{
+    $prompt = <<<PROMPT
+Detect personally identifiable information (PII) in this text.
+
+Text: {$text}
+
+Identify ALL instances of:
+- Full names (first + last name together, especially with context like "my name is" or "contact me at")
+- Home addresses (street addresses with city/state)
+- Government ID numbers (SSN, passport, driver's license)
+- Financial information (credit card numbers, bank account numbers)
+- Medical information (patient IDs, medical record numbers)
+- Login credentials (usernames with passwords)
+- Phone numbers (in any format)
+- Email addresses (if not already detected by patterns)
+
+Return JSON array with ALL matches found. Be thorough.
+PROMPT;
+
+    $response = $this->claude->messages()->create([
+        'model' => 'claude-sonnet-4-20250514', // Use Sonnet for better detection
+        'max_tokens' => 2048, // Increase for more matches
+        'temperature' => 0.1, // Lower for consistency
+        'messages' => [[
+            'role' => 'user',
+            'content' => $prompt
+        ]]
+    ]);
+    // ... rest of parsing
+}
+```
+
+### Issue: Moderation Queue Items Not Processing
+
+**Symptom**: Items added to queue but `getNext()` returns null
+
+**Cause**: Redis connection failing or queue key mismatch
+
+**Solution**: Add connection checks and verify Redis operations:
+
+```php
+public function getNext(string $moderatorId): ?array
+{
+    try {
+        // Verify Redis connection
+        if (!$this->redis->ping()) {
+            error_log("Redis connection failed");
+            // Fallback to database-only queue
+            return $this->getNextFromDatabase($moderatorId);
+        }
+
+        // Get highest priority item
+        $items = $this->redis->zrevrange('moderation:queue', 0, 0);
+        
+        if (empty($items)) {
+            return null;
+        }
+
+        $queueId = (int)$items[0];
+        
+        // Verify item exists in database
+        $item = $this->getItem($queueId);
+        if (!$item) {
+            // Clean up orphaned Redis entry
+            $this->redis->zrem('moderation:queue', (string)$queueId);
+            return null;
+        }
+
+        // Claim the item
+        if ($this->claimItem($queueId, $moderatorId)) {
+            return $item;
+        }
+
+        return null;
+    } catch (\Exception $e) {
+        error_log("Queue error: " . $e->getMessage());
+        return $this->getNextFromDatabase($moderatorId);
+    }
+}
+```
+
+### Issue: False Positives on Legitimate Content
+
+**Symptom**: Educational content, quotes, or satire being flagged as violations
+
+**Cause**: System prompt not emphasizing context awareness enough
+
+**Solution**: Strengthen system prompt with more examples:
+
+```php
+private function getAnalysisSystemPrompt(): string
+{
+    return <<<SYSTEM
+You are a content moderation expert analyzing user-generated content.
+
+CRITICAL: Context is everything. Always consider:
+
+1. **Quotes and References**: Content quoting violations is NOT a violation itself
+   - "He said 'kill you'" → NOT a threat (it's a quote)
+   - Educational discussion of hate speech → NOT hate speech
+
+2. **Satire and Criticism**: Criticizing toxicity is NOT toxic
+   - "This is what hate speech looks like: [example]" → Educational, NOT violation
+   - Satirical content mocking harmful ideas → NOT a violation
+
+3. **Cultural Context**: Understand cultural and linguistic nuances
+   - Reclaimed language by marginalized groups → Context-dependent
+   - Medical/health discussions → Appropriate in health forums
+
+4. **Intent Matters**: Distinguish between:
+   - Actual threats vs. hypothetical discussion
+   - Real harassment vs. friendly banter (in appropriate contexts)
+   - Spam vs. legitimate promotion (in appropriate channels)
+
+When in doubt, flag for human review rather than blocking.
+
+Your analysis must be:
+- Objective and unbiased
+- Context-aware (distinguish satire, quotes, educational content)
+- Culturally sensitive
+- Consistent with platform policies
+- Detailed with specific examples
+
+Severity Scoring:
+- 0.0-0.3: Minor issues, likely acceptable
+- 0.4-0.6: Moderate concerns, flag for review
+- 0.7-0.8: Serious violations, likely block
+- 0.9-1.0: Severe violations, immediate block
+
+Always err on the side of caution for:
+- Child safety
+- Violence or threats
+- Illegal activity
+- PII exposure
+SYSTEM;
+}
+```
+
+## Further Reading
+
+- [Anthropic Claude API Documentation](https://docs.claude.com) — Official Claude API reference and moderation best practices
+- [Content Moderation Best Practices](https://www.cloudflare.com/learning/bots/what-is-content-moderation/) — Industry standards for moderation workflows
+- [GDPR Compliance Guide](https://gdpr.eu/what-is-gdpr/) — Understanding PII protection requirements
+- [Redis Sorted Sets](https://redis.io/docs/data-types/sorted-sets/) — Priority queue implementation patterns
+- [False Positive Reduction Strategies](https://www.contentmoderation.com/blog/reducing-false-positives) — Techniques for improving moderation accuracy
+- [Chapter 19: Queue Processing with Laravel](/series/claude-php-developers/chapters/19-queue-processing-laravel) — Related chapter on async processing
+- [Chapter 18: Caching Strategies](/series/claude-php-developers/chapters/18-caching-strategies) — Performance optimization for moderation systems
 
 ## Key Takeaways
 

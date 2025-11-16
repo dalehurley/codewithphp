@@ -17,7 +17,11 @@ prerequisites:
 
 ## Overview
 
-PHP Data Objects (PDO) is PHP's database abstraction layer—similar to JDBC in Java. It provides a consistent interface for working with multiple database systems (MySQL, PostgreSQL, SQLite, etc.). In this chapter, you'll learn how to safely and efficiently work with databases in PHP, with constant comparisons to JDBC patterns you already know.
+PHP Data Objects (PDO) is PHP's database abstraction layer—similar to JDBC in Java. It provides a consistent interface for working with multiple database systems (MySQL, PostgreSQL, SQLite, etc.). If you're familiar with JDBC's `Connection`, `PreparedStatement`, and `ResultSet` classes, you'll find PDO's API refreshingly similar yet more streamlined.
+
+In this chapter, you'll learn how to safely and efficiently work with databases in PHP, with constant comparisons to JDBC patterns you already know. We'll start with basic connections and prepared statements, then move to advanced topics like transactions, error handling, and the repository pattern. By the end, you'll be able to build robust data access layers that prevent SQL injection, handle errors gracefully, and maintain data consistency.
+
+You'll build practical examples including a connection manager, a complete repository implementation, and a query builder. These patterns form the foundation for working with databases in PHP applications, whether you're building simple scripts or complex enterprise applications.
 
 ## Prerequisites
 
@@ -1622,6 +1626,12 @@ In [Chapter 10: Building REST APIs](/series/php-for-java-developers/chapters/10-
 - [Doctrine ORM](https://www.doctrine-project.org/projects/orm.html)
 
 ---
+
+<ChapterCheckbox 
+  seriesId="php-for-java-developers"
+  chapterId="09"
+  label="Completed database operations with PDO!"
+/>
 
 <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
   <div>

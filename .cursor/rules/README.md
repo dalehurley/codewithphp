@@ -213,6 +213,33 @@ Includes direct references to code samples:
 
 ---
 
+#### `claude-php-developers.mdc`
+
+**Type:** Applied to `docs/series/claude-php-developers/**/*.md`  
+**Purpose:** Guidelines specific to the Claude for PHP Developers series
+
+Defines:
+
+- Latest Claude models (Sonnet 4.5, Haiku 4.5, Opus 4.1) and model selection
+- Core capabilities (Messages API, Streaming, Tool Use, Vision, Structured Outputs)
+- Advanced features (Agent Skills, 1M token context, Context Editing, Extended Thinking, Prompt Caching, Citations, Batch Processing, Files API, Memory Tool)
+- Available tools (Bash, Code Execution, Computer Use, MCP Connector, Memory, Text Editor, Web Fetch, Web Search)
+- PHP integration patterns (Official SDK, Service Layer, Framework integration)
+- Code quality standards (PHP 8.2+, type declarations, error handling, security)
+- Chapter structure requirements and content organization
+- API reference accuracy and documentation linking
+- Security considerations (API keys, input validation, output validation, rate limiting, data privacy)
+- Cost optimization strategies (model selection, token management, caching, batch processing)
+- Testing requirements and patterns
+- Laravel-specific patterns (Service Providers, Facades, Queues, Caching, Livewire)
+- Advanced topics (RAG, Multi-Agent Systems, Production Deployment)
+- Content update procedures and breaking change handling
+- Common pitfalls and best practices
+
+**Use when:** Writing or editing Claude PHP series chapters, implementing Claude API integrations, or referencing Claude features
+
+---
+
 ## Rule Types
 
 ### Always Applied
@@ -231,6 +258,7 @@ Rules with `globs: pattern` in frontmatter:
 - `authoring-guidelines.mdc` → `docs/**/*.md`
 - `tutorials-global.mdc` → `docs/**/*.md`
 - `ai-ml-series.mdc` → `docs/series/ai-ml-php-developers/**/*.md`
+- `claude-php-developers.mdc` → `docs/series/claude-php-developers/**/*.md`
 
 These rules apply when working with files matching the pattern.
 
@@ -310,6 +338,10 @@ When rules conflict (rare), follow this priority:
 ### Working on AI/ML Series?
 
 → `ai-ml-series.mdc` (auto-applied) + check code samples
+
+### Working on Claude PHP Series?
+
+→ `claude-php-developers.mdc` (auto-applied) + verify latest API docs
 
 ### PHP Code Guidelines?
 

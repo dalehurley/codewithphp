@@ -252,3 +252,7 @@ class SafeUser extends Model
 echo "Eloquent ORM patterns demonstrated.\n";
 echo "These are examples showing syntax, not executable code.\n";
 
+
+
+
+

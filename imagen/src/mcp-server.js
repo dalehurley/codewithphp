@@ -59,8 +59,7 @@ class ImagenMCPServer {
               },
               series: {
                 type: 'string',
-                enum: ['php-basics', 'ai-ml-php-developers', 'python-developers-love-php-laravel', 'build-crm-laravel-12', 'rails-developers-love-laravel', 'php-algorithms'],
-                description: 'Tutorial series for organizing images (required)',
+                description: 'Tutorial series slug for organizing images (e.g., "php-basics", "claude-php-developers"). Images will be saved to /images/{series}/ directory (required)',
               },
               chapter: {
                 type: 'string',
@@ -115,8 +114,7 @@ class ImagenMCPServer {
             properties: {
               series: {
                 type: 'string',
-                enum: ['php-basics', 'ai-ml-php-developers', 'python-developers-love-php-laravel', 'build-crm-laravel-12', 'rails-developers-love-laravel', 'php-algorithms'],
-                description: 'Tutorial series for organizing images (required)',
+                description: 'Tutorial series slug for organizing images (e.g., "php-basics", "claude-php-developers"). Images will be saved to /images/{series}/ directory (required)',
               },
               theme: {
                 type: 'string',
@@ -324,10 +322,9 @@ class ImagenMCPServer {
         throw new Error('Missing required fields: prompt, series, chapter, slug');
       }
 
-      // Validate series
-      const validSeries = ['php-basics', 'ai-ml-php-developers', 'python-developers-love-php-laravel', 'build-crm-laravel-12', 'rails-developers-love-laravel', 'php-algorithms'];
-      if (!validSeries.includes(series)) {
-        throw new Error(`Invalid series: ${series}. Must be one of: ${validSeries.join(', ')}`);
+      // Validate series format (kebab-case slug)
+      if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(series)) {
+        throw new Error(`Invalid series format: "${series}". Must be a kebab-case slug (e.g., "php-basics", "claude-php-developers")`);
       }
 
       // Generate final prompt
@@ -452,10 +449,9 @@ class ImagenMCPServer {
         throw new Error('Missing required fields: series, theme, chapters (non-empty array)');
       }
 
-      // Validate series
-      const validSeries = ['php-basics', 'ai-ml-php-developers', 'python-developers-love-php-laravel', 'build-crm-laravel-12', 'rails-developers-love-laravel', 'php-algorithms'];
-      if (!validSeries.includes(series)) {
-        throw new Error(`Invalid series: ${series}. Must be one of: ${validSeries.join(', ')}`);
+      // Validate series format (kebab-case slug)
+      if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(series)) {
+        throw new Error(`Invalid series format: "${series}". Must be a kebab-case slug (e.g., "php-basics", "claude-php-developers")`);
       }
 
       // Extract consistency options
