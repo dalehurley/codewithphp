@@ -1,6 +1,6 @@
 ---
 title: "01: Introduction to Claude API"
-description: "Master Claude's capabilities, model variants (Opus, Sonnet, Haiku), pricing structure, Messages API architecture, and how conversations work with practical PHP examples."
+description: "Master Claude's capabilities, model variants (Opus 4.1, Sonnet 4.5, Haiku 4.5), pricing structure, Messages API architecture, and how conversations work with practical PHP examples."
 series: "claude-php-developers"
 chapter: 1
 order: 1
@@ -29,7 +29,7 @@ prerequisites:
 
 Claude is Anthropic's family of large language models (LLMs) designed to be helpful, harmless, and honest. This chapter provides a comprehensive introduction to Claude's capabilities, architecture, and how to effectively integrate it into your PHP applications.
 
-You'll learn about the three model variants (Opus, Sonnet, and Haiku), understand the Messages API structure that powers all Claude interactions, explore pricing and cost optimization strategies, and gain insight into how Claude processes conversations. By the end, you'll have a solid foundation for making informed decisions about which Claude model to use for your specific use cases.
+You'll learn about the latest Claude 4.x lineup—Opus 4.1, Sonnet 4.5, and Haiku 4.5—understand the Messages API structure that powers all Claude interactions, explore pricing and cost optimization strategies, and gain insight into how Claude processes conversations. By the end, you'll have a solid foundation for making informed decisions about which Claude model to use for your specific use cases.
 
 ## Prerequisites
 
@@ -51,13 +51,13 @@ By the end of this chapter, you will have created:
 - A `TokenEstimator` utility for cost estimation
 - A `ConversationManager` class for maintaining multi-turn conversations
 - A `CostOptimizer` class for selecting cost-effective models
-- Understanding of when to use Opus, Sonnet, or Haiku models
+- Understanding of when to use Opus 4.1, Sonnet 4.5, or Haiku 4.5 models
 - Knowledge of Claude's pricing structure and optimization strategies
 
 ## Objectives
 
 - Understand Claude's core capabilities and how they differ from traditional software
-- Compare and contrast the three model variants (Opus, Sonnet, Haiku) and their use cases
+- Compare and contrast the three model variants (Opus 4.1, Sonnet 4.5, Haiku 4.5) and their use cases
 - Master the Messages API architecture and request/response structure
 - Learn Claude's pricing model and implement cost optimization strategies
 - Implement conversation management patterns for stateless API interactions
@@ -105,7 +105,7 @@ Claude excels at:
 ### Key Strengths
 
 **Extended Context Window**
-Claude supports up to 200,000 tokens (approximately 150,000 words) in a single conversation. This enables:
+Claude supports up to 200,000 tokens (approximately 150,000 words) in a single conversation, with Sonnet 4.5 offering a 1M-token beta tier when available. This enables:
 - Processing entire codebases
 - Analyzing long documents
 - Maintaining extensive conversation history
@@ -130,31 +130,31 @@ Claude is trained using Constitutional AI, making it:
 
 ## Claude Model Variants
 
-Anthropic offers three model variants, each optimized for different use cases:
+Anthropic's 2025 Claude lineup includes Opus 4.1, Sonnet 4.5, and Haiku 4.5. Each model targets a specific balance of capability, latency, and cost—so knowing their strengths is essential.
 
-### Claude Opus 4
+### Claude Opus 4.1
 
-**Overview**: The most intelligent and capable model in the Claude family.
+**Overview**: The most intelligent and capable Claude model, built for maximum reasoning depth.
 
 **Specifications:**
-- Model ID: `claude-opus-4-20250514`
+- Model ID: `claude-opus-4-20250514` (verify latest revision in the console)
 - Context Window: 200,000 tokens
 - Max Output: 16,384 tokens
-- Training Data: Up to December 2024
+- Extended Thinking: Enabled for complex tasks
+- Availability: Anthropic API (check Bedrock/Vertex availability per account)
 
 **Best For:**
 - Complex reasoning tasks
-- Advanced code generation
-- Research and analysis
-- Creative projects requiring nuance
-- Tasks where accuracy is critical
+- Advanced code generation and refactoring
+- Research and strategic analysis
+- Creative projects requiring nuance and fidelity
+- Scenarios where accuracy trumps latency and cost
 
 **Performance Characteristics:**
-- Highest quality outputs
-- Best at following complex instructions
-- Superior at handling ambiguity
-- Slowest response times
-- Highest cost per token
+- Highest quality outputs and instruction following
+- Handles ambiguity and multi-step reasoning exceptionally well
+- Slowest response times relative to other models
+- Highest cost per token in the lineup
 
 **Example Use Cases:**
 
@@ -182,27 +182,28 @@ $response = $client->messages()->create([
 ]);
 ```
 
-### Claude Sonnet 4
+### Claude Sonnet 4.5
 
-**Overview**: The balanced model offering excellent performance at reasonable cost.
+**Overview**: The balanced, go-to production model delivering excellent capability per dollar.
 
 **Specifications:**
 - Model ID: `claude-sonnet-4-20250514`
-- Context Window: 200,000 tokens
+- Context Window: 200,000 tokens (1M-token Beta tier for Sonnet 4.5 where enabled)
 - Max Output: 16,384 tokens
-- Training Data: Up to December 2024
+- Prompt Caching: Supports 5-minute and 1-hour caches
+- Availability: Anthropic API, Amazon Bedrock, and Vertex AI (region dependent)
 
 **Best For:**
-- General-purpose applications
-- Most production workloads
-- Balanced quality and speed needs
-- Cost-effective scaling
+- General-purpose applications and most production workloads
+- Code review, documentation, and knowledge work
+- Balanced quality, speed, and cost scenarios
+- Teams scaling usage without compromising capability
 
 **Performance Characteristics:**
-- Excellent quality-to-cost ratio
-- Fast response times
-- Reliable and consistent
-- Recommended starting point
+- Outstanding quality-to-cost ratio
+- Fast response times for interactive applications
+- Highly reliable and consistent
+- Default recommendation for new workloads
 
 **Example Use Cases:**
 
@@ -230,27 +231,28 @@ $response = $client->messages()->create([
 ]);
 ```
 
-### Claude Haiku 4
+### Claude Haiku 4.5
 
-**Overview**: The fastest and most cost-effective model for high-volume tasks.
+**Overview**: The lowest-latency, most cost-effective Claude option—perfect for high-volume workflows.
 
 **Specifications:**
 - Model ID: `claude-haiku-4-20250514`
 - Context Window: 200,000 tokens
 - Max Output: 16,384 tokens
-- Training Data: Up to December 2024
+- Latency: Sub-second responses for most prompts
+- Availability: Anthropic API plus partner clouds where enabled
 
 **Best For:**
-- High-volume processing
-- Simple classification tasks
-- Quick responses needed
-- Cost-sensitive applications
+- High-volume processing and classification
+- Lightweight summarization and extraction
+- Quick responses in user-facing products
+- Cost-sensitive applications and background jobs
 
 **Performance Characteristics:**
 - Fastest response times
 - Lowest cost per token
-- Good for straightforward tasks
-- May lack nuance for complex queries
+- Ideal for straightforward or deterministic tasks
+- May miss nuance required for deeply complex prompts
 
 **Example Use Cases:**
 
@@ -280,14 +282,14 @@ $response = $client->messages()->create([
 
 ### Model Comparison Table
 
-| Feature | Opus 4 | Sonnet 4 | Haiku 4 |
-|---------|--------|----------|---------|
+| Feature | Opus 4.1 | Sonnet 4.5 | Haiku 4.5 |
+|---------|----------|------------|-----------|
 | **Intelligence** | Highest | High | Good |
 | **Speed** | Slower | Fast | Fastest |
 | **Cost** | Highest | Medium | Lowest |
 | **Use Case** | Complex tasks | General purpose | High volume |
 | **Best For** | Quality | Balance | Speed |
-| **Context** | 200K tokens | 200K tokens | 200K tokens |
+| **Context** | 200K tokens | 200K tokens (1M Beta) | 200K tokens |
 | **Max Output** | 16,384 tokens | 16,384 tokens | 16,384 tokens |
 
 ### Choosing the Right Model
@@ -307,29 +309,29 @@ class ClaudeModelSelector
         bool $costSensitive,
         bool $speedCritical
     ): string {
-        // High volume, simple tasks → Haiku
+        // High volume, simple tasks → Haiku 4.5
         if ($volumeHigh && $taskComplexity === 'simple') {
             return 'claude-haiku-4-20250514';
         }
 
-        // Cost sensitive and task is not complex → Haiku
+        // Cost sensitive and task is not complex → Haiku 4.5
         if ($costSensitive && $taskComplexity !== 'complex') {
             return 'claude-haiku-4-20250514';
         }
 
-        // Speed critical and task is not complex → Haiku or Sonnet
+        // Speed critical and task is not complex → Haiku 4.5 or Sonnet 4.5
         if ($speedCritical) {
             return $taskComplexity === 'simple'
                 ? 'claude-haiku-4-20250514'
                 : 'claude-sonnet-4-20250514';
         }
 
-        // Complex reasoning required → Opus
+        // Complex reasoning required → Opus 4.1
         if ($taskComplexity === 'complex') {
             return 'claude-opus-4-20250514';
         }
 
-        // Default: Sonnet (best balance)
+        // Default: Sonnet 4.5 (best balance)
         return 'claude-sonnet-4-20250514';
     }
 }
@@ -612,15 +614,15 @@ Understanding Claude's pricing model is essential for building cost-effective ap
 
 ### Current Pricing (2025)
 
-**Claude Opus 4**
+**Claude Opus 4.1**
 - Input: $15.00 per million tokens
 - Output: $75.00 per million tokens
 
-**Claude Sonnet 4**
+**Claude Sonnet 4.5**
 - Input: $3.00 per million tokens
 - Output: $15.00 per million tokens
 
-**Claude Haiku 4**
+**Claude Haiku 4.5**
 - Input: $0.25 per million tokens
 - Output: $1.25 per million tokens
 
@@ -1231,7 +1233,7 @@ class ModelComparison
 
     public function compareModels(string $prompt): array
     {
-        // TODO: Send same prompt to Opus, Sonnet, and Haiku
+        // TODO: Send same prompt to Opus 4.1, Sonnet 4.5, and Haiku 4.5
         // Return array with results, timing, and cost for each
     }
 }
@@ -1290,11 +1292,11 @@ class SmartConversation
     }
 }
 
-// Should automatically use Haiku for simple, Sonnet for general, Opus for complex
+// Should automatically use Haiku 4.5 for simple, Sonnet 4.5 for general, Opus 4.1 for complex
 $chat = new SmartConversation($client);
-$chat->chat("Hello!", 'simple');           // → Uses Haiku
-$chat->chat("Explain MVC", 'general');     // → Uses Sonnet
-$chat->chat("Design a system", 'complex'); // → Uses Opus
+$chat->chat("Hello!", 'simple');           // → Uses Haiku 4.5
+$chat->chat("Explain MVC", 'general');     // → Uses Sonnet 4.5
+$chat->chat("Design a system", 'complex'); // → Uses Opus 4.1
 ```
 
 <details>
@@ -1311,8 +1313,8 @@ $chat->chat("Design a system", 'complex'); // → Uses Opus
 ## Troubleshooting
 
 **Model not found error?**
-- Check model ID spelling: `claude-sonnet-4-20250514` (not `claude-4-sonnet`)
-- Ensure you're using a valid, current model ID
+- Check model ID spelling (e.g. `claude-sonnet-4-20250514` for Claude Sonnet 4.5, not `claude-4-sonnet`)
+- Ensure you're using the latest Claude 4.1/4.5 IDs exposed in the Anthropic console
 - Check Anthropic documentation for latest model names
 
 **Unexpected response format?**
@@ -1321,7 +1323,7 @@ $chat->chat("Design a system", 'complex'); // → Uses Opus
 - Verify you're not hitting max_tokens limit
 
 **High costs?**
-- Review which model you're using (Opus is 25x more expensive than Haiku)
+- Review which model you're using (Opus 4.1 is roughly 60x more expensive per input token than Haiku 4.5)
 - Check token usage in responses
 - Implement request tracking and monitoring
 - Consider batching requests where possible
@@ -1337,7 +1339,7 @@ $chat->chat("Design a system", 'complex'); // → Uses Opus
 Congratulations! You've completed a comprehensive introduction to Claude's API. Here's what you've accomplished:
 
 - ✓ **Understood Claude's capabilities** and how it differs from traditional software
-- ✓ **Compared the three model variants** (Opus, Sonnet, Haiku) and their optimal use cases
+- ✓ **Compared the three model variants** (Opus 4.1, Sonnet 4.5, Haiku 4.5) and their optimal use cases
 - ✓ **Mastered the Messages API architecture** including request/response structure
 - ✓ **Learned Claude's pricing model** and implemented cost optimization strategies
 - ✓ **Built practical PHP classes** for model selection, response handling, and conversation management
@@ -1346,7 +1348,7 @@ Congratulations! You've completed a comprehensive introduction to Claude's API. 
 
 ### Key Concepts Learned
 
-- **Model Selection**: Opus for complex reasoning, Sonnet for general use, Haiku for high-volume tasks
+- **Model Selection**: Opus 4.1 for complex reasoning, Sonnet 4.5 for general use, Haiku 4.5 for high-volume tasks
 - **Stateless Architecture**: Each API call is independent; conversation history must be explicitly included
 - **Token Economics**: Output tokens cost 5x more than input tokens; optimization matters
 - **Context Management**: 200K token window enables large conversations but costs scale with usage
