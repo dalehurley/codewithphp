@@ -233,7 +233,7 @@ Comprehensive, runnable code samples created for chapters 00-09 of the Claude fo
 
 ### Common Dependencies:
 - `php: ^8.2`
-- `anthropic-ai/sdk: ^1.0`
+- `anthropics/anthropic-sdk-php: ^1.0`
 - `vlucas/phpdotenv: ^5.5`
 - `monolog/monolog: ^3.5`
 

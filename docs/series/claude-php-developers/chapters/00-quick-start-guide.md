@@ -41,9 +41,9 @@ This is a reference guide, not a traditional tutorial. For step-by-step learning
 Keep your API key secret! Never commit it to version control.
 :::
 
-### Install the PHP SDK
+### Install a Claude Client
 
-Create a new project directory and install the Anthropic PHP SDK:
+Create a new project directory and install the clients you need. We recommend installing both the beta SDK (for parity testing) and the community client (for richer helpers) so you can switch as necessary.
 
 **Unix/Mac/Linux:**
 ```bash
@@ -53,8 +53,8 @@ mkdir claude-quickstart && cd claude-quickstart
 # Initialize composer
 composer init --no-interaction
 
-# Install Anthropic SDK
-composer require anthropic-ai/sdk
+# Install both the beta SDK and the community client
+composer require anthropics/anthropic-sdk-php anthropic-php/client
 ```
 
 **Windows (PowerShell):**
@@ -66,9 +66,11 @@ Set-Location claude-quickstart
 # Initialize composer
 composer init --no-interaction
 
-# Install Anthropic SDK
-composer require anthropic-ai/sdk
+# Install both the beta SDK and the community client
+composer require anthropics/anthropic-sdk-php anthropic-php/client
 ```
+
+> ℹ️ **Capability gaps:** As of November 2025 the official SDK only wraps the Messages API and basic SSE helpers. For streaming shortcuts, Files API uploads, or Laravel bindings, stick with the community packages listed above—we'll point out when a sample depends on them.
 
 ### Your First Claude Request
 

@@ -28,9 +28,9 @@ prerequisites:
 
 ## Overview
 
-The official Anthropic PHP SDK is more than just a wrapper around HTTP requests—it's a robust, production-ready library with advanced features like middleware, testing utilities, custom transports, and comprehensive type safety. This chapter explores the SDK's architecture, advanced capabilities, and best practices for building enterprise-grade applications.
+The official Anthropic PHP SDK is currently labeled **beta**. It mirrors the Messages API contract and ships a solid factory + typed responses, but it does **not** yet expose Files, Batches, Realtime sockets, Agent Skills, or framework bindings. This chapter explores the SDK's architecture, documents its gaps, and shows how to pair it with community packages or lightweight extensions so you can still ship production-ready code today.
 
-By mastering the SDK's internals, you'll be able to customize behavior, implement sophisticated logging and monitoring, write comprehensive tests, and optimize performance for your specific use cases.
+By mastering the SDK's internals—*and* understanding where it falls short—you'll be able to customize behavior, implement sophisticated logging and monitoring, write comprehensive tests, and decide when to lean on the community ecosystem instead.
 
 ## What You'll Build
 
@@ -61,24 +61,27 @@ Before diving in, ensure you have:
 If you haven't already installed the official Anthropic PHP SDK:
 
 ```bash
-# Install the official Anthropic PHP SDK
-composer require anthropic-ai/sdk
+# Install the official Anthropic PHP SDK (beta)
+composer require anthropics/anthropic-sdk-php
 
 # For advanced middleware features, also install Guzzle HTTP client
 composer require guzzlehttp/guzzle
+
+# Recommended: add the community client for missing helpers
+composer require anthropic-php/client
 ```
 
 **Verify installation:**
 
 ```bash
 # Check that the package was installed correctly
-composer show anthropic-ai/sdk
+composer show anthropics/anthropic-sdk-php
 ```
 
-You should see package details including version, description, and dependencies. The SDK requires PHP 8.4+ and follows PSR standards for HTTP messaging.
+You should see package details including version, description, and dependencies. The SDK requires PHP 8.4+ and follows PSR standards for HTTP messaging, but it still carries a **beta** stability flag.
 
 ::: tip SDK vs Direct HTTP
-While you can make direct HTTP requests to the Claude API, the official SDK provides type safety, better error handling, and easier testing. For production applications, the SDK is strongly recommended.
+Reach for the beta SDK when you want first-party types or need to validate Anthropic's wire contract. Use the community client—or direct HTTP—when you need features that the SDK has not added yet (Files, Batches, realtime sockets, framework bindings, richer streaming ergonomics).
 :::
 
 ## Objectives
@@ -92,6 +95,21 @@ By completing this chapter, you will:
 - Write comprehensive tests using mockable SDK interfaces
 - Apply dependency injection patterns for maintainable code
 - Integrate the SDK into Laravel applications with service providers
+
+## Beta Limitations (November 2025)
+
+Before we dive in, be crystal clear about what the official SDK does **not** ship yet:
+
+1. **Messages-only surface** — There are no helpers for Files API uploads, document ingestion, Batch jobs, or the Realtime WebSocket API.
+2. **Manual streaming ergonomics** — You still need to wire SSE yourself (the SDK exposes low-level stream handlers but no UI-friendly helpers).
+3. **No framework bindings** — Laravel/Symfony integrations, config publishing, and queue bindings live entirely in community packages.
+4. **Tool schema helpers missing** — You'll craft tool definitions manually; there is no builder or validation layer today.
+5. **Limited retries and telemetry** — You must bring your own middleware for exponential backoff, logging, and metrics.
+
+We'll call out workarounds throughout the chapter. Most involve either:
+
+- Layering your own middleware/transport (covered below), or
+- Pairing the SDK with the community packages (`anthropic-php/client`, `anthropic-php/laravel`, `claudeai/symfony-bundle`) for the missing surface area.
 
 ## SDK Architecture Overview
 
@@ -1562,13 +1580,13 @@ Common issues and solutions when working with the SDK:
 
 **SDK not found after installation?**
 - Run `composer dump-autoload`
-- Verify `anthropic-ai/sdk` is in `composer.json` and `vendor/` directory
+- Verify `anthropics/anthropic-sdk-php` is in `composer.json` and `vendor/` directory
 - Check minimum PHP version (8.2+)
 
 **Type errors with response objects?**
 - Ensure strict types are enabled (`declare(strict_types=1)`)
 - Check you're using the correct response object properties
-- Review the SDK's type definitions in `vendor/anthropic-ai/sdk/src/Responses/`
+- Review the SDK's type definitions in `vendor/anthropics/anthropic-sdk-php/src/Responses/`
 
 **Custom HTTP client not working?**
 - Ensure your client implements `Psr\Http\Client\ClientInterface`
@@ -1582,7 +1600,7 @@ Common issues and solutions when working with the SDK:
 
 ## Wrap-up
 
-Congratulations! You've mastered the official Anthropic PHP SDK. Here's what you've accomplished:
+Congratulations! You've pressure-tested the beta Anthropic PHP SDK. Here's what you've accomplished:
 
 - ✓ **Understood SDK architecture** — Factory pattern, client, resources, and transports
 - ✓ **Configured advanced clients** — Custom HTTP clients, middleware, and headers
@@ -1592,8 +1610,9 @@ Congratulations! You've mastered the official Anthropic PHP SDK. Here's what you
 - ✓ **Implemented middleware** — Logging, metrics, and rate limiting patterns
 - ✓ **Handled errors gracefully** — Retry logic with exponential backoff
 - ✓ **Applied best practices** — Dependency injection and configuration management
+- ✓ **Mapped capability gaps** — Documented what still requires community packages or direct HTTP
 
-The SDK's architecture follows modern PHP standards, making it production-ready and highly customizable. You can now build enterprise-grade applications with sophisticated monitoring, caching, and error handling.
+The SDK's architecture follows modern PHP standards, but remember it's still **beta**. Keep using it to validate first-party behavior, then layer in community packages (or your own extensions) for Files, Batches, realtime features, and framework bindings.
 
 In the next chapter, you'll build a reusable Claude service class that wraps the SDK with your own business logic, making it even easier to integrate Claude into your applications.
 

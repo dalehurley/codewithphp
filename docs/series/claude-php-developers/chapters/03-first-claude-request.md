@@ -1,6 +1,6 @@
 ---
 title: "03: Your First Claude Request in PHP"
-description: "Master making Claude API calls with detailed examples using Guzzle HTTP client and the official SDK. Learn request structure, response parsing, error handling, and best practices."
+description: "Master making Claude API calls with detailed examples using Guzzle HTTP client, the beta official SDK, and the community client. Learn request structure, response parsing, error handling, and best practices."
 series: "claude-php-developers"
 chapter: 3
 order: 3
@@ -28,13 +28,14 @@ prerequisites:
 
 ## Overview
 
-Making your first successful API request is a milestone in any integration project. This chapter provides a comprehensive guide to making Claude API calls using both raw HTTP requests with Guzzle and the official Anthropic PHP SDK.
+Making your first successful API request is a milestone in any integration project. This chapter provides a comprehensive guide to making Claude API calls using raw HTTP requests with Guzzle, the beta official Anthropic PHP SDK, and the battle-tested community client most production teams ship today.
 
 You'll learn the complete anatomy of API requests and responses, how to properly structure your calls, parse responses effectively, handle errors gracefully, and follow best practices for production environments. By the end, you'll be confident making reliable, efficient Claude API calls.
 
 **What You'll Learn:**
 - Making API calls with Guzzle HTTP client
-- Using the official Anthropic PHP SDK
+- Using the official Anthropic PHP SDK (beta) and understanding its limits
+- Installing and calling the community client for production readiness
 - Request structure and parameters
 - Response parsing and data extraction
 - Comprehensive error handling
@@ -57,7 +58,7 @@ Before starting, ensure you have:
 
 By the end of this chapter, you will have created:
 
-- A working PHP application that makes Claude API requests using the official SDK
+- A working PHP application that makes Claude API requests using both the beta SDK and the community client
 - A reusable `ClaudeRequestBuilder` class for fluent request construction
 - A type-safe `ClaudeResponse` model wrapper with cost estimation
 - A `JsonExtractor` service for parsing structured data from responses
@@ -73,7 +74,7 @@ You'll have a complete understanding of request structure, response parsing, err
 By completing this chapter, you will:
 
 - **Understand** the complete structure of Claude API requests and responses
-- **Create** working examples using both the official SDK and direct HTTP calls
+- **Create** working examples using the beta SDK, the community client, and direct HTTP calls
 - **Implement** robust error handling with specific exception types
 - **Build** reusable service classes for common API patterns
 - **Master** response parsing including JSON extraction from markdown
@@ -82,23 +83,33 @@ By completing this chapter, you will:
 
 ## Installation
 
-### Installing the Anthropic SDK
+### Installing the Official SDK (Beta)
 
-The official SDK is the recommended way to interact with Claude:
+Anthropic's SDK for PHP is still labeled **beta**. Install it to align with the first-party API surface and to verify breaking changes quickly:
 
 ```bash
 # Install the official Anthropic PHP SDK
-composer require anthropic-ai/sdk
+composer require anthropics/anthropic-sdk-php
 ```
 
 **Verify installation:**
 
 ```bash
 # Check that the package was installed correctly
-composer show anthropic-ai/sdk
+composer show anthropics/anthropic-sdk-php
 ```
 
-You should see package details including version, description, and dependencies.
+You should see package details including version, description, and dependencies along with a `beta` stability flag. Stick with the latest tagged version; nightly builds change frequently.
+
+### Installing the Community Client (Production Default)
+
+Most production teams currently rely on the community-maintained client for richer helpers (streaming ergonomics, tool payload builders, retries, etc.). Install it alongside the official SDK:
+
+```bash
+composer require anthropic-php/client
+```
+
+The community package exports the same request payloads, so you can swap between clients simply by changing which factory you instantiate.
 
 ### Installing Guzzle (Optional)
 
@@ -115,7 +126,7 @@ Create a clean project structure:
 ```bash
 mkdir claude-requests && cd claude-requests
 composer init --no-interaction
-composer require anthropic-ai/sdk vlucas/phpdotenv
+composer require anthropics/anthropic-sdk-php anthropic-php/client vlucas/phpdotenv
 mkdir -p src/{Services,Models,Exceptions} examples tests
 ```
 
@@ -173,6 +184,10 @@ $response = $client->messages()->create([
 // Output response
 echo $response->content[0]->text . "\n";
 ```
+
+::: tip Switching Clients
+Swap `Anthropic::factory()` with the factory class exported by `anthropic-php/client` if you're using the community client. The payload structure shown here works for both packages.
+:::
 
 **How It Works:**
 
@@ -1794,7 +1809,7 @@ class CostTracker
 
 Congratulations! You've completed a comprehensive guide to making Claude API requests in PHP. Here's what you've accomplished:
 
-- ✓ **Made your first API call** using the official Anthropic PHP SDK
+- ✓ **Made your first API call** using both the beta SDK and the community client
 - ✓ **Built reusable components** including request builders, response models, and service wrappers
 - ✓ **Implemented robust error handling** with specific exception types and retry logic
 - ✓ **Mastered response parsing** including JSON extraction from markdown-formatted responses
@@ -1803,7 +1818,7 @@ Congratulations! You've completed a comprehensive guide to making Claude API req
 
 ### Key Concepts Learned
 
-- **SDK vs HTTP**: The official SDK provides type safety and convenience, while direct HTTP gives you more control
+- **SDK vs HTTP**: The beta SDK mirrors the REST contract; the community client adds ergonomics, while direct HTTP gives you full control
 - **Request Structure**: Messages must alternate between user and assistant roles, with optional system prompts
 - **Error Handling**: Different exception types require different handling strategies (retry vs fail-fast)
 - **Response Parsing**: Claude responses are structured objects with metadata, usage stats, and content blocks
@@ -1815,7 +1830,7 @@ You now have the foundation to build sophisticated Claude integrations. In the n
 
 ## Key Takeaways
 
-- ✓ **SDK is recommended** for most use cases over direct HTTP
+- ✓ **Pair the beta SDK with the community client** for most use cases, falling back to direct HTTP when you need total control
 - ✓ **Always handle errors** with specific exception types
 - ✓ **Implement retry logic** for transient failures
 - ✓ **Validate parameters** before making requests

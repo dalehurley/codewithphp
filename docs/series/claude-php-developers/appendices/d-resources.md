@@ -75,9 +75,9 @@ Curated resources to deepen your knowledge of Claude AI and PHP integration. Boo
 
 **[anthropic-sdk-php](https://github.com/anthropics/anthropic-sdk-php)**
 ```bash
-composer require anthropic-php/client
+composer require anthropics/anthropic-sdk-php
 ```
-- Official PHP SDK
+- Official PHP SDK (**beta**)
 - Type-safe client
 - Streaming support
 - Laravel integration examples
@@ -116,24 +116,29 @@ composer require anthropic-php/client
 
 ## PHP Libraries and SDKs
 
-### Official SDK
+### Official SDK (Beta)
 
-**[anthropic-php/client](https://github.com/anthropics/anthropic-sdk-php)**
+**[anthropic-sdk-php](https://github.com/anthropics/anthropic-sdk-php)**
 ```bash
-composer require anthropic-php/client
+composer require anthropics/anthropic-sdk-php
 ```
 
-**Features:**
-- Messages API
-- Streaming responses
-- Tool use (function calling)
-- Vision API support
-- Type-safe requests
-- PSR-18 HTTP client
+**What it ships today:**
+- Messages API parity (request/response types)
+- Basic streaming hooks (via PSR-7 streams)
+- Typed contracts for cost metadata, usage stats
+- PSR-18 friendly factory/builder
+
+**What it still lacks (Nov 2025):**
+- Files, Batches, Realtime sockets, Agent Skills
+- Tool schema builders or validators
+- Framework bindings (Laravel/Symfony)
+- Opinionated retries/circuit breakers
+
+Pair it with community packages (below) or your own middleware to cover those gaps.
 
 **Quick Start:**
 ```php
-# filename: sdk-quickstart.php
 use Anthropic\Anthropic;
 
 $client = Anthropic::factory()
@@ -148,6 +153,26 @@ $response = $client->messages()->create([
     ]
 ]);
 ```
+
+### Community Client Stack
+
+**[anthropic-php/client](https://github.com/anthropic-php/client)**
+```bash
+composer require anthropic-php/client
+```
+- Adds resilient streaming helpers, tool payload builders, retry middleware, and response helpers layered on top of the HTTP API.
+
+**[anthropic-php/laravel](https://github.com/anthropic-php/laravel)**
+```bash
+composer require anthropic-php/laravel
+```
+- Laravel service provider, config publishing, facade, queue bindings, horizon integration.
+
+**[claudeai/symfony-bundle](https://github.com/claudeai/symfony-bundle)**
+```bash
+composer require claudeai/symfony-bundle
+```
+- Symfony DI integration, profiler panels, HTTP client autowiring, Messenger support.
 
 ### Community Packages
 
