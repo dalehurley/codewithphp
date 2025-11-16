@@ -174,3 +174,7 @@ class DealFactory extends Factory
     }
 }
 
+
+
+
+

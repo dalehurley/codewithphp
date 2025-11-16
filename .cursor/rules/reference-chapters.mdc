@@ -1,0 +1,479 @@
+---
+globs: docs/**/*quick-start*.md, docs/**/*reference*.md, docs/**/*cheat-sheet*.md
+description: Guidelines for Reference Chapters - Quick starts, cheat sheets, and lookup guides
+---
+
+# Reference Chapter Guidelines
+
+Reference chapters serve a different purpose than traditional tutorial chapters. They are designed for **quick lookup, copy-paste solutions, and rapid problem-solving** rather than step-by-step learning.
+
+## What is a Reference Chapter?
+
+A reference chapter is a specialized chapter type that:
+- Provides **quick solutions** to common problems
+- Offers **copy-paste ready code** snippets
+- Uses a **non-linear structure** for easy scanning
+- Focuses on **practical application** over explanation
+- Serves as a **quick lookup guide** or cheat sheet
+
+## Types of Reference Chapters
+
+### 1. Quick Start Guides
+**Purpose**: Get developers productive in 5-15 minutes
+**Examples**: `00-quick-start-guide.md`, `00-getting-started.md`
+
+**Structure**:
+- Brief introduction ("Got 5 minutes?")
+- Clear note that this is a reference guide
+- "I Need To..." or "Common Tasks" sections
+- Decision trees or flowcharts
+- Copy-paste snippets with minimal explanation
+- Links to detailed chapters for deeper learning
+
+### 2. Cheat Sheets
+**Purpose**: Quick reference for syntax, patterns, or common operations
+**Examples**: Complexity cheat sheet, PHP functions reference
+
+**Structure**:
+- Organized by category or use case
+- Tables, lists, or compact code blocks
+- Minimal prose, maximum examples
+- Cross-references to detailed documentation
+
+### 3. Lookup Guides
+**Purpose**: Help developers find the right tool/algorithm for their problem
+**Examples**: Algorithm selection guide, framework comparison
+
+**Structure**:
+- Decision trees or flowcharts
+- Use case → solution mappings
+- When to use X vs Y comparisons
+- Performance considerations
+
+## Frontmatter for Reference Chapters
+
+Reference chapters use standard frontmatter with a note in `difficulty`:
+
+```yaml
+---
+title: "Quick Start Guide"
+description: "Get started in 5 minutes with practical solutions"
+series: "series-slug"
+chapter: 0
+order: 0
+difficulty: "beginner"  # Or appropriate difficulty
+prerequisites: []  # Usually empty for quick starts
+---
+```
+
+**Notes**:
+- Chapter number is often `0` or `00` to indicate it's a pre-learning resource
+- Title doesn't need "NN:" format for special chapters
+- Prerequisites are minimal or empty (reference guides should be self-contained)
+
+## Content Structure Exceptions
+
+Reference chapters **intentionally deviate** from standard tutorial structure:
+
+### ❌ Standard Sections NOT Required
+- Overview (use brief intro instead)
+- Prerequisites (state "No prerequisites required" if applicable)
+- What You'll Build (not building, just referencing)
+- Step-by-step sections (use task-based sections instead)
+- Exercises (reference guides are tools, not lessons)
+- Formal Wrap-up (use brief "Next Steps" instead)
+
+### ✅ Reference-Specific Sections RECOMMENDED
+- **Brief Introduction** (1-2 sentences + value proposition)
+- **Info Callout** explaining this is a reference guide
+- **"I Need To..."** or **"Common Tasks"** sections
+- **Decision Trees** (text or Mermaid diagrams)
+- **Quick Wins** or **Common Patterns**
+- **Copy-Paste Snippets** section
+- **FAQs** (specific to reference material)
+- **ChapterCheckbox** (for progress tracking)
+- **Next Steps** or CTA to detailed learning paths
+
+## Code Block Requirements
+
+All code blocks in reference chapters **MUST include filename comments**:
+
+```php
+<?php
+# filename: example-solution.php
+
+// Copy-paste ready code
+function quickSolution() {
+    // Implementation
+}
+```
+
+**Why**:
+- Makes snippets more portable
+- Helps readers organize their code
+- Follows authoring guidelines even in reference format
+- Provides context for adapted code
+
+## Formatting Guidelines
+
+### Headings
+
+Use descriptive, scannable headings:
+
+**✅ Good**:
+- `## 🎯 "I Need To..."`
+- `### Sort Data`
+- `### Find Shortest Path`
+- `## 💡 Quick Wins`
+
+**❌ Avoid**:
+- `## Step 1: Introduction` (too tutorial-like)
+- `## Section A` (not descriptive)
+
+### Organization
+
+**By Task/Problem**:
+```markdown
+## Common Tasks
+
+### Task 1: Sort Data
+Copy-paste solution...
+
+### Task 2: Search Arrays
+Copy-paste solution...
+```
+
+**By Use Case**:
+```markdown
+## By Use Case
+
+### E-Commerce
+Solutions for product recommendations...
+
+### APIs
+Rate limiting, caching...
+```
+
+**By Pattern**:
+```markdown
+## Common Patterns
+
+### Two Pointers Pattern
+When to use, implementation...
+
+### Sliding Window Pattern
+When to use, implementation...
+```
+
+## Visual Elements
+
+### Decision Trees
+
+Use text-based or Mermaid diagrams:
+
+````markdown
+```
+Need to process data?
+├─ Search for item?
+│  ├─ Data sorted? → Binary Search
+│  ├─ Many searches? → Hash Table
+│  └─ One search? → Linear Search
+└─ Sort data? → Use PHP sort()
+```
+````
+
+### Tables
+
+Use tables for comparisons or quick reference:
+
+```markdown
+| Algorithm | Complexity | Best For |
+|-----------|------------|----------|
+| Linear Search | O(n) | Unsorted data |
+| Binary Search | O(log n) | Sorted data |
+```
+
+### Callouts
+
+Use callouts strategically:
+
+```markdown
+::: tip Pro Tip
+Use built-in PHP functions 99% of the time. They're faster!
+:::
+
+::: warning
+Don't optimize prematurely. Profile first!
+:::
+
+::: info
+This is a reference guide. For step-by-step learning, see Chapter 1.
+:::
+```
+
+## Linking Strategy
+
+Reference chapters should:
+- Link to detailed chapters frequently
+- Use inline links: `→ [Full Guide](/path/to/chapter)`
+- Provide "Learning Paths" section at the end
+- Cross-reference related reference chapters
+
+**Example**:
+
+```markdown
+### Sort Data
+
+```php
+sort($array);  // Built-in - best choice
+```
+
+**→ [Full Sorting Guide](/series/php-algorithms/chapters/05-bubble-selection-sort/)**
+```
+
+## Progress Tracking
+
+**Always include ChapterCheckbox** at the end (before final CTA):
+
+```vue
+<ChapterCheckbox 
+  seriesId="series-slug"
+  chapterId="00"
+  label="I've reviewed the Quick Start Guide and know where to find solutions"
+/>
+```
+
+## Content Philosophy
+
+### What to Include
+- ✅ Solutions that work out of the box
+- ✅ Common use cases (80% of problems)
+- ✅ When to use X vs Y guidance
+- ✅ Performance tips and quick wins
+- ✅ Security considerations (briefly)
+- ✅ Framework-specific optimizations
+- ✅ Links to deeper learning
+
+### What to Minimize
+- ❌ Detailed explanations (save for tutorial chapters)
+- ❌ Theory and background (link to it instead)
+- ❌ Long code examples (keep them focused)
+- ❌ Multiple approaches (show the recommended one)
+
+### Balance
+
+Reference chapters should **solve problems quickly** while still being:
+- Technically accurate
+- Secure (no vulnerable code)
+- Modern (PHP 8.4 standards)
+- Practical (real-world examples)
+
+## Example Structure
+
+Here's a complete reference chapter structure:
+
+```markdown
+---
+title: "Quick Start Guide"
+description: "Get started in 5 minutes with practical solutions"
+series: "series-slug"
+chapter: 0
+order: 0
+difficulty: "beginner"
+prerequisites: []
+---
+
+![Quick Start Guide](/images/series/chapter-00-quick-start-hero-full.webp)
+
+# Quick Start Guide
+
+**Got 5 minutes?** This guide gets you from zero to productive fast.
+
+::: info
+This is a reference guide, not a traditional tutorial. For step-by-step learning, start with [Chapter 1](/series/series-slug/chapters/01-introduction/).
+:::
+
+## What You'll Learn
+
+By the end of this quick start, you will:
+- Solve common problems immediately
+- Know which tool to use for your use case
+- Find copy-paste ready solutions
+
+## Prerequisites
+
+**No prerequisites required** - dive right in!
+
+## 🎯 "I Need To..."
+
+### Task 1: Common Problem
+
+```php
+<?php
+# filename: solution.php
+
+// Copy-paste ready solution
+```
+
+**→ [Full Guide](/series/series-slug/chapters/05-detailed-chapter/)**
+
+### Task 2: Another Problem
+
+```php
+<?php
+# filename: another-solution.php
+
+// Another solution
+```
+
+---
+
+## 🚦 Decision Tree
+
+```
+Problem?
+├─ Case A → Solution X
+├─ Case B → Solution Y
+└─ Case C → Solution Z
+```
+
+---
+
+## 💡 Quick Wins
+
+### 1. Win Title
+
+```php
+<?php
+# filename: quick-win.php
+
+// Implementation
+```
+
+---
+
+## 📖 Learning Paths
+
+**If you have 1 hour:**
+1. Read this guide
+2. Chapter X
+3. Chapter Y
+
+**For deep learning:**
+Start with Chapter 1
+
+---
+
+## ❓ FAQs
+
+**Q: When should I use this?**
+A: Brief answer with link to details.
+
+---
+
+<ChapterCheckbox 
+  seriesId="series-slug"
+  chapterId="00"
+  label="I've reviewed the Quick Start Guide"
+/>
+
+---
+
+<div class="series-cta">
+  <h2>Ready for More?</h2>
+  <p>Continue with the full series.</p>
+  <a href="/series/series-slug/chapters/01-introduction" class="cta-button">Start Course →</a>
+</div>
+```
+
+## Validation Checklist
+
+Before publishing a reference chapter:
+
+**Content**:
+- [ ] Brief introduction with clear value proposition
+- [ ] Info callout explaining it's a reference guide
+- [ ] All code blocks have filename comments
+- [ ] Solutions are copy-paste ready and tested
+- [ ] Links to detailed chapters provided
+- [ ] ChapterCheckbox included at end
+- [ ] Next steps or learning paths provided
+
+**Code Quality**:
+- [ ] All examples use PHP 8.4 syntax
+- [ ] No security vulnerabilities
+- [ ] Code follows PSR-12 standards
+- [ ] Examples are complete (not partial)
+- [ ] Filename comments present
+
+**Structure**:
+- [ ] Task-based or use-case organization
+- [ ] Easy to scan (good headings)
+- [ ] Visual aids (tables, diagrams) included
+- [ ] FAQs address common questions
+- [ ] Cross-references to related content
+
+**Technical**:
+- [ ] Hero image exists and path is correct
+- [ ] All internal links work
+- [ ] No VitePress build errors
+- [ ] Displays correctly in browser
+
+## When to Create a Reference Chapter
+
+Create a reference chapter when:
+- ✅ You want to provide quick solutions for developers in a hurry
+- ✅ The content is better suited for lookup than linear reading
+- ✅ You're creating a companion to a detailed tutorial series
+- ✅ You want to provide a "cheat sheet" or quick reference
+- ✅ The chapter should be chapter 0 or 00 (pre-learning)
+
+**Don't** create a reference chapter when:
+- ❌ The content requires step-by-step explanation
+- ❌ You're teaching foundational concepts
+- ❌ The material needs exercises for retention
+- ❌ Linear learning progression is important
+
+## Examples in the Wild
+
+**Good Reference Chapters**:
+- `00-quick-start-guide.md` (PHP Algorithms) — Problem-solving focused
+- Complexity cheat sheet appendices — Quick lookup tables
+- Algorithm selection guides — Decision tree format
+
+**These Should Be Tutorial Chapters**:
+- First chapters teaching foundational concepts
+- Build-along project chapters
+- Chapters requiring exercises for mastery
+
+## Integration with Tutorial Series
+
+Reference chapters complement tutorial chapters:
+
+**Reference Chapter** (`00-quick-start-guide.md`):
+- "Need to sort? Use `sort()`. → See Chapter 5 for details"
+
+**Tutorial Chapter** (`05-sorting-algorithms.md`):
+- Step-by-step explanation of sorting algorithms
+- Exercises to practice implementation
+- Deep understanding of when/why
+
+**The Relationship**:
+```
+Quick Start (Reference) → Solves problem immediately
+         ↓
+Tutorial Chapter → Builds deep understanding
+         ↓
+Advanced Chapter → Mastery and optimization
+```
+
+## Summary
+
+Reference chapters are **problem-solving tools**, not learning journeys. They:
+- Get developers productive fast
+- Provide copy-paste solutions
+- Link to detailed explanations
+- Use task/use-case organization
+- Skip tutorial structure intentionally
+
+**When in doubt**: If someone needs a solution *now*, make it a reference chapter. If they need to *learn*, make it a tutorial chapter.

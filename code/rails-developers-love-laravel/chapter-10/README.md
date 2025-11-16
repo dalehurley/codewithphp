@@ -373,3 +373,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 **Created as part of the "Rails Developers Love Laravel" tutorial series**
 
+
+
+
+

@@ -6,7 +6,7 @@ chapter: 4
 order: 4
 difficulty: "Intermediate"
 prerequisites:
-  - "PHP 8.2+ installed"
+  - "PHP 8.4+ installed"
   - "Completion of Chapters 01-03"
   - "Understanding of arrays and objects in PHP"
 ---
@@ -47,11 +47,49 @@ This chapter provides comprehensive coverage of message formatting, building sta
 Before starting, ensure you have:
 
 - ✓ **Completed Chapters 01-03**
-- ✓ **PHP 8.2+** with type declarations knowledge
+- ✓ **PHP 8.4+** with type declarations knowledge
 - ✓ **Anthropic API key** configured
 - ✓ **Understanding of sessions** or state management
 
-## Message Structure Fundamentals
+**Verify your setup:**
+
+```bash
+php --version  # Should show PHP 8.4+
+composer --version  # Should be installed
+```
+
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- A `MessageValidator` class for validating and sanitizing individual messages
+- A `ConversationValidator` class for validating entire conversation arrays
+- A `BasicConversationManager` class for managing multi-turn conversations
+- An `AdvancedConversationManager` with system prompts and metadata tracking
+- A `TokenEstimator` service for context window budgeting
+- Multiple conversation trimming strategies (sliding window, token-based, summarization)
+- Three storage implementations: Session, File, and Database-based conversation persistence
+- A `PersistentConversationManager` that maintains conversations across sessions
+- Advanced conversation patterns including multi-persona and branching conversations
+- Production-ready conversation management systems with context window handling
+
+You'll understand how to structure messages, validate conversation integrity, manage conversation state, handle context windows efficiently, and build stateful chat applications that maintain context across multiple interactions.
+
+## Objectives
+
+By completing this chapter, you will:
+
+- **Understand** message structure, content types, and role alternation rules
+- **Validate** messages and conversations before sending to catch errors early
+- **Sanitize** message content for consistency and safety
+- **Build** conversation managers for multi-turn interactions
+- **Implement** context window management strategies
+- **Create** persistent conversation storage systems
+- **Master** conversation trimming and summarization techniques
+- **Apply** advanced patterns like branching and multi-persona conversations
+- **Design** production-ready conversation systems with proper state management
+
+## Message Structure Fundamentals (~10 min)
 
 ### Anatomy of a Message
 
@@ -61,9 +99,30 @@ Every message in a Claude conversation has two required fields:
 <?php
 $message = [
     'role' => 'user',        // Required: 'user' or 'assistant'
-    'content' => 'Hello!'    // Required: string content
+    'content' => 'Hello!'    // Required: string or array of content blocks
 ];
 ```
+
+**Content Structure:**
+
+The `content` field can be either:
+
+1. **Simple string** (most common):
+   ```php
+   'content' => 'Hello, Claude!'
+   ```
+
+2. **Array of content blocks** (for multimodal content):
+   ```php
+   'content' => [
+       ['type' => 'text', 'text' => 'What is in this image?'],
+       ['type' => 'image', 'source' => ['type' => 'base64', 'data' => '...']]
+   ]
+   ```
+
+::: info Content Blocks
+For this chapter, we focus on simple string content. Multimodal content with images and other content blocks is covered in [Chapter 13: Vision - Working with Images](/series/claude-php-developers/chapters/13-vision-images).
+:::
 
 ### Valid Message Roles
 
@@ -186,7 +245,357 @@ $alsoCorrect = [
 ];
 ```
 
-## Building Multi-Turn Conversations
+### Message Validation
+
+Before sending messages to Claude, it's good practice to validate their structure. This catches errors early and provides clear feedback:
+
+```php
+<?php
+# filename: src/Validation/MessageValidator.php
+declare(strict_types=1);
+
+namespace App\Validation;
+
+class MessageValidator
+{
+    /**
+     * Validate a single message structure
+     * 
+     * @throws \InvalidArgumentException if message is invalid
+     */
+    public static function validateMessage(array $message): void
+    {
+        // Check required fields
+        if (!isset($message['role'])) {
+            throw new \InvalidArgumentException('Message must have a "role" field');
+        }
+
+        if (!isset($message['content'])) {
+            throw new \InvalidArgumentException('Message must have a "content" field');
+        }
+
+        // Validate role
+        if (!in_array($message['role'], ['user', 'assistant'], true)) {
+            throw new \InvalidArgumentException(
+                'Message role must be "user" or "assistant", got: ' . $message['role']
+            );
+        }
+
+        // Validate content type
+        if (!is_string($message['content']) && !is_array($message['content'])) {
+            throw new \InvalidArgumentException(
+                'Message content must be string or array, got: ' . gettype($message['content'])
+            );
+        }
+
+        // Validate string content length
+        if (is_string($message['content'])) {
+            if (mb_strlen($message['content']) === 0) {
+                throw new \InvalidArgumentException('Message content cannot be empty');
+            }
+
+            // Warn about very long content (not an error, but worth noting)
+            if (mb_strlen($message['content']) > 1000000) {
+                trigger_error(
+                    'Message content is very long (' . mb_strlen($message['content']) . ' chars). ' .
+                    'Consider splitting or using content blocks.',
+                    E_USER_WARNING
+                );
+            }
+        }
+
+        // Validate content blocks array structure (if array)
+        if (is_array($message['content'])) {
+            self::validateContentBlocks($message['content']);
+        }
+    }
+
+    /**
+     * Validate content blocks array structure
+     */
+    private static function validateContentBlocks(array $blocks): void
+    {
+        if (empty($blocks)) {
+            throw new \InvalidArgumentException('Content blocks array cannot be empty');
+        }
+
+        foreach ($blocks as $index => $block) {
+            if (!is_array($block)) {
+                throw new \InvalidArgumentException(
+                    "Content block at index {$index} must be an array"
+                );
+            }
+
+            if (!isset($block['type'])) {
+                throw new \InvalidArgumentException(
+                    "Content block at index {$index} must have a 'type' field"
+                );
+            }
+
+            // Validate text block
+            if ($block['type'] === 'text') {
+                if (!isset($block['text']) || !is_string($block['text'])) {
+                    throw new \InvalidArgumentException(
+                        "Text content block at index {$index} must have a 'text' field (string)"
+                    );
+                }
+            }
+
+            // Note: Image block validation would go here, but covered in Chapter 13
+        }
+    }
+
+    /**
+     * Sanitize message content
+     * 
+     * Ensures content is safe and properly formatted
+     */
+    public static function sanitizeContent(string $content): string
+    {
+        // Trim whitespace
+        $content = trim($content);
+
+        // Normalize line endings
+        $content = str_replace(["\r\n", "\r"], "\n", $content);
+
+        // Remove excessive blank lines (more than 2 consecutive)
+        $content = preg_replace('/\n{3,}/', "\n\n", $content);
+
+        // Ensure content is not empty after sanitization
+        if (mb_strlen($content) === 0) {
+            throw new \InvalidArgumentException('Content is empty after sanitization');
+        }
+
+        return $content;
+    }
+
+    /**
+     * Validate and sanitize a message
+     * 
+     * Returns sanitized message array
+     */
+    public static function validateAndSanitize(array $message): array
+    {
+        self::validateMessage($message);
+
+        // Sanitize string content
+        if (is_string($message['content'])) {
+            $message['content'] = self::sanitizeContent($message['content']);
+        }
+
+        return $message;
+    }
+}
+```
+
+**Usage:**
+
+```php
+<?php
+# filename: examples/01-message-validation.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use App\Validation\MessageValidator;
+
+// ✓ Valid message
+$validMessage = [
+    'role' => 'user',
+    'content' => 'Hello, Claude!'
+];
+
+MessageValidator::validateMessage($validMessage);
+echo "Message is valid!\n";
+
+// ✗ Invalid: Missing role
+try {
+    MessageValidator::validateMessage(['content' => 'Hello']);
+} catch (\InvalidArgumentException $e) {
+    echo "Error: " . $e->getMessage() . "\n";
+}
+
+// ✗ Invalid: Empty content
+try {
+    MessageValidator::validateMessage(['role' => 'user', 'content' => '']);
+} catch (\InvalidArgumentException $e) {
+    echo "Error: " . $e->getMessage() . "\n";
+}
+
+// Sanitize content
+$dirtyContent = "  Hello\n\n\n\nWorld  ";
+$cleanContent = MessageValidator::sanitizeContent($dirtyContent);
+echo "Sanitized: '{$cleanContent}'\n";
+
+// Validate and sanitize
+$message = [
+    'role' => 'user',
+    'content' => "  Multiple\n\n\n\nLines  "
+];
+
+$cleanMessage = MessageValidator::validateAndSanitize($message);
+echo "Cleaned message: " . json_encode($cleanMessage) . "\n";
+```
+
+### Conversation Validation
+
+Validate entire conversation arrays to ensure proper structure:
+
+```php
+<?php
+# filename: src/Validation/ConversationValidator.php
+declare(strict_types=1);
+
+namespace App\Validation;
+
+class ConversationValidator
+{
+    /**
+     * Validate an entire conversation array
+     * 
+     * @throws \InvalidArgumentException if conversation is invalid
+     */
+    public static function validateConversation(array $messages): void
+    {
+        if (empty($messages)) {
+            throw new \InvalidArgumentException('Conversation cannot be empty');
+        }
+
+        // Validate first message
+        $firstMessage = $messages[0];
+        if ($firstMessage['role'] !== 'user') {
+            throw new \InvalidArgumentException(
+                'Conversation must start with a user message, got: ' . $firstMessage['role']
+            );
+        }
+
+        // Validate each message
+        foreach ($messages as $index => $message) {
+            try {
+                MessageValidator::validateMessage($message);
+            } catch (\InvalidArgumentException $e) {
+                throw new \InvalidArgumentException(
+                    "Invalid message at index {$index}: " . $e->getMessage(),
+                    0,
+                    $e
+                );
+            }
+        }
+
+        // Validate alternation
+        self::validateAlternation($messages);
+    }
+
+    /**
+     * Validate that messages alternate between user and assistant
+     */
+    private static function validateAlternation(array $messages): void
+    {
+        $previousRole = null;
+
+        foreach ($messages as $index => $message) {
+            $currentRole = $message['role'];
+
+            // Check for consecutive same-role messages
+            if ($previousRole !== null && $previousRole === $currentRole) {
+                throw new \InvalidArgumentException(
+                    "Messages must alternate roles. Found consecutive '{$currentRole}' " .
+                    "messages at indices " . ($index - 1) . " and {$index}"
+                );
+            }
+
+            $previousRole = $currentRole;
+        }
+    }
+
+    /**
+     * Validate and sanitize entire conversation
+     * 
+     * Returns sanitized conversation array
+     */
+    public static function validateAndSanitize(array $messages): array
+    {
+        self::validateConversation($messages);
+
+        $sanitized = [];
+        foreach ($messages as $message) {
+            $sanitized[] = MessageValidator::validateAndSanitize($message);
+        }
+
+        return $sanitized;
+    }
+
+    /**
+     * Check if conversation is valid without throwing exceptions
+     * 
+     * Returns [isValid: bool, errors: string[]]
+     */
+    public static function checkConversation(array $messages): array
+    {
+        $errors = [];
+
+        try {
+            self::validateConversation($messages);
+            return ['isValid' => true, 'errors' => []];
+        } catch (\InvalidArgumentException $e) {
+            return ['isValid' => false, 'errors' => [$e->getMessage()]];
+        }
+    }
+}
+```
+
+**Usage:**
+
+```php
+<?php
+# filename: examples/02-conversation-validation.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use App\Validation\ConversationValidator;
+
+// ✓ Valid conversation
+$validConversation = [
+    ['role' => 'user', 'content' => 'Hello!'],
+    ['role' => 'assistant', 'content' => 'Hi there!'],
+    ['role' => 'user', 'content' => 'How are you?'],
+];
+
+ConversationValidator::validateConversation($validConversation);
+echo "Conversation is valid!\n";
+
+// ✗ Invalid: Starts with assistant
+try {
+    $invalid = [
+        ['role' => 'assistant', 'content' => 'Hello!'],
+    ];
+    ConversationValidator::validateConversation($invalid);
+} catch (\InvalidArgumentException $e) {
+    echo "Error: " . $e->getMessage() . "\n";
+}
+
+// ✗ Invalid: Consecutive user messages
+try {
+    $invalid = [
+        ['role' => 'user', 'content' => 'First'],
+        ['role' => 'user', 'content' => 'Second'],
+    ];
+    ConversationValidator::validateConversation($invalid);
+} catch (\InvalidArgumentException $e) {
+    echo "Error: " . $e->getMessage() . "\n";
+}
+
+// Check without exceptions
+$result = ConversationValidator::checkConversation($validConversation);
+if ($result['isValid']) {
+    echo "Conversation is valid!\n";
+} else {
+    echo "Errors: " . implode(', ', $result['errors']) . "\n";
+}
+```
+
+## Building Multi-Turn Conversations (~15 min)
 
 ### Basic Conversation Manager
 
@@ -211,11 +620,17 @@ class BasicConversationManager
 
     public function sendMessage(string $userMessage): string
     {
-        // Add user message
-        $this->messages[] = [
+        // Validate and sanitize user message
+        $message = \App\Validation\MessageValidator::validateAndSanitize([
             'role' => 'user',
             'content' => $userMessage
-        ];
+        ]);
+
+        // Add user message
+        $this->messages[] = $message;
+
+        // Validate conversation before sending
+        \App\Validation\ConversationValidator::validateConversation($this->messages);
 
         // Get response
         $response = $this->client->messages()->create([
@@ -462,7 +877,7 @@ file_put_contents('conversation.json', json_encode($export, JSON_PRETTY_PRINT));
 echo "Conversation exported to conversation.json\n";
 ```
 
-## Context Window Management
+## Context Window Management (~10 min)
 
 Claude has a 200,000 token context window, but managing it efficiently is crucial for cost and performance.
 
@@ -781,7 +1196,7 @@ class SummarizingManager
 }
 ```
 
-## Conversation Persistence
+## Conversation Persistence (~10 min)
 
 ### Session-Based Storage
 
@@ -1171,7 +1586,7 @@ echo "Claude: {$reply3}\n";
 // Claude remembers: name is Sarah, learning PHP
 ```
 
-## Advanced Conversation Patterns
+## Advanced Conversation Patterns (~5 min)
 
 ### Multi-Persona Conversations
 
@@ -1346,12 +1761,17 @@ class BranchingManager
 
 ## Exercises
 
-### Exercise 1: Conversation Analytics
+### Exercise 1: Conversation Analytics (~15 min)
 
-Build a system to track conversation metrics:
+**Goal**: Build a system to track conversation metrics and provide insights.
+
+Create a `ConversationAnalytics` class that analyzes conversation data:
 
 ```php
 <?php
+# filename: exercises/ConversationAnalytics.php
+declare(strict_types=1);
+
 class ConversationAnalytics
 {
     public function analyze(array $messages): array
@@ -1360,52 +1780,147 @@ class ConversationAnalytics
         // TODO: Calculate average message length
         // TODO: Count user vs assistant messages
         // TODO: Estimate total tokens
-        // TODO: Calculate conversation duration
+        // TODO: Calculate conversation duration (if timestamps available)
         // TODO: Return analytics array
     }
 }
 ```
 
-### Exercise 2: Conversation Exporter
+**Requirements:**
+- Count total messages in the conversation
+- Calculate average message length (characters)
+- Separate counts for user vs assistant messages
+- Estimate total tokens using the 4-character approximation
+- Return a structured array with all metrics
 
-Create a conversation export system:
+**Validation**: Test with a sample conversation:
+
+```php
+$messages = [
+    ['role' => 'user', 'content' => 'Hello'],
+    ['role' => 'assistant', 'content' => 'Hi there!'],
+    ['role' => 'user', 'content' => 'How are you?'],
+];
+
+$analytics = new ConversationAnalytics();
+$result = $analytics->analyze($messages);
+
+// Expected structure:
+// [
+//     'total_messages' => 3,
+//     'user_messages' => 2,
+//     'assistant_messages' => 1,
+//     'average_length' => 8.67,
+//     'estimated_tokens' => 7,
+// ]
+```
+
+### Exercise 2: Conversation Exporter (~20 min)
+
+**Goal**: Create a conversation export system for multiple formats.
+
+Build a `ConversationExporter` class that formats conversations:
 
 ```php
 <?php
+# filename: exercises/ConversationExporter.php
+declare(strict_types=1);
+
 class ConversationExporter
 {
     public function exportToMarkdown(array $messages): string
     {
         // TODO: Format messages as markdown
-        // TODO: Add metadata header
+        // TODO: Add metadata header with timestamp
+        // TODO: Use proper markdown formatting
         // TODO: Return formatted string
     }
 
     public function exportToHtml(array $messages): string
     {
-        // TODO: Create HTML document
-        // TODO: Style conversation nicely
+        // TODO: Create HTML document with DOCTYPE
+        // TODO: Style conversation with CSS
+        // TODO: Format user/assistant messages differently
         // TODO: Return HTML string
     }
 }
 ```
 
-### Exercise 3: Context-Aware Summarizer
+**Requirements:**
+- Markdown export should include a header with date/time
+- Format user messages with "**User:**" prefix
+- Format assistant messages with "**Assistant:**" prefix
+- HTML export should include inline CSS for styling
+- Both exports should preserve message order
 
-Build intelligent conversation summarization:
+**Validation**: Export a sample conversation and verify formatting:
+
+```php
+$messages = [
+    ['role' => 'user', 'content' => 'What is PHP?'],
+    ['role' => 'assistant', 'content' => 'PHP is a server-side language.'],
+];
+
+$exporter = new ConversationExporter();
+$markdown = $exporter->exportToMarkdown($messages);
+$html = $exporter->exportToHtml($messages);
+
+// Verify markdown contains proper formatting
+// Verify HTML is valid and styled
+```
+
+### Exercise 3: Context-Aware Summarizer (~25 min)
+
+**Goal**: Build intelligent conversation summarization that preserves key context.
+
+Create a `ContextAwareSummarizer` that uses Claude to summarize conversations:
 
 ```php
 <?php
+# filename: exercises/ContextAwareSummarizer.php
+declare(strict_types=1);
+
+use Anthropic\Anthropic;
+
 class ContextAwareSummarizer
 {
+    public function __construct(
+        private readonly Anthropic $client
+    ) {}
+
     public function summarize(array $messages, int $targetLength = 500): string
     {
-        // TODO: Extract key topics
-        // TODO: Identify important facts
-        // TODO: Generate concise summary
-        // TODO: Preserve critical context
+        // TODO: Extract key topics from messages
+        // TODO: Identify important facts and context
+        // TODO: Use Claude to generate concise summary
+        // TODO: Preserve critical context (names, decisions, etc.)
+        // TODO: Return summary string
     }
 }
+```
+
+**Requirements:**
+- Use Claude Haiku model for cost efficiency
+- Preserve important facts (names, dates, decisions)
+- Keep summary under target length
+- Maintain conversation flow context
+- Handle empty or short conversations gracefully
+
+**Validation**: Test with a longer conversation:
+
+```php
+$messages = [
+    ['role' => 'user', 'content' => 'My name is Sarah.'],
+    ['role' => 'assistant', 'content' => 'Nice to meet you, Sarah!'],
+    ['role' => 'user', 'content' => 'I am learning PHP.'],
+    // ... more messages
+];
+
+$summarizer = new ContextAwareSummarizer($client);
+$summary = $summarizer->summarize($messages, 300);
+
+// Verify summary includes "Sarah" and "learning PHP"
+// Verify summary is under 300 characters
 ```
 
 <details>
@@ -1441,10 +1956,28 @@ class ContextAwareSummarizer
 - Increase timeout for large contexts
 - Consider conversation summarization
 
+## Wrap-up
+
+Congratulations! You've completed a comprehensive exploration of messages and conversations with Claude. Here's what you've accomplished:
+
+- ✓ **Mastered message structure** - Understanding role alternation and message formatting
+- ✓ **Built conversation managers** - Created basic and advanced managers with system prompts
+- ✓ **Implemented context management** - Learned token estimation and trimming strategies
+- ✓ **Created persistence systems** - Built session, file, and database storage solutions
+- ✓ **Applied advanced patterns** - Explored multi-persona and branching conversations
+- ✓ **Designed production systems** - Combined all concepts into production-ready solutions
+
+You now have the knowledge to build sophisticated, stateful chat applications that maintain context, manage conversation history efficiently, and scale to handle long-running conversations. These skills are essential for creating engaging AI-powered applications that feel natural and contextually aware.
+
+In the next chapter, you'll learn prompt engineering techniques to get the most out of Claude's capabilities and create more effective interactions.
+
 ## Key Takeaways
 
 - ✓ **Messages must alternate** between user and assistant roles
 - ✓ **Conversations are stateless** - you must maintain history
+- ✓ **Content can be string or array** - simple strings for text, arrays for multimodal content
+- ✓ **Validate messages before sending** - catch errors early with validation helpers
+- ✓ **Sanitize content** - normalize whitespace and formatting for consistency
 - ✓ **Context window is large** (200K tokens) but has limits
 - ✓ **Trim strategically** to manage costs and performance
 - ✓ **Persist conversations** for multi-session continuity
@@ -1463,6 +1996,15 @@ class ContextAwareSummarizer
 ---
 
 Continue to [Chapter 05: Prompt Engineering Basics](/series/claude-php-developers/chapters/05-prompt-engineering-basics) to learn effective prompting techniques.
+
+## Further Reading
+
+- [Anthropic Messages API Documentation](https://docs.claude.com/en/api/messages) — Official API reference for message structure and parameters
+- [Anthropic Context Window Guide](https://docs.claude.com/en/docs/build-with-claude/context-windows) — Understanding context limits and best practices
+- [PHP Sessions Documentation](https://www.php.net/manual/en/book.session.php) — PHP session management for conversation persistence
+- [PDO Database Access](https://www.php.net/manual/en/book.pdo.php) — PHP Data Objects for database-backed conversation storage
+- [Chapter 03: Your First Claude Request](/series/claude-php-developers/chapters/03-first-claude-request) — Review API request fundamentals
+- [Chapter 05: Prompt Engineering Basics](/series/claude-php-developers/chapters/05-prompt-engineering-basics) — Learn effective prompting techniques
 
 ## 💻 Code Samples
 

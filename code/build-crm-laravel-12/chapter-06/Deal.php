@@ -51,3 +51,7 @@ class Deal extends Model
     }
 }
 
+
+
+
+

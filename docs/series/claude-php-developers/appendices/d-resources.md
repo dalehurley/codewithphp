@@ -41,7 +41,7 @@ Curated resources to deepen your knowledge of Claude AI and PHP integration. Boo
 
 ### Documentation
 
-**[Anthropic API Documentation](https://docs.anthropic.com)**
+**[Anthropic API Documentation](https://docs.claude.com)**
 - Complete API reference
 - Getting started guides
 - Best practices
@@ -59,7 +59,7 @@ Curated resources to deepen your knowledge of Claude AI and PHP integration. Boo
 - Best practice patterns
 - Community contributions
 
-**[Prompt Engineering Guide](https://docs.anthropic.com/claude/docs/prompt-engineering)**
+**[Prompt Engineering Guide](https://docs.claude.com/en/docs/prompt-engineering)**
 - Prompting techniques
 - Few-shot learning
 - Chain-of-thought prompting
@@ -106,7 +106,7 @@ composer require anthropic-php/client
 - Technical deep dives
 - Interpretability research
 
-**[Release Notes](https://docs.anthropic.com/claude/docs/release-notes)**
+**[Release Notes](https://docs.claude.com/en/docs/release-notes)**
 - API changes
 - New features
 - Deprecations
@@ -133,6 +133,7 @@ composer require anthropic-php/client
 
 **Quick Start:**
 ```php
+# filename: sdk-quickstart.php
 use Anthropic\Anthropic;
 
 $client = Anthropic::factory()
@@ -318,31 +319,31 @@ composer require sentry/sentry-laravel
 
 ### Anthropic Guides
 
-**[Introduction to Claude](https://docs.anthropic.com/claude/docs/intro-to-claude)**
+**[Introduction to Claude](https://docs.claude.com/en/docs/intro)**
 - Core concepts
 - Model capabilities
 - Use cases
 - Limitations
 
-**[Prompt Engineering](https://docs.anthropic.com/claude/docs/prompt-engineering)**
+**[Prompt Engineering](https://docs.claude.com/en/docs/prompt-engineering)**
 - Writing effective prompts
 - Few-shot examples
 - System prompts
 - Advanced techniques
 
-**[Tool Use Guide](https://docs.anthropic.com/claude/docs/tool-use)**
+**[Tool Use Guide](https://docs.claude.com/en/docs/agents-and-tools/tool-use)**
 - Function calling basics
 - Defining tools
 - Handling tool calls
 - Best practices
 
-**[Vision Guide](https://docs.anthropic.com/claude/docs/vision)**
+**[Vision Guide](https://docs.claude.com/en/docs/capabilities/vision)**
 - Image analysis
 - Supported formats
 - Best practices
 - Limitations
 
-**[Streaming Guide](https://docs.anthropic.com/claude/docs/streaming)**
+**[Streaming Guide](https://docs.claude.com/en/docs/capabilities/streaming-messages)**
 - Server-Sent Events
 - Handling stream events
 - Error handling
@@ -781,7 +782,7 @@ composer create-project anthropic/laravel-claude-starter
 |-------|---------|----------|------|
 | claude-opus-4-20250514 | 200K | Complex reasoning | $$$ |
 | claude-sonnet-4-20250514 | 200K | Balanced tasks | $$ |
-| claude-3-5-haiku-20241022 | 200K | Simple, fast | $ |
+| claude-haiku-4-20250514 | 200K | Simple, fast | $ |
 
 ### Token Limits
 
@@ -797,7 +798,7 @@ composer create-project anthropic/laravel-claude-starter
 
 | Resource | URL |
 |----------|-----|
-| API Docs | [docs.anthropic.com](https://docs.anthropic.com) |
+| API Docs | [docs.claude.com](https://docs.claude.com) |
 | Console | [console.anthropic.com](https://console.anthropic.com) |
 | Status | [status.anthropic.com](https://status.anthropic.com) |
 | Pricing | [anthropic.com/pricing](https://www.anthropic.com/pricing) |
@@ -905,8 +906,9 @@ This resource guide is a living document. The Claude API and PHP ecosystem evolv
 ---
 
 ::: tip Quick Navigation
-- **[← Appendix C: Error Codes](/series/claude-php-developers/appendices/c-error-codes)** - Troubleshooting guide
 - **[← Appendix A: API Reference](/series/claude-php-developers/appendices/a-api-reference)** - Complete API reference
+- **[← Appendix B: Prompting Patterns](/series/claude-php-developers/appendices/b-prompting-patterns)** - Prompt templates
+- **[← Appendix C: Error Codes](/series/claude-php-developers/appendices/c-error-codes)** - Troubleshooting guide
 - **[Back to Series](/series/claude-php-developers)** - Return to main series
 :::
 
@@ -920,4 +922,4 @@ Found a great resource not listed here? We welcome contributions!
 - **[Submit a PR](https://github.com/dalehurley/codewithphp/pulls)** to add it directly
 - **[Discuss on Discord](https://discord.gg/anthropic)** with the community
 
-*Last updated: November 2024 • Maintained by the Code with PHP team*
+_Last updated: November 2024 • Maintained by the Code with PHP team_

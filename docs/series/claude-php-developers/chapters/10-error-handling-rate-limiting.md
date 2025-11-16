@@ -44,7 +44,57 @@ Before starting, ensure you understand:
 
 **Estimated Time**: 45-60 minutes
 
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- An `ErrorParser` class that categorizes Claude API errors and determines retry strategies
+- An `ExponentialBackoff` retry mechanism with configurable delays and jitter
+- An `AdaptiveBackoff` system that adjusts parameters based on error patterns
+- A `CircuitBreaker` implementation with three states (closed, open, half-open) to prevent cascading failures
+- A `RateLimiter` class that enforces request limits using sliding window algorithms
+- A `TokenBucketRateLimiter` for smoother rate limiting with token-based consumption
+- A complete `ResilientClaudeClient` that combines all protection mechanisms
+- A `FallbackStrategy` system with multiple degradation layers (cache, simpler models, defaults, queuing)
+- An `ErrorMonitor` for tracking error patterns and triggering alerts
+- HTTP client configuration with proper timeout handling and request cancellation
+- An `IdempotentRequest` system to prevent duplicate processing during retries
+- Streaming error handling for mid-stream failures and partial responses
+- Payload size error handling with automatic request reduction
+- Health check and readiness probe systems
+- Priority-based error handling for different request types
+- Error budget tracking to monitor SLO compliance
+- Comprehensive test suites for error handling scenarios (unit and integration tests)
+- Production-ready error handling systems that keep applications running during API failures
+
+## Objectives
+
+By the end of this chapter, you will:
+
+- Understand all Claude API error types and their HTTP status codes
+- Distinguish between retryable and non-retryable errors
+- Implement exponential backoff with jitter for intelligent retry logic
+- Build circuit breakers to prevent cascading failures in distributed systems
+- Apply rate limiting strategies to respect API quotas and prevent throttling
+- Create graceful degradation systems with multiple fallback layers
+- Monitor error patterns and implement alerting for production systems
+- Configure HTTP client timeouts and handle request cancellation
+- Implement idempotency keys to prevent duplicate processing during retries
+- Handle streaming response errors and recover from partial responses
+- Manage payload size errors with automatic request reduction strategies
+- Implement health checks and readiness probes for API availability
+- Apply priority-based error handling for different request criticality levels
+- Track error budgets and monitor service level objectives (SLOs)
+- Build a complete resilient client wrapper that handles all error scenarios
+- Test error handling with unit tests and integration tests against real API errors
+
 ## Understanding Claude API Errors
+
+::: info Related Chapter
+
+For scaling error handling patterns across multiple servers and high-traffic scenarios, see [Chapter 38: Scaling Applications](/series/claude-php-developers/chapters/38-scaling-applications) which covers distributed circuit breakers, queue-based retries, and concurrency management.
+
+:::
 
 ### Error Types and HTTP Status Codes
 
@@ -182,6 +232,12 @@ declare(strict_types=1);
 
 namespace CodeWithPHP\Claude;
 
+/**
+ * ErrorParser - Parses Claude API errors and determines retry strategies
+ * 
+ * Requires ClaudeErrorReference class (defined in examples/01-error-types.php)
+ * Both classes should be in the same namespace for this to work.
+ */
 class ErrorParser
 {
     /**
@@ -199,9 +255,17 @@ class ErrorParser
 
         // Extract HTTP status code
         if (method_exists($exception, 'getCode')) {
-            $errorData['status_code'] = $exception->getCode();
-            $errorData['type'] = ClaudeErrorReference::getType($exception->getCode());
-            $errorData['retryable'] = ClaudeErrorReference::shouldRetry($exception->getCode());
+            $statusCode = $exception->getCode();
+            $errorData['status_code'] = $statusCode;
+            
+            // Use ClaudeErrorReference if available
+            if (class_exists(ClaudeErrorReference::class)) {
+                $errorData['type'] = ClaudeErrorReference::getType($statusCode);
+                $errorData['retryable'] = ClaudeErrorReference::shouldRetry($statusCode);
+            } else {
+                // Fallback: determine retryable based on status code
+                $errorData['retryable'] = in_array($statusCode, [429, 500, 503, 529], true);
+            }
         }
 
         // Parse error message for details
@@ -486,6 +550,12 @@ class AdaptiveBackoff extends ExponentialBackoff
 
 ## Circuit Breaker Pattern
 
+::: tip Distributed Circuit Breakers
+
+In multi-instance deployments, circuit breaker state should be shared across instances using Redis or a database. Otherwise, each instance maintains its own circuit state, which can lead to inconsistent behavior. Consider using a distributed circuit breaker implementation for production systems with multiple servers.
+
+:::
+
 ### Circuit Breaker Implementation
 
 ```php
@@ -682,6 +752,12 @@ try {
 ```
 
 ## Rate Limiting Strategies
+
+::: tip Distributed Rate Limiting
+
+For applications running multiple instances (load-balanced servers), use distributed rate limiting with Redis or a database. The in-memory `RateLimiter` shown here only works for single-instance applications. For multi-instance deployments, coordinate rate limits across instances to prevent exceeding API quotas.
+
+:::
 
 ### Rate Limiter Implementation
 
@@ -935,6 +1011,235 @@ $result = $bucket->execute(
     operation: fn() => $client->messages()->create([...]),
     cost: 5.0  // This request costs 5 tokens
 );
+```
+
+## Request Timeout and Cancellation
+
+### Configuring HTTP Client Timeouts
+
+Proper timeout configuration prevents hanging requests and improves application responsiveness.
+
+```php
+<?php
+# filename: src/HttpClientConfig.php
+declare(strict_types=1);
+
+namespace CodeWithPHP\Claude;
+
+use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
+
+class HttpClientConfig
+{
+    /**
+     * Create HTTP client with appropriate timeouts for Claude API
+     */
+    public static function createClient(string $apiKey): Client
+    {
+        return new Client([
+            'base_uri' => 'https://api.anthropic.com',
+            'headers' => [
+                'x-api-key' => $apiKey,
+                'anthropic-version' => '2023-06-01',
+                'content-type' => 'application/json',
+            ],
+            RequestOptions::TIMEOUT => 60,           // Total request timeout (seconds)
+            RequestOptions::CONNECT_TIMEOUT => 10,    // Connection timeout (seconds)
+            RequestOptions::READ_TIMEOUT => 60,        // Read timeout (seconds)
+            RequestOptions::HTTP_ERRORS => true,      // Throw exceptions on HTTP errors
+        ]);
+    }
+
+    /**
+     * Create client with extended timeout for long-running requests
+     */
+    public static function createLongRunningClient(string $apiKey): Client
+    {
+        return new Client([
+            'base_uri' => 'https://api.anthropic.com',
+            'headers' => [
+                'x-api-key' => $apiKey,
+                'anthropic-version' => '2023-06-01',
+                'content-type' => 'application/json',
+            ],
+            RequestOptions::TIMEOUT => 300,          // 5 minutes for long requests
+            RequestOptions::CONNECT_TIMEOUT => 10,
+            RequestOptions::READ_TIMEOUT => 300,
+        ]);
+    }
+}
+
+// Usage
+$client = HttpClientConfig::createClient($apiKey);
+
+// For requests that might take longer (e.g., large context windows)
+$longClient = HttpClientConfig::createLongRunningClient($apiKey);
+```
+
+### Handling Timeout Errors
+
+```php
+<?php
+# filename: examples/timeout-handling.php
+declare(strict_types=1);
+
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
+
+try {
+    $response = $client->messages()->create([...]);
+} catch (ConnectException $e) {
+    // Connection timeout - network issue
+    error_log("Connection timeout: " . $e->getMessage());
+    // Retry with exponential backoff
+    
+} catch (RequestException $e) {
+    if ($e->hasResponse()) {
+        $statusCode = $e->getResponse()->getStatusCode();
+        // Handle HTTP errors
+    } else {
+        // Request timeout or other error
+        error_log("Request timeout: " . $e->getMessage());
+    }
+}
+```
+
+### Request Cancellation
+
+For long-running requests, implement cancellation to free resources:
+
+```php
+<?php
+# filename: src/CancellableRequest.php
+declare(strict_types=1);
+
+namespace CodeWithPHP\Claude;
+
+class CancellableRequest
+{
+    private bool $cancelled = false;
+    private ?int $requestId = null;
+
+    public function cancel(): void
+    {
+        $this->cancelled = true;
+        error_log("Request {$this->requestId} cancelled");
+    }
+
+    public function isCancelled(): bool
+    {
+        return $this->cancelled;
+    }
+
+    /**
+     * Execute operation with cancellation support
+     */
+    public function execute(callable $operation): mixed
+    {
+        $this->requestId = uniqid('req_', true);
+
+        if ($this->cancelled) {
+            throw new \RuntimeException("Request {$this->requestId} was cancelled");
+        }
+
+        return $operation();
+    }
+}
+
+// Usage with timeout
+$cancellable = new CancellableRequest();
+
+// Set timeout to cancel after 30 seconds
+$timeout = new \React\Promise\Timer\TimeoutException("Request timeout");
+$promise = $operation();
+$promise->timeout(30)->then(
+    fn($result) => $result,
+    fn($error) => $cancellable->cancel()
+);
+```
+
+## Idempotency and Request Deduplication
+
+### Ensuring Idempotent Retries
+
+When retrying requests, ensure they're idempotent to prevent duplicate processing:
+
+```php
+<?php
+# filename: src/IdempotentRequest.php
+declare(strict_types=1);
+
+namespace CodeWithPHP\Claude;
+
+class IdempotentRequest
+{
+    /**
+     * Generate idempotency key for request
+     */
+    public static function generateKey(array $request): string
+    {
+        // Create deterministic key from request content
+        $keyData = [
+            'model' => $request['model'] ?? '',
+            'messages' => $request['messages'] ?? [],
+            'max_tokens' => $request['max_tokens'] ?? 1024,
+        ];
+        
+        return hash('sha256', json_encode($keyData, JSON_SORT_KEYS));
+    }
+
+    /**
+     * Check if request was already processed
+     */
+    public static function isDuplicate(string $idempotencyKey, \Redis $cache): bool
+    {
+        return $cache->exists("idempotency:{$idempotencyKey}") === 1;
+    }
+
+    /**
+     * Mark request as processed
+     */
+    public static function markProcessed(string $idempotencyKey, mixed $result, \Redis $cache, int $ttl = 3600): void
+    {
+        $cache->setex(
+            "idempotency:{$idempotencyKey}",
+            $ttl,
+            json_encode($result)
+        );
+    }
+
+    /**
+     * Get cached result if duplicate
+     */
+    public static function getCachedResult(string $idempotencyKey, \Redis $cache): ?array
+    {
+        $cached = $cache->get("idempotency:{$idempotencyKey}");
+        return $cached ? json_decode($cached, true) : null;
+    }
+}
+
+// Usage with retry logic
+$idempotencyKey = IdempotentRequest::generateKey($request);
+
+// Check for duplicate
+if ($cached = IdempotentRequest::getCachedResult($idempotencyKey, $redis)) {
+    return $cached; // Return cached result
+}
+
+// Execute request
+try {
+    $result = $backoff->execute(function() use ($client, $request) {
+        return $client->messages()->create($request);
+    });
+
+    // Cache result
+    IdempotentRequest::markProcessed($idempotencyKey, $result, $redis);
+    return $result;
+
+} catch (\Exception $e) {
+    // On failure, don't cache - allow retry
+    throw $e;
+}
 ```
 
 ## Resilient Client Implementation
@@ -1254,6 +1559,812 @@ try {
 }
 ```
 
+## Testing Error Handling
+
+### Mocking Errors for Testing
+
+Test your error handling logic with simulated failures:
+
+```php
+<?php
+# filename: tests/ErrorHandlingTest.php
+declare(strict_types=1);
+
+namespace Tests;
+
+use CodeWithPHP\Claude\ResilientClaudeClient;
+use CodeWithPHP\Claude\ExponentialBackoff;
+use GuzzleHttp\Exception\ServerException;
+use GuzzleHttp\Psr7\Response;
+
+class ErrorHandlingTest
+{
+    /**
+     * Test exponential backoff with simulated errors
+     */
+    public function testExponentialBackoff(): void
+    {
+        $attempts = 0;
+        $backoff = new ExponentialBackoff(maxRetries: 3, baseDelayMs: 100);
+
+        try {
+            $result = $backoff->execute(function() use (&$attempts) {
+                $attempts++;
+                
+                // Simulate transient error for first 2 attempts
+                if ($attempts < 3) {
+                    throw new ServerException(
+                        'Service temporarily unavailable',
+                        new \GuzzleHttp\Psr7\Request('POST', '/v1/messages'),
+                        new Response(503)
+                    );
+                }
+                
+                return ['success' => true];
+            });
+
+            $this->assertEquals(3, $attempts);
+            $this->assertTrue($result['success']);
+
+        } catch (\Exception $e) {
+            $this->fail("Should have succeeded after retries");
+        }
+    }
+
+    /**
+     * Test circuit breaker opens after threshold
+     */
+    public function testCircuitBreakerOpens(): void
+    {
+        $circuitBreaker = new CircuitBreaker(
+            failureThreshold: 3,
+            timeout: 60
+        );
+
+        // Simulate failures
+        for ($i = 0; $i < 3; $i++) {
+            try {
+                $circuitBreaker->execute(function() {
+                    throw new \RuntimeException("Simulated failure");
+                });
+            } catch (\RuntimeException $e) {
+                // Expected
+            }
+        }
+
+        // Circuit should be open
+        $this->assertEquals(CircuitState::OPEN, $circuitBreaker->getState());
+
+        // Next request should fail immediately
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage("Circuit breaker");
+        
+        $circuitBreaker->execute(function() {
+            return ['success' => true];
+        });
+    }
+
+    /**
+     * Test rate limiter prevents exceeding limits
+     */
+    public function testRateLimiter(): void
+    {
+        $rateLimiter = new RateLimiter(
+            maxRequests: 2,
+            windowSeconds: 60
+        );
+
+        // First two requests should succeed
+        $this->assertTrue($rateLimiter->allow());
+        $this->assertTrue($rateLimiter->allow());
+
+        // Third should be blocked
+        $this->assertFalse($rateLimiter->allow());
+
+        // After window expires, should allow again
+        // (In real test, you'd mock time or wait)
+    }
+}
+```
+
+### Integration Testing with Real API
+
+Test against real API errors (use test API key):
+
+```php
+<?php
+# filename: tests/IntegrationTest.php
+declare(strict_types=1);
+
+namespace Tests;
+
+use CodeWithPHP\Claude\ResilientClaudeClient;
+
+class IntegrationTest
+{
+    /**
+     * Test handling of real rate limit errors
+     */
+    public function testRateLimitHandling(): void
+    {
+        $client = new ResilientClaudeClient(
+            client: $this->createClient(),
+            options: [
+                'max_retries' => 3,
+                'max_requests' => 1, // Very low limit to trigger rate limit
+                'window_seconds' => 60,
+            ]
+        );
+
+        // First request should succeed
+        $response1 = $client->createMessage([
+            'model' => 'claude-haiku-4-20250514',
+            'max_tokens' => 10,
+            'messages' => [['role' => 'user', 'content' => 'Hi']]
+        ]);
+
+        $this->assertNotNull($response1);
+
+        // Second request should be rate limited
+        // Should either wait or use fallback
+        try {
+            $response2 = $client->createMessage([...]);
+            // If it succeeds, rate limiter worked correctly
+        } catch (\Exception $e) {
+            // If it fails, should be handled gracefully
+            $this->assertStringContainsString('rate limit', strtolower($e->getMessage()));
+        }
+    }
+}
+```
+
+## Streaming Response Error Handling
+
+### Handling Mid-Stream Failures
+
+Streaming responses can fail partway through. Handle partial responses and connection drops gracefully:
+
+```php
+<?php
+# filename: src/StreamingErrorHandler.php
+declare(strict_types=1);
+
+namespace CodeWithPHP\Claude;
+
+class StreamingErrorHandler
+{
+    private string $partialContent = '';
+    private bool $streamComplete = false;
+    private ?\Throwable $lastError = null;
+
+    /**
+     * Handle streaming events with error recovery
+     */
+    public function handleStreamEvent(string $event, array $data, callable $onChunk, callable $onError): void
+    {
+        try {
+            switch ($event) {
+                case 'content_block_delta':
+                    $this->partialContent .= $data['delta']['text'] ?? '';
+                    $onChunk($data['delta']['text'] ?? '');
+                    break;
+
+                case 'message_stop':
+                    $this->streamComplete = true;
+                    break;
+
+                case 'error':
+                    $this->lastError = new \RuntimeException($data['error']['message'] ?? 'Stream error');
+                    $onError($this->lastError, $this->partialContent);
+                    break;
+            }
+        } catch (\Throwable $e) {
+            $this->lastError = $e;
+            $onError($e, $this->partialContent);
+        }
+    }
+
+    /**
+     * Get partial content if stream failed
+     */
+    public function getPartialContent(): string
+    {
+        return $this->partialContent;
+    }
+
+    /**
+     * Check if stream completed successfully
+     */
+    public function isComplete(): bool
+    {
+        return $this->streamComplete && $this->lastError === null;
+    }
+
+    /**
+     * Retry failed stream with fallback
+     */
+    public function retryWithFallback(callable $streamOperation, callable $fallback): mixed
+    {
+        try {
+            return $streamOperation();
+        } catch (\Throwable $e) {
+            // If we have partial content, use it with fallback
+            if (!empty($this->partialContent)) {
+                error_log("Stream failed with partial content: " . strlen($this->partialContent) . " chars");
+                return $fallback($this->partialContent, $e);
+            }
+            throw $e;
+        }
+    }
+}
+
+// Usage
+$handler = new StreamingErrorHandler();
+
+try {
+    $stream = $client->messages()->stream([...]);
+    
+    foreach ($stream as $event) {
+        $handler->handleStreamEvent(
+            event: $event->type,
+            data: $event->toArray(),
+            onChunk: fn($text) => echo $text,
+            onError: fn($error, $partial) => {
+                error_log("Stream error: " . $error->getMessage());
+                // Save partial content for recovery
+                savePartialResponse($partial);
+            }
+        );
+    }
+} catch (\Exception $e) {
+    // Handle stream failure
+    $partial = $handler->getPartialContent();
+    if ($partial) {
+        // Use partial content or retry
+        $result = $handler->retryWithFallback(
+            streamOperation: fn() => retryStream(),
+            fallback: fn($partial, $error) => completePartialResponse($partial)
+        );
+    }
+}
+```
+
+### Connection Drop Recovery
+
+Handle network interruptions during streaming:
+
+```php
+<?php
+# filename: src/StreamRecovery.php
+declare(strict_types=1);
+
+namespace CodeWithPHP\Claude;
+
+class StreamRecovery
+{
+    /**
+     * Resume stream from last received chunk
+     */
+    public function resumeStream(string $lastChunk, array $originalRequest): mixed
+    {
+        // Store context for resumption
+        $context = [
+            'last_chunk' => $lastChunk,
+            'original_request' => $originalRequest,
+            'timestamp' => time(),
+        ];
+
+        // Retry with context hint
+        $retryRequest = $originalRequest;
+        $retryRequest['messages'][] = [
+            'role' => 'assistant',
+            'content' => $lastChunk . '[RESUMED]'
+        ];
+
+        return $this->retryStream($retryRequest);
+    }
+
+    private function retryStream(array $request): mixed
+    {
+        // Implement retry logic with exponential backoff
+        $backoff = new ExponentialBackoff(maxRetries: 3);
+        return $backoff->execute(fn() => $client->messages()->stream($request));
+    }
+}
+```
+
+## Payload Size and Quota Errors
+
+### Handling 413 Payload Too Large
+
+When requests exceed size limits, implement automatic chunking or summarization:
+
+```php
+<?php
+# filename: src/PayloadSizeHandler.php
+declare(strict_types=1);
+
+namespace CodeWithPHP\Claude;
+
+class PayloadSizeHandler
+{
+    private const MAX_PAYLOAD_SIZE = 100000; // bytes
+    private const MAX_MESSAGES = 100;
+
+    /**
+     * Handle payload size errors with automatic reduction
+     */
+    public function handleOversizedRequest(array $request, \Throwable $error): array
+    {
+        if ($error->getCode() !== 413) {
+            throw $error;
+        }
+
+        // Strategy 1: Truncate messages
+        if (count($request['messages']) > self::MAX_MESSAGES) {
+            $request['messages'] = array_slice(
+                $request['messages'],
+                -self::MAX_MESSAGES
+            );
+            return $request;
+        }
+
+        // Strategy 2: Summarize old messages
+        $request['messages'] = $this->summarizeOldMessages($request['messages']);
+
+        // Strategy 3: Reduce max_tokens
+        if (isset($request['max_tokens']) && $request['max_tokens'] > 4096) {
+            $request['max_tokens'] = 4096;
+        }
+
+        return $request;
+    }
+
+    /**
+     * Summarize older messages to reduce payload
+     */
+    private function summarizeOldMessages(array $messages): array
+    {
+        if (count($messages) <= 10) {
+            return $messages;
+        }
+
+        // Keep recent messages, summarize older ones
+        $recent = array_slice($messages, -10);
+        $old = array_slice($messages, 0, -10);
+
+        $summary = $this->createSummary($old);
+        
+        return array_merge(
+            [['role' => 'system', 'content' => "Previous conversation summary: {$summary}"]],
+            $recent
+        );
+    }
+
+    private function createSummary(array $messages): string
+    {
+        // Use Claude to summarize (or simple truncation)
+        $content = implode("\n", array_column($messages, 'content'));
+        return substr($content, 0, 500) . '...';
+    }
+}
+
+// Usage
+try {
+    $response = $client->messages()->create($request);
+} catch (\Exception $e) {
+    if ($e->getCode() === 413) {
+        $handler = new PayloadSizeHandler();
+        $reducedRequest = $handler->handleOversizedRequest($request, $e);
+        $response = $client->messages()->create($reducedRequest);
+    } else {
+        throw $e;
+    }
+}
+```
+
+## Health Checks and Readiness Probes
+
+### API Health Monitoring
+
+Check Claude API health before making requests:
+
+```php
+<?php
+# filename: src/HealthChecker.php
+declare(strict_types=1);
+
+namespace CodeWithPHP\Claude;
+
+class HealthChecker
+{
+    private ?int $lastCheck = null;
+    private ?bool $lastHealthStatus = null;
+    private int $checkInterval = 60; // seconds
+
+    /**
+     * Check if Claude API is healthy
+     */
+    public function isHealthy(ClientContract $client): bool
+    {
+        // Cache health check result
+        if ($this->lastCheck && (time() - $this->lastCheck) < $this->checkInterval) {
+            return $this->lastHealthStatus ?? false;
+        }
+
+        try {
+            // Lightweight health check request
+            $response = $client->messages()->create([
+                'model' => 'claude-haiku-4-20250514',
+                'max_tokens' => 10,
+                'messages' => [['role' => 'user', 'content' => 'ping']]
+            ]);
+
+            $this->lastHealthStatus = true;
+            $this->lastCheck = time();
+            return true;
+
+        } catch (\Exception $e) {
+            $this->lastHealthStatus = false;
+            $this->lastCheck = time();
+            return false;
+        }
+    }
+
+    /**
+     * Wait for API to become healthy
+     */
+    public function waitForHealthy(ClientContract $client, int $timeout = 300): bool
+    {
+        $start = time();
+        
+        while ((time() - $start) < $timeout) {
+            if ($this->isHealthy($client)) {
+                return true;
+            }
+            sleep(5); // Check every 5 seconds
+        }
+        
+        return false;
+    }
+}
+
+// Usage
+$healthChecker = new HealthChecker();
+
+if (!$healthChecker->isHealthy($client)) {
+    // Use fallback or wait
+    if ($healthChecker->waitForHealthy($client, timeout: 60)) {
+        // API recovered, proceed
+    } else {
+        // Use fallback service
+        return $fallbackService->handle($request);
+    }
+}
+```
+
+## Request Prioritization During Errors
+
+### Priority-Based Error Handling
+
+Handle errors differently based on request priority:
+
+```php
+<?php
+# filename: src/PriorityErrorHandler.php
+declare(strict_types=1);
+
+namespace CodeWithPHP\Claude;
+
+enum RequestPriority: string
+{
+    case CRITICAL = 'critical';  // User-facing, must succeed
+    case HIGH = 'high';          // Important but can wait
+    case NORMAL = 'normal';      // Standard requests
+    case LOW = 'low';            // Background tasks
+}
+
+class PriorityErrorHandler
+{
+    /**
+     * Handle error based on request priority
+     */
+    public function handleError(\Throwable $error, RequestPriority $priority): mixed
+    {
+        return match($priority) {
+            RequestPriority::CRITICAL => $this->handleCriticalError($error),
+            RequestPriority::HIGH => $this->handleHighPriorityError($error),
+            RequestPriority::NORMAL => $this->handleNormalError($error),
+            RequestPriority::LOW => $this->handleLowPriorityError($error),
+        };
+    }
+
+    private function handleCriticalError(\Throwable $error): mixed
+    {
+        // Critical: Aggressive retries, multiple fallbacks
+        $backoff = new ExponentialBackoff(maxRetries: 10, baseDelayMs: 500);
+        
+        return $backoff->execute(function() use ($error) {
+            // Try primary, then fallback models, then cache
+            return $this->tryWithAllFallbacks();
+        });
+    }
+
+    private function handleHighPriorityError(\Throwable $error): mixed
+    {
+        // High: Standard retries with fallback
+        $backoff = new ExponentialBackoff(maxRetries: 5);
+        return $backoff->execute(fn() => $this->tryWithFallback());
+    }
+
+    private function handleNormalError(\Throwable $error): mixed
+    {
+        // Normal: Limited retries
+        $backoff = new ExponentialBackoff(maxRetries: 3);
+        try {
+            return $backoff->execute(fn() => $this->retry());
+        } catch (\Exception $e) {
+            return $this->useDefaultResponse();
+        }
+    }
+
+    private function handleLowPriorityError(\Throwable $error): mixed
+    {
+        // Low: Queue for later, don't retry now
+        $this->queueForLater($error);
+        return ['queued' => true, 'message' => 'Request queued for processing'];
+    }
+}
+
+// Usage
+$handler = new PriorityErrorHandler();
+
+try {
+    $response = $client->messages()->create($request);
+} catch (\Exception $e) {
+    $response = $handler->handleError($e, RequestPriority::CRITICAL);
+}
+```
+
+## Error Budget and SLO Tracking
+
+### Tracking Error Rates Against SLAs
+
+Monitor error rates to ensure service level objectives are met:
+
+```php
+<?php
+# filename: src/ErrorBudgetTracker.php
+declare(strict_types=1);
+
+namespace CodeWithPHP\Claude;
+
+class ErrorBudgetTracker
+{
+    private const SLO_ERROR_RATE = 0.01; // 1% error rate target
+    private const BUDGET_WINDOW = 3600; // 1 hour window
+
+    /**
+     * Track error and check if budget is exhausted
+     */
+    public function trackError(\Throwable $error, \Redis $redis): bool
+    {
+        $now = time();
+        $windowStart = $now - self::BUDGET_WINDOW;
+        
+        // Increment error count
+        $errorKey = "error_budget:errors:{$windowStart}";
+        $redis->incr($errorKey);
+        $redis->expire($errorKey, self::BUDGET_WINDOW);
+
+        // Increment total requests
+        $totalKey = "error_budget:total:{$windowStart}";
+        $total = $redis->incr($totalKey);
+        $redis->expire($totalKey, self::BUDGET_WINDOW);
+
+        // Calculate error rate
+        $errors = (int) $redis->get($errorKey);
+        $errorRate = $total > 0 ? $errors / $total : 0;
+
+        // Check if budget exhausted
+        if ($errorRate > self::SLO_ERROR_RATE) {
+            $this->alertBudgetExhausted($errorRate);
+            return false; // Budget exhausted
+        }
+
+        return true; // Within budget
+    }
+
+    /**
+     * Get current error budget status
+     */
+    public function getBudgetStatus(\Redis $redis): array
+    {
+        $now = time();
+        $windowStart = $now - self::BUDGET_WINDOW;
+        
+        $errors = (int) ($redis->get("error_budget:errors:{$windowStart}") ?: 0);
+        $total = (int) ($redis->get("error_budget:total:{$windowStart}") ?: 0);
+        $errorRate = $total > 0 ? $errors / $total : 0;
+        
+        return [
+            'error_rate' => round($errorRate * 100, 2) . '%',
+            'slo_target' => round(self::SLO_ERROR_RATE * 100, 2) . '%',
+            'within_budget' => $errorRate <= self::SLO_ERROR_RATE,
+            'errors' => $errors,
+            'total_requests' => $total,
+        ];
+    }
+
+    private function alertBudgetExhausted(float $errorRate): void
+    {
+        error_log("ERROR BUDGET EXHAUSTED: Error rate {$errorRate} exceeds SLO");
+        // Send alert to monitoring system
+    }
+}
+
+// Usage
+$tracker = new ErrorBudgetTracker();
+
+try {
+    $response = $client->messages()->create($request);
+    // Track success
+} catch (\Exception $e) {
+    // Track error
+    $withinBudget = $tracker->trackError($e, $redis);
+    
+    if (!$withinBudget) {
+        // Budget exhausted - use more aggressive fallbacks
+        return $this->useAggressiveFallback();
+    }
+    
+    throw $e;
+}
+```
+
+## Error Logging Best Practices
+
+### Structured Error Logging
+
+Proper error logging is essential for debugging production issues. Use structured logging with context:
+
+```php
+<?php
+# filename: src/ErrorLogger.php
+declare(strict_types=1);
+
+namespace CodeWithPHP\Claude;
+
+use Psr\Log\LoggerInterface;
+
+class ErrorLogger
+{
+    public function __construct(
+        private LoggerInterface $logger
+    ) {}
+
+    /**
+     * Log error with full context
+     */
+    public function logError(\Throwable $error, array $context = []): void
+    {
+        $this->logger->error('Claude API error', [
+            'error_type' => get_class($error),
+            'error_message' => $error->getMessage(),
+            'error_code' => $error->getCode(),
+            'file' => $error->getFile(),
+            'line' => $error->getLine(),
+            'trace' => $error->getTraceAsString(),
+            'context' => array_merge([
+                'timestamp' => time(),
+                'request_id' => $context['request_id'] ?? uniqid('req_', true),
+            ], $context),
+        ]);
+    }
+
+    /**
+     * Log retry attempt
+     */
+    public function logRetry(int $attempt, int $maxAttempts, \Throwable $error, int $delayMs): void
+    {
+        $this->logger->warning('Retrying Claude API request', [
+            'attempt' => $attempt,
+            'max_attempts' => $maxAttempts,
+            'delay_ms' => $delayMs,
+            'error' => $error->getMessage(),
+            'error_code' => $error->getCode(),
+        ]);
+    }
+
+    /**
+     * Log circuit breaker state change
+     */
+    public function logCircuitBreakerState(string $name, string $oldState, string $newState, array $stats = []): void
+    {
+        $this->logger->info('Circuit breaker state changed', [
+            'circuit_name' => $name,
+            'old_state' => $oldState,
+            'new_state' => $newState,
+            'stats' => $stats,
+        ]);
+    }
+
+    /**
+     * Log rate limit hit
+     */
+    public function logRateLimit(string $identifier, int $retryAfter): void
+    {
+        $this->logger->warning('Rate limit exceeded', [
+            'identifier' => $identifier,
+            'retry_after_seconds' => $retryAfter,
+        ]);
+    }
+}
+
+// Usage with PSR-3 logger (Monolog, etc.)
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
+$logger = new Logger('claude_api');
+$logger->pushHandler(new StreamHandler('php://stderr', Logger::WARNING));
+
+$errorLogger = new ErrorLogger($logger);
+
+try {
+    $result = $client->messages()->create([...]);
+} catch (\Exception $e) {
+    $errorLogger->logError($e, [
+        'model' => 'claude-sonnet-4-20250514',
+        'user_id' => 123,
+        'request_size' => strlen(json_encode($request)),
+    ]);
+    throw $e;
+}
+```
+
+### Log Levels and When to Use Them
+
+```php
+// DEBUG: Detailed information for debugging
+$logger->debug('Retry delay calculated', ['delay_ms' => $delay]);
+
+// INFO: General informational messages
+$logger->info('Circuit breaker closed', ['circuit' => 'claude-api']);
+
+// WARNING: Something unexpected but handled
+$logger->warning('Rate limit approaching', ['utilization' => '90%']);
+
+// ERROR: Error occurred but application continues
+$logger->error('API request failed', ['error' => $e->getMessage()]);
+
+// CRITICAL: Critical error requiring immediate attention
+$logger->critical('Circuit breaker opened', ['failures' => 10]);
+```
+
+### Sensitive Data Protection
+
+Never log sensitive information:
+
+```php
+// ❌ BAD - Logs API key
+$logger->error('Request failed', ['api_key' => $apiKey]);
+
+// ✅ GOOD - Redact sensitive data
+$logger->error('Request failed', [
+    'api_key' => substr($apiKey, 0, 8) . '...',
+    'headers' => $this->redactHeaders($headers),
+]);
+
+private function redactHeaders(array $headers): array
+{
+    $redacted = $headers;
+    if (isset($redacted['x-api-key'])) {
+        $redacted['x-api-key'] = substr($redacted['x-api-key'], 0, 8) . '...';
+    }
+    return $redacted;
+}
+```
+
 ## Monitoring and Alerting
 
 ### Error Monitor
@@ -1405,6 +2516,152 @@ $stats = $monitor->getStats();
 print_r($stats);
 ```
 
+## Troubleshooting
+
+### Error: "Circuit breaker is OPEN. Service temporarily unavailable."
+
+**Symptom**: All requests fail immediately with circuit breaker error, even for new requests.
+
+**Cause**: The circuit breaker has detected too many failures and opened to protect your application. It will remain open until the timeout period elapses.
+
+**Solution**: 
+
+```php
+// Check circuit breaker state
+$stats = $circuitBreaker->getStats();
+if ($stats['state'] === 'open') {
+    // Wait for timeout or manually reset if needed
+    $circuitBreaker->reset();
+}
+
+// Or use fallback when circuit is open
+try {
+    $result = $circuitBreaker->execute($operation);
+} catch (\RuntimeException $e) {
+    if (str_contains($e->getMessage(), 'OPEN')) {
+        // Use fallback strategy
+        return $fallbackStrategy->useDefault('Service temporarily unavailable', $e);
+    }
+    throw $e;
+}
+```
+
+### Error: "Rate limit exceeded. Retry after X seconds."
+
+**Symptom**: Requests fail with rate limit errors even though you're not making many requests.
+
+**Cause**: Rate limiter is tracking requests incorrectly, or multiple instances are sharing the same limiter without coordination.
+
+**Solution**:
+
+```php
+// Use distributed rate limiter (Redis, database) for multiple instances
+$rateLimiter = new DistributedRateLimiter(
+    storage: new RedisStorage($redis),
+    maxRequests: 50,
+    windowSeconds: 60
+);
+
+// Or check if rate limiter needs cleanup
+$stats = $rateLimiter->getStats();
+if ($stats['current_requests'] > $stats['max_requests']) {
+    $rateLimiter->reset(); // Reset if tracking is incorrect
+}
+```
+
+### Problem: Exponential Backoff Causing Long Delays
+
+**Symptom**: Retries take too long, causing poor user experience.
+
+**Cause**: Base delay or multiplier is too high, or max delay is set too high.
+
+**Solution**:
+
+```php
+// Adjust backoff parameters for faster retries
+$backoff = new ExponentialBackoff(
+    maxRetries: 3,           // Reduce retries
+    baseDelayMs: 500,        // Start with 500ms instead of 1000ms
+    maxDelayMs: 5000,        // Cap at 5 seconds instead of 60
+    multiplier: 1.5           // Slower growth (1.5x instead of 2x)
+);
+```
+
+### Problem: Errors Not Being Retried When They Should Be
+
+**Symptom**: Transient errors (like 503) are not retried automatically.
+
+**Cause**: Error parser is not correctly identifying errors as retryable, or exception type is not recognized.
+
+**Solution**:
+
+```php
+// Verify error is identified as transient
+$isTransient = ErrorParser::isTransient($exception);
+if (!$isTransient && $exception->getCode() === 503) {
+    // Manually mark as retryable
+    $errorData = ErrorParser::parse($exception);
+    $errorData['retryable'] = true;
+}
+
+// Or check ErrorParser logic
+$errorData = ErrorParser::parse($exception);
+if ($errorData['status_code'] === 503 && !$errorData['retryable']) {
+    // Fix ErrorParser::isTransient() method
+}
+```
+
+### Problem: Requests Hanging or Timing Out
+
+**Symptom**: Requests take too long or hang indefinitely, blocking application threads.
+
+**Cause**: HTTP client timeout not configured, or timeout values too high.
+
+**Solution**:
+
+```php
+// Configure appropriate timeouts
+$client = new Client([
+    RequestOptions::TIMEOUT => 60,           // Total timeout
+    RequestOptions::CONNECT_TIMEOUT => 10,    // Connection timeout
+    RequestOptions::READ_TIMEOUT => 60,       // Read timeout
+]);
+
+// For long-running requests, use separate client
+$longClient = new Client([
+    RequestOptions::TIMEOUT => 300,  // 5 minutes
+    RequestOptions::READ_TIMEOUT => 300,
+]);
+
+// Implement request cancellation for user-initiated cancellations
+$cancellable = new CancellableRequest();
+// ... cancel when user abandons request
+```
+
+### Problem: Duplicate Requests After Retries
+
+**Symptom**: Same request processed multiple times after retries, causing duplicate side effects.
+
+**Cause**: Requests are not idempotent, or idempotency keys not implemented.
+
+**Solution**:
+
+```php
+// Generate idempotency key
+$idempotencyKey = IdempotentRequest::generateKey($request);
+
+// Check for duplicate before processing
+if ($cached = IdempotentRequest::getCachedResult($idempotencyKey, $redis)) {
+    return $cached; // Return cached result
+}
+
+// Process request
+$result = $client->messages()->create($request);
+
+// Cache result for future duplicate checks
+IdempotentRequest::markProcessed($idempotencyKey, $result, $redis);
+```
+
 ## Exercises
 
 ### Exercise 1: Smart Retry System
@@ -1412,48 +2669,138 @@ print_r($stats);
 Build an intelligent retry system that learns optimal retry parameters from historical data.
 
 **Requirements:**
-- Track success/failure patterns
-- Adjust backoff parameters dynamically
-- Optimize for different error types
-- Provide recommendations
+- Track success/failure patterns over time
+- Adjust backoff parameters dynamically based on error rates
+- Optimize for different error types (429 vs 503 vs 500)
+- Provide recommendations for optimal settings
+- Store historical data in a persistent format (file or database)
+
+**Validation**: Test with simulated error patterns:
+
+```php
+// Simulate different error scenarios
+$scenarios = [
+    'high_429_rate' => [429, 429, 429, 200], // Rate limit errors
+    'intermittent_503' => [503, 200, 503, 200], // Intermittent failures
+    'temporary_outage' => [500, 500, 500, 200], // Temporary outage
+];
+
+foreach ($scenarios as $name => $errors) {
+    $system = new SmartRetrySystem();
+    foreach ($errors as $errorCode) {
+        // Simulate error
+        $system->recordAttempt($errorCode === 200, $errorCode);
+    }
+    
+    $recommendations = $system->getRecommendations();
+    echo "Scenario: {$name}\n";
+    print_r($recommendations);
+    // Should show different recommendations for each scenario
+}
+```
 
 ### Exercise 2: Multi-Region Failover
 
 Create a system that automatically fails over to different API regions when one is unavailable.
 
 **Requirements:**
-- Detect region-specific failures
-- Automatically switch regions
-- Load balance across regions
-- Track region health
+- Detect region-specific failures (timeout, 503, connection errors)
+- Automatically switch to healthy regions
+- Load balance across multiple regions when all are healthy
+- Track region health with health checks
+- Implement region priority/weighting
+
+**Validation**: Test failover behavior:
+
+```php
+$regionManager = new MultiRegionManager([
+    'us-east' => 'https://api.anthropic.com',
+    'us-west' => 'https://api-west.anthropic.com',
+    'eu' => 'https://api-eu.anthropic.com',
+]);
+
+// Simulate region failure
+$regionManager->markRegionUnhealthy('us-east');
+
+// Next request should use us-west or eu
+$response = $regionManager->execute(function() {
+    return $client->messages()->create([...]);
+});
+
+// Verify region was switched
+assert($regionManager->getCurrentRegion() !== 'us-east');
+```
 
 ### Exercise 3: Comprehensive Error Dashboard
 
 Build a real-time dashboard showing error rates, circuit breaker states, and system health.
 
 **Requirements:**
-- Real-time error visualization
-- Circuit breaker status
-- Rate limit utilization
-- Alert management
+- Real-time error visualization (WebSocket or Server-Sent Events)
+- Circuit breaker status for all breakers
+- Rate limit utilization graphs
+- Error rate trends over time
+- Alert management interface
+- Export error logs functionality
+
+**Validation**: Dashboard should display:
+
+```php
+// Dashboard should show:
+$dashboard = new ErrorDashboard();
+
+$stats = $dashboard->getStats();
+assert(isset($stats['circuit_breakers']));
+assert(isset($stats['rate_limiters']));
+assert(isset($stats['error_rates']));
+assert(isset($stats['alerts']));
+
+// Real-time updates should work
+$dashboard->subscribe(function($update) {
+    // Should receive updates when errors occur
+    assert(isset($update['timestamp']));
+    assert(isset($update['type']));
+});
+```
 
 <details>
 <summary>Solution Hints</summary>
 
-For Exercise 1, build a machine learning model or heuristic system that analyzes error patterns and adjusts parameters. For Exercise 2, implement a region manager with health checks and failover logic. For Exercise 3, use WebSockets or SSE to push real-time updates to a web dashboard.
+**Exercise 1**: Build a machine learning model or heuristic system that analyzes error patterns and adjusts parameters. Consider using a simple moving average or exponential smoothing to track error rates. Store success/failure history in a database or file.
+
+**Exercise 2**: Implement a region manager with health checks and failover logic. Use the circuit breaker pattern per region. Track region health with periodic health checks. Implement round-robin or weighted load balancing when multiple regions are healthy.
+
+**Exercise 3**: Use WebSockets or Server-Sent Events (SSE) to push real-time updates to a web dashboard. Store error data in a time-series database or use Redis for real-time data. Create a simple HTML/JavaScript frontend that connects to your PHP backend via WebSocket or SSE.
 
 </details>
 
-## Key Takeaways
+## Wrap-up
 
-- ✓ Implement exponential backoff for transient errors
-- ✓ Use circuit breakers to prevent cascading failures
-- ✓ Apply rate limiting to respect API limits
-- ✓ Build multiple fallback layers for resilience
-- ✓ Monitor error patterns to detect issues early
-- ✓ Distinguish between retryable and non-retryable errors
-- ✓ Always log errors with context for debugging
-- ✓ Test error handling under failure conditions
+Congratulations! You've built production-grade error handling and rate limiting systems for Claude API applications. Here's what you accomplished:
+
+- ✓ **Error Classification**: Created systems to parse and categorize all Claude API error types, distinguishing retryable from non-retryable errors
+- ✓ **Intelligent Retries**: Implemented exponential backoff with jitter to handle transient failures gracefully
+- ✓ **Circuit Breakers**: Built circuit breaker patterns to prevent cascading failures and protect your application from degraded services
+- ✓ **Rate Limiting**: Applied multiple rate limiting strategies (sliding window, token bucket) to respect API quotas
+- ✓ **Resilient Client**: Combined all protection mechanisms into a single `ResilientClaudeClient` wrapper
+- ✓ **Graceful Degradation**: Created fallback strategies that keep your application functional even when Claude API is unavailable
+- ✓ **Monitoring & Alerting**: Implemented error monitoring systems that track patterns and trigger alerts for production issues
+
+These error handling patterns are essential for any production Claude application. They ensure your application remains stable and responsive even when external services experience problems. The circuit breaker pattern, exponential backoff, and rate limiting are industry-standard techniques used by major tech companies.
+
+In the next chapter, you'll learn about **Tool Use Fundamentals** - extending Claude's capabilities with function calling to create more powerful, interactive applications.
+
+## Further Reading
+
+- [Anthropic API Error Handling Guide](https://docs.claude.com/en/api/errors) — Official documentation on Claude API error types and handling
+- [Exponential Backoff and Jitter](https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/) — AWS best practices for retry strategies
+- [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html) — Martin Fowler's explanation of the circuit breaker pattern
+- [Rate Limiting Strategies](https://cloud.google.com/architecture/rate-limiting-strategies-techniques) — Google Cloud's guide to rate limiting techniques
+- [Resilience Patterns](https://www.oreilly.com/library/view/release-it/9781680500268/) — Release It! by Michael Nygard covers production resilience patterns
+- [PSR-3: Logger Interface](https://www.php-fig.org/psr/psr-3/) — PHP standard for logging, useful for error monitoring
+- [Chapter 38: Scaling Applications](/series/claude-php-developers/chapters/38-scaling-applications) — Distributed error handling patterns for multi-server deployments
+- [Guzzle HTTP Client Documentation](https://docs.guzzlephp.org/en/stable/) — HTTP client configuration and timeout options
+- [Idempotency Keys Best Practices](https://stripe.com/docs/api/idempotent_requests) — Stripe's guide to idempotent API design
 
 <ChapterCheckbox
   seriesId="claude-php-developers"

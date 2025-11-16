@@ -6,10 +6,10 @@ chapter: 20
 order: 20
 difficulty: "Expert"
 prerequisites:
+  - "/series/claude-php-developers/chapters/06-streaming-responses"
   - "Laravel 11+ with Reverb"
   - "WebSockets understanding"
   - "Laravel Broadcasting knowledge"
-  - "Chapter 06: Streaming Responses"
 ---
 
 ![20: Real-time Chat with WebSockets](/images/claude-php/chapter-20-hero-full.webp)
@@ -36,39 +36,76 @@ This chapter teaches you to build production-ready chat applications with stream
 
 Before diving in, ensure you have:
 
-- ✓ **Laravel 11+** with Reverb installed
-- ✓ **Laravel Broadcasting** configured
-- ✓ **Chapter 06** completed (Streaming knowledge)
-- ✓ **WebSockets** basic understanding
+- **Laravel 11+** with Reverb installed
+- **Laravel Broadcasting** configured
+- **Chapter 06** completed (Streaming knowledge) — [Streaming Responses in PHP](/series/claude-php-developers/chapters/06-streaming-responses)
+- **WebSockets** basic understanding
 
 **Estimated Time**: 75-90 minutes
 
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- A complete real-time chat application with WebSocket support
+- Database models for conversations and messages with streaming state tracking
+- Three broadcasting events: `MessageChunkReceived`, `MessageCompleted`, and `UserTyping`
+- A `ChatService` that streams Claude responses over WebSockets
+- A `ChatController` with full CRUD operations and typing indicator endpoints
+- A Vue.js frontend component with real-time message updates
+- Broadcasting channel authorization for secure multi-user conversations
+- Presence channels for tracking active users in chat rooms
+
+## Objectives
+
+- Understand Laravel Reverb and WebSocket architecture for real-time applications
+- Implement streaming Claude responses over WebSockets using Laravel Broadcasting
+- Create broadcasting events for message chunks, completion, and typing indicators
+- Build a production-ready chat service with proper error handling
+- Develop a Vue.js frontend that connects to WebSocket channels
+- Configure secure broadcasting channels with authorization
+- Implement presence channels for multi-user chat rooms
+- Handle WebSocket connection failures and implement reconnection logic
+
 ## Real-Time Chat Architecture
 
-```
-User Browser
-  ↓ (WebSocket)
-Laravel Reverb Server
-  ↓
-Laravel Application
-  ↓
-Claude API (Streaming)
-  ↓ (Stream chunks)
-Broadcast to WebSocket
-  ↓
-All Connected Clients
+```mermaid
+flowchart TB
+    A[User Browser] -->|WebSocket Connection| B[Laravel Reverb Server]
+    B -->|HTTP Request| C[Laravel Application]
+    C -->|Streaming API Call| D[Claude API]
+    D -->|Stream Chunks| C
+    C -->|Broadcast Events| B
+    B -->|WebSocket Push| E[All Connected Clients]
+    
+    style A fill:#e1f5ff
+    style B fill:#fff4e1
+    style C fill:#e8f5e9
+    style D fill:#fce4ec
+    style E fill:#e1f5ff
 ```
 
-## Setup Laravel Reverb
+## Step 1: Setup Laravel Reverb (~10 min)
+
+### Goal
+
+Install and configure Laravel Reverb to enable WebSocket support for real-time communication.
+
+### Actions
+
+1. **Install Reverb**:
 
 ```bash
-# Install Reverb
+# Install Reverb package
 composer require laravel/reverb
 
 # Publish configuration
 php artisan reverb:install
+```
 
-# Update .env
+2. **Configure environment variables** in `.env`:
+
+```bash
 BROADCAST_CONNECTION=reverb
 REVERB_APP_ID=your-app-id
 REVERB_APP_KEY=your-app-key
@@ -78,15 +115,44 @@ REVERB_PORT=8080
 REVERB_SCHEME=http
 ```
 
+3. **Start the Reverb server**:
+
 ```bash
-# Start Reverb server
+# Start Reverb (keep this running)
 php artisan reverb:start
 
-# Start queue worker (for processing)
+# In another terminal, start queue worker
 php artisan queue:work
 ```
 
-## Database Setup
+### Expected Result
+
+You should see Reverb starting up:
+
+```
+Starting Reverb server on localhost:8080...
+Reverb server started successfully.
+```
+
+### Why It Works
+
+Laravel Reverb is a first-party WebSocket server built specifically for Laravel. It handles WebSocket connections, manages channels, and integrates seamlessly with Laravel's broadcasting system. The `BROADCAST_CONNECTION=reverb` setting tells Laravel to use Reverb instead of other broadcasting drivers like Pusher or Redis.
+
+### Troubleshooting
+
+- **Error: "Port already in use"** — Change `REVERB_PORT` to a different port (e.g., 8081)
+- **Connection refused** — Ensure Reverb is running with `php artisan reverb:start`
+- **Authentication fails** — Verify `REVERB_APP_KEY` and `REVERB_APP_SECRET` match in both `.env` and frontend configuration
+
+## Step 2: Create Database Schema (~5 min)
+
+### Goal
+
+Set up database tables to store conversations and messages with streaming state tracking.
+
+### Actions
+
+1. **Create migration**:
 
 ```php
 <?php
@@ -133,7 +199,30 @@ return new class extends Migration
 };
 ```
 
-## Models
+2. **Run migration**:
+
+```bash
+php artisan migrate
+```
+
+### Expected Result
+
+Two tables are created: `chat_conversations` and `chat_messages` with proper relationships and indexes.
+
+### Why It Works
+
+The `chat_conversations` table stores conversation metadata including the Claude model and system prompt. The `chat_messages` table stores individual messages with an `is_streaming` flag to track when Claude is generating a response. The `completed_at` timestamp marks when streaming finishes, enabling proper UI state management.
+
+### Troubleshooting
+
+- **Foreign key constraint fails** — Ensure the `users` table exists before running the migration
+- **Enum type not supported** — Some databases require explicit enum type definition; use `string` instead if needed
+
+## Step 3: Create Models (~5 min)
+
+### Goal
+
+Create Eloquent models with relationships and helper methods for formatting messages.
 
 ```php
 <?php
@@ -185,6 +274,8 @@ class ChatConversation extends Model
 }
 ```
 
+2. **Create ChatMessage model**:
+
 ```php
 <?php
 # filename: app/Models/ChatMessage.php
@@ -219,7 +310,19 @@ class ChatMessage extends Model
 }
 ```
 
-## Streaming Events
+### Expected Result
+
+Two model classes with proper relationships: `ChatConversation` has many `ChatMessage`, and `ChatMessage` belongs to `ChatConversation`. The `getFormattedMessages()` method prepares messages for Claude API format.
+
+### Why It Works
+
+Eloquent relationships enable easy data access (`$conversation->messages`), and the `getFormattedMessages()` method transforms database records into the array format Claude API expects. The `is_streaming` flag allows the frontend to show a loading indicator while Claude generates responses.
+
+## Step 4: Create Broadcasting Events (~10 min)
+
+### Goal
+
+Create three events that broadcast real-time updates: message chunks, completion, and typing indicators.
 
 ```php
 <?php
@@ -265,6 +368,8 @@ class MessageChunkReceived implements ShouldBroadcast
     }
 }
 ```
+
+2. **Create MessageCompleted event**:
 
 ```php
 <?php
@@ -313,6 +418,8 @@ class MessageCompleted implements ShouldBroadcast
 }
 ```
 
+3. **Create UserTyping event**:
+
 ```php
 <?php
 # filename: app/Events/UserTyping.php
@@ -359,7 +466,25 @@ class UserTyping implements ShouldBroadcast
 }
 ```
 
-## Chat Service with Streaming
+### Expected Result
+
+Three event classes that implement `ShouldBroadcast` and define their broadcast channels, event names, and payload data.
+
+### Why It Works
+
+Laravel's broadcasting system automatically serializes these events and sends them to the configured WebSocket server (Reverb). The `broadcastOn()` method defines which channel receives the event, `broadcastAs()` sets the event name, and `broadcastWith()` controls the payload. Private channels require authentication, while presence channels track who's subscribed.
+
+### Troubleshooting
+
+- **Events not broadcasting** — Verify `BROADCAST_CONNECTION=reverb` in `.env`
+- **Channel authorization fails** — Check `routes/channels.php` has proper authorization logic
+- **Events broadcast but frontend doesn't receive** — Verify Echo is configured correctly on the frontend
+
+## Step 5: Build Chat Service (~15 min)
+
+### Goal
+
+Create a service class that handles streaming Claude responses and broadcasts chunks in real-time.
 
 ```php
 <?php
@@ -476,7 +601,25 @@ class ChatService
 }
 ```
 
-## Controller Implementation
+### Expected Result
+
+A `ChatService` class that creates messages, streams Claude responses, broadcasts chunks as they arrive, and handles errors gracefully.
+
+### Why It Works
+
+The service creates a placeholder assistant message with `is_streaming=true` before starting the stream. As Claude generates tokens, each chunk is broadcast via `MessageChunkReceived` events. When streaming completes, the message is updated with the full content and `MessageCompleted` is broadcast. The `->toOthers()` method prevents broadcasting to the sender, useful for multi-user scenarios.
+
+### Troubleshooting
+
+- **Streaming stops mid-response** — Check Claude API rate limits and connection stability
+- **Chunks arrive out of order** — WebSocket guarantees order, but verify network stability
+- **Memory issues with long responses** — Consider processing chunks in batches or using queues
+
+## Step 6: Create Controller (~10 min)
+
+### Goal
+
+Build a RESTful controller with endpoints for conversations, messages, and typing indicators.
 
 ```php
 <?php
@@ -613,7 +756,86 @@ class ChatController extends Controller
 }
 ```
 
-## Frontend Implementation (Vue 3)
+2. **Create Policy for authorization** (optional but recommended):
+
+```php
+<?php
+# filename: app/Policies/ChatConversationPolicy.php
+declare(strict_types=1);
+
+namespace App\Policies;
+
+use App\Models\ChatConversation;
+use App\Models\User;
+
+class ChatConversationPolicy
+{
+    public function view(User $user, ChatConversation $conversation): bool
+    {
+        return $user->id === $conversation->user_id;
+    }
+
+    public function update(User $user, ChatConversation $conversation): bool
+    {
+        return $user->id === $conversation->user_id;
+    }
+
+    public function delete(User $user, ChatConversation $conversation): bool
+    {
+        return $user->id === $conversation->user_id;
+    }
+}
+```
+
+### Expected Result
+
+A controller with five endpoints: create conversation, send message, show conversation, list conversations, and broadcast typing. The controller uses authorization policies to ensure users can only access their own conversations.
+
+### Why It Works
+
+The `sendMessage` method returns a `202 Accepted` status immediately after creating the message, allowing the frontend to show the streaming response via WebSocket. The `authorize()` calls use Laravel's policy system to verify ownership. Typing indicators use debouncing (handled in the frontend) to avoid excessive broadcasts.
+
+### Troubleshooting
+
+- **403 Forbidden on authorization** — Register the policy in `app/Providers/AuthServiceProvider.php`
+- **Message not streaming** — Verify the ChatService is called and Reverb is running
+- **Typing indicator spam** — Implement debouncing in the frontend (shown in Step 7)
+
+## Step 7: Build Frontend Component (~20 min)
+
+### Goal
+
+Create a Vue.js component that connects to WebSocket channels and displays real-time messages.
+
+### Actions
+
+1. **Initialize Laravel Echo** (in your main JavaScript file):
+
+```javascript
+// filename: resources/js/bootstrap.js or resources/js/app.js
+import Echo from 'laravel-echo';
+import Pusher from 'pusher-js';
+
+window.Pusher = Pusher;
+
+window.Echo = new Echo({
+    broadcaster: 'reverb',
+    key: import.meta.env.VITE_REVERB_APP_KEY,
+    wsHost: import.meta.env.VITE_REVERB_HOST,
+    wsPort: import.meta.env.VITE_REVERB_PORT ?? 80,
+    wssPort: import.meta.env.VITE_REVERB_PORT ?? 443,
+    forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
+    enabledTransports: ['ws', 'wss'],
+    authEndpoint: '/broadcasting/auth',
+    auth: {
+        headers: {
+            Authorization: `Bearer ${yourAuthToken}`,
+        },
+    },
+});
+```
+
+2. **Create ChatWindow component**:
 
 ```vue
 <!-- filename: resources/js/components/ChatWindow.vue -->
@@ -913,7 +1135,26 @@ function formatTime(dateString) {
 </style>
 ```
 
-## Broadcasting Channels Configuration
+### Expected Result
+
+A fully functional chat interface that connects to WebSocket channels, displays streaming messages in real-time, shows typing indicators, and handles user input.
+
+### Why It Works
+
+Laravel Echo simplifies WebSocket connections by handling authentication, channel subscriptions, and event listeners. The component subscribes to a private channel (`conversation.{id}`) which requires authentication. When chunks arrive, the message content is appended incrementally. The typing indicator uses debouncing (1 second timeout) to avoid excessive API calls. The `watch` on `messages` automatically scrolls to show new content.
+
+### Troubleshooting
+
+- **Echo connection fails** — Verify `VITE_REVERB_*` environment variables match backend configuration
+- **Authentication fails** — Ensure the auth endpoint returns proper tokens and headers
+- **Messages not updating** — Check browser console for WebSocket errors and verify channel names match
+- **Typing indicator not working** — Verify PresenceChannel is used and presence callbacks are configured
+
+## Step 8: Configure Broadcasting Channels (~5 min)
+
+### Goal
+
+Set up channel authorization to ensure users can only access their own conversations.
 
 ```php
 <?php
@@ -930,7 +1171,45 @@ Broadcast::channel('conversation.{conversationId}', function ($user, $conversati
 });
 ```
 
-## API Routes
+2. **Configure presence channel callbacks** (for typing indicators):
+
+```php
+<?php
+# filename: routes/channels.php
+declare(strict_types=1);
+
+use App\Models\ChatConversation;
+use Illuminate\Support\Facades\Broadcast;
+
+Broadcast::channel('conversation.{conversationId}', function ($user, $conversationId) {
+    $conversation = ChatConversation::find($conversationId);
+    
+    if ($conversation && $user->id === $conversation->user_id) {
+        return ['id' => $user->id, 'name' => $user->name];
+    }
+    
+    return false;
+});
+```
+
+### Expected Result
+
+Channel authorization that verifies conversation ownership before allowing WebSocket subscriptions.
+
+### Why It Works
+
+Laravel's channel authorization runs before allowing WebSocket connections. Returning `false` denies access, while returning user data allows subscription and makes it available to presence channel callbacks. This prevents users from accessing conversations they don't own.
+
+### Troubleshooting
+
+- **403 Forbidden on channel subscription** — Verify the user ID matches the conversation owner
+- **Presence data not available** — Ensure the channel callback returns user data, not just `true`
+
+## Step 9: Define API Routes (~3 min)
+
+### Goal
+
+Create RESTful API routes for the chat endpoints.
 
 ```php
 <?php
@@ -952,30 +1231,455 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 ```
 
-## Troubleshooting
+### Expected Result
 
-**WebSocket connection fails?**
-- Ensure Reverb is running: `php artisan reverb:start`
-- Check `.env` configuration for `REVERB_*` variables
-- Verify frontend Echo configuration matches backend
-- Check browser console for connection errors
+Five API endpoints protected by authentication middleware, accessible at `/api/conversations/*`.
 
-**Messages not streaming?**
-- Verify broadcasting is configured: `BROADCAST_CONNECTION=reverb`
-- Check channel authorization in `routes/channels.php`
-- Ensure user is authenticated
-- Review Laravel logs for errors
+### Why It Works
 
-**Typing indicators not working?**
-- Use PresenceChannel instead of PrivateChannel for presence features
-- Verify Echo is properly initialized on frontend
-- Check network tab for failed broadcast requests
+The `auth:sanctum` middleware ensures only authenticated users can access these endpoints. Laravel's route model binding automatically resolves `{conversation}` to a `ChatConversation` instance, making controller methods cleaner.
 
-**Performance issues with many concurrent users?**
-- Scale Reverb horizontally with multiple instances
-- Use Redis for horizontal scaling
-- Implement message pagination
-- Consider rate limiting typing indicator broadcasts
+## Step 10: Test the Application (~5 min)
+
+### Goal
+
+Verify the complete chat application works end-to-end.
+
+### Actions
+
+1. **Start all required services**:
+
+```bash
+# Terminal 1: Start Reverb
+php artisan reverb:start
+
+# Terminal 2: Start queue worker
+php artisan queue:work
+
+# Terminal 3: Start Laravel dev server
+php artisan serve
+
+# Terminal 4: Start frontend build
+npm run dev
+```
+
+2. **Test WebSocket connection**:
+
+Open browser console and verify Echo connects:
+```javascript
+// Should see connection established
+window.Echo.connector.socket.connected // true
+```
+
+3. **Create a conversation**:
+
+```bash
+curl -X POST http://localhost:8000/api/conversations \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Test Chat"}'
+```
+
+4. **Send a message**:
+
+```bash
+curl -X POST http://localhost:8000/api/conversations/1/messages \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Hello Claude!"}'
+```
+
+### Expected Result
+
+Messages stream in real-time through the WebSocket connection, appearing word-by-word in the chat interface.
+
+### Why It Works
+
+All components work together: the API creates messages, ChatService streams from Claude, events broadcast chunks, Reverb delivers to WebSocket clients, and the Vue component renders updates. The queue worker processes any queued broadcasts if needed.
+
+### Troubleshooting
+
+See the comprehensive troubleshooting section below.
+
+### Error: "WebSocket connection fails"
+
+**Symptom**: Browser console shows connection errors, Echo fails to connect
+
+**Cause**: Reverb server not running, incorrect configuration, or authentication issues
+
+**Solution**:
+
+1. Verify Reverb is running:
+```bash
+php artisan reverb:start
+# Should see: "Starting Reverb server on localhost:8080..."
+```
+
+2. Check environment variables match:
+```bash
+# Backend .env
+REVERB_APP_KEY=your-key
+REVERB_HOST=localhost
+REVERB_PORT=8080
+
+# Frontend .env (VITE_ prefix)
+VITE_REVERB_APP_KEY=your-key
+VITE_REVERB_HOST=localhost
+VITE_REVERB_PORT=8080
+```
+
+3. Verify authentication endpoint:
+```bash
+curl http://localhost:8000/broadcasting/auth \
+  -H "Authorization: Bearer YOUR_TOKEN"
+# Should return JSON, not 401/403
+```
+
+### Error: "Messages not streaming"
+
+**Symptom**: Messages are created but chunks don't appear in real-time
+
+**Cause**: Broadcasting not configured, channel authorization fails, or events not firing
+
+**Solution**:
+
+1. Verify broadcasting driver:
+```bash
+# .env
+BROADCAST_CONNECTION=reverb
+```
+
+2. Check channel authorization:
+```php
+// routes/channels.php - ensure this returns true for authorized users
+Broadcast::channel('conversation.{conversationId}', function ($user, $conversationId) {
+    // Your authorization logic
+});
+```
+
+3. Check Laravel logs:
+```bash
+tail -f storage/logs/laravel.log
+# Look for broadcasting errors
+```
+
+4. Test event broadcasting manually:
+```php
+// In tinker: php artisan tinker
+broadcast(new \App\Events\MessageChunkReceived(
+    conversationId: 1,
+    messageId: 1,
+    chunk: 'test'
+));
+```
+
+### Error: "Typing indicators not working"
+
+**Symptom**: Typing status doesn't appear for other users
+
+**Cause**: Using PrivateChannel instead of PresenceChannel, or presence callbacks not configured
+
+**Solution**:
+
+1. Use PresenceChannel for typing events:
+```php
+// app/Events/UserTyping.php
+public function broadcastOn(): Channel
+{
+    return new PresenceChannel('conversation.' . $this->conversationId);
+}
+```
+
+2. Configure presence callbacks in channels.php (see Step 8)
+
+3. Verify Echo presence methods:
+```javascript
+channel.here((users) => {
+    console.log('Users present:', users);
+});
+```
+
+### Error: "Performance issues with many concurrent users"
+
+**Symptom**: Slow responses, dropped connections, high server load
+
+**Cause**: Single Reverb instance, no horizontal scaling, inefficient broadcasting
+
+**Solution**:
+
+1. Scale Reverb horizontally:
+```bash
+# Run multiple Reverb instances on different ports
+php artisan reverb:start --port=8080
+php artisan reverb:start --port=8081
+# Use load balancer to distribute connections
+```
+
+2. Use Redis for horizontal scaling:
+```bash
+# .env
+BROADCAST_CONNECTION=redis
+REDIS_CLIENT=phpredis
+```
+
+3. Implement message pagination:
+```php
+// Load only recent messages
+$messages = $conversation->messages()
+    ->orderByDesc('created_at')
+    ->limit(50)
+    ->get();
+```
+
+4. Rate limit typing broadcasts:
+```php
+// In controller
+RateLimiter::attempt(
+    "typing:{$conversation->id}:{$user->id}",
+    perMinute(10),
+    function () {
+        broadcast(new UserTyping(...));
+    }
+);
+```
+
+## Advanced Topics
+
+### Testing WebSocket Connections
+
+Testing real-time WebSocket functionality requires special approaches. Use Laravel's Event facade to test broadcasting:
+
+```php
+<?php
+# filename: tests/Feature/ChatWebSocketTest.php
+declare(strict_types=1);
+
+namespace Tests\Feature;
+
+use App\Events\MessageChunkReceived;
+use App\Models\ChatConversation;
+use App\Models\User;
+use Illuminate\Support\Facades\Event;
+use Tests\TestCase;
+
+class ChatWebSocketTest extends TestCase
+{
+    public function test_message_events_are_broadcast(): void
+    {
+        Event::fake();
+        $user = User::factory()->create();
+        $conversation = ChatConversation::factory()->for($user)->create();
+
+        $this->actingAs($user)
+            ->postJson("/api/conversations/{$conversation->id}/messages", [
+                'message' => 'Hello Claude!',
+            ]);
+
+        Event::assertDispatched(MessageChunkReceived::class);
+    }
+
+    public function test_unauthorized_user_cannot_access(): void
+    {
+        $user1 = User::factory()->create();
+        $user2 = User::factory()->create();
+        $conversation = ChatConversation::factory()->for($user1)->create();
+
+        $this->actingAs($user2)
+            ->postJson("/api/conversations/{$conversation->id}/messages", [
+                'message' => 'Unauthorized access',
+            ])
+            ->assertForbidden();
+    }
+}
+```
+
+**Why It Works**: Event::fake() intercepts broadcasts. Use assertDispatched() to verify events were fired with correct data.
+
+### Graceful Degradation
+
+When WebSockets fail, fall back to polling:
+
+```javascript
+// filename: resources/js/composables/useRobustConnection.js
+export function useRobustConnection(conversationId) {
+  const connectionStatus = ref('disconnected');
+  const pollInterval = ref(null);
+
+  function setupWebSocket() {
+    try {
+      const channel = window.Echo.private(`conversation.${conversationId}`);
+      channel.listen('.message.chunk', (event) => {
+        // Handle message chunk
+      });
+      connectionStatus.value = 'connected';
+      return true;
+    } catch (error) {
+      console.warn('WebSocket failed, falling back to polling');
+      fallbackToPolling();
+      return false;
+    }
+  }
+
+  function fallbackToPolling() {
+    connectionStatus.value = 'polling';
+    pollInterval.value = setInterval(async () => {
+      const response = await axios.get(`/api/conversations/${conversationId}`);
+      // Handle polling response
+    }, 2000);
+  }
+
+  onMounted(() => setupWebSocket());
+  onUnmounted(() => {
+    if (pollInterval.value) clearInterval(pollInterval.value);
+  });
+
+  return { connectionStatus };
+}
+```
+
+**Why It Works**: Users get uninterrupted service whether WebSockets work or not. Polling is slower but maintains functionality.
+
+### Authentication Security
+
+Use multiple guards for flexible authentication:
+
+```php
+<?php
+// routes/channels.php
+
+Broadcast::channel('conversation.{conversationId}', function ($user, $conversationId) {
+    $conversation = ChatConversation::find($conversationId);
+    
+    if (!$conversation || $user->id !== $conversation->user_id) {
+        return false;
+    }
+    
+    // Verify token hasn't expired (optional)
+    if ($user->token && now()->isAfter($user->token->expires_at)) {
+        return false;
+    }
+    
+    return ['id' => $user->id, 'name' => $user->name];
+}, ['guards' => ['web', 'sanctum']]);
+```
+
+**Why It Works**: Multiple guards support both session (web) and token (sanctum) authentication. Returns false to deny, user data to allow.
+
+### Message Ordering and Consistency
+
+Handle out-of-order and duplicate messages:
+
+```php
+<?php
+# filename: app/Services/MessageConsistencyService.php
+
+class MessageConsistencyService
+{
+    public function getMissedMessages(int $conversationId, \DateTime $sinceTime): array
+    {
+        return ChatMessage::where('conversation_id', $conversationId)
+            ->where('created_at', '>', $sinceTime)
+            ->orderBy('created_at')
+            ->get()
+            ->toArray();
+    }
+
+    public function createIdempotent(
+        int $conversationId,
+        string $role,
+        string $content,
+        string $idempotencyKey
+    ): ChatMessage {
+        return DB::transaction(function () use ($conversationId, $role, $content, $idempotencyKey) {
+            // Prevent duplicate messages from retries
+            $existing = ChatMessage::where([
+                'conversation_id' => $conversationId,
+                'content' => $content,
+            ])
+            ->where('created_at', '>', now()->subMinutes(5))
+            ->first();
+
+            if ($existing) {
+                return $existing;
+            }
+
+            return ChatMessage::create([
+                'conversation_id' => $conversationId,
+                'role' => $role,
+                'content' => $content,
+                'metadata' => ['idempotency_key' => $idempotencyKey],
+            ]);
+        });
+    }
+}
+```
+
+**Why It Works**: Missed message recovery after reconnection fetches new messages. Idempotency prevents duplicate creation from retries.
+
+### Connection State Management
+
+Implement heartbeat and exponential backoff for resilience:
+
+```javascript
+// filename: resources/js/composables/useWebSocketConnection.js
+
+export function useWebSocketConnection(conversationId) {
+  const connectionState = ref('disconnected');
+  const reconnectAttempts = ref(0);
+  const maxAttempts = 10;
+  let heartbeatInterval = null;
+
+  function getReconnectDelay() {
+    // Exponential backoff with jitter
+    const delay = 1000 * Math.pow(2, reconnectAttempts.value);
+    const jitter = Math.random() * 1000;
+    return Math.min(delay + jitter, 30000); // Cap at 30 seconds
+  }
+
+  function connectWebSocket() {
+    try {
+      const channel = window.Echo.private(`conversation.${conversationId}`);
+      
+      // Setup heartbeat to detect stale connections
+      heartbeatInterval = setInterval(() => {
+        // Check for stale connection (no activity for 30 seconds)
+        if (new Date() - lastActivity > 30000) {
+          attemptReconnect();
+        }
+      }, 5000);
+
+      connectionState.value = 'connected';
+      reconnectAttempts.value = 0;
+    } catch (error) {
+      attemptReconnect();
+    }
+  }
+
+  function attemptReconnect() {
+    if (reconnectAttempts.value >= maxAttempts) {
+      connectionState.value = 'failed';
+      return;
+    }
+
+    reconnectAttempts.value++;
+    connectionState.value = 'reconnecting';
+    const delay = getReconnectDelay();
+    
+    setTimeout(() => {
+      connectWebSocket();
+    }, delay);
+  }
+
+  onMounted(() => connectWebSocket());
+  onUnmounted(() => {
+    if (heartbeatInterval) clearInterval(heartbeatInterval);
+  });
+
+  return { connectionState, reconnectAttempts };
+}
+```
+
+**Why It Works**: Exponential backoff with jitter prevents thundering herd. Heartbeat detects stale connections. Max attempts prevent infinite retries.
 
 ## Key Takeaways
 
@@ -993,9 +1697,26 @@ Route::middleware('auth:sanctum')->group(function () {
   label="You've built a real-time chat application with Claude!"
 />
 
----
+## Wrap-up
 
-Congratulations on completing Chapter 20 and the PHP Integration Patterns section!
+Congratulations on completing Chapter 20! You've built a production-ready real-time chat application with Claude. Here's what you accomplished:
+
+- ✓ Set up Laravel Reverb for WebSocket support
+- ✓ Created database models for conversations and messages
+- ✓ Implemented streaming events for real-time message chunks
+- ✓ Built a ChatService that streams Claude responses over WebSockets
+- ✓ Created a complete Vue.js frontend with typing indicators
+- ✓ Configured broadcasting channels with proper authorization
+- ✓ Implemented presence channels for multi-user chat rooms
+
+You now have the skills to build interactive, real-time AI chat applications that provide engaging user experiences similar to ChatGPT, with proper error handling, authentication, and scalability considerations.
+
+## Further Reading
+
+- [Laravel Reverb Documentation](https://laravel.com/docs/reverb) — Official Laravel Reverb documentation
+- [Laravel Broadcasting](https://laravel.com/docs/broadcasting) — Complete broadcasting guide
+- [WebSockets Protocol](https://datatracker.ietf.org/doc/html/rfc6455) — RFC 6455 WebSocket specification
+- [Laravel Echo Documentation](https://laravel.com/docs/broadcasting#client-side-installation) — Frontend WebSocket client setup
 
 ## 💻 Code Samples
 

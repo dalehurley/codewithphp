@@ -6,9 +6,9 @@ chapter: 22
 order: 22
 difficulty: "Intermediate"
 prerequisites:
-  - "Laravel 11+ with Livewire 3"
-  - "Database configured (MySQL/PostgreSQL)"
-  - "Completion of Chapter 21"
+  - "/series/claude-php-developers/chapters/21-laravel-integration"
+  - "Laravel 11+ with Livewire 3 installed"
+  - "Database configured (MySQL or PostgreSQL)"
 ---
 
 ![22: Building a Chatbot with Laravel](/images/claude-php/chapter-22-hero-full.webp)
@@ -31,20 +31,6 @@ In this chapter, you'll build a complete, production-ready chatbot application u
 
 By the end, you'll have a working chatbot that can handle multiple users, maintain separate conversations, stream responses in real-time, and provide a smooth, modern chat experience that rivals commercial solutions.
 
-**What You'll Learn:**
-- Database schema design for conversations and messages
-- User authentication and authorization
-- Livewire components for reactive chat UI
-- Real-time streaming with Server-Sent Events
-- Conversation management and context handling
-- Message persistence and history
-- Rate limiting per user
-- Export and sharing functionality
-- Typing indicators and UX polish
-- Deployment considerations
-
-**Estimated Time**: 120-150 minutes
-
 ## Prerequisites
 
 Before starting, ensure you have:
@@ -56,7 +42,145 @@ Before starting, ensure you have:
 - ✓ **Basic Livewire knowledge**
 - ✓ **TailwindCSS** for styling
 
+**Estimated Time**: ~120-150 minutes
+
+## Quick Start
+
+Get a working chatbot running in 5 minutes:
+
+```bash
+# 1. Create migrations
+php artisan make:migration create_conversations_table
+php artisan make:migration create_messages_table
+
+# 2. Copy migration code from this chapter, then run:
+php artisan migrate
+
+# 3. Create models
+php artisan make:model Conversation
+php artisan make:model Message
+
+# 4. Create service
+php artisan make:class Services/ChatService
+
+# 5. Create Livewire components
+php artisan make:livewire Chat
+php artisan make:livewire ConversationList
+
+# 6. Add route to routes/web.php
+Route::middleware(['auth'])->group(function () {
+    Route::get('/chat/{conversation?}', Chat::class)->name('chat');
+});
+
+# 7. Visit /chat in your browser
+```
+
+**Expected Result**: A working chat interface where you can send messages and receive streaming responses from Claude.
+
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- A complete database schema for conversations and messages with proper relationships
+- Eloquent models (`Conversation` and `Message`) with relationships and helper methods
+- A `ChatService` class that handles message sending, streaming, and cost calculation
+- Two Livewire components (`Chat` and `ConversationList`) for reactive UI
+- Beautiful Blade views with TailwindCSS styling for the chat interface
+- Rate limiting middleware to prevent abuse
+- Conversation export functionality (Markdown and JSON formats)
+- Comprehensive test suite for the chat functionality
+- A production-ready chatbot application with user authentication, conversation persistence, and real-time streaming
+
+## Objectives
+
+By completing this chapter, you will:
+
+- Design and implement a scalable database schema for chat applications
+- Build Eloquent models with relationships, accessors, and business logic methods
+- Create Livewire components for reactive, real-time chat interfaces
+- Implement streaming responses using Server-Sent Events
+- Handle conversation context and message history management
+- Track API costs and token usage at the message level
+- Implement rate limiting to control API usage and costs
+- Export conversations in multiple formats for data portability
+- Write comprehensive tests using Laravel's testing tools
+- Build a production-ready chat application with proper error handling
+
+## Step-by-Step Setup
+
+### Step 1: Install Dependencies (~5 min)
+
+**Goal**: Ensure all required packages are installed.
+
+**Actions**:
+
+1. **Verify Livewire 3 is installed**:
+
+```bash
+composer require livewire/livewire
+```
+
+2. **Ensure TailwindCSS is configured** (if using Laravel Breeze/Jetstream, this is already done):
+
+```bash
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+```
+
+3. **Verify Claude service from Chapter 21** is set up and working.
+
+**Expected Result**: All dependencies installed and configured.
+
+### Step 2: Run Migrations (~2 min)
+
+**Goal**: Create the database tables for conversations and messages.
+
+**Actions**:
+
+1. **Create the migration files**:
+
+```bash
+php artisan make:migration create_conversations_table
+php artisan make:migration create_messages_table
+```
+
+2. **Copy the migration code** from the sections below into the respective migration files.
+
+3. **Run the migrations**:
+
+```bash
+php artisan migrate
+```
+
+**Expected Result**: Two new tables (`conversations` and `messages`) in your database.
+
+**Why It Works**: Migrations create the database schema that will store all conversation data. The foreign keys ensure data integrity, and indexes optimize query performance.
+
+### Step 3: Create Models (~5 min)
+
+**Goal**: Set up Eloquent models with relationships and business logic.
+
+**Actions**:
+
+1. **Create the Conversation model**:
+
+```bash
+php artisan make:model Conversation
+```
+
+2. **Create the Message model**:
+
+```bash
+php artisan make:model Message
+```
+
+3. **Copy the model code** from the sections below.
+
+**Expected Result**: Two models ready to use with relationships and helper methods.
+
 ## Database Schema Design
+
+The foundation of our chatbot is a well-designed database schema that separates conversations from messages. This design allows for flexible conversation management, efficient querying, and proper data relationships.
 
 ### Migrations
 
@@ -130,7 +254,18 @@ return new class extends Migration
 };
 ```
 
+**Why This Schema Works:**
+
+- **Separate tables**: Conversations and messages are stored separately, allowing efficient querying and management
+- **Foreign keys**: Proper relationships ensure data integrity with cascade deletes
+- **Indexes**: The composite index on `user_id` and `last_message_at` optimizes the common query of loading a user's recent conversations
+- **Soft deletes**: Conversations can be "deleted" but retained for analytics or recovery
+- **Metadata fields**: JSON columns allow storing flexible, schema-less data for future features
+- **Token tracking**: Storing input/output tokens and costs enables usage analytics and budgeting
+
 ## Models
+
+Eloquent models provide an object-oriented interface to our database tables, with relationships, accessors, and business logic methods.
 
 ### Conversation Model
 
@@ -183,6 +318,31 @@ class Conversation extends Model
                 'content' => $message->content,
             ];
         })->toArray();
+    }
+
+    public function getFormattedMessagesForContext(int $maxTokens = 100000): array
+    {
+        $messages = $this->messages()->orderBy('created_at')->get();
+        $totalTokens = 0;
+        $contextMessages = [];
+
+        // Start from the most recent messages and work backwards
+        foreach ($messages->reverse() as $message) {
+            // Estimate tokens (rough approximation: 1 token ≈ 4 characters)
+            $estimatedTokens = (int) ceil(strlen($message->content) / 4);
+            
+            if ($totalTokens + $estimatedTokens > $maxTokens) {
+                break;
+            }
+
+            $totalTokens += $estimatedTokens;
+            array_unshift($contextMessages, [
+                'role' => $message->role,
+                'content' => $message->content,
+            ]);
+        }
+
+        return $contextMessages;
     }
 
     public function generateTitle(): void
@@ -266,7 +426,113 @@ class Message extends Model
 }
 ```
 
+**Key Model Features:**
+
+- **Relationships**: `belongsTo` and `hasMany` relationships enable easy navigation between conversations and messages
+- **Accessors**: `formatted_messages` provides a clean array format for Claude API calls
+- **Business Logic**: `generateTitle()` automatically creates conversation titles from the first message
+- **Aggregations**: `total_cost` and `total_tokens` accessors calculate sums without additional queries
+- **Type Safety**: Helper methods like `isUser()` and `isAssistant()` improve code readability
+
+### Factory Classes
+
+For testing, create factory classes to generate test data:
+
+```php
+<?php
+# filename: database/factories/ConversationFactory.php
+declare(strict_types=1);
+
+namespace Database\Factories;
+
+use App\Models\Conversation;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class ConversationFactory extends Factory
+{
+    protected $model = Conversation::class;
+
+    public function definition(): array
+    {
+        return [
+            'user_id' => User::factory(),
+            'title' => $this->faker->sentence(4),
+            'system_prompt' => null,
+            'model' => 'claude-sonnet-4-20250514',
+            'metadata' => null,
+            'last_message_at' => now(),
+        ];
+    }
+
+    public function withSystemPrompt(string $prompt): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'system_prompt' => $prompt,
+        ]);
+    }
+
+    public function withModel(string $model): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'model' => $model,
+        ]);
+    }
+}
+```
+
+```php
+<?php
+# filename: database/factories/MessageFactory.php
+declare(strict_types=1);
+
+namespace Database\Factories;
+
+use App\Models\Conversation;
+use App\Models\Message;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class MessageFactory extends Factory
+{
+    protected $model = Message::class;
+
+    public function definition(): array
+    {
+        return [
+            'conversation_id' => Conversation::factory(),
+            'role' => $this->faker->randomElement(['user', 'assistant']),
+            'content' => $this->faker->paragraph(),
+            'input_tokens' => null,
+            'output_tokens' => null,
+            'cost' => null,
+            'metadata' => null,
+        ];
+    }
+
+    public function user(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'user',
+        ]);
+    }
+
+    public function assistant(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'assistant',
+            'input_tokens' => $this->faker->numberBetween(100, 500),
+            'output_tokens' => $this->faker->numberBetween(50, 300),
+            'cost' => $this->faker->randomFloat(6, 0.001, 0.1),
+        ]);
+    }
+}
+```
+
+**Why Factories Matter**: Factories make testing easier by generating realistic test data. They're especially useful for creating conversations with multiple messages for testing pagination, search, and context management.
+
 ## Chat Service
+
+The `ChatService` class encapsulates all chat-related business logic, handling message sending, streaming, cost calculation, and conversation management. This service layer keeps your controllers and Livewire components clean and focused on presentation.
 
 ```php
 <?php
@@ -297,12 +563,16 @@ class ChatService
             'content' => $content,
         ]);
 
-        // Get conversation history
-        $history = $conversation->formatted_messages;
+        // Get conversation history with context window management
+        // Limit to ~100k tokens to stay within Claude's context window
+        $history = $conversation->getFormattedMessagesForContext(100000);
+        
+        // Exclude the current user message from history
+        $previousMessages = array_slice($history, 0, -1);
 
         // Get response from Claude
         $result = Claude::withModel($conversation->model)
-            ->chat($content, array_slice($history, 0, -1), $conversation->system_prompt);
+            ->chat($content, $previousMessages, $conversation->system_prompt);
 
         // Calculate cost
         $cost = $this->calculateCost(
@@ -336,19 +606,23 @@ class ChatService
         string $content,
         callable $callback
     ): void {
-        // Create user message
-        $userMessage = $conversation->messages()->create([
+        // Create user message first
+        $conversation->messages()->create([
             'role' => 'user',
             'content' => $content,
         ]);
 
+        // Get conversation history with context window management
+        // Limit to ~100k tokens to stay within Claude's context window
+        $history = $conversation->getFormattedMessagesForContext(100000);
+        
+        // Exclude the last message (the user message we just created)
+        // to send only previous conversation history to Claude
+        $previousMessages = array_slice($history, 0, -1);
+
         $fullResponse = '';
-        $history = $conversation->formatted_messages;
 
-        // Build prompt with history
-        $messages = array_slice($history, 0, -1);
-
-        // Stream response
+        // Stream response from Claude
         Claude::withModel($conversation->model)
             ->stream(
                 $content,
@@ -357,16 +631,18 @@ class ChatService
                     $callback($chunk);
                 },
                 [
+                    'messages' => $previousMessages,
                     'system' => $conversation->system_prompt,
                 ]
             );
 
-        // Create assistant message with full response
+        // Create assistant message with full response after streaming completes
         $conversation->messages()->create([
             'role' => 'assistant',
             'content' => $fullResponse,
         ]);
 
+        // Update conversation timestamp and generate title if needed
         $conversation->update(['last_message_at' => now()]);
         $conversation->generateTitle();
     }
@@ -383,7 +659,17 @@ class ChatService
 }
 ```
 
+**Service Design Benefits:**
+
+- **Separation of Concerns**: Business logic is separated from presentation (Livewire components)
+- **Cost Tracking**: Automatic cost calculation based on model pricing and token usage
+- **Streaming Support**: Handles both synchronous and streaming responses
+- **History Management**: Properly manages conversation context for Claude API calls
+- **Reusability**: Can be used by controllers, jobs, commands, or any other part of your application
+
 ## Livewire Components
+
+Livewire components provide reactive UI without writing complex JavaScript. They handle user interactions, manage component state, and automatically update the DOM when data changes.
 
 ### Chat Component
 
@@ -406,9 +692,13 @@ class Chat extends Component
     public string $message = '';
     public bool $isStreaming = false;
     public string $streamingResponse = '';
+    public bool $showSettings = false;
+    public string $selectedModel = '';
+    public string $systemPrompt = '';
 
     protected $rules = [
         'message' => 'required|string|max:10000',
+        'systemPrompt' => 'nullable|string|max:5000',
     ];
 
     public function mount(?int $conversationId = null)
@@ -416,6 +706,8 @@ class Chat extends Component
         if ($conversationId) {
             $this->conversation = Conversation::where('user_id', Auth::id())
                 ->findOrFail($conversationId);
+            $this->selectedModel = $this->conversation->model;
+            $this->systemPrompt = $this->conversation->system_prompt ?? '';
         } else {
             $this->createNewConversation();
         }
@@ -425,10 +717,50 @@ class Chat extends Component
     {
         $this->conversation = Conversation::create([
             'user_id' => Auth::id(),
-            'model' => config('claude.default_model'),
+            'model' => $this->selectedModel ?: config('claude.default_model'),
+            'system_prompt' => $this->systemPrompt ?: null,
         ]);
 
+        $this->selectedModel = $this->conversation->model;
         $this->redirect(route('chat', ['conversation' => $this->conversation->id]));
+    }
+
+    public function updateSettings(): void
+    {
+        $this->validate(['systemPrompt' => 'nullable|string|max:5000']);
+
+        if ($this->conversation) {
+            $this->conversation->update([
+                'model' => $this->selectedModel,
+                'system_prompt' => $this->systemPrompt ?: null,
+            ]);
+        }
+
+        $this->showSettings = false;
+        $this->dispatch('settings-updated');
+    }
+
+    public function retryMessage(int $messageId): void
+    {
+        $message = $this->conversation->messages()->findOrFail($messageId);
+        
+        if ($message->role !== 'user') {
+            return;
+        }
+
+        // Delete the assistant response if it exists
+        $assistantMessage = $this->conversation->messages()
+            ->where('id', '>', $messageId)
+            ->where('role', 'assistant')
+            ->first();
+
+        if ($assistantMessage) {
+            $assistantMessage->delete();
+        }
+
+        // Resend the message
+        $this->message = $message->content;
+        $this->sendMessage(app(ChatService::class));
     }
 
     public function sendMessage(ChatService $chatService): void
@@ -501,8 +833,10 @@ use Livewire\Component;
 
 class ConversationList extends Component
 {
-    public $conversations;
+    public \Illuminate\Contracts\Pagination\LengthAwarePaginator $conversations;
     public ?int $activeConversationId = null;
+    public string $search = '';
+    public int $perPage = 20;
 
     public function mount(?int $activeId = null)
     {
@@ -512,10 +846,27 @@ class ConversationList extends Component
 
     public function loadConversations(): void
     {
-        $this->conversations = Conversation::where('user_id', Auth::id())
+        $query = Conversation::where('user_id', Auth::id());
+
+        // Add search functionality
+        if (!empty($this->search)) {
+            $query->where(function ($q) {
+                $q->where('title', 'like', '%' . $this->search . '%')
+                  ->orWhereHas('messages', function ($mq) {
+                      $mq->where('content', 'like', '%' . $this->search . '%');
+                  });
+            });
+        }
+
+        $this->conversations = $query
             ->orderBy('last_message_at', 'desc')
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate($this->perPage);
+    }
+
+    public function updatedSearch(): void
+    {
+        $this->loadConversations();
     }
 
     public function selectConversation(int $conversationId): void
@@ -544,7 +895,17 @@ class ConversationList extends Component
 }
 ```
 
+**Livewire Component Patterns:**
+
+- **Public Properties**: Automatically synced with the view and can be bound to form inputs
+- **Lifecycle Hooks**: `mount()` runs when the component is initialized, perfect for loading data
+- **Event Listeners**: `#[On('conversation-selected')]` listens for events from other components
+- **Validation**: Built-in validation rules provide client and server-side validation
+- **Error Handling**: Try-catch blocks ensure graceful error handling with user-friendly messages
+
 ## Views
+
+Blade templates provide the HTML structure, while Livewire handles the dynamic behavior. Alpine.js (included with Livewire) adds lightweight interactivity like auto-scrolling.
 
 ### Main Chat View
 
@@ -570,6 +931,12 @@ class ConversationList extends Component
             </button>
             @if($conversation)
                 <button
+                    wire:click="$set('showSettings', true)"
+                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                >
+                    Settings
+                </button>
+                <button
                     wire:click="deleteConversation"
                     wire:confirm="Are you sure you want to delete this conversation?"
                     class="px-4 py-2 text-sm font-medium text-red-700 bg-white border border-red-300 rounded-md hover:bg-red-50"
@@ -578,6 +945,53 @@ class ConversationList extends Component
                 </button>
             @endif
         </div>
+    </div>
+
+    <!-- Settings Modal -->
+    @if($showSettings && $conversation)
+        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" wire:click="$set('showSettings', false)">
+            <div class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4" wire:click.stop>
+                <h3 class="text-lg font-semibold mb-4">Conversation Settings</h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Model</label>
+                        <select wire:model="selectedModel" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="claude-opus-4-20250514">Claude Opus 4</option>
+                            <option value="claude-sonnet-4-20250514">Claude Sonnet 4</option>
+                            <option value="claude-haiku-4-20250514">Claude Haiku 4</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">System Prompt</label>
+                        <textarea
+                            wire:model="systemPrompt"
+                            rows="6"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                            placeholder="Enter a system prompt to guide Claude's behavior..."
+                        ></textarea>
+                        <p class="mt-1 text-xs text-gray-500">This prompt will be used for all messages in this conversation.</p>
+                    </div>
+                </div>
+                
+                <div class="mt-6 flex justify-end gap-2">
+                    <button
+                        wire:click="$set('showSettings', false)"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        wire:click="updateSettings"
+                        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+                    >
+                        Save Settings
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
     </div>
 
     <!-- Messages Container -->
@@ -600,12 +1014,25 @@ class ConversationList extends Component
                             <div class="prose prose-sm max-w-none {{ $message->isUser() ? 'prose-invert' : '' }}">
                                 {!! Str::markdown($message->content) !!}
                             </div>
-                            @if($message->isAssistant() && $message->cost)
-                                <div class="mt-2 text-xs text-gray-500">
-                                    Cost: ${{ number_format($message->cost, 6) }} •
-                                    Tokens: {{ $message->input_tokens + $message->output_tokens }}
-                                </div>
-                            @endif
+                            <div class="mt-2 flex items-center gap-3">
+                                @if($message->isAssistant() && $message->cost)
+                                    <div class="text-xs text-gray-500">
+                                        Cost: ${{ number_format($message->cost, 6) }} •
+                                        Tokens: {{ $message->input_tokens + $message->output_tokens }}
+                                    </div>
+                                @endif
+                                @if($message->isUser())
+                                    <button
+                                        wire:click="retryMessage({{ $message->id }})"
+                                        wire:loading.attr="disabled"
+                                        class="text-xs text-blue-600 hover:text-blue-800 disabled:opacity-50"
+                                        title="Retry this message"
+                                    >
+                                        <span wire:loading.remove wire:target="retryMessage({{ $message->id }})">Retry</span>
+                                        <span wire:loading wire:target="retryMessage({{ $message->id }})">Retrying...</span>
+                                    </button>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -677,6 +1104,14 @@ class ConversationList extends Component
 @endscript
 ```
 
+**View Features:**
+
+- **Markdown Rendering**: Uses Laravel's `Str::markdown()` helper to render Claude's responses with proper formatting
+- **Streaming Display**: Shows streaming responses in real-time with a pulsing icon indicator
+- **Auto-scroll**: Alpine.js automatically scrolls to the bottom when new messages arrive
+- **Cost Display**: Shows per-message costs and token counts for transparency
+- **Responsive Design**: TailwindCSS classes ensure the UI works on all screen sizes
+
 ### Conversation List View
 
 ```blade
@@ -687,6 +1122,16 @@ class ConversationList extends Component
     </div>
 
     <div class="flex-1 overflow-y-auto">
+        <!-- Search Bar -->
+        <div class="p-4 border-b border-gray-200 bg-white">
+            <input
+                type="text"
+                wire:model.live.debounce.300ms="search"
+                placeholder="Search conversations..."
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+        </div>
+
         @forelse($conversations as $conversation)
             <button
                 wire:click="selectConversation({{ $conversation->id }})"
@@ -724,6 +1169,11 @@ class ConversationList extends Component
                 <p class="text-xs mt-1">Start a new chat to begin</p>
             </div>
         @endforelse
+
+        <!-- Pagination -->
+        <div class="p-4 border-t border-gray-200 bg-white">
+            {{ $conversations->links() }}
+        </div>
     </div>
 </div>
 ```
@@ -753,15 +1203,82 @@ class ConversationList extends Component
 <?php
 # filename: routes/web.php
 
+use App\Http\Controllers\ConversationController;
 use App\Livewire\Chat;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/chat/{conversation?}', Chat::class)->name('chat');
+    
+    // Optional: Add export route if using the ConversationController
+    Route::get('/conversations/{conversation}/export', [ConversationController::class, 'export'])
+        ->name('conversations.export');
 });
 ```
 
+**Why This Route Structure:**
+
+- **Single Route**: Livewire handles all chat interactions through one route
+- **Optional Parameter**: Allows both new conversations (`/chat`) and existing ones (`/chat/123`)
+- **Middleware Protection**: Ensures only authenticated users can access conversations
+
 ## Advanced Features
+
+### Context Window Management
+
+The `getFormattedMessagesForContext()` method automatically manages conversation history to stay within Claude's context window limits. It:
+
+- Estimates token usage (rough approximation: 1 token ≈ 4 characters)
+- Keeps the most recent messages that fit within the limit
+- Ensures older messages are excluded when approaching the context limit
+- Maintains conversation flow by prioritizing recent context
+
+**Usage**: This is automatically called by `ChatService` when sending messages, so no manual intervention is needed.
+
+### Pagination
+
+Conversation lists are paginated to improve performance with many conversations:
+
+- Default: 20 conversations per page
+- Configurable via `$perPage` property
+- Uses Laravel's built-in pagination
+- Works seamlessly with search functionality
+
+### Search Functionality
+
+Users can search conversations by:
+
+- Conversation title
+- Message content within conversations
+- Real-time search with 300ms debounce
+- Pagination works with search results
+
+### Model Selection
+
+Users can switch Claude models per conversation:
+
+- Available models: Opus 4, Sonnet 4, Haiku 4
+- Changes apply to all future messages in the conversation
+- Model selection persists with the conversation
+- Cost tracking adjusts automatically based on selected model
+
+### System Prompt Management
+
+Each conversation can have a custom system prompt:
+
+- Editable via the Settings modal
+- Applies to all messages in the conversation
+- Useful for role-playing, specific behaviors, or domain-specific instructions
+- Stored per conversation, not globally
+
+### Message Retry
+
+Users can retry failed or unsatisfactory messages:
+
+- "Retry" button appears on user messages
+- Deletes the previous assistant response
+- Resends the user message automatically
+- Useful for handling API errors or getting different responses
 
 ### Rate Limiting
 
@@ -839,11 +1356,11 @@ class ConversationExporter
 
     public function exportAsJson(Conversation $conversation): string
     {
-        return json_encode([
+        $data = [
             'id' => $conversation->id,
             'title' => $conversation->title,
             'model' => $conversation->model,
-            'created_at' => $conversation->created_at,
+            'created_at' => $conversation->created_at->toIso8601String(),
             'messages' => $conversation->messages->map(function ($message) {
                 return [
                     'role' => $message->role,
@@ -852,13 +1369,21 @@ class ConversationExporter
                         'input' => $message->input_tokens,
                         'output' => $message->output_tokens,
                     ],
-                    'cost' => $message->cost,
-                    'created_at' => $message->created_at,
+                    'cost' => $message->cost ? (float) $message->cost : null,
+                    'created_at' => $message->created_at->toIso8601String(),
                 ];
-            }),
+            })->toArray(),
             'total_cost' => $conversation->total_cost,
             'total_tokens' => $conversation->total_tokens,
-        ], JSON_PRETTY_PRINT);
+        ];
+
+        $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        
+        if ($json === false) {
+            throw new \RuntimeException('Failed to encode conversation as JSON: ' . json_last_error_msg());
+        }
+
+        return $json;
     }
 }
 ```
@@ -955,11 +1480,13 @@ class ChatTest extends TestCase
 
         $this->app->instance(ChatService::class, $mockService);
 
+        // Note: This test assumes you have a POST route for sending messages
+        // In a real implementation, you might use Livewire's test methods instead
         $this->actingAs($user)
-            ->post(route('chat.send', $conversation), [
-                'message' => 'Hello',
-            ])
-            ->assertStatus(200);
+            ->livewire(Chat::class, ['conversationId' => $conversation->id])
+            ->set('message', 'Hello')
+            ->call('sendMessage')
+            ->assertHasNoErrors();
     }
 
     public function test_user_cannot_access_other_users_conversations(): void
@@ -980,56 +1507,154 @@ class ChatTest extends TestCase
 
 ### Exercise 1: Add Message Editing
 
-Allow users to edit their previous messages:
+**Goal**: Allow users to edit their previous messages and regenerate Claude's response.
+
+**Requirements:**
+
+- Add `edited_at` timestamp column to `messages` table
+- Create a Livewire method `editMessage()` that:
+  - Verifies the message belongs to the authenticated user
+  - Updates the message content
+  - Stores the original content in `metadata` for history
+  - Marks the message as edited with a timestamp
+  - Optionally regenerates Claude's response
+- Add UI controls (edit button, inline editing) to the chat view
+- Show "edited" indicator in the message UI
+
+**Validation**: Test that:
+- Users can only edit their own messages
+- Edited messages show an "edited" indicator
+- Original content is preserved in metadata
+- Regenerated responses maintain conversation context
 
 ```php
 <?php
+# filename: app/Livewire/Chat.php
 public function editMessage(int $messageId, string $newContent): void
 {
-    // TODO: Find message, verify ownership
-    // TODO: Update message content
-    // TODO: Mark as edited with timestamp
+    $message = Message::where('id', $messageId)
+        ->whereHas('conversation', fn($q) => $q->where('user_id', Auth::id()))
+        ->firstOrFail();
+    
+    if ($message->role !== 'user') {
+        throw new \Exception('Only user messages can be edited');
+    }
+    
+    $message->update([
+        'content' => $newContent,
+        'edited_at' => now(),
+        'metadata' => array_merge($message->metadata ?? [], [
+            'edit_history' => array_merge($message->metadata['edit_history'] ?? [], [
+                [
+                    'original_content' => $message->content,
+                    'edited_at' => now()->toIso8601String(),
+                ]
+            ])
+        ])
+    ]);
+    
+    // Optionally regenerate Claude's response
+    // $this->regenerateResponse($message);
 }
 ```
 
 ### Exercise 2: Implement Conversation Folders
 
-Add folder organization for conversations:
+**Goal**: Add folder organization so users can organize conversations into categories.
+
+**Requirements:**
+
+- Create `conversation_folders` migration with:
+  - `id`, `user_id`, `name`, `color` (hex color), `order`, `timestamps`
+- Add `folder_id` foreign key to `conversations` table
+- Create `ConversationFolder` model with relationships
+- Update `ConversationList` component to:
+  - Show folders in sidebar
+  - Allow creating/editing/deleting folders
+  - Filter conversations by folder
+  - Drag-and-drop conversations between folders
+- Add folder management UI (create, rename, delete, change color)
+
+**Validation**: Test that:
+- Users can only access their own folders
+- Conversations can be moved between folders
+- Deleting a folder moves conversations to "Uncategorized"
+- Folder colors persist and display correctly
 
 ```php
 <?php
+# filename: app/Models/ConversationFolder.php
 class ConversationFolder extends Model
 {
-    // TODO: Create migration
-    // TODO: Add relationships
-    // TODO: Update UI to show folders
+    protected $fillable = ['user_id', 'name', 'color', 'order'];
+    
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+    
+    public function conversations(): HasMany
+    {
+        return $this->hasMany(Conversation::class)->orderBy('last_message_at', 'desc');
+    }
 }
 ```
 
 ### Exercise 3: Add Message Reactions
 
-Let users react to assistant messages:
+**Goal**: Let users provide feedback on assistant messages with reactions (thumbs up/down).
+
+**Requirements:**
+
+- Create `message_reactions` migration with:
+  - `id`, `message_id`, `user_id`, `type` (enum: 'positive', 'negative'), `timestamps`
+  - Unique constraint on `message_id` + `user_id` (one reaction per user per message)
+- Create `MessageReaction` model with relationships
+- Add reaction buttons to assistant messages in the chat view
+- Track reactions in analytics for quality improvement
+- Show reaction counts in the UI
+- Add API endpoint to fetch reaction statistics
+
+**Validation**: Test that:
+- Users can only react to assistant messages
+- Users can change their reaction (update existing)
+- Reaction counts are accurate
+- Analytics can aggregate reaction data
 
 ```php
 <?php
+# filename: app/Models/MessageReaction.php
 class MessageReaction extends Model
 {
-    // TODO: Migration for reactions (thumbs up/down)
-    // TODO: Track feedback for quality improvement
-    // TODO: UI component for reactions
+    protected $fillable = ['message_id', 'user_id', 'type'];
+    
+    public function message(): BelongsTo
+    {
+        return $this->belongsTo(Message::class);
+    }
+    
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+    
+    public function scopePositive($query)
+    {
+        return $query->where('type', 'positive');
+    }
+    
+    public function scopeNegative($query)
+    {
+        return $query->where('type', 'negative');
+    }
 }
 ```
 
-<details>
-<summary>Solution Hints</summary>
+**Additional Considerations:**
 
-**Exercise 1**: Add `edited_at` column to messages table. Create Livewire method to toggle edit mode. Store original content in `metadata` for history.
-
-**Exercise 2**: Create `conversation_folders` table with `user_id`, `name`, `color`. Add `folder_id` to conversations. Update sidebar to group by folder.
-
-**Exercise 3**: Create `message_reactions` table with `message_id`, `user_id`, `type` (positive/negative). Add buttons to message UI. Track in analytics.
-
-</details>
+- **Exercise 1**: Consider adding a "Regenerate Response" button that calls Claude again with the edited message
+- **Exercise 2**: Implement drag-and-drop using Alpine.js or a library like Sortable.js
+- **Exercise 3**: Create a dashboard showing reaction analytics to identify which responses users find helpful
 
 ## Troubleshooting
 
@@ -1049,9 +1674,127 @@ class MessageReaction extends Model
 - Cache recent conversations in Redis
 
 **Memory issues with long conversations?**
-- Implement context window management
-- Truncate old messages before sending to Claude
-- Store summarized history for very old messages
+- Context window management is automatically handled by `getFormattedMessagesForContext()`
+- Old messages are automatically excluded when approaching token limits
+- Consider implementing message summarization for very old conversations
+
+**Search not working?**
+- Ensure the search input is properly bound with `wire:model.live.debounce.300ms`
+- Check that database indexes exist on `title` and `messages.content` columns
+- Verify the `loadConversations()` method is being called on search updates
+
+**Settings not saving?**
+- Verify the `updateSettings()` method validates input properly
+- Check that the conversation belongs to the authenticated user
+- Ensure the modal is properly closed after saving
+
+**Pagination not showing?**
+- Verify `$conversations` is a paginated result, not a collection
+- Check that `paginate()` is called instead of `get()` in `loadConversations()`
+- Ensure Livewire pagination component is included
+
+## Deployment Considerations
+
+Before deploying to production, consider these important aspects:
+
+### Queue Workers
+
+For better performance, process long-running Claude requests via queues:
+
+```php
+# In ChatService, dispatch to queue for long conversations
+if ($conversation->messages()->count() > 50) {
+    ProcessChatMessage::dispatch($conversation, $content);
+    return;
+}
+```
+
+**Setup**:
+```bash
+# Start queue worker
+php artisan queue:work --tries=3 --timeout=300
+```
+
+### Caching Strategy
+
+Cache frequently accessed data:
+
+```php
+// Cache conversation list
+$conversations = Cache::remember("user_conversations_{$userId}", 300, function () {
+    return Conversation::where('user_id', $userId)->get();
+});
+```
+
+### Database Optimization
+
+- Add indexes on frequently queried columns
+- Consider partitioning the `messages` table by date for very large datasets
+- Use database read replicas for read-heavy workloads
+
+### Rate Limiting
+
+Configure rate limiting per user to prevent abuse:
+
+```php
+// In routes/web.php
+Route::middleware(['auth', 'throttle:60,1'])->group(function () {
+    Route::get('/chat/{conversation?}', Chat::class)->name('chat');
+});
+```
+
+### Monitoring
+
+Set up monitoring for:
+
+- API response times
+- Error rates
+- Cost per user/conversation
+- Queue processing times
+- Database query performance
+
+### Environment Variables
+
+Ensure these are set in production:
+
+```env
+ANTHROPIC_API_KEY=your_key_here
+CLAUDE_DEFAULT_MODEL=claude-sonnet-4-20250514
+QUEUE_CONNECTION=redis
+CACHE_DRIVER=redis
+SESSION_DRIVER=redis
+```
+
+### Security Checklist
+
+- [ ] Verify authentication middleware on all routes
+- [ ] Ensure user can only access their own conversations
+- [ ] Validate all user inputs
+- [ ] Sanitize conversation titles and messages
+- [ ] Implement CSRF protection (Livewire handles this automatically)
+- [ ] Rate limit API calls per user
+- [ ] Log all API errors for monitoring
+- [ ] Use HTTPS in production
+- [ ] Set secure session cookies
+- [ ] Implement proper error handling (don't expose API keys)
+
+## Wrap-up
+
+Congratulations! You've built a complete, production-ready chatbot application with Laravel, Livewire, and Claude. Here's what you've accomplished:
+
+- ✓ **Database Architecture**: Designed a scalable schema with conversations and messages, including proper relationships, indexes, and soft deletes
+- ✓ **Eloquent Models**: Created `Conversation` and `Message` models with relationships, accessors, and business logic methods
+- ✓ **Chat Service**: Built a service class that handles message sending, streaming, cost calculation, and conversation management
+- ✓ **Livewire Components**: Created reactive UI components for chat and conversation list management
+- ✓ **Real-time Streaming**: Implemented streaming responses using Server-Sent Events for better user experience
+- ✓ **User Authentication**: Integrated Laravel's authentication system to ensure users only access their own conversations
+- ✓ **Cost Tracking**: Implemented per-message cost and token tracking for analytics and budgeting
+- ✓ **Rate Limiting**: Added middleware to prevent abuse and control API costs
+- ✓ **Export Functionality**: Built conversation export in both Markdown and JSON formats
+- ✓ **Comprehensive Testing**: Created test suite with proper mocking and database testing
+- ✓ **Beautiful UI**: Designed a modern, responsive chat interface with TailwindCSS
+
+You now have a fully-functional chatbot application that can handle multiple users, maintain conversation history, stream responses in real-time, and provide a professional chat experience. The architecture is clean, maintainable, and ready for production deployment.
 
 ## Key Takeaways
 
@@ -1063,6 +1806,18 @@ class MessageReaction extends Model
 - ✓ **Export Functionality** provides data portability
 - ✓ **Rate Limiting** prevents abuse and controls costs
 - ✓ **Clean Architecture** makes the system maintainable and testable
+
+## Further Reading
+
+- [Laravel Livewire Documentation](https://livewire.laravel.com/docs) — Official Livewire documentation for reactive components
+- [Laravel Eloquent Relationships](https://laravel.com/docs/eloquent-relationships) — Complete guide to Eloquent relationships
+- [Laravel Broadcasting](https://laravel.com/docs/broadcasting) — Real-time event broadcasting for WebSockets
+- [Server-Sent Events (SSE) Specification](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) — Understanding SSE for streaming
+- [Anthropic Claude API Documentation](https://docs.claude.com) — Official Claude API reference
+- [Laravel Rate Limiting](https://laravel.com/docs/rate-limiting) — Built-in rate limiting features
+- [Chapter 21: Laravel Integration Patterns](/series/claude-php-developers/chapters/21-laravel-integration) — Foundation for Laravel integration
+- [Chapter 20: Real-time Chat with WebSockets](/series/claude-php-developers/chapters/20-realtime-chat-websockets) — Related chapter on real-time systems
+- [Chapter 23: Claude-Powered Form Validation](/series/claude-php-developers/chapters/23-ai-form-validation) — Next chapter on AI-powered validation
 
 <ChapterCheckbox
   seriesId="claude-php-developers"

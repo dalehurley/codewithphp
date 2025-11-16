@@ -35,7 +35,7 @@ By the end of this chapter, you'll understand how to build class hierarchies in 
 ## What You'll Build
 
 In this chapter, you'll create:
-- A Shape hierarchy with Circle, Rectangle, and Triangle
+- A Shape hierarchy with Circle and Rectangle using abstract classes
 - An employee management system with inheritance
 - An abstract repository pattern implementation
 - A payment processing system demonstrating polymorphism
@@ -599,7 +599,7 @@ You can make methods MORE visible (protected → public) but NOT less visible (p
 
 ### Return Type Compatibility
 
-PHP 7.4+ enforces return type compatibility (covariance):
+PHP 7.4+ (including PHP 8.4) enforces return type compatibility (covariance):
 
 ```php
 <?php
@@ -619,7 +619,7 @@ class AnimalFactory
 
 class DogFactory extends AnimalFactory
 {
-    // ✅ Covariant return type (PHP 7.4+)
+    // ✅ Covariant return type (PHP 7.4+, PHP 8.4 compatible)
     public function create(): Dog
     {
         return new Dog();
@@ -1809,6 +1809,272 @@ echo "\nManagers: " . count($managers) . "\n";
 
 ---
 
+## Section 11: Advanced Inheritance Topics
+
+### Goal
+Explore advanced inheritance concepts and runtime introspection in PHP.
+
+### Runtime Inheritance Inspection
+
+PHP provides powerful functions to inspect inheritance relationships at runtime:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+class Vehicle {
+    protected string $model;
+    
+    public function __construct(string $model) {
+        $this->model = $model;
+    }
+}
+
+class Car extends Vehicle {
+    private int $doors;
+    
+    public function __construct(string $model, int $doors) {
+        parent::__construct($model);
+        $this->doors = $doors;
+    }
+}
+
+class SportsCar extends Car {
+    private int $horsepower;
+    
+    public function __construct(string $model, int $doors, int $horsepower) {
+        parent::__construct($model, $doors);
+        $this->horsepower = $horsepower;
+    }
+}
+
+// Runtime inspection
+$sportsCar = new SportsCar("Ferrari", 2, 650);
+
+echo get_class($sportsCar);                    // "SportsCar"
+echo get_parent_class($sportsCar);             // "Car"
+echo get_parent_class(\Car::class);            // "Vehicle"
+echo get_parent_class(\Vehicle::class);        // false (no parent)
+
+// Check if a class is a subclass
+if (is_subclass_of($sportsCar, \Vehicle::class)) {
+    echo "SportsCar is a subclass of Vehicle";
+}
+
+// Get all interfaces implemented
+$interfaces = class_implements($sportsCar);
+print_r($interfaces);
+
+// Reflection for advanced inspection
+$reflection = new \ReflectionClass($sportsCar);
+echo "Parent: " . $reflection->getParentClass()->getName() . "\n";
+echo "All methods: " . implode(", ", array_map(fn($m) => $m->getName(), $reflection->getMethods()));
+```
+
+### Object Cloning in Inheritance
+
+When cloning objects in inheritance hierarchies, you need to handle nested objects properly:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+class Engine {
+    public int $horsepower;
+    public string $type;
+    
+    public function __construct(int $horsepower, string $type) {
+        $this->horsepower = $horsepower;
+        $this->type = $type;
+    }
+}
+
+class Vehicle {
+    protected string $model;
+    protected Engine $engine;
+    
+    public function __construct(string $model, Engine $engine) {
+        $this->model = $model;
+        $this->engine = $engine;
+    }
+    
+    public function __clone(): void {
+        // Deep clone the engine to prevent shared references
+        $this->engine = clone $this->engine;
+    }
+}
+
+class Car extends Vehicle {
+    private int $doors;
+    
+    public function __construct(string $model, Engine $engine, int $doors) {
+        parent::__construct($model, $engine);
+        $this->doors = $doors;
+    }
+    
+    public function __clone(): void {
+        parent::__clone(); // Don't forget to call parent
+        // Add custom cloning if needed
+    }
+}
+
+$original = new Car("BMW", new Engine(250, "V6"), 4);
+$clone = clone $original;
+
+// Modify cloned object
+$clone->engine->horsepower = 300;
+
+// Original remains untouched thanks to __clone()
+echo $original->engine->horsepower;  // 250
+```
+
+### Design Decision: Abstract Classes vs Interfaces
+
+Here's a systematic approach for choosing between abstract classes and interfaces:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// Use Abstract Class when:
+// 1. You have shared implementation
+// 2. Classes have an "is-a" relationship
+// 3. You need protected members
+// 4. You want to share state
+abstract class AbstractVehicle {
+    protected string $licensePlate;
+    
+    public function __construct(string $licensePlate) {
+        $this->licensePlate = $licensePlate;
+    }
+    
+    // Shared implementation
+    protected function getFormattedLicense(): string {
+        return "License: " . $this->licensePlate;
+    }
+    
+    abstract public function startEngine(): void;
+}
+
+// Use Interface when:
+// 1. You only define contracts
+// 2. Classes can do something (capabilities)
+// 3. Multiple inheritance needed
+interface Drivable {
+    public function drive(float $distance): float;
+}
+
+interface Parkingable {
+    public function park(): void;
+}
+
+class ElectricCar extends AbstractVehicle implements Drivable, Parkingable {
+    private float $batteryLevel;
+    
+    public function __construct(string $licensePlate, float $batteryLevel = 100.0) {
+        parent::__construct($licensePlate);
+        $this->batteryLevel = $batteryLevel;
+    }
+    
+    public function startEngine(): void {
+        echo "Electric engine starting silently...";
+    }
+    
+    public function drive(float $distance): float {
+        $used = $distance * 0.5; // kWh per km
+        $this->batteryLevel -= $used;
+        return $this->batteryLevel;
+    }
+    
+    public function park(): void {
+        echo "Electric car parking and charging...";
+    }
+}
+```
+
+### Inheritance and Serialization
+
+Here's how inheritance affects object serialization:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+class Person {
+    public string $name;
+    public int $age;
+    
+    public function __construct(string $name, int $age) {
+        $this->name = $name;
+        $this->age = $age;
+    }
+    
+    public function __serialize(): array {
+        return ['name' => $this->name, 'age' => $this->age];
+    }
+    
+    public function __unserialize(array $data): void {
+        $this->name = $data['name'];
+        $this->age = $data['age'];
+    }
+}
+
+class Employee extends Person {
+    private string $employeeId;
+    protected float $salary;
+    
+    public function __construct(string $name, int $age, string $employeeId, float $salary) {
+        parent::__construct($name, $age);
+        $this->employeeId = $employeeId;
+        $this->salary = $salary;
+    }
+    
+    public function __serialize(): array {
+        return array_merge(parent::__serialize(), [
+            'employeeId' => $this->employeeId,
+            'salary' => $this->salary
+        ]);
+    }
+    
+    public function __unserialize(array $data): void {
+        parent::__unserialize($data);
+        $this->employeeId = $data['employeeId'];
+        $this->salary = $data['salary'];
+    }
+}
+
+$employee = new Employee("Alice", 30, "EMP123", 75000);
+$serialized = serialize($employee);
+$unserialized = unserialize($serialized);
+
+echo "Unserialized: " . $unserialized->name . " - " . $unserialized->employeeId;
+```
+
+::: tip Inheritance Design Guide
+**Use Abstract Class when:**
+- You have shared implementation code
+- Classes have a true "is-a" relationship
+- You need protected members or state sharing
+- You want to use final methods for critical logic
+
+**Use Interface when:**
+- You need multiple inheritance
+- Classes only need contracts (no implementation)
+- You want to define capabilities ("can-do")
+- You need maximum flexibility
+
+**Use Traits** (Chapter 5) **when:**
+- You need code reuse without inheritance
+- You want horizontal composition
+- Single inheritance limitation is a problem
+:::
+
+---
+
 ## Exercises
 
 ### Exercise 1: Vehicle Hierarchy
@@ -2030,6 +2296,86 @@ foreach ($notifications as $notification) {
 
 </details>
 
+### Exercise 3: Inheritance Inspector
+
+Build a tool to inspect inheritance relationships at runtime.
+
+**Requirements:**
+- Use `get_parent_class()`, `is_subclass_of()`, and reflection
+- Display class hierarchy tree (parent → child → grandchild)
+- Show implemented interfaces
+- Compare regular `clone` vs deep clone behavior
+
+<details>
+<summary>Solution</summary>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+class InheritanceInspector {
+    public static function inspectClass(string $className): array {
+        $reflection = new \ReflectionClass($className);
+        
+        return [
+            'class' => $className,
+            'parent' => $reflection->getParentClass()?->getName(),
+            'interfaces' => class_implements($className) ?: [],
+            'methods' => array_map(fn($m) => $m->getName(), $reflection->getMethods()),
+            'properties' => array_keys($reflection->getDefaultProperties())
+        ];
+    }
+
+    public static function showHierarchy(string $className, int $indent = 0): void {
+        $spaces = str_repeat("  ", $indent);
+        echo $spaces . "├── " . $className . "\n";
+        
+        if ($parent = \get_parent_class($className)) {
+            self::showHierarchy($parent, $indent + 1);
+        }
+    }
+}
+
+// Test classes
+class Vehicle {
+    public string $type;
+    public function __construct(string $type) { $this->type = $type; }
+}
+
+class Engine {
+    public int $horsepower;
+    public function __construct(int $horsepower) { $this->horsepower = $horsepower; }
+    public function __clone(): void {
+        echo "Engine cloned\n";
+    }
+}
+
+class Car extends Vehicle {
+    private Engine $engine;
+    public function __construct(string $type, Engine $engine) {
+        parent::__construct($type);
+        $this->engine = $engine;
+    }
+    public function __clone(): void {
+        echo "Deep cloning Car...\n";
+        $this->engine = clone $this->engine;
+    }
+}
+
+// Test the inspector
+$info = InheritanceInspector::inspectClass(Car::class);
+print_r($info);
+
+InheritanceInspector::showHierarchy(Car::class);
+
+// Test cloning
+$original = new Car("Sedan", new Engine(200));
+$clone = clone $original;
+```
+
+</details>
+
 ---
 
 ## Wrap-up Checklist
@@ -2049,6 +2395,12 @@ Before moving to the next chapter, ensure you can:
 ::: tip Ready for More?
 In [Chapter 5: Interfaces & Traits](/series/php-for-java-developers/chapters/05-interfaces-and-traits), we'll explore interfaces (similar to Java) and traits (a PHP-specific feature for code reuse).
 :::
+
+<ChapterCheckbox 
+  seriesId="php-for-java-developers"
+  chapterId="04"
+  label="Mastered PHP inheritance, abstract classes, and polymorphism!"
+/>
 
 ---
 

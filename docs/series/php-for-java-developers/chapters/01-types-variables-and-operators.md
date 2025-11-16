@@ -17,7 +17,7 @@ prerequisites:
 
 ## Overview
 
-Coming from Java's strongly-typed world, PHP's dynamic typing might seem foreign at first. However, modern PHP (7.4+) offers optional static typing that brings it closer to Java's type safety. In this chapter, we'll explore PHP's type system, understand how variables work, and learn operators—all while comparing to Java equivalents.
+Coming from Java's strongly-typed world, PHP's dynamic typing might seem foreign at first. However, modern PHP (8.0+) offers optional static typing that brings it closer to Java's type safety. PHP 8.4 includes advanced type features like union types, intersection types, and improved type inference. In this chapter, we'll explore PHP's type system, understand how variables work, and learn operators—all while comparing to Java equivalents.
 
 By the end of this chapter, you'll understand how to write type-safe PHP code that feels familiar to your Java background.
 
@@ -29,7 +29,7 @@ By the end of this chapter, you'll understand how to write type-safe PHP code th
 
 **What you need:**
 - Completed [Chapter 0: Setup & First Comparison](/series/php-for-java-developers/chapters/00-setup-and-first-comparison)
-- PHP 8.3 installed and working
+- PHP 8.4 installed and working
 - IDE configured for PHP development
 - Understanding of Java's primitive and object types
 
@@ -39,7 +39,10 @@ In this chapter, you'll create:
 - A type-safe data validation class
 - A utility library for type conversions
 - A demonstration of PHP's type juggling vs strict types
-- Operator examples comparing PHP and Java
+- Operator examples comparing PHP and Java (including bitwise operations)
+- Constants and configuration examples
+- Scope demonstration scripts
+- Reference-based utility functions
 
 ## Learning Objectives
 
@@ -51,6 +54,10 @@ By the end of this chapter, you'll be able to:
 - **Leverage compound types** (arrays, objects, callables)
 - **Apply strict typing** to catch type errors early
 - **Use operators effectively** including PHP-specific ones
+- **Define and use constants** (global and class-level)
+- **Understand variable scope** (global, local, static)
+- **Work with references** (pass-by-reference vs pass-by-value)
+- **Apply bitwise operators** for flags and low-level operations
 
 ---
 
@@ -315,6 +322,590 @@ String html = """
 
 ---
 
+## Section 2.5: Constants
+
+### Goal
+
+Understand PHP constants and how they differ from Java's `final` variables.
+
+### Global Constants
+
+PHP supports two ways to define constants:
+
+::: code-group
+
+```php [PHP Constants]
+<?php
+
+declare(strict_types=1);
+
+// Method 1: define() function (runtime)
+define('APP_NAME', 'My Application');
+define('MAX_USERS', 100);
+define('PI', 3.14159);
+
+// Method 2: const keyword (compile-time, PHP 5.3+)
+const APP_VERSION = '1.0.0';
+const DEBUG_MODE = true;
+
+// Constants are case-sensitive by default
+define('SITE_URL', 'https://example.com');
+
+// Access constants (no $ prefix!)
+echo APP_NAME;        // "My Application"
+echo MAX_USERS;       // 100
+echo APP_VERSION;     // "1.0.0"
+
+// Check if constant exists
+if (defined('APP_NAME')) {
+    echo "APP_NAME is defined";
+}
+
+// Constants cannot be redefined
+define('APP_NAME', 'New Name');  // ⚠️ Warning: Constant already defined
+
+// Constants are global by default
+function showAppName(): void {
+    echo APP_NAME;  // Works - constants are accessible everywhere
+}
+```
+
+```java [Java Constants]
+// Java uses final keyword
+public class Constants {
+    // Class constants (static final)
+    public static final String APP_NAME = "My Application";
+    public static final int MAX_USERS = 100;
+    public static final double PI = 3.14159;
+    
+    // Instance constants (final)
+    private final String appVersion = "1.0.0";
+    
+    // Method to access
+    public void showAppName() {
+        System.out.println(APP_NAME);  // Access via class name
+    }
+}
+
+// Access constants
+System.out.println(Constants.APP_NAME);  // "My Application"
+```
+
+:::
+
+### Key Differences
+
+| Aspect | Java | PHP |
+|--------|------|-----|
+| **Syntax** | `static final TYPE NAME = value;` | `define('NAME', value);` or `const NAME = value;` |
+| **Scope** | Class-level or instance-level | Global by default |
+| **Access** | `ClassName.CONSTANT` or `instance.constant` | Direct name (no prefix) |
+| **Type** | Must declare type | Inferred from value |
+| **Redefinition** | Compile error | Runtime warning (ignored) |
+| **Case Sensitivity** | Case-sensitive | Case-sensitive (can use `define()` with 3rd param) |
+
+### When to Use Each Method
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// Use define() for:
+// - Conditional constants
+if ($environment === 'production') {
+    define('DEBUG_MODE', false);
+} else {
+    define('DEBUG_MODE', true);
+}
+
+// - Constants in functions/conditionals
+function setupConstants(): void {
+    define('DYNAMIC_CONSTANT', getValueFromConfig());
+}
+
+// Use const for:
+// - Class constants (covered in Chapter 3)
+// - Top-level constants (always available)
+const API_VERSION = '2.0';
+const MAX_RETRIES = 3;
+
+// - Better performance (compile-time)
+const CACHE_TTL = 3600;
+```
+
+::: tip Best Practice for Java Developers
+- Use `const` for simple, always-available constants (like Java's `static final`)
+- Use `define()` only when you need conditional or dynamic constant definition
+- Prefer class constants (Chapter 3) for better organization
+- Constants are global - be careful with naming to avoid conflicts
+:::
+
+### Magic Constants
+
+PHP provides special constants that change based on context:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// File and line information
+echo __FILE__;      // Current file path
+echo __LINE__;      // Current line number
+echo __DIR__;       // Directory of current file
+
+// Function and class information
+function example(): void {
+    echo __FUNCTION__;  // "example"
+    echo __METHOD__;    // "example" (or "ClassName::example" in class)
+}
+
+class Example {
+    public function method(): void {
+        echo __CLASS__;     // "Example"
+        echo __METHOD__;    // "Example::method"
+        echo __NAMESPACE__; // Namespace (if any)
+    }
+}
+```
+
+**Java equivalent:**
+```java
+// Java doesn't have magic constants
+// Use reflection or stack traces for similar info
+public class Example {
+    public void method() {
+        String className = this.getClass().getName();
+        String methodName = Thread.currentThread()
+            .getStackTrace()[1].getMethodName();
+    }
+}
+```
+
+---
+
+## Section 2.6: Variable Scope
+
+### Goal
+
+Understand PHP's variable scope and how it differs from Java's scoping rules.
+
+### Variable Scope Overview
+
+PHP has different scoping rules than Java:
+
+::: code-group
+
+```php [PHP Variable Scope]
+<?php
+
+declare(strict_types=1);
+
+// Global scope
+$globalVar = "I'm global";
+
+function testFunction(): void {
+    // Local scope - $globalVar is NOT accessible here
+    $localVar = "I'm local";
+    echo $localVar;  // ✅ Works
+    
+    // echo $globalVar;  // ❌ Undefined variable error!
+    
+    // Access global variable using 'global' keyword
+    global $globalVar;
+    echo $globalVar;  // ✅ Now works
+    
+    // Or use $GLOBALS superglobal
+    echo $GLOBALS['globalVar'];  // ✅ Also works
+}
+
+// Static variables (persist between function calls)
+function counter(): int {
+    static $count = 0;  // Initialized only once
+    $count++;
+    return $count;
+}
+
+echo counter();  // 1
+echo counter();  // 2
+echo counter();  // 3
+
+// Each function call maintains its own static variable
+function anotherCounter(): int {
+    static $count = 0;
+    $count += 10;
+    return $count;
+}
+
+echo anotherCounter();  // 10 (separate from counter()'s $count)
+```
+
+```java [Java Variable Scope]
+public class ScopeExample {
+    // Instance variable (class scope)
+    private String instanceVar = "I'm an instance variable";
+    
+    // Class variable (static)
+    private static String classVar = "I'm a class variable";
+    
+    public void testMethod() {
+        // Local variable
+        String localVar = "I'm local";
+        System.out.println(localVar);  // ✅ Works
+        
+        // Instance variable accessible
+        System.out.println(this.instanceVar);  // ✅ Works
+        
+        // Class variable accessible
+        System.out.println(ScopeExample.classVar);  // ✅ Works
+    }
+    
+    // Static method
+    public static void staticMethod() {
+        // Only static/class variables accessible
+        System.out.println(classVar);  // ✅ Works
+        // System.out.println(instanceVar);  // ❌ Error - no instance
+    }
+}
+```
+
+:::
+
+### Global Keyword
+
+The `global` keyword imports a global variable into local scope:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+$name = "Alice";
+$age = 30;
+
+function greet(): void {
+    global $name, $age;  // Import global variables
+    
+    echo "Hello, $name! You are $age years old.";
+}
+
+greet();  // "Hello, Alice! You are 30 years old."
+
+// Modifying global variables
+function incrementAge(): void {
+    global $age;
+    $age++;  // Modifies the global $age
+}
+
+incrementAge();
+echo $age;  // 31
+```
+
+::: warning Avoid Global Variables
+Global variables make code harder to maintain and test. Prefer:
+- Function parameters
+- Return values
+- Dependency injection (covered in Chapter 11)
+- Class properties (covered in Chapter 3)
+:::
+
+### $GLOBALS Superglobal
+
+`$GLOBALS` is an associative array containing all global variables:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+$user = "Alice";
+$count = 5;
+
+function accessGlobals(): void {
+    // Access via $GLOBALS array
+    echo $GLOBALS['user'];   // "Alice"
+    echo $GLOBALS['count'];  // 5
+    
+    // Modify global variables
+    $GLOBALS['count']++;
+}
+
+accessGlobals();
+echo $count;  // 6
+```
+
+### Static Variables
+
+Static variables persist between function calls but remain local to the function:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+function getNextId(): int {
+    static $id = 0;  // Initialized only on first call
+    $id++;
+    return $id;
+}
+
+echo getNextId();  // 1
+echo getNextId();  // 2
+echo getNextId();  // 3
+
+// Useful for caching/memoization
+function expensiveCalculation(int $input): int {
+    static $cache = [];
+    
+    if (isset($cache[$input])) {
+        return $cache[$input];
+    }
+    
+    // Expensive operation
+    $result = $input * $input * 1000;
+    $cache[$input] = $result;
+    
+    return $result;
+}
+```
+
+**Java equivalent:**
+```java
+public class Example {
+    private static int id = 0;  // Class-level static
+    
+    public static int getNextId() {
+        return ++id;  // Shared across all calls
+    }
+    
+    // No function-level static in Java
+    // Use class-level static or instance variables
+}
+```
+
+### Scope Comparison Table
+
+| Scope Type | PHP | Java | Notes |
+|-----------|-----|------|-------|
+| **Global** | `$var` (top-level) | Class/package level | PHP globals accessible via `global` keyword |
+| **Local** | Inside function | Inside method/block | Both are function/method-scoped |
+| **Static (function)** | `static $var` | Not available | PHP-only feature |
+| **Static (class)** | `static $property` | `static` keyword | Covered in Chapter 3 |
+| **Instance** | `$this->property` | `this.field` | Covered in Chapter 3 |
+
+---
+
+## Section 2.7: References
+
+### Goal
+
+Understand PHP's reference system and how it differs from Java's pass-by-value model.
+
+### Pass-by-Reference vs Pass-by-Value
+
+PHP supports both pass-by-value (default) and pass-by-reference (with `&`):
+
+::: code-group
+
+```php [PHP References]
+<?php
+
+declare(strict_types=1);
+
+// Pass-by-value (default)
+function increment(int $value): void {
+    $value++;  // Only modifies local copy
+}
+
+$number = 5;
+increment($number);
+echo $number;  // Still 5 (unchanged)
+
+// Pass-by-reference (use &)
+function incrementByRef(int &$value): void {
+    $value++;  // Modifies original variable
+}
+
+$number = 5;
+incrementByRef($number);
+echo $number;  // 6 (modified!)
+
+// Reference assignment
+$a = 5;
+$b = &$a;  // $b is a reference to $a
+$b = 10;
+echo $a;  // 10 (both point to same value)
+
+// Unset reference
+unset($b);  // Only removes $b, $a still exists
+echo $a;  // 10
+
+// Returning references
+function &getValue(): int {
+    static $value = 0;
+    return $value;  // Return reference
+}
+
+$ref = &getValue();
+$ref = 100;
+echo getValue();  // 100
+```
+
+```java [Java Pass-by-Value]
+// Java always passes by value
+public class Example {
+    public static void increment(int value) {
+        value++;  // Only modifies local copy
+    }
+    
+    public static void incrementObject(MyObject obj) {
+        obj.value++;  // Modifies object's field (object reference is copied, but points to same object)
+    }
+    
+    public static void main(String[] args) {
+        int number = 5;
+        increment(number);
+        System.out.println(number);  // Still 5
+        
+        MyObject obj = new MyObject(5);
+        incrementObject(obj);
+        System.out.println(obj.value);  // 6 (object modified)
+    }
+}
+```
+
+:::
+
+### When to Use References
+
+References are useful for:
+
+1. **Modifying function parameters:**
+```php
+<?php
+
+declare(strict_types=1);
+
+function swap(int &$a, int &$b): void {
+    $temp = $a;
+    $a = $b;
+    $b = $temp;
+}
+
+$x = 10;
+$y = 20;
+swap($x, $y);
+echo "$x, $y";  // "20, 10"
+```
+
+2. **Avoiding expensive copies:**
+```php
+<?php
+
+declare(strict_types=1);
+
+function processLargeArray(array &$data): void {
+    // Modifies array in place (no copy)
+    $data['processed'] = true;
+}
+
+$bigArray = [/* large dataset */];
+processLargeArray($bigArray);  // Efficient - no copy
+```
+
+3. **Returning references (rare):**
+```php
+<?php
+
+declare(strict_types=1);
+
+class Registry {
+    private static array $data = [];
+    
+    public static function &get(string $key): mixed {
+        return self::$data[$key];  // Return reference
+    }
+}
+```
+
+### Reference Gotchas
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// Reference in foreach
+$array = [1, 2, 3];
+foreach ($array as &$value) {
+    $value *= 2;  // Modifies original array
+}
+unset($value);  // ⚠️ Important: unset reference after loop!
+print_r($array);  // [2, 4, 6]
+
+// Without unset, $value still references last element
+$array[] = 4;
+// $value would now reference the new element!
+
+// References and arrays
+$a = 1;
+$b = 2;
+$array = [&$a, &$b];  // Array contains references
+$array[0] = 10;
+echo $a;  // 10 (modified through reference)
+```
+
+::: warning References Best Practices
+1. **Avoid global references** - Makes code hard to follow
+2. **Unset foreach references** - Prevents unexpected behavior
+3. **Document reference parameters** - Use PHPDoc `@param int &$value`
+4. **Prefer return values** - Usually clearer than modifying by reference
+5. **Use sparingly** - References can make code harder to understand
+:::
+
+### Variable Variables (Advanced)
+
+PHP supports variable variables (using variable name as another variable's name):
+
+```php
+<?php
+
+declare(strict_types=1);
+
+$name = "Alice";
+$$name = "Hello";  // Creates $Alice = "Hello"
+
+echo $Alice;  // "Hello"
+
+// Useful for dynamic variable access
+$field = "email";
+$user = [
+    "name" => "Alice",
+    "email" => "alice@example.com"
+];
+
+echo $user[$field];  // "alice@example.com"
+
+// Variable variables with arrays
+$foo = "bar";
+$bar = "baz";
+echo $$foo;  // "baz" ($$foo = $bar)
+
+// Variable function names
+$func = "strtoupper";
+echo $func("hello");  // "HELLO"
+```
+
+::: tip Variable Variables Use Cases
+- **Dynamic property access** (though arrays are usually better)
+- **Configuration mapping**
+- **Template systems**
+- **Generally avoid** - Makes code harder to read and debug
+:::
+
+---
+
 ## Section 3: Type Juggling vs Strict Typing
 
 ### Goal
@@ -326,6 +917,7 @@ Understand PHP's type juggling and why strict typing is better.
 Without `declare(strict_types=1)`, PHP automatically converts types:
 
 ```php
+# filename: type-juggling-example.php
 <?php
 
 // NO strict_types declaration
@@ -361,6 +953,7 @@ Type juggling can cause unexpected bugs:
 With `declare(strict_types=1)`, PHP behaves more like Java:
 
 ```php
+# filename: strict-typing-example.php
 <?php
 
 declare(strict_types=1);
@@ -433,6 +1026,7 @@ calculateDiscount("100", "10");  // TypeError - caught immediately! ✅
 Here's a script to see type behavior in action:
 
 ```php
+# filename: type-demonstration.php
 <?php
 
 echo "=== WITHOUT strict_types ===\n\n";
@@ -879,6 +1473,155 @@ var_dump($a xor $b);  // true (true if exactly one is true)
 **Recommendation:** Always use `&&`, `||`, `!` for consistency with Java.
 :::
 
+### Bitwise Operators
+
+Bitwise operators work on the binary representation of integers:
+
+::: code-group
+
+```php [PHP Bitwise]
+<?php
+
+declare(strict_types=1);
+
+$a = 5;   // 0101 in binary
+$b = 3;   // 0011 in binary
+
+// Bitwise AND
+echo $a & $b;   // 1 (0001) - bits set in both
+
+// Bitwise OR
+echo $a | $b;   // 7 (0111) - bits set in either
+
+// Bitwise XOR (exclusive OR)
+echo $a ^ $b;   // 6 (0110) - bits set in one but not both
+
+// Bitwise NOT (complement)
+echo ~$a;       // -6 (inverts all bits, result depends on integer size)
+
+// Left shift (multiply by 2^n)
+echo $a << 1;   // 10 (01010) - shift left by 1 bit
+
+// Right shift (divide by 2^n)
+echo $a >> 1;   // 2 (0010) - shift right by 1 bit
+
+// Practical example: Flags/permissions
+const READ = 1;    // 0001
+const WRITE = 2;   // 0010
+const EXECUTE = 4; // 0100
+
+$permissions = READ | WRITE;  // 0011 (read and write)
+if ($permissions & READ) {
+    echo "Has read permission";
+}
+```
+
+```java [Java Bitwise]
+int a = 5;   // 0101 in binary
+int b = 3;   // 0011 in binary
+
+// Bitwise AND
+System.out.println(a & b);   // 1 (0001)
+
+// Bitwise OR
+System.out.println(a | b);   // 7 (0111)
+
+// Bitwise XOR
+System.out.println(a ^ b);   // 6 (0110)
+
+// Bitwise NOT
+System.out.println(~a);      // -6 (inverts all bits)
+
+// Left shift
+System.out.println(a << 1);  // 10 (01010)
+
+// Right shift (signed)
+System.out.println(a >> 1);  // 2 (0010)
+
+// Unsigned right shift (Java-specific)
+System.out.println(a >>> 1); // 2 (for positive numbers, same as >>)
+
+// Flags example
+final int READ = 1;    // 0001
+final int WRITE = 2;   // 0010
+final int EXECUTE = 4; // 0100
+
+int permissions = READ | WRITE;  // 0011
+if ((permissions & READ) != 0) {
+    System.out.println("Has read permission");
+}
+```
+
+:::
+
+### Bitwise Assignment Operators
+
+PHP supports bitwise assignment operators (same as Java):
+
+```php
+<?php
+
+declare(strict_types=1);
+
+$a = 5;
+
+$a &= 3;   // $a = $a & 3 (bitwise AND assignment)
+$a |= 3;   // $a = $a | 3 (bitwise OR assignment)
+$a ^= 3;   // $a = $a ^ 3 (bitwise XOR assignment)
+$a <<= 1;  // $a = $a << 1 (left shift assignment)
+$a >>= 1;  // $a = $a >> 1 (right shift assignment)
+```
+
+### Common Bitwise Use Cases
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// 1. Flags and permissions
+class Permissions {
+    const READ = 1;      // 0001
+    const WRITE = 2;     // 0010
+    const EXECUTE = 4;   // 0100
+    const DELETE = 8;    // 1000
+    
+    public static function hasPermission(int $userPerms, int $required): bool {
+        return ($userPerms & $required) === $required;
+    }
+    
+    public static function addPermission(int $perms, int $newPerm): int {
+        return $perms | $newPerm;
+    }
+    
+    public static function removePermission(int $perms, int $removePerm): int {
+        return $perms & ~$removePerm;
+    }
+}
+
+$userPerms = Permissions::READ | Permissions::WRITE;
+var_dump(Permissions::hasPermission($userPerms, Permissions::READ));  // true
+var_dump(Permissions::hasPermission($userPerms, Permissions::EXECUTE));  // false
+
+// 2. Checking if number is even/odd
+function isEven(int $n): bool {
+    return ($n & 1) === 0;  // Last bit is 0 for even numbers
+}
+
+// 3. Fast multiplication/division by powers of 2
+$value = 10;
+$doubled = $value << 1;   // 20 (multiply by 2)
+$halved = $value >> 1;    // 5 (divide by 2)
+$quadrupled = $value << 2; // 40 (multiply by 4)
+```
+
+::: tip When to Use Bitwise Operators
+- **Flags/permissions** - Efficient way to store multiple boolean flags
+- **Performance-critical code** - Faster than arithmetic for powers of 2
+- **Low-level operations** - Working with binary data, protocols
+- **Generally avoid** - Use only when you have a specific need
+:::
+
 ### Operator Precedence
 
 Like Java, PHP has operator precedence rules (higher precedence = evaluated first):
@@ -887,16 +1630,19 @@ Like Java, PHP has operator precedence rules (higher precedence = evaluated firs
 |-----------|----------|-------------|---------|
 | Highest | `()` | Parentheses | `(5 + 3) * 2` |
 | | `**` | Exponentiation | `2 ** 3` = 8 |
-| | `++`, `--`, `!` | Increment, decrement, not | `!$flag`, `$i++` |
+| | `++`, `--`, `!`, `~` | Increment, decrement, not, bitwise NOT | `!$flag`, `$i++`, `~$a` |
 | | `*`, `/`, `%` | Multiplication, division, modulo | `5 * 3 / 2` |
 | | `+`, `-`, `.` | Addition, subtraction, concatenation | `5 + 3`, `"a" . "b"` |
 | | `<`, `<=`, `>`, `>=` | Comparison | `5 < 10` |
 | | `==`, `===`, `!=`, `!==` | Equality | `5 === 5` |
+| | `&` | Bitwise AND | `$a & $b` |
+| | `^` | Bitwise XOR | `$a ^ $b` |
+| | `\|` | Bitwise OR | `$a \| $b` |
 | | `&&` | Logical AND | `$a && $b` |
 | | `\|\|` | Logical OR | `$a \|\| $b` |
 | | `??` | Null coalescing | `$a ?? $b` |
 | | `? :` | Ternary | `$x ? $y : $z` |
-| | `=`, `+=`, `-=`, etc. | Assignment | `$a = 5` |
+| | `=`, `+=`, `-=`, `&=`, `\|=`, etc. | Assignment | `$a = 5` |
 | Lowest | `and`, `or`, `xor` | Low-precedence logical | `$a and $b` |
 
 **Important differences from Java:**
@@ -1020,6 +1766,7 @@ if (obj instanceof String) {
 ### Type Juggling Rules (Without Strict Types)
 
 ```php
+# filename: type-casting-example.php
 <?php
 
 // String to number
@@ -1382,6 +2129,7 @@ Create a practical validation class using strict types.
 ### Implementation
 
 ```php
+# filename: validator.php
 <?php
 
 declare(strict_types=1);
@@ -1760,10 +2508,22 @@ Before moving to the next chapter, ensure you can:
 - [ ] Understand operator precedence and use parentheses for clarity
 - [ ] Know the type coercion rules and avoid them with strict types
 - [ ] Map Java Stream operations to PHP array functions
+- [ ] Define constants using `define()` and `const`
+- [ ] Understand variable scope (global, local, static)
+- [ ] Use the `global` keyword and `$GLOBALS` superglobal appropriately
+- [ ] Work with references (`&$var`) and understand pass-by-reference
+- [ ] Apply bitwise operators (`&`, `|`, `^`, `~`, `<<`, `>>`) when needed
+- [ ] Understand variable variables (`$$var`) and when to avoid them
 
 ::: tip Ready for More?
 In [Chapter 2: Control Flow & Functions](/series/php-for-java-developers/chapters/02-control-flow-and-functions), we'll dive into control structures, functions, and closures, comparing them to Java equivalents.
 :::
+
+<ChapterCheckbox 
+  seriesId="php-for-java-developers"
+  chapterId="01"
+  label="Mastered PHP types, variables, and operators!"
+/>
 
 ---
 

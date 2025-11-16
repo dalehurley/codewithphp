@@ -30,3 +30,7 @@ Route::middleware(['auth:sanctum', 'throttle:120,1'])->group(function () {
     Route::apiResource('tags', TagController::class);
 });
 
+
+
+
+

@@ -6,7 +6,7 @@ chapter: 3
 order: 3
 difficulty: "Beginner"
 prerequisites:
-  - "PHP 8.2+ installed"
+  - "PHP 8.4+ installed"
   - "Composer installed"
   - "Completion of Chapters 01-02"
   - "Anthropic API key configured"
@@ -48,10 +48,37 @@ You'll learn the complete anatomy of API requests and responses, how to properly
 Before starting, ensure you have:
 
 - ✓ **Completed Chapters 01-02**
-- ✓ **PHP 8.2+** installed and working
+- ✓ **PHP 8.4+** installed and working
 - ✓ **Composer** for dependency management
 - ✓ **Anthropic API key** configured in environment
 - ✓ **Basic HTTP/REST API knowledge**
+
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- A working PHP application that makes Claude API requests using the official SDK
+- A reusable `ClaudeRequestBuilder` class for fluent request construction
+- A type-safe `ClaudeResponse` model wrapper with cost estimation
+- A `JsonExtractor` service for parsing structured data from responses
+- A `RetryableClaudeClient` wrapper with exponential backoff retry logic
+- A `DebuggableClaudeClient` with request/response logging
+- Direct HTTP integration examples using Guzzle
+- Production-ready error handling for all API exception types
+
+You'll have a complete understanding of request structure, response parsing, error handling, and best practices for making reliable Claude API calls in PHP.
+
+## Objectives
+
+By completing this chapter, you will:
+
+- **Understand** the complete structure of Claude API requests and responses
+- **Create** working examples using both the official SDK and direct HTTP calls
+- **Implement** robust error handling with specific exception types
+- **Build** reusable service classes for common API patterns
+- **Master** response parsing including JSON extraction from markdown
+- **Apply** retry logic and exponential backoff for transient failures
+- **Optimize** API calls with proper timeout configuration and connection pooling
 
 ## Installation
 
@@ -60,8 +87,18 @@ Before starting, ensure you have:
 The official SDK is the recommended way to interact with Claude:
 
 ```bash
+# Install the official Anthropic PHP SDK
 composer require anthropic-ai/sdk
 ```
+
+**Verify installation:**
+
+```bash
+# Check that the package was installed correctly
+composer show anthropic-ai/sdk
+```
+
+You should see package details including version, description, and dependencies.
 
 ### Installing Guzzle (Optional)
 
@@ -91,11 +128,21 @@ ANTHROPIC_MODEL=claude-sonnet-4-20250514
 ANTHROPIC_MAX_TOKENS=2048
 ```
 
+::: warning Security Best Practice
+Never commit your `.env` file to version control. Add it to `.gitignore`:
+
+```bash
+echo ".env" >> .gitignore
+```
+
+Always use environment variables or secure secret management in production.
+:::
+
 ## Making Requests with the SDK
 
 ### Basic Request
 
-The simplest possible request:
+The simplest possible request demonstrates the core API call pattern:
 
 ```php
 <?php
@@ -118,7 +165,7 @@ $response = $client->messages()->create([
     'messages' => [
         [
             'role' => 'user',
-            'content' => 'Hello, Claude! Tell me about PHP 8.3 features.'
+            'content' => 'Hello, Claude! Tell me about PHP 8.4 features.'
         ]
     ]
 ]);
@@ -127,12 +174,33 @@ $response = $client->messages()->create([
 echo $response->content[0]->text . "\n";
 ```
 
+**How It Works:**
+
+1. **Client Initialization**: `Anthropic::factory()` creates a client builder, `withApiKey()` sets your API key, and `make()` builds the client instance.
+2. **Request Structure**: The `messages()->create()` method accepts an array with required parameters (`model`, `max_tokens`, `messages`) and optional parameters.
+3. **Response Access**: The response object contains a `content` array where each element has a `text` property containing Claude's response.
+
 Run it:
 
 ```bash
+# Set your API key as an environment variable
 export ANTHROPIC_API_KEY="sk-ant-your-key-here"
+
+# Execute the script
 php examples/01-basic-request.php
 ```
+
+**Expected Result:**
+
+```
+PHP 8.4 introduces several exciting features including property hooks, asymmetric visibility, 
+new array functions, and improved type system capabilities. Property hooks allow you to 
+intercept property access and modification...
+```
+
+::: tip Environment Variables
+For production applications, use a `.env` file with `vlucas/phpdotenv` instead of exporting environment variables directly. This keeps your API keys secure and out of version control.
+:::
 
 ### Request with All Parameters
 
@@ -199,7 +267,38 @@ echo "Input tokens: {$response->usage->inputTokens}\n";
 echo "Output tokens: {$response->usage->outputTokens}\n";
 ```
 
+**Expected Result:**
+
+```
+Response:
+Laravel service providers are the central place of all Laravel application bootstrapping...
+
+Model used: claude-sonnet-4-20250514
+Stop reason: end_turn
+Input tokens: 45
+Output tokens: 523
+```
+
+**Understanding the Parameters:**
+
+- **`model`**: Specifies which Claude model to use (required)
+- **`max_tokens`**: Maximum tokens Claude can generate in response (required, 1-16384)
+- **`messages`**: Array of conversation messages (required, must start with user message)
+- **`system`**: Optional system prompt that sets Claude's behavior and context
+- **`temperature`**: Controls randomness (0.0 = deterministic, 1.0 = creative)
+- **`top_p`**: Nucleus sampling parameter (0.0-1.0)
+- **`top_k`**: Limits token selection pool
+- **`stop_sequences`**: Array of strings that stop generation when encountered
+- **`metadata`**: Optional tracking data (requires `user_id` if provided)
+
 ### Request Builder Pattern
+
+The builder pattern provides a fluent interface for constructing API requests. This approach offers several benefits:
+
+- **Type safety**: Method chaining ensures correct parameter types
+- **Readability**: Code reads like natural language
+- **Validation**: Built-in validation prevents invalid requests
+- **Reusability**: Single builder instance can create multiple requests
 
 Create a reusable request builder:
 
@@ -341,11 +440,15 @@ $response = $client->messages()->create($params);
 echo $response->content[0]->text . "\n";
 ```
 
+**How It Works:**
+
+The builder pattern uses method chaining where each method returns `$this`, allowing you to call multiple methods in sequence. The `build()` method validates the configuration and returns a properly formatted array ready for the API call. This pattern is especially useful when building requests dynamically based on user input or application state.
+
 ## Understanding Request Structure
 
 ### Messages Array
 
-Messages must follow specific rules:
+Messages must follow specific rules to ensure valid API requests:
 
 ```php
 <?php
@@ -376,9 +479,33 @@ $messages = [
 $messages = [];  // ERROR
 ```
 
+**Key Rules:**
+
+1. **Must start with user message**: The first message in the array must have `role => 'user'`
+2. **Alternating roles**: Messages must alternate between `user` and `assistant` roles
+3. **No consecutive same roles**: Two user messages or two assistant messages cannot be adjacent
+4. **Non-empty array**: At least one message is required
+5. **Content required**: Each message must have a non-empty `content` string
+
+::: tip Message Validation
+Always validate your messages array before sending. The SDK will throw a `ValidationException` if these rules are violated, but validating early prevents unnecessary API calls.
+:::
+
 ### System Prompts
 
-System prompts set the context for Claude's behavior:
+System prompts set the context for Claude's behavior and are particularly powerful for:
+
+- **Defining roles**: Tell Claude to act as a specific type of expert
+- **Setting constraints**: Establish boundaries and guidelines
+- **Providing context**: Share background information that applies to all messages
+- **Controlling tone**: Specify the style and format of responses
+
+::: info System Prompt Best Practices
+- Keep system prompts concise but specific
+- Use clear, direct language
+- Include examples when helpful
+- System prompts apply to the entire conversation, so set them once at the start
+:::
 
 ```php
 <?php
@@ -394,6 +521,12 @@ $client = Anthropic::factory()
     ->make();
 
 // Example 1: Code reviewer
+$codeToReview = <<<'PHP'
+function processUser($data) {
+    return mysql_query("SELECT * FROM users WHERE id = " . $data['id']);
+}
+PHP;
+
 $codeReviewResponse = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
     'max_tokens' => 2000,
@@ -407,6 +540,14 @@ $codeReviewResponse = $client->messages()->create([
 ]);
 
 // Example 2: Documentation writer
+$classCode = <<<'PHP'
+class UserService {
+    public function createUser(string $name, string $email): int {
+        // Implementation here
+    }
+}
+PHP;
+
 $docsResponse = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
     'max_tokens' => 3000,
@@ -420,6 +561,12 @@ $docsResponse = $client->messages()->create([
 ]);
 
 // Example 3: Data analyzer
+$salesData = [
+    ['month' => 'January', 'revenue' => 50000],
+    ['month' => 'February', 'revenue' => 55000],
+    ['month' => 'March', 'revenue' => 60000],
+];
+
 $analysisResponse = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
     'max_tokens' => 1500,
@@ -427,7 +574,7 @@ $analysisResponse = $client->messages()->create([
     'messages' => [
         [
             'role' => 'user',
-            'content' => "Analyze this sales data:\n\n" . json_encode($salesData)
+            'content' => "Analyze this sales data:\n\n" . json_encode($salesData, JSON_PRETTY_PRINT)
         ]
     ]
 ]);
@@ -494,18 +641,27 @@ echo $response3->content[0]->text . "\n\n";
 
 **Parameter Recommendations:**
 
-| Use Case | Temperature | Top-p | Top-k |
-|----------|-------------|-------|-------|
-| Code Generation | 0.0 - 0.3 | 0.1 | 10 |
-| Data Extraction | 0.0 - 0.2 | 0.1 | 5 |
-| Technical Documentation | 0.3 - 0.5 | 0.5 | 20 |
-| General Conversation | 0.7 - 0.9 | 0.9 | 40 |
-| Creative Writing | 0.9 - 1.0 | 0.95 | 50 |
-| Brainstorming | 1.0 | 1.0 | 100 |
+| Use Case | Temperature | Top-p | Top-k | Why |
+|----------|-------------|-------|-------|-----|
+| Code Generation | 0.0 - 0.3 | 0.1 | 10 | Low randomness ensures consistent, correct code |
+| Data Extraction | 0.0 - 0.2 | 0.1 | 5 | Deterministic output for accurate data parsing |
+| Technical Documentation | 0.3 - 0.5 | 0.5 | 20 | Balanced for clarity with some variation |
+| General Conversation | 0.7 - 0.9 | 0.9 | 40 | Natural variation for engaging dialogue |
+| Creative Writing | 0.9 - 1.0 | 0.95 | 50 | High creativity for diverse outputs |
+| Brainstorming | 1.0 | 1.0 | 100 | Maximum diversity for idea generation |
+
+::: tip Temperature Guidelines
+- **Start with defaults** (temperature 1.0) and adjust based on your needs
+- **Lower temperature** for tasks requiring consistency (code, data extraction)
+- **Higher temperature** for creative tasks (writing, brainstorming)
+- **Test different values** to find what works best for your specific use case
+:::
 
 ## Parsing Responses
 
 ### Basic Response Structure
+
+Every Claude API response contains structured data that you can access programmatically. Understanding the response structure is crucial for building robust applications.
 
 ```php
 <?php
@@ -539,10 +695,20 @@ echo "Stop Sequence: " . ($response->stop_sequence ?? 'null') . "\n";
 
 // Content array (usually has one text content block)
 echo "\n=== Content ===\n";
-foreach ($response->content as $index => $block) {
-    echo "Block {$index}:\n";
-    echo "  Type: {$block->type}\n";                   // "text"
-    echo "  Text: {$block->text}\n";                   // The actual response
+if (empty($response->content)) {
+    echo "Warning: Response has no content blocks\n";
+} else {
+    foreach ($response->content as $index => $block) {
+        echo "Block {$index}:\n";
+        echo "  Type: {$block->type}\n";                   // "text"
+        
+        // Handle different content types
+        if ($block->type === 'text') {
+            echo "  Text: {$block->text}\n";               // The actual response
+        } else {
+            echo "  Content: " . json_encode($block) . "\n"; // Other content types
+        }
+    }
 }
 
 // Usage statistics
@@ -552,7 +718,64 @@ echo "Output Tokens: {$response->usage->outputTokens}\n";
 echo "Total Tokens: " . ($response->usage->inputTokens + $response->usage->outputTokens) . "\n";
 ```
 
+**Understanding Response Properties:**
+
+- **`id`**: Unique identifier for this message (useful for logging and tracking)
+- **`type`**: Always `"message"` for message responses
+- **`role`**: Always `"assistant"` for Claude's responses
+- **`model`**: The model that generated this response
+- **`stop_reason`**: Why generation stopped (`"end_turn"`, `"max_tokens"`, `"stop_sequence"`)
+- **`stop_sequence`**: The stop sequence that triggered termination (if applicable)
+- **`content`**: Array of content blocks (usually one text block, but can have multiple)
+- **`usage`**: Token usage statistics for cost tracking
+
+**Using Response ID for Correlation:**
+
+The response `id` field (format: `msg_01ABC...`) is useful for:
+- **Logging**: Include in logs to correlate requests and responses
+- **Debugging**: Reference specific API calls when troubleshooting
+- **Support**: Share with Anthropic support for issue investigation
+- **Auditing**: Track API usage and costs per request
+
+```php
+// Example: Logging with request ID
+$response = $client->messages()->create([...]);
+error_log("Claude API Response [{$response->id}]: {$response->usage->inputTokens} input, {$response->usage->outputTokens} output tokens");
+```
+
+**Content Array Safety:**
+
+Always check if the content array is empty before accessing elements:
+
+```php
+// Safe content access
+if (empty($response->content)) {
+    throw new \RuntimeException('Response has no content');
+}
+
+$text = $response->content[0]->text ?? '';
+
+// Or handle multiple content blocks
+foreach ($response->content as $block) {
+    if ($block->type === 'text') {
+        echo $block->text;
+    }
+}
+```
+
+::: tip Response Validation
+Always check `stop_reason` to ensure the response completed successfully. If `stop_reason` is `"max_tokens"`, the response was truncated and you may need to increase `max_tokens` or request a continuation.
+:::
+
 ### Response Model Class
+
+Wrapping the SDK response in a custom model class provides several advantages:
+
+- **Type safety**: Explicit types prevent runtime errors
+- **Encapsulation**: Hide SDK implementation details
+- **Additional methods**: Add helper methods like cost estimation
+- **Easier testing**: Mock responses without SDK dependencies
+- **Future-proofing**: Adapt to SDK changes without changing application code
 
 Create a type-safe response wrapper:
 
@@ -708,7 +931,12 @@ file_put_contents('response.json', json_encode($data, JSON_PRETTY_PRINT));
 
 ### Extracting JSON from Responses
 
-Claude often returns JSON, but may wrap it in markdown:
+Claude often returns JSON, but may wrap it in markdown code blocks. This is common when:
+- Requesting structured data extraction
+- Asking for formatted output
+- Using system prompts that specify JSON format
+
+The `JsonExtractor` class handles multiple formats automatically:
 
 ```php
 <?php
@@ -817,11 +1045,62 @@ try {
 }
 ```
 
+## Understanding Rate Limits
+
+Before diving into error handling, it's important to understand rate limits - a common source of API errors.
+
+### What Are Rate Limits?
+
+Rate limits control how many API requests you can make within a specific time period. They exist to:
+- **Prevent abuse**: Protect the API from being overwhelmed
+- **Ensure fairness**: Distribute resources fairly among users
+- **Maintain stability**: Keep the service responsive for all users
+
+### Typical Rate Limits
+
+Anthropic enforces rate limits based on your account tier:
+
+- **Free/Trial Tier**: ~50 requests per minute
+- **Paid Tier**: Varies by usage and account level (typically 50-100+ requests/minute)
+- **Enterprise Tier**: Custom limits based on agreement
+
+Rate limits apply to:
+- **Requests per minute**: How many API calls you can make
+- **Tokens per minute**: Total token throughput (input + output)
+- **Requests per day**: Daily quota limits (for some tiers)
+
+### Rate Limit Headers
+
+When you hit a rate limit, the API returns HTTP 429 with helpful headers:
+
+```
+HTTP/1.1 429 Too Many Requests
+Retry-After: 60
+X-RateLimit-Limit: 50
+X-RateLimit-Remaining: 0
+X-RateLimit-Reset: 1640995200
+```
+
+- **`Retry-After`**: Seconds to wait before retrying
+- **`X-RateLimit-Limit`**: Your rate limit threshold
+- **`X-RateLimit-Remaining`**: Requests remaining in current window
+- **`X-RateLimit-Reset`**: Unix timestamp when limit resets
+
+::: tip Rate Limit Best Practices
+- **Monitor your usage**: Track requests per minute to stay under limits
+- **Implement backoff**: Use exponential backoff when hitting limits
+- **Batch requests**: Combine multiple operations when possible
+- **Cache responses**: Avoid duplicate requests for same content
+- **Upgrade tier**: Consider higher tier for production workloads
+:::
+
 ## Error Handling
+
+Robust error handling is essential for production applications. The Anthropic SDK provides specific exception types for different error scenarios, allowing you to handle each appropriately.
 
 ### Exception Types
 
-The SDK throws several exception types:
+The SDK throws several exception types, each representing a different error condition:
 
 ```php
 <?php
@@ -898,7 +1177,28 @@ try {
 }
 ```
 
+**Exception Handling Best Practices:**
+
+1. **Catch specific exceptions first**: Handle `RateLimitException` and `AuthenticationException` before generic `Exception`
+2. **Log errors appropriately**: Use appropriate log levels (error for failures, warning for retries)
+3. **Provide user-friendly messages**: Don't expose internal error details to end users
+4. **Implement retry logic**: Automatically retry transient failures (rate limits, server errors)
+5. **Fail fast on permanent errors**: Don't retry authentication or validation errors
+
+::: warning Error Handling in Production
+Never expose API keys, internal error messages, or stack traces to end users. Always sanitize error messages and log detailed information server-side for debugging.
+:::
+
 ### Retry Logic with Exponential Backoff
+
+Transient failures (rate limits, server errors) should be retried automatically. Exponential backoff increases wait time between retries, preventing overwhelming the API and improving success rates.
+
+**Why Exponential Backoff?**
+
+- **Rate limits**: Gives the API time to reset rate limit counters
+- **Server errors**: Temporary issues often resolve quickly
+- **Network issues**: Brief connectivity problems may resolve
+- **Prevents cascading failures**: Avoids hammering a struggling service
 
 ```php
 <?php
@@ -1010,7 +1310,81 @@ try {
 }
 ```
 
+## Understanding the Claude API Structure
+
+Before diving into direct HTTP requests, it's important to understand the Claude API's structure and conventions.
+
+### API Base URL and Endpoint
+
+The Claude API uses a single base URL with versioned endpoints:
+
+- **Base URL**: `https://api.anthropic.com`
+- **Messages Endpoint**: `/v1/messages`
+- **Full URL**: `https://api.anthropic.com/v1/messages`
+
+The `/v1/` prefix indicates the API version. Anthropic maintains backward compatibility within major versions, so `/v1/` endpoints remain stable. Future major versions (like `/v2/`) would introduce breaking changes.
+
+::: info API Environments
+Currently, Anthropic provides a single production API endpoint. There are no separate staging or sandbox environments. Always use `https://api.anthropic.com` for all requests.
+:::
+
+### Required HTTP Headers
+
+When making direct HTTP requests, you must include these headers:
+
+```php
+$headers = [
+    'x-api-key' => 'sk-ant-your-key-here',           // Your API key
+    'anthropic-version' => '2023-06-01',             // API version (required)
+    'Content-Type' => 'application/json',            // Request body format
+];
+```
+
+**Understanding the Headers:**
+
+- **`x-api-key`**: Your Anthropic API key (starts with `sk-ant-`)
+- **`anthropic-version`**: API version date string. This ensures your code works with the expected API behavior. The SDK handles this automatically, but you must set it manually for direct HTTP requests.
+- **`Content-Type`**: Always `application/json` for request bodies
+
+::: tip API Version Header
+The `anthropic-version` header tells Anthropic which API version to use. Using `2023-06-01` ensures compatibility with the current API. If Anthropic releases breaking changes in the future, they'll use a new date (e.g., `2024-01-01`), and you can continue using `2023-06-01` until you're ready to migrate.
+:::
+
+### HTTP Status Codes
+
+The Claude API uses standard HTTP status codes to indicate request results:
+
+| Status Code | Meaning | When It Occurs | Action |
+|-------------|---------|----------------|--------|
+| `200` | Success | Request completed successfully | Process response normally |
+| `400` | Bad Request | Invalid request parameters | Fix request parameters, don't retry |
+| `401` | Unauthorized | Invalid or missing API key | Check API key, don't retry |
+| `403` | Forbidden | API key lacks permissions | Check account permissions, don't retry |
+| `404` | Not Found | Invalid endpoint or model | Check endpoint/model name, don't retry |
+| `422` | Unprocessable Entity | Request valid but cannot be processed | Review request format, don't retry |
+| `429` | Too Many Requests | Rate limit exceeded | Implement retry with backoff |
+| `500` | Internal Server Error | Anthropic server error | Retry with exponential backoff |
+| `502` | Bad Gateway | Network/gateway error | Retry with exponential backoff |
+| `503` | Service Unavailable | Service temporarily unavailable | Retry with exponential backoff |
+
+**Status Code Categories:**
+
+- **2xx (Success)**: Request succeeded
+- **4xx (Client Error)**: Your request was invalid - don't retry without fixing
+- **5xx (Server Error)**: Anthropic's servers had an issue - safe to retry
+
+::: tip Retry Strategy
+Only retry on 5xx errors and 429 (rate limit). Never retry 4xx errors (except 429) as they indicate problems with your request that won't be fixed by retrying.
+:::
+
 ## Making Requests with Guzzle (Direct HTTP)
+
+While the SDK is recommended for most use cases, direct HTTP requests with Guzzle offer more control and flexibility. Use direct HTTP when:
+
+- **Custom HTTP behavior**: Need specific timeout, retry, or middleware behavior
+- **SDK limitations**: SDK doesn't support a feature you need
+- **Performance**: Want to optimize HTTP client configuration
+- **Integration**: Need to integrate with existing Guzzle-based infrastructure
 
 For advanced use cases or when SDK doesn't fit your needs:
 
@@ -1027,16 +1401,18 @@ use GuzzleHttp\Exception\GuzzleException;
 $apiKey = getenv('ANTHROPIC_API_KEY');
 
 $client = new Client([
-    'base_uri' => 'https://api.anthropic.com',
+    'base_uri' => 'https://api.anthropic.com',  // Claude API base URL
     'timeout' => 30.0,
     'headers' => [
-        'x-api-key' => $apiKey,
-        'anthropic-version' => '2023-06-01',
-        'Content-Type' => 'application/json',
+        'x-api-key' => $apiKey,                    // Your API key
+        'anthropic-version' => '2023-06-01',       // API version (required!)
+        'Content-Type' => 'application/json',       // Request format
     ]
 ]);
 
 try {
+    // POST to /v1/messages endpoint
+    // The /v1/ prefix indicates API version 1
     $response = $client->post('/v1/messages', [
         'json' => [
             'model' => 'claude-sonnet-4-20250514',
@@ -1414,6 +1790,29 @@ class CostTracker
 - Reduce request frequency
 - Consider request queuing
 
+## Wrap-up
+
+Congratulations! You've completed a comprehensive guide to making Claude API requests in PHP. Here's what you've accomplished:
+
+- ✓ **Made your first API call** using the official Anthropic PHP SDK
+- ✓ **Built reusable components** including request builders, response models, and service wrappers
+- ✓ **Implemented robust error handling** with specific exception types and retry logic
+- ✓ **Mastered response parsing** including JSON extraction from markdown-formatted responses
+- ✓ **Created production-ready patterns** for debugging, logging, and performance optimization
+- ✓ **Learned both SDK and HTTP approaches** giving you flexibility for different use cases
+
+### Key Concepts Learned
+
+- **SDK vs HTTP**: The official SDK provides type safety and convenience, while direct HTTP gives you more control
+- **Request Structure**: Messages must alternate between user and assistant roles, with optional system prompts
+- **Error Handling**: Different exception types require different handling strategies (retry vs fail-fast)
+- **Response Parsing**: Claude responses are structured objects with metadata, usage stats, and content blocks
+- **Production Patterns**: Retry logic, logging, timeout configuration, and connection pooling are essential
+
+### Next Steps
+
+You now have the foundation to build sophisticated Claude integrations. In the next chapter, you'll learn how to manage multi-turn conversations, maintain context across requests, and implement conversation state management.
+
 ## Key Takeaways
 
 - ✓ **SDK is recommended** for most use cases over direct HTTP
@@ -1426,6 +1825,15 @@ class CostTracker
 - ✓ **Monitor costs** by tracking token usage
 - ✓ **Use type-safe wrappers** for better code maintainability
 - ✓ **Test error scenarios** to ensure robust error handling
+
+## Further Reading
+
+- [Anthropic Messages API Documentation](https://docs.claude.com/en/api/messages) — Official API reference with all parameters and response formats
+- [Anthropic PHP SDK GitHub Repository](https://github.com/anthropics/anthropic-sdk-php) — Source code, examples, and issue tracking
+- [Guzzle HTTP Client Documentation](https://docs.guzzlephp.org/) — Complete guide to Guzzle for direct HTTP requests
+- [PSR-18 HTTP Client Standard](https://www.php-fig.org/psr/psr-18/) — PHP standard for HTTP client interfaces
+- [Chapter 04: Understanding Messages and Conversations](/series/claude-php-developers/chapters/04-messages-conversations) — Learn multi-turn conversation management
+- [Chapter 05: Prompt Engineering Basics](/series/claude-php-developers/chapters/05-prompt-engineering-basics) — Master effective prompt design
 
 <ChapterCheckbox
   seriesId="claude-php-developers"

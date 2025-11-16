@@ -34,6 +34,27 @@ This chapter teaches you to build production-ready multi-agent systems with inte
 
 **What You'll Build**: A complete multi-agent framework with supervisor-worker patterns, peer-to-peer collaboration, task routing, message queuing, and workflow orchestration.
 
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- A complete multi-agent framework with base `Agent` class
+- Supervisor agent for task coordination and delegation
+- Specialized worker agents (Research, Code, Writer)
+- Message broker for inter-agent communication
+- Agent orchestrator for system management
+- Complete working example demonstrating multi-agent collaboration
+
+## Objectives
+
+- Understand multi-agent system architecture and design patterns
+- Build a flexible agent framework with specialization and delegation
+- Implement reliable message passing between agents
+- Create supervisor-worker coordination patterns
+- Master task decomposition and result synthesis
+- Design robust error handling and retry mechanisms
+- Optimize multi-agent workflows for production use
+
 ## Prerequisites
 
 Before starting, ensure you have:
@@ -46,6 +67,18 @@ Before starting, ensure you have:
 **Estimated Time**: 120-150 minutes
 
 ## Agent Framework
+
+The foundation of our multi-agent system is the abstract `Agent` class. This base class provides common functionality for all agents, including Claude API integration, message passing, task delegation, and conversation history management.
+
+Each agent maintains its own conversation history, allowing it to build context over multiple interactions. Agents can communicate with each other through the message broker, delegate tasks to specialized agents, and use Claude's tool use capabilities for dynamic task routing.
+
+**Key Features:**
+- Abstract base class enforcing specialization
+- Built-in Claude API integration with tool support
+- Message passing and broadcasting capabilities
+- Task delegation with result waiting
+- Conversation history per agent
+- Capability registration system
 
 ```php
 <?php
@@ -142,7 +175,7 @@ abstract class Agent
      */
     protected function delegateTask(string $targetAgentId, Task $task): TaskResult
     {
-        $message = new Message(
+        $message = Message::create(
             from: $this->agentId,
             to: $targetAgentId,
             type: 'task_delegation',
@@ -202,6 +235,8 @@ abstract class Agent
 
     protected function handleToolCalls(object $response, array $messages): object
     {
+        $toolResults = [];
+
         foreach ($response->content as $block) {
             if ($block->type !== 'tool_use') {
                 continue;
@@ -213,25 +248,29 @@ abstract class Agent
                 default => ['error' => 'Unknown tool']
             };
 
-            // Continue conversation with tool result
-            $messages[] = [
-                'role' => 'assistant',
-                'content' => $response->content
-            ];
-
-            $messages[] = [
-                'role' => 'user',
-                'content' => [
-                    [
-                        'type' => 'tool_result',
-                        'tool_use_id' => $block->id,
-                        'content' => json_encode($result)
-                    ]
-                ]
+            // Collect tool results for the response
+            $toolResults[] = [
+                'type' => 'tool_result',
+                'tool_use_id' => $block->id,
+                'content' => json_encode($result)
             ];
         }
 
-        // Get final response
+        // Add assistant's tool use request to messages
+        $messages[] = [
+            'role' => 'assistant',
+            'content' => $response->content
+        ];
+
+        // Add tool results as user message
+        if (!empty($toolResults)) {
+            $messages[] = [
+                'role' => 'user',
+                'content' => $toolResults
+            ];
+        }
+
+        // Get final response after tool execution
         return $this->claude->messages()->create([
             'model' => 'claude-sonnet-4-20250514',
             'max_tokens' => 4096,
@@ -261,7 +300,7 @@ abstract class Agent
 
     protected function handleRequestInformation(object $input): array
     {
-        $message = new Message(
+        $message = Message::create(
             from: $this->agentId,
             to: $input->agent_id,
             type: 'information_request',
@@ -312,6 +351,17 @@ abstract class Agent
 ```
 
 ## Supervisor Agent
+
+The `SupervisorAgent` acts as the coordinator for the multi-agent system. It receives complex tasks, analyzes them, breaks them into subtasks, and delegates work to appropriate specialized agents. The supervisor uses Claude's reasoning capabilities to determine the best task decomposition strategy and agent assignment.
+
+**Responsibilities:**
+- Task analysis and decomposition
+- Agent selection and task assignment
+- Progress monitoring
+- Result synthesis from multiple agents
+- Error handling and retry coordination
+
+The supervisor maintains a registry of available worker agents and their capabilities, allowing it to make informed delegation decisions. It uses Claude's tool use feature to dynamically delegate tasks based on the task requirements.
 
 ```php
 <?php
@@ -425,6 +475,14 @@ PROMPT;
 ```
 
 ## Specialized Worker Agents
+
+Worker agents are specialized AI agents focused on specific domains. Each worker agent has distinct capabilities and uses optimized system prompts and temperature settings for their particular task type.
+
+**Research Agent**: Optimized for factual information gathering with lower temperature (0.3) for accuracy
+**Code Agent**: Focused on code generation with very low temperature (0.2) for precision
+**Writer Agent**: Creative content generation with higher temperature (0.8) for variety
+
+Each agent extends the base `Agent` class and implements its specific `processTask` method, defining how it handles assigned work. The specialized system prompts guide Claude's behavior to match each agent's role.
 
 ```php
 <?php
@@ -663,6 +721,18 @@ PROMPT;
 
 ## Message Broker
 
+The `MessageBroker` is the communication hub for all agents. It manages message queues, handles task delegation, stores task results, and provides blocking wait operations for synchronous coordination.
+
+**Features:**
+- Per-agent message queues
+- Point-to-point messaging
+- Broadcast messaging to all agents
+- Task result storage and retrieval
+- Timeout-based waiting mechanisms
+- Automatic task processing on delegation
+
+The broker processes task delegations automatically: when a task delegation message arrives, it extracts the task, assigns it to the target agent, processes it, stores the result, and sends a completion message back to the delegating agent.
+
 ```php
 <?php
 # filename: src/MultiAgent/MessageBroker.php
@@ -817,7 +887,7 @@ class MessageBroker
         $this->storeTaskResult($result);
 
         // Send completion message back
-        $completionMessage = new Message(
+        $completionMessage = Message::create(
             from: $targetAgentId,
             to: $message->from,
             type: 'task_completed',
@@ -834,6 +904,16 @@ class MessageBroker
 ```
 
 ## Agent Orchestrator
+
+The `AgentOrchestrator` is the high-level interface for creating and managing multi-agent systems. It provides factory methods for creating supervisors and worker teams, and a simple API for executing tasks through the system.
+
+**Responsibilities:**
+- Agent creation and initialization
+- System setup and configuration
+- Task execution coordination
+- Agent registry management
+
+The orchestrator simplifies the process of setting up a complete multi-agent system, handling the initialization of the message broker and agent registration automatically.
 
 ```php
 <?php
@@ -1000,7 +1080,7 @@ echo "\n";
 $tasks = [
     "Create a comprehensive guide for building a Laravel API with authentication, including code examples and best practices documentation.",
 
-    "Research the latest PHP 8.3 features, write code examples demonstrating each feature, and create a blog post summarizing the findings.",
+    "Research the latest PHP 8.4 features, write code examples demonstrating each feature, and create a blog post summarizing the findings.",
 
     "Build a user registration system with validation, create database migrations, and write documentation explaining the implementation."
 ];
@@ -1025,6 +1105,30 @@ foreach ($tasks as $i => $taskDescription) {
 echo "\n--- Multi-Agent System Statistics ---\n";
 echo "Total agents: " . count($orchestrator->getAgents()) . "\n";
 ```
+
+### Why It Works
+
+This example demonstrates the complete multi-agent workflow:
+
+1. **Initialization**: The orchestrator creates a supervisor and three specialized worker agents (Research, Code, Writer), automatically registering them with the message broker.
+
+2. **Worker Registration**: Workers are registered with the supervisor, providing it with capability information for intelligent task delegation.
+
+3. **Task Execution**: When a complex task is submitted, the supervisor:
+   - Analyzes the task using Claude's reasoning
+   - Decomposes it into subtasks (research, coding, writing)
+   - Delegates each subtask to the appropriate specialist
+   - Waits for results from each agent
+   - Synthesizes the final output
+
+4. **Message Flow**: The message broker handles all inter-agent communication:
+   - Task delegation messages from supervisor to workers
+   - Task completion messages from workers back to supervisor
+   - Result storage for retrieval
+
+5. **Parallel Processing**: Independent subtasks can be processed in parallel, improving overall system performance.
+
+The system demonstrates how multiple specialized AI agents can collaborate to solve complex problems that would be difficult for a single agent to handle effectively.
 
 ## Data Structures
 
@@ -1078,27 +1182,753 @@ readonly class Message
         public string $to,
         public string $type,
         public mixed $content,
-        public float $timestamp = 0.0
+        public float $timestamp
     ) {
-        if ($this->timestamp === 0.0) {
-            $this->timestamp = microtime(true);
+        // Timestamp defaults to current time if not provided
+        // Note: readonly properties must be initialized in constructor parameters
+    }
+
+    public static function create(
+        string $from,
+        string $to,
+        string $type,
+        mixed $content,
+        ?float $timestamp = null
+    ): self {
+        return new self(
+            from: $from,
+            to: $to,
+            type: $type,
+            content: $content,
+            timestamp: $timestamp ?? microtime(true)
+        );
+    }
+}
+```
+
+## Wrap-up
+
+You've successfully built a sophisticated multi-agent system! Here's what you accomplished:
+
+- ✓ **Created a flexible agent framework** with base `Agent` class supporting specialization
+- ✓ **Implemented supervisor-worker patterns** for task coordination and delegation
+- ✓ **Built specialized agents** (Research, Code, Writer) with distinct capabilities
+- ✓ **Designed message broker** for reliable inter-agent communication
+- ✓ **Created agent orchestrator** for system lifecycle management
+- ✓ **Implemented task decomposition** breaking complex problems into subtasks
+- ✓ **Built result synthesis** combining outputs from multiple agents
+- ✓ **Added error handling** with timeouts and retry mechanisms
+- ✓ **Enabled tool use** for agents to delegate tasks and request information
+- ✓ **Maintained conversation history** per agent for context preservation
+
+Multi-agent systems enable you to solve complex problems that exceed single-agent capabilities. By coordinating specialized agents through structured communication, you can build sophisticated AI applications that leverage the strengths of each agent while maintaining system reliability and performance.
+
+## Key Takeaways
+
+- Multi-agent systems solve complex problems through specialization
+- Supervisor agents coordinate and delegate to worker agents
+- Message brokers enable reliable inter-agent communication
+- Each agent has specific expertise and capabilities
+- Tool use enables agents to delegate and request information
+- Task decomposition breaks complex problems into subtasks
+- Result synthesis combines outputs from multiple agents
+- Conversation history maintains context per agent
+- Error handling and retries ensure robustness
+- Agent orchestration manages the entire system lifecycle
+
+## Production Deployment
+
+Moving multi-agent systems from prototypes to production requires careful consideration of asynchronous processing, monitoring, security, and scalability. This section covers production-ready patterns and integrations with Laravel queues, observability tools, and security measures.
+
+### Async Agent Processing with Laravel Queues
+
+For production systems, replace synchronous waiting with Laravel's queue system. This prevents blocking requests and enables true concurrent agent processing:
+
+```php
+<?php
+# filename: src/MultiAgent/Jobs/ProcessAgentTask.php
+declare(strict_types=1);
+
+namespace App\MultiAgent\Jobs;
+
+use App\MultiAgent\Task;
+use App\MultiAgent\TaskResult;
+use App\MultiAgent\AgentOrchestrator;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+
+class ProcessAgentTask implements ShouldQueue
+{
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public int $timeout = 3600;
+    public int $tries = 3;
+    public int $backoff = 60;
+
+    public function __construct(
+        private Task $task,
+        private string $agentId,
+        private string $resultChannel
+    ) {}
+
+    public function handle(AgentOrchestrator $orchestrator): void
+    {
+        try {
+            $agent = $orchestrator->getAgent($this->agentId);
+            
+            if (!$agent) {
+                throw new \RuntimeException("Agent not found: {$this->agentId}");
+            }
+
+            // Process task
+            $result = $agent->processTask($this->task);
+
+            // Broadcast result via WebSocket
+            broadcast(new TaskCompleted(
+                taskId: $this->task->id,
+                result: $result,
+                channel: $this->resultChannel
+            ))->toOthers();
+
+        } catch (\Exception $e) {
+            // Log to observability system
+            \Log::error('Agent task failed', [
+                'task_id' => $this->task->id,
+                'agent_id' => $this->agentId,
+                'error' => $e->getMessage(),
+                'attempt' => $this->attempts()
+            ]);
+
+            if ($this->attempts() >= $this->tries) {
+                throw $e;
+            }
+        }
+    }
+
+    public function failed(\Exception $e): void
+    {
+        broadcast(new TaskFailed(
+            taskId: $this->task->id,
+            error: $e->getMessage(),
+            channel: $this->resultChannel
+        ))->toOthers();
+    }
+}
+```
+
+**See Also:** Chapter 19 (Queue-Based Processing) for comprehensive queue patterns
+
+### Monitoring Agent Performance
+
+Integrate with observability systems to track agent metrics, execution times, error rates, and model usage:
+
+```php
+<?php
+# filename: src/MultiAgent/Monitoring/AgentMetrics.php
+declare(strict_types=1);
+
+namespace App\MultiAgent\Monitoring;
+
+use Illuminate\Support\Facades\Log;
+use OpenTelemetry\API\Metrics\MeterProvider;
+use OpenTelemetry\API\Trace\TracerProvider;
+
+class AgentMetrics
+{
+    private array $metrics = [];
+
+    public function __construct(
+        private MeterProvider $meterProvider,
+        private TracerProvider $tracerProvider
+    ) {}
+
+    public function recordTaskExecution(
+        string $agentId,
+        string $taskType,
+        float $duration,
+        bool $success,
+        array $metadata = []
+    ): void {
+        // Record metrics
+        $meter = $this->meterProvider->getMeter('multi-agent-system');
+        
+        $counter = $meter->createCounter('agent_tasks_total', [
+            'status' => $success ? 'success' : 'failure',
+            'agent_id' => $agentId,
+            'task_type' => $taskType
+        ]);
+        $counter->add(1);
+
+        $histogram = $meter->createHistogram('agent_task_duration_seconds', [
+            'agent_id' => $agentId,
+            'task_type' => $taskType
+        ]);
+        $histogram->record($duration);
+
+        // Log structured data
+        Log::info('Agent task executed', [
+            'agent_id' => $agentId,
+            'task_type' => $taskType,
+            'duration' => $duration,
+            'success' => $success,
+            'metadata' => $metadata,
+            'timestamp' => date('c')
+        ]);
+
+        // Track token usage
+        if (isset($metadata['tokens_used'])) {
+            $gauge = $meter->createUpDownCounter('agent_tokens_used_total');
+            $gauge->add($metadata['tokens_used']);
+        }
+    }
+
+    public function recordAgentCommunication(
+        string $fromAgent,
+        string $toAgent,
+        string $messageType,
+        int $messageSize,
+        float $latency
+    ): void {
+        $meter = $this->meterProvider->getMeter('multi-agent-system');
+        
+        $histogram = $meter->createHistogram('agent_message_latency_ms', [
+            'from_agent' => $fromAgent,
+            'to_agent' => $toAgent,
+            'message_type' => $messageType
+        ]);
+        $histogram->record($latency);
+
+        Log::debug('Agent communication', [
+            'from_agent' => $fromAgent,
+            'to_agent' => $toAgent,
+            'message_type' => $messageType,
+            'message_size' => $messageSize,
+            'latency_ms' => $latency
+        ]);
+    }
+}
+```
+
+**See Also:** Chapter 37 (Monitoring & Observability) for comprehensive instrumentation strategies
+
+### Security for Agent Communication
+
+Secure inter-agent communication with validation, encryption, and audit logging:
+
+```php
+<?php
+# filename: src/MultiAgent/Security/SecureMessageBroker.php
+declare(strict_types=1);
+
+namespace App\MultiAgent\Security;
+
+use App\MultiAgent\Message;
+use App\MultiAgent\MessageBroker;
+use Illuminate\Support\Facades\Log;
+
+class SecureMessageBroker extends MessageBroker
+{
+    public function __construct(
+        private string $encryptionKey,
+        private array $allowedMessageTypes = [],
+        private array $agentPermissions = []
+    ) {
+        parent::__construct();
+    }
+
+    public function send(string $targetAgentId, Message $message): void
+    {
+        // Validate message
+        $this->validateMessage($message);
+
+        // Check agent permissions
+        $this->checkPermissions($message->from, $targetAgentId, $message->type);
+
+        // Encrypt sensitive data
+        if ($this->isSensitive($message->type)) {
+            $message = $this->encryptMessage($message);
+        }
+
+        // Audit log
+        Log::info('Agent message sent', [
+            'from_agent' => $message->from,
+            'to_agent' => $targetAgentId,
+            'message_type' => $message->type,
+            'timestamp' => date('c'),
+            'encrypted' => $this->isSensitive($message->type)
+        ]);
+
+        parent::send($targetAgentId, $message);
+    }
+
+    private function validateMessage(Message $message): void
+    {
+        if (!empty($this->allowedMessageTypes) && 
+            !in_array($message->type, $this->allowedMessageTypes)) {
+            throw new \SecurityException("Message type not allowed: {$message->type}");
+        }
+
+        // Validate content structure
+        if ($message->type === 'task_delegation') {
+            $this->validateTaskContent($message->content);
+        }
+    }
+
+    private function checkPermissions(string $fromAgent, string $toAgent, string $messageType): void
+    {
+        if (!isset($this->agentPermissions[$fromAgent][$toAgent])) {
+            throw new \SecurityException(
+                "Agent {$fromAgent} not permitted to send to {$toAgent}"
+            );
+        }
+
+        $allowedTypes = $this->agentPermissions[$fromAgent][$toAgent];
+        if (!in_array($messageType, $allowedTypes)) {
+            throw new \SecurityException(
+                "Agent {$fromAgent} not permitted to send {$messageType} to {$toAgent}"
+            );
+        }
+    }
+
+    private function encryptMessage(Message $message): Message
+    {
+        $encrypted = encrypt(json_encode($message->content), false);
+        
+        return Message::create(
+            from: $message->from,
+            to: $message->to,
+            type: $message->type,
+            content: ['encrypted' => $encrypted, 'algorithm' => 'AES-256-GCM']
+        );
+    }
+
+    private function isSensitive(string $messageType): bool
+    {
+        return in_array($messageType, [
+            'task_delegation',
+            'sensitive_data',
+            'credentials'
+        ]);
+    }
+
+    private function validateTaskContent(array $content): void
+    {
+        if (empty($content['description'])) {
+            throw new \InvalidArgumentException('Task description required');
+        }
+
+        if (!isset($content['assigned_to'])) {
+            throw new \InvalidArgumentException('Task must specify assigned agent');
         }
     }
 }
 ```
 
-## Key Takeaways
+**See Also:** Chapter 36 (Security Best Practices) for comprehensive security patterns
 
-- ✓ Multi-agent systems solve complex problems through specialization
-- ✓ Supervisor agents coordinate and delegate to worker agents
-- ✓ Message brokers enable reliable inter-agent communication
-- ✓ Each agent has specific expertise and capabilities
-- ✓ Tool use enables agents to delegate and request information
-- ✓ Task decomposition breaks complex problems into subtasks
-- ✓ Result synthesis combines outputs from multiple agents
-- ✓ Conversation history maintains context per agent
-- ✓ Error handling and retries ensure robustness
-- ✓ Agent orchestration manages the entire system lifecycle
+### Scaling to Multiple Servers
+
+For production multi-agent systems across multiple servers, use Redis or message brokers instead of in-memory message queues:
+
+```php
+<?php
+# filename: src/MultiAgent/DistributedMessageBroker.php
+declare(strict_types=1);
+
+namespace App\MultiAgent;
+
+use Illuminate\Support\Facades\Redis;
+
+class DistributedMessageBroker extends MessageBroker
+{
+    public function __construct(
+        private \Predis\Client $redis,
+        private string $namespace = 'agents:'
+    ) {
+        parent::__construct();
+    }
+
+    public function send(string $targetAgentId, Message $message): void
+    {
+        $queueKey = "{$this->namespace}queue:{$targetAgentId}";
+        
+        // Store message in Redis (persists across servers)
+        $this->redis->rpush(
+            $queueKey,
+            serialize($message)
+        );
+
+        // Set expiration to prevent memory leaks
+        $this->redis->expire($queueKey, 86400); // 24 hours
+    }
+
+    public function getMessages(string $agentId, ?string $messageType = null): array
+    {
+        $queueKey = "{$this->namespace}queue:{$agentId}";
+        $messages = [];
+
+        // Get all messages from Redis
+        while ($serialized = $this->redis->lpop($queueKey)) {
+            $message = unserialize($serialized);
+
+            if ($messageType === null || $message->type === $messageType) {
+                $messages[] = $message;
+            }
+        }
+
+        return $messages;
+    }
+
+    public function storeTaskResult(TaskResult $result): void
+    {
+        $resultKey = "{$this->namespace}results:{$result->taskId}";
+        
+        $this->redis->setex(
+            $resultKey,
+            3600, // 1 hour TTL
+            serialize($result)
+        );
+    }
+
+    public function waitForTaskResult(string $taskId, int $timeout = 30): TaskResult
+    {
+        $resultKey = "{$this->namespace}results:{$taskId}";
+        $endTime = time() + $timeout;
+
+        while (time() < $endTime) {
+            $serialized = $this->redis->get($resultKey);
+
+            if ($serialized) {
+                return unserialize($serialized);
+            }
+
+            usleep(100000); // 100ms
+        }
+
+        throw new \RuntimeException("Timeout waiting for task result: {$taskId}");
+    }
+}
+```
+
+**See Also:** Chapter 38 (Scaling) for distributed system patterns
+
+## Advanced Patterns
+
+### Peer-to-Peer Agent Communication
+
+For systems where agents need to communicate directly (not just through supervisors), implement peer networks:
+
+```php
+<?php
+# filename: src/MultiAgent/PeerNetwork.php
+declare(strict_types=1);
+
+namespace App\MultiAgent;
+
+class PeerNetwork
+{
+    private array $agents = [];
+    private array $routes = [];
+    private array $discoveryCache = [];
+
+    public function registerAgent(Agent $agent): void
+    {
+        $agentId = $agent->getAgentId();
+        $this->agents[$agentId] = $agent;
+
+        // Announce agent to network
+        $this->broadcastDiscovery($agentId, $agent->getCapabilities());
+    }
+
+    /**
+     * Direct peer-to-peer communication without going through message broker
+     */
+    public function peerToPeer(string $fromAgent, string $toAgent, Message $message): void
+    {
+        if (!isset($this->agents[$toAgent])) {
+            throw new \RuntimeException("Agent not available: {$toAgent}");
+        }
+
+        // Log peer communication
+        \Log::info('Peer-to-peer message', [
+            'from' => $fromAgent,
+            'to' => $toAgent,
+            'type' => $message->type
+        ]);
+
+        // Direct invocation (can be async with queues in production)
+        $this->agents[$toAgent]->receiveMessage($message);
+    }
+
+    /**
+     * Service discovery for dynamic agent lookup
+     */
+    public function discoverAgent(string $capability): ?Agent
+    {
+        // Check cache first
+        if (isset($this->discoveryCache[$capability])) {
+            return $this->agents[$this->discoveryCache[$capability]] ?? null;
+        }
+
+        // Find agent with capability
+        foreach ($this->agents as $agentId => $agent) {
+            if (in_array($capability, $agent->getCapabilities())) {
+                $this->discoveryCache[$capability] = $agentId;
+                return $agent;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Gossip protocol for state synchronization
+     */
+    public function gossip(string $fromAgent, array $state): void
+    {
+        foreach ($this->agents as $agentId => $agent) {
+            if ($agentId !== $fromAgent) {
+                $message = Message::create(
+                    from: $fromAgent,
+                    to: $agentId,
+                    type: 'gossip_sync',
+                    content: $state
+                );
+
+                try {
+                    $this->peerToPeer($fromAgent, $agentId, $message);
+                } catch (\Exception $e) {
+                    // Ignore failures in gossip - eventual consistency
+                    \Log::debug("Gossip delivery failed to {$agentId}");
+                }
+            }
+        }
+    }
+}
+```
+
+### Consensus and Voting
+
+For critical decisions, use consensus mechanisms where multiple agents vote:
+
+```php
+<?php
+# filename: src/MultiAgent/Consensus/VotingMechanism.php
+declare(strict_types=1);
+
+namespace App\MultiAgent\Consensus;
+
+class VotingMechanism
+{
+    private array $votes = [];
+
+    public function initiateVote(string $voteId, string $proposal, array $agentIds): void
+    {
+        $this->votes[$voteId] = [
+            'proposal' => $proposal,
+            'participants' => array_fill_keys($agentIds, null),
+            'started_at' => time()
+        ];
+    }
+
+    public function vote(string $voteId, string $agentId, bool $decision): void
+    {
+        if (!isset($this->votes[$voteId])) {
+            throw new \RuntimeException("Vote not found: {$voteId}");
+        }
+
+        if (!isset($this->votes[$voteId]['participants'][$agentId])) {
+            throw new \RuntimeException("Agent not eligible: {$agentId}");
+        }
+
+        $this->votes[$voteId]['participants'][$agentId] = $decision;
+    }
+
+    public function getResult(string $voteId): array
+    {
+        if (!isset($this->votes[$voteId])) {
+            throw new \RuntimeException("Vote not found: {$voteId}");
+        }
+
+        $vote = $this->votes[$voteId];
+        $votes = array_filter($vote['participants'], fn($v) => $v !== null);
+        
+        if (count($votes) === 0) {
+            return ['status' => 'pending', 'result' => null];
+        }
+
+        $yesCount = array_sum($votes);
+        $noCount = count($votes) - $yesCount;
+        $totalVotes = count($vote['participants']);
+
+        $result = $yesCount > $noCount ? 'approved' : 'rejected';
+        $threshold = ceil($totalVotes / 2);
+        $hasQuorum = count($votes) >= $threshold;
+
+        return [
+            'status' => 'completed',
+            'result' => $result,
+            'votes_for' => $yesCount,
+            'votes_against' => $noCount,
+            'total_participants' => $totalVotes,
+            'has_quorum' => $hasQuorum,
+            'proposal' => $vote['proposal']
+        ];
+    }
+}
+```
+
+## Best Practices
+
+### Agent Design
+
+- **Single Responsibility**: Each agent should have a focused, well-defined purpose
+- **Clear Capabilities**: Explicitly define what each agent can and cannot do
+- **Optimized Prompts**: Tailor system prompts and temperature settings to each agent's role
+- **Error Handling**: Implement robust error handling with retry logic and fallback strategies
+
+### Communication Patterns
+
+- **Message Types**: Use consistent message types for different communication patterns
+- **Timeout Management**: Set appropriate timeouts based on expected task duration
+- **Result Storage**: Store task results for debugging and auditing
+- **Broadcast Sparingly**: Use broadcasts only when necessary to avoid message flooding
+
+### Performance Optimization
+
+- **Parallel Execution**: Delegate independent tasks in parallel when possible
+- **Context Management**: Keep conversation history focused to reduce token usage
+- **Caching**: Cache agent capabilities and frequently accessed information
+- **Async Patterns**: Use async/await or message queues for production systems
+
+### Production Considerations
+
+- **Monitoring**: Track agent performance, task completion rates, and error rates
+- **Scaling**: Design for horizontal scaling with distributed message brokers
+- **Security**: Validate all inter-agent communications and sanitize inputs
+- **Cost Management**: Monitor API usage and optimize for token efficiency
+
+## Troubleshooting
+
+### Error: "Agent not registered"
+
+**Symptom**: `RuntimeException: Agent {agentId} not registered`
+
+**Cause**: Attempting to send a message to an agent that hasn't been registered with the message broker
+
+**Solution**: Ensure all agents are created through the orchestrator or manually registered with the message broker before use:
+
+```php
+// Correct: Use orchestrator
+$orchestrator = new AgentOrchestrator($claude);
+$supervisor = $orchestrator->createSupervisor();
+$workers = $orchestrator->createWorkerTeam();
+
+// Or manually register
+$messageBroker->registerAgent($agent);
+```
+
+### Error: "Timeout waiting for task result"
+
+**Symptom**: `RuntimeException: Timeout waiting for task result: {taskId}`
+
+**Cause**: Task processing exceeded the timeout period (default 30 seconds)
+
+**Solution**: Increase timeout for long-running tasks or optimize task processing:
+
+```php
+// Increase timeout
+$result = $messageBroker->waitForTaskResult($taskId, timeout: 60);
+
+// Or use async patterns for production
+```
+
+### Issue: Agents Not Collaborating
+
+**Symptom**: Supervisor doesn't delegate tasks to workers
+
+**Cause**: Workers not registered with supervisor or supervisor system prompt missing worker information
+
+**Solution**: Ensure workers are registered before processing tasks:
+
+```php
+$supervisor = $orchestrator->createSupervisor();
+$workers = $orchestrator->createWorkerTeam();
+
+// Critical: Register workers with supervisor
+foreach ($workers as $worker) {
+    $supervisor->registerWorkerAgent($worker);
+}
+```
+
+### Issue: Tool Calls Not Working
+
+**Symptom**: Agents don't use delegate_task or request_information tools
+
+**Cause**: Tool definitions missing or Claude not recognizing tool use patterns
+
+**Solution**: Verify tool definitions are correct and system prompts encourage tool use:
+
+```php
+// Ensure tools are properly defined
+protected function getTools(): array
+{
+    return [
+        [
+            'name' => 'delegate_task',
+            'description' => 'Clear description...',
+            'input_schema' => [
+                'type' => 'object',
+                'properties' => [...],
+                'required' => [...]
+            ]
+        ]
+    ];
+}
+```
+
+### Issue: High Token Usage
+
+**Symptom**: Excessive API costs due to large conversation histories
+
+**Cause**: Conversation history growing unbounded with each interaction
+
+**Solution**: Implement conversation history management:
+
+```php
+// Limit conversation history
+protected function buildMessages(string $prompt): array
+{
+    // Keep only last N messages
+    $recentHistory = array_slice($this->conversationHistory, -10);
+    $recentHistory[] = [
+        'role' => 'user',
+        'content' => $prompt
+    ];
+    return $recentHistory;
+}
+```
+
+## Related Chapters
+
+These chapters complement multi-agent systems with critical capabilities for production deployment:
+
+- **[Chapter 19: Queue-Based Processing with Laravel](/series/claude-php-developers/chapters/19-queue-processing-laravel)** — Essential for async agent task processing and background job handling
+- **[Chapter 34: Prompt Chaining and Workflows](/series/claude-php-developers/chapters/34-prompt-chaining-workflows)** — Orchestrating sequential AI operations; complements agent delegation
+- **[Chapter 36: Security Best Practices](/series/claude-php-developers/chapters/36-security-best-practices)** — Securing inter-agent communication and validating agent actions
+- **[Chapter 37: Monitoring & Observability](/series/claude-php-developers/chapters/37-monitoring-observability)** — Instrumenting multi-agent systems for production visibility
+- **[Chapter 38: Scaling Claude Applications](/series/claude-php-developers/chapters/38-scaling-applications)** — Distributed agent systems across multiple servers
+
+## Further Reading
+
+- [Claude API Documentation — Tool Use](https://docs.claude.com/en/tool-use) — Official guide to function calling and tool integration
+- [Multi-Agent Systems Research](https://arxiv.org/list/cs.MA/recent) — Academic papers on multi-agent coordination and distributed consensus
+- [Design Patterns: Observer Pattern](https://refactoring.guru/design-patterns/observer) — Communication patterns for agent coordination
+- [Distributed Systems Principles](https://martinfowler.com/articles/patterns-of-distributed-systems/) — Foundational patterns for building reliable distributed systems
+- [Laravel Queue Documentation](https://laravel.com/docs/11.x/queues) — Production-ready queue processing for async operations
 
 <ChapterCheckbox
   seriesId="claude-php-developers"

@@ -317,3 +317,4 @@ echo "- Simple to implement and understand\n";
 echo "- Useful for small arrays and single searches\n";
 echo str_repeat("=", 50) . "\n";
 
+

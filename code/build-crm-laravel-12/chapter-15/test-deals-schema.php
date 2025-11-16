@@ -116,3 +116,7 @@ echo "Days until closing: {$deal->days_until_closing}\n";
 
 echo "\n✅ All tests passed!\n";
 
+
+
+
+

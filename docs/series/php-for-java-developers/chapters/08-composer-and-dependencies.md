@@ -1450,6 +1450,12 @@ Before moving to the next chapter, ensure you can:
 In [Chapter 9: Working with Arrays](/series/php-for-java-developers/chapters/09-working-with-arrays), we'll explore PHP's powerful array manipulation functions and how they compare to Java Streams.
 :::
 
+<ChapterCheckbox 
+  seriesId="php-for-java-developers"
+  chapterId="08"
+  label="Mastered Composer dependency management!"
+/>
+
 ---
 
 ## Further Reading

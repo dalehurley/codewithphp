@@ -52,6 +52,7 @@ Complete guide to Claude API errors, debugging strategies, and solutions. Use th
 ### PHP SDK Error Object
 
 ```php
+# filename: sdk-error-handling.php
 try {
     $response = $client->messages()->create([...]);
 } catch (\Anthropic\Exceptions\ErrorException $e) {
@@ -87,6 +88,7 @@ Errors caused by invalid requests from your application.
 **Solutions:**
 
 ```php
+# filename: fix-missing-max-tokens.php
 // ❌ Wrong - missing max_tokens
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
@@ -122,6 +124,7 @@ $response = $client->messages()->create([
 **Validation Helper:**
 
 ```php
+# filename: ClaudeRequestValidator.php
 class ClaudeRequestValidator
 {
     public static function validate(array $params): array
@@ -193,6 +196,7 @@ if (!empty($errors)) {
 **Solutions:**
 
 ```php
+# filename: fix-authentication-error.php
 // Check if API key is set
 $apiKey = getenv('ANTHROPIC_API_KEY');
 if (!$apiKey) {
@@ -246,11 +250,12 @@ $client = Anthropic::factory()
 **Solutions:**
 
 ```php
+# filename: fix-permission-error.php
 // Check model availability
 $availableModels = [
     'claude-opus-4-20250514',
     'claude-sonnet-4-20250514',
-    'claude-3-5-haiku-20241022'
+    'claude-haiku-4-20250514'
 ];
 
 if (!in_array($model, $availableModels)) {
@@ -290,6 +295,7 @@ $client = Anthropic::factory()
 **Solution:**
 
 ```php
+# filename: fix-not-found-error.php
 // ❌ Wrong
 $url = 'https://api.anthropic.com/v1/message'; // Missing 's'
 
@@ -329,6 +335,7 @@ $client = Anthropic::factory()
 **Solutions:**
 
 ```php
+# filename: RateLimiter.php
 class RateLimiter
 {
     private int $maxRetries = 5;
@@ -366,6 +373,7 @@ $response = $rateLimiter->makeRequest(function() use ($client, $params) {
 **Advanced Rate Limiting with Redis:**
 
 ```php
+# filename: RedisRateLimiter.php
 class RedisRateLimiter
 {
     private Redis $redis;
@@ -407,6 +415,7 @@ $response = $client->messages()->create($params);
 **Check Rate Limit Headers:**
 
 ```php
+# filename: check-rate-limit-headers.php
 // After making a request, check remaining quota
 if (method_exists($response, 'headers')) {
     $remaining = $response->headers['anthropic-ratelimit-requests-remaining'] ?? null;
@@ -443,6 +452,7 @@ Errors on Anthropic's side. Usually transient.
 **Solution:** Retry with exponential backoff.
 
 ```php
+# filename: ApiErrorHandler.php
 class ApiErrorHandler
 {
     public function makeRequestWithRetry(callable $request, int $maxAttempts = 3): mixed
@@ -487,6 +497,7 @@ class ApiErrorHandler
 **Solution:** Retry with longer delays.
 
 ```php
+# filename: OverloadHandler.php
 class OverloadHandler
 {
     public function makeRequest(callable $request, int $maxRetries = 5): mixed
@@ -525,6 +536,7 @@ class OverloadHandler
 **Cause:** Request took too long to complete.
 
 ```php
+# filename: connection-timeout.php
 // Set custom timeout
 $client = Anthropic::factory()
     ->withApiKey(getenv('ANTHROPIC_API_KEY'))
@@ -542,6 +554,7 @@ $client = Anthropic::factory()
 **Cause:** SSL verification issues.
 
 ```php
+# filename: ssl-certificate-errors.php
 // Development only - DO NOT use in production
 $client = Anthropic::factory()
     ->withApiKey(getenv('ANTHROPIC_API_KEY'))
@@ -577,6 +590,7 @@ $client = Anthropic::factory()
 **Causes & Solutions:**
 
 ```php
+# filename: fix-empty-response.php
 // 1. Check stop_reason
 if ($response->stop_reason === 'max_tokens') {
     // Response was truncated - increase max_tokens
@@ -611,6 +625,7 @@ if ($response->stop_reason === 'tool_use') {
 **Solution:**
 
 ```php
+# filename: ResponseValidator.php
 class ResponseValidator
 {
     public static function validateMessageResponse($response): void
@@ -674,6 +689,7 @@ try {
 **Solution:**
 
 ```php
+# filename: ConversationManager.php
 class ConversationManager
 {
     private array $messages = [];
@@ -738,6 +754,7 @@ $conversation->addMessage('assistant', $response->content[0]->text);
 **Debug Steps:**
 
 ```php
+# filename: debug-tool-use.php
 // 1. Verify tool definition format
 $tools = [
     [
@@ -782,6 +799,7 @@ $toolResult = [
 ### Enable Debug Logging
 
 ```php
+# filename: ClaudeDebugger.php
 class ClaudeDebugger
 {
     private $client;
@@ -839,7 +857,7 @@ class ClaudeDebugger
         $pricing = [
             'claude-opus-4-20250514' => ['input' => 15, 'output' => 75],
             'claude-sonnet-4-20250514' => ['input' => 3, 'output' => 15],
-            'claude-3-5-haiku-20241022' => ['input' => 0.8, 'output' => 4],
+            'claude-haiku-4-20250514' => ['input' => 0.8, 'output' => 4],
         ];
 
         $rates = $pricing[$model] ?? ['input' => 3, 'output' => 15];
@@ -859,6 +877,7 @@ $response = $debugger->createMessage($params);
 ### Request/Response Inspector
 
 ```php
+# filename: RequestInspector.php
 class RequestInspector
 {
     public static function inspect(array $params): void
@@ -925,6 +944,7 @@ RequestInspector::inspectResponse($response);
 ### Comprehensive Error Handling
 
 ```php
+# filename: ClaudeClient.php
 class ClaudeClient
 {
     private $client;
@@ -999,6 +1019,7 @@ class ClaudeClient
 ### Circuit Breaker Pattern
 
 ```php
+# filename: CircuitBreaker.php
 class CircuitBreaker
 {
     private const STATE_CLOSED = 'closed';
@@ -1068,16 +1089,18 @@ try {
 If you're still stuck after trying these solutions:
 
 1. **Check API Status**: [status.anthropic.com](https://status.anthropic.com)
-2. **Official Docs**: [docs.anthropic.com](https://docs.anthropic.com)
+2. **Official Docs**: [docs.claude.com](https://docs.claude.com)
 3. **Discord Community**: [discord.gg/anthropic](https://discord.gg/anthropic)
 4. **GitHub Issues**: [github.com/anthropics/anthropic-sdk-php](https://github.com/anthropics/anthropic-sdk-php)
 
 ---
 
 ::: tip Quick Navigation
+- **[← Appendix A: API Reference](/series/claude-php-developers/appendices/a-api-reference)** - Complete API reference
 - **[← Appendix B: Prompting Patterns](/series/claude-php-developers/appendices/b-prompting-patterns)** - Prompt templates
+- **[← Appendix C: Error Codes](/series/claude-php-developers/appendices/c-error-codes)** - Troubleshooting guide
 - **[Appendix D: Resources →](/series/claude-php-developers/appendices/d-resources)** - Tools and resources
 - **[Back to Series](/series/claude-php-developers)** - Return to main series
 :::
 
-*Last updated: November 2024*
+_Last updated: November 2024_

@@ -30,6 +30,15 @@ PHP's exception handling works nearly identically to Java's—you use try-catch-
 - Understanding of Java exception handling
 - Familiarity with try-catch-finally blocks
 
+## What You'll Build
+
+In this chapter, you'll create:
+- Custom exception classes (UserNotFoundException, ValidationException, DatabaseException)
+- A Result object pattern implementation for expected failures
+- An API error handling system with global exception handler
+- Structured logging with context-rich exceptions
+- Exception handling tests using PHPUnit
+
 ## Learning Objectives
 
 By the end of this chapter, you'll be able to:
@@ -54,6 +63,7 @@ Master try-catch-finally blocks in PHP.
 ::: code-group
 
 ```php [PHP Exceptions]
+# filename: exception-basic.php
 <?php
 
 declare(strict_types=1);
@@ -100,9 +110,21 @@ public class Example {
 
 :::
 
+**Expected Result:**
+
+```
+Error: Division by zero
+Cleanup code runs regardless
+```
+
+**Why It Works:**
+
+PHP's exception handling mirrors Java's try-catch-finally structure. When `divide()` throws an `InvalidArgumentException`, execution jumps to the matching catch block. The finally block always executes, regardless of whether an exception was thrown or caught. This ensures cleanup code runs even if errors occur.
+
 ### Exception Methods
 
 ```php
+# filename: exception-methods.php
 <?php
 
 declare(strict_types=1);
@@ -118,6 +140,22 @@ try {
 }
 ```
 
+**Expected Result:**
+
+```
+Message: Something went wrong
+Code: 500
+File: /path/to/exception-methods.php
+Line: 120
+Trace:
+#0 /path/to/exception-methods.php(120): Exception->__construct('Something went wrong', 500)
+...
+```
+
+**Why It Works:**
+
+PHP exceptions provide several methods to inspect error details. `getMessage()` returns the exception message, `getCode()` returns the error code, `getFile()` and `getLine()` show where the exception was thrown, and `getTraceAsString()` provides a formatted stack trace. These methods help debug issues by providing context about where and why exceptions occurred.
+
 ---
 
 ## Section 2: Exception Hierarchy
@@ -129,6 +167,7 @@ Understand PHP's exception hierarchy and how it compares to Java.
 ### Built-in Exception Classes
 
 ```php
+# filename: exception-hierarchy.php
 <?php
 
 declare(strict_types=1);
@@ -170,9 +209,20 @@ try {
 }
 ```
 
+**Expected Result:**
+
+```
+Out of bounds: Index out of bounds
+```
+
+**Why It Works:**
+
+PHP's exception hierarchy allows catching specific exception types. When multiple catch blocks are present, PHP matches exceptions from most specific to least specific. Here, `OutOfBoundsException` is caught first because it's the exact type thrown. If it weren't present, the `RuntimeException` catch would handle it (since `OutOfBoundsException` extends `RuntimeException`), and if that weren't present, the generic `Exception` catch would handle it.
+
 ### Multiple Catch Blocks
 
 ```php
+# filename: multiple-catch.php
 <?php
 
 declare(strict_types=1);
@@ -188,6 +238,16 @@ try {
 }
 ```
 
+**Expected Result:**
+
+```
+Input error: Bad argument
+```
+
+**Why It Works:**
+
+PHP 7.1+ allows catching multiple exception types in a single catch block using the pipe (`|`) operator. This reduces code duplication when the same handling logic applies to multiple exception types. The catch block matches if the thrown exception is an instance of any of the specified types.
+
 ---
 
 ## Section 3: Custom Exceptions
@@ -201,6 +261,7 @@ Create custom exception classes for specific error conditions.
 ::: code-group
 
 ```php [PHP Custom Exceptions]
+# filename: custom-exceptions.php
 <?php
 
 declare(strict_types=1);
@@ -275,6 +336,16 @@ try {
 }
 ```
 
+**Expected Result:**
+
+```
+Not found: User with ID 1001 not found
+```
+
+**Why It Works:**
+
+Custom exceptions allow you to create domain-specific error types with additional context. `UserNotFoundException` automatically includes the user ID in its message, while `ValidationException` stores validation errors in an array accessible via `getErrors()`. This makes error handling more expressive and provides richer error information to callers.
+
 ```java [Java Custom Exceptions]
 // UserNotFoundException.java
 package com.example.exceptions;
@@ -340,6 +411,7 @@ Understand the difference between PHP errors and exceptions.
 ### PHP 7+ Error Handling
 
 ```php
+# filename: error-to-exception.php
 <?php
 
 declare(strict_types=1);
@@ -372,9 +444,22 @@ try {
 }
 ```
 
+**Expected Result:**
+
+```
+Type error: Argument #1 ($value) must be of type int, string given
+Division error: Division by zero
+Something went wrong: [error message]
+```
+
+**Why It Works:**
+
+PHP 7+ converts most errors to exceptions. `TypeError` is thrown when type declarations are violated, `DivisionByZeroError` is thrown for division by zero operations. The `Throwable` interface is the base for both `Exception` and `Error`, allowing you to catch both types in a single catch block. This unified error handling makes PHP's error system more consistent and easier to work with.
+
 ### Error Levels (Legacy)
 
 ```php
+# filename: legacy-error-handling.php
 <?php
 
 // Old PHP error levels (avoid in modern code)
@@ -397,6 +482,16 @@ try {
 }
 ```
 
+**Expected Result:**
+
+```
+File error: file_get_contents(/nonexistent/file): Failed to open stream: No such file or directory
+```
+
+**Why It Works:**
+
+Legacy PHP error handling used error levels (E_ERROR, E_WARNING, etc.) instead of exceptions. Modern PHP code should use exceptions, but you can convert legacy errors to exceptions using `set_error_handler()`. This allows you to handle all errors uniformly using try-catch blocks, making error handling more consistent across your application.
+
 ---
 
 ## Section 5: Finally Block
@@ -408,6 +503,7 @@ Master the finally block for cleanup code.
 ### Finally Block Behavior
 
 ```php
+# filename: finally-block.php
 <?php
 
 declare(strict_types=1);
@@ -448,9 +544,21 @@ function processFile(string $filename): void
 processFile('/nonexistent.txt');
 ```
 
+**Expected Result:**
+
+```
+Error: Cannot open file
+File closed
+```
+
+**Why It Works:**
+
+The finally block always executes, even when exceptions are thrown. This makes it perfect for cleanup operations like closing file handles, database connections, or releasing resources. Even though the file couldn't be opened and an exception was thrown, the finally block ensures the file handle is checked and closed if it was opened, preventing resource leaks.
+
 ### Finally with Return
 
 ```php
+# filename: finally-return.php
 <?php
 
 declare(strict_types=1);
@@ -471,6 +579,16 @@ $result = testFinally();
 // Then returns "try block"
 ```
 
+**Expected Result:**
+
+```
+Finally block executed
+```
+
+**Why It Works:**
+
+The finally block executes before the return statement completes. This ensures cleanup code runs even when a function returns early. The return value is preserved, but the finally block's code executes first. This behavior is consistent with Java's finally block and ensures predictable cleanup regardless of how the function exits.
+
 ---
 
 ## Section 6: Exception Best Practices
@@ -482,6 +600,7 @@ Learn exception handling best practices.
 ### Do's and Don'ts
 
 ```php
+# filename: exception-best-practices.php
 <?php
 
 declare(strict_types=1);
@@ -554,6 +673,7 @@ throw new Exception("Error");  // Not helpful!
 ### Exception Chaining
 
 ```php
+# filename: exception-chaining.php
 <?php
 
 declare(strict_types=1);
@@ -591,6 +711,7 @@ try {
 Build a robust error handling system for an API.
 
 ```php
+# filename: api-error-handling.php
 <?php
 
 declare(strict_types=1);
@@ -697,6 +818,7 @@ Learn modern alternatives to exceptions for expected failures.
 ### The Problem with Exceptions for Control Flow
 
 ```php
+# filename: exception-control-flow-problem.php
 <?php
 
 declare(strict_types=1);
@@ -736,6 +858,7 @@ try {
 ::: code-group
 
 ```php [Result Class]
+# filename: result-class.php
 <?php
 
 declare(strict_types=1);
@@ -846,6 +969,7 @@ final class Result
 ```
 
 ```php [Using Result Objects]
+# filename: result-usage.php
 <?php
 
 declare(strict_types=1);
@@ -979,6 +1103,7 @@ Learn to log exceptions with rich context for debugging.
 ### Exception Context
 
 ```php
+# filename: enriched-exception.php
 <?php
 
 declare(strict_types=1);
@@ -1050,6 +1175,7 @@ try {
 ::: code-group
 
 ```php [Logger Interface]
+# filename: structured-logger.php
 <?php
 
 declare(strict_types=1);
@@ -1104,6 +1230,7 @@ class JsonLogger implements Logger
 ```
 
 ```php [Exception Handler with Logging]
+# filename: exception-handler-logging.php
 <?php
 
 declare(strict_types=1);
@@ -1235,6 +1362,7 @@ Understand the performance impact of exceptions and when to avoid them.
 ### Exception Cost
 
 ```php
+# filename: exception-performance-benchmark.php
 <?php
 
 declare(strict_types=1);
@@ -1371,6 +1499,7 @@ try {
 ### When Exceptions Are OK
 
 ```php
+# filename: when-exceptions-ok.php
 <?php
 
 declare(strict_types=1);
@@ -1428,6 +1557,7 @@ Learn to test exception scenarios effectively.
 ::: code-group
 
 ```php [PHPUnit Tests]
+# filename: UserServiceTest.php
 <?php
 
 declare(strict_types=1);
@@ -1515,6 +1645,7 @@ class UserServiceTest extends TestCase
 ```
 
 ```php [Testing Result Objects]
+# filename: UserServiceWithResultTest.php
 <?php
 
 declare(strict_types=1);
@@ -1617,6 +1748,7 @@ class UserServiceTest {
 ### Mock Exceptions in Tests
 
 ```php
+# filename: PaymentServiceTest.php
 <?php
 
 declare(strict_types=1);
@@ -1672,6 +1804,7 @@ Leverage modern PHP 8+ features for better error handling.
 ### Never Return Type
 
 ```php
+# filename: never-type.php
 <?php
 
 declare(strict_types=1);
@@ -1710,6 +1843,7 @@ function processRequest(): void
 ### Union Types for Error Handling
 
 ```php
+# filename: union-types-error-handling.php
 <?php
 
 declare(strict_types=1);
@@ -1767,6 +1901,7 @@ if ($result instanceof User) {
 ### Intersection Types
 
 ```php
+# filename: intersection-types.php
 <?php
 
 declare(strict_types=1);
@@ -1815,6 +1950,7 @@ class CriticalException extends \Exception implements Loggable, Notifiable
 ### Match Expression for Error Handling
 
 ```php
+# filename: match-expression-error-handling.php
 <?php
 
 declare(strict_types=1);
@@ -1858,6 +1994,293 @@ set_exception_handler('handleError');
 
 ---
 
+## Exercises
+
+### Exercise 1: Custom Exception Classes
+
+Create a file called `custom-exceptions.php` and implement:
+
+**Requirements:**
+- Create `PaymentException` base class extending `Exception`
+- Create `InsufficientFundsException` extending `PaymentException`
+- Create `InvalidCardException` extending `PaymentException`
+- Create `PaymentProcessor` class with `processPayment()` method
+- Throw appropriate exceptions based on validation logic
+- Include meaningful error messages and error codes
+
+**Validation:** Test your implementation:
+
+```php
+$processor = new PaymentProcessor();
+
+try {
+    $processor->processPayment(-100, '1234');
+} catch (InsufficientFundsException $e) {
+    echo "Expected: {$e->getMessage()}\n";
+}
+
+try {
+    $processor->processPayment(100, 'invalid');
+} catch (InvalidCardException $e) {
+    echo "Expected: {$e->getMessage()}\n";
+}
+```
+
+### Exercise 2: Result Object Pattern
+
+Implement a `Result` class and refactor a service to use it:
+
+**Requirements:**
+- Create a `Result` class with `ok()` and `fail()` static methods
+- Implement `isSuccess()`, `isFailure()`, `getValue()`, `getError()` methods
+- Create `UserService` with `authenticate()` method returning `Result<User>`
+- Handle both success and failure cases without exceptions
+- Chain operations using `map()` and `flatMap()` methods
+
+**Validation:** Test your implementation:
+
+```php
+$service = new UserService();
+
+$result = $service->authenticate('user@example.com', 'password');
+
+if ($result->isSuccess()) {
+    $user = $result->getValue();
+    echo "Authenticated: {$user->email}\n";
+} else {
+    echo "Error: {$result->getError()}\n";
+}
+```
+
+### Exercise 3: Global Exception Handler
+
+Create a global exception handler for a web API:
+
+**Requirements:**
+- Create custom exception classes: `ValidationException`, `NotFoundException`, `UnauthorizedException`
+- Implement `ApiExceptionHandler` class
+- Use `match` expression to map exceptions to HTTP status codes
+- Return JSON responses with error details
+- Log exceptions with context (request ID, user ID, timestamp)
+- Set up the handler using `set_exception_handler()`
+
+**Validation:** Test your implementation:
+
+```php
+// Should return 422 JSON response
+throw new ValidationException('Email is required', ['email' => 'Required']);
+
+// Should return 404 JSON response
+throw new NotFoundException('User not found');
+
+// Should return 401 JSON response
+throw new UnauthorizedException('Invalid token');
+```
+
+### Exercise 4: Exception Chaining
+
+Implement exception chaining for a multi-layer application:
+
+**Requirements:**
+- Create `DatabaseException`, `ServiceException`, `ControllerException`
+- Implement a `UserService` that catches `DatabaseException` and wraps it in `ServiceException`
+- Implement a `UserController` that catches `ServiceException` and wraps it in `ControllerException`
+- Preserve the exception chain using the `$previous` parameter
+- Display the full exception chain when handling errors
+
+**Validation:** Test your implementation:
+
+```php
+try {
+    $controller->getUser(123);
+} catch (ControllerException $e) {
+    // Should show full chain: ControllerException -> ServiceException -> DatabaseException
+    $current = $e;
+    while ($current !== null) {
+        echo get_class($current) . ": {$current->getMessage()}\n";
+        $current = $current->getPrevious();
+    }
+}
+```
+
+### Exercise 5: Structured Logging
+
+Create a structured logging system for exceptions:
+
+**Requirements:**
+- Create `StructuredLogger` class implementing PSR-3-like interface
+- Log exceptions as JSON with context (timestamp, level, message, exception class, file, line, trace)
+- Include request context (request ID, user ID, IP address, URL, method)
+- Create `EnrichedException` class that captures context automatically
+- Use the logger in exception handler
+
+**Validation:** Test your implementation:
+
+```php
+$logger = new StructuredLogger('logs/app.log');
+
+try {
+    throw new EnrichedException('Database query failed')
+        ->setContext(['query' => 'SELECT * FROM users', 'duration_ms' => 500]);
+} catch (EnrichedException $e) {
+    $logger->error($e->getMessage(), $e->getContext());
+}
+
+// Check logs/app.log for JSON entry
+```
+
+---
+
+## Troubleshooting
+
+### Error: "Uncaught Exception: ..."
+
+**Symptom:** Exception is thrown but not caught, causing a fatal error.
+
+**Cause:** No try-catch block around code that throws exceptions, or exception type doesn't match catch block.
+
+**Solution:**
+
+```php
+// ❌ BAD: No exception handling
+function riskyOperation() {
+    throw new Exception("Error");
+}
+riskyOperation(); // Fatal error!
+
+// ✅ GOOD: Proper exception handling
+try {
+    riskyOperation();
+} catch (Exception $e) {
+    echo "Caught: {$e->getMessage()}\n";
+}
+```
+
+### Error: "Catch block order matters"
+
+**Symptom:** More specific exceptions are caught by generic catch blocks.
+
+**Cause:** Catch blocks are evaluated in order, and generic exceptions catch specific ones.
+
+**Solution:**
+
+```php
+// ❌ BAD: Generic catch first
+try {
+    throw new InvalidArgumentException("Bad input");
+} catch (Exception $e) {  // Catches everything!
+    echo "Generic error";
+} catch (InvalidArgumentException $e) {  // Never reached
+    echo "Invalid argument";
+}
+
+// ✅ GOOD: Specific catches first
+try {
+    throw new InvalidArgumentException("Bad input");
+} catch (InvalidArgumentException $e) {  // Caught here
+    echo "Invalid argument";
+} catch (Exception $e) {  // Fallback for other exceptions
+    echo "Generic error";
+}
+```
+
+### Error: "Finally block not executing"
+
+**Symptom:** Finally block code doesn't run.
+
+**Cause:** Fatal errors or script termination (`exit()`, `die()`) bypass finally blocks.
+
+**Solution:**
+
+```php
+// ❌ BAD: exit() prevents finally from running
+try {
+    exit("Script ends");
+} finally {
+    echo "This never runs";
+}
+
+// ✅ GOOD: Use return or throw instead
+try {
+    return "Script ends";
+} finally {
+    echo "This runs before return";
+}
+```
+
+### Error: "Exception context lost"
+
+**Symptom:** Exception thrown but context information is missing.
+
+**Cause:** Not preserving exception chain or not adding context to exceptions.
+
+**Solution:**
+
+```php
+// ❌ BAD: Context lost
+try {
+    throw new DatabaseException("Query failed");
+} catch (DatabaseException $e) {
+    throw new ServiceException("Service unavailable");  // Original exception lost
+}
+
+// ✅ GOOD: Preserve exception chain
+try {
+    throw new DatabaseException("Query failed");
+} catch (DatabaseException $e) {
+    throw new ServiceException("Service unavailable", 0, $e);  // Chain preserved
+}
+```
+
+### Error: "Performance issues with exceptions"
+
+**Symptom:** Application is slow, exceptions thrown frequently in loops.
+
+**Cause:** Using exceptions for control flow in performance-critical code.
+
+**Solution:**
+
+```php
+// ❌ BAD: Exception in loop (expensive)
+for ($i = 0; $i < 1000000; $i++) {
+    try {
+        if ($i % 2 === 0) {
+            throw new Exception("Even number");
+        }
+    } catch (Exception $e) {
+        // Handle
+    }
+}
+
+// ✅ GOOD: Check condition first
+for ($i = 0; $i < 1000000; $i++) {
+    if ($i % 2 === 0) {
+        // Handle even number without exception
+    }
+}
+```
+
+### Error: "Exception message not helpful"
+
+**Symptom:** Exception messages don't provide enough context for debugging.
+
+**Cause:** Generic exception messages without context.
+
+**Solution:**
+
+```php
+// ❌ BAD: Generic message
+throw new Exception("Error");
+
+// ✅ GOOD: Descriptive message with context
+throw new ValidationException(
+    "Email validation failed: '{$email}' is not a valid email address",
+    ['email' => $email, 'field' => 'email', 'value' => $email]
+);
+```
+
+---
+
 ## Wrap-up Checklist
 
 Before moving to the next chapter, ensure you can:
@@ -1880,6 +2303,12 @@ Before moving to the next chapter, ensure you can:
 ::: tip Completed Part 2!
 Congratulations! You've completed Part 2: Object-Oriented PHP. In [Chapter 8: Composer & Dependencies](/series/php-for-java-developers/chapters/08-composer-and-dependencies), we'll begin Part 3: Modern PHP Development, learning about Composer (PHP's Maven/Gradle equivalent).
 :::
+
+<ChapterCheckbox 
+  seriesId="php-for-java-developers"
+  chapterId="07"
+  label="Mastered PHP exception handling and error management!"
+/>
 
 ---
 

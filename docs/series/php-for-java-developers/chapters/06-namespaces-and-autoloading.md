@@ -1836,6 +1836,12 @@ Before moving to the next chapter, ensure you can:
 In [Chapter 7: Error Handling](/series/php-for-java-developers/chapters/07-error-handling), we'll explore exceptions, try-catch-finally blocks, and error handling best practices in PHP.
 :::
 
+<ChapterCheckbox 
+  seriesId="php-for-java-developers"
+  chapterId="06"
+  label="Mastered PHP namespaces and PSR-4 autoloading!"
+/>
+
 ---
 
 ## Further Reading

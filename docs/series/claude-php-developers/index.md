@@ -1,12 +1,12 @@
 ---
 title: Claude for PHP Developers
-description: Master Anthropic's Claude AI from basics to production—learn prompting, tool use, vision, RAG, and deployment of full-featured AI applications with PHP.
+description: Master Anthropic's Claude AI from basics to production—learn prompting, tool use, vision, RAG, Agent Skills, multi-agent systems, and deployment of full-featured AI applications with PHP 8.4+.
 series: claude-php-developers
 order: 0
 difficulty: Expert
 prerequisites:
   [
-    "Expert PHP knowledge (PHP 8.2+)",
+    "Expert PHP knowledge (PHP 8.4+)",
     "Understanding of APIs and HTTP requests",
     "Familiarity with Laravel or Symfony",
     "Basic understanding of AI/ML concepts",
@@ -29,7 +29,14 @@ prerequisites:
 
 Welcome to **Claude for PHP Developers** — the comprehensive, hands-on course that teaches you how to build production-ready AI applications using Anthropic's Claude and modern PHP. Whether you're adding AI features to existing applications, building AI-first products, or exploring the frontier of AI-powered development, this series will take you from your first API call to deploying sophisticated multi-agent systems.
 
-Claude is Anthropic's family of state-of-the-art AI models, designed to be helpful, harmless, and honest. With capabilities including natural language understanding, code generation, vision, tool use, and more, Claude can transform your PHP applications into intelligent, context-aware systems that solve complex real-world problems.
+Claude is Anthropic's family of state-of-the-art AI models, designed to be helpful, harmless, and honest. With capabilities including natural language understanding, code generation, vision, tool use, RAG, and advanced features like Agent Skills and Memory, Claude can transform your PHP applications into intelligent, context-aware systems that solve complex real-world problems.
+
+**Claude Model Family:**
+- **Claude Sonnet 4.5** — Balanced performance and cost, ideal for most applications (200K tokens standard, 1M tokens Beta)
+- **Claude Haiku 4.5** — Fastest and most affordable, perfect for simple tasks (200K tokens)
+- **Claude Opus 4.1** — Most capable, best for complex reasoning tasks (200K tokens)
+
+All models support tool use, vision, streaming, structured outputs, and the latest beta features.
 
 This series is built for **expert PHP developers** who want to master AI integration. You'll learn not just how to call APIs, but how to architect AI-powered systems, optimize for cost and performance, implement RAG (Retrieval Augmented Generation), build multi-agent workflows, and deploy production-grade applications that scale.
 
@@ -46,13 +53,13 @@ This series is designed for:
 - **Enterprise developers** integrating Claude into existing PHP applications
 - **AI-curious developers** with strong PHP skills ready to master modern AI
 
-You should have expert-level PHP knowledge, understanding of modern frameworks (Laravel, Symfony), API development experience, and familiarity with asynchronous processing. No AI/ML background required—we'll teach you everything you need to know about working with Claude.
+You should have expert-level PHP 8.4+ knowledge, understanding of modern frameworks (Laravel 11, Symfony 7), API development experience, and familiarity with asynchronous processing. No AI/ML background required—we'll teach you everything you need to know about working with Claude.
 
 ## Prerequisites
 
 **Software Requirements:**
 
-- **PHP 8.2+** (we'll use modern PHP features throughout)
+- **PHP 8.4+** (we'll use modern PHP features throughout)
 - **Composer** for dependency management
 - **Laravel 11** or **Symfony 7** (for framework-specific chapters)
 - **Anthropic API Key** (we'll show you how to get one)
@@ -70,12 +77,13 @@ You should have expert-level PHP knowledge, understanding of modern frameworks (
 
 **Skill Assumptions:**
 
-- Expert-level PHP (namespaces, traits, interfaces, dependency injection)
-- Modern framework experience (Laravel or Symfony)
+- Expert-level PHP 8.4+ (namespaces, traits, interfaces, dependency injection, type declarations)
+- Modern framework experience (Laravel 11 or Symfony 7)
 - RESTful API development and consumption
 - Understanding of asynchronous processing (queues, workers)
 - Database design and optimization
 - Git and deployment workflows
+- Composer for dependency management
 - No prior AI/ML experience required
 
 ## What You'll Build
@@ -89,10 +97,11 @@ By working through this series, you will:
    - Message formatting and conversation threading
    - Streaming responses for real-time UX
    - Tool use (function calling) for dynamic capabilities
-   - Vision API for image analysis
-   - Structured outputs with JSON
-   - Error handling and rate limiting
-   - Cost optimization strategies
+   - Vision API for image and document analysis
+   - Structured outputs with JSON schema enforcement
+   - Error handling, rate limiting, and retry logic
+   - Cost optimization strategies (caching, batching, model selection)
+   - Advanced features: Agent Skills, Memory Tool, Files API, Extended Thinking
 
 2. **Build production-ready AI applications**:
    - **AI Chatbot** with conversation memory and context
@@ -105,23 +114,33 @@ By working through this series, you will:
    - **Admin Panel** with AI-powered features
 
 3. **Implement advanced AI patterns**:
-   - **RAG (Retrieval Augmented Generation)** with vector databases
+   - **RAG (Retrieval Augmented Generation)** with vector databases and semantic search
    - **Prompt chaining** for multi-step workflows
-   - **Multi-agent systems** with specialized agents
-   - **Caching strategies** for cost and performance optimization
+   - **Multi-agent systems** with specialized agents and orchestration
+   - **Agent Skills** (Beta) for extending Claude with custom capabilities
+   - **Caching strategies** including prompt caching (5m/1hr) and response caching
    - **Queue-based processing** for long-running tasks
-   - **Real-time streaming** with WebSockets
+   - **Batch processing** for 50% cost savings on async workloads
+   - **Real-time streaming** with WebSockets and Server-Sent Events
+   - **Extended Thinking** for transparent reasoning processes
+   - **Citations and Search Results** for RAG and knowledge base integration
+   - **Memory Tool** (Beta) for cross-conversation memory
+   - **Files API** (Beta) for persistent file uploads
    - **Fine-tuning strategies** for domain-specific models
 
 4. **Deploy and scale in production**:
-   - Security best practices and API key management
-   - Monitoring and observability with logging
-   - Rate limiting and quota management
+   - Security best practices, API key management, and compliance
+   - Privacy considerations: GDPR, data residency, PII handling
+   - Monitoring and observability with logging and metrics
+   - Rate limiting, quota management, and graceful degradation
    - Cost optimization and billing alerts
-   - Docker deployment and orchestration
-   - Scaling strategies for high-traffic applications
+   - Quality assurance: evaluating and measuring AI output
+   - Testing strategies: unit tests, integration tests, mock responses
+   - Docker deployment, orchestration, and CI/CD integration
+   - Scaling strategies: horizontal scaling, load balancing, queuing
+   - Debugging techniques and troubleshooting production issues
 
-Every code example is production-ready, following PHP 8.2+ best practices, modern design patterns, and includes comprehensive error handling and testing strategies.
+Every code example is production-ready, following PHP 8.4+ best practices, modern design patterns, and includes comprehensive error handling and testing strategies.
 
 ## Learning Objectives
 
@@ -130,14 +149,19 @@ By the end of this series, you will be able to:
 - **Integrate Claude API** into any PHP application with confidence
 - **Design and implement AI-powered features** that solve real business problems
 - **Optimize prompts** for accuracy, performance, and cost-effectiveness
-- **Build conversational interfaces** with context and memory management
-- **Implement RAG systems** for knowledge-grounded responses
+- **Build conversational interfaces** with context and memory management (including Memory Tool)
+- **Implement RAG systems** with vector databases, semantic search, and citations
 - **Create tool use functions** that extend Claude's capabilities dynamically
-- **Process images and documents** using Claude's vision capabilities
+- **Use Agent Skills** (Beta) to extend Claude with custom capabilities
+- **Process images and documents** using Claude's vision capabilities and Files API
 - **Design multi-agent systems** for complex workflow automation
-- **Deploy production applications** with monitoring, scaling, and security
-- **Optimize costs** while maintaining quality and performance
+- **Implement advanced features** like Extended Thinking, prompt caching, and batch processing
+- **Deploy production applications** with monitoring, scaling, security, and compliance
+- **Optimize costs** through caching, batching, intelligent model selection, and quality trade-offs
+- **Test AI features** effectively: mocking, unit testing, quality verification
+- **Measure and evaluate** AI output quality and performance metrics
 - **Debug and troubleshoot** AI application issues systematically
+- **Secure sensitive data**: handle PII, implement data privacy, ensure compliance
 
 ## How This Series Works
 
@@ -146,16 +170,21 @@ This series follows a **progressive, project-based approach**: you'll learn each
 Each chapter includes:
 
 - **Clear explanations** of Claude features and AI concepts
-- **Step-by-step implementations** in modern PHP 8.2+
-- **Complete working examples** with Laravel and standalone PHP
+- **Step-by-step implementations** in modern PHP 8.4+
+- **Complete working examples** with Laravel, Symfony, and standalone PHP
 - **Best practices** for production deployments
 - **Cost optimization strategies** for each feature
 - **Security considerations** and common pitfalls
+- **Testing strategies** for AI features and mocking
+- **Quality assurance** approaches for AI output
+- **Troubleshooting guides** for common issues and debugging techniques
 - **Hands-on exercises** to reinforce learning
-- **Troubleshooting guides** for common issues
 - **Further reading** for deeper exploration
 
 We'll start with fundamentals (API basics, authentication, prompting), progress through core features (streaming, tools, vision), explore integration patterns (Laravel, caching, queues), and finish with advanced topics (RAG, multi-agent systems, production deployment).
+
+**Latest Features Covered:**
+This series includes coverage of Claude's newest capabilities including Agent Skills (Beta), Memory Tool (Beta), Files API (Beta), Extended Thinking, prompt caching, batch processing, citations, and the 1M token context window (Beta). We'll show you how to leverage these cutting-edge features in your PHP applications.
 
 ::: tip
 Build alongside each chapter instead of just reading. Understanding AI integration requires hands-on practice—implementing, testing, debugging, and iterating. Each chapter includes complete, runnable code examples.
@@ -171,24 +200,36 @@ require 'vendor/autoload.php';
 
 use Anthropic\Anthropic;
 
-// Initialize Claude
+// Initialize Claude client
 $client = Anthropic::factory()
     ->withApiKey(getenv('ANTHROPIC_API_KEY'))
     ->make();
 
 // Your first AI conversation!
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-20250514', // Claude Sonnet 4.5 - verify latest version
     'max_tokens' => 1024,
     'messages' => [
         ['role' => 'user', 'content' => 'Write a PHP function to calculate fibonacci numbers']
     ]
 ]);
 
+// Access the generated text
 echo $response->content[0]->text;
 
 // Claude will generate a complete, working PHP function!
 ```
+
+**What This Does:**
+- Initializes the Anthropic PHP SDK with your API key
+- Sends a message to Claude Sonnet 4.5 (latest model)
+- Receives and displays the AI-generated PHP code
+- Ready to run—just set your `ANTHROPIC_API_KEY` environment variable!
+
+**Setup Required:**
+1. Install the Anthropic PHP SDK: `composer require anthropics/anthropic-sdk-php`
+2. Set your API key: `export ANTHROPIC_API_KEY='your-key-here'`
+3. Run the script: `php quickstart.php`
 
 **What's Next?**
 That's just the beginning. Head to [Chapter 00: Quick Start Guide](/series/claude-php-developers/chapters/00-quick-start-guide/) for a complete working example, or start comprehensive learning with [Chapter 01: Introduction to Claude API](/series/claude-php-developers/chapters/01-introduction-to-claude-api/).
@@ -294,7 +335,7 @@ Master essential Claude features for production applications.
   <img src="/images/claude-php/chapter-09-thumbnail.webp" alt="Chapter 09 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
   <div>
     <h4 style="margin-top: 0;"><a href="/series/claude-php-developers/chapters/09-token-management">09 — Token Management and Counting</a></h4>
-    <p style="margin-bottom: 0;">Understand tokenization, calculate costs, and optimize context windows. Learn to count tokens accurately in PHP, implement context pruning strategies, and manage the 200K token context limit. Build a token budget system for cost control.</p>
+    <p style="margin-bottom: 0;">Understand tokenization, calculate costs, and optimize context windows. Learn to count tokens accurately in PHP, implement context pruning strategies, and manage context limits (200K tokens standard, 1M tokens Beta). Build a token budget system for cost control.</p>
   </div>
 </div>
 
@@ -394,9 +435,9 @@ Integrate Claude into modern PHP applications and frameworks.
   </div>
 </div>
 
-### Part 5: Laravel Deep Dive (Chapters 21–25)
+### Part 5: PHP Framework Integration (Chapters 21–25)
 
-Master Laravel-specific patterns for Claude integration.
+Master framework-specific patterns: Laravel-first with Symfony compatibility notes.
 
 <div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
   <img src="/images/claude-php/chapter-21-thumbnail.webp" alt="Chapter 21 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
@@ -581,42 +622,42 @@ Quick reference materials to support your learning journey.
 No! This course assumes expert PHP knowledge but no AI background. We'll teach you everything you need to know about working with Claude specifically.
 
 **Which PHP framework should I use?**
-While we include Laravel-specific chapters (21-25), most examples work with any framework or standalone PHP. Choose based on your project needs.
+We include comprehensive Laravel-specific chapters (21-25), and all examples are easily adaptable to Symfony, Slim, or standalone PHP. Most core concepts apply across all frameworks. Choose based on your project needs—all approaches are covered.
 
 **How much does Claude API cost?**
-Pricing varies by model: Haiku (~$0.25/million tokens), Sonnet (~$3/million tokens), Opus (~$15/million tokens). We'll teach cost optimization throughout the series.
+Pricing varies by model: Haiku 4.5 (~$0.25/million tokens), Sonnet 4.5 (~$3/million tokens), Opus 4.1 (~$15/million tokens). We'll teach cost optimization throughout the series, including prompt caching, batch processing (50% savings), and intelligent model selection.
 
 **Can I use Claude for commercial projects?**
-Yes! Anthropic's commercial terms allow production use. Review the terms at anthropic.com and follow best practices in Chapter 36.
+Yes! Anthropic's commercial terms allow production use. Review the [terms of service](https://www.anthropic.com/legal/terms) and follow security best practices in Chapter 36. All code examples in this series are production-ready.
 
 **What's the difference between models?**
-- **Haiku**: Fast, affordable, great for simple tasks
-- **Sonnet**: Balanced performance and cost, most versatile
-- **Opus**: Most capable, best for complex reasoning
+- **Haiku 4.5**: Fastest, most affordable (~$0.25/million tokens), great for simple tasks, 200K context
+- **Sonnet 4.5**: Balanced performance and cost (~$3/million tokens), most versatile, 200K context (1M Beta)
+- **Opus 4.1**: Most capable (~$15/million tokens), best for complex reasoning, 200K context
 
 **How do I get an API key?**
-Sign up at console.anthropic.com, add billing information, and generate an API key. We cover this in Chapter 02.
+Sign up at [console.anthropic.com](https://console.anthropic.com), add billing information, and generate an API key. We cover this step-by-step in Chapter 02, including security best practices for key management.
 
 **Is Claude better than ChatGPT for PHP apps?**
-Both are excellent. Claude excels at: longer context (200K tokens), following instructions precisely, code generation, and safety. Choose based on your specific needs.
+Both are excellent. Claude excels at: longer context (200K tokens standard, 1M Beta), following instructions precisely, code generation, safety, tool use, and advanced features like Agent Skills and Memory. Choose based on your specific needs—Claude is particularly strong for complex reasoning and multi-step workflows.
 
 **What about rate limits?**
-Rate limits depend on your tier. We cover rate limiting, queuing, and scaling strategies in Chapters 10 and 38.
+Rate limits depend on your tier and model. We cover rate limiting, queuing, retry logic with exponential backoff, and scaling strategies in Chapters 10 and 38. For high-volume applications, batch processing (Chapter 39) offers 50% cost savings.
 
 **Can I fine-tune Claude?**
-Claude fine-tuning is available for enterprise customers. For most use cases, prompt engineering and RAG (Chapter 31) are more practical. See Chapter 35 for details.
+Claude fine-tuning is available for enterprise customers. For most use cases, prompt engineering, RAG (Chapter 31), and Agent Skills (Beta) are more practical and cost-effective. See Chapter 35 for fine-tuning strategies and when it makes sense.
 
 **How do I test AI features?**
-We cover testing strategies throughout, including mocking API responses, testing prompts, and quality assurance for AI outputs.
+We cover comprehensive testing strategies throughout the series: mocking API responses for CI/CD, unit testing Claude integrations, integration testing with real API calls, testing tool use functions, quality assurance for AI outputs, and evaluating output consistency. See Chapter 17 for service layer patterns that enable easy testing.
 
 ## Getting Help
 
 **Stuck on something?** Here's where to get help:
 
-- **Anthropic Documentation**: [docs.anthropic.com](https://docs.anthropic.com)
-- **Anthropic Discord**: [discord.gg/anthropic](https://discord.gg/anthropic)
-- **GitHub Discussions**: [Ask questions and share progress](https://github.com/dalehurley/codewithphp/discussions)
-- **Report issues**: [Open an issue](https://github.com/dalehurley/codewithphp/issues)
+- **Anthropic Documentation**: [docs.claude.com](https://docs.claude.com) — Official API reference
+- **Anthropic Discord**: [discord.gg/anthropic](https://discord.gg/anthropic) — Community support
+- **GitHub Discussions**: [Ask questions and share progress](https://github.com/dalehurley/codewithphp/discussions) — Get help from the community
+- **Report issues**: [Open an issue](https://github.com/dalehurley/codewithphp/issues) — Report bugs or suggest improvements
 - **Check appendices** for quick reference on API, errors, and patterns
 
 ## Related Resources
@@ -625,7 +666,7 @@ Want to dive deeper? These resources complement the series:
 
 ### Official Resources
 
-- **[Anthropic Documentation](https://docs.anthropic.com)**: Official API documentation
+- **[Anthropic Documentation](https://docs.claude.com)**: Official API documentation
 - **[Anthropic Cookbook](https://github.com/anthropics/anthropic-cookbook)**: Code examples and patterns
 - **[Claude Console](https://console.anthropic.com)**: Test prompts and manage API keys
 - **[Anthropic Blog](https://www.anthropic.com/news)**: Latest updates and research
@@ -638,10 +679,10 @@ Want to dive deeper? These resources complement the series:
 
 ### Related Code with PHP Series
 
-- **[PHP Basics](/series/php-basics/)**: Master PHP fundamentals
-- **[PHP Algorithms](/series/php-algorithms/)**: Algorithm and data structure foundations
-- **[AI/ML for PHP Developers](/series/ai-ml-php-developers/)**: Broader AI/ML concepts with PHP
-- **[Build a CRM with Laravel 12](/series/build-crm-laravel-12/)**: Apply Claude to real applications
+- **[PHP Basics](/series/php-basics/)** — Master PHP fundamentals and modern PHP 8.4+ features
+- **[PHP Algorithms](/series/php-algorithms/)** — Algorithm and data structure foundations
+- **[AI/ML for PHP Developers](/series/ai-ml-php-developers/)** — Broader AI/ML concepts and machine learning with PHP
+- **[Build a CRM with Laravel 12](/series/build-crm-laravel-12/)** — Apply Claude and AI to real production applications
 
 ---
 

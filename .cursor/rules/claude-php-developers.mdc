@@ -1,0 +1,527 @@
+---
+description: Claude for PHP Developers series — Guidelines for writing Claude API integration content with PHP
+globs: docs/series/claude-php-developers/**/*.md
+---
+
+# Claude for PHP Developers Series - Cursor Instructions
+
+## Series Overview
+
+This rule file provides comprehensive guidelines for authoring and maintaining the **Claude for PHP Developers** tutorial series. All content must align with the latest Claude API documentation and best practices.
+
+**Series Path**: `docs/series/claude-php-developers/`
+**Code Samples Path**: `code/claude-php-developers/` (if applicable)
+**Target Audience**: Expert PHP developers (PHP 8.2+) integrating Claude AI into production applications
+
+## Latest Claude Models and Versions
+
+### Current Model Lineup (2025)
+
+**Claude Sonnet 4.5** - Latest smartest model
+- Model ID: `claude-sonnet-4-20250514` (verify latest version)
+- Best for: Complex agents, coding, advanced tasks
+- Context: 1M tokens (Beta) or 200K tokens (standard)
+- Use when: You need the best balance of capability and cost
+
+**Claude Haiku 4.5** - Latest fastest model
+- Model ID: `claude-haiku-4-20250514` (verify latest version)
+- Best for: Speed-critical applications, simple tasks
+- Context: 200K tokens
+- Use when: Latency matters more than capability
+
+**Claude Opus 4.1** - Specialized advanced reasoning
+- Model ID: `claude-opus-4-20250514` (verify latest version)
+- Best for: Specialized tasks requiring advanced reasoning
+- Context: 200K tokens
+- Use when: Maximum capability is required
+
+### Model Selection Guidelines
+
+When writing chapters, always:
+- ✅ Reference the latest model versions from [docs.claude.com](https://docs.claude.com)
+- ✅ Explain when to use each model variant
+- ✅ Include cost considerations in model selection
+- ✅ Show PHP code examples with correct model IDs
+- ✅ Mention availability (API, Bedrock, Vertex AI) when relevant
+- ❌ Never hardcode outdated model versions
+- ❌ Never assume all features available on all models
+
+## Core Capabilities and Features
+
+### Must-Cover Features
+
+When writing chapters, ensure coverage of these Claude capabilities:
+
+#### 1. Messages API (Foundation)
+- Message structure (user, assistant, system roles)
+- Multi-turn conversations
+- Context management
+- Token limits and optimization
+
+#### 2. Streaming Responses
+- Server-Sent Events (SSE) implementation
+- Real-time UX patterns
+- Partial response handling
+- PHP streaming examples
+
+#### 3. Tool Use (Function Calling)
+- Tool definition and schema
+- Tool execution patterns
+- Error handling in tools
+- Security considerations
+- Custom tool building in PHP
+
+#### 4. Vision Capabilities
+- Image analysis
+- PDF processing
+- Document understanding
+- Multi-modal inputs
+
+#### 5. Structured Outputs
+- JSON schema enforcement
+- Type validation
+- Error handling
+- PHP object mapping
+
+#### 6. Advanced Features (Latest)
+- **Agent Skills** (Beta) - Extend Claude with Skills
+- **1M Token Context Window** (Beta) - Extended context processing
+- **Context Editing** (Beta) - Automatic context management
+- **Extended Thinking** - Transparent reasoning process
+- **Prompt Caching** (5m and 1hr) - Cost and latency optimization
+- **Citations** - Source attribution for RAG
+- **Search Results** - Natural citations for knowledge bases
+- **Batch Processing** - 50% cost savings for async workloads
+- **Files API** (Beta) - Persistent file uploads
+- **Memory Tool** (Beta) - Cross-conversation memory
+
+### Tools Available
+
+When covering tool use, reference these official tools:
+
+1. **Bash Tool** - Execute bash commands
+2. **Code Execution Tool** (Beta) - Run Python in sandbox
+3. **Computer Use Tool** (Beta) - UI automation
+4. **MCP Connector** (Beta) - Connect to MCP servers
+5. **Memory Tool** (Beta) - Persistent memory across conversations
+6. **Text Editor Tool** - File manipulation
+7. **Web Fetch Tool** (Beta) - Retrieve web content
+8. **Web Search Tool** - Real-time web search
+
+## PHP Integration Patterns
+
+### Official PHP SDK
+
+Always prefer the official Anthropic PHP SDK:
+
+```php
+use Anthropic\Anthropic;
+
+$client = Anthropic::factory()
+    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
+    ->make();
+```
+
+### Service Layer Pattern
+
+Chapters should demonstrate:
+- Dependency injection
+- Service classes for Claude integration
+- Configuration management
+- Error handling wrappers
+- Testing strategies
+
+### Framework Integration
+
+For Laravel/Symfony chapters:
+- Service providers
+- Facades (Laravel)
+- Configuration files
+- Queue integration
+- Caching strategies
+
+## Code Quality Standards
+
+### PHP Requirements
+
+- **PHP Version**: PHP 8.2+ (prefer PHP 8.4 features when appropriate)
+- **Type Declarations**: Always use strict types (`declare(strict_types=1);`)
+- **Type Hints**: Use type hints for all parameters and return types
+- **Error Handling**: Comprehensive try-catch blocks with meaningful errors
+- **PSR Standards**: Follow PSR-12 coding standards
+
+### Code Examples Must Include
+
+1. **Complete, Runnable Code**
+   - No partial snippets
+   - Include all necessary imports
+   - Show full class definitions
+
+2. **Error Handling**
+   - API error handling
+   - Network failures
+   - Rate limiting
+   - Invalid responses
+
+3. **Security Best Practices**
+   - API key management
+   - Input validation
+   - Output sanitization
+   - Prompt injection prevention
+
+4. **Cost Optimization**
+   - Token counting
+   - Model selection rationale
+   - Caching strategies
+   - Batch processing where applicable
+
+5. **Comments and Documentation**
+   - PHPDoc blocks for classes/methods
+   - Inline comments for complex logic
+   - Usage examples
+
+## Chapter Structure Requirements
+
+### Frontmatter
+
+Every chapter must include:
+
+```yaml
+---
+title: "XX: Chapter Title"
+description: "Brief description for SEO and previews"
+series: "claude-php-developers"
+chapter: XX
+order: XX
+difficulty: "Beginner|Intermediate|Expert"
+prerequisites:
+  - "Completed Chapter XX"
+  - "Understanding of X concept"
+---
+```
+
+### Required Sections
+
+1. **Overview** - What the chapter covers and why it matters
+2. **Prerequisites** - What readers need before starting
+3. **What You'll Build** - Concrete deliverables
+4. **Objectives** - Learning outcomes
+5. **Step-by-Step Content** - Main tutorial content
+6. **Best Practices** - Production considerations
+7. **Troubleshooting** - Common issues and solutions
+8. **Further Reading** - Additional resources
+9. **Summary** - Key takeaways
+
+### Code Organization
+
+- Place code samples in logical order
+- Show progression from simple to complex
+- Include complete working examples
+- Provide both standalone and framework-integrated versions when relevant
+
+## API Reference Accuracy
+
+### Always Verify
+
+Before writing about any Claude feature:
+- ✅ Check [docs.claude.com](https://docs.claude.com) for latest documentation
+- ✅ Verify model IDs and availability
+- ✅ Confirm API endpoint structure
+- ✅ Check for Beta vs GA status
+- ✅ Verify pricing information
+
+### Documentation Links
+
+Always link to official documentation:
+- Main docs: `https://docs.claude.com`
+- API reference: `https://docs.claude.com/en/api/overview`
+- Feature guides: Link to specific feature pages
+
+## Feature-Specific Guidelines
+
+### Agent Skills (Beta)
+
+When covering Agent Skills:
+- Explain progressive disclosure concept
+- Show how Skills extend Claude capabilities
+- Demonstrate pre-built Skills (PowerPoint, Excel, Word, PDF)
+- Show custom Skill creation with instructions and scripts
+- Note Beta status and availability
+
+### Context Windows
+
+- **Standard**: 200K tokens (all models)
+- **Extended**: 1M tokens (Beta, Sonnet 4.5)
+- Always explain token counting
+- Show context management strategies
+- Demonstrate context pruning techniques
+
+### Prompt Caching
+
+- **5-minute cache**: Standard for frequently accessed context
+- **1-hour cache**: Extended for important but less frequent context
+- Show cost savings calculations
+- Demonstrate cache key strategies
+- Explain when caching is appropriate
+
+### Structured Outputs
+
+- Available on Sonnet 4.5 and Opus 4.1
+- Show JSON schema definition
+- Demonstrate validation
+- Handle parsing errors gracefully
+- Compare with tool use for structured data
+
+### Batch Processing
+
+- Emphasize 50% cost savings
+- Show async batch creation
+- Demonstrate result retrieval
+- Explain when batching is appropriate
+- Show PHP queue integration patterns
+
+## Security Considerations
+
+Every chapter must address:
+
+1. **API Key Management**
+   - Environment variables
+   - Key rotation strategies
+   - Never commit keys to code
+
+2. **Input Validation**
+   - Sanitize user inputs
+   - Validate prompts
+   - Prevent prompt injection
+
+3. **Output Validation**
+   - Verify response structure
+   - Sanitize AI-generated content
+   - Handle unexpected outputs
+
+4. **Rate Limiting**
+   - Respect API limits
+   - Implement backoff strategies
+   - Queue management
+
+5. **Data Privacy**
+   - PII handling
+   - Data retention policies
+   - Compliance considerations
+
+## Cost Optimization
+
+Always include cost considerations:
+
+1. **Model Selection**
+   - When to use Haiku vs Sonnet vs Opus
+   - Cost per token comparisons
+   - Performance trade-offs
+
+2. **Token Management**
+   - Token counting utilities
+   - Context optimization
+   - Prompt compression techniques
+
+3. **Caching Strategies**
+   - Response caching
+   - Prompt caching
+   - Semantic caching
+
+4. **Batch Processing**
+   - When to batch
+   - Cost savings calculations
+   - Implementation patterns
+
+## Testing Requirements
+
+### Code Samples Must Be Testable
+
+- All code examples should be runnable
+- Include test cases where appropriate
+- Show mocking strategies for API calls
+- Demonstrate integration testing patterns
+
+### Testing Patterns
+
+- Unit tests for service classes
+- Integration tests for API calls
+- Mock API responses for CI/CD
+- Test error scenarios
+
+## Laravel-Specific Patterns
+
+For Laravel chapters (21-25):
+
+1. **Service Providers**
+   - Register Claude service
+   - Bind interfaces
+   - Configuration management
+
+2. **Facades**
+   - Create facades for easy access
+   - Show usage examples
+
+3. **Queues**
+   - Queue jobs for async processing
+   - Progress tracking
+   - Error handling
+
+4. **Caching**
+   - Redis integration
+   - Cache tags
+   - TTL strategies
+
+5. **Livewire/Inertia**
+   - Real-time updates
+   - Streaming responses
+   - User experience patterns
+
+## Advanced Topics Coverage
+
+### RAG (Retrieval Augmented Generation)
+
+- Vector database integration
+- Embedding generation
+- Semantic search
+- Context injection
+- Hallucination prevention
+
+### Multi-Agent Systems
+
+- Agent orchestration
+- Message passing
+- Task delegation
+- Conflict resolution
+- Workflow patterns
+
+### Production Deployment
+
+- Monitoring and observability
+- Scaling strategies
+- Cost optimization at scale
+- Security hardening
+- Incident response
+
+## Content Updates
+
+### Regular Review Checklist
+
+When updating chapters, verify:
+
+- [ ] Model versions are current
+- [ ] API endpoints are correct
+- [ ] Feature availability (Beta vs GA)
+- [ ] Pricing information is accurate
+- [ ] Code examples work with latest SDK
+- [ ] Links to documentation are valid
+- [ ] Best practices reflect latest guidance
+
+### Breaking Changes
+
+If Claude API changes:
+1. Update affected chapters immediately
+2. Add migration notes
+3. Update code examples
+4. Notify in chapter frontmatter if needed
+
+## Common Pitfalls to Avoid
+
+### ❌ Don't Do This
+
+- Hardcode outdated model IDs
+- Assume all features available everywhere
+- Skip error handling
+- Ignore cost implications
+- Forget security considerations
+- Use deprecated API patterns
+- Write code that won't run
+
+### ✅ Do This Instead
+
+- Use environment variables for model selection
+- Check feature availability
+- Comprehensive error handling
+- Include cost analysis
+- Security-first approach
+- Follow latest API patterns
+- Test all code examples
+
+## Resources and References
+
+### Official Documentation
+
+- **Main Docs**: https://docs.claude.com
+- **API Reference**: https://docs.claude.com/en/api/overview
+- **PHP SDK**: https://github.com/anthropics/anthropic-sdk-php
+- **Console**: https://console.anthropic.com
+
+### Series-Specific Resources
+
+- Series index: `docs/series/claude-php-developers/index.md`
+- Appendices: `docs/series/claude-php-developers/appendices/`
+- Quick reference: `docs/series/claude-php-developers/QUICK-REFERENCE.md`
+
+## Writing Style
+
+### Tone and Voice
+
+- **Professional but approachable** - Expert-level content, friendly tone
+- **Practical and hands-on** - Focus on real-world applications
+- **Clear and concise** - Avoid unnecessary complexity
+- **Example-driven** - Show, don't just tell
+
+### Code Comments
+
+- Explain "why" not just "what"
+- Include context for complex decisions
+- Reference related concepts
+- Note potential gotchas
+
+### Examples
+
+- Start simple, build complexity
+- Show complete working code
+- Include both success and error cases
+- Provide real-world use cases
+
+## Chapter-Specific Notes
+
+### Early Chapters (00-10)
+- Focus on fundamentals
+- Build confidence with simple examples
+- Establish patterns used throughout series
+
+### Middle Chapters (11-20)
+- Introduce advanced features
+- Show integration patterns
+- Build toward real applications
+
+### Application Chapters (21-30)
+- Complete, production-ready applications
+- Best practices and patterns
+- Real-world scenarios
+
+### Advanced Chapters (31-39)
+- Cutting-edge techniques
+- Scalability and optimization
+- Production deployment
+
+## Quality Assurance
+
+Before publishing any chapter:
+
+1. ✅ All code examples tested
+2. ✅ Model versions verified
+3. ✅ API endpoints confirmed
+4. ✅ Links validated
+5. ✅ Security considerations addressed
+6. ✅ Cost implications explained
+7. ✅ Error handling included
+8. ✅ Best practices highlighted
+
+---
+
+**Last Updated**: Based on Claude documentation as of 2025
+**Maintainer**: Review quarterly for API updates
+**Reference**: https://docs.claude.com for latest information

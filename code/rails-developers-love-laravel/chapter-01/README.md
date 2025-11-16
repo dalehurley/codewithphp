@@ -30,3 +30,7 @@ cat laravel-routing-example.php
 4. **Database** - Migrations and schema definition
 5. **Relationships** - associations vs relationships
 
+
+
+
+

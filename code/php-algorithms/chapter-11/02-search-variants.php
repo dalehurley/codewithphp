@@ -371,3 +371,4 @@ echo "- Move-to-front: Optimizes repeated searches\n";
 echo "- Choose based on data characteristics\n";
 echo str_repeat("=", 50) . "\n";
 
+

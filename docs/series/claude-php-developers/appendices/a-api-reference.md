@@ -32,6 +32,7 @@ Complete reference for the Claude API with PHP examples. Bookmark this page for 
 - [Streaming Responses](#streaming-responses)
 - [Tool Use (Function Calling)](#tool-use-function-calling)
 - [Vision API](#vision-api)
+- [Structured Outputs](#structured-outputs)
 - [Error Responses](#error-responses)
 - [Rate Limits](#rate-limits)
 - [Model Versions](#model-versions)
@@ -49,12 +50,14 @@ https://api.anthropic.com/v1/messages
 ### Authentication Header
 
 ```php
+# filename: auth-header.php
 'x-api-key' => 'your_api_key_here'
 ```
 
 ### Required Headers
 
 ```php
+# filename: required-headers.php
 $headers = [
     'x-api-key' => getenv('ANTHROPIC_API_KEY'),
     'anthropic-version' => '2023-06-01',
@@ -65,6 +68,7 @@ $headers = [
 ### Optional Headers
 
 ```php
+# filename: optional-headers.php
 // Beta features
 'anthropic-beta' => 'prompt-caching-2024-07-31'
 
@@ -75,6 +79,7 @@ $headers = [
 ### PHP SDK Initialization
 
 ```php
+# filename: sdk-initialization.php
 use Anthropic\Anthropic;
 
 $client = Anthropic::factory()
@@ -94,6 +99,7 @@ $client = Anthropic::factory()
 **Minimal Request:**
 
 ```php
+# filename: minimal-request.php
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
     'max_tokens' => 1024,
@@ -106,6 +112,7 @@ $response = $client->messages()->create([
 **Complete Request with All Options:**
 
 ```php
+# filename: complete-request.php
 $response = $client->messages()->create([
     // Required parameters
     'model' => 'claude-sonnet-4-20250514',
@@ -135,6 +142,7 @@ $response = $client->messages()->create([
 **Multi-turn Conversation:**
 
 ```php
+# filename: multi-turn-conversation.php
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
     'max_tokens' => 1024,
@@ -161,29 +169,30 @@ $response = $client->messages()->create([
 
 ### Required Parameters
 
-| Parameter | Type | Description | Example |
-|-----------|------|-------------|---------|
-| `model` | string | Model identifier | `"claude-sonnet-4-20250514"` |
-| `max_tokens` | integer | Maximum tokens to generate (1-4096) | `1024` |
-| `messages` | array | Array of message objects | See examples |
+| Parameter    | Type    | Description                         | Example                      |
+| ------------ | ------- | ----------------------------------- | ---------------------------- |
+| `model`      | string  | Model identifier                    | `"claude-sonnet-4-20250514"` |
+| `max_tokens` | integer | Maximum tokens to generate (1-4096) | `1024`                       |
+| `messages`   | array   | Array of message objects            | See examples                 |
 
 ### Optional Parameters
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `system` | string | null | System prompt that defines behavior |
-| `temperature` | float | 1.0 | Randomness (0.0-1.0) |
-| `top_p` | float | -1 | Nucleus sampling threshold |
-| `top_k` | integer | -1 | Top-k sampling parameter |
-| `stop_sequences` | array | [] | Sequences that stop generation |
-| `stream` | boolean | false | Enable streaming responses |
-| `metadata` | object | {} | Custom metadata for request |
-| `tools` | array | [] | Available tools for function calling |
-| `tool_choice` | object | auto | How to use tools |
+| Parameter        | Type    | Default | Description                          |
+| ---------------- | ------- | ------- | ------------------------------------ |
+| `system`         | string  | null    | System prompt that defines behavior  |
+| `temperature`    | float   | 1.0     | Randomness (0.0-1.0)                 |
+| `top_p`          | float   | -1      | Nucleus sampling threshold           |
+| `top_k`          | integer | -1      | Top-k sampling parameter             |
+| `stop_sequences` | array   | []      | Sequences that stop generation       |
+| `stream`         | boolean | false   | Enable streaming responses           |
+| `metadata`       | object  | {}      | Custom metadata for request          |
+| `tools`          | array   | []      | Available tools for function calling |
+| `tool_choice`    | object  | auto    | How to use tools                     |
 
 ### Message Object Structure
 
 ```php
+# filename: message-structure.php
 [
     'role' => 'user',      // Required: 'user' or 'assistant'
     'content' => 'text'    // Required: string or array of content blocks
@@ -193,6 +202,7 @@ $response = $client->messages()->create([
 **Content Block Types:**
 
 ```php
+# filename: content-blocks.php
 // Text content
 ['type' => 'text', 'text' => 'Your message here']
 
@@ -238,6 +248,7 @@ $response = $client->messages()->create([
 ### Standard Response
 
 ```php
+# filename: standard-response.php
 // Response object structure
 $response = [
     'id' => 'msg_01AbCdEfGhIjKlMnOpQr',
@@ -268,16 +279,17 @@ $outputTokens = $response->usage->output_tokens;
 
 ### Stop Reasons
 
-| Stop Reason | Description |
-|-------------|-------------|
-| `end_turn` | Natural conversation end |
-| `max_tokens` | Hit max_tokens limit |
-| `stop_sequence` | Hit a stop sequence |
-| `tool_use` | Claude wants to use a tool |
+| Stop Reason     | Description                |
+| --------------- | -------------------------- |
+| `end_turn`      | Natural conversation end   |
+| `max_tokens`    | Hit max_tokens limit       |
+| `stop_sequence` | Hit a stop sequence        |
+| `tool_use`      | Claude wants to use a tool |
 
 ### Response with Tool Use
 
 ```php
+# filename: tool-use-response.php
 $response = [
     'id' => 'msg_01AbCdEfGhIjKlMnOpQr',
     'type' => 'message',
@@ -312,6 +324,7 @@ $response = [
 ### Enable Streaming
 
 ```php
+# filename: streaming-example.php
 $stream = $client->messages()->createStreamed([
     'model' => 'claude-sonnet-4-20250514',
     'max_tokens' => 1024,
@@ -329,20 +342,21 @@ foreach ($stream as $event) {
 
 ### Stream Event Types
 
-| Event Type | Description | Data |
-|------------|-------------|------|
-| `message_start` | Stream started | Message metadata |
-| `content_block_start` | Content block started | Block index and type |
-| `content_block_delta` | Partial content | Delta with text |
-| `content_block_stop` | Content block finished | Block index |
-| `message_delta` | Message metadata update | Usage, stop_reason |
-| `message_stop` | Stream ended | None |
-| `ping` | Keepalive | None |
-| `error` | Error occurred | Error details |
+| Event Type            | Description             | Data                 |
+| --------------------- | ----------------------- | -------------------- |
+| `message_start`       | Stream started          | Message metadata     |
+| `content_block_start` | Content block started   | Block index and type |
+| `content_block_delta` | Partial content         | Delta with text      |
+| `content_block_stop`  | Content block finished  | Block index          |
+| `message_delta`       | Message metadata update | Usage, stop_reason   |
+| `message_stop`        | Stream ended            | None                 |
+| `ping`                | Keepalive               | None                 |
+| `error`               | Error occurred          | Error details        |
 
 ### Stream Event Examples
 
 ```php
+# filename: stream-events.php
 // message_start
 [
     'type' => 'message_start',
@@ -384,6 +398,7 @@ foreach ($stream as $event) {
 ### Define Tools
 
 ```php
+# filename: define-tools.php
 $tools = [
     [
         'name' => 'get_weather',
@@ -438,6 +453,7 @@ $response = $client->messages()->create([
 ### Tool Choice Options
 
 ```php
+# filename: tool-choice-options.php
 // Auto (default) - Let Claude decide
 'tool_choice' => ['type' => 'auto']
 
@@ -454,6 +470,7 @@ $response = $client->messages()->create([
 ### Handle Tool Use Response
 
 ```php
+# filename: handle-tool-use.php
 // Check if Claude wants to use a tool
 foreach ($response->content as $block) {
     if ($block->type === 'tool_use') {
@@ -495,6 +512,7 @@ foreach ($response->content as $block) {
 ### Send Image (Base64)
 
 ```php
+# filename: send-image-base64.php
 $imageData = file_get_contents('image.jpg');
 $base64Image = base64_encode($imageData);
 
@@ -526,6 +544,7 @@ $response = $client->messages()->create([
 ### Send Image (URL)
 
 ```php
+# filename: send-image-url.php
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
     'max_tokens' => 1024,
@@ -552,12 +571,119 @@ $response = $client->messages()->create([
 
 ### Supported Image Formats
 
-| Format | MIME Type | Max Size |
-|--------|-----------|----------|
-| JPEG | `image/jpeg` | 5 MB |
-| PNG | `image/png` | 5 MB |
-| GIF | `image/gif` | 5 MB |
-| WebP | `image/webp` | 5 MB |
+| Format | MIME Type    | Max Size |
+| ------ | ------------ | -------- |
+| JPEG   | `image/jpeg` | 5 MB     |
+| PNG    | `image/png`  | 5 MB     |
+| GIF    | `image/gif`  | 5 MB     |
+| WebP   | `image/webp` | 5 MB     |
+
+---
+
+## Structured Outputs
+
+Structured outputs allow you to enforce JSON schema validation on Claude's responses, ensuring consistent, type-safe data structures.
+
+### Enable Structured Outputs
+
+```php
+# filename: structured-outputs.php
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-20250514',
+    'max_tokens' => 1024,
+    'messages' => [
+        ['role' => 'user', 'content' => 'Extract user information from this text: "John Doe, age 30, email: john@example.com"']
+    ],
+    'response_format' => [
+        'type' => 'json_schema',
+        'json_schema' => [
+            'name' => 'user_extraction',
+            'strict' => true,
+            'schema' => [
+                'type' => 'object',
+                'properties' => [
+                    'name' => [
+                        'type' => 'string',
+                        'description' => 'User full name'
+                    ],
+                    'age' => [
+                        'type' => 'integer',
+                        'description' => 'User age'
+                    ],
+                    'email' => [
+                        'type' => 'string',
+                        'format' => 'email',
+                        'description' => 'User email address'
+                    ]
+                ],
+                'required' => ['name', 'age', 'email'],
+                'additionalProperties' => false
+            ]
+        ]
+    ]
+]);
+
+// Response content will be valid JSON matching the schema
+$userData = json_decode($response->content[0]->text, true);
+```
+
+### Schema Definition
+
+```php
+# filename: structured-schema-example.php
+$schema = [
+    'type' => 'object',
+    'properties' => [
+        'products' => [
+            'type' => 'array',
+            'items' => [
+                'type' => 'object',
+                'properties' => [
+                    'name' => ['type' => 'string'],
+                    'price' => ['type' => 'number'],
+                    'in_stock' => ['type' => 'boolean']
+                ],
+                'required' => ['name', 'price']
+            ]
+        ],
+        'total' => ['type' => 'number']
+    ],
+    'required' => ['products', 'total']
+];
+```
+
+### Error Handling for Structured Outputs
+
+```php
+# filename: structured-outputs-error-handling.php
+try {
+    $response = $client->messages()->create([
+        'model' => 'claude-sonnet-4-20250514',
+        'max_tokens' => 1024,
+        'messages' => [
+            ['role' => 'user', 'content' => 'Extract data...']
+        ],
+        'response_format' => [
+            'type' => 'json_schema',
+            'json_schema' => $schema
+        ]
+    ]);
+
+    $data = json_decode($response->content[0]->text, true);
+
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        throw new RuntimeException('Invalid JSON response: ' . json_last_error_msg());
+    }
+} catch (ErrorException $e) {
+    // Handle API errors
+    if ($e->getErrorType() === 'invalid_request_error') {
+        // Schema might be invalid
+        error_log('Schema validation failed: ' . $e->getMessage());
+    }
+}
+```
+
+**Note:** Structured outputs are available on Claude Sonnet 4.5 and Opus 4.1 models.
 
 ---
 
@@ -566,6 +692,7 @@ $response = $client->messages()->create([
 ### Error Response Structure
 
 ```php
+# filename: error-response.php
 [
     'type' => 'error',
     'error' => [
@@ -577,19 +704,20 @@ $response = $client->messages()->create([
 
 ### Common Error Types
 
-| Error Type | HTTP Status | Description | Solution |
-|------------|-------------|-------------|----------|
-| `invalid_request_error` | 400 | Malformed request | Check request parameters |
-| `authentication_error` | 401 | Invalid API key | Verify API key |
-| `permission_error` | 403 | No access to resource | Check account permissions |
-| `not_found_error` | 404 | Resource not found | Verify endpoint URL |
-| `rate_limit_error` | 429 | Too many requests | Implement rate limiting |
-| `api_error` | 500 | Server error | Retry with backoff |
-| `overloaded_error` | 529 | Service overloaded | Retry with backoff |
+| Error Type              | HTTP Status | Description           | Solution                  |
+| ----------------------- | ----------- | --------------------- | ------------------------- |
+| `invalid_request_error` | 400         | Malformed request     | Check request parameters  |
+| `authentication_error`  | 401         | Invalid API key       | Verify API key            |
+| `permission_error`      | 403         | No access to resource | Check account permissions |
+| `not_found_error`       | 404         | Resource not found    | Verify endpoint URL       |
+| `rate_limit_error`      | 429         | Too many requests     | Implement rate limiting   |
+| `api_error`             | 500         | Server error          | Retry with backoff        |
+| `overloaded_error`      | 529         | Service overloaded    | Retry with backoff        |
 
 ### Error Handling Example
 
 ```php
+# filename: error-handling.php
 use Anthropic\Exceptions\AnthropicException;
 use Anthropic\Exceptions\ErrorException;
 
@@ -621,6 +749,7 @@ try {
 ### Rate Limit Headers
 
 ```php
+# filename: rate-limit-headers.php
 // Check remaining requests
 $remaining = $response->headers['anthropic-ratelimit-requests-remaining'];
 $limit = $response->headers['anthropic-ratelimit-requests-limit'];
@@ -634,17 +763,18 @@ $tokensReset = $response->headers['anthropic-ratelimit-tokens-reset'];
 
 ### Default Rate Limits (Tier 1)
 
-| Limit Type | Claude Opus | Claude Sonnet | Claude Haiku |
-|------------|-------------|---------------|--------------|
-| Requests/min | 50 | 50 | 50 |
-| Tokens/min | 40,000 | 40,000 | 40,000 |
-| Tokens/day | 1,000,000 | 1,000,000 | 1,000,000 |
+| Limit Type   | Claude Opus | Claude Sonnet | Claude Haiku |
+| ------------ | ----------- | ------------- | ------------ |
+| Requests/min | 50          | 50            | 50           |
+| Tokens/min   | 40,000      | 40,000        | 40,000       |
+| Tokens/day   | 1,000,000   | 1,000,000     | 1,000,000    |
 
-*Note: Limits increase with higher tiers. Check console.anthropic.com for your tier.*
+_Note: Limits increase with higher tiers. Check console.anthropic.com for your tier._
 
 ### Handle Rate Limiting
 
 ```php
+# filename: rate-limiting-handler.php
 function makeRequestWithRetry($client, $params, $maxRetries = 3) {
     $attempt = 0;
 
@@ -672,15 +802,16 @@ function makeRequestWithRetry($client, $params, $maxRetries = 3) {
 
 ### Current Models (2024)
 
-| Model | Identifier | Context | Use Case |
-|-------|-----------|---------|----------|
-| **Claude Opus 4** | `claude-opus-4-20250514` | 200K tokens | Most capable, complex tasks |
-| **Claude Sonnet 4** | `claude-sonnet-4-20250514` | 200K tokens | Balanced performance & cost |
-| **Claude Haiku 3.5** | `claude-3-5-haiku-20241022` | 200K tokens | Fast, cost-effective |
+| Model                | Identifier                 | Context     | Use Case                    |
+| -------------------- | -------------------------- | ----------- | --------------------------- |
+| **Claude Opus 4**    | `claude-opus-4-20250514`   | 200K tokens | Most capable, complex tasks |
+| **Claude Sonnet 4**  | `claude-sonnet-4-20250514` | 200K tokens | Balanced performance & cost |
+| **Claude Haiku 4.5** | `claude-haiku-4-20250514`  | 200K tokens | Fast, cost-effective        |
 
 ### Model Selection Guide
 
 ```php
+# filename: model-selection.php
 // Complex reasoning, highest quality
 $model = 'claude-opus-4-20250514';
 
@@ -688,24 +819,25 @@ $model = 'claude-opus-4-20250514';
 $model = 'claude-sonnet-4-20250514';
 
 // High volume, simple tasks
-$model = 'claude-3-5-haiku-20241022';
+$model = 'claude-haiku-4-20250514';
 ```
 
 ### Model Pricing (Approximate)
 
-| Model | Input (per 1M tokens) | Output (per 1M tokens) |
-|-------|----------------------|------------------------|
-| Opus 4 | $15.00 | $75.00 |
-| Sonnet 4 | $3.00 | $15.00 |
-| Haiku 3.5 | $0.80 | $4.00 |
+| Model     | Input (per 1M tokens) | Output (per 1M tokens) |
+| --------- | --------------------- | ---------------------- |
+| Opus 4    | $15.00                | $75.00                 |
+| Sonnet 4  | $3.00                 | $15.00                 |
+| Haiku 3.5 | $0.80                 | $4.00                  |
 
-*Check official pricing at anthropic.com/pricing for current rates.*
+_Check official pricing at anthropic.com/pricing for current rates._
 
 ---
 
 ## Quick Reference: Complete Example
 
 ```php
+# filename: complete-example.php
 <?php
 require 'vendor/autoload.php';
 
@@ -775,7 +907,7 @@ try {
 
 ## Additional Resources
 
-- **[Official API Documentation](https://docs.anthropic.com)** - Complete API reference
+- **[Official API Documentation](https://docs.claude.com)** - Complete API reference
 - **[API Status Page](https://status.anthropic.com)** - Service status
 - **[Anthropic Console](https://console.anthropic.com)** - Manage API keys
 - **[PHP SDK Repository](https://github.com/anthropics/anthropic-sdk-php)** - SDK source code
@@ -784,9 +916,12 @@ try {
 ---
 
 ::: tip Quick Navigation
-- **[← Back to Series](/series/claude-php-developers)** - Return to main series
-- **[Appendix B: Prompting Patterns →](/series/claude-php-developers/appendices/b-prompting-patterns)** - Proven prompt templates
-- **[Appendix C: Error Codes →](/series/claude-php-developers/appendices/c-error-codes)** - Troubleshooting guide
-:::
 
-*Last updated: November 2024 • API Version: 2023-06-01*
+- **[← Appendix A: API Reference](/series/claude-php-developers/appendices/a-api-reference)** - Complete API reference
+- **[Appendix B: Prompting Patterns →](/series/claude-php-developers/appendices/b-prompting-patterns)** - Prompt templates
+- **[Appendix C: Error Codes →](/series/claude-php-developers/appendices/c-error-codes)** - Troubleshooting guide
+- **[Appendix D: Resources →](/series/claude-php-developers/appendices/d-resources)** - Tools and resources
+- **[Back to Series](/series/claude-php-developers)** - Return to main series
+  :::
+
+_Last updated: November 2024 • API Version: 2023-06-01_

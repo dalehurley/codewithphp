@@ -9,6 +9,8 @@ prerequisites:
   - "/series/php-for-java-developers/chapters/11-dependency-injection"
 ---
 
+![Unit Testing with PHPUnit](/images/php-for-java-developers/chapter-12-unit-testing-hero-full.webp)
+
 # Chapter 12: Unit Testing with PHPUnit
 
 <Badge type="warning">Intermediate</Badge>
@@ -28,14 +30,112 @@ Unit testing is essential for maintaining code quality, preventing regressions, 
 - Testing best practices (FIRST, AAA pattern)
 - Integration with CI/CD pipelines
 - Testing strategies for different scenarios
+- Advanced features: test dependencies, groups, skipping
+- Testing traits and final classes
+- Environment variables and configuration
 
 ## Prerequisites
+
+::: info Time Estimate
+⏱️ **90-120 minutes** to complete this chapter
+:::
 
 Before starting this chapter, you should be comfortable with:
 - Object-oriented programming (Chapters 3-5)
 - Dependency injection (Chapter 11)
 - Basic command-line usage
 - Composer for dependency management
+
+**Verify your setup:**
+
+```bash
+# Check PHP version
+php --version
+
+# Verify Composer is installed
+composer --version
+```
+
+## What You'll Build
+
+By the end of this chapter, you will have:
+
+- A complete PHPUnit test suite with multiple test classes
+- Test fixtures using lifecycle methods (`setUp`, `tearDown`)
+- Data providers for parameterized testing
+- Mocked dependencies using PHPUnit's mocking framework
+- Code coverage reports (HTML and text formats)
+- A GitHub Actions workflow for CI/CD integration
+- Understanding of FIRST principles and AAA pattern
+- Experience testing edge cases, exceptions, and complex scenarios
+
+## Quick Start
+
+Get PHPUnit running in under 5 minutes:
+
+```bash
+# Create a new project directory
+mkdir phpunit-demo && cd phpunit-demo
+
+# Initialize Composer
+composer init --no-interaction --name="demo/phpunit-demo"
+
+# Install PHPUnit
+composer require --dev phpunit/phpunit ^10.0
+
+# Create a simple class to test
+cat > src/Calculator.php << 'EOF'
+<?php
+
+declare(strict_types=1);
+
+namespace Demo;
+
+class Calculator
+{
+    public function add(int $a, int $b): int
+    {
+        return $a + $b;
+    }
+}
+EOF
+
+# Create your first test
+cat > tests/CalculatorTest.php << 'EOF'
+<?php
+
+declare(strict_types=1);
+
+namespace Tests;
+
+use PHPUnit\Framework\TestCase;
+use Demo\Calculator;
+
+class CalculatorTest extends TestCase
+{
+    public function testAddition(): void
+    {
+        $calc = new Calculator();
+        $this->assertEquals(5, $calc->add(2, 3));
+    }
+}
+EOF
+
+# Run tests
+./vendor/bin/phpunit tests/CalculatorTest.php
+```
+
+**Expected output:**
+
+```
+PHPUnit 10.x.x by Sebastian Bergmann and contributors.
+
+.                                                                   1 / 1 (100%)
+
+Time: 00:00.012, Memory: 4.00 MB
+
+OK (1 test, 1 assertion)
+```
 
 ## Learning Objectives
 
@@ -53,7 +153,7 @@ By the end of this chapter, you will be able to:
 
 ---
 
-## Section 1: PHPUnit vs JUnit
+## Section 1: PHPUnit vs JUnit (~15 min)
 
 PHPUnit is heavily inspired by JUnit, so the concepts are familiar to Java developers.
 
@@ -192,7 +292,7 @@ class CalculatorTest {
 
 ---
 
-## Section 2: Test Structure and Organization
+## Section 2: Test Structure and Organization (~10 min)
 
 Organize tests to mirror your application structure.
 
@@ -224,6 +324,7 @@ project/
 ### Test Naming Conventions
 
 ```php
+# filename: tests/Unit/Services/UserServiceTest.php
 <?php
 
 declare(strict_types=1);
@@ -273,13 +374,14 @@ class UserServiceTest extends TestCase
 
 ---
 
-## Section 3: Assertions
+## Section 3: Assertions (~20 min)
 
 PHPUnit provides comprehensive assertions for verifying expectations.
 
 ### Common Assertions
 
 ```php
+# filename: tests/Unit/AssertionsExampleTest.php
 <?php
 
 declare(strict_types=1);
@@ -426,6 +528,7 @@ class AssertionsExampleTest extends TestCase
 ### Custom Assertions
 
 ```php
+# filename: tests/Unit/CustomAssertionsTest.php
 <?php
 
 declare(strict_types=1);
@@ -477,13 +580,14 @@ class CustomAssertionsTest extends TestCase
 
 ---
 
-## Section 4: Test Fixtures and Lifecycle
+## Section 4: Test Fixtures and Lifecycle (~15 min)
 
 Test fixtures set up the test environment.
 
 ### Lifecycle Methods
 
 ```php
+# filename: tests/Unit/LifecycleTest.php
 <?php
 
 declare(strict_types=1);
@@ -566,6 +670,7 @@ class LifecycleTest extends TestCase
 ### Test Fixtures
 
 ```php
+# filename: tests/Unit/Services/UserServiceTest.php
 <?php
 
 declare(strict_types=1);
@@ -632,13 +737,14 @@ class UserServiceTest extends TestCase
 
 ---
 
-## Section 5: Data Providers
+## Section 5: Data Providers (~15 min)
 
 Data providers enable parameterized testing.
 
 ### Basic Data Provider
 
 ```php
+# filename: tests/Unit/EmailValidatorTest.php
 <?php
 
 declare(strict_types=1);
@@ -705,6 +811,7 @@ class EmailValidatorTest extends TestCase
 ### Named Data Sets
 
 ```php
+# filename: tests/Unit/CalculatorTest.php
 <?php
 
 declare(strict_types=1);
@@ -756,6 +863,7 @@ class CalculatorTest extends TestCase
 ### Complex Data Providers
 
 ```php
+# filename: tests/Unit/Services/PriceCalculatorTest.php
 <?php
 
 declare(strict_types=1);
@@ -841,13 +949,14 @@ class PriceCalculatorTest extends TestCase
 
 ---
 
-## Section 6: Mocking and Test Doubles
+## Section 6: Mocking and Test Doubles (~25 min)
 
 Mocking isolates the unit under test from its dependencies.
 
 ### Types of Test Doubles
 
 ```php
+# filename: tests/Unit/Services/TestDoublesExampleTest.php
 <?php
 
 declare(strict_types=1);
@@ -961,6 +1070,7 @@ class TestDoublesExampleTest extends TestCase
 ### Mock Configuration
 
 ```php
+# filename: tests/Unit/Services/UserServiceTest.php
 <?php
 
 declare(strict_types=1);
@@ -1124,7 +1234,7 @@ class PaymentServiceTest extends TestCase
 
 ---
 
-## Section 7: Code Coverage
+## Section 7: Code Coverage (~10 min)
 
 Code coverage measures how much code is executed by tests.
 
@@ -1144,6 +1254,7 @@ Code coverage measures how much code is executed by tests.
 ### Coverage Annotations
 
 ```php
+# filename: src/Services/UserService.php
 <?php
 
 declare(strict_types=1);
@@ -1172,7 +1283,7 @@ class UserService
         // This entire section is ignored
     }
 
-    private function moreLegeacyCode(): void
+    private function moreLegacyCode(): void
     {
         // Also ignored
     }
@@ -1188,6 +1299,7 @@ class UserService
 ### Test Coverage Example
 
 ```php
+# filename: src/Services/MathService.php
 <?php
 
 declare(strict_types=1);
@@ -1233,6 +1345,7 @@ class MathService
 ```
 
 ```php
+# filename: tests/Unit/Services/MathServiceTest.php
 <?php
 
 declare(strict_types=1);
@@ -1293,7 +1406,7 @@ class MathServiceTest extends TestCase
 
 ---
 
-## Section 8: Testing Best Practices
+## Section 8: Testing Best Practices (~15 min)
 
 Apply proven testing principles for maintainable tests.
 
@@ -1536,7 +1649,7 @@ class UserServiceTest extends TestCase
 
 ---
 
-## Section 9: Testing Strategies
+## Section 9: Testing Strategies (~15 min)
 
 Different scenarios require different testing approaches.
 
@@ -1735,7 +1848,545 @@ class ExceptionTestingTest extends TestCase
 
 ---
 
-## Section 10: Integration with CI/CD
+## Section 10: Advanced PHPUnit Features (~15 min)
+
+PHPUnit provides additional features for complex testing scenarios.
+
+### Test Dependencies (@depends)
+
+Tests can depend on other tests, ensuring execution order:
+
+```php
+# filename: tests/Unit/Services/OrderServiceTest.php
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Unit\Services;
+
+use PHPUnit\Framework\TestCase;
+use App\Services\OrderService;
+
+class OrderServiceTest extends TestCase
+{
+    private ?OrderService $service = null;
+    private ?int $orderId = null;
+
+    /**
+     * This test runs first
+     */
+    public function testCreateOrder(): int
+    {
+        $this->service = new OrderService(
+            $this->createMock(OrderRepository::class),
+            $this->createMock(PaymentGateway::class),
+            $this->createMock(EmailService::class),
+            $this->createMock(LoggerInterface::class)
+        );
+
+        $this->orderId = $this->service->createOrder(['items' => [1, 2, 3]]);
+        $this->assertIsInt($this->orderId);
+
+        // Return value becomes argument for dependent tests
+        return $this->orderId;
+    }
+
+    /**
+     * This test depends on testCreateOrder
+     * Will be skipped if testCreateOrder fails
+     * @depends testCreateOrder
+     */
+    public function testProcessOrder(int $orderId): void
+    {
+        $this->assertNotNull($this->service);
+        $result = $this->service->processOrder($orderId);
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Can depend on multiple tests
+     * @depends testCreateOrder
+     */
+    public function testCancelOrder(int $orderId): void
+    {
+        $this->assertNotNull($this->service);
+        $result = $this->service->cancelOrder($orderId);
+        $this->assertTrue($result);
+    }
+}
+```
+
+### Test Groups (@group)
+
+Organize tests into groups for selective execution:
+
+```php
+# filename: tests/Unit/Services/PaymentServiceTest.php
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Unit\Services;
+
+use PHPUnit\Framework\TestCase;
+
+class PaymentServiceTest extends TestCase
+{
+    /**
+     * @group payment
+     * @group slow
+     */
+    public function testProcessPayment(): void
+    {
+        // Slow integration test
+    }
+
+    /**
+     * @group payment
+     * @group fast
+     */
+    public function testValidateCard(): void
+    {
+        // Fast unit test
+    }
+
+    /**
+     * @group payment
+     * @group api
+     */
+    public function testExternalPaymentGateway(): void
+    {
+        // API integration test
+    }
+}
+```
+
+Run specific groups:
+
+```bash
+# Run only fast payment tests
+./vendor/bin/phpunit --group payment,fast
+
+# Exclude slow tests
+./vendor/bin/phpunit --exclude-group slow
+
+# Run multiple groups
+./vendor/bin/phpunit --group payment --group api
+```
+
+### Skipping Tests (@skip, @requires)
+
+Conditionally skip tests based on conditions:
+
+```php
+# filename: tests/Unit/Services/FileServiceTest.php
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Unit\Services;
+
+use PHPUnit\Framework\TestCase;
+
+class FileServiceTest extends TestCase
+{
+    /**
+     * Skip this test unconditionally
+     * @skip
+     */
+    public function testLegacyFeature(): void
+    {
+        // This test will be skipped
+    }
+
+    /**
+     * Skip if extension not available
+     * @requires extension gd
+     */
+    public function testImageProcessing(): void
+    {
+        // Only runs if GD extension is installed
+    }
+
+    /**
+     * Skip if PHP version too low
+     * @requires PHP >= 8.1
+     */
+    public function testNewPhpFeature(): void
+    {
+        // Only runs on PHP 8.1+
+    }
+
+    /**
+     * Skip if function doesn't exist
+     * @requires function curl_init
+     */
+    public function testCurlIntegration(): void
+    {
+        // Only runs if curl_init exists
+    }
+
+    /**
+     * Programmatic skipping
+     */
+    public function testConditionalFeature(): void
+    {
+        if (!extension_loaded('redis')) {
+            $this->markTestSkipped('Redis extension not available');
+        }
+
+        // Test code here
+    }
+
+    /**
+     * Skip with message
+     */
+    public function testIncompleteFeature(): void
+    {
+        $this->markTestIncomplete('Feature not yet implemented');
+    }
+}
+```
+
+### Coverage Annotations (@covers, @coversNothing)
+
+Control code coverage attribution:
+
+```php
+# filename: tests/Unit/Services/UserServiceTest.php
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Unit\Services;
+
+use PHPUnit\Framework\TestCase;
+use App\Services\UserService;
+
+/**
+ * @covers \App\Services\UserService
+ */
+class UserServiceTest extends TestCase
+{
+    /**
+     * This test covers UserService::registerUser
+     * @covers \App\Services\UserService::registerUser
+     */
+    public function testRegisterUser(): void
+    {
+        // Test implementation
+    }
+
+    /**
+     * This test doesn't contribute to coverage
+     * Useful for integration tests
+     * @coversNothing
+     */
+    public function testIntegrationFlow(): void
+    {
+        // Integration test that shouldn't affect coverage
+    }
+}
+```
+
+### Custom Assertion Messages
+
+Provide helpful failure messages:
+
+```php
+# filename: tests/Unit/Validators/EmailValidatorTest.php
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Unit\Validators;
+
+use PHPUnit\Framework\TestCase;
+use App\Validators\EmailValidator;
+
+class EmailValidatorTest extends TestCase
+{
+    public function testValidEmail(): void
+    {
+        $validator = new EmailValidator();
+        $email = 'user@example.com';
+
+        $this->assertTrue(
+            $validator->isValid($email),
+            "Email '{$email}' should be valid but validation failed"
+        );
+    }
+
+    public function testInvalidEmail(): void
+    {
+        $validator = new EmailValidator();
+        $email = 'invalid-email';
+
+        $this->assertFalse(
+            $validator->isValid($email),
+            "Email '{$email}' should be invalid but validation passed"
+        );
+    }
+
+    public function testEmailWithCustomMessage(): void
+    {
+        $validator = new EmailValidator();
+        $email = 'test@example.com';
+
+        $this->assertTrue(
+            $validator->isValid($email),
+            sprintf(
+                "Expected email '%s' to be valid. Validator returned: %s",
+                $email,
+                var_export($validator->isValid($email), true)
+            )
+        );
+    }
+}
+```
+
+### Testing Traits
+
+Test code that uses traits:
+
+```php
+# filename: src/Traits/Loggable.php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Traits;
+
+trait Loggable
+{
+    private array $logs = [];
+
+    public function log(string $message): void
+    {
+        $this->logs[] = [
+            'message' => $message,
+            'timestamp' => time(),
+        ];
+    }
+
+    public function getLogs(): array
+    {
+        return $this->logs;
+    }
+}
+```
+
+```php
+# filename: tests/Unit/Traits/LoggableTest.php
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Unit\Traits;
+
+use PHPUnit\Framework\TestCase;
+use App\Traits\Loggable;
+
+class LoggableTest extends TestCase
+{
+    public function testTraitLogging(): void
+    {
+        // Create anonymous class using the trait
+        $object = new class {
+            use Loggable;
+        };
+
+        $object->log('Test message');
+        $logs = $object->getLogs();
+
+        $this->assertCount(1, $logs);
+        $this->assertEquals('Test message', $logs[0]['message']);
+        $this->assertIsInt($logs[0]['timestamp']);
+    }
+
+    public function testTraitWithRealClass(): void
+    {
+        // Test trait in context of actual class
+        $service = new class {
+            use Loggable;
+
+            public function doSomething(): void
+            {
+                $this->log('Action performed');
+            }
+        };
+
+        $service->doSomething();
+        $this->assertCount(1, $service->getLogs());
+    }
+}
+```
+
+### Testing Final Classes
+
+Final classes cannot be mocked directly. Use wrappers or test through interfaces:
+
+```php
+# filename: src/Services/FinalService.php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Services;
+
+final class FinalService
+{
+    public function process(string $data): string
+    {
+        return strtoupper($data);
+    }
+}
+```
+
+```php
+# filename: tests/Unit/Services/FinalServiceTest.php
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Unit\Services;
+
+use PHPUnit\Framework\TestCase;
+use App\Services\FinalService;
+
+class FinalServiceTest extends TestCase
+{
+    /**
+     * Final classes can be tested directly
+     * They just can't be mocked
+     */
+    public function testFinalServiceDirectly(): void
+    {
+        $service = new FinalService();
+        $result = $service->process('hello');
+
+        $this->assertEquals('HELLO', $result);
+    }
+
+    /**
+     * If you need to mock, wrap in an interface
+     * Note: Interface should be defined in a separate file
+     */
+    public function testServiceThroughInterface(): void
+    {
+        // Create wrapper implementing interface
+        // (Interface ProcessableInterface defined elsewhere)
+        $wrapper = new class(new FinalService()) implements ProcessableInterface {
+            public function __construct(private FinalService $service) {}
+
+            public function process(string $data): string
+            {
+                return $this->service->process($data);
+            }
+        };
+
+        // Now you can mock the interface
+        $mock = $this->createMock(ProcessableInterface::class);
+        $mock->method('process')->willReturn('MOCKED');
+
+        $this->assertEquals('MOCKED', $mock->process('test'));
+    }
+}
+```
+
+**Alternative approach** - Define interface in test file:
+
+```php
+# filename: tests/Unit/Services/FinalServiceTest.php
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Unit\Services;
+
+use PHPUnit\Framework\TestCase;
+use App\Services\FinalService;
+
+// Define interface at class level
+interface ProcessableInterface
+{
+    public function process(string $data): string;
+}
+
+class FinalServiceTest extends TestCase
+{
+    public function testServiceThroughInterface(): void
+    {
+        $wrapper = new class(new FinalService()) implements ProcessableInterface {
+            public function __construct(private FinalService $service) {}
+
+            public function process(string $data): string
+            {
+                return $this->service->process($data);
+            }
+        };
+
+        $mock = $this->createMock(ProcessableInterface::class);
+        $mock->method('process')->willReturn('MOCKED');
+
+        $this->assertEquals('MOCKED', $mock->process('test'));
+    }
+}
+```
+
+### Environment Variables in Tests
+
+Use environment variables for test configuration:
+
+```php
+# filename: tests/Unit/Services/ApiServiceTest.php
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Unit\Services;
+
+use PHPUnit\Framework\TestCase;
+
+class ApiServiceTest extends TestCase
+{
+    protected function setUp(): void
+    {
+        // Set environment variables for tests
+        $_ENV['API_URL'] = 'https://api.test.example.com';
+        $_ENV['API_KEY'] = 'test-api-key';
+    }
+
+    protected function tearDown(): void
+    {
+        // Clean up environment variables
+        unset($_ENV['API_URL'], $_ENV['API_KEY']);
+    }
+
+    public function testApiConfiguration(): void
+    {
+        $apiUrl = $_ENV['API_URL'] ?? null;
+        $this->assertNotNull($apiUrl);
+        $this->assertStringContainsString('test', $apiUrl);
+    }
+}
+```
+
+Or use phpunit.xml:
+
+```xml
+<phpunit>
+    <php>
+        <env name="APP_ENV" value="testing"/>
+        <env name="DB_HOST" value="localhost"/>
+        <env name="DB_NAME" value="test_db"/>
+    </php>
+</phpunit>
+```
+
+---
+
+## Section 11: Integration with CI/CD (~10 min)
 
 Automate tests in continuous integration pipelines.
 
@@ -1814,11 +2465,14 @@ docker run --rm my-app-tests
 
 Practice unit testing concepts:
 
-### Exercise 1: Write Tests for Calculator
+### Exercise 1: Write Tests for Calculator (~20 min)
 
-Create comprehensive tests for a calculator class:
+**Goal**: Create comprehensive tests for a calculator class using data providers and testing edge cases.
+
+Create a file called `tests/CalculatorTest.php` and implement:
 
 ```php
+# filename: src/Calculator.php
 <?php
 
 declare(strict_types=1);
@@ -1855,19 +2509,36 @@ class Calculator
         return ($value * $percentage) / 100;
     }
 }
-
-// TODO: Write comprehensive test suite
-// - Test all methods with various inputs
-// - Use data providers
-// - Test edge cases
-// - Achieve 100% code coverage
 ```
 
-### Exercise 2: Mock Dependencies
+**Requirements:**
 
-Test this service with mocked dependencies:
+- Test all five methods (`add`, `subtract`, `multiply`, `divide`, `percentage`)
+- Use data providers for at least two methods
+- Test edge cases: zero, negative numbers, division by zero
+- Test with floating-point precision using `assertEqualsWithDelta()`
+- Achieve 100% code coverage
+
+**Validation**: Run your tests and verify:
+
+```bash
+./vendor/bin/phpunit tests/CalculatorTest.php --coverage-text
+```
+
+Expected output should show:
+- All tests passing (✓)
+- 100% code coverage for `Calculator` class
+- At least 10 test methods (including data provider variations)
+- Division by zero exception test included
+
+### Exercise 2: Mock Dependencies (~25 min)
+
+**Goal**: Test a service with multiple dependencies using PHPUnit's mocking framework.
+
+Create a file called `tests/OrderServiceTest.php` and test this service:
 
 ```php
+# filename: src/Services/OrderService.php
 <?php
 
 declare(strict_types=1);
@@ -1915,13 +2586,132 @@ class OrderService
         }
     }
 }
+```
 
-// TODO: Write tests that:
-// - Mock all dependencies
-// - Test successful order processing
-// - Test payment failure
-// - Test exception handling
-// - Verify all method calls and arguments
+**Requirements:**
+
+- Mock all four dependencies (`OrderRepository`, `PaymentGateway`, `EmailService`, `LoggerInterface`)
+- Test successful order processing path:
+  - Verify `payment->charge()` is called with correct arguments
+  - Verify `orders->save()` is called once
+  - Verify `email->sendOrderConfirmation()` is called
+  - Verify `logger->info()` is called with success message
+- Test payment failure path:
+  - Mock `payment->charge()` to return `false`
+  - Verify `logger->error()` is called
+  - Verify order is NOT saved
+  - Verify email is NOT sent
+- Test exception handling:
+  - Mock `payment->charge()` to throw an exception
+  - Verify `logger->error()` is called with exception details
+  - Verify method returns `false`
+
+**Validation**: Run your tests:
+
+```bash
+./vendor/bin/phpunit tests/OrderServiceTest.php
+```
+
+Expected output:
+- At least 3 test methods (success, payment failure, exception)
+- All mocks verify method calls and arguments
+- All tests passing (✓)
+
+---
+
+## Troubleshooting
+
+Common issues when working with PHPUnit:
+
+### Error: "Class 'PHPUnit\Framework\TestCase' not found"
+
+**Symptom**: `Fatal error: Uncaught Error: Class 'PHPUnit\Framework\TestCase' not found`
+
+**Cause**: PHPUnit is not installed or autoloader is not configured correctly.
+
+**Solution**:
+
+```bash
+# Install PHPUnit via Composer
+composer require --dev phpunit/phpunit ^10.0
+
+# Ensure autoloader is generated
+composer dump-autoload
+
+# Verify installation
+./vendor/bin/phpunit --version
+```
+
+### Error: "No tests executed"
+
+**Symptom**: PHPUnit runs but reports "No tests executed"
+
+**Cause**: Test methods don't follow naming convention or missing `@test` annotation.
+
+**Solution**:
+
+```php
+// Method 1: Prefix method name with "test"
+public function testAddition(): void
+{
+    // Test code
+}
+
+// Method 2: Use @test annotation
+/**
+ * @test
+ */
+public function addition(): void
+{
+    // Test code
+}
+```
+
+### Mock Expectations Not Met
+
+**Symptom**: Test fails with "Expectation failed for method name is equal to 'methodName' when invoked 0 time(s). Method was expected to be called 1 time(s)."
+
+**Cause**: Mocked method was never called, or called with wrong arguments.
+
+**Solution**:
+
+```php
+// Verify method is actually called in your code
+$mock->expects($this->once())
+    ->method('save')
+    ->with($this->equalTo($order)); // Check arguments match
+
+// Or use less strict matching
+$mock->expects($this->once())
+    ->method('save')
+    ->with($this->anything()); // Accept any argument
+```
+
+### Code Coverage Shows 0%
+
+**Symptom**: Coverage report shows no code covered.
+
+**Cause**: Xdebug extension not installed or enabled, or source paths not configured.
+
+**Solution**:
+
+```bash
+# Install Xdebug (required for code coverage)
+# macOS
+brew install php-xdebug
+
+# Ubuntu/Debian
+sudo apt-get install php-xdebug
+
+# Verify Xdebug is enabled
+php -m | grep xdebug
+
+# Update phpunit.xml to include source directory
+<source>
+    <include>
+        <directory>src</directory>
+    </include>
+</source>
 ```
 
 ---
@@ -2024,6 +2814,37 @@ public function testDivisionWithNegatives(): void
 
 ---
 
+## Wrap-up
+
+Congratulations! You've completed a comprehensive introduction to unit testing with PHPUnit. You now understand how to write effective tests that help maintain code quality and enable confident refactoring.
+
+**What you accomplished:**
+
+- ✅ Installed and configured PHPUnit in your projects
+- ✅ Wrote unit tests with comprehensive assertions
+- ✅ Created test fixtures using lifecycle methods
+- ✅ Implemented data providers for parameterized testing
+- ✅ Mocked dependencies to isolate units under test
+- ✅ Generated and interpreted code coverage reports
+- ✅ Applied FIRST principles and AAA pattern to test design
+- ✅ Tested exceptions, edge cases, and complex scenarios
+- ✅ Integrated tests with CI/CD pipelines
+
+**Key concepts mastered:**
+
+- **PHPUnit vs JUnit**: Understanding the similarities and differences between PHP and Java testing frameworks
+- **Test Organization**: Structuring tests to mirror application architecture
+- **Assertions**: Using the right assertion for each scenario (equality, type, exception, etc.)
+- **Mocking**: Creating test doubles (dummies, stubs, mocks, spies, fakes) to isolate units
+- **Code Coverage**: Measuring and interpreting test coverage metrics
+- **Best Practices**: Following FIRST principles and AAA pattern for maintainable tests
+
+**Next steps:**
+
+In the next chapter, you'll learn about integration testing, which tests how multiple components work together. You'll explore testing database interactions, API endpoints, and full application workflows. The unit testing foundation you've built here will be essential for writing effective integration tests.
+
+---
+
 ## Chapter Wrap-up Checklist
 
 Before moving to the next chapter, ensure you can:
@@ -2038,6 +2859,12 @@ Before moving to the next chapter, ensure you can:
 - [ ] Use AAA pattern for test structure
 - [ ] Test exceptions and edge cases
 - [ ] Integrate tests with CI/CD pipelines
+
+<ChapterCheckbox 
+  seriesId="php-for-java-developers"
+  chapterId="12"
+  label="Completed unit testing with PHPUnit!"
+/>
 
 ---
 

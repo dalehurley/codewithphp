@@ -43,8 +43,9 @@ Production-ready prompt templates for PHP developers. Copy, customize, and use t
 ### Generate PHP Class
 
 ```php
-$prompt = <<<'PROMPT'
-Create a PHP 8.2+ class with the following requirements:
+# filename: generate-class-prompt.php
+$prompt = <<<PROMPT
+Create a PHP 8.4+ class with the following requirements:
 
 Class Name: UserRepository
 Purpose: Manage user data with database interactions
@@ -66,6 +67,7 @@ PROMPT;
 **Usage:**
 
 ```php
+# filename: use-code-generation-prompt.php
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
     'max_tokens' => 2048,
@@ -79,7 +81,8 @@ $response = $client->messages()->create([
 ### Generate API Endpoint
 
 ```php
-$prompt = <<<'PROMPT'
+# filename: generate-api-endpoint-prompt.php
+$prompt = <<<PROMPT
 Generate a Laravel API endpoint with the following specifications:
 
 Endpoint: POST /api/products
@@ -110,7 +113,8 @@ PROMPT;
 ### Generate Database Migration
 
 ```php
-$prompt = <<<'PROMPT'
+# filename: generate-migration-prompt.php
+$prompt = <<<PROMPT
 Create a Laravel migration for the following database schema:
 
 Table: orders
@@ -142,14 +146,13 @@ PROMPT;
 ### Comprehensive Code Review
 
 ```php
+# filename: code-review-prompt.php
 $code = file_get_contents('path/to/code.php');
 
 $prompt = <<<PROMPT
 Review the following PHP code and provide detailed feedback:
 
-```php
 {$code}
-```
 
 Please analyze:
 
@@ -191,15 +194,17 @@ PROMPT;
 
 ### Security Audit
 
-```php
-$prompt = <<<'PROMPT'
+````php
+# filename: security-audit-prompt.php
+$prompt = <<<PROMPT
 Perform a security audit on this PHP code. Focus exclusively on security vulnerabilities:
 
 ```php
 {CODE_HERE}
-```
+````
 
 Check for:
+
 1. SQL Injection (raw queries, improper parameterization)
 2. XSS (unescaped output, unsafe HTML rendering)
 3. CSRF vulnerabilities
@@ -212,6 +217,7 @@ Check for:
 10. Missing input validation
 
 For each vulnerability:
+
 - OWASP category
 - Risk level (Critical/High/Medium/Low)
 - Attack vector
@@ -220,7 +226,8 @@ For each vulnerability:
 
 Return findings in order of severity.
 PROMPT;
-```
+
+````
 
 ---
 
@@ -229,6 +236,7 @@ PROMPT;
 ### Generate PHPDoc
 
 ```php
+# filename: generate-phpdoc-prompt.php
 $code = <<<'PHP'
 public function processPayment($amount, $currency, $customerId, array $options = [])
 {
@@ -239,9 +247,7 @@ PHP;
 $prompt = <<<PROMPT
 Generate comprehensive PHPDoc documentation for this method:
 
-```php
 {$code}
-```
 
 Include:
 - Description of what the method does
@@ -253,12 +259,13 @@ Include:
 
 Follow PSR-5 PHPDoc standard.
 PROMPT;
-```
+````
 
 ### Generate README
 
 ```php
-$prompt = <<<'PROMPT'
+# filename: generate-readme-prompt.php
+$prompt = <<<PROMPT
 Create a comprehensive README.md for a Laravel package with these details:
 
 Package Name: claude-php-sdk
@@ -293,8 +300,9 @@ PROMPT;
 
 ### API Documentation
 
-```php
-$prompt = <<<'PROMPT'
+````php
+# filename: generate-api-docs-prompt.php
+$prompt = <<<PROMPT
 Generate OpenAPI 3.0 documentation for this Laravel API endpoint:
 
 Endpoint: GET /api/v1/products/{id}
@@ -306,9 +314,10 @@ public function show(Product $product): JsonResponse
         'data' => new ProductResource($product)
     ]);
 }
-```
+````
 
 ProductResource structure:
+
 - id (integer)
 - name (string)
 - description (string, nullable)
@@ -319,6 +328,7 @@ ProductResource structure:
 - updated_at (string, ISO 8601)
 
 Include:
+
 - Path definition
 - Parameters (path, query)
 - Response schemas (200, 404)
@@ -327,7 +337,8 @@ Include:
 
 Return valid OpenAPI YAML.
 PROMPT;
-```
+
+````
 
 ---
 
@@ -336,6 +347,7 @@ PROMPT;
 ### Extract Structured Data
 
 ```php
+# filename: extract-structured-data-prompt.php
 $text = "John Smith ordered 3 MacBook Pros for $6,000 on March 15, 2024...";
 
 $prompt = <<<PROMPT
@@ -365,12 +377,13 @@ Example output format:
     "order_date": "2024-03-15"
 }
 PROMPT;
-```
+````
 
 ### Parse Email Content
 
 ```php
-$prompt = <<<'PROMPT'
+# filename: parse-email-prompt.php
+$prompt = <<<PROMPT
 Parse this email and extract key information as JSON:
 
 Email:
@@ -403,7 +416,8 @@ PROMPT;
 ### Extract Invoice Data
 
 ```php
-$prompt = <<<'PROMPT'
+# filename: extract-invoice-prompt.php
+$prompt = <<<PROMPT
 Extract all relevant data from this invoice text and structure it as JSON:
 
 Invoice Text:
@@ -451,7 +465,8 @@ PROMPT;
 ### Product Description
 
 ```php
-$prompt = <<<'PROMPT'
+# filename: generate-product-description-prompt.php
+$prompt = <<<PROMPT
 Generate a compelling product description for an e-commerce website:
 
 Product: {PRODUCT_NAME}
@@ -478,7 +493,8 @@ PROMPT;
 ### Blog Post Outline
 
 ```php
-$prompt = <<<'PROMPT'
+# filename: generate-blog-outline-prompt.php
+$prompt = <<<PROMPT
 Create a detailed blog post outline on this topic:
 
 Topic: {BLOG_TOPIC}
@@ -505,7 +521,8 @@ PROMPT;
 ### Email Template
 
 ```php
-$prompt = <<<'PROMPT'
+# filename: generate-email-template-prompt.php
+$prompt = <<<PROMPT
 Write a professional email template for:
 
 Purpose: {PURPOSE - welcome, order confirmation, password reset, etc}
@@ -514,7 +531,7 @@ Tone: {TONE - formal, friendly, urgent}
 
 Include:
 - Compelling subject line
-- Personalization placeholders ({{name}}, {{order_number}}, etc)
+- Personalization placeholders (\{\{name\}\}, \{\{order_number\}\}, etc)
 - Clear main message
 - Action button/CTA
 - Footer with contact info
@@ -532,7 +549,8 @@ PROMPT;
 ### Sentiment Analysis
 
 ```php
-$prompt = <<<'PROMPT'
+# filename: sentiment-analysis-prompt.php
+$prompt = <<<PROMPT
 Analyze the sentiment of this customer review:
 
 Review: "{REVIEW_TEXT}"
@@ -560,7 +578,8 @@ PROMPT;
 ### Content Classification
 
 ```php
-$prompt = <<<'PROMPT'
+# filename: content-classification-prompt.php
+$prompt = <<<PROMPT
 Classify this user-generated content:
 
 Content: "{CONTENT}"
@@ -587,7 +606,8 @@ PROMPT;
 ### Topic Extraction
 
 ```php
-$prompt = <<<'PROMPT'
+# filename: topic-extraction-prompt.php
+$prompt = <<<PROMPT
 Extract and categorize topics from this article:
 
 Article:
@@ -619,6 +639,7 @@ PROMPT;
 ### Debug Error
 
 ```php
+# filename: debug-error-prompt.php
 $error = "Call to undefined method App\Models\User::getFullname()";
 $code = file_get_contents('User.php');
 
@@ -629,9 +650,7 @@ Error Message:
 {$error}
 
 Code:
-```php
 {$code}
-```
 
 Stack Trace (if available):
 {$stackTrace}
@@ -650,20 +669,23 @@ PROMPT;
 
 ### Performance Optimization
 
-```php
-$prompt = <<<'PROMPT'
+````php
+# filename: performance-optimization-prompt.php
+$prompt = <<<PROMPT
 Analyze this code for performance issues and suggest optimizations:
 
 ```php
 {CODE}
-```
+````
 
 Current performance metrics:
+
 - Execution time: {TIME}
 - Memory usage: {MEMORY}
 - Database queries: {QUERY_COUNT}
 
 Identify:
+
 1. Performance bottlenecks
 2. N+1 query problems
 3. Inefficient algorithms
@@ -671,6 +693,7 @@ Identify:
 5. Missing indexes
 
 For each issue:
+
 - Impact (High/Medium/Low)
 - Explanation
 - Optimized code example
@@ -678,7 +701,8 @@ For each issue:
 
 Prioritize by impact.
 PROMPT;
-```
+
+````
 
 ---
 
@@ -687,19 +711,22 @@ PROMPT;
 ### Refactor to Design Pattern
 
 ```php
-$prompt = <<<'PROMPT'
+# filename: refactor-pattern-prompt.php
+$prompt = <<<PROMPT
 Refactor this code to use an appropriate design pattern:
 
 Current Code:
 ```php
 {CODE}
-```
+````
 
 Issues with current code:
+
 - {ISSUE_1}
 - {ISSUE_2}
 
 Requirements:
+
 1. Suggest the most suitable design pattern
 2. Explain why this pattern fits
 3. Provide refactored code using the pattern
@@ -707,34 +734,39 @@ Requirements:
 5. List benefits of the refactoring
 6. Note any trade-offs
 
-Use PHP 8.2+ features where appropriate.
+Use PHP 8.4+ features where appropriate.
 PROMPT;
-```
+
+````
 
 ### Extract Service Class
 
 ```php
-$prompt = <<<'PROMPT'
+# filename: extract-service-prompt.php
+$prompt = <<<PROMPT
 This controller has too much business logic. Extract it into a service class:
 
 Current Controller:
 ```php
 {CONTROLLER_CODE}
-```
+````
 
 Create:
+
 1. A service class with appropriate methods
 2. Interface for the service (dependency inversion)
 3. Updated controller using the service
 4. Unit test example for the service
 
 Follow:
+
 - Single Responsibility Principle
 - Dependency Injection
 - Type hints and return types
 - PSR-12 standards
-PROMPT;
-```
+  PROMPT;
+
+````
 
 ---
 
@@ -743,15 +775,17 @@ PROMPT;
 ### Generate Unit Test
 
 ```php
-$prompt = <<<'PROMPT'
+# filename: generate-unit-test-prompt.php
+$prompt = <<<PROMPT
 Generate comprehensive PHPUnit tests for this class:
 
 Class to Test:
 ```php
 {CLASS_CODE}
-```
+````
 
 Create tests that:
+
 1. Cover all public methods
 2. Test happy paths and edge cases
 3. Test error conditions
@@ -764,12 +798,14 @@ Create tests that:
 Use PHPUnit 10 syntax.
 Include descriptive test method names.
 PROMPT;
-```
+
+````
 
 ### Generate Test Cases
 
 ```php
-$prompt = <<<'PROMPT'
+# filename: generate-test-cases-prompt.php
+$prompt = <<<PROMPT
 Generate test cases for this user registration feature:
 
 Feature: User Registration
@@ -796,7 +832,7 @@ Format as a test case table with:
 - Expected result
 - Priority (P0/P1/P2)
 PROMPT;
-```
+````
 
 ---
 
@@ -807,11 +843,12 @@ System prompts define Claude's role and behavior. Use these in the `system` para
 ### Code Review Assistant
 
 ```php
+# filename: code-review-system-prompt.php
 $systemPrompt = <<<'SYSTEM'
 You are an expert PHP code reviewer with 10+ years of experience.
 
 Your expertise includes:
-- PHP 8.0+ features and best practices
+- PHP 8.4+ features and best practices
 - Laravel and Symfony frameworks
 - PSR standards (PSR-1, PSR-12, PSR-4)
 - SOLID principles and design patterns
@@ -841,6 +878,7 @@ SYSTEM;
 ### API Documentation Writer
 
 ```php
+# filename: api-docs-system-prompt.php
 $systemPrompt = <<<'SYSTEM'
 You are a technical documentation specialist for API documentation.
 
@@ -872,6 +910,7 @@ SYSTEM;
 ### Data Extraction Specialist
 
 ```php
+# filename: data-extraction-system-prompt.php
 $systemPrompt = <<<'SYSTEM'
 You are a data extraction and parsing specialist.
 
@@ -897,6 +936,7 @@ SYSTEM;
 ### Security Auditor
 
 ```php
+# filename: security-auditor-system-prompt.php
 $systemPrompt = <<<'SYSTEM'
 You are a security expert specializing in PHP application security.
 
@@ -928,12 +968,64 @@ SYSTEM;
 
 ## Advanced Patterns
 
+### Prompt Caching
+
+Prompt caching allows you to cache frequently used system prompts or message prefixes, reducing costs and latency for repeated content.
+
+```php
+# filename: prompt-caching-example.php
+// Cache a system prompt for 5 minutes
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-20250514',
+    'max_tokens' => 1024,
+    'system' => 'You are an expert PHP code reviewer. Review code for security, performance, and best practices.',
+    'messages' => [
+        ['role' => 'user', 'content' => 'Review this code: ' . $code]
+    ],
+    'metadata' => [
+        'cache_control' => [
+            'type' => 'ephemeral',
+            'ttl_seconds' => 300  // 5 minutes
+        ]
+    ]
+]);
+
+// For 1-hour cache (important but less frequent)
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-20250514',
+    'max_tokens' => 1024,
+    'system' => 'You are an expert PHP code reviewer...',
+    'messages' => [
+        ['role' => 'user', 'content' => 'Review this code: ' . $code]
+    ],
+    'metadata' => [
+        'cache_control' => [
+            'type' => 'ephemeral',
+            'ttl_seconds' => 3600  // 1 hour
+        ]
+    ]
+]);
+```
+
+**Benefits:**
+
+- Reduced costs for repeated context
+- Lower latency for cached prompts
+- Best for system prompts or long prefixes that don't change
+
+**When to Use:**
+
+- System prompts that define behavior
+- Long document prefixes in RAG applications
+- Frequently reused prompt templates
+
 ### Chain of Thought Prompting
 
 For complex reasoning tasks:
 
 ```php
-$prompt = <<<'PROMPT'
+# filename: chain-of-thought-prompt.php
+$prompt = <<<PROMPT
 Solve this problem step by step:
 
 Problem: {PROBLEM_DESCRIPTION}
@@ -954,7 +1046,8 @@ PROMPT;
 Provide examples to establish patterns:
 
 ```php
-$prompt = <<<'PROMPT'
+# filename: few-shot-learning-prompt.php
+$prompt = <<<PROMPT
 Extract product information from these listings and format as JSON.
 
 Example 1:
@@ -974,7 +1067,8 @@ PROMPT;
 ### Role-Based Prompting
 
 ```php
-$prompt = <<<'PROMPT'
+# filename: role-based-prompt.php
+$prompt = <<<PROMPT
 You are a senior Laravel developer with 8 years of experience.
 
 A junior developer asks:
@@ -1002,7 +1096,8 @@ PROMPT;
 
 ### Provide Context
 
-```php
+````php
+# filename: context-prompt-example.php
 $prompt = "
 Context: This is a payment processing service for an e-commerce platform handling $1M monthly.
 
@@ -1013,14 +1108,17 @@ Task: Review this payment processing code for security and reliability issues.
 Code:
 ```php
 {$code}
-```
+````
+
 ";
-```
+
+````
 
 ### Use Delimiters
 
 ```php
-$prompt = <<<'PROMPT'
+# filename: delimiters-prompt-example.php
+$prompt = <<<PROMPT
 Analyze the code between the XML tags:
 
 <code>
@@ -1029,12 +1127,13 @@ Analyze the code between the XML tags:
 
 Provide refactoring suggestions.
 PROMPT;
-```
+````
 
 ### Specify Output Format
 
 ```php
-$prompt = <<<'PROMPT'
+# filename: output-format-prompt.php
+$prompt = <<<PROMPT
 Extract user data and return ONLY valid JSON with no explanation.
 
 Required format:
@@ -1047,6 +1146,7 @@ PROMPT;
 ### Set Temperature Appropriately
 
 ```php
+# filename: temperature-settings.php
 // For consistent, deterministic outputs (code generation, data extraction)
 'temperature' => 0.0
 
@@ -1064,6 +1164,7 @@ PROMPT;
 Helper function to use templates:
 
 ```php
+# filename: PromptTemplate.php
 class PromptTemplate
 {
     private string $template;
@@ -1087,7 +1188,7 @@ class PromptTemplate
 }
 
 // Usage
-$template = new PromptTemplate(<<<'PROMPT'
+$template = new PromptTemplate(<<<PROMPT
 Generate a {TYPE} for:
 
 Name: {NAME}
@@ -1098,7 +1199,7 @@ Requirements:
 PROMPT);
 
 $prompt = $template->render([
-    'type' => 'PHP class',
+    'type' => PHP class',
     'name' => 'ProductRepository',
     'description' => 'Manages product data',
     'requirements' => "- Use Laravel\n- Include CRUD methods\n- Add type hints"
@@ -1109,16 +1210,19 @@ $prompt = $template->render([
 
 ## Additional Resources
 
-- **[Anthropic Prompt Engineering Guide](https://docs.anthropic.com/claude/docs/prompt-engineering)** - Official guide
-- **[Prompt Library](https://docs.anthropic.com/claude/prompt-library)** - More examples
+- **[Anthropic Prompt Engineering Guide](https://docs.claude.com/en/docs/prompt-engineering)** - Official guide
+- **[Prompt Library](https://docs.claude.com/en/prompt-library)** - More examples
 - **[Chapter 05: Prompt Engineering Basics](/series/claude-php-developers/chapters/05-prompt-engineering-basics)** - Full chapter on prompting
 
 ---
 
 ::: tip Quick Navigation
-- **[← Appendix A: API Reference](/series/claude-php-developers/appendices/a-api-reference)** - Complete API reference
-- **[Appendix C: Error Codes →](/series/claude-php-developers/appendices/c-error-codes)** - Troubleshooting guide
-- **[Back to Series](/series/claude-php-developers)** - Return to main series
-:::
 
-*Last updated: November 2024*
+- **[← Appendix A: API Reference](/series/claude-php-developers/appendices/a-api-reference)** - Complete API reference
+- **[← Appendix B: Prompting Patterns](/series/claude-php-developers/appendices/b-prompting-patterns)** - Prompt templates
+- **[Appendix C: Error Codes →](/series/claude-php-developers/appendices/c-error-codes)** - Troubleshooting guide
+- **[Appendix D: Resources →](/series/claude-php-developers/appendices/d-resources)** - Tools and resources
+- **[Back to Series](/series/claude-php-developers)** - Return to main series
+  :::
+
+_Last updated: November 2024_

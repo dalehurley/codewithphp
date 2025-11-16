@@ -31,17 +31,20 @@ Integrating Claude into Laravel applications requires more than just making API 
 
 You'll learn to architect a clean, testable, and maintainable Claude integration that follows Laravel best practices. By the end, you'll have built a complete Laravel package for Claude that can be reused across projects, tested comprehensively, and configured through environment variables.
 
-**What You'll Learn:**
-- Creating custom service providers for Claude integration
-- Building facades for convenient API access
-- Implementing contracts and interfaces for flexibility
-- Managing configuration with environment variables
-- Writing comprehensive tests with mocking
-- Packaging Claude integration for reuse
-- Performance optimization with Laravel caching
-- Queue integration for async processing
-
 **Estimated Time**: 90-120 minutes
+
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- A complete Laravel service provider for Claude integration
+- A contract (interface) for flexible, testable Claude services
+- A production-ready ClaudeService implementation with caching and logging
+- A facade for convenient static access to Claude functionality
+- Comprehensive test suite with mocked Anthropic client
+- Configuration management system using Laravel's config system
+- Usage tracking system for monitoring costs and patterns
+- A reusable Laravel package structure for Claude integration
 
 ## Prerequisites
 
@@ -49,9 +52,49 @@ Before starting, ensure you have:
 
 - ✓ **Laravel 11+** installed and configured
 - ✓ **Anthropic API key** set up
-- ✓ **PHP 8.2+** with Composer
+- ✓ **PHP 8.4+** with Composer
 - ✓ **Understanding of Laravel architecture** (service container, facades, providers)
 - ✓ **Completion of Chapters 00-20** (fundamental Claude concepts)
+
+### Environment Setup
+
+Create or update your `.env` file with these Claude-specific variables:
+
+```bash
+# .env
+ANTHROPIC_API_KEY=sk-ant-xxxxxxxxxxxxxxxxxxxxx
+CLAUDE_MODEL=claude-sonnet-4-20250514
+CLAUDE_MAX_TOKENS=2048
+CLAUDE_TEMPERATURE=1.0
+CLAUDE_TIMEOUT=60
+CLAUDE_CACHE_ENABLED=true
+CLAUDE_CACHE_TTL=3600
+CLAUDE_CACHE_STORE=redis
+```
+
+**Environment Variable Reference:**
+- `ANTHROPIC_API_KEY` — Your API key from [console.anthropic.com](https://console.anthropic.com)
+- `CLAUDE_MODEL` — Default model (latest: `claude-sonnet-4-20250514`)
+- `CLAUDE_MAX_TOKENS` — Maximum tokens per response (1-4096)
+- `CLAUDE_TEMPERATURE` — Randomness (0.0 deterministic → 1.0 creative)
+- `CLAUDE_TIMEOUT` — Request timeout in seconds
+- `CLAUDE_CACHE_ENABLED` — Enable response caching
+- `CLAUDE_CACHE_TTL` — Cache duration in seconds
+- `CLAUDE_CACHE_STORE` — Cache driver (redis, file, database)
+
+## Objectives
+
+By completing this chapter, you will:
+
+- Understand Laravel's service container and dependency injection patterns
+- Create custom service providers to bootstrap Claude integration
+- Implement contracts and interfaces for flexible, testable code
+- Build facades for convenient static access to services
+- Configure Laravel applications using environment variables and config files
+- Write comprehensive tests using mocking and dependency injection
+- Package Claude integration as a reusable Laravel package
+- Implement caching strategies to reduce API costs
+- Track usage and monitor Claude API consumption
 
 ## Laravel Architecture Overview
 
@@ -124,7 +167,15 @@ class ClaudeServiceProvider extends ServiceProvider
 
 Let's create a comprehensive service provider for Claude integration.
 
-### Step 1: Create the Configuration File
+### Step 1: Create the Configuration File (~5 min)
+
+### Goal
+
+Set up a centralized configuration file that manages all Claude-related settings using Laravel's configuration system and environment variables.
+
+### Actions
+
+1. **Create the configuration file** at `config/claude.php`:
 
 ```php
 <?php
@@ -213,7 +264,27 @@ return [
 ];
 ```
 
-### Step 2: Create the Service Provider
+### Expected Result
+
+You'll have a configuration file that:
+- Loads sensitive values (API key) from environment variables
+- Provides sensible defaults for all settings
+- Organizes cache, timeout, and system prompt settings
+- Can be published to your application's config directory
+
+### Why It Works
+
+Laravel's configuration system (`config()`) merges environment variables with default values, allowing you to override settings per environment without modifying code. The `env()` helper reads from your `.env` file, keeping sensitive credentials out of version control. This pattern follows Laravel's 12-factor app principles.
+
+### Step 2: Create the Service Provider (~10 min)
+
+### Goal
+
+Build a service provider that registers Claude services in Laravel's container, enabling dependency injection throughout your application.
+
+### Actions
+
+1. **Create the service provider** at `app/Providers/ClaudeServiceProvider.php`:
 
 ```php
 <?php
@@ -298,7 +369,27 @@ class ClaudeServiceProvider extends ServiceProvider
 }
 ```
 
-### Step 3: Register the Provider
+### Expected Result
+
+After creating the service provider, you'll be able to:
+- Resolve `ClaudeService` and `ClaudeInterface` from the container
+- Access Claude functionality via dependency injection
+- Use the `'claude'` alias for convenient access
+- Publish configuration files using `php artisan vendor:publish`
+
+### Why It Works
+
+The service provider's `register()` method runs early in Laravel's bootstrap process, allowing you to bind services before they're needed. Using `singleton()` ensures only one instance exists per request, improving performance. The `provides()` method helps Laravel optimize service resolution, and the `boot()` method runs after all providers are registered, perfect for publishing assets.
+
+### Step 3: Register the Provider (~2 min)
+
+### Goal
+
+Register your service provider so Laravel loads it during application bootstrap.
+
+### Actions
+
+1. **Add the provider** to `bootstrap/providers.php`:
 
 ```php
 <?php
@@ -310,9 +401,23 @@ return [
 ];
 ```
 
-## Creating the Contract (Interface)
+### Expected Result
 
-Contracts provide flexibility and testability:
+Your service provider will be loaded automatically when Laravel boots, and all Claude services will be available throughout your application.
+
+### Why It Works
+
+Laravel reads the `providers.php` file during bootstrap and instantiates each provider, calling their `register()` and `boot()` methods in order. This ensures your Claude services are ready before any routes, controllers, or other services try to use them.
+
+## Creating the Contract (Interface) (~5 min)
+
+### Goal
+
+Define a contract (interface) that specifies Claude service methods, enabling flexible implementations and easy testing through dependency injection.
+
+### Actions
+
+1. **Create the interface** at `app/Contracts/ClaudeInterface.php`:
 
 ```php
 <?php
@@ -372,7 +477,27 @@ interface ClaudeInterface
 }
 ```
 
-## Implementing the Claude Service
+### Expected Result
+
+You'll have a contract that:
+- Defines all Claude service methods with proper type hints
+- Enables dependency injection of the interface (not concrete class)
+- Allows easy mocking in tests
+- Provides clear documentation of available methods
+
+### Why It Works
+
+Contracts (interfaces) follow the Dependency Inversion Principle from SOLID—depend on abstractions, not concretions. By injecting `ClaudeInterface` instead of `ClaudeService`, you can swap implementations without changing consuming code. This is especially valuable for testing, where you can inject mock implementations.
+
+## Implementing the Claude Service (~15 min)
+
+### Goal
+
+Create a production-ready service implementation that handles API calls, caching, logging, and error handling.
+
+### Actions
+
+1. **Create the service class** at `app/Services/ClaudeService.php`:
 
 ```php
 <?php
@@ -609,7 +734,28 @@ class ClaudeService implements ClaudeInterface
 }
 ```
 
-## Creating a Facade
+### Expected Result
+
+Your service will:
+- Cache responses when enabled, reducing API costs
+- Log all API calls for monitoring and debugging
+- Handle errors gracefully with proper exception handling
+- Support streaming, code analysis, and data extraction
+- Allow model switching via fluent interface
+
+### Why It Works
+
+The service wraps the Anthropic SDK client, adding Laravel-specific features like caching and logging. By checking cache before making API calls, you avoid redundant requests. The `withModel()` method uses cloning to create a new instance with different settings, following the immutable builder pattern. Error handling ensures failures are logged but exceptions propagate for proper error handling upstream.
+
+## Creating a Facade (~5 min)
+
+### Goal
+
+Provide a convenient static interface to Claude services, following Laravel's facade pattern for cleaner, more readable code.
+
+### Actions
+
+1. **Create the facade** at `app/Facades/Claude.php`:
 
 Facades provide a static interface to services:
 
@@ -645,7 +791,21 @@ class Claude extends Facade
 }
 ```
 
+### Expected Result
+
+You'll be able to use Claude functionality statically:
+```php
+Claude::generate('Hello');
+Claude::analyzeCode($code);
+```
+
+### Why It Works
+
+Facades provide static access to services resolved from the container. When you call `Claude::generate()`, Laravel resolves the `'claude'` binding (which points to `ClaudeService`) and calls the method. The `@method` annotations provide IDE autocomplete support, making facades feel like static classes while maintaining testability.
+
 ### Using the Facade
+
+Here's how to use the facade in controllers:
 
 ```php
 <?php
@@ -697,9 +857,15 @@ class AiController extends Controller
 }
 ```
 
-## Testing the Integration
+## Testing the Integration (~20 min)
 
-### Setup Test Configuration
+### Goal
+
+Write comprehensive tests that mock the Anthropic client, ensuring your service works correctly without making real API calls.
+
+### Actions
+
+1. **Configure test environment** in `tests/TestCase.php`:
 
 ```php
 <?php
@@ -727,7 +893,20 @@ abstract class TestCase extends BaseTestCase
 }
 ```
 
+### Expected Result
+
+Your test base class will:
+- Set test API keys automatically
+- Disable caching for predictable test results
+- Provide a clean environment for each test
+
+### Why It Works
+
+The `setUp()` method runs before each test, ensuring consistent configuration. Disabling cache prevents tests from interfering with each other, and using test API keys ensures you never accidentally make real API calls during testing.
+
 ### Mock the Anthropic Client
+
+2. **Create unit tests** for the service in `tests/Unit/Services/ClaudeServiceTest.php`:
 
 ```php
 <?php
@@ -831,7 +1010,21 @@ class ClaudeServiceTest extends TestCase
 }
 ```
 
+### Expected Result
+
+Your tests will:
+- Verify service methods return expected results
+- Test conversation history management
+- Validate model switching functionality
+- Run without making real API calls
+
+### Why It Works
+
+Mockery creates mock objects that simulate the Anthropic client's behavior. By setting expectations (`shouldReceive()`), you control what methods are called and what they return. The `tearDown()` method cleans up mocks to prevent test interference. This approach tests your service logic without external dependencies.
+
 ### Feature Test with Facade
+
+3. **Test facade integration** in `tests/Feature/ClaudeFacadeTest.php`:
 
 ```php
 <?php
@@ -878,7 +1071,22 @@ class ClaudeFacadeTest extends TestCase
 }
 ```
 
-## Advanced Patterns
+### Expected Result
+
+Your feature tests will verify that:
+- Facades correctly resolve services from the container
+- Static calls work as expected
+- Integration between facade and service is seamless
+
+### Why It Works
+
+Feature tests run in a full Laravel application context, including service providers. By binding a mock to the container (`$this->app->instance()`), the facade resolves your mock instead of the real service. This tests the entire integration chain from facade to service to client.
+
+## Advanced Patterns (~15 min)
+
+### Goal
+
+Implement production-ready patterns for model selection, usage tracking, and cost monitoring.
 
 ### Model Selection Helper
 
@@ -1031,6 +1239,418 @@ class UsageTracker
 }
 ```
 
+## Creating Exception Classes
+
+Custom exceptions enable better error handling and debugging:
+
+```php
+<?php
+# filename: app/Exceptions/Claude/ClaudeException.php
+declare(strict_types=1);
+
+namespace App\Exceptions\Claude;
+
+use Exception;
+use Throwable;
+
+class ClaudeException extends Exception
+{
+    /**
+     * Create a new Claude exception.
+     */
+    public function __construct(
+        string $message = 'Claude API error',
+        int $code = 0,
+        ?Throwable $previous = null,
+        public readonly ?string $apiErrorCode = null,
+        public readonly ?array $apiResponse = null,
+    ) {
+        parent::__construct($message, $code, $previous);
+    }
+
+    /**
+     * Get the API error code if available
+     */
+    public function getApiErrorCode(): ?string
+    {
+        return $this->apiErrorCode;
+    }
+
+    /**
+     * Get the full API response for debugging
+     */
+    public function getApiResponse(): ?array
+    {
+        return $this->apiResponse;
+    }
+
+    /**
+     * Check if this is a rate limit error
+     */
+    public function isRateLimit(): bool
+    {
+        return str_contains($this->message, 'rate_limit') ||
+               str_contains($this->message, '429');
+    }
+
+    /**
+     * Check if this is an authentication error
+     */
+    public function isAuthenticationError(): bool
+    {
+        return str_contains($this->message, 'authentication') ||
+               str_contains($this->message, '401');
+    }
+}
+```
+
+Create a rate limit exception:
+
+```php
+<?php
+# filename: app/Exceptions/Claude/RateLimitException.php
+declare(strict_types=1);
+
+namespace App\Exceptions\Claude;
+
+class RateLimitException extends ClaudeException
+{
+    public function __construct(
+        string $message = 'Claude API rate limit exceeded',
+        public readonly ?int $retryAfterSeconds = null,
+    ) {
+        parent::__construct($message, 429, apiErrorCode: 'rate_limit_error');
+    }
+
+    /**
+     * Get seconds to wait before retrying
+     */
+    public function getRetryAfter(): ?int
+    {
+        return $this->retryAfterSeconds;
+    }
+}
+```
+
+Update the `ClaudeService` to throw these exceptions:
+
+```php
+<?php
+# Inside app/Services/ClaudeService.php - modify the generate() method
+
+        try {
+            $response = $this->client->messages()->create($requestOptions);
+            $text = $response->content[0]->text;
+            // ... rest of code
+        } catch (\Exception $e) {
+            Log::error('Claude API call failed', [
+                'error' => $e->getMessage(),
+                'model' => $this->currentModel,
+            ]);
+
+            // Convert Anthropic exceptions to custom exceptions
+            if (str_contains($e->getMessage(), 'rate_limit')) {
+                throw new \App\Exceptions\Claude\RateLimitException(
+                    $e->getMessage(),
+                    retryAfterSeconds: 60
+                );
+            }
+
+            if (str_contains($e->getMessage(), '401') || str_contains($e->getMessage(), 'Unauthorized')) {
+                throw new \App\Exceptions\Claude\ClaudeException(
+                    'Authentication failed: Invalid API key',
+                    401,
+                    $e,
+                    apiErrorCode: 'authentication_error'
+                );
+            }
+
+            throw new \App\Exceptions\Claude\ClaudeException(
+                $e->getMessage(),
+                $e->getCode(),
+                $e,
+                apiErrorCode: 'api_error',
+                apiResponse: []
+            );
+        }
+```
+
+## Database Migration for Usage Tracking
+
+Create a migration for the `claude_usage` table:
+
+```bash
+php artisan make:migration create_claude_usage_table
+```
+
+```php
+<?php
+# filename: database/migrations/[timestamp]_create_claude_usage_table.php
+declare(strict_types=1);
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('claude_usage', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
+            $table->string('model', 100);
+            $table->longText('prompt');
+            $table->longText('response');
+            $table->integer('input_tokens')->default(0);
+            $table->integer('output_tokens')->default(0);
+            $table->decimal('cost', 10, 6)->default(0);
+            $table->integer('duration_ms')->default(0);
+            $table->json('metadata')->nullable();
+            $table->string('status', 50)->default('completed'); // completed, failed, rate_limited
+            $table->text('error_message')->nullable();
+            $table->timestamps();
+
+            // Indexes for common queries
+            $table->index(['user_id', 'created_at']);
+            $table->index(['model', 'created_at']);
+            $table->index('status');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('claude_usage');
+    }
+};
+```
+
+Run the migration:
+
+```bash
+php artisan migrate
+```
+
+## Console Command for Testing Integration
+
+Create a console command to test the Claude service:
+
+```bash
+php artisan make:command ClaudeTestCommand
+```
+
+```php
+<?php
+# filename: app/Console/Commands/ClaudeTestCommand.php
+declare(strict_types=1);
+
+namespace App\Console\Commands;
+
+use App\Contracts\ClaudeInterface;
+use App\Exceptions\Claude\ClaudeException;
+use Illuminate\Console\Command;
+
+class ClaudeTestCommand extends Command
+{
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'claude:test
+        {--model= : Override the default model}
+        {--timeout=30 : Request timeout in seconds}';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Test Claude API integration';
+
+    /**
+     * Execute the console command.
+     */
+    public function handle(ClaudeInterface $claude): int
+    {
+        $this->info('🤖 Testing Claude API Integration\n');
+
+        // Check environment
+        $this->info('📋 Environment Check:');
+        $this->checkEnvironment();
+
+        // Test basic generation
+        $this->info('\n✅ Testing Basic Generation:');
+        if (!$this->testBasicGeneration($claude)) {
+            return Command::FAILURE;
+        }
+
+        // Test with custom model
+        if ($this->option('model')) {
+            $this->info('\n✅ Testing with Custom Model:');
+            if (!$this->testCustomModel($claude)) {
+                return Command::FAILURE;
+            }
+        }
+
+        // Test conversation
+        $this->info('\n✅ Testing Conversation:');
+        if (!$this->testConversation($claude)) {
+            return Command::FAILURE;
+        }
+
+        $this->info('\n✨ All tests passed! Claude integration is working correctly.\n');
+        return Command::SUCCESS;
+    }
+
+    /**
+     * Check environment variables
+     */
+    private function checkEnvironment(): void
+    {
+        $required = [
+            'ANTHROPIC_API_KEY',
+            'CLAUDE_MODEL',
+        ];
+
+        foreach ($required as $var) {
+            if (env($var)) {
+                $value = $var === 'ANTHROPIC_API_KEY' ? '***' . substr(env($var), -4) : env($var);
+                $this->line("  ✓ {$var} = {$value}");
+            } else {
+                $this->error("  ✗ {$var} is not set");
+            }
+        }
+    }
+
+    /**
+     * Test basic generation
+     */
+    private function testBasicGeneration(ClaudeInterface $claude): bool
+    {
+        try {
+            $this->line('  Testing: Generate a simple response...');
+
+            $response = $claude->generate(
+                prompt: 'Say "Claude is working!" in exactly those words.'
+            );
+
+            if (str_contains($response, 'Claude is working')) {
+                $this->line("  ✓ Response: {$response}");
+                return true;
+            }
+
+            $this->error('  ✗ Unexpected response format');
+            return false;
+        } catch (ClaudeException $e) {
+            $this->error("  ✗ Error: {$e->getMessage()}");
+            return false;
+        }
+    }
+
+    /**
+     * Test with custom model
+     */
+    private function testCustomModel(ClaudeInterface $claude): bool
+    {
+        try {
+            $model = $this->option('model');
+            $this->line("  Testing: Generate with model {$model}...");
+
+            $service = $claude->withModel($model);
+            $response = $service->generate(
+                prompt: 'Respond with the model name you are.'
+            );
+
+            $this->line("  ✓ Response with {$model}: {$response}");
+            return true;
+        } catch (ClaudeException $e) {
+            if ($e->isRateLimit()) {
+                $this->warn("  ⚠ Rate limited: {$e->getMessage()}");
+                return true; // Not a failure, just API limit
+            }
+
+            $this->error("  ✗ Error: {$e->getMessage()}");
+            return false;
+        }
+    }
+
+    /**
+     * Test conversation
+     */
+    private function testConversation(ClaudeInterface $claude): bool
+    {
+        try {
+            $this->line('  Testing: Multi-turn conversation...');
+
+            // First turn
+            $result1 = $claude->chat(
+                message: 'What is 2 + 2?'
+            );
+
+            $this->line("  ✓ User: What is 2 + 2?");
+            $this->line("  ✓ Claude: {$result1['response']}");
+
+            // Second turn with history
+            $result2 = $claude->chat(
+                message: 'What about 2 + 3?',
+                history: $result1['history']
+            );
+
+            $this->line("  ✓ User: What about 2 + 3?");
+            $this->line("  ✓ Claude: {$result2['response']}");
+            $this->line("  ✓ Conversation history maintained across turns");
+
+            return true;
+        } catch (ClaudeException $e) {
+            $this->error("  ✗ Error: {$e->getMessage()}");
+            return false;
+        }
+    }
+}
+```
+
+Run the test command:
+
+```bash
+php artisan claude:test
+
+# Test with custom model
+php artisan claude:test --model=claude-haiku-4-20250514
+
+# Test with custom timeout
+php artisan claude:test --timeout=60
+```
+
+**Expected Output:**
+
+```
+🤖 Testing Claude API Integration
+
+📋 Environment Check:
+  ✓ ANTHROPIC_API_KEY = ***xxxx
+  ✓ CLAUDE_MODEL = claude-sonnet-4-20250514
+
+✅ Testing Basic Generation:
+  Testing: Generate a simple response...
+  ✓ Response: Claude is working!
+
+✅ Testing Conversation:
+  Testing: Multi-turn conversation...
+  ✓ User: What is 2 + 2?
+  ✓ Claude: 2 + 2 equals 4.
+  ✓ User: What about 2 + 3?
+  ✓ Claude: 2 + 3 equals 5.
+  ✓ Conversation history maintained across turns
+
+✨ All tests passed! Claude integration is working correctly.
+```
+
 ## Creating a Laravel Package
 
 ### Package Structure
@@ -1096,10 +1716,43 @@ packages/
 
 ### Exercise 1: Build a Rate Limiter
 
+**Goal**: Create a rate limiting system to control Claude API usage per user.
+
+**Requirements**:
+- Implement `attempt()` method that checks if a user can make a request
+- Implement `remaining()` method that returns requests left for the hour
+- Use Laravel Cache with keys like `claude:ratelimit:{userId}:{hour}`
+- Set cache expiry to 1 hour (3600 seconds)
+- Return `true` if under limit, `false` if exceeded
+
+**Validation**: Test with multiple users and verify limits are enforced:
+
+```php
+$limiter = new ClaudeRateLimiter();
+
+// First 100 requests should succeed
+for ($i = 0; $i < 100; $i++) {
+    $this->assertTrue($limiter->attempt(1));
+}
+
+// 101st should fail
+$this->assertFalse($limiter->attempt(1));
+
+// Check remaining
+$this->assertEquals(0, $limiter->remaining(1));
+```
+
 Create a rate limiting system for Claude API calls:
 
 ```php
 <?php
+# filename: app/Services/ClaudeRateLimiter.php
+declare(strict_types=1);
+
+namespace App\Services;
+
+use Illuminate\Support\Facades\Cache;
+
 class ClaudeRateLimiter
 {
     public function attempt(int $userId, int $maxPerHour = 100): bool
@@ -1117,16 +1770,46 @@ class ClaudeRateLimiter
 
 ### Exercise 2: Create a Prompt Template System
 
+**Goal**: Build a reusable prompt template system that loads templates from storage and replaces variables.
+
+**Requirements**:
+- Store templates in `storage/app/prompts/` directory
+- Support variable replacement using `{{variable}}` syntax
+- Load template files by name (e.g., `code_review.txt`)
+- Replace all variables with provided values
+- Return rendered prompt string
+
+**Validation**: Create a template file and test variable replacement:
+
+```php
+// storage/app/prompts/code_review.txt
+// Review this {{language}} code: {{code}}
+
+$prompt = PromptTemplate::render('code_review', [
+    'language' => 'PHP',
+    'code' => '<?php echo "Hello"; ?>'
+]);
+
+// Should return: "Review this PHP code: <?php echo "Hello"; ?>"
+```
+
 Build a template system for reusable prompts:
 
 ```php
 <?php
+# filename: app/Services/PromptTemplate.php
+declare(strict_types=1);
+
+namespace App\Services;
+
+use Illuminate\Support\Facades\Storage;
+
 class PromptTemplate
 {
     public static function render(string $template, array $variables): string
     {
-        // TODO: Load template from storage
-        // TODO: Replace variables
+        // TODO: Load template from storage/app/prompts/
+        // TODO: Replace {{variable}} placeholders
         // TODO: Return rendered prompt
     }
 }
@@ -1137,22 +1820,58 @@ class PromptTemplate
 
 ### Exercise 3: Build a Response Cache Manager
 
+**Goal**: Create an intelligent caching system that stores Claude responses with configurable TTL and supports pattern-based invalidation.
+
+**Requirements**:
+- Generate cache keys using prompt and model hash
+- Use Laravel's `Cache::remember()` for automatic retrieval/storage
+- Support custom TTL (default from config)
+- Implement `invalidate()` that removes keys matching a pattern
+- Return count of invalidated keys
+
+**Validation**: Test caching and invalidation:
+
+```php
+$manager = new ResponseCacheManager();
+
+// First call executes callback
+$result1 = $manager->remember('test prompt', fn() => 'response');
+
+// Second call returns cached value
+$result2 = $manager->remember('test prompt', fn() => 'different');
+
+$this->assertEquals('response', $result2);
+
+// Invalidate all Claude caches
+$count = $manager->invalidate('claude:*');
+$this->assertGreaterThan(0, $count);
+```
+
 Create a smart caching system with TTL and invalidation:
 
 ```php
 <?php
+# filename: app/Services/ResponseCacheManager.php
+declare(strict_types=1);
+
+namespace App\Services;
+
+use Illuminate\Support\Facades\Cache;
+
 class ResponseCacheManager
 {
     public function remember(string $prompt, callable $callback, ?int $ttl = null): string
     {
-        // TODO: Check cache
-        // TODO: Call callback if not cached
-        // TODO: Store with semantic key
+        // TODO: Generate cache key from prompt and model
+        // TODO: Use Cache::remember() with callback
+        // TODO: Return cached or fresh response
     }
 
     public function invalidate(string $pattern): int
     {
-        // TODO: Invalidate matching cache keys
+        // TODO: Find cache keys matching pattern
+        // TODO: Delete matching keys
+        // TODO: Return count of deleted keys
     }
 }
 ```
@@ -1160,13 +1879,82 @@ class ResponseCacheManager
 <details>
 <summary>Solution Hints</summary>
 
-**Exercise 1**: Use `Cache::increment()` with a key like `claude:ratelimit:{$userId}:{$hour}`. Set expiry to 1 hour. Check count before allowing request.
+**Exercise 1**: Use `Cache::increment()` with a key like `claude:ratelimit:{$userId}:{$hour}`. Set expiry to 1 hour using `Cache::put()` or `Cache::remember()`. Check count before allowing request. For `remaining()`, calculate `maxPerHour - currentCount`.
 
-**Exercise 2**: Store templates in `storage/app/prompts/`. Use `str_replace()` or `preg_replace()` for variable substitution. Support nested templates.
+**Exercise 2**: Use `Storage::get("prompts/{$template}.txt")` to load templates. Use `preg_replace('/\{\{(\w+)\}\}/', $variables[$1], $template)` for variable replacement. Handle missing variables gracefully.
 
-**Exercise 3**: Generate cache key using `md5(json_encode(['prompt' => $prompt, 'model' => $model]))`. Use `Cache::remember()` with custom TTL. For invalidation, iterate cache keys matching pattern.
+**Exercise 3**: Generate cache key using `md5(json_encode(['prompt' => $prompt, 'model' => $model]))`. Use `Cache::remember($key, $ttl, $callback)`. For invalidation, use Redis `KEYS` command or iterate through known patterns if using file cache.
 
 </details>
+
+## Integration Testing in Your Application
+
+Test the integration with a controller or job:
+
+```php
+<?php
+# filename: app/Http/Controllers/ClaudeTestController.php
+declare(strict_types=1);
+
+namespace App\Http\Controllers;
+
+use App\Contracts\ClaudeInterface;
+use App\Models\ClaudeUsage;
+use App\Services\UsageTracker;
+use Illuminate\Http\JsonResponse;
+
+class ClaudeTestController extends Controller
+{
+    public function test(
+        ClaudeInterface $claude,
+        UsageTracker $tracker
+    ): JsonResponse {
+        $startTime = microtime(true);
+
+        try {
+            $response = $claude->generate(
+                prompt: 'Explain Laravel service providers in one sentence.'
+            );
+
+            $duration = (microtime(true) - $startTime) * 1000;
+
+            // Track usage (if user is authenticated)
+            if (auth()->check()) {
+                $tracker->track(
+                    userId: auth()->id(),
+                    model: $claude->getModel(),
+                    prompt: 'Explain Laravel service providers...',
+                    response: $response,
+                    inputTokens: 15,
+                    outputTokens: 45,
+                    durationMs: (int)$duration
+                );
+            }
+
+            return response()->json([
+                'success' => true,
+                'response' => $response,
+                'duration_ms' => round($duration, 2),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+}
+```
+
+Add the route:
+
+```php
+<?php
+# In routes/web.php
+
+Route::get('/test/claude', [\App\Http\Controllers\ClaudeTestController::class, 'test'])
+    ->middleware('auth');
+```
 
 ## Troubleshooting
 
@@ -1174,32 +1962,71 @@ class ResponseCacheManager
 - Ensure provider is registered in `bootstrap/providers.php`
 - Run `php artisan config:clear` to clear cached config
 - Check for syntax errors in provider
+- Run `php artisan provider:list` to see registered providers
 
 **Facade not working?**
 - Verify facade accessor returns correct binding name
 - Check provider registers the service with that name
 - Run `php artisan optimize:clear` to clear all caches
+- Verify facade is imported: `use App\Facades\Claude;`
 
 **Tests failing with API errors?**
 - Ensure you're mocking the Anthropic client, not making real calls
 - Use `Mockery::close()` in `tearDown()` to clean up mocks
 - Check test configuration in `TestCase.php`
+- Use `$this->app->instance()` to bind mocks to container
 
 **Cache not working?**
 - Verify Redis/cache driver is configured correctly
 - Check `CLAUDE_CACHE_ENABLED` is true in `.env`
 - Ensure cache store specified in config exists
+- Run `php artisan cache:clear` to clear old entries
 
-## Key Takeaways
+**API key not recognized?**
+- Verify `ANTHROPIC_API_KEY` is set in `.env`
+- Ensure key starts with `sk-ant-`
+- Check for trailing whitespace in `.env`
+- Run `php artisan config:cache` if using config caching
+- Verify key has proper API permissions in Anthropic console
 
-- ✓ **Service Providers** bootstrap Claude integration in Laravel
-- ✓ **Contracts** provide flexibility and enable easy testing
-- ✓ **Facades** offer convenient static access to services
-- ✓ **Configuration** should use environment variables
-- ✓ **Caching** dramatically reduces costs for repeated queries
-- ✓ **Testing** requires mocking the Anthropic client
-- ✓ **Packages** enable reuse across multiple projects
-- ✓ **Usage Tracking** provides visibility into costs and patterns
+**Rate limiting errors?**
+- Catch `RateLimitException` specifically: `catch (RateLimitException $e)`
+- Implement exponential backoff: `sleep($e->getRetryAfter() ?? 60)`
+- Check usage in Anthropic console dashboard
+- Consider implementing queue-based processing (Chapter 19)
+
+**Exception handling issues?**
+- Import custom exceptions: `use App\Exceptions\Claude\ClaudeException;`
+- Check exception is caught before generic `\Exception` handler
+- Use `->isRateLimit()` and `->isAuthenticationError()` helpers
+- Log exception details: `Log::error($e->getMessage(), $e->getTrace())`
+
+## Wrap-up
+
+Congratulations! You've mastered Laravel integration patterns for Claude. Here's what you've accomplished:
+
+- ✓ **Built a service provider** — Properly registered Claude services in Laravel's container
+- ✓ **Created contracts** — Implemented interfaces for flexible, testable code
+- ✓ **Implemented ClaudeService** — Production-ready service with caching, logging, and error handling
+- ✓ **Built a facade** — Convenient static access to Claude functionality
+- ✓ **Configured Laravel** — Environment-based configuration management
+- ✓ **Wrote comprehensive tests** — Mocked Anthropic client for reliable testing
+- ✓ **Designed a package structure** — Reusable Laravel package for Claude integration
+- ✓ **Implemented usage tracking** — Monitor costs and API consumption patterns
+- ✓ **Applied Laravel best practices** — Followed framework conventions and patterns
+
+Your Claude integration now follows Laravel's architecture patterns, making it maintainable, testable, and production-ready. The service provider pattern ensures clean dependency injection, while contracts enable easy mocking and testing.
+
+In the next chapter, you'll build a complete chatbot application using these integration patterns, bringing together all the concepts you've learned throughout this series.
+
+## Further Reading
+
+- [Laravel Service Providers Documentation](https://laravel.com/docs/providers) — Official guide to creating and registering service providers
+- [Laravel Service Container](https://laravel.com/docs/container) — Understanding dependency injection and service resolution
+- [Laravel Facades](https://laravel.com/docs/facades) — How facades work and when to use them
+- [Laravel Package Development](https://laravel.com/docs/packages) — Creating reusable Laravel packages
+- [PSR-11: Container Interface](https://www.php-fig.org/psr/psr-11/) — Standard container interface for dependency injection
+- [Laravel Testing Documentation](https://laravel.com/docs/testing) — Comprehensive testing guide with mocking examples
 
 <ChapterCheckbox
   seriesId="claude-php-developers"

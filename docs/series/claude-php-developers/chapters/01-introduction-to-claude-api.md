@@ -6,9 +6,9 @@ chapter: 1
 order: 1
 difficulty: "Beginner"
 prerequisites:
-  - "PHP 8.2+ installed"
+  - "/series/claude-php-developers/chapters/00-quick-start-guide"
+  - "PHP 8.4+ installed"
   - "Basic understanding of REST APIs"
-  - "Completion of Chapter 00"
 ---
 
 ![01: Introduction to Claude API](/images/claude-php/chapter-01-hero-full.webp)
@@ -31,24 +31,38 @@ Claude is Anthropic's family of large language models (LLMs) designed to be help
 
 You'll learn about the three model variants (Opus, Sonnet, and Haiku), understand the Messages API structure that powers all Claude interactions, explore pricing and cost optimization strategies, and gain insight into how Claude processes conversations. By the end, you'll have a solid foundation for making informed decisions about which Claude model to use for your specific use cases.
 
-**What You'll Learn:**
-- Claude's core capabilities and strengths
-- Differences between Opus, Sonnet, and Haiku models
-- Messages API architecture and design
-- Pricing structure and cost optimization
-- How conversations and context work
-- Best practices for PHP integration
-
-**Estimated Time**: 30-45 minutes
-
 ## Prerequisites
 
 Before starting, ensure you have:
 
-- ✓ **Completed Chapter 00** (Quick Start Guide)
-- ✓ **PHP 8.2+** installed and working
-- ✓ **Anthropic API key** configured
-- ✓ **Basic REST API knowledge**
+- ✓ **Completed** [Chapter 00: Quick Start Guide](/series/claude-php-developers/chapters/00-quick-start-guide)
+- ✓ **PHP 8.4+** installed and working (`php --version`)
+- ✓ **Anthropic API key** configured in your environment
+- ✓ **Basic REST API knowledge** (HTTP methods, JSON, status codes)
+
+**Estimated Time**: ~30-45 minutes
+
+## What You'll Build
+
+By the end of this chapter, you will have created:
+
+- A `ClaudeModelSelector` class for intelligent model selection
+- A `ClaudeResponseHandler` class for processing API responses with cost tracking
+- A `TokenEstimator` utility for cost estimation
+- A `ConversationManager` class for maintaining multi-turn conversations
+- A `CostOptimizer` class for selecting cost-effective models
+- Understanding of when to use Opus, Sonnet, or Haiku models
+- Knowledge of Claude's pricing structure and optimization strategies
+
+## Objectives
+
+- Understand Claude's core capabilities and how they differ from traditional software
+- Compare and contrast the three model variants (Opus, Sonnet, Haiku) and their use cases
+- Master the Messages API architecture and request/response structure
+- Learn Claude's pricing model and implement cost optimization strategies
+- Implement conversation management patterns for stateless API interactions
+- Build practical PHP classes for model selection, response handling, and cost tracking
+- Apply best practices for integrating Claude into PHP applications
 
 ## What is Claude?
 
@@ -143,7 +157,10 @@ Anthropic offers three model variants, each optimized for different use cases:
 - Highest cost per token
 
 **Example Use Cases:**
+
 ```php
+<?php
+# filename: examples/opus-use-cases.php
 // Complex architectural decisions
 $response = $client->messages()->create([
     'model' => 'claude-opus-4-20250514',
@@ -188,7 +205,10 @@ $response = $client->messages()->create([
 - Recommended starting point
 
 **Example Use Cases:**
+
 ```php
+<?php
+# filename: examples/sonnet-use-cases.php
 // API documentation generation
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
@@ -233,7 +253,10 @@ $response = $client->messages()->create([
 - May lack nuance for complex queries
 
 **Example Use Cases:**
+
 ```php
+<?php
+# filename: examples/haiku-use-cases.php
 // Email classification
 $response = $client->messages()->create([
     'model' => 'claude-haiku-4-20250514',
@@ -329,18 +352,54 @@ echo "Architecture design: " .
 
 The Messages API is the primary interface for interacting with Claude. Understanding its architecture is crucial for effective integration.
 
+### API Basics
+
+Before diving into the request structure, here are the fundamental API details:
+
+**API Endpoint:**
+- Base URL: `https://api.anthropic.com`
+- Endpoint: `/v1/messages`
+- Full URL: `https://api.anthropic.com/v1/messages`
+
+**HTTP Method:**
+- All requests use `POST`
+- Request body must be JSON
+
+**Required Headers:**
+- `x-api-key`: Your Anthropic API key (starts with `sk-ant-`)
+- `anthropic-version`: API version (currently `2023-06-01`)
+- `Content-Type`: `application/json`
+
+**Response Status Codes:**
+- `200 OK`: Successful request
+- `400 Bad Request`: Invalid parameters or malformed request
+- `401 Unauthorized`: Invalid or missing API key
+- `429 Too Many Requests`: Rate limit exceeded
+- `500 Internal Server Error`: Anthropic service error
+- `529 Service Overloaded`: Service temporarily unavailable
+
+**Rate Limits:**
+- Default tier: 50 requests per minute
+- Higher tiers available based on usage (covered in Chapter 02)
+- Rate limit headers included in responses: `anthropic-ratelimit-requests-limit`, `anthropic-ratelimit-requests-remaining`
+
+::: info
+Detailed error handling and rate limiting strategies are covered in [Chapter 10: Error Handling and Rate Limiting](/series/claude-php-developers/chapters/10-error-handling-rate-limiting).
+:::
+
 ### API Structure Overview
 
 Every Claude interaction follows this structure:
 
 ```
-Request → Messages API → Claude Model → Response
+HTTP POST Request → Messages API → Claude Model → JSON Response
 ```
 
 ### Request Anatomy
 
 ```php
 <?php
+# filename: examples/request-anatomy.php
 # Complete request structure with all options
 $response = $client->messages()->create([
     // === REQUIRED PARAMETERS ===
@@ -390,6 +449,7 @@ $response = $client->messages()->create([
 
 ```php
 <?php
+# filename: examples/response-anatomy.php
 # Complete response structure
 $response = $client->messages()->create([...]);
 
@@ -635,6 +695,7 @@ echo "Estimated cost: $" . number_format($estimate['total_cost'], 6) . "\n";
 ### Cost Optimization Strategies
 
 **1. Choose the Right Model**
+
 ```php
 <?php
 # filename: examples/model-cost-optimization.php
@@ -664,8 +725,10 @@ class CostOptimizer
 ```
 
 **2. Minimize Token Usage**
+
 ```php
 <?php
+# filename: examples/token-minimization.php
 # Inefficient: Verbose prompt
 $prompt = "I would like you to please analyze the following PHP code that I'm going to provide below and tell me what you think about it and if there are any issues or problems that you can identify:";
 
@@ -676,8 +739,10 @@ $prompt = "Analyze this PHP code for issues:";
 ```
 
 **3. Limit max_tokens**
+
 ```php
 <?php
+# filename: examples/limit-max-tokens.php
 # Set appropriate max_tokens based on expected response length
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
@@ -690,8 +755,10 @@ $response = $client->messages()->create([
 ```
 
 **4. Cache System Prompts** (Advanced)
+
 ```php
 <?php
+# filename: examples/system-prompt-caching.php
 # Reuse system prompts across requests to save tokens
 # (Requires prompt caching feature - covered in Chapter 15)
 $systemPrompt = "You are a PHP expert...";  // Reused across requests
@@ -1153,6 +1220,9 @@ Build a tool that sends the same prompt to all three models and compares results
 
 ```php
 <?php
+# filename: exercises/exercise-01-model-comparison.php
+declare(strict_types=1);
+
 class ModelComparison
 {
     public function __construct(
@@ -1177,6 +1247,9 @@ Create a class that estimates and tracks API costs:
 
 ```php
 <?php
+# filename: exercises/exercise-02-cost-calculator.php
+declare(strict_types=1);
+
 class CostTracker
 {
     private array $requests = [];
@@ -1204,6 +1277,9 @@ Build a conversation manager that automatically selects the right model:
 
 ```php
 <?php
+# filename: exercises/exercise-03-smart-conversation.php
+declare(strict_types=1);
+
 class SmartConversation
 {
     public function chat(string $message, string $taskType = 'general'): string
@@ -1256,16 +1332,42 @@ $chat->chat("Design a system", 'complex'); // → Uses Opus
 - Consider request queuing for high-volume apps
 - Contact Anthropic for limit increases
 
-## Key Takeaways
+## Wrap-up
 
-- ✓ **Three Models**: Opus (powerful), Sonnet (balanced), Haiku (fast/cheap)
-- ✓ **Messages API**: Stateless architecture requires including conversation history
-- ✓ **Token Pricing**: Output tokens cost 5x more than input tokens
-- ✓ **Context Window**: 200K tokens for all models, but costs scale with usage
-- ✓ **System Prompts**: Set behavioral context for the entire conversation
-- ✓ **Message Alternation**: Must alternate between user and assistant roles
-- ✓ **Model Selection**: Start with Sonnet for most use cases
-- ✓ **Cost Optimization**: Choose right model, minimize tokens, batch requests
+Congratulations! You've completed a comprehensive introduction to Claude's API. Here's what you've accomplished:
+
+- ✓ **Understood Claude's capabilities** and how it differs from traditional software
+- ✓ **Compared the three model variants** (Opus, Sonnet, Haiku) and their optimal use cases
+- ✓ **Mastered the Messages API architecture** including request/response structure
+- ✓ **Learned Claude's pricing model** and implemented cost optimization strategies
+- ✓ **Built practical PHP classes** for model selection, response handling, and conversation management
+- ✓ **Implemented conversation patterns** for stateless API interactions
+- ✓ **Applied best practices** for integrating Claude into PHP applications
+
+### Key Concepts Learned
+
+- **Model Selection**: Opus for complex reasoning, Sonnet for general use, Haiku for high-volume tasks
+- **Stateless Architecture**: Each API call is independent; conversation history must be explicitly included
+- **Token Economics**: Output tokens cost 5x more than input tokens; optimization matters
+- **Context Management**: 200K token window enables large conversations but costs scale with usage
+- **System Prompts**: Set behavioral context that applies to the entire conversation
+- **Message Alternation**: Messages must alternate between user and assistant roles
+
+### Real-World Application
+
+The classes and patterns you've learned in this chapter form the foundation for building production Claude applications. The `ClaudeModelSelector` helps you choose the right model for each task, `ClaudeResponseHandler` provides cost tracking and analytics, and `ConversationManager` enables multi-turn conversations. These patterns will be expanded upon in later chapters as you build more sophisticated applications.
+
+### Next Steps
+
+In the next chapter, you'll learn about secure API key management, environment configuration, and best practices for protecting your Anthropic credentials in production environments.
+
+## Further Reading
+
+- [Anthropic API Documentation](https://docs.claude.com) — Official API reference and guides
+- [Anthropic Pricing](https://www.anthropic.com/pricing) — Current pricing for all models
+- [Anthropic Model Cards](https://www.anthropic.com/research) — Detailed information about model capabilities and limitations
+- [PHP Environment Variables Best Practices](https://www.php.net/manual/en/features.commandline.php) — Managing API keys securely
+- [PSR-12 Coding Standard](https://www.php-fig.org/psr/psr-12/) — PHP coding standards for consistent code style
 
 <ChapterCheckbox
   seriesId="claude-php-developers"

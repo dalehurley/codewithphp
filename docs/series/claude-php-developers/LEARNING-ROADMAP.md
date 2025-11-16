@@ -7,6 +7,25 @@ description: Structured learning paths and progress tracking for mastering Claud
 
 > Your personalized guide to mastering Claude AI integration with PHP, from basics to production deployment.
 
+**Related Resources:**
+- [Full Series Index](/series/claude-php-developers/) - Browse all chapters
+- [Quick Reference](/series/claude-php-developers/QUICK-REFERENCE.md) - Syntax cheat sheet
+- [Completion Certificate](/series/claude-php-developers/CERTIFICATE.md) - Celebrate your achievement
+
+## Prerequisites
+
+Before starting any learning path, ensure you have:
+
+- **PHP 8.4+** installed and working (`php --version`)
+- **Composer** installed (`composer --version`)
+- **Anthropic API Key** from [console.anthropic.com](https://console.anthropic.com)
+- **Basic PHP knowledge** (namespaces, classes, type hints)
+- **Familiarity with Laravel or Symfony** (for framework-specific paths)
+
+**Not sure where to start?** Begin with [Chapter 00: Quick Start Guide](/series/claude-php-developers/chapters/00-quick-start-guide/) regardless of your chosen path.
+
+---
+
 ## 🎯 Choose Your Learning Path
 
 Select the path that matches your goals and timeline:
@@ -18,13 +37,13 @@ Select the path that matches your goals and timeline:
 **Timeline**: 1-2 days (part-time)
 
 **Chapters**:
-- [ ] **00**: Quick Start Guide (30 min)
-- [ ] **01**: Introduction to Claude API (60 min)
-- [ ] **02**: Authentication and API Keys (45 min)
-- [ ] **03**: Your First Claude Request (90 min)
-- [ ] **06**: Streaming Responses (90 min)
-- [ ] **11**: Tool Use Fundamentals (2 hours)
-- [ ] **21**: Laravel Integration Patterns (2 hours)
+- [ ] **[00: Quick Start Guide](/series/claude-php-developers/chapters/00-quick-start-guide/)** (30 min)
+- [ ] **[01: Introduction to Claude API](/series/claude-php-developers/chapters/01-introduction-to-claude-api/)** (60 min)
+- [ ] **[02: Authentication and API Keys](/series/claude-php-developers/chapters/02-authentication-api-keys/)** (45 min)
+- [ ] **[03: Your First Claude Request](/series/claude-php-developers/chapters/03-first-claude-request/)** (90 min)
+- [ ] **[06: Streaming Responses](/series/claude-php-developers/chapters/06-streaming-responses/)** (90 min)
+- [ ] **[11: Tool Use Fundamentals](/series/claude-php-developers/chapters/11-tool-use-fundamentals/)** (2 hours)
+- [ ] **[21: Laravel Integration Patterns](/series/claude-php-developers/chapters/21-laravel-integration/)** (2 hours)
 
 **You'll Learn**:
 - Make basic API calls
@@ -131,11 +150,11 @@ Select the path that matches your goals and timeline:
 
 ---
 
-### 🎓 Path 4: Complete Mastery (80+ hours)
+### 🎓 Path 4: Complete Mastery (60-80 hours)
 
 **Goal**: Master every aspect of Claude integration for expert-level implementations.
 
-**Timeline**: 4-6 weeks (full-time) or 12-16 weeks (part-time)
+**Timeline**: 3-4 weeks (full-time) or 8-12 weeks (part-time)
 
 **Includes all chapters from Path 3, plus:**
 
@@ -391,9 +410,9 @@ Use this template to track your progress:
 **Hours Logged**: [XX]
 
 ### Completed Chapters
-- [x] 00: Quick Start Guide - [Date]
-- [x] 01: Introduction to Claude API - [Date]
-- [ ] 02: Authentication and API Keys
+- [x] [00: Quick Start Guide](/series/claude-php-developers/chapters/00-quick-start-guide/) - [Date]
+- [x] [01: Introduction to Claude API](/series/claude-php-developers/chapters/01-introduction-to-claude-api/) - [Date]
+- [ ] [02: Authentication and API Keys](/series/claude-php-developers/chapters/02-authentication-api-keys/)
 ...
 
 ### Projects Built
@@ -422,7 +441,7 @@ Choose your path above and:
 5. **Track your progress** using the template above
 6. **Join the community** for support and motivation
 
-Ready to begin? **[Start Chapter 00: Quick Start Guide →](chapters/00-quick-start-guide.md)**
+Ready to begin? **[Start Chapter 00: Quick Start Guide →](/series/claude-php-developers/chapters/00-quick-start-guide/)**
 
 ---
 

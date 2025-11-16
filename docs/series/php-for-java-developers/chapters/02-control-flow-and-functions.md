@@ -17,7 +17,7 @@ prerequisites:
 
 ## Overview
 
-Control structures in PHP will feel very familiar to you as a Java developer—the syntax is nearly identical for most constructs. However, PHP adds some convenient features like the `foreach` loop for arrays and flexible function parameters. In this chapter, we'll explore control flow and functions, highlighting both similarities and PHP-specific enhancements.
+Control structures in PHP will feel very familiar to you as a Java developer - the syntax is nearly identical for most constructs. However, PHP adds some convenient features like the `foreach` loop for arrays and flexible function parameters. In this chapter, we'll explore control flow and functions, highlighting both similarities and PHP-specific enhancements.
 
 By the end of this chapter, you'll be writing PHP control structures and functions confidently, knowing exactly how they differ from Java.
 
@@ -30,7 +30,7 @@ By the end of this chapter, you'll be writing PHP control structures and functio
 **What you need:**
 - Completed [Chapter 1: Types, Variables & Operators](/series/php-for-java-developers/chapters/01-types-variables-and-operators)
 - Understanding of Java control structures and methods
-- PHP 8.3 installed and configured
+- PHP 8.4 installed and configured
 
 ## What You'll Build
 
@@ -39,6 +39,7 @@ In this chapter, you'll create:
 - A collection of utility functions with type hints
 - A function library demonstrating closures
 - A file processor using control structures
+- Advanced function patterns including recursion, overloading alternatives, and reflection
 
 ## Learning Objectives
 
@@ -49,6 +50,7 @@ By the end of this chapter, you'll be able to:
 - **Leverage PHP's flexible parameters** (default values, named arguments, variadic)
 - **Create and use closures** (anonymous functions)
 - **Understand include/require** for code organization
+- **Master advanced patterns** including recursion, overloading alternatives, scope management, and reflection
 
 ---
 
@@ -1629,6 +1631,671 @@ $router->dispatch('GET', '/users');
 
 ---
 
+## Section 8: Advanced Function Patterns
+
+### Goal
+
+Master advanced function patterns including recursion, overloading alternatives, scope management, and reflection.
+
+### Recursion and Performance
+
+PHP supports recursion similarly to Java, but with important differences:
+
+::: code-group
+
+```php [PHP Recursion]
+<?php
+
+declare(strict_types=1);
+
+// Basic recursion - factorial
+function factorial(int $n): int
+{
+    if ($n <= 1) {
+        return 1;
+    }
+    return $n * factorial($n - 1);
+}
+
+echo factorial(5);  // 120
+
+// Tree traversal recursion
+class TreeNode
+{
+    public function __construct(
+        public mixed $value,
+        public ?TreeNode $left = null,
+        public ?TreeNode $right = null
+    ) {}
+}
+
+function traverseTree(?TreeNode $node): void
+{
+    if ($node === null) {
+        return;
+    }
+    
+    echo $node->value . "\n";
+    traverseTree($node->left);
+    traverseTree($node->right);
+}
+
+// Tail recursion (not optimized in PHP)
+function tailRecursiveSum(int $n, int $acc = 0): int
+{
+    if ($n === 0) {
+        return $acc;
+    }
+    return tailRecursiveSum($n - 1, $acc + $n);
+}
+
+// ⚠️ PHP doesn't optimize tail recursion - can cause stack overflow
+// Use iterative approach for large inputs
+function iterativeSum(int $n): int
+{
+    $sum = 0;
+    for ($i = 1; $i <= $n; $i++) {
+        $sum += $i;
+    }
+    return $sum;
+}
+
+// Check recursion limit
+echo ini_get('xdebug.max_nesting_level');  // Default: 256
+```
+
+```java [Java Recursion]
+// Basic recursion - factorial
+public int factorial(int n) {
+    if (n <= 1) {
+        return 1;
+    }
+    return n * factorial(n - 1);
+}
+
+// Tree traversal recursion
+class TreeNode {
+    int value;
+    TreeNode left;
+    TreeNode right;
+}
+
+void traverseTree(TreeNode node) {
+    if (node == null) {
+        return;
+    }
+    
+    System.out.println(node.value);
+    traverseTree(node.left);
+    traverseTree(node.right);
+}
+
+// Tail recursion (not optimized in Java either)
+int tailRecursiveSum(int n, int acc) {
+    if (n == 0) {
+        return acc;
+    }
+    return tailRecursiveSum(n - 1, acc + n);
+}
+
+// Java also doesn't optimize tail recursion
+// Use iterative approach for large inputs
+int iterativeSum(int n) {
+    int sum = 0;
+    for (int i = 1; i <= n; i++) {
+        sum += i;
+    }
+    return sum;
+}
+```
+
+:::
+
+::: warning Recursion Limits
+- **PHP default stack limit**: ~256-512 calls (configurable)
+- **Java default stack limit**: ~1000-2000 calls (JVM-dependent)
+- **Best practice**: Use iterative solutions for deep recursion or large datasets
+- **Check limit**: `ini_get('xdebug.max_nesting_level')` or `get_cfg_var('max_execution_depth')`
+:::
+
+### Function Overloading Patterns
+
+PHP doesn't have native function overloading like Java. Here are the alternatives:
+
+::: code-group
+
+```php [PHP Overloading Alternatives]
+<?php
+
+declare(strict_types=1);
+
+// Method 1: Variadic functions (most common)
+function sum(int ...$numbers): int
+{
+    return array_sum($numbers);
+}
+
+echo sum(1, 2, 3);  // 6
+echo sum(1, 2, 3, 4, 5);  // 15
+
+// Method 2: Union types (PHP 8.0+)
+function format(int|float $value): string
+{
+    return number_format((float)$value, 2);
+}
+
+echo format(100);  // "100.00"
+echo format(99.5);  // "99.50"
+
+// Method 3: Named arguments for optional parameters
+function createUser(
+    string $name,
+    int $age = 18,
+    string $role = 'user',
+    bool $active = true
+): array {
+    return [
+        'name' => $name,
+        'age' => $age,
+        'role' => $role,
+        'active' => $active
+    ];
+}
+
+// Different "overloads" via named arguments
+$user1 = createUser('Alice');  // age=18, role='user', active=true
+$user2 = createUser('Bob', role: 'admin');  // age=18, role='admin', active=true
+$user3 = createUser('Charlie', active: false);  // age=18, role='user', active=false
+
+// Method 4: func_get_args() for dynamic signatures (legacy)
+function legacySum(): int
+{
+    $args = func_get_args();
+    return array_sum($args);
+}
+
+echo legacySum(1, 2, 3);  // 6
+
+// Method 5: Mixed type with type checking
+function process(mixed $input): string
+{
+    if (is_int($input)) {
+        return "Integer: $input";
+    }
+    if (is_string($input)) {
+        return "String: $input";
+    }
+    if (is_array($input)) {
+        return "Array with " . count($input) . " items";
+    }
+    return "Unknown type";
+}
+```
+
+```java [Java Method Overloading]
+// Java has native method overloading
+public int sum(int a, int b) {
+    return a + b;
+}
+
+public int sum(int a, int b, int c) {
+    return a + b + c;
+}
+
+public int sum(int... numbers) {
+    return Arrays.stream(numbers).sum();
+}
+
+// Different parameter types
+public String format(int value) {
+    return String.format("%d", value);
+}
+
+public String format(double value) {
+    return String.format("%.2f", value);
+}
+
+// Different parameter counts
+public User createUser(String name) {
+    return createUser(name, 18, "user", true);
+}
+
+public User createUser(String name, int age) {
+    return createUser(name, age, "user", true);
+}
+
+public User createUser(String name, int age, String role) {
+    return createUser(name, age, role, true);
+}
+
+public User createUser(String name, int age, String role, boolean active) {
+    return new User(name, age, role, active);
+}
+```
+
+:::
+
+::: tip PHP Overloading Best Practices
+1. **Use variadic functions** for variable argument counts
+2. **Use union types** for different input types (PHP 8.0+)
+3. **Use named arguments** to skip optional parameters
+4. **Avoid func_get_args()** in new code - use variadic instead
+5. **Prefer explicit type checking** over mixed types when possible
+:::
+
+### Advanced Closures and Scope
+
+Understanding variable scope and closure binding is crucial:
+
+::: code-group
+
+```php [PHP Advanced Closures]
+<?php
+
+declare(strict_types=1);
+
+// Static variables in functions (persist between calls)
+function counter(): int
+{
+    static $count = 0;
+    return ++$count;
+}
+
+echo counter();  // 1
+echo counter();  // 2
+echo counter();  // 3
+
+// Closure with use() - explicit variable capture
+$multiplier = 10;
+$multiply = function(int $n) use ($multiplier): int {
+    return $n * $multiplier;
+};
+
+echo $multiply(5);  // 50
+
+// Closure with reference capture
+$counter = 0;
+$increment = function() use (&$counter): void {
+    $counter++;
+};
+
+$increment();
+$increment();
+echo $counter;  // 2
+
+// Arrow functions auto-capture by value
+$factor = 5;
+$double = fn(int $n): int => $n * $factor;
+echo $double(10);  // 50
+
+// Arrow functions can't capture by reference
+// $increment = fn() => $counter++;  // ❌ Error: can't modify $counter
+
+// Closure binding - change $this context
+class Calculator
+{
+    public function __construct(
+        private int $base = 0
+    ) {}
+
+    public function add(int $value): int
+    {
+        return $this->base + $value;
+    }
+}
+
+$calc = new Calculator(10);
+$bound = Closure::bind(fn(int $x): int => $this->add($x), $calc, Calculator::class);
+echo $bound(5);  // 15
+
+// Closure scope resolution
+$globalVar = 'global';
+
+function outerFunction(): callable
+{
+    $outerVar = 'outer';
+    
+    return function() use ($outerVar) {
+        $innerVar = 'inner';
+        // Can access: $outerVar, $innerVar
+        // Cannot access: $globalVar (unless global keyword used)
+        return "$outerVar - $innerVar";
+    };
+}
+
+$closure = outerFunction();
+echo $closure();  // "outer - inner"
+```
+
+```java [Java Lambda Scope]
+// Java lambdas capture effectively final variables
+int multiplier = 10;
+Function<Integer, Integer> multiply = n -> n * multiplier;
+System.out.println(multiply.apply(5));  // 50
+
+// Can't modify captured variables
+int counter = 0;
+// counter++;  // Would make it non-final, breaking lambda
+
+// Use array or object wrapper for mutable state
+int[] counterWrapper = {0};
+Runnable increment = () -> counterWrapper[0]++;
+increment.run();
+increment.run();
+System.out.println(counterWrapper[0]);  // 2
+
+// Method references capture instance
+class Calculator {
+    private int base;
+    
+    Calculator(int base) {
+        this.base = base;
+    }
+    
+    int add(int value) {
+        return base + value;
+    }
+}
+
+Calculator calc = new Calculator(10);
+Function<Integer, Integer> add = calc::add;
+System.out.println(add.apply(5));  // 15
+```
+
+:::
+
+### Function Reflection
+
+PHP's Reflection API allows introspection of functions:
+
+::: code-group
+
+```php [PHP Function Reflection]
+<?php
+
+declare(strict_types=1);
+
+function exampleFunction(
+    string $name,
+    int $age = 18,
+    ?string $email = null
+): array {
+    return [
+        'name' => $name,
+        'age' => $age,
+        'email' => $email
+    ];
+}
+
+// Get function reflection
+$reflection = new ReflectionFunction('exampleFunction');
+
+// Function metadata
+echo $reflection->getName();  // "exampleFunction"
+echo $reflection->getFileName();  // Full path to file
+echo $reflection->getStartLine();  // Line number where function starts
+echo $reflection->getEndLine();  // Line number where function ends
+
+// Check if function is closure
+var_dump($reflection->isClosure());  // false
+
+// Get return type
+$returnType = $reflection->getReturnType();
+if ($returnType) {
+    echo $returnType->getName();  // "array"
+    var_dump($returnType->allowsNull());  // false
+}
+
+// Get parameters
+$parameters = $reflection->getParameters();
+foreach ($parameters as $param) {
+    echo $param->getName() . "\n";  // name, age, email
+    
+    // Parameter type
+    $type = $param->getType();
+    if ($type) {
+        echo "  Type: " . $type->getName() . "\n";
+    }
+    
+    // Default value
+    if ($param->isDefaultValueAvailable()) {
+        echo "  Default: ";
+        var_dump($param->getDefaultValue());
+    }
+    
+    // Nullable
+    echo "  Nullable: " . ($param->allowsNull() ? 'yes' : 'no') . "\n";
+}
+
+// Invoke function dynamically
+$result = $reflection->invoke('Alice', 30, 'alice@example.com');
+print_r($result);
+
+// Invoke with named arguments (PHP 8.0+)
+$result = $reflection->invokeNamedArgs([
+    'name' => 'Bob',
+    'email' => 'bob@example.com'
+    // age uses default: 18
+]);
+print_r($result);
+
+// Check if function exists
+if (function_exists('exampleFunction')) {
+    echo "Function exists\n";
+}
+
+// Get all functions
+$allFunctions = get_defined_functions();
+print_r($allFunctions['user']);  // User-defined functions
+```
+
+```java [Java Method Reflection]
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+
+class Example {
+    public static String[] exampleMethod(
+        String name,
+        int age,
+        String email
+    ) {
+        return new String[]{name, String.valueOf(age), email};
+    }
+}
+
+// Get method reflection
+Method method = Example.class.getMethod(
+    "exampleMethod",
+    String.class,
+    int.class,
+    String.class
+);
+
+// Method metadata
+System.out.println(method.getName());  // "exampleMethod"
+System.out.println(method.getReturnType());  // class [Ljava.lang.String;
+
+// Get parameters
+Parameter[] parameters = method.getParameters();
+for (Parameter param : parameters) {
+    System.out.println(param.getName());
+    System.out.println("  Type: " + param.getType());
+}
+
+// Invoke method dynamically
+String[] result = (String[]) method.invoke(
+    null,  // static method, no instance
+    "Alice",
+    30,
+    "alice@example.com"
+);
+
+// Check if method exists
+try {
+    Method m = Example.class.getMethod("exampleMethod",
+        String.class, int.class, String.class);
+    System.out.println("Method exists");
+} catch (NoSuchMethodException e) {
+    System.out.println("Method not found");
+}
+```
+
+:::
+
+### Function Performance Considerations
+
+Understanding performance implications of different function patterns:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// Named function (fastest)
+function namedAdd(int $a, int $b): int
+{
+    return $a + $b;
+}
+
+// Anonymous function (slightly slower)
+$anonymousAdd = function(int $a, int $b): int {
+    return $a + $b;
+};
+
+// Arrow function (similar performance to anonymous)
+$arrowAdd = fn(int $a, int $b): int => $a + $b;
+
+// Closure with captured variable (slight overhead)
+$base = 10;
+$closureAdd = function(int $a, int $b) use ($base): int {
+    return $a + $b + $base;
+};
+
+// Performance tips:
+// 1. Named functions are fastest (no closure overhead)
+// 2. Arrow functions are slightly faster than regular closures
+// 3. Capturing many variables increases memory usage
+// 4. Use static functions when possible (no $this overhead)
+
+// Memoization pattern for expensive functions
+function memoize(callable $fn): callable
+{
+    static $cache = [];
+    
+    return function(...$args) use ($fn, &$cache) {
+        $key = serialize($args);
+        
+        if (!isset($cache[$key])) {
+            $cache[$key] = $fn(...$args);
+        }
+        
+        return $cache[$key];
+    };
+}
+
+// Usage
+$expensiveFunction = memoize(function(int $n): int {
+    // Simulate expensive computation
+    sleep(1);
+    return $n * 2;
+});
+
+echo $expensiveFunction(5);  // Takes 1 second
+echo $expensiveFunction(5);  // Instant (cached)
+```
+
+::: tip Performance Best Practices
+1. **Named functions** are fastest - use when closure isn't needed
+2. **Arrow functions** have minimal overhead - prefer over regular closures for simple cases
+3. **Avoid capturing large objects** in closures - increases memory usage
+4. **Use static functions** when possible - no instance overhead
+5. **Memoize expensive functions** - cache results for repeated calls
+6. **Profile before optimizing** - function call overhead is usually negligible
+:::
+
+### Function Composition Patterns
+
+Advanced patterns for combining functions:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// Function composition
+function compose(callable ...$functions): callable
+{
+    return function(mixed $value) use ($functions): mixed {
+        return array_reduce(
+            array_reverse($functions),
+            fn($acc, $fn) => $fn($acc),
+            $value
+        );
+    };
+}
+
+// Usage
+$process = compose(
+    fn($s) => trim($s),
+    fn($s) => strtolower($s),
+    fn($s) => str_replace(' ', '-', $s)
+);
+
+echo $process('  Hello World  ');  // "hello-world"
+
+// Partial application
+function partial(callable $fn, ...$partialArgs): callable
+{
+    return function(...$remainingArgs) use ($fn, $partialArgs) {
+        return $fn(...$partialArgs, ...$remainingArgs);
+    };
+}
+
+// Usage
+function multiply(int $a, int $b, int $c): int
+{
+    return $a * $b * $c;
+}
+
+$double = partial('multiply', 2);
+echo $double(5, 3);  // 30 (2 * 5 * 3)
+
+// Currying (manual implementation)
+function curry(callable $fn): callable
+{
+    $reflection = new ReflectionFunction($fn);
+    $paramCount = $reflection->getNumberOfParameters();
+    
+    $curryImpl = function(...$args) use ($fn, $paramCount, &$curryImpl) {
+        if (count($args) >= $paramCount) {
+            return $fn(...$args);
+        }
+        
+        return function(...$nextArgs) use ($fn, $args, $paramCount, &$curryImpl) {
+            return $curryImpl(...$args, ...$nextArgs);
+        };
+    };
+    
+    return $curryImpl;
+}
+
+// Usage
+$curriedMultiply = curry(fn(int $a, int $b, int $c): int => $a * $b * $c);
+$step1 = $curriedMultiply(2);  // Returns function expecting 2 args
+$step2 = $step1(5);  // Returns function expecting 1 arg
+echo $step2(3);  // 30
+```
+
+::: tip When to Use Advanced Patterns
+- **Composition**: Chaining transformations in functional style
+- **Partial application**: Creating specialized functions from general ones
+- **Currying**: Breaking multi-argument functions into single-argument chains
+- **Memoization**: Caching expensive function results
+- **Use sparingly**: These patterns add complexity - use when they genuinely improve readability
+:::
+
+---
+
 ## Exercises
 
 ### Exercise 1: FizzBuzz
@@ -1804,6 +2471,485 @@ echo $result;  // 220 (4 + 16 + 36 + 64 + 100)
 
 ---
 
+## Section 8: Function Recursion
+
+### Goal
+
+Learn PHP's function recursion with examples and Java comparisons.
+
+### Basic Recursion
+
+Here's a classic factorial example comparing PHP and Java implementations:
+
+```php
+<?php
+declare(strict_types=1);
+
+function factorial(int $n): int {
+    if ($n <= 1) {
+        return 1;
+    }
+    return $n * factorial($n - 1);
+}
+
+echo factorial(5);  // 120
+```
+
+**Java equivalent:**
+```java
+public static int factorial(int n) {
+    if (n <= 1) {
+        return 1;
+    }
+    return n * factorial(n - 1);
+}
+```
+
+### Tail Recursion and Stack Limits
+
+Unlike Java, **PHP does not optimize tail recursion**, which means deeply recursive functions can hit stack limits. Here's an example with proper handling:
+
+```php
+<?php
+declare(strict_types=1);
+
+function fibonacci(int $n): int {
+    if ($n < 0) {
+        throw new InvalidArgumentException("n must be non-negative");
+    }
+    
+    // Base cases
+    if ($n <= 1) {
+        return $n;
+    }
+    
+    // Recursive case - note this is NOT tail recursive
+    return fibonacci($n - 1) + fibonacci($n - 2);
+}
+
+// For large numbers, use iteration instead
+function fibonacciIterative(int $n): int {
+    if ($n < 0) {
+        throw new InvalidArgumentException("n must be non-negative");
+    }
+    
+    if ($n <= 1) {
+        return $n;
+    }
+    
+    $a = 0;
+    $b = 1;
+    
+    for ($i = 2; $i <= $n; $i++) {
+        $temp = $a + $b;
+        $a = $b;
+        $b = $temp;
+    }
+    
+    return $b;
+}
+
+echo fibonacci(10);  // 55
+echo fibonacciIterative(50);  // 12586269025 (much faster)
+```
+
+### Stack Overflow Prevention
+
+PHP has a default recursion limit (typically 100-200 calls). You can check and adjust this:
+
+```php
+<?php
+declare(strict_types=1);
+
+// Check current limit
+$limit = ini_get('xdebug.max_nesting_level') ?: '100';
+echo "Recursion limit: $limit\n";
+
+function safeRecursion(int $depth, int $maxDepth = 50): string {
+    if ($depth >= $maxDepth) {
+        return "Max depth reached at $depth";
+    }
+    
+    return "Depth: $depth\n" . safeRecursion($depth + 1, $maxDepth);
+}
+
+echo safeRecursion(0, 10);
+```
+
+### Mutual Recursion
+
+PHP supports mutual recursion just like Java:
+
+```php
+<?php
+declare(strict_types=1);
+
+function isEven(int $n): bool {
+    if ($n === 0) {
+        return true;
+    }
+    return isOdd(abs($n) - 1);
+}
+
+function isOdd(int $n): bool {
+    if ($n === 0) {
+        return false;
+    }
+    return isEven(abs($n) - 1);
+}
+
+$number = 42;
+echo "$number is " . (isEven($number) ? 'even' : 'odd');  // 42 is even
+```
+
+### Practical Example: Tree Traversal
+
+Here's a practical example of recursion for traversing nested structures:
+
+```php
+<?php
+declare(strict_types=1);
+
+$companyStructure = [
+    'name' => 'CEO',
+    'children' => [
+        [
+            'name' => 'CTO',
+            'children' => [
+                ['name' => 'Lead Developer', 'children' => []],
+                ['name' => 'DevOps Engineer', 'children' => []]
+            ]
+        ],
+        [
+            'name' => 'CFO',
+            'children' => [
+                ['name' => 'Accountant', 'children' => []]
+            ]
+        ]
+    ]
+];
+
+function printOrganization(array $node, int $level = 0): void {
+    $indent = str_repeat('  ', $level);
+    echo $indent . $node['name'] . "\n";
+    
+    foreach ($node['children'] as $child) {
+        printOrganization($child, $level + 1);
+    }
+}
+
+printOrganization($companyStructure);
+```
+
+### Java vs PHP Recursion Comparison
+
+| Aspect | PHP | Java |
+|--------|-----|------|
+| **Tail Call Optimization** | ❌ Not supported | ✅ Supported (limited) |
+| **Stack Limit** | ~100-200 calls | ~1000-10000 calls |
+| **Performance** | Slower for deep recursion | Generally faster |
+| **Memory Usage** | Higher per call | Lower per call |
+| **Best Practice** | Use iteration for deep recursion | Can use recursion more freely |
+
+### Memoization with Recursive Functions
+
+To optimize recursive functions, use memoization (caching previous results):
+
+```php
+<?php
+declare(strict_types=1);
+
+class FibonacciMemoized {
+    private static array $cache = [];
+    
+    public static function calculate(int $n): int {
+        if ($n < 0) {
+            throw new InvalidArgumentException("n must be non-negative");
+        }
+        
+        // Check cache first
+        if (isset(self::$cache[$n])) {
+            return self::$cache[$n];
+        }
+        
+        // Base cases
+        if ($n <= 1) {
+            return self::$cache[$n] = $n;
+        }
+        
+        // Recursive calculation with caching
+        self::$cache[$n] = self::calculate($n - 1) + self::calculate($n - 2);
+        return self::$cache[$n];
+    }
+    
+    public static function clearCache(): void {
+        self::$cache = [];
+    }
+}
+
+// Much faster for repeated calculations
+$start = microtime(true);
+echo FibonacciMemoized::calculate(35);  // 9227465
+$time = microtime(true) - $start;
+echo "\nTime: {$time}s\n";
+```
+
+---
+
+## Function Attributes and Reflection
+
+PHP 8.0+ introduced attributes (similar to Java annotations), and PHP's reflection API allows runtime inspection of functions - both crucial concepts for Java developers.
+
+### Function Attributes
+
+Attributes in PHP are similar to Java annotations and can be applied to functions:
+
+```php
+<?php
+declare(strict_types=1);
+
+// Define custom attributes
+#[Attribute(Attribute::TARGET_FUNCTION)]
+class Deprecated {
+    public function __construct(
+        public string $message,
+        public string $since
+    ) {}
+}
+
+#[Attribute(Attribute::TARGET_FUNCTION)]
+class Cacheable {
+    public function __construct(
+        public int $ttl = 3600
+    ) {}
+}
+
+// Using attributes on functions
+#[Deprecated('Use newCalculate() instead', '2.0')]
+function oldCalculate(int $a, int $b): int {
+    return $a + $b;
+}
+
+#[Cacheable(ttl: 1800)]
+function expensiveCalculation(int $input): int {
+    // Simulate expensive operation
+    sleep(1);
+    return $input * $input;
+}
+
+// Reading attributes via reflection
+$reflector = new ReflectionFunction('expensiveCalculation');
+$attributes = $reflector->getAttributes(Cacheable::class);
+
+if (!empty($attributes)) {
+    $cacheAttr = $attributes[0]->newInstance();
+    echo "Cache TTL: {$cacheAttr->ttl} seconds\n";
+}
+```
+
+**Java equivalent:**
+```java
+@Deprecated(since = "2.0", forRemoval = true)
+@Cacheable(ttl = 1800)
+public int expensiveCalculation(int input) {
+    // Implementation
+}
+```
+
+### Function Reflection
+
+PHP's reflection API provides runtime inspection of functions, similar to Java's reflection:
+
+```php
+<?php
+declare(strict_types=1);
+
+function exampleFunction(
+    string $name,
+    int $age = 25,
+    ?string $email = null
+): string {
+    return "Hello $name, age $age";
+}
+
+// Reflect on the function
+$reflection = new ReflectionFunction('exampleFunction');
+
+echo "Function: " . $reflection->getName() . "\n";
+echo "File: " . $reflection->getFileName() . "\n";
+echo "Start line: " . $reflection->getStartLine() . "\n";
+
+// Get parameters
+$parameters = $reflection->getParameters();
+foreach ($parameters as $param) {
+    echo "Parameter: {$param->getName()}\n";
+    echo "Type: " . ($param->getType()?->getName() ?? 'mixed') . "\n";
+    echo "Has default: " . ($param->isDefaultValueAvailable() ? 'Yes' : 'No') . "\n";
+    
+    if ($param->isDefaultValueAvailable()) {
+        echo "Default: " . var_export($param->getDefaultValue(), true) . "\n";
+    }
+    echo "---\n";
+}
+
+// Get return type
+$returnType = $reflection->getReturnType();
+echo "Return type: " . ($returnType?->getName() ?? 'mixed') . "\n";
+```
+
+### Dynamic Function Invocation
+
+Using reflection to dynamically invoke functions with type safety:
+
+```php
+<?php
+declare(strict_types=1);
+
+class Calculator {
+    public function add(int $a, int $b): int {
+        return $a + $b;
+    }
+    
+    public function divide(float $a, float $b): float {
+        if ($b === 0.0) {
+            throw new InvalidArgumentException("Cannot divide by zero");
+        }
+        return $a / $b;
+    }
+}
+
+// Dynamic method invocation
+$calculator = new Calculator();
+$reflection = new ReflectionMethod($calculator, 'add');
+
+// Invoke with proper type checking
+$result = $reflection->invoke($calculator, 5, 3);
+echo "5 + 3 = $result\n";  // 5 + 3 = 8
+
+// Safe parameter validation
+$method = new ReflectionMethod($calculator, 'divide');
+$parameters = $method->getParameters();
+
+// Validate parameters before invocation
+$args = [10.0, 2.0];
+if (count($args) === count($parameters)) {
+    $result = $method->invoke($calculator, ...$args);
+    echo "10 / 2 = $result\n";  // 10 / 2 = 5
+}
+```
+
+### Function Overloading Simulation
+
+While PHP doesn't support method overloading like Java, you can simulate it using reflection and variadic parameters:
+
+```php
+<?php
+declare(strict_types=1);
+
+class OverloadedCalculator {
+    public function __call(string $name, array $arguments) {
+        $reflection = new ReflectionMethod($this, $name);
+        
+        // Simulate overloading based on argument count
+        switch ($name) {
+            case 'calculate':
+                return $this->handleCalculate($arguments);
+            default:
+                throw new BadMethodCallException("Method $name not found");
+        }
+    }
+    
+    private function handleCalculate(array $args) {
+        switch (count($args)) {
+            case 1:
+                return $args[0] * $args[0];  // Square
+            case 2:
+                return $args[0] + $args[1];  // Add
+            case 3:
+                return $args[0] + $args[1] + $args[2];  // Add three
+            default:
+                return array_sum($args);  // Sum all
+        }
+    }
+}
+
+$calc = new OverloadedCalculator();
+echo $calc->calculate(5) . "\n";        // 25 (square)
+echo $calc->calculate(5, 3) . "\n";     // 8 (add)
+echo $calc->calculate(1, 2, 3) . "\n";  // 6 (add three)
+```
+
+### Java vs PHP Reflection Comparison
+
+| Feature | PHP | Java |
+|---------|-----|------|
+| **Annotations/Attributes** | `#[Attribute]` (PHP 8.0+) | `@interface` |
+| **Runtime Reflection** | `ReflectionFunction` | `java.lang.reflect.Method` |
+| **Parameter Types** | `ReflectionParameter` | `java.lang.reflect.Parameter` |
+| **Return Types** | `ReflectionType` | `java.lang.reflect.Type` |
+| **Dynamic Invocation** | `ReflectionFunction::invoke()` | `Method.invoke()` |
+| **Method Overloading** | ❌ Not supported | ✅ Supported |
+| **Type Erasure** | ❌ Not applicable | ✅ Generic type erasure |
+
+### Practical Use Case: Validation Framework
+
+Here's a practical example using attributes for function validation:
+
+```php
+<?php
+declare(strict_types=1);
+
+#[Attribute(Attribute::TARGET_FUNCTION)]
+class Validate {
+    public function __construct(
+        public array $rules
+    ) {}
+}
+
+#[Attribute(Attribute::TARGET_PARAMETER)]
+class NotEmpty {
+    public function __construct(
+        public string $message = "Value cannot be empty"
+    ) {}
+}
+
+#[Attribute(Attribute::TARGET_PARAMETER)]
+class Range {
+    public function __construct(
+        public int $min,
+        public int $max,
+        public string $message = "Value out of range"
+    ) {}
+}
+
+#[Validate([
+    'name' => [NotEmpty::class],
+    'age' => [Range::class => ['min' => 0, 'max' => 150]]
+])]
+function createUser(
+    #[NotEmpty] string $name,
+    #[Range(0, 150)] int $age
+): array {
+    return ['name' => $name, 'age' => $age];
+}
+
+// Validation framework implementation
+class ValidationFramework {
+    public static function validateAndCall(callable $function, array $args): mixed {
+        $reflection = is_array($function) 
+            ? new ReflectionMethod($function[0], $function[1])
+            : new ReflectionFunction($function);
+            
+        // Validate parameters based on attributes
+        // ... validation logic ...
+        
+        return $reflection->invoke(...$args);
+    }
+}
+```
+
+---
+
 ## Wrap-up Checklist
 
 Before moving to the next chapter, ensure you can:
@@ -1822,10 +2968,21 @@ Before moving to the next chapter, ensure you can:
 - [ ] Write arrow functions and regular closures
 - [ ] Understand the difference between include and require
 - [ ] Know when to use `require_once` vs autoloading
+- [ ] Use recursion effectively and understand stack limits
+- [ ] Implement function overloading patterns using variadics, union types, and named arguments
+- [ ] Master advanced closure scope and binding
+- [ ] Use Reflection API to introspect functions dynamically
+- [ ] Apply performance optimization techniques (memoization, composition)
 
 ::: tip Ready for More?
 In [Chapter 3: OOP Basics](/series/php-for-java-developers/chapters/03-oop-basics), we'll dive deep into object-oriented programming in PHP, exploring classes, inheritance, and more advanced OOP concepts.
 :::
+
+<ChapterCheckbox 
+  seriesId="php-for-java-developers"
+  chapterId="02"
+  label="Mastered PHP control flow and functions!"
+/>
 
 ---
 
