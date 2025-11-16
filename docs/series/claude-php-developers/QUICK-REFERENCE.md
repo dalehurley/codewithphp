@@ -35,9 +35,15 @@ description: Essential syntax, patterns, and examples for rapid development with
 ## Basic Setup
 
 ### Installation
-```bash
-composer require anthropic-ai/sdk
-```
+Choose the client(s) that match your use case:
+
+| Package | Status | Install |
+| --- | --- | --- |
+| Official SDK (`anthropics/anthropic-sdk-php`) | **Beta** – Messages-only, parity with REST | `composer require anthropics/anthropic-sdk-php` |
+| Community core client (`anthropic-php/client`) | Stable – richer streaming/tool helpers | `composer require anthropic-php/client` |
+| Laravel integration (`anthropic-php/laravel`) | Stable – service provider, queues, facades | `composer require anthropic-php/laravel` |
+
+> Keep the official SDK around for first-party compatibility, but rely on the community packages whenever you need streaming ergonomics, Files API shims, or framework bindings.
 
 ### Initialize Client
 ```php
@@ -115,6 +121,8 @@ foreach ($stream as $event) {
     }
 }
 ```
+
+> `createStreamed()` ships with the community client (`anthropic-php/client`). When using the beta official SDK, fall back to raw SSE handling as shown in Chapter 06.
 
 ---
 
@@ -640,7 +648,7 @@ CLAUDE_TIMEOUT=120
 {
     "require": {
         "php": "^8.4",
-        "anthropic-ai/sdk": "^1.0",
+        "anthropics/anthropic-sdk-php": "^1.0",
         "vlucas/phpdotenv": "^5.5",
         "predis/predis": "^2.0"
     }
@@ -740,7 +748,7 @@ try {
 ## Troubleshooting
 
 ### Issue: "Class 'Anthropic\Anthropic' not found"
-**Solution**: Run `composer require anthropic-ai/sdk` and ensure `vendor/autoload.php` is included.
+**Solution**: Run `composer require anthropics/anthropic-sdk-php` and ensure `vendor/autoload.php` is included.
 
 ### Issue: "Invalid API key"
 **Solution**: Verify your API key starts with `sk-ant-` and is set in environment variables.

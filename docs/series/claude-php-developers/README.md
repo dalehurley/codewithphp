@@ -102,9 +102,19 @@ Sign up at [console.anthropic.com](https://console.anthropic.com) and generate a
 
 ### 2. Install Dependencies
 
+Pick the client that matches your needs:
+
+| Package | Status | When to use | Limitations |
+| --- | --- | --- | --- |
+| `anthropics/anthropic-sdk-php` | Official **Beta** | Verifying first-party behavior, experimenting with raw Messages | Missing helpers for Files, Batches, prompt caching, and framework ergonomics |
+| `anthropic-php/client` | Community Stable | Day-to-day development, richer streaming/tool helpers | Community maintained, so monitor releases |
+| `anthropic-php/laravel` | Community Stable | Laravel projects that need bindings, queues, facades | Depends on `anthropic-php/client` |
+
 ```bash
-composer require anthropic-ai/sdk
+composer require anthropics/anthropic-sdk-php anthropic-php/client
 ```
+
+> We keep the beta SDK installed for parity tests, then layer the community client on top for advanced features. Remove either package if you only need one.
 
 ### 3. Make Your First Request
 

@@ -227,9 +227,22 @@ echo $response->content[0]->text;
 - Ready to run—just set your `ANTHROPIC_API_KEY` environment variable!
 
 **Setup Required:**
-1. Install the Anthropic PHP SDK: `composer require anthropics/anthropic-sdk-php`
+1. Install a Claude client (see the matrix below — the official SDK is still beta)
 2. Set your API key: `export ANTHROPIC_API_KEY='your-key-here'`
 3. Run the script: `php quickstart.php`
+
+### SDK & Client Options
+
+Claude's composer ecosystem is split between the official beta SDK and mature community packages. Install the one that matches your needs:
+
+| Package | Status (Nov 2025) | Strengths | Gaps / Notes |
+| --- | --- | --- | --- |
+| `anthropics/anthropic-sdk-php` | Official **Beta** | First-party types, parity with REST Messages API, minimal dependencies | Only wraps Messages endpoints today, no Files/Batches helpers, limited streaming ergonomics, no framework integration — best for experimenting with core API features |
+| `anthropic-php/client` | Community Stable | Full Messages coverage plus helpers for streaming, tool-use payload builders, resilient retries | Maintained by the community (not Anthropic); keep/watch releases for breaking changes |
+| `anthropic-php/laravel` | Community Stable | Laravel service provider, facade, queue bindings, config publishing | Depends on `anthropic-php/client`; still community-supported |
+| `claudeai/symfony-bundle` | Community Stable | Symfony DI integration, HTTP client abstraction, profiler hooks | Requires Symfony 7+, same API surface as community client |
+
+📌 **Recommendation:** keep the official SDK installed for compatibility testing, but lean on the community packages for production features (streaming UX helpers, Files API shims, framework bindings) until Anthropic graduates the PHP SDK from beta.
 
 **What's Next?**
 That's just the beginning. Head to [Chapter 00: Quick Start Guide](/series/claude-php-developers/chapters/00-quick-start-guide/) for a complete working example, or start comprehensive learning with [Chapter 01: Introduction to Claude API](/series/claude-php-developers/chapters/01-introduction-to-claude-api/).

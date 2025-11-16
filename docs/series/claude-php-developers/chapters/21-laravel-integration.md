@@ -1683,7 +1683,7 @@ packages/
     "require": {
         "php": "^8.2",
         "illuminate/support": "^11.0",
-        "anthropic-ai/sdk": "^0.6"
+        "anthropics/anthropic-sdk-php": "^0.6"
     },
     "require-dev": {
         "orchestra/testbench": "^9.0",

@@ -231,7 +231,7 @@ Most chapters require:
 {
     "require": {
         "php": "^8.2",
-        "anthropic-ai/sdk": "^1.0",
+        "anthropics/anthropic-sdk-php": "^1.0",
         "vlucas/phpdotenv": "^5.5"
     }
 }
