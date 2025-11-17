@@ -10,7 +10,8 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use Anthropic\Client;
+use Anthropic\Messages\MessageParam;
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/..');
@@ -24,18 +25,16 @@ if (!$apiKey) {
 echo "=== Making Claude Request with SDK ===\n\n";
 
 try {
-    $client = Anthropic::factory()
-        ->withApiKey($apiKey)
-        ->make();
+    $client = new Client(apiKey: $apiKey);
 
     echo "Sending request...\n";
-    $response = $client->messages()->create([
-        'model' => 'claude-sonnet-4-20250514',
-        'max_tokens' => 1024,
-        'messages' => [
-            ['role' => 'user', 'content' => 'What is the Anthropic PHP SDK?']
-        ]
-    ]);
+    $response = $client->messages->create(
+        model: 'claude-3-5-sonnet-20240620',
+        maxTokens: 1024,
+        messages: [
+            MessageParam::fromUser('What is the Anthropic PHP SDK?'),
+        ],
+    );
 
     echo "Response: {$response->content[0]->text}\n";
     echo "Tokens: {$response->usage->inputTokens} in, {$response->usage->outputTokens} out\n";

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+use Anthropic\Messages\MessageParam;
 use ClaudePHP\SDK\SDKWrapper;
 use Dotenv\Dotenv;
 
@@ -14,23 +15,36 @@ echo "Official SDK - Advanced Usage\n\n";
 
 $sdk = new SDKWrapper($_ENV['ANTHROPIC_API_KEY']);
 
-// Add logging middleware
-$sdk->addMiddleware(function($type, $data) {
-    if ($type === 'request') {
-        echo "→ Request: " . $data['messages'][0]['content'] . "\n";
-    } elseif ($type === 'response') {
-        echo "← Response: " . substr($data['content'][0]['text'], 0, 100) . "...\n";
+$sdk->addMiddleware(function (string $phase, mixed $payload) {
+    if ($phase === 'request') {
+        echo "→ Requesting: " . json_encode($payload['messages'] ?? []) . "\n";
     }
-    return $data;
+
+    if ($phase === 'response' && is_object($payload) && property_exists($payload, 'usage')) {
+        echo "← Tokens: input={$payload->usage->inputTokens}, output={$payload->usage->outputTokens}\n";
+    }
+
+    return $payload;
 });
 
 $result = $sdk->sendMessage([
-    'model' => 'claude-sonnet-4-20250514',
-    'max_tokens' => 1024,
-    'messages' => [
-        ['role' => 'user', 'content' => 'What is the capital of France?'],
-    ],
+    'model' => 'claude-3-5-sonnet-20240620',
+    'maxTokens' => 512,
+    'messages' => [MessageParam::fromUser('What is the capital of France?')],
 ]);
 
-echo "\nFull response:\n";
-echo $result['content'][0]['text'] . "\n";
+echo "\nResponse object:\n";
+print_r($result);
+
+echo "\nStreaming excerpt:\n";
+foreach ($sdk->streamMessage([
+    'model' => 'claude-3-5-sonnet-20240620',
+    'maxTokens' => 128,
+    'messages' => [MessageParam::fromUser('Stream two short tips for cache invalidation.')],
+]) as $event) {
+    $text = $event->delta->text ?? ($event['delta']['text'] ?? null);
+    if ($text) {
+        echo $text;
+    }
+}
+echo "\n";

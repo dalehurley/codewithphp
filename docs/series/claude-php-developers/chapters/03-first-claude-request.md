@@ -6,7 +6,7 @@ chapter: 3
 order: 3
 difficulty: "Beginner"
 prerequisites:
-  - "PHP 8.4+ installed"
+  - "PHP 8.1+ installed"
   - "Composer installed"
   - "Completion of Chapters 01-02"
   - "Anthropic API key configured"
@@ -48,7 +48,7 @@ You'll learn the complete anatomy of API requests and responses, how to properly
 Before starting, ensure you have:
 
 - ✓ **Completed Chapters 01-02**
-- ✓ **PHP 8.4+** installed and working
+- ✓ **PHP 8.1+** installed and working
 - ✓ **Composer** for dependency management
 - ✓ **Anthropic API key** configured in environment
 - ✓ **Basic HTTP/REST API knowledge**
@@ -151,24 +151,20 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use Anthropic\Client;
+use Anthropic\Messages\MessageParam;
 
 // Initialize client
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new Client(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Make request
-$response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
-    'max_tokens' => 1024,
-    'messages' => [
-        [
-            'role' => 'user',
-            'content' => 'Hello, Claude! Tell me about PHP 8.4 features.'
-        ]
-    ]
-]);
+$response = $client->messages->create(
+    model: 'claude-3-5-sonnet-20240620',
+    maxTokens: 1024,
+    messages: [
+        MessageParam::fromUser('Hello, Claude! Share a few modern PHP features.'),
+    ],
+);
 
 // Output response
 echo $response->content[0]->text . "\n";
@@ -176,8 +172,8 @@ echo $response->content[0]->text . "\n";
 
 **How It Works:**
 
-1. **Client Initialization**: `Anthropic::factory()` creates a client builder, `withApiKey()` sets your API key, and `make()` builds the client instance.
-2. **Request Structure**: The `messages()->create()` method accepts an array with required parameters (`model`, `max_tokens`, `messages`) and optional parameters.
+1. **Client Initialization**: Instantiate `Anthropic\Client` directly with your API key; no factory pattern is provided by the official SDK.
+2. **Request Structure**: Call `$client->messages->create(...)` with named parameters like `model`, `maxTokens`, and typed message helpers.
 3. **Response Access**: The response object contains a `content` array where each element has a `text` property containing Claude's response.
 
 Run it:
@@ -193,7 +189,7 @@ php examples/01-basic-request.php
 **Expected Result:**
 
 ```
-PHP 8.4 introduces several exciting features including property hooks, asymmetric visibility, 
+Modern PHP releases include improved typing, enums, readonly properties, and more,
 new array functions, and improved type system capabilities. Property hooks allow you to 
 intercept property access and modification...
 ```
@@ -213,50 +209,46 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use Anthropic\Client;
+use Anthropic\Messages\MessageParam;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new Client(apiKey: getenv('ANTHROPIC_API_KEY'));
 
-$response = $client->messages()->create([
+$response = $client->messages->create(
     // === Required Parameters ===
 
-    'model' => 'claude-sonnet-4-20250514',
+    model: 'claude-3-5-sonnet-20240620',
 
-    'max_tokens' => 2048,
+    maxTokens: 2048,
 
-    'messages' => [
-        [
-            'role' => 'user',
-            'content' => 'Explain Laravel service providers in detail.'
-        ]
+    messages: [
+        MessageParam::fromUser('Explain Laravel service providers in detail.'),
     ],
 
     // === Optional Parameters ===
 
     // System prompt - sets behavior and context
-    'system' => 'You are an expert Laravel developer. Provide detailed, practical explanations with code examples.',
+    system: 'You are an expert Laravel developer. Provide detailed, practical explanations with code examples.',
 
     // Temperature: 0.0 (deterministic) to 1.0 (creative)
     // Lower = more focused, higher = more varied
-    'temperature' => 0.7,
+    temperature: 0.7,
 
     // Top-p (nucleus sampling): 0.0 to 1.0
     // Lower = more focused, higher = more diverse
-    'top_p' => 0.9,
+    topP: 0.9,
 
     // Top-k sampling: limits token selection
-    'top_k' => 40,
+    topK: 40,
 
     // Stop sequences - halt generation when encountered
-    'stop_sequences' => ['</answer>', 'STOP', '---END---'],
+    stopSequences: ['</answer>', 'STOP', '---END---'],
 
     // Metadata for tracking (user_id required if provided)
-    'metadata' => [
+    metadata: [
         'user_id' => 'user-12345',
     ],
-]);
+);
 
 echo "Response:\n";
 echo $response->content[0]->text . "\n\n";
@@ -273,7 +265,7 @@ echo "Output tokens: {$response->usage->outputTokens}\n";
 Response:
 Laravel service providers are the central place of all Laravel application bootstrapping...
 
-Model used: claude-sonnet-4-20250514
+Model used: claude-3-5-sonnet-20240620
 Stop reason: end_turn
 Input tokens: 45
 Output tokens: 523
@@ -282,13 +274,13 @@ Output tokens: 523
 **Understanding the Parameters:**
 
 - **`model`**: Specifies which Claude model to use (required)
-- **`max_tokens`**: Maximum tokens Claude can generate in response (required, 1-16384)
+- **`maxTokens`**: Maximum tokens Claude can generate in response (required, 1-16384)
 - **`messages`**: Array of conversation messages (required, must start with user message)
 - **`system`**: Optional system prompt that sets Claude's behavior and context
 - **`temperature`**: Controls randomness (0.0 = deterministic, 1.0 = creative)
-- **`top_p`**: Nucleus sampling parameter (0.0-1.0)
-- **`top_k`**: Limits token selection pool
-- **`stop_sequences`**: Array of strings that stop generation when encountered
+- **`topP`**: Nucleus sampling parameter (0.0-1.0)
+- **`topK`**: Limits token selection pool
+- **`stopSequences`**: Array of strings that stop generation when encountered
 - **`metadata`**: Optional tracking data (requires `user_id` if provided)
 
 ### Request Builder Pattern
@@ -311,7 +303,7 @@ namespace App\Services;
 
 class ClaudeRequestBuilder
 {
-    private string $model = 'claude-sonnet-4-20250514';
+    private string $model = 'claude-3-5-sonnet-20240620';
     private int $maxTokens = 2048;
     private array $messages = [];
     private ?string $system = null;
@@ -384,7 +376,7 @@ class ClaudeRequestBuilder
 
         $params = [
             'model' => $this->model,
-            'max_tokens' => $this->maxTokens,
+            'maxTokens' => $this->maxTokens,
             'messages' => $this->messages,
             'temperature' => $this->temperature,
         ];
@@ -394,7 +386,7 @@ class ClaudeRequestBuilder
         }
 
         if ($this->stopSequences !== null) {
-            $params['stop_sequences'] = $this->stopSequences;
+            $params['stopSequences'] = $this->stopSequences;
         }
 
         if ($this->metadata !== null) {
@@ -416,16 +408,14 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Services\ClaudeRequestBuilder;
-use Anthropic\Anthropic;
+use Anthropic\Client;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new Client(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Build request fluently
 $builder = new ClaudeRequestBuilder();
 $params = $builder
-    ->model('claude-sonnet-4-20250514')
+    ->model('claude-3-5-sonnet-20240620')
     ->maxTokens(1500)
     ->system('You are a PHP expert specializing in Laravel.')
     ->temperature(0.7)
@@ -435,7 +425,7 @@ $params = $builder
     ->build();
 
 // Make request
-$response = $client->messages()->create($params);
+$response = $client->messages->create($params);
 
 echo $response->content[0]->text . "\n";
 ```
@@ -514,11 +504,10 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use Anthropic\Client;
+use Anthropic\Messages\MessageParam;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new Client(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Example 1: Code reviewer
 $codeToReview = <<<'PHP'
@@ -527,17 +516,14 @@ function processUser($data) {
 }
 PHP;
 
-$codeReviewResponse = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
-    'max_tokens' => 2000,
-    'system' => 'You are a senior PHP code reviewer. Focus on security, performance, and best practices. Be concise but thorough.',
-    'messages' => [
-        [
-            'role' => 'user',
-            'content' => "Review this code:\n\n" . $codeToReview
-        ]
-    ]
-]);
+$codeReviewResponse = $client->messages->create(
+    model: 'claude-3-5-sonnet-20240620',
+    maxTokens: 2000,
+    system: 'You are a senior PHP code reviewer. Focus on security, performance, and best practices. Be concise but thorough.',
+    messages: [
+        MessageParam::fromUser("Review this code:\n\n" . $codeToReview),
+    ],
+);
 
 // Example 2: Documentation writer
 $classCode = <<<'PHP'
@@ -548,17 +534,14 @@ class UserService {
 }
 PHP;
 
-$docsResponse = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
-    'max_tokens' => 3000,
-    'system' => 'You are a technical documentation writer. Write clear, comprehensive docs with examples. Follow PSR-5 PHPDoc standards.',
-    'messages' => [
-        [
-            'role' => 'user',
-            'content' => "Generate PHPDoc comments for:\n\n" . $classCode
-        ]
-    ]
-]);
+$docsResponse = $client->messages->create(
+    model: 'claude-3-5-sonnet-20240620',
+    maxTokens: 3000,
+    system: 'You are a technical documentation writer. Write clear, comprehensive docs with examples. Follow PSR-5 PHPDoc standards.',
+    messages: [
+        MessageParam::fromUser("Generate PHPDoc comments for:\n\n" . $classCode),
+    ],
+);
 
 // Example 3: Data analyzer
 $salesData = [
@@ -567,17 +550,14 @@ $salesData = [
     ['month' => 'March', 'revenue' => 60000],
 ];
 
-$analysisResponse = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
-    'max_tokens' => 1500,
-    'system' => 'You are a data analyst. Provide statistical insights and actionable recommendations based on data. Always include confidence levels.',
-    'messages' => [
-        [
-            'role' => 'user',
-            'content' => "Analyze this sales data:\n\n" . json_encode($salesData, JSON_PRETTY_PRINT)
-        ]
-    ]
-]);
+$analysisResponse = $client->messages->create(
+    model: 'claude-3-5-sonnet-20240620',
+    maxTokens: 1500,
+    system: 'You are a data analyst. Provide statistical insights and actionable recommendations based on data. Always include confidence levels.',
+    messages: [
+        MessageParam::fromUser("Analyze this sales data:\n\n" . json_encode($salesData, JSON_PRETTY_PRINT)),
+    ],
+);
 ```
 
 ### Temperature and Sampling Parameters
@@ -591,23 +571,22 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use Anthropic\Client;
+use Anthropic\Messages\MessageParam;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new Client(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $prompt = 'Write a short story about a PHP developer.';
 
 // Temperature 0.0 - Most deterministic
 // Same input = same output (mostly)
 // Best for: factual responses, code generation, data extraction
-$response1 = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
-    'max_tokens' => 500,
-    'temperature' => 0.0,
-    'messages' => [['role' => 'user', 'content' => $prompt]]
-]);
+$response1 = $client->messages->create(
+    model: 'claude-3-5-sonnet-20240620',
+    maxTokens: 500,
+    temperature: 0.0,
+    messages: [MessageParam::fromUser($prompt)],
+);
 
 echo "Temperature 0.0 (Deterministic):\n";
 echo $response1->content[0]->text . "\n\n";
@@ -615,12 +594,12 @@ echo $response1->content[0]->text . "\n\n";
 // Temperature 0.5 - Balanced
 // Some variation, still focused
 // Best for: general conversation, explanations
-$response2 = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
-    'max_tokens' => 500,
-    'temperature' => 0.5,
-    'messages' => [['role' => 'user', 'content' => $prompt]]
-]);
+$response2 = $client->messages->create(
+    model: 'claude-3-5-sonnet-20240620',
+    maxTokens: 500,
+    temperature: 0.5,
+    messages: [MessageParam::fromUser($prompt)],
+);
 
 echo "Temperature 0.5 (Balanced):\n";
 echo $response2->content[0]->text . "\n\n";
@@ -628,12 +607,12 @@ echo $response2->content[0]->text . "\n\n";
 // Temperature 1.0 - Most creative (default)
 // High variation and creativity
 // Best for: creative writing, brainstorming, diverse outputs
-$response3 = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
-    'max_tokens' => 500,
-    'temperature' => 1.0,
-    'messages' => [['role' => 'user', 'content' => $prompt]]
-]);
+$response3 = $client->messages->create(
+    model: 'claude-3-5-sonnet-20240620',
+    maxTokens: 500,
+    temperature: 1.0,
+    messages: [MessageParam::fromUser($prompt)],
+);
 
 echo "Temperature 1.0 (Creative):\n";
 echo $response3->content[0]->text . "\n\n";
@@ -670,19 +649,16 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use Anthropic\Client;
+use Anthropic\Messages\MessageParam;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new Client(apiKey: getenv('ANTHROPIC_API_KEY'));
 
-$response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
-    'max_tokens' => 1024,
-    'messages' => [
-        ['role' => 'user', 'content' => 'Explain PHP namespaces.']
-    ]
-]);
+$response = $client->messages->create(
+    model: 'claude-3-5-sonnet-20240620',
+    maxTokens: 1024,
+    messages: [MessageParam::fromUser('Explain PHP namespaces.')],
+);
 
 // Response object properties
 echo "=== Response Structure ===\n";
@@ -690,8 +666,8 @@ echo "ID: {$response->id}\n";                          // msg_01ABC...
 echo "Type: {$response->type}\n";                      // "message"
 echo "Role: {$response->role}\n";                      // "assistant"
 echo "Model: {$response->model}\n";                    // "claude-sonnet-4..."
-echo "Stop Reason: {$response->stop_reason}\n";        // "end_turn"
-echo "Stop Sequence: " . ($response->stop_sequence ?? 'null') . "\n";
+echo "Stop Reason: {$response->stopReason}\n";        // "end_turn"
+echo "Stop Sequence: " . ($response->stopSequence ?? 'null') . "\n";
 
 // Content array (usually has one text content block)
 echo "\n=== Content ===\n";
@@ -739,7 +715,7 @@ The response `id` field (format: `msg_01ABC...`) is useful for:
 
 ```php
 // Example: Logging with request ID
-$response = $client->messages()->create([...]);
+$response = $client->messages->create([...]);
 error_log("Claude API Response [{$response->id}]: {$response->usage->inputTokens} input, {$response->usage->outputTokens} output tokens");
 ```
 
@@ -902,19 +878,16 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Models\ClaudeResponse;
-use Anthropic\Anthropic;
+use Anthropic\Client;
+use Anthropic\Messages\MessageParam;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new Client(apiKey: getenv('ANTHROPIC_API_KEY'));
 
-$sdkResponse = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
-    'max_tokens' => 1024,
-    'messages' => [
-        ['role' => 'user', 'content' => 'Explain PHP traits.']
-    ]
-]);
+$sdkResponse = $client->messages->create(
+    model: 'claude-3-5-sonnet-20240620',
+    maxTokens: 1024,
+    messages: [MessageParam::fromUser('Explain PHP traits.')],
+);
 
 // Wrap in type-safe model
 $response = ClaudeResponse::fromSdkResponse($sdkResponse);
@@ -1007,20 +980,18 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Services\JsonExtractor;
-use Anthropic\Anthropic;
+use Anthropic\Client;
+use Anthropic\Messages\MessageParam;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new Client(apiKey: getenv('ANTHROPIC_API_KEY'));
 
-$response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
-    'max_tokens' => 512,
-    'messages' => [[
-        'role' => 'user',
-        'content' => 'Return user data as JSON: name="John Doe", age=30, city="New York". Include only valid JSON, no explanation.'
-    ]]
-]);
+$response = $client->messages->create(
+    model: 'claude-3-5-sonnet-20240620',
+    maxTokens: 512,
+    messages: [
+        MessageParam::fromUser('Return user data as JSON: name="John Doe", age=30, city="New York". Include only valid JSON, no explanation.'),
+    ],
+);
 
 $text = $response->content[0]->text;
 echo "Raw response:\n{$text}\n\n";
@@ -1109,7 +1080,8 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use Anthropic\Client;
+use Anthropic\Messages\MessageParam;
 use Anthropic\Exceptions\{
     ErrorException,
     RateLimitException,
@@ -1120,18 +1092,16 @@ use Anthropic\Exceptions\{
     UnprocessableEntityException
 };
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new Client(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 try {
-    $response = $client->messages()->create([
-        'model' => 'claude-sonnet-4-20250514',
-        'max_tokens' => 1024,
-        'messages' => [
-            ['role' => 'user', 'content' => 'Hello!']
-        ]
-    ]);
+    $response = $client->messages->create(
+        model: 'claude-3-5-sonnet-20240620',
+        maxTokens: 1024,
+        messages: [
+            MessageParam::fromUser('Hello!'),
+        ],
+    );
 
     echo $response->content[0]->text;
 
@@ -1207,7 +1177,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Anthropic\Anthropic;
+use Anthropic\Client;
 use Anthropic\Exceptions\RateLimitException;
 use Anthropic\Exceptions\ErrorException;
 
@@ -1217,7 +1187,7 @@ class RetryableClaudeClient
     private const INITIAL_DELAY = 1; // seconds
 
     public function __construct(
-        private readonly Anthropic $client
+        private readonly Client $client
     ) {}
 
     public function createMessage(array $params): mixed
@@ -1227,7 +1197,7 @@ class RetryableClaudeClient
 
         while ($attempt < self::MAX_RETRIES) {
             try {
-                return $this->client->messages()->create($params);
+                return $this->client->messages->create(...$params);
 
             } catch (RateLimitException $e) {
                 $attempt++;
@@ -1286,20 +1256,19 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Services\RetryableClaudeClient;
-use Anthropic\Anthropic;
+use Anthropic\Client;
+use Anthropic\Messages\MessageParam;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new Client(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $retryableClient = new RetryableClaudeClient($client);
 
 try {
     $response = $retryableClient->createMessage([
-        'model' => 'claude-sonnet-4-20250514',
-        'max_tokens' => 1024,
+        'model' => 'claude-3-5-sonnet-20240620',
+        'maxTokens' => 1024,
         'messages' => [
-            ['role' => 'user', 'content' => 'Hello!']
+            MessageParam::fromUser('Hello!')
         ]
     ]);
 
@@ -1539,7 +1508,7 @@ use Psr\Log\NullLogger;
 class DebuggableClaudeClient
 {
     public function __construct(
-        private readonly Anthropic $client,
+        private readonly Client $client,
         private readonly LoggerInterface $logger = new NullLogger(),
         private readonly bool $debugMode = false
     ) {}
@@ -1558,7 +1527,7 @@ class DebuggableClaudeClient
         }
 
         try {
-            $response = $this->client->messages()->create($params);
+            $response = $this->client->messages->create(...$params);
 
             $duration = microtime(true) - $startTime;
 
@@ -1567,7 +1536,7 @@ class DebuggableClaudeClient
                     'request_id' => $requestId,
                     'duration' => round($duration, 3),
                     'model' => $response->model,
-                    'stop_reason' => $response->stop_reason,
+                    'stop_reason' => $response->stopReason,
                     'input_tokens' => $response->usage->inputTokens,
                     'output_tokens' => $response->usage->outputTokens,
                     'response_preview' => substr($response->content[0]->text, 0, 100),
@@ -1621,29 +1590,30 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
 use GuzzleHttp\Client;
 
-// Configure HTTP client with custom timeout
+// Configure HTTP client with custom timeout for direct API calls
 $httpClient = new Client([
+    'base_uri' => 'https://api.anthropic.com',
     'timeout' => 60.0,           // Total request timeout
     'connect_timeout' => 10.0,   // Connection timeout
+    'headers' => [
+        'anthropic-version' => '2023-06-01',
+        'x-api-key' => getenv('ANTHROPIC_API_KEY'),
+        'content-type' => 'application/json',
+    ],
 ]);
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->withHttpClient($httpClient)
-    ->make();
-
-$response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
-    'max_tokens' => 4096,  // Large response
+$payload = [
+    'model' => 'claude-3-5-sonnet-20240620',
+    'max_tokens' => 4096,
     'messages' => [
-        ['role' => 'user', 'content' => 'Write a comprehensive guide to PHP design patterns.']
-    ]
-]);
+        ['role' => 'user', 'content' => 'Write a comprehensive guide to PHP design patterns.'],
+    ],
+];
 
-echo $response->content[0]->text;
+$response = $httpClient->post('/v1/messages', ['json' => $payload]);
+echo json_decode($response->getBody()->getContents(), true)['content'][0]['text'] ?? '';
 ```
 
 ### Connection Pooling
@@ -1655,16 +1625,15 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Anthropic\Anthropic;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Handler\CurlMultiHandler;
 
 class PooledClaudeClient
 {
-    private static ?Anthropic $instance = null;
+    private static ?Client $instance = null;
 
-    public static function getInstance(): Anthropic
+    public static function getInstance(): Client
     {
         if (self::$instance === null) {
             // Create handler with connection pooling
@@ -1674,15 +1643,16 @@ class PooledClaudeClient
 
             $stack = HandlerStack::create($handler);
 
-            $httpClient = new Client([
+            self::$instance = new Client([
+                'base_uri' => 'https://api.anthropic.com',
                 'handler' => $stack,
                 'timeout' => 30.0,
+                'headers' => [
+                    'anthropic-version' => '2023-06-01',
+                    'x-api-key' => getenv('ANTHROPIC_API_KEY'),
+                    'content-type' => 'application/json',
+                ],
             ]);
-
-            self::$instance = Anthropic::factory()
-                ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-                ->withHttpClient($httpClient)
-                ->make();
         }
 
         return self::$instance;

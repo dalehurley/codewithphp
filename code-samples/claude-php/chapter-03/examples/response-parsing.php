@@ -10,7 +10,8 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use Anthropic\Client;
+use Anthropic\Messages\MessageParam;
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/..');
@@ -21,17 +22,17 @@ $apiKey = getenv('ANTHROPIC_API_KEY');
 echo "=== Response Parsing Examples ===\n\n";
 
 try {
-    $client = Anthropic::factory()->withApiKey($apiKey)->make();
+    $client = new Client(apiKey: $apiKey);
 
     // Example 1: Extract JSON
     echo "1. Extracting JSON Data\n";
-    $response = $client->messages()->create([
-        'model' => 'claude-sonnet-4-20250514',
-        'max_tokens' => 200,
-        'messages' => [
-            ['role' => 'user', 'content' => 'Return a JSON object with keys: name="Claude", version="4", year=2025']
-        ]
-    ]);
+    $response = $client->messages->create(
+        model: 'claude-3-5-sonnet-20240620',
+        maxTokens: 200,
+        messages: [
+            MessageParam::fromUser('Return a JSON object with keys: name="Claude", version="4", year=2025'),
+        ],
+    );
 
     $text = $response->content[0]->text;
     echo "Raw: {$text}\n";
@@ -45,13 +46,13 @@ try {
 
     // Example 2: Extract Code Blocks
     echo "\n2. Extracting Code Blocks\n";
-    $response = $client->messages()->create([
-        'model' => 'claude-sonnet-4-20250514',
-        'max_tokens' => 300,
-        'messages' => [
-            ['role' => 'user', 'content' => 'Write a PHP function to add two numbers']
-        ]
-    ]);
+    $response = $client->messages->create(
+        model: 'claude-3-5-sonnet-20240620',
+        maxTokens: 300,
+        messages: [
+            MessageParam::fromUser('Write a PHP function to add two numbers'),
+        ],
+    );
 
     $text = $response->content[0]->text;
     preg_match('/```php\n(.*?)\n```/s', $text, $matches);

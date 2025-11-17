@@ -1,13 +1,13 @@
 # Chapter 16: Official PHP SDK
 
-Advanced usage patterns for the official Anthropic PHP SDK including middleware, custom transports, and comprehensive testing.
+Official Anthropic PHP SDK examples that match the `anthropic-ai/sdk` API surface: typed requests, streaming, retries, and how to layer your own logging/testing hooks without relying on community-only factories or middleware.
 
 ## Examples
 
-1. **sdk-advanced.php** - Advanced SDK features
-2. **middleware.php** - Request/response middleware
-3. **custom-transport.php** - Custom HTTP transport
-4. **testing.php** - Testing strategies
+1. **sdk-advanced.php** - Typed requests, streaming, and retries using `Anthropic\Client`
+2. **middleware.php** - Logging/metrics hooks built around the official client
+3. **custom-transport.php** - Injecting a mock transport for offline usage
+4. **testing.php** - Dependency-injected transport for unit tests
 
 ## Installation
 

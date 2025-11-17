@@ -4,21 +4,27 @@ declare(strict_types=1);
 
 namespace ClaudePHP\SDK;
 
-use GuzzleHttp\Client;
+use Anthropic\Client;
+use Anthropic\Messages\MessageParam;
 
 /**
- * Wrapper around Claude API with middleware support
+ * Thin wrapper around the official Anthropic PHP SDK that lets you attach
+ * middleware-style callbacks without modifying the SDK itself.
  */
 class SDKWrapper
 {
     private Client $client;
-    private string $apiKey;
+
+    /** @var callable|null */
+    private $transport;
+
+    /** @var array<int, callable> */
     private array $middleware = [];
 
-    public function __construct(string $apiKey)
+    public function __construct(string $apiKey, ?callable $transport = null)
     {
-        $this->apiKey = $apiKey;
-        $this->client = new Client(['base_uri' => 'https://api.anthropic.com']);
+        $this->client = new Client(apiKey: $apiKey);
+        $this->transport = $transport;
     }
 
     public function addMiddleware(callable $middleware): void
@@ -26,29 +32,76 @@ class SDKWrapper
         $this->middleware[] = $middleware;
     }
 
-    public function sendMessage(array $params): array
+    /**
+     * Send a message using the official client. Accepts an array payload that matches
+     * the SDK's create() signature (model, max_tokens/maxTokens, messages, etc.).
+     */
+    public function sendMessage(array $params): mixed
     {
-        // Apply pre-request middleware
+        $preparedParams = $this->normalizeMessages($params);
+
         foreach ($this->middleware as $mw) {
-            $params = $mw('request', $params);
+            $preparedParams = $mw('request', $preparedParams);
         }
 
-        $response = $this->client->post('/v1/messages', [
-            'headers' => [
-                'x-api-key' => $this->apiKey,
-                'anthropic-version' => '2023-06-01',
-                'content-type' => 'application/json',
-            ],
-            'json' => $params,
-        ]);
+        $sender = $this->transport ?? function (array $payload) {
+            return $this->client->messages->create(...$payload);
+        };
 
-        $result = json_decode($response->getBody()->getContents(), true);
+        $response = $sender($preparedParams);
 
-        // Apply post-response middleware
         foreach ($this->middleware as $mw) {
-            $result = $mw('response', $result);
+            $response = $mw('response', $response);
         }
 
-        return $result;
+        return $response;
+    }
+
+    /**
+     * Stream a response from the API and invoke middleware on each streamed event.
+     */
+    public function streamMessage(array $params): iterable
+    {
+        $preparedParams = $this->normalizeMessages($params);
+
+        foreach ($this->middleware as $mw) {
+            $preparedParams = $mw('request', $preparedParams);
+        }
+
+        $stream = $this->client->messages->createStream(...$preparedParams);
+
+        foreach ($stream as $event) {
+            foreach ($this->middleware as $mw) {
+                $mw('stream', $event);
+            }
+            yield $event;
+        }
+    }
+
+    /**
+     * Ensure message payloads use the typed helpers where possible while
+     * preserving array compatibility for injected transports.
+     */
+    private function normalizeMessages(array $params): array
+    {
+        if (isset($params['messages'])) {
+            $params['messages'] = array_map(function ($message) {
+                if ($message instanceof MessageParam) {
+                    return $message;
+                }
+
+                if (is_array($message) && ($message['role'] ?? null) === 'user') {
+                    return MessageParam::fromUser($message['content']);
+                }
+
+                return $message;
+            }, $params['messages']);
+        }
+
+        if (array_key_exists('max_tokens', $params) && !isset($params['maxTokens'])) {
+            $params['maxTokens'] = $params['max_tokens'];
+        }
+
+        return $params;
     }
 }
