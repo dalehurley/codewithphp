@@ -4,49 +4,51 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+use Anthropic\Messages\MessageParam;
+use ClaudePHP\SDK\SDKWrapper;
+
 echo "SDK - Testing Strategies\n\n";
 
 class ClaudeServiceTest
 {
-    private $mockResponses = [];
+    private SDKWrapper $sdk;
 
-    public function mockResponse(array $response): void
+    public function __construct()
     {
-        $this->mockResponses[] = $response;
-    }
+        $transport = function (array $payload) {
+            return [
+                'content' => [['type' => 'text', 'text' => 'Hello from mock']],
+                'usage' => ['input_tokens' => 5, 'output_tokens' => 2],
+                'model' => $payload['model'],
+            ];
+        };
 
-    public function callClaude(string $prompt): array
-    {
-        if (empty($this->mockResponses)) {
-            throw new \Exception('No mock responses configured');
-        }
-        return array_shift($this->mockResponses);
+        $this->sdk = new SDKWrapper(apiKey: 'test-key', transport: $transport);
     }
 
     public function testBasicResponse(): void
     {
-        $this->mockResponse([
-            'content' => [['type' => 'text', 'text' => 'Hello!']],
-            'usage' => ['input_tokens' => 5, 'output_tokens' => 2],
+        $result = $this->sdk->sendMessage([
+            'model' => 'claude-3-5-sonnet-20240620',
+            'maxTokens' => 64,
+            'messages' => [MessageParam::fromUser('Say hello')],
         ]);
 
-        $result = $this->callClaude('Say hello');
-
-        assert($result['content'][0]['text'] === 'Hello!');
+        assert(is_array($result));
+        assert($result['content'][0]['text'] === 'Hello from mock');
         echo "✓ Basic response test passed\n";
     }
 
     public function testTokenCounting(): void
     {
-        $this->mockResponse([
-            'content' => [['type' => 'text', 'text' => 'Response']],
-            'usage' => ['input_tokens' => 10, 'output_tokens' => 5],
+        $result = $this->sdk->sendMessage([
+            'model' => 'claude-3-5-sonnet-20240620',
+            'maxTokens' => 64,
+            'messages' => [MessageParam::fromUser('Count tokens')],
         ]);
 
-        $result = $this->callClaude('Test');
-
-        assert($result['usage']['input_tokens'] === 10);
-        assert($result['usage']['output_tokens'] === 5);
+        assert($result['usage']['input_tokens'] === 5);
+        assert($result['usage']['output_tokens'] === 2);
         echo "✓ Token counting test passed\n";
     }
 }

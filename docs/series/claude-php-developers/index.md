@@ -399,7 +399,7 @@ Integrate Claude into modern PHP applications and frameworks.
   <img src="/images/claude-php/chapter-16-thumbnail.webp" alt="Chapter 16 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
   <div>
     <h4 style="margin-top: 0;"><a href="/series/claude-php-developers/chapters/16-official-php-sdk">16 — The Official PHP SDK</a></h4>
-    <p style="margin-bottom: 0;">Master the official Anthropic PHP SDK. Explore its architecture, advanced features, middleware support, and testing utilities. Learn best practices for SDK integration in production applications and when to use raw HTTP vs the SDK.</p>
+    <p style="margin-bottom: 0;">Install and use the official Anthropic PHP SDK accurately: typed models, streaming, retries, and pagination. Learn how to layer your own logging or middleware around the client without relying on undocumented factory APIs.</p>
   </div>
 </div>
 
