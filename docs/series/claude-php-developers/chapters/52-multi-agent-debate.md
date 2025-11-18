@@ -6,7 +6,7 @@ chapter: 52
 order: 52
 difficulty: "Advanced"
 prerequisites:
-  - "/series/claude-php-developers/chapters/51-*"
+  - "/series/claude-php-developers/chapters/51-hierarchical-agents"
   - "/series/claude-php-developers/chapters/11-tool-use-fundamentals"
 ---
 
@@ -26,9 +26,11 @@ prerequisites:
 
 ## Overview
 
-This chapter is based on Tutorial 12 from the [Claude PHP SDK Tutorial Series](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials). 
+Multi-Agent Debate enables agents to solve complex multi-step problems through iterative reasoning and tool execution. This chapter teaches you to implement the ReAct (Reason-Act-Observe) pattern, handle multiple tool calls in sequence, maintain conversation state, and build production-ready agents that can tackle complex tasks autonomously.
 
-**Estimated Time**: 60 minutes
+By the end of this chapter, you'll understand how to build agents that can reason about problems, execute tools iteratively, observe results, and adapt their approach until the task is complete.
+
+**Estimated Time**: 60-75 min
 
 ## Prerequisites
 
@@ -38,237 +40,321 @@ Before starting, ensure you have:
 - ✓ **Completed Chapter 11: Tool Use Fundamentals** - Tool definitions and execution
 - ✓ **PHP 8.4+** with Composer installed
 - ✓ **Claude PHP SDK** installed: `composer require claude-php/claude-php-sdk`
+- ✓ **API Key** configured in environment
 
-## Learning Objectives
+## What You'll Build
 
-By the end of this chapter, you'll be able to:
+By the end of this chapter, you will have created:
 
-- Implement multi-agent debate protocols
-- Design agents with different perspectives
-- Build consensus mechanisms
-- Handle disagreements and conflicts
-- Synthesize insights from debates
-- Apply debate to decision-making
-- Understand when debate improves outcomes
+- A complete ReAct agent implementation with iterative reasoning
+- Tool execution handlers for multi-step workflows
+- Conversation state management across iterations
+- Proper stop condition handling
+- Debugging utilities for agent reasoning
+- Production-ready patterns for error handling and iteration limits
 
-## Tutorial Content
+## Objectives
 
-> **Note**: This chapter is based on the [Claude PHP SDK Tutorial {tutorial_num}](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/{tutorial_num:02d}-*).
-> For the complete tutorial with working code examples, visit the SDK repository.
+By completing this chapter, you will:
 
+- **Understand** the ReAct pattern and its role in agentic AI
+- **Implement** iterative reasoning loops with proper state management
+- **Handle** multiple tool calls in sequence
+- **Maintain** conversation history across iterations
+- **Implement** proper stop conditions and iteration limits
+- **Debug** agent reasoning steps effectively
+- **Build** production-ready agents with error handling
 
+## The ReAct Pattern
 
-Multi-agent debate systems leverage diverse perspectives and critical thinking by having multiple agents discuss, challenge, and refine ideas. This pattern produces more robust, well-reasoned outputs through collaborative argumentation.
+**ReAct** stands for **Reason** → **Act** → **Observe**, and it's the fundamental pattern for autonomous agents.
 
-### 🎯 Learning Objectives
+### The Loop Flow
 
-By the end of this tutorial, you'll be able to:
-
-- Implement multi-agent debate protocols
-- Design agents with different perspectives
-- Build consensus mechanisms
-- Handle disagreements and conflicts
-- Synthesize insights from debates
-- Apply debate to decision-making
-- Understand when debate improves outcomes
-
-### 🏗️ What We're Building
-
-A debate system featuring:
-
-1. **Multiple Agents** - Different viewpoints and roles
-2. **Debate Protocol** - Structured argumentation rounds
-3. **Challenger Agents** - Devil's advocate and critics
-4. **Moderator** - Manages flow and synthesizes
-5. **Consensus Builder** - Finds common ground
-6. **Decision Framework** - Converts debate to action
-
-### 📋 Prerequisites
-
-Make sure you have:
-
-- Completed [Tutorial 11: Hierarchical Agents](../11-hierarchical-agents/)
-- Understanding of argumentation and logic
-- PHP 8.1+ installed
-- Claude PHP SDK configured
-
-### 🤔 What is Multi-Agent Debate?
-
-Multi-agent debate involves multiple AI agents with different roles or perspectives discussing a topic to reach better conclusions.
-
-#### Debate vs Single Agent
-
-**Single Agent:**
 ```
-Question: Should we adopt technology X?
-Agent: Yes, because... [one perspective]
-Done.
+Start
+  ↓
+┌─────────────────────────────────┐
+│  REASON                         │
+│  "What do I need to do next?"   │
+│  "What info is missing?"        │
+└───────────┬─────────────────────┘
+            ↓
+┌─────────────────────────────────┐
+│  ACT                            │
+│  "Call tool X with params Y"    │
+│  Or "I have enough to answer"   │
+└───────────┬─────────────────────┘
+            ↓
+┌─────────────────────────────────┐
+│  OBSERVE                        │
+│  "Tool returned Z"              │
+│  "Do I have what I need?"       │
+└───────────┬─────────────────────┘
+            ↓
+        ┌───────┐
+        │ Done? │
+        └───┬───┘
+            │
+      No ───┴─── Yes
+      │           │
+      │           ↓
+      │        [Return Answer]
+      │
+      └──> (Back to REASON)
 ```
 
-**Multi-Agent Debate:**
-```
-Question: Should we adopt technology X?
+### Why ReAct Matters
 
-Proponent: Yes, because benefits A, B, C...
-Opponent: No, because risks X, Y, Z...
-Analyst: Data shows...
-Critic: Both sides overlook...
-Moderator: Considering all views...
+Without ReAct, agents can only:
+- Answer questions with their training data
+- Make ONE tool call per task
 
-Result: Nuanced, well-reasoned decision
-```
+With ReAct, agents can:
+- Gather information step-by-step
+- Chain multiple tools together
+- Adapt based on tool results
+- Solve complex multi-step problems
 
-### 🔑 Key Concepts
+## Step 1: Basic ReAct Loop Implementation
 
-#### 1. Agent Roles
-
-Different agents bring different perspectives:
+Let's start with a complete working example:
 
 ```php
-$roles = [
-    'proponent' => [
-        'perspective' => 'Support the proposal',
-        'system' => 'You advocate for the proposal. Find benefits and opportunities.'
-    ],
-    'opponent' => [
-        'perspective' => 'Challenge the proposal',
-        'system' => 'You oppose the proposal. Identify risks and drawbacks.'
-    ],
-    'analyst' => [
-        'perspective' => 'Objective analysis',
-        'system' => 'You analyze facts objectively. Focus on data and evidence.'
-    ],
-    'critic' => [
-        'perspective' => 'Critical thinking',
-        'system' => 'You identify logical flaws and assumptions in arguments.'
-    ],
-    'moderator' => [
-        'perspective' => 'Synthesis and balance',
-        'system' => 'You synthesize viewpoints and find balanced conclusions.'
+<?php
+# filename: examples/01-react-loop.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+
+// Define calculator tool
+$calculatorTool = [
+    'name' => 'calculate',
+    'description' => 'Perform precise mathematical calculations.',
+    'input_schema' => [
+        'type' => 'object',
+        'properties' => [
+            'expression' => [
+                'type' => 'string',
+                'description' => 'Mathematical expression to evaluate'
+            ]
+        ],
+        'required' => ['expression']
     ]
 ];
-```
 
-#### 2. Debate Protocol
+// Tool executor
+function executeCalculator(string $expression): string {
+    try {
+        // WARNING: eval() for demo only! Use proper parser in production
+        $result = eval("return {$expression};");
+        return (string)$result;
+    } catch (Exception $e) {
+        return "Error: " . $e->getMessage();
+    }
+}
 
-Structured rounds ensure comprehensive discussion:
+// User task requiring multiple steps
+$task = "What is (50 × 30) + (100 - 25)?";
+echo "Task: {$task}\n\n";
 
-```php
-$protocol = [
-    'round_1' => [
-        'type' => 'opening_statements',
-        'agents' => ['proponent', 'opponent'],
-        'purpose' => 'Present initial positions'
-    ],
-    'round_2' => [
-        'type' => 'rebuttals',
-        'agents' => ['opponent', 'proponent'],
-        'purpose' => 'Challenge opponent arguments'
-    ],
-    'round_3' => [
-        'type' => 'analysis',
-        'agents' => ['analyst', 'critic'],
-        'purpose' => 'Objective evaluation'
-    ],
-    'final' => [
-        'type' => 'synthesis',
-        'agents' => ['moderator'],
-        'purpose' => 'Unified conclusion'
-    ]
+// Initialize conversation
+$messages = [
+    ['role' => 'user', 'content' => $task]
 ];
-```
 
-#### 3. Argument Quality
+$maxIterations = 10;
+$iteration = 0;
+$finalResponse = null;
 
-Evaluate argument strength:
-
-```php
-$argumentMetrics = [
-    'logic' => 'Is reasoning sound?',
-    'evidence' => 'Are claims supported?',
-    'completeness' => 'Are counterarguments addressed?',
-    'relevance' => 'Does it address the question?'
-];
-```
-
-#### 4. Consensus Building
-
-Find common ground:
-
-```php
-function findConsensus($debateHistory) {
-    $agreementPoints = [];
-    $disagreementPoints = [];
+// ReAct Loop
+while ($iteration < $maxIterations) {
+    $iteration++;
     
-    foreach ($debateHistory as $round) {
-        // Identify where agents agree
-        $commonalities = extractCommonPoints($round);
-        $agreementPoints = array_merge($agreementPoints, $commonalities);
-        
-        // Track persistent disagreements
-        $conflicts = extractConflicts($round);
-        $disagreementPoints = array_merge($disagreementPoints, $conflicts);
+    echo "Iteration {$iteration}\n";
+    
+    // REASON: Call Claude with current state
+    $response = $client->messages()->create([
+        'model' => 'claude-sonnet-4-5',
+        'max_tokens' => 4096,
+        'messages' => $messages,
+        'tools' => [$calculatorTool]
+    ]);
+    
+    echo "  Stop Reason: {$response->stop_reason}\n";
+    
+    // Add assistant response to history
+    $messages[] = [
+        'role' => 'assistant',
+        'content' => $response->content
+    ];
+    
+    // Check if done
+    if ($response->stop_reason === 'end_turn') {
+        $finalResponse = $response;
+        break;
     }
     
-    return [
-        'consensus' => $agreementPoints,
-        'open_issues' => $disagreementPoints
-    ];
+    // ACT: Execute tools if requested
+    if ($response->stop_reason === 'tool_use') {
+        $toolResults = [];
+        
+        foreach ($response->content as $block) {
+            if ($block['type'] === 'tool_use') {
+                echo "  Using tool: {$block['name']}\n";
+                
+                // Execute tool
+                $result = executeCalculator($block['input']['expression']);
+                echo "  Result: {$result}\n";
+                
+                // Format tool result
+                $toolResults[] = [
+                    'type' => 'tool_result',
+                    'tool_use_id' => $block['id'],
+                    'content' => $result
+                ];
+            }
+        }
+        
+        // OBSERVE: Add results to conversation
+        if (!empty($toolResults)) {
+            $messages[] = [
+                'role' => 'user',
+                'content' => $toolResults
+            ];
+        }
+    }
+}
+
+// Display final answer
+if ($finalResponse) {
+    echo "\nFinal Answer:\n";
+    foreach ($finalResponse->content as $block) {
+        if ($block['type'] === 'text') {
+            echo $block['text'] . "\n";
+        }
+    }
+} else {
+    echo "\nMax iterations reached without completion\n";
 }
 ```
 
-### 💡 Implementation Patterns
+**Why It Works**: The ReAct loop maintains conversation history across iterations. Each iteration, Claude reasons about what to do next, acts by requesting tools, and observes the results. The loop continues until Claude determines the task is complete (`stop_reason === 'end_turn'`).
 
-#### Basic Debate System
+## Step 2: Stop Conditions and Safety
+
+Always implement proper stop conditions:
 
 ```php
-class DebateSystem {
-    private $client;
-    private $agents = [];
-    private $history = [];
+<?php
+# filename: examples/02-stop-conditions.php
+declare(strict_types=1);
+
+// Stop conditions
+$stopReasons = [
+    'end_turn' => 'Task complete',
+    'max_tokens' => 'Response truncated',
+    'tool_use' => 'Tool execution needed'
+];
+
+// Safety limits
+$maxIterations = 10;
+$maxTokens = 10000;
+$totalTokens = 0;
+
+while ($iteration < $maxIterations) {
+    $iteration++;
     
-    public function __construct($client) {
-        $this->client = $client;
+    $response = $client->messages()->create([...]);
+    
+    $totalTokens += $response->usage->input_tokens + $response->usage->output_tokens;
+    
+    // Check token limit
+    if ($totalTokens > $maxTokens) {
+        echo "Token limit reached\n";
+        break;
     }
     
-    public function addAgent($name, $role, $systemPrompt) {
-        $this->agents[$name] = [
-            'role' => $role,
-            'system' => $systemPrompt
-        ];
+    // Check stop reason
+    if ($response->stop_reason === 'end_turn') {
+        break; // Success
     }
     
-    public function debate($topic, $rounds = 3) {
-        $context = "Topic: {$topic}\n\n";
-        
-        for ($round = 1; $round <= $rounds; $round++) {
-            echo "Round {$round}:\n";
-            
-            foreach ($this->agents as $name => $config) {
-                $prompt = $context . "As the {$config['role']}, provide your perspective.";
-                
-                $response = $this->client->messages()->create([
-                    'model' => 'claude-sonnet-4-5',
-                    'max_tokens' => 1024,
-                    'system' => $config['system'],
-                    'messages' => [['role' => 'user', 'content' => $prompt]]
-                ]);
-                
-                $statement = extractTextContent($response);
-                $this->history[] = [
+    // Handle tool use...
+}
+```
+
+## Step 3: Debugging Agent Reasoning
+
+Add debugging to understand agent behavior:
+
+```php
+<?php
+# filename: examples/03-debugging.php
+declare(strict_types=1);
+
+function debugIteration(int $iteration, object $response): void {
+    echo "\n╔════ Iteration {$iteration} ════╗\n";
+    echo "Stop Reason: {$response->stop_reason}\n";
+    echo "Tokens: {$response->usage->input_tokens} in, {$response->usage->output_tokens} out\n";
+    
+    foreach ($response->content as $block) {
+        if ($block['type'] === 'text') {
+            echo "Text: {$block['text']}\n";
+        } elseif ($block['type'] === 'tool_use') {
+            echo "Tool: {$block['name']}\n";
+            echo "  Input: " . json_encode($block['input']) . "\n";
+        }
+    }
+}
+```
+
+## Common Issues and Solutions
+
+### Issue: Infinite Loop
+
+**Symptom**: Agent keeps making tool calls without completing
+
+**Solution**: Always set iteration limits and check for progress
+
+```php
+$maxIterations = 10;
+$hasProgressed = false;
+$previousToolCount = 0;
+
+while ($iteration < $maxIterations) {
+    // ... execute loop ...
+    
+    $currentToolCount = count(array_filter($response->content, fn($b) => $b['type'] === 'tool_use'));
+    
+    if ($currentToolCount > $previousToolCount) {
+        $hasProgressed = true;
+    }
+    
+    if ($iteration >= 5 && !$hasProgressed) {
+        echo "Warning: Agent may be stuck\n";
+        break;
+    }
+}
+```
 
 ## Next Steps
 
-Continue to the next chapter in the agent series, or explore related topics:
+Continue to the next chapter in the agent series:
 
-- **[Chapter 53](/series/claude-php-developers/chapters/53-*)** - Next agent chapter
+- **[Chapter 53](/series/claude-php-developers/chapters/53-rag-pattern)** - Next agent chapter
 - **[Chapter 33: Multi-Agent Systems](/series/claude-php-developers/chapters/33-multi-agent-systems)** - Advanced coordination
-- **[Claude PHP SDK Tutorials](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials)** - Complete tutorial series
+- **[Chapter 40: Introduction to Agentic AI](/series/claude-php-developers/chapters/40-introduction-to-agentic-ai)** - Agent fundamentals
 
 ## Further Reading
 
-- [Claude PHP SDK Repository](https://github.com/claude-php/Claude-PHP-SDK) - Source code and examples
-- [Tutorial 12 Source](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/12-*) - Original tutorial
+- [Claude PHP SDK Tutorials](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials) - Complete tutorial series
+- [Tutorial 12 Source](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/12-multi-agent-debate) - Original tutorial with code examples
+- [ReAct Paper](https://arxiv.org/abs/2210.03629) - Original research paper
 
 <ChapterCheckbox
   seriesId="claude-php-developers"
@@ -278,19 +364,19 @@ Continue to the next chapter in the agent series, or explore related topics:
 
 ---
 
-Continue to [Chapter 53](/series/claude-php-developers/chapters/53-*) or explore [all chapters](/series/claude-php-developers).
+Continue to [Chapter 53](/series/claude-php-developers/chapters/53-rag-pattern) or explore [all chapters](/series/claude-php-developers).
 
 ## 💻 Code Samples
 
 Code examples for this chapter are available in the Claude PHP SDK repository:
 
-**[View Tutorial 12 Code](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/12-*)**
+**[View Tutorial 12 Code](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/12-multi-agent-debate)**
 
 Clone and run locally:
 ```bash
 git clone https://github.com/claude-php/Claude-PHP-SDK.git
-cd Claude-PHP-SDK/tutorials/12-*
+cd Claude-PHP-SDK/tutorials/12-multi-agent-debate
 composer install
 export ANTHROPIC_API_KEY="sk-ant-your-key-here"
-php *.php
+php react_agent.php
 ```

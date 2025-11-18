@@ -6,7 +6,7 @@ chapter: 54
 order: 54
 difficulty: "Advanced"
 prerequisites:
-  - "/series/claude-php-developers/chapters/53-*"
+  - "/series/claude-php-developers/chapters/53-rag-pattern"
   - "/series/claude-php-developers/chapters/11-tool-use-fundamentals"
 ---
 
@@ -259,7 +259,7 @@ function checkSafety($state) {
 
 Continue to the next chapter in the agent series, or explore related topics:
 
-- **[Chapter 55](/series/claude-php-developers/chapters/55-*)** - Next agent chapter
+- **[Chapter 55](/series/claude-php-developers/chapters/55-multi-tool-agent)** - Next agent chapter
 - **[Chapter 33: Multi-Agent Systems](/series/claude-php-developers/chapters/33-multi-agent-systems)** - Advanced coordination
 - **[Claude PHP SDK Tutorials](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials)** - Complete tutorial series
 
@@ -276,7 +276,7 @@ Continue to the next chapter in the agent series, or explore related topics:
 
 ---
 
-Continue to [Chapter 55](/series/claude-php-developers/chapters/55-*) or explore [all chapters](/series/claude-php-developers).
+Continue to [Chapter 55](/series/claude-php-developers/chapters/55-multi-tool-agent) or explore [all chapters](/series/claude-php-developers).
 
 ## 💻 Code Samples
 

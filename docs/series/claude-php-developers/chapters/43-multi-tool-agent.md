@@ -6,7 +6,7 @@ chapter: 43
 order: 43
 difficulty: "Intermediate"
 prerequisites:
-  - "/series/claude-php-developers/chapters/42-*"
+  - "/series/claude-php-developers/chapters/42-react-loop-basics"
   - "/series/claude-php-developers/chapters/11-tool-use-fundamentals"
 ---
 
@@ -26,9 +26,11 @@ prerequisites:
 
 ## Overview
 
-This chapter is based on Tutorial 3 from the [Claude PHP SDK Tutorial Series](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials). 
+In Chapter 42, you built agents with a single tool. Real-world agents need multiple diverse tools to handle various tasks. This chapter teaches you to create agents with several tools and understand how Claude chooses the right tool for each situation.
 
-**Estimated Time**: 45 minutes
+You'll learn to define multiple tools with clear, distinct purposes, help Claude select the appropriate tool through good descriptions, handle different tool types (data retrieval, computation, actions), and debug tool selection decisions.
+
+**Estimated Time**: 45-60 minutes
 
 ## Prerequisites
 
@@ -38,66 +40,58 @@ Before starting, ensure you have:
 - ✓ **Completed Chapter 11: Tool Use Fundamentals** - Tool definitions and execution
 - ✓ **PHP 8.4+** with Composer installed
 - ✓ **Claude PHP SDK** installed: `composer require claude-php/claude-php-sdk`
+- ✓ **API Key** configured in environment
 
-## Learning Objectives
+## What You'll Build
 
-By the end of this chapter, you'll be able to:
+By the end of this chapter, you will have created:
 
-- Define multiple tools with clear, distinct purposes
-- Help Claude choose the right tool through good descriptions
-- Handle different tool types (data retrieval, computation, actions)
-- Debug tool selection decisions
-- Optimize tool definitions for clarity
-- Manage tool execution workflows
+- A **Smart Assistant Agent** with multiple diverse tools:
+  - Calculator tool for mathematical computations
+  - Current Time tool for timezone queries
+  - Weather tool for weather information (simulated)
+  - Web Search tool for information retrieval (simulated)
+- Tool executor pattern that routes to the correct function
+- Multi-tool ReAct loop that handles different tool types
+- Tool selection debugging utilities
+- Production-ready patterns for managing multiple tools
 
-## Tutorial Content
+## Objectives
 
-> **Note**: This chapter is based on the [Claude PHP SDK Tutorial {tutorial_num}](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/{tutorial_num:02d}-*).
-> For the complete tutorial with working code examples, visit the SDK repository.
+By completing this chapter, you will:
 
+- **Define** multiple tools with clear, distinct purposes
+- **Help** Claude choose the right tool through good descriptions
+- **Handle** different tool types (data retrieval, computation, actions)
+- **Debug** tool selection decisions effectively
+- **Optimize** tool definitions for clarity and accuracy
+- **Manage** tool execution workflows with multiple tools
+- **Build** agents that can handle diverse requests across tool categories
 
+## Why Multiple Tools?
 
-In the previous tutorials, we built agents with a single tool. Real-world agents need multiple diverse tools to handle various tasks. In this tutorial, we'll create an agent with several tools and learn how Claude chooses the right one for each situation.
+Real-world agents need diverse capabilities:
 
-### 🎯 Learning Objectives
+**Single-Tool Agent** (Chapter 42):
+- Can only perform one type of task
+- Limited to calculator operations
+- Cannot handle varied user requests
 
-By the end of this tutorial, you'll be able to:
+**Multi-Tool Agent** (this chapter):
+- Handles diverse requests: "What time is it in Tokyo?", "Calculate 25% of 480", "What's the weather in London?"
+- Chooses the right tool for each situation
+- Combines tools when needed: "What's the weather in Tokyo and what time is it there?"
 
-- Define multiple tools with clear, distinct purposes
-- Help Claude choose the right tool through good descriptions
-- Handle different tool types (data retrieval, computation, actions)
-- Debug tool selection decisions
-- Optimize tool definitions for clarity
-- Manage tool execution workflows
-
-### 🏗️ What We're Building
-
-We'll create a **Smart Assistant Agent** with these tools:
-
-1. **Calculator** - Mathematical computations
-2. **Current Time** - Get time in any timezone
-3. **Weather** - Get weather information (simulated)
-4. **Web Search** - Search for information (simulated)
-
-This agent can handle diverse requests like:
-
-- "What time is it in Tokyo?"
-- "Calculate 25% of 480"
-- "What's the weather in London?"
-- "Search for the population of Paris"
-
-### 🔑 Key Concepts
-
-#### Tool Selection
+## Tool Selection
 
 Claude chooses tools based on:
 
-1. **Tool Name**: Clear, descriptive names
-2. **Tool Description**: What it does and when to use it
+1. **Tool Name**: Clear, descriptive names help Claude understand purpose
+2. **Tool Description**: What it does and when to use it (most important!)
 3. **Input Schema**: What parameters it needs
-4. **Context**: The user's request
+4. **Context**: The user's request and conversation history
 
-#### Good vs Bad Tool Definitions
+### Good vs Bad Tool Definitions
 
 **❌ Bad Example:**
 
@@ -130,144 +124,247 @@ Claude chooses tools based on:
 ]
 ```
 
-### 📋 Defining Multiple Tools
+**Why It Works**: Clear descriptions tell Claude exactly when to use each tool. The description should answer: "What does this tool do?" and "When should I use it?"
 
-#### 1. Calculator Tool
+## Step 1: Basic ReAct Loop Implementation
+
+Let's start with a complete working example:
 
 ```php
+<?php
+# filename: examples/01-react-loop.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+
+// Define calculator tool
 $calculatorTool = [
     'name' => 'calculate',
-    'description' => 'Perform precise mathematical calculations including ' .
-                     'arithmetic (+, -, *, /), percentages, and complex expressions. ' .
-                     'Use this for any mathematical computation.',
+    'description' => 'Perform precise mathematical calculations.',
     'input_schema' => [
         'type' => 'object',
         'properties' => [
             'expression' => [
                 'type' => 'string',
-                'description' => 'Math expression like "25 * 4" or "0.25 * 480"'
+                'description' => 'Mathematical expression to evaluate'
             ]
         ],
         'required' => ['expression']
     ]
 ];
-```
 
-#### 2. Time Tool
-
-```php
-$timeTool = [
-    'name' => 'get_current_time',
-    'description' => 'Get the current time in any timezone. ' .
-                     'Returns time in 24-hour format. ' .
-                     'Use this when user asks "what time is it" or needs current time.',
-    'input_schema' => [
-        'type' => 'object',
-        'properties' => [
-            'timezone' => [
-                'type' => 'string',
-                'description' => 'IANA timezone like "America/New_York", "Europe/London", "Asia/Tokyo"'
-            ]
-        ],
-        'required' => ['timezone']
-    ]
-];
-```
-
-#### 3. Weather Tool
-
-```php
-$weatherTool = [
-    'name' => 'get_weather',
-    'description' => 'Get current weather conditions for a city. ' .
-                     'Returns temperature, conditions (sunny/rainy/cloudy), and humidity. ' .
-                     'Use this when user asks about weather or temperature.',
-    'input_schema' => [
-        'type' => 'object',
-        'properties' => [
-            'city' => [
-                'type' => 'string',
-                'description' => 'City name, can include country like "London, UK"'
-            ]
-        ],
-        'required' => ['city']
-    ]
-];
-```
-
-#### 4. Search Tool
-
-```php
-$searchTool = [
-    'name' => 'search',
-    'description' => 'Search for factual information on any topic. ' .
-                     'Returns relevant information from knowledge sources. ' .
-                     'Use this for facts, statistics, definitions, or recent information.',
-    'input_schema' => [
-        'type' => 'object',
-        'properties' => [
-            'query' => [
-                'type' => 'string',
-                'description' => 'Search query'
-            ]
-        ],
-        'required' => ['query']
-    ]
-];
-```
-
-### 🔧 Tool Implementation
-
-#### Tool Executor Pattern
-
-```php
-function executeTool($toolName, $input) {
-    return match($toolName) {
-        'calculate' => executeCalculator($input['expression']),
-        'get_current_time' => getCurrentTime($input['timezone']),
-        'get_weather' => getWeather($input['city']),
-        'search' => performSearch($input['query']),
-        default => "Unknown tool: {$toolName}"
-    };
-}
-
-function executeCalculator($expression) {
-    // Use safe math parser in production!
-    return (string)eval("return {$expression};");
-}
-
-function getCurrentTime($timezone) {
+// Tool executor
+function executeCalculator(string $expression): string {
     try {
-        $dt = new DateTime('now', new DateTimeZone($timezone));
-        return $dt->format('Y-m-d H:i:s T');
+        // WARNING: eval() for demo only! Use proper parser in production
+        $result = eval("return {$expression};");
+        return (string)$result;
     } catch (Exception $e) {
-        return "Error: Invalid timezone";
+        return "Error: " . $e->getMessage();
     }
 }
 
-function getWeather($city) {
-    // Simulated - in production, call real weather API
-    $conditions = ['sunny', 'cloudy', 'rainy', 'partly cloudy'];
-    $temp = rand(50, 85);
-    $condition = $conditions[array_rand($conditions)];
+// User task requiring multiple steps
+$task = "What is (50 × 30) + (100 - 25)?";
+echo "Task: {$task}\n\n";
 
-    return json_encode([
-        'city' => $city,
-        'temperature' => $temp . '°F',
-        'conditions' => $condition,
+// Initialize conversation
+$messages = [
+    ['role' => 'user', 'content' => $task]
+];
+
+$maxIterations = 10;
+$iteration = 0;
+$finalResponse = null;
+
+// ReAct Loop
+while ($iteration < $maxIterations) {
+    $iteration++;
+    
+    echo "Iteration {$iteration}\n";
+    
+    // REASON: Call Claude with current state
+    $response = $client->messages()->create([
+        'model' => 'claude-sonnet-4-5',
+        'max_tokens' => 4096,
+        'messages' => $messages,
+        'tools' => [$calculatorTool]
+    ]);
+    
+    echo "  Stop Reason: {$response->stop_reason}\n";
+    
+    // Add assistant response to history
+    $messages[] = [
+        'role' => 'assistant',
+        'content' => $response->content
+    ];
+    
+    // Check if done
+    if ($response->stop_reason === 'end_turn') {
+        $finalResponse = $response;
+        break;
+    }
+    
+    // ACT: Execute tools if requested
+    if ($response->stop_reason === 'tool_use') {
+        $toolResults = [];
+        
+        foreach ($response->content as $block) {
+            if ($block['type'] === 'tool_use') {
+                echo "  Using tool: {$block['name']}\n";
+                
+                // Execute tool
+                $result = executeCalculator($block['input']['expression']);
+                echo "  Result: {$result}\n";
+                
+                // Format tool result
+                $toolResults[] = [
+                    'type' => 'tool_result',
+                    'tool_use_id' => $block['id'],
+                    'content' => $result
+                ];
+            }
+        }
+        
+        // OBSERVE: Add results to conversation
+        if (!empty($toolResults)) {
+            $messages[] = [
+                'role' => 'user',
+                'content' => $toolResults
+            ];
+        }
+    }
+}
+
+// Display final answer
+if ($finalResponse) {
+    echo "\nFinal Answer:\n";
+    foreach ($finalResponse->content as $block) {
+        if ($block['type'] === 'text') {
+            echo $block['text'] . "\n";
+        }
+    }
+} else {
+    echo "\nMax iterations reached without completion\n";
+}
+```
+
+**Why It Works**: The ReAct loop maintains conversation history across iterations. Each iteration, Claude reasons about what to do next, acts by requesting tools, and observes the results. The loop continues until Claude determines the task is complete (`stop_reason === 'end_turn'`).
+
+## Step 2: Stop Conditions and Safety
+
+Always implement proper stop conditions:
+
+```php
+<?php
+# filename: examples/02-stop-conditions.php
+declare(strict_types=1);
+
+// Stop conditions
+$stopReasons = [
+    'end_turn' => 'Task complete',
+    'max_tokens' => 'Response truncated',
+    'tool_use' => 'Tool execution needed'
+];
+
+// Safety limits
+$maxIterations = 10;
+$maxTokens = 10000;
+$totalTokens = 0;
+
+while ($iteration < $maxIterations) {
+    $iteration++;
+    
+    $response = $client->messages()->create([...]);
+    
+    $totalTokens += $response->usage->input_tokens + $response->usage->output_tokens;
+    
+    // Check token limit
+    if ($totalTokens > $maxTokens) {
+        echo "Token limit reached\n";
+        break;
+    }
+    
+    // Check stop reason
+    if ($response->stop_reason === 'end_turn') {
+        break; // Success
+    }
+    
+    // Handle tool use...
+}
+```
+
+## Step 3: Debugging Agent Reasoning
+
+Add debugging to understand agent behavior:
+
+```php
+<?php
+# filename: examples/03-debugging.php
+declare(strict_types=1);
+
+function debugIteration(int $iteration, object $response): void {
+    echo "\n╔════ Iteration {$iteration} ════╗\n";
+    echo "Stop Reason: {$response->stop_reason}\n";
+    echo "Tokens: {$response->usage->input_tokens} in, {$response->usage->output_tokens} out\n";
+    
+    foreach ($response->content as $block) {
+        if ($block['type'] === 'text') {
+            echo "Text: {$block['text']}\n";
+        } elseif ($block['type'] === 'tool_use') {
+            echo "Tool: {$block['name']}\n";
+            echo "  Input: " . json_encode($block['input']) . "\n";
+        }
+    }
+}
+```
+
+## Common Issues and Solutions
+
+### Issue: Infinite Loop
+
+**Symptom**: Agent keeps making tool calls without completing
+
+**Solution**: Always set iteration limits and check for progress
+
+```php
+$maxIterations = 10;
+$hasProgressed = false;
+$previousToolCount = 0;
+
+while ($iteration < $maxIterations) {
+    // ... execute loop ...
+    
+    $currentToolCount = count(array_filter($response->content, fn($b) => $b['type'] === 'tool_use'));
+    
+    if ($currentToolCount > $previousToolCount) {
+        $hasProgressed = true;
+    }
+    
+    if ($iteration >= 5 && !$hasProgressed) {
+        echo "Warning: Agent may be stuck\n";
+        break;
+    }
+}
+```
 
 ## Next Steps
 
-Continue to the next chapter in the agent series, or explore related topics:
+Continue to the next chapter in the agent series:
 
-- **[Chapter 44](/series/claude-php-developers/chapters/44-*)** - Next agent chapter
+- **[Chapter 44](/series/claude-php-developers/chapters/44-production-ready-agent)** - Next agent chapter
 - **[Chapter 33: Multi-Agent Systems](/series/claude-php-developers/chapters/33-multi-agent-systems)** - Advanced coordination
-- **[Claude PHP SDK Tutorials](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials)** - Complete tutorial series
+- **[Chapter 40: Introduction to Agentic AI](/series/claude-php-developers/chapters/40-introduction-to-agentic-ai)** - Agent fundamentals
 
 ## Further Reading
 
-- [Claude PHP SDK Repository](https://github.com/claude-php/Claude-PHP-SDK) - Source code and examples
-- [Tutorial 3 Source](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/03-*) - Original tutorial
+- [Claude PHP SDK Tutorials](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials) - Complete tutorial series
+- [Tutorial 3 Source](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/03-multi-tool-agent) - Original tutorial with code examples
+- [ReAct Paper](https://arxiv.org/abs/2210.03629) - Original research paper
 
 <ChapterCheckbox
   seriesId="claude-php-developers"
@@ -277,19 +374,19 @@ Continue to the next chapter in the agent series, or explore related topics:
 
 ---
 
-Continue to [Chapter 44](/series/claude-php-developers/chapters/44-*) or explore [all chapters](/series/claude-php-developers).
+Continue to [Chapter 44](/series/claude-php-developers/chapters/44-production-ready-agent) or explore [all chapters](/series/claude-php-developers).
 
 ## 💻 Code Samples
 
 Code examples for this chapter are available in the Claude PHP SDK repository:
 
-**[View Tutorial 3 Code](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/03-*)**
+**[View Tutorial 3 Code](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/03-multi-tool-agent)**
 
 Clone and run locally:
 ```bash
 git clone https://github.com/claude-php/Claude-PHP-SDK.git
-cd Claude-PHP-SDK/tutorials/03-*
+cd Claude-PHP-SDK/tutorials/03-multi-tool-agent
 composer install
 export ANTHROPIC_API_KEY="sk-ant-your-key-here"
-php *.php
+php react_agent.php
 ```

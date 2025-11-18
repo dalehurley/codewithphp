@@ -6,7 +6,7 @@ chapter: 51
 order: 51
 difficulty: "Advanced"
 prerequisites:
-  - "/series/claude-php-developers/chapters/50-*"
+  - "/series/claude-php-developers/chapters/50-reflection-self-critique"
   - "/series/claude-php-developers/chapters/11-tool-use-fundamentals"
 ---
 
@@ -26,9 +26,11 @@ prerequisites:
 
 ## Overview
 
-This chapter is based on Tutorial 11 from the [Claude PHP SDK Tutorial Series](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials). 
+Hierarchical Agents enables agents to solve complex multi-step problems through iterative reasoning and tool execution. This chapter teaches you to implement the ReAct (Reason-Act-Observe) pattern, handle multiple tool calls in sequence, maintain conversation state, and build production-ready agents that can tackle complex tasks autonomously.
 
-**Estimated Time**: 60 minutes
+By the end of this chapter, you'll understand how to build agents that can reason about problems, execute tools iteratively, observe results, and adapt their approach until the task is complete.
+
+**Estimated Time**: 60-75 min
 
 ## Prerequisites
 
@@ -38,237 +40,321 @@ Before starting, ensure you have:
 - ✓ **Completed Chapter 11: Tool Use Fundamentals** - Tool definitions and execution
 - ✓ **PHP 8.4+** with Composer installed
 - ✓ **Claude PHP SDK** installed: `composer require claude-php/claude-php-sdk`
+- ✓ **API Key** configured in environment
 
-## Learning Objectives
+## What You'll Build
 
-By the end of this chapter, you'll be able to:
+By the end of this chapter, you will have created:
 
-- Build master-worker agent architectures
-- Implement task delegation strategies
-- Create specialized sub-agents for different domains
-- Aggregate and synthesize results from multiple agents
-- Handle inter-agent communication
-- Optimize parallel vs sequential execution
-- Design agent hierarchies for real-world problems
+- A complete ReAct agent implementation with iterative reasoning
+- Tool execution handlers for multi-step workflows
+- Conversation state management across iterations
+- Proper stop condition handling
+- Debugging utilities for agent reasoning
+- Production-ready patterns for error handling and iteration limits
 
-## Tutorial Content
+## Objectives
 
-> **Note**: This chapter is based on the [Claude PHP SDK Tutorial {tutorial_num}](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/{tutorial_num:02d}-*).
-> For the complete tutorial with working code examples, visit the SDK repository.
+By completing this chapter, you will:
 
+- **Understand** the ReAct pattern and its role in agentic AI
+- **Implement** iterative reasoning loops with proper state management
+- **Handle** multiple tool calls in sequence
+- **Maintain** conversation history across iterations
+- **Implement** proper stop conditions and iteration limits
+- **Debug** agent reasoning steps effectively
+- **Build** production-ready agents with error handling
 
+## The ReAct Pattern
 
-Hierarchical agent systems organize multiple specialized agents under a coordinator, enabling efficient task delegation, parallel execution, and domain-specific expertise. This pattern is essential for complex, multi-domain tasks.
+**ReAct** stands for **Reason** → **Act** → **Observe**, and it's the fundamental pattern for autonomous agents.
 
-### 🎯 Learning Objectives
-
-By the end of this tutorial, you'll be able to:
-
-- Build master-worker agent architectures
-- Implement task delegation strategies
-- Create specialized sub-agents for different domains
-- Aggregate and synthesize results from multiple agents
-- Handle inter-agent communication
-- Optimize parallel vs sequential execution
-- Design agent hierarchies for real-world problems
-
-### 🏗️ What We're Building
-
-A hierarchical system with:
-
-1. **Master Agent (Coordinator)** - Analyzes tasks and delegates
-2. **Specialized Workers** - Domain experts (math, research, writing, coding)
-3. **Task Router** - Intelligent agent selection
-4. **Result Synthesizer** - Combines worker outputs
-5. **Error Handler** - Manages worker failures
-
-### 📋 Prerequisites
-
-Make sure you have:
-
-- Completed [Tutorial 10: Reflection](../10-reflection/)
-- Understanding of agent patterns from previous tutorials
-- PHP 8.1+ installed
-- Claude PHP SDK configured
-
-### 🤔 What is Hierarchical Architecture?
-
-Hierarchical systems organize agents in layers:
+### The Loop Flow
 
 ```
-                 ┌─────────────────┐
-                 │  Master Agent   │
-                 │  (Coordinator)  │
-                 └────────┬────────┘
-                          │
-         ┌────────────────┼────────────────┐
-         │                │                │
-    ┌────▼────┐      ┌────▼────┐     ┌────▼────┐
-    │  Math   │      │Research │     │ Writing │
-    │  Agent  │      │ Agent   │     │  Agent  │
-    └─────────┘      └─────────┘     └─────────┘
+Start
+  ↓
+┌─────────────────────────────────┐
+│  REASON                         │
+│  "What do I need to do next?"   │
+│  "What info is missing?"        │
+└───────────┬─────────────────────┘
+            ↓
+┌─────────────────────────────────┐
+│  ACT                            │
+│  "Call tool X with params Y"    │
+│  Or "I have enough to answer"   │
+└───────────┬─────────────────────┘
+            ↓
+┌─────────────────────────────────┐
+│  OBSERVE                        │
+│  "Tool returned Z"              │
+│  "Do I have what I need?"       │
+└───────────┬─────────────────────┘
+            ↓
+        ┌───────┐
+        │ Done? │
+        └───┬───┘
+            │
+      No ───┴─── Yes
+      │           │
+      │           ↓
+      │        [Return Answer]
+      │
+      └──> (Back to REASON)
 ```
 
-#### Why Hierarchical?
+### Why ReAct Matters
 
-**Advantages:**
-- ✅ **Specialization** - Each agent excels in its domain
-- ✅ **Scalability** - Add agents without redesigning system
-- ✅ **Parallel Execution** - Multiple agents work simultaneously
-- ✅ **Clear Responsibility** - Each agent has defined role
-- ✅ **Maintainability** - Isolated components
+Without ReAct, agents can only:
+- Answer questions with their training data
+- Make ONE tool call per task
 
-**Disadvantages:**
-- ❌ **Complexity** - More components to manage
-- ❌ **Coordination Overhead** - Master must orchestrate
-- ❌ **Potential Bottleneck** - Master can be limiting factor
+With ReAct, agents can:
+- Gather information step-by-step
+- Chain multiple tools together
+- Adapt based on tool results
+- Solve complex multi-step problems
 
-### 🔑 Key Concepts
+## Step 1: Basic ReAct Loop Implementation
 
-#### 1. Task Decomposition
-
-Master agent breaks complex tasks into subtasks:
+Let's start with a complete working example:
 
 ```php
-$masterPrompt = "Complex task: {$task}\n\n" .
-                "Available specialized agents:\n" .
-                "- math_agent: Calculations, statistics, formulas\n" .
-                "- research_agent: Information lookup, fact-checking\n" .
-                "- writing_agent: Composition, editing, formatting\n" .
-                "- code_agent: Programming, algorithms, debugging\n\n" .
-                "Decompose into subtasks. For each subtask specify:\n" .
-                "1. Which agent should handle it\n" .
-                "2. What the subtask is\n" .
-                "3. Any dependencies on other subtasks\n" .
-                "4. Expected output";
-```
+<?php
+# filename: examples/01-react-loop.php
+declare(strict_types=1);
 
-#### 2. Agent Specialization
+require __DIR__ . '/../vendor/autoload.php';
 
-Each worker has specific expertise:
+use ClaudePhp\ClaudePhp;
 
-```php
-class MathAgent {
-    private $system = "You are a mathematics expert. " .
-                     "Solve calculations precisely. " .
-                     "Provide step-by-step solutions.";
-    private $tools = [$calculatorTool, $statisticsTool];
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+
+// Define calculator tool
+$calculatorTool = [
+    'name' => 'calculate',
+    'description' => 'Perform precise mathematical calculations.',
+    'input_schema' => [
+        'type' => 'object',
+        'properties' => [
+            'expression' => [
+                'type' => 'string',
+                'description' => 'Mathematical expression to evaluate'
+            ]
+        ],
+        'required' => ['expression']
+    ]
+];
+
+// Tool executor
+function executeCalculator(string $expression): string {
+    try {
+        // WARNING: eval() for demo only! Use proper parser in production
+        $result = eval("return {$expression};");
+        return (string)$result;
+    } catch (Exception $e) {
+        return "Error: " . $e->getMessage();
+    }
 }
 
-class ResearchAgent {
-    private $system = "You are a research specialist. " .
-                     "Find accurate information. " .
-                     "Cite sources.";
-    private $tools = [$searchTool, $webFetchTool];
-}
+// User task requiring multiple steps
+$task = "What is (50 × 30) + (100 - 25)?";
+echo "Task: {$task}\n\n";
 
-class WritingAgent {
-    private $system = "You are a professional writer. " .
-                     "Create clear, engaging content. " .
-                     "Use proper structure.";
-    private $tools = []; // Pure language work
-}
-```
+// Initialize conversation
+$messages = [
+    ['role' => 'user', 'content' => $task]
+];
 
-#### 3. Delegation Strategy
+$maxIterations = 10;
+$iteration = 0;
+$finalResponse = null;
 
-Route tasks to appropriate agents:
-
-```php
-function selectAgent($subtask, $agents) {
-    // Analyze subtask requirements
-    $keywords = extractKeywords($subtask);
+// ReAct Loop
+while ($iteration < $maxIterations) {
+    $iteration++;
     
-    // Match to agent specialties
-    foreach ($agents as $agent) {
-        $matchScore = calculateMatch($keywords, $agent->specialty);
-        if ($matchScore > 0.7) {
-            return $agent;
-        }
+    echo "Iteration {$iteration}\n";
+    
+    // REASON: Call Claude with current state
+    $response = $client->messages()->create([
+        'model' => 'claude-sonnet-4-5',
+        'max_tokens' => 4096,
+        'messages' => $messages,
+        'tools' => [$calculatorTool]
+    ]);
+    
+    echo "  Stop Reason: {$response->stop_reason}\n";
+    
+    // Add assistant response to history
+    $messages[] = [
+        'role' => 'assistant',
+        'content' => $response->content
+    ];
+    
+    // Check if done
+    if ($response->stop_reason === 'end_turn') {
+        $finalResponse = $response;
+        break;
     }
     
-    return $defaultAgent;
-}
-```
-
-#### 4. Result Aggregation
-
-Combine outputs from multiple agents:
-
-```php
-function synthesizeResults($task, $results) {
-    $synthesisPrompt = "Original task: {$task}\n\n";
-    
-    foreach ($results as $agent => $output) {
-        $synthesisPrompt .= "{$agent} result:\n{$output}\n\n";
-    }
-    
-    $synthesisPrompt .= "Synthesize these results into a coherent final answer.";
-    
-    return synthesize($synthesisPrompt);
-}
-```
-
-### 💡 Implementation Patterns
-
-#### Basic Hierarchical System
-
-```php
-class HierarchicalSystem {
-    private $master;
-    private $workers = [];
-    
-    public function __construct($client) {
-        $this->master = new MasterAgent($client);
-        $this->workers['math'] = new MathAgent($client);
-        $this->workers['research'] = new ResearchAgent($client);
-        $this->workers['writing'] = new WritingAgent($client);
-    }
-    
-    public function execute($task) {
-        // 1. Decompose
-        $subtasks = $this->master->decompose($task, $this->workers);
+    // ACT: Execute tools if requested
+    if ($response->stop_reason === 'tool_use') {
+        $toolResults = [];
         
-        // 2. Delegate and execute
-        $results = [];
-        foreach ($subtasks as $subtask) {
-            $agent = $this->workers[$subtask->agent];
-            $results[$subtask->agent] = $agent->execute($subtask->task);
+        foreach ($response->content as $block) {
+            if ($block['type'] === 'tool_use') {
+                echo "  Using tool: {$block['name']}\n";
+                
+                // Execute tool
+                $result = executeCalculator($block['input']['expression']);
+                echo "  Result: {$result}\n";
+                
+                // Format tool result
+                $toolResults[] = [
+                    'type' => 'tool_result',
+                    'tool_use_id' => $block['id'],
+                    'content' => $result
+                ];
+            }
         }
         
-        // 3. Synthesize
-        return $this->master->synthesize($task, $results);
+        // OBSERVE: Add results to conversation
+        if (!empty($toolResults)) {
+            $messages[] = [
+                'role' => 'user',
+                'content' => $toolResults
+            ];
+        }
+    }
+}
+
+// Display final answer
+if ($finalResponse) {
+    echo "\nFinal Answer:\n";
+    foreach ($finalResponse->content as $block) {
+        if ($block['type'] === 'text') {
+            echo $block['text'] . "\n";
+        }
+    }
+} else {
+    echo "\nMax iterations reached without completion\n";
+}
+```
+
+**Why It Works**: The ReAct loop maintains conversation history across iterations. Each iteration, Claude reasons about what to do next, acts by requesting tools, and observes the results. The loop continues until Claude determines the task is complete (`stop_reason === 'end_turn'`).
+
+## Step 2: Stop Conditions and Safety
+
+Always implement proper stop conditions:
+
+```php
+<?php
+# filename: examples/02-stop-conditions.php
+declare(strict_types=1);
+
+// Stop conditions
+$stopReasons = [
+    'end_turn' => 'Task complete',
+    'max_tokens' => 'Response truncated',
+    'tool_use' => 'Tool execution needed'
+];
+
+// Safety limits
+$maxIterations = 10;
+$maxTokens = 10000;
+$totalTokens = 0;
+
+while ($iteration < $maxIterations) {
+    $iteration++;
+    
+    $response = $client->messages()->create([...]);
+    
+    $totalTokens += $response->usage->input_tokens + $response->usage->output_tokens;
+    
+    // Check token limit
+    if ($totalTokens > $maxTokens) {
+        echo "Token limit reached\n";
+        break;
+    }
+    
+    // Check stop reason
+    if ($response->stop_reason === 'end_turn') {
+        break; // Success
+    }
+    
+    // Handle tool use...
+}
+```
+
+## Step 3: Debugging Agent Reasoning
+
+Add debugging to understand agent behavior:
+
+```php
+<?php
+# filename: examples/03-debugging.php
+declare(strict_types=1);
+
+function debugIteration(int $iteration, object $response): void {
+    echo "\n╔════ Iteration {$iteration} ════╗\n";
+    echo "Stop Reason: {$response->stop_reason}\n";
+    echo "Tokens: {$response->usage->input_tokens} in, {$response->usage->output_tokens} out\n";
+    
+    foreach ($response->content as $block) {
+        if ($block['type'] === 'text') {
+            echo "Text: {$block['text']}\n";
+        } elseif ($block['type'] === 'tool_use') {
+            echo "Tool: {$block['name']}\n";
+            echo "  Input: " . json_encode($block['input']) . "\n";
+        }
     }
 }
 ```
 
-#### Worker Agent Implementation
+## Common Issues and Solutions
+
+### Issue: Infinite Loop
+
+**Symptom**: Agent keeps making tool calls without completing
+
+**Solution**: Always set iteration limits and check for progress
 
 ```php
-class WorkerAgent {
-    private $client;
-    private $system;
-    private $tools;
+$maxIterations = 10;
+$hasProgressed = false;
+$previousToolCount = 0;
+
+while ($iteration < $maxIterations) {
+    // ... execute loop ...
     
-    public function __construct($client, $system, $tools = []) {
-        $this->client = $client;
-        $this->system = $system;
-        $this->tools = $tools;
+    $currentToolCount = count(array_filter($response->content, fn($b) => $b['type'] === 'tool_use'));
+    
+    if ($currentToolCount > $previousToolCount) {
+        $hasProgressed = true;
     }
     
+    if ($iteration >= 5 && !$hasProgressed) {
+        echo "Warning: Agent may be stuck\n";
+        break;
+    }
+}
+```
 
 ## Next Steps
 
-Continue to the next chapter in the agent series, or explore related topics:
+Continue to the next chapter in the agent series:
 
-- **[Chapter 52](/series/claude-php-developers/chapters/52-*)** - Next agent chapter
+- **[Chapter 52](/series/claude-php-developers/chapters/52-multi-agent-debate)** - Next agent chapter
 - **[Chapter 33: Multi-Agent Systems](/series/claude-php-developers/chapters/33-multi-agent-systems)** - Advanced coordination
-- **[Claude PHP SDK Tutorials](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials)** - Complete tutorial series
+- **[Chapter 40: Introduction to Agentic AI](/series/claude-php-developers/chapters/40-introduction-to-agentic-ai)** - Agent fundamentals
 
 ## Further Reading
 
-- [Claude PHP SDK Repository](https://github.com/claude-php/Claude-PHP-SDK) - Source code and examples
-- [Tutorial 11 Source](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/11-*) - Original tutorial
+- [Claude PHP SDK Tutorials](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials) - Complete tutorial series
+- [Tutorial 11 Source](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/11-hierarchical-agents) - Original tutorial with code examples
+- [ReAct Paper](https://arxiv.org/abs/2210.03629) - Original research paper
 
 <ChapterCheckbox
   seriesId="claude-php-developers"
@@ -278,19 +364,19 @@ Continue to the next chapter in the agent series, or explore related topics:
 
 ---
 
-Continue to [Chapter 52](/series/claude-php-developers/chapters/52-*) or explore [all chapters](/series/claude-php-developers).
+Continue to [Chapter 52](/series/claude-php-developers/chapters/52-multi-agent-debate) or explore [all chapters](/series/claude-php-developers).
 
 ## 💻 Code Samples
 
 Code examples for this chapter are available in the Claude PHP SDK repository:
 
-**[View Tutorial 11 Code](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/11-*)**
+**[View Tutorial 11 Code](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/11-hierarchical-agents)**
 
 Clone and run locally:
 ```bash
 git clone https://github.com/claude-php/Claude-PHP-SDK.git
-cd Claude-PHP-SDK/tutorials/11-*
+cd Claude-PHP-SDK/tutorials/11-hierarchical-agents
 composer install
 export ANTHROPIC_API_KEY="sk-ant-your-key-here"
-php *.php
+php react_agent.php
 ```

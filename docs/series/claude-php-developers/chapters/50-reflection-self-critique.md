@@ -6,7 +6,7 @@ chapter: 50
 order: 50
 difficulty: "Intermediate"
 prerequisites:
-  - "/series/claude-php-developers/chapters/49-*"
+  - "/series/claude-php-developers/chapters/49-plan-and-execute"
   - "/series/claude-php-developers/chapters/11-tool-use-fundamentals"
 ---
 
@@ -26,9 +26,11 @@ prerequisites:
 
 ## Overview
 
-This chapter is based on Tutorial 10 from the [Claude PHP SDK Tutorial Series](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials). 
+Reflection & Self-Critique enables agents to solve complex multi-step problems through iterative reasoning and tool execution. This chapter teaches you to implement the ReAct (Reason-Act-Observe) pattern, handle multiple tool calls in sequence, maintain conversation state, and build production-ready agents that can tackle complex tasks autonomously.
 
-**Estimated Time**: 45 minutes
+By the end of this chapter, you'll understand how to build agents that can reason about problems, execute tools iteratively, observe results, and adapt their approach until the task is complete.
+
+**Estimated Time**: 45-60 min
 
 ## Prerequisites
 
@@ -38,237 +40,321 @@ Before starting, ensure you have:
 - ✓ **Completed Chapter 11: Tool Use Fundamentals** - Tool definitions and execution
 - ✓ **PHP 8.4+** with Composer installed
 - ✓ **Claude PHP SDK** installed: `composer require claude-php/claude-php-sdk`
+- ✓ **API Key** configured in environment
 
-## Learning Objectives
+## What You'll Build
 
-By the end of this chapter, you'll be able to:
+By the end of this chapter, you will have created:
 
-- Implement reflection loops for self-evaluation
-- Build agents that critique their own work
-- Use iterative refinement to improve outputs
-- Define quality criteria for different tasks
-- Apply reflection to code, writing, and decisions
-- Combine reflection with other patterns
-- Understand when reflection adds value vs overhead
+- A complete ReAct agent implementation with iterative reasoning
+- Tool execution handlers for multi-step workflows
+- Conversation state management across iterations
+- Proper stop condition handling
+- Debugging utilities for agent reasoning
+- Production-ready patterns for error handling and iteration limits
 
-## Tutorial Content
+## Objectives
 
-> **Note**: This chapter is based on the [Claude PHP SDK Tutorial {tutorial_num}](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/{tutorial_num:02d}-*).
-> For the complete tutorial with working code examples, visit the SDK repository.
+By completing this chapter, you will:
 
+- **Understand** the ReAct pattern and its role in agentic AI
+- **Implement** iterative reasoning loops with proper state management
+- **Handle** multiple tool calls in sequence
+- **Maintain** conversation history across iterations
+- **Implement** proper stop conditions and iteration limits
+- **Debug** agent reasoning steps effectively
+- **Build** production-ready agents with error handling
 
+## The ReAct Pattern
 
-Reflection enables agents to evaluate their own outputs, identify issues, and iteratively improve results. This meta-cognitive capability is key to building high-quality, self-correcting AI systems.
+**ReAct** stands for **Reason** → **Act** → **Observe**, and it's the fundamental pattern for autonomous agents.
 
-### 🎯 Learning Objectives
+### The Loop Flow
 
-By the end of this tutorial, you'll be able to:
-
-- Implement reflection loops for self-evaluation
-- Build agents that critique their own work
-- Use iterative refinement to improve outputs
-- Define quality criteria for different tasks
-- Apply reflection to code, writing, and decisions
-- Combine reflection with other patterns
-- Understand when reflection adds value vs overhead
-
-### 🏗️ What We're Building
-
-We'll implement reflection agents that:
-
-1. **Generate** - Create initial output
-2. **Reflect** - Evaluate quality and identify issues  
-3. **Refine** - Improve based on reflection
-4. **Iterate** - Repeat until quality threshold met
-5. **Compare** - Show before/after improvements
-
-### 📋 Prerequisites
-
-Make sure you have:
-
-- Completed [Tutorial 9: Plan-and-Execute](../09-plan-and-execute/)
-- Understanding of quality assessment
-- PHP 8.1+ installed
-- Claude PHP SDK configured
-
-### 🤔 What is Reflection?
-
-Reflection is the ability to examine and evaluate one's own outputs, thoughts, and processes. In AI agents, reflection enables:
-
-- **Self-evaluation** - Assess quality of outputs
-- **Error detection** - Find mistakes and issues
-- **Iterative improvement** - Refine through multiple passes
-- **Learning** - Understand what works and what doesn't
-
-#### Simple Example
-
-**Without Reflection:**
 ```
-Task: Write a function to reverse a string
-Output: function reverse($s) { return strrev($s); }
-Done!
+Start
+  ↓
+┌─────────────────────────────────┐
+│  REASON                         │
+│  "What do I need to do next?"   │
+│  "What info is missing?"        │
+└───────────┬─────────────────────┘
+            ↓
+┌─────────────────────────────────┐
+│  ACT                            │
+│  "Call tool X with params Y"    │
+│  Or "I have enough to answer"   │
+└───────────┬─────────────────────┘
+            ↓
+┌─────────────────────────────────┐
+│  OBSERVE                        │
+│  "Tool returned Z"              │
+│  "Do I have what I need?"       │
+└───────────┬─────────────────────┘
+            ↓
+        ┌───────┐
+        │ Done? │
+        └───┬───┘
+            │
+      No ───┴─── Yes
+      │           │
+      │           ↓
+      │        [Return Answer]
+      │
+      └──> (Back to REASON)
 ```
 
-**With Reflection:**
-```
-Task: Write a function to reverse a string
+### Why ReAct Matters
 
-Generate:
-function reverse($s) { return strrev($s); }
+Without ReAct, agents can only:
+- Answer questions with their training data
+- Make ONE tool call per task
 
-Reflect:
-- Uses built-in function (good)
-- No input validation (issue)
-- No documentation (issue)
-- No edge case handling (issue)
+With ReAct, agents can:
+- Gather information step-by-step
+- Chain multiple tools together
+- Adapt based on tool results
+- Solve complex multi-step problems
 
-Refine:
-/**
- * Reverses a string safely
- * @param string|null $s Input string
- * @return string Reversed string
- */
-function reverse(?string $s): string {
-    if ($s === null || $s === '') {
-        return '';
-    }
-    return strrev($s);
-}
+## Step 1: Basic ReAct Loop Implementation
 
-Better!
-```
-
-### 🔑 Key Concepts
-
-#### 1. Generate-Reflect-Refine Loop
-
-The core pattern:
+Let's start with a complete working example:
 
 ```php
-$output = generate($task);
+<?php
+# filename: examples/01-react-loop.php
+declare(strict_types=1);
 
-for ($iteration = 1; $iteration <= $maxIterations; $iteration++) {
-    $reflection = reflect($output, $criteria);
+require __DIR__ . '/../vendor/autoload.php';
+
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+
+// Define calculator tool
+$calculatorTool = [
+    'name' => 'calculate',
+    'description' => 'Perform precise mathematical calculations.',
+    'input_schema' => [
+        'type' => 'object',
+        'properties' => [
+            'expression' => [
+                'type' => 'string',
+                'description' => 'Mathematical expression to evaluate'
+            ]
+        ],
+        'required' => ['expression']
+    ]
+];
+
+// Tool executor
+function executeCalculator(string $expression): string {
+    try {
+        // WARNING: eval() for demo only! Use proper parser in production
+        $result = eval("return {$expression};");
+        return (string)$result;
+    } catch (Exception $e) {
+        return "Error: " . $e->getMessage();
+    }
+}
+
+// User task requiring multiple steps
+$task = "What is (50 × 30) + (100 - 25)?";
+echo "Task: {$task}\n\n";
+
+// Initialize conversation
+$messages = [
+    ['role' => 'user', 'content' => $task]
+];
+
+$maxIterations = 10;
+$iteration = 0;
+$finalResponse = null;
+
+// ReAct Loop
+while ($iteration < $maxIterations) {
+    $iteration++;
     
-    $score = extractScore($reflection);
+    echo "Iteration {$iteration}\n";
     
-    if ($score >= $qualityThreshold) {
-        echo "Quality threshold reached!\n";
+    // REASON: Call Claude with current state
+    $response = $client->messages()->create([
+        'model' => 'claude-sonnet-4-5',
+        'max_tokens' => 4096,
+        'messages' => $messages,
+        'tools' => [$calculatorTool]
+    ]);
+    
+    echo "  Stop Reason: {$response->stop_reason}\n";
+    
+    // Add assistant response to history
+    $messages[] = [
+        'role' => 'assistant',
+        'content' => $response->content
+    ];
+    
+    // Check if done
+    if ($response->stop_reason === 'end_turn') {
+        $finalResponse = $response;
         break;
     }
     
-    $issues = extractIssues($reflection);
-    $output = refine($output, $issues);
+    // ACT: Execute tools if requested
+    if ($response->stop_reason === 'tool_use') {
+        $toolResults = [];
+        
+        foreach ($response->content as $block) {
+            if ($block['type'] === 'tool_use') {
+                echo "  Using tool: {$block['name']}\n";
+                
+                // Execute tool
+                $result = executeCalculator($block['input']['expression']);
+                echo "  Result: {$result}\n";
+                
+                // Format tool result
+                $toolResults[] = [
+                    'type' => 'tool_result',
+                    'tool_use_id' => $block['id'],
+                    'content' => $result
+                ];
+            }
+        }
+        
+        // OBSERVE: Add results to conversation
+        if (!empty($toolResults)) {
+            $messages[] = [
+                'role' => 'user',
+                'content' => $toolResults
+            ];
+        }
+    }
 }
 
-return $output;
+// Display final answer
+if ($finalResponse) {
+    echo "\nFinal Answer:\n";
+    foreach ($finalResponse->content as $block) {
+        if ($block['type'] === 'text') {
+            echo $block['text'] . "\n";
+        }
+    }
+} else {
+    echo "\nMax iterations reached without completion\n";
+}
 ```
 
-#### 2. Quality Criteria
+**Why It Works**: The ReAct loop maintains conversation history across iterations. Each iteration, Claude reasons about what to do next, acts by requesting tools, and observes the results. The loop continues until Claude determines the task is complete (`stop_reason === 'end_turn'`).
 
-Define what "good" means for your task:
+## Step 2: Stop Conditions and Safety
+
+Always implement proper stop conditions:
 
 ```php
-$criteria = [
-    'correctness' => [
-        'weight' => 0.4,
-        'description' => 'Is the solution correct and accurate?'
-    ],
-    'completeness' => [
-        'weight' => 0.3,
-        'description' => 'Are all requirements addressed?'
-    ],
-    'clarity' => [
-        'weight' => 0.2,
-        'description' => 'Is it easy to understand?'
-    ],
-    'efficiency' => [
-        'weight' => 0.1,
-        'description' => 'Is it reasonably optimal?'
-    ]
+<?php
+# filename: examples/02-stop-conditions.php
+declare(strict_types=1);
+
+// Stop conditions
+$stopReasons = [
+    'end_turn' => 'Task complete',
+    'max_tokens' => 'Response truncated',
+    'tool_use' => 'Tool execution needed'
 ];
-```
 
-#### 3. Reflection Prompts
+// Safety limits
+$maxIterations = 10;
+$maxTokens = 10000;
+$totalTokens = 0;
 
-Different types of reflection questions:
-
-**Quality Assessment:**
-```
-"Evaluate this output on a scale of 1-10 for:
-- Correctness (1-10)
-- Completeness (1-10)
-- Clarity (1-10)
-Overall score and reasoning?"
-```
-
-**Issue Identification:**
-```
-"Review this carefully and identify:
-1. Errors or mistakes
-2. Missing information
-3. Unclear explanations
-4. Potential improvements"
-```
-
-**Comparative Analysis:**
-```
-"Compare this output to best practices:
-- What aligns with standards?
-- What deviates from best practices?
-- What could be better?"
-```
-
-#### 4. Targeted Refinement
-
-Fix specific issues:
-
-```php
-$refinementPrompt = "Improve this output by:\n";
-foreach ($issues as $issue) {
-    $refinementPrompt .= "- {$issue['type']}: {$issue['description']}\n";
-}
-$refinementPrompt .= "\nOriginal output:\n{$output}";
-```
-
-### 💡 Reflection Implementations
-
-#### Basic Reflection Function
-
-```php
-function reflectAndRefine($client, $task, $initialOutput, $maxIterations = 3) {
-    $output = $initialOutput;
-    $history = [];
+while ($iteration < $maxIterations) {
+    $iteration++;
     
-    for ($i = 0; $i < $maxIterations; $i++) {
-        echo "Iteration " . ($i + 1) . "\n";
-        echo str_repeat("-", 60) . "\n";
-        
-        // Reflect
-        $reflectionPrompt = "Task: {$task}\n\n" .
-                           "Current output:\n{$output}\n\n" .
-                           "Evaluate this output:\n" .
-                           "1. What's working well?\n" .
-                           "2. What issues exist?\n" .
-                           "3. How can it be improved?\n" .
-                           "4. Overall quality score (1-10)";
-        
-        $reflection = $client->messages()->create([
-            'model' => 'claude-sonnet-4-5',
-            'max_tokens' => 1024,
+    $response = $client->messages()->create([...]);
+    
+    $totalTokens += $response->usage->input_tokens + $response->usage->output_tokens;
+    
+    // Check token limit
+    if ($totalTokens > $maxTokens) {
+        echo "Token limit reached\n";
+        break;
+    }
+    
+    // Check stop reason
+    if ($response->stop_reason === 'end_turn') {
+        break; // Success
+    }
+    
+    // Handle tool use...
+}
+```
+
+## Step 3: Debugging Agent Reasoning
+
+Add debugging to understand agent behavior:
+
+```php
+<?php
+# filename: examples/03-debugging.php
+declare(strict_types=1);
+
+function debugIteration(int $iteration, object $response): void {
+    echo "\n╔════ Iteration {$iteration} ════╗\n";
+    echo "Stop Reason: {$response->stop_reason}\n";
+    echo "Tokens: {$response->usage->input_tokens} in, {$response->usage->output_tokens} out\n";
+    
+    foreach ($response->content as $block) {
+        if ($block['type'] === 'text') {
+            echo "Text: {$block['text']}\n";
+        } elseif ($block['type'] === 'tool_use') {
+            echo "Tool: {$block['name']}\n";
+            echo "  Input: " . json_encode($block['input']) . "\n";
+        }
+    }
+}
+```
+
+## Common Issues and Solutions
+
+### Issue: Infinite Loop
+
+**Symptom**: Agent keeps making tool calls without completing
+
+**Solution**: Always set iteration limits and check for progress
+
+```php
+$maxIterations = 10;
+$hasProgressed = false;
+$previousToolCount = 0;
+
+while ($iteration < $maxIterations) {
+    // ... execute loop ...
+    
+    $currentToolCount = count(array_filter($response->content, fn($b) => $b['type'] === 'tool_use'));
+    
+    if ($currentToolCount > $previousToolCount) {
+        $hasProgressed = true;
+    }
+    
+    if ($iteration >= 5 && !$hasProgressed) {
+        echo "Warning: Agent may be stuck\n";
+        break;
+    }
+}
+```
 
 ## Next Steps
 
-Continue to the next chapter in the agent series, or explore related topics:
+Continue to the next chapter in the agent series:
 
-- **[Chapter 51](/series/claude-php-developers/chapters/51-*)** - Next agent chapter
+- **[Chapter 51](/series/claude-php-developers/chapters/51-hierarchical-agents)** - Next agent chapter
 - **[Chapter 33: Multi-Agent Systems](/series/claude-php-developers/chapters/33-multi-agent-systems)** - Advanced coordination
-- **[Claude PHP SDK Tutorials](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials)** - Complete tutorial series
+- **[Chapter 40: Introduction to Agentic AI](/series/claude-php-developers/chapters/40-introduction-to-agentic-ai)** - Agent fundamentals
 
 ## Further Reading
 
-- [Claude PHP SDK Repository](https://github.com/claude-php/Claude-PHP-SDK) - Source code and examples
-- [Tutorial 10 Source](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/10-*) - Original tutorial
+- [Claude PHP SDK Tutorials](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials) - Complete tutorial series
+- [Tutorial 10 Source](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/10-reflection) - Original tutorial with code examples
+- [ReAct Paper](https://arxiv.org/abs/2210.03629) - Original research paper
 
 <ChapterCheckbox
   seriesId="claude-php-developers"
@@ -278,19 +364,19 @@ Continue to the next chapter in the agent series, or explore related topics:
 
 ---
 
-Continue to [Chapter 51](/series/claude-php-developers/chapters/51-*) or explore [all chapters](/series/claude-php-developers).
+Continue to [Chapter 51](/series/claude-php-developers/chapters/51-hierarchical-agents) or explore [all chapters](/series/claude-php-developers).
 
 ## 💻 Code Samples
 
 Code examples for this chapter are available in the Claude PHP SDK repository:
 
-**[View Tutorial 10 Code](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/10-*)**
+**[View Tutorial 10 Code](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/10-reflection)**
 
 Clone and run locally:
 ```bash
 git clone https://github.com/claude-php/Claude-PHP-SDK.git
-cd Claude-PHP-SDK/tutorials/10-*
+cd Claude-PHP-SDK/tutorials/10-reflection
 composer install
 export ANTHROPIC_API_KEY="sk-ant-your-key-here"
-php *.php
+php react_agent.php
 ```

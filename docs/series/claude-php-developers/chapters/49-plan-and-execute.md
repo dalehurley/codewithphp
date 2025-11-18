@@ -6,7 +6,7 @@ chapter: 49
 order: 49
 difficulty: "Intermediate"
 prerequisites:
-  - "/series/claude-php-developers/chapters/48-*"
+  - "/series/claude-php-developers/chapters/48-tree-of-thoughts"
   - "/series/claude-php-developers/chapters/11-tool-use-fundamentals"
 ---
 
@@ -26,9 +26,11 @@ prerequisites:
 
 ## Overview
 
-This chapter is based on Tutorial 9 from the [Claude PHP SDK Tutorial Series](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials). 
+Plan-and-Execute enables agents to solve complex multi-step problems through iterative reasoning and tool execution. This chapter teaches you to implement the ReAct (Reason-Act-Observe) pattern, handle multiple tool calls in sequence, maintain conversation state, and build production-ready agents that can tackle complex tasks autonomously.
 
-**Estimated Time**: 45 minutes
+By the end of this chapter, you'll understand how to build agents that can reason about problems, execute tools iteratively, observe results, and adapt their approach until the task is complete.
+
+**Estimated Time**: 45-60 min
 
 ## Prerequisites
 
@@ -38,236 +40,321 @@ Before starting, ensure you have:
 - ✓ **Completed Chapter 11: Tool Use Fundamentals** - Tool definitions and execution
 - ✓ **PHP 8.4+** with Composer installed
 - ✓ **Claude PHP SDK** installed: `composer require claude-php/claude-php-sdk`
+- ✓ **API Key** configured in environment
 
-## Learning Objectives
+## What You'll Build
 
-By the end of this chapter, you'll be able to:
+By the end of this chapter, you will have created:
 
-- Understand the Plan-and-Execute pattern
-- Separate planning from execution
-- Create detailed action plans before executing
-- Monitor execution and handle failures
-- Revise plans based on execution results
-- Compare Plan-and-Execute with ReAct
+- A complete ReAct agent implementation with iterative reasoning
+- Tool execution handlers for multi-step workflows
+- Conversation state management across iterations
+- Proper stop condition handling
+- Debugging utilities for agent reasoning
+- Production-ready patterns for error handling and iteration limits
 
-## Tutorial Content
+## Objectives
 
-> **Note**: This chapter is based on the [Claude PHP SDK Tutorial {tutorial_num}](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/{tutorial_num:02d}-*).
-> For the complete tutorial with working code examples, visit the SDK repository.
+By completing this chapter, you will:
 
+- **Understand** the ReAct pattern and its role in agentic AI
+- **Implement** iterative reasoning loops with proper state management
+- **Handle** multiple tool calls in sequence
+- **Maintain** conversation history across iterations
+- **Implement** proper stop conditions and iteration limits
+- **Debug** agent reasoning steps effectively
+- **Build** production-ready agents with error handling
 
+## The ReAct Pattern
 
-The Plan-and-Execute pattern separates planning from execution into two distinct phases. Unlike ReAct which interleaves thinking and action, Plan-and-Execute creates a complete plan upfront, then executes it systematically.
+**ReAct** stands for **Reason** → **Act** → **Observe**, and it's the fundamental pattern for autonomous agents.
 
-### 🎯 Learning Objectives
-
-By the end of this tutorial, you'll be able to:
-
-- Understand the Plan-and-Execute pattern
-- Separate planning from execution
-- Create detailed action plans before executing
-- Monitor execution and handle failures
-- Revise plans based on execution results
-- Compare Plan-and-Execute with ReAct
-
-### 🏗️ What We're Building
-
-We'll implement agents that:
-
-1. **Plan Phase** - Analyze task and create detailed action plan
-2. **Execute Phase** - Systematically execute each planned step
-3. **Monitor Phase** - Track progress and detect issues
-4. **Revise Phase** - Update plan if needed
-
-### 📋 Prerequisites
-
-Make sure you have:
-
-- Completed [Tutorial 8: Tree of Thoughts](../08-tree-of-thoughts/)
-- Understanding of ReAct pattern
-- PHP 8.1+ installed
-- Claude PHP SDK configured
-
-### 🤔 What is Plan-and-Execute?
-
-Plan-and-Execute divides work into two phases:
-
-#### React Pattern (Interleaved)
+### The Loop Flow
 
 ```
-Think → Act → Observe → Think → Act → Observe → ...
+Start
+  ↓
+┌─────────────────────────────────┐
+│  REASON                         │
+│  "What do I need to do next?"   │
+│  "What info is missing?"        │
+└───────────┬─────────────────────┘
+            ↓
+┌─────────────────────────────────┐
+│  ACT                            │
+│  "Call tool X with params Y"    │
+│  Or "I have enough to answer"   │
+└───────────┬─────────────────────┘
+            ↓
+┌─────────────────────────────────┐
+│  OBSERVE                        │
+│  "Tool returned Z"              │
+│  "Do I have what I need?"       │
+└───────────┬─────────────────────┘
+            ↓
+        ┌───────┐
+        │ Done? │
+        └───┬───┘
+            │
+      No ───┴─── Yes
+      │           │
+      │           ↓
+      │        [Return Answer]
+      │
+      └──> (Back to REASON)
 ```
 
-#### Plan-and-Execute Pattern (Sequential)
+### Why ReAct Matters
 
-```
-PLAN: Analyze → Break down → Sequence steps
-↓
-EXECUTE: Step 1 → Step 2 → Step 3 → ...
-```
+Without ReAct, agents can only:
+- Answer questions with their training data
+- Make ONE tool call per task
 
-### 🔑 Key Concepts
+With ReAct, agents can:
+- Gather information step-by-step
+- Chain multiple tools together
+- Adapt based on tool results
+- Solve complex multi-step problems
 
-#### 1. Planning Phase
+## Step 1: Basic ReAct Loop Implementation
 
-Create comprehensive plan before any action:
+Let's start with a complete working example:
 
 ```php
-$planPrompt = "Task: {$task}\n\n" .
-              "Create a detailed step-by-step plan. For each step:\n" .
-              "1. Describe the action\n" .
-              "2. What tool to use\n" .
-              "3. Expected outcome\n" .
-              "4. Dependencies on previous steps";
-```
+<?php
+# filename: examples/01-react-loop.php
+declare(strict_types=1);
 
-#### 2. Execution Phase
+require __DIR__ . '/../vendor/autoload.php';
 
-Follow the plan systematically:
+use ClaudePhp\ClaudePhp;
 
-```php
-foreach ($plan->steps as $step) {
-    echo "Executing: {$step->action}\n";
-    $result = executeTool($step->tool, $step->input);
-    $step->result = $result;
-    
-    if ($result->isError) {
-        // Handle failure
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+
+// Define calculator tool
+$calculatorTool = [
+    'name' => 'calculate',
+    'description' => 'Perform precise mathematical calculations.',
+    'input_schema' => [
+        'type' => 'object',
+        'properties' => [
+            'expression' => [
+                'type' => 'string',
+                'description' => 'Mathematical expression to evaluate'
+            ]
+        ],
+        'required' => ['expression']
+    ]
+];
+
+// Tool executor
+function executeCalculator(string $expression): string {
+    try {
+        // WARNING: eval() for demo only! Use proper parser in production
+        $result = eval("return {$expression};");
+        return (string)$result;
+    } catch (Exception $e) {
+        return "Error: " . $e->getMessage();
     }
 }
-```
 
-#### 3. Monitoring
+// User task requiring multiple steps
+$task = "What is (50 × 30) + (100 - 25)?";
+echo "Task: {$task}\n\n";
 
-Track execution progress:
-
-```php
-$monitor = [
-    'completed' => [],
-    'current' => $currentStep,
-    'remaining' => $remainingSteps,
-    'failures' => []
+// Initialize conversation
+$messages = [
+    ['role' => 'user', 'content' => $task]
 ];
-```
 
-#### 4. Plan Revision
+$maxIterations = 10;
+$iteration = 0;
+$finalResponse = null;
 
-Update plan if execution reveals issues:
-
-```php
-if ($executionFailed) {
-    $revisedPlan = revisePlan($originalPlan, $executionResults);
-}
-```
-
-### 📊 Plan-and-Execute vs ReAct
-
-| Aspect | Plan-and-Execute | ReAct |
-|--------|-----------------|-------|
-| **Planning** | Upfront, complete | Interleaved with action |
-| **Flexibility** | Less (follows plan) | High (adapts constantly) |
-| **Efficiency** | Better (no wasted actions) | Can be exploratory |
-| **Complexity** | Simpler execution | Complex loop |
-| **Best For** | Well-defined tasks | Exploratory tasks |
-| **Resource Use** | Predictable | Variable |
-
-### 💡 Planning Implementation
-
-#### Step 1: Task Analysis
-
-```php
-$analysisPrompt = "Task: {$task}\n\n" .
-                  "Analyze this task:\n" .
-                  "1. What is the end goal?\n" .
-                  "2. What information do we need?\n" .
-                  "3. What tools are available?\n" .
-                  "4. What are the constraints?";
-```
-
-#### Step 2: Plan Generation
-
-```php
-$planningPrompt = "Task: {$task}\n\n" .
-                  "Available tools: {$toolsList}\n\n" .
-                  "Create a detailed plan with these sections:\n\n" .
-                  "STEPS:\n" .
-                  "1. [Action] - Tool: [tool_name] - Expected: [outcome]\n" .
-                  "2. ...\n\n" .
-                  "DEPENDENCIES:\n" .
-                  "- Step 2 depends on Step 1 result\n\n" .
-                  "RISKS:\n" .
-                  "- Potential issues and mitigation";
-```
-
-#### Step 3: Plan Validation
-
-```php
-function validatePlan($plan) {
-    // Check all dependencies are satisfied
-    // Verify tools exist
-    // Ensure steps are ordered correctly
-    // Check for circular dependencies
-}
-```
-
-### 🚀 Execution Implementation
-
-#### Sequential Execution
-
-```php
-function executePlan($client, $plan, $tools) {
-    $results = [];
-    $context = [];
+// ReAct Loop
+while ($iteration < $maxIterations) {
+    $iteration++;
     
-    foreach ($plan->steps as $i => $step) {
-        echo "Step " . ($i + 1) . ": {$step->description}\n";
+    echo "Iteration {$iteration}\n";
+    
+    // REASON: Call Claude with current state
+    $response = $client->messages()->create([
+        'model' => 'claude-sonnet-4-5',
+        'max_tokens' => 4096,
+        'messages' => $messages,
+        'tools' => [$calculatorTool]
+    ]);
+    
+    echo "  Stop Reason: {$response->stop_reason}\n";
+    
+    // Add assistant response to history
+    $messages[] = [
+        'role' => 'assistant',
+        'content' => $response->content
+    ];
+    
+    // Check if done
+    if ($response->stop_reason === 'end_turn') {
+        $finalResponse = $response;
+        break;
+    }
+    
+    // ACT: Execute tools if requested
+    if ($response->stop_reason === 'tool_use') {
+        $toolResults = [];
         
-        // Execute with context from previous steps
-        $result = executeStep($step, $context, $tools);
+        foreach ($response->content as $block) {
+            if ($block['type'] === 'tool_use') {
+                echo "  Using tool: {$block['name']}\n";
+                
+                // Execute tool
+                $result = executeCalculator($block['input']['expression']);
+                echo "  Result: {$result}\n";
+                
+                // Format tool result
+                $toolResults[] = [
+                    'type' => 'tool_result',
+                    'tool_use_id' => $block['id'],
+                    'content' => $result
+                ];
+            }
+        }
         
-        if ($result->success) {
-            $results[] = $result;
-            $context[$step->id] = $result->data;
-        } else {
-            // Handle failure
-            return handleFailure($plan, $i, $result);
+        // OBSERVE: Add results to conversation
+        if (!empty($toolResults)) {
+            $messages[] = [
+                'role' => 'user',
+                'content' => $toolResults
+            ];
         }
     }
-    
-    return $results;
+}
+
+// Display final answer
+if ($finalResponse) {
+    echo "\nFinal Answer:\n";
+    foreach ($finalResponse->content as $block) {
+        if ($block['type'] === 'text') {
+            echo $block['text'] . "\n";
+        }
+    }
+} else {
+    echo "\nMax iterations reached without completion\n";
 }
 ```
 
-#### Error Handling
+**Why It Works**: The ReAct loop maintains conversation history across iterations. Each iteration, Claude reasons about what to do next, acts by requesting tools, and observes the results. The loop continues until Claude determines the task is complete (`stop_reason === 'end_turn'`).
+
+## Step 2: Stop Conditions and Safety
+
+Always implement proper stop conditions:
 
 ```php
-function handleFailure($plan, $failedStepIndex, $error) {
-    // Options:
-    // 1. Retry the step
-    // 2. Skip and continue
-    // 3. Revise plan
-    // 4. Abort mission
+<?php
+# filename: examples/02-stop-conditions.php
+declare(strict_types=1);
+
+// Stop conditions
+$stopReasons = [
+    'end_turn' => 'Task complete',
+    'max_tokens' => 'Response truncated',
+    'tool_use' => 'Tool execution needed'
+];
+
+// Safety limits
+$maxIterations = 10;
+$maxTokens = 10000;
+$totalTokens = 0;
+
+while ($iteration < $maxIterations) {
+    $iteration++;
     
-    if ($error->isRecoverable) {
-        return retryStep($plan->steps[$failedStepIndex]);
-    } else {
-        return revisePlan($plan, $failedStepIndex, $error);
+    $response = $client->messages()->create([...]);
+    
+    $totalTokens += $response->usage->input_tokens + $response->usage->output_tokens;
+    
+    // Check token limit
+    if ($totalTokens > $maxTokens) {
+        echo "Token limit reached\n";
+        break;
+    }
+    
+    // Check stop reason
+    if ($response->stop_reason === 'end_turn') {
+        break; // Success
+    }
+    
+    // Handle tool use...
+}
+```
+
+## Step 3: Debugging Agent Reasoning
+
+Add debugging to understand agent behavior:
+
+```php
+<?php
+# filename: examples/03-debugging.php
+declare(strict_types=1);
+
+function debugIteration(int $iteration, object $response): void {
+    echo "\n╔════ Iteration {$iteration} ════╗\n";
+    echo "Stop Reason: {$response->stop_reason}\n";
+    echo "Tokens: {$response->usage->input_tokens} in, {$response->usage->output_tokens} out\n";
+    
+    foreach ($response->content as $block) {
+        if ($block['type'] === 'text') {
+            echo "Text: {$block['text']}\n";
+        } elseif ($block['type'] === 'tool_use') {
+            echo "Tool: {$block['name']}\n";
+            echo "  Input: " . json_encode($block['input']) . "\n";
+        }
+    }
+}
+```
+
+## Common Issues and Solutions
+
+### Issue: Infinite Loop
+
+**Symptom**: Agent keeps making tool calls without completing
+
+**Solution**: Always set iteration limits and check for progress
+
+```php
+$maxIterations = 10;
+$hasProgressed = false;
+$previousToolCount = 0;
+
+while ($iteration < $maxIterations) {
+    // ... execute loop ...
+    
+    $currentToolCount = count(array_filter($response->content, fn($b) => $b['type'] === 'tool_use'));
+    
+    if ($currentToolCount > $previousToolCount) {
+        $hasProgressed = true;
+    }
+    
+    if ($iteration >= 5 && !$hasProgressed) {
+        echo "Warning: Agent may be stuck\n";
+        break;
     }
 }
 ```
 
 ## Next Steps
 
-Continue to the next chapter in the agent series, or explore related topics:
+Continue to the next chapter in the agent series:
 
-- **[Chapter 50](/series/claude-php-developers/chapters/50-*)** - Next agent chapter
+- **[Chapter 50](/series/claude-php-developers/chapters/50-reflection-self-critique)** - Next agent chapter
 - **[Chapter 33: Multi-Agent Systems](/series/claude-php-developers/chapters/33-multi-agent-systems)** - Advanced coordination
-- **[Claude PHP SDK Tutorials](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials)** - Complete tutorial series
+- **[Chapter 40: Introduction to Agentic AI](/series/claude-php-developers/chapters/40-introduction-to-agentic-ai)** - Agent fundamentals
 
 ## Further Reading
 
-- [Claude PHP SDK Repository](https://github.com/claude-php/Claude-PHP-SDK) - Source code and examples
-- [Tutorial 9 Source](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/09-*) - Original tutorial
+- [Claude PHP SDK Tutorials](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials) - Complete tutorial series
+- [Tutorial 9 Source](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/09-plan-and-execute) - Original tutorial with code examples
+- [ReAct Paper](https://arxiv.org/abs/2210.03629) - Original research paper
 
 <ChapterCheckbox
   seriesId="claude-php-developers"
@@ -277,19 +364,19 @@ Continue to the next chapter in the agent series, or explore related topics:
 
 ---
 
-Continue to [Chapter 50](/series/claude-php-developers/chapters/50-*) or explore [all chapters](/series/claude-php-developers).
+Continue to [Chapter 50](/series/claude-php-developers/chapters/50-reflection-self-critique) or explore [all chapters](/series/claude-php-developers).
 
 ## 💻 Code Samples
 
 Code examples for this chapter are available in the Claude PHP SDK repository:
 
-**[View Tutorial 9 Code](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/09-*)**
+**[View Tutorial 9 Code](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/09-plan-and-execute)**
 
 Clone and run locally:
 ```bash
 git clone https://github.com/claude-php/Claude-PHP-SDK.git
-cd Claude-PHP-SDK/tutorials/09-*
+cd Claude-PHP-SDK/tutorials/09-plan-and-execute
 composer install
 export ANTHROPIC_API_KEY="sk-ant-your-key-here"
-php *.php
+php react_agent.php
 ```
