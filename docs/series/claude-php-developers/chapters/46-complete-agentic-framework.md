@@ -26,11 +26,11 @@ prerequisites:
 
 ## Overview
 
-Complete Agentic Framework enables agents to solve complex multi-step problems through iterative reasoning and tool execution. This chapter teaches you to implement the ReAct (Reason-Act-Observe) pattern, handle multiple tool calls in sequence, maintain conversation state, and build production-ready agents that can tackle complex tasks autonomously.
+Welcome to building a complete agentic framework! This chapter brings together everything you've learned to build a comprehensive agentic system with task decomposition, parallel execution, state management, and orchestration.
 
-By the end of this chapter, you'll understand how to build agents that can reason about problems, execute tools iteratively, observe results, and adapt their approach until the task is complete.
+You'll learn to design a complete agent architecture, implement task decomposition strategies, orchestrate multiple sub-agents, manage complex state across workflows, handle parallel tool execution, and build reusable agent components for production-grade systems.
 
-**Estimated Time**: 90-120 min
+**Estimated Time**: 90 minutes
 
 ## Prerequisites
 
@@ -46,315 +46,383 @@ Before starting, ensure you have:
 
 By the end of this chapter, you will have created:
 
-- A complete ReAct agent implementation with iterative reasoning
-- Tool execution handlers for multi-step workflows
-- Conversation state management across iterations
-- Proper stop condition handling
-- Debugging utilities for agent reasoning
-- Production-ready patterns for error handling and iteration limits
+- **Complete Agent Architecture** - Full framework with orchestrator, sub-agents, and state management
+- **Task Decomposer** - System that breaks complex goals into manageable subtasks
+- **Agent Pool** - Registry and management system for multiple specialized agents
+- **State Manager** - Centralized state management with history tracking
+- **Orchestrator** - Coordination system that manages the entire workflow
+- **Parallel Execution** - Ability to run multiple agents simultaneously
+- **Reusable Components** - Production-grade agentic framework ready for deployment
 
 ## Objectives
 
 By completing this chapter, you will:
 
-- **Understand** the ReAct pattern and its role in agentic AI
-- **Implement** iterative reasoning loops with proper state management
-- **Handle** multiple tool calls in sequence
-- **Maintain** conversation history across iterations
-- **Implement** proper stop conditions and iteration limits
-- **Debug** agent reasoning steps effectively
-- **Build** production-ready agents with error handling
+- **Design** a complete agent architecture with clear separation of concerns
+- **Implement** task decomposition strategies for complex goals
+- **Orchestrate** multiple sub-agents working in parallel
+- **Manage** complex state across workflows and agents
+- **Handle** parallel tool execution efficiently
+- **Build** reusable agent components for production use
+- **Create** production-grade agentic systems ready for deployment
 
-## The ReAct Pattern
+## Framework Architecture
 
-**ReAct** stands for **Reason** → **Act** → **Observe**, and it's the fundamental pattern for autonomous agents.
-
-### The Loop Flow
+A complete agentic framework consists of several key components working together:
 
 ```
-Start
-  ↓
-┌─────────────────────────────────┐
-│  REASON                         │
-│  "What do I need to do next?"   │
-│  "What info is missing?"        │
-└───────────┬─────────────────────┘
-            ↓
-┌─────────────────────────────────┐
-│  ACT                            │
-│  "Call tool X with params Y"    │
-│  Or "I have enough to answer"   │
-└───────────┬─────────────────────┘
-            ↓
-┌─────────────────────────────────┐
-│  OBSERVE                        │
-│  "Tool returned Z"              │
-│  "Do I have what I need?"       │
-└───────────┬─────────────────────┘
-            ↓
-        ┌───────┐
-        │ Done? │
-        └───┬───┘
-            │
-      No ───┴─── Yes
-      │           │
-      │           ↓
-      │        [Return Answer]
-      │
-      └──> (Back to REASON)
+┌─────────────────────────────────────────────────────────────┐
+│                     ORCHESTRATOR                            │
+│  • Receives high-level goals                                │
+│  • Decomposes into subtasks                                 │
+│  • Coordinates execution                                    │
+│  • Aggregates results                                       │
+└────────────────┬────────────────────────────────────────────┘
+                 │
+      ┌──────────┴──────────┐
+      │                     │
+      ▼                     ▼
+┌─────────────┐       ┌─────────────┐
+│  SUB-AGENT  │       │  SUB-AGENT  │
+│     #1      │       │     #2      │
+│             │       │             │
+│  • Focused  │       │  • Focused  │
+│    task     │       │    task     │
+│  • Tools    │       │  • Tools    │
+│  • Memory   │       │  • Memory   │
+└──────┬──────┘       └──────┬──────┘
+       │                     │
+       └──────────┬──────────┘
+                  │
+                  ▼
+          ┌───────────────┐
+          │ STATE MANAGER │
+          │  • History    │
+          │  • Memory     │
+          │  • Context    │
+          └───────────────┘
 ```
 
-### Why ReAct Matters
+### Core Components
 
-Without ReAct, agents can only:
-- Answer questions with their training data
-- Make ONE tool call per task
+1. **Orchestrator** - Coordinates the entire workflow
+2. **Task Decomposer** - Breaks complex tasks into subtasks
+3. **Agent Pool** - Manages multiple specialized agents
+4. **State Manager** - Maintains context across workflows
+5. **Sub-Agents** - Specialized agents for specific tasks
 
-With ReAct, agents can:
-- Gather information step-by-step
-- Chain multiple tools together
-- Adapt based on tool results
-- Solve complex multi-step problems
+## Step 1: Task Decomposer (~15 min)
 
-## Step 1: Basic ReAct Loop Implementation
-
-Let's start with a complete working example:
+The Task Decomposer breaks complex goals into manageable subtasks:
 
 ```php
 <?php
-# filename: examples/01-react-loop.php
+# filename: examples/01-task-decomposer.php
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+class TaskDecomposer {
+    public function __construct(
+        private ClaudePhp $client
+    ) {}
 
-// Define calculator tool
-$calculatorTool = [
-    'name' => 'calculate',
-    'description' => 'Perform precise mathematical calculations.',
-    'input_schema' => [
-        'type' => 'object',
-        'properties' => [
-            'expression' => [
-                'type' => 'string',
-                'description' => 'Mathematical expression to evaluate'
-            ]
-        ],
-        'required' => ['expression']
-    ]
-];
+    public function decompose(string $task): array {
+        $response = $this->client->messages()->create([
+            'model' => 'claude-sonnet-4-5',
+            'messages' => [[
+                'role' => 'user',
+                'content' => "Break down this task into 3-5 subtasks. " .
+                            "Return a JSON array of subtask descriptions: {$task}"
+            ]],
+            'thinking' => ['type' => 'enabled', 'budget_tokens' => 5000]
+        ]);
 
-// Tool executor
-function executeCalculator(string $expression): string {
-    try {
-        // WARNING: eval() for demo only! Use proper parser in production
-        $result = eval("return {$expression};");
-        return (string)$result;
-    } catch (Exception $e) {
-        return "Error: " . $e->getMessage();
+        return $this->parseSubtasks($response);
+    }
+
+    private function parseSubtasks(object $response): array {
+        // Extract JSON from response
+        $text = '';
+        foreach ($response->content as $block) {
+            if ($block['type'] === 'text') {
+                $text .= $block['text'];
+            }
+        }
+
+        // Try to extract JSON array
+        if (preg_match('/\[.*\]/s', $text, $matches)) {
+            $subtasks = json_decode($matches[0], true);
+            return is_array($subtasks) ? $subtasks : [];
+        }
+
+        return [];
     }
 }
 
-// User task requiring multiple steps
-$task = "What is (50 × 30) + (100 - 25)?";
-echo "Task: {$task}\n\n";
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+$decomposer = new TaskDecomposer($client);
 
-// Initialize conversation
-$messages = [
-    ['role' => 'user', 'content' => $task]
-];
+$goal = "Research PHP 8.4 features and write a blog post";
+$subtasks = $decomposer->decompose($goal);
 
-$maxIterations = 10;
-$iteration = 0;
-$finalResponse = null;
+echo "Goal: {$goal}\n\nSubtasks:\n";
+foreach ($subtasks as $i => $subtask) {
+    echo ($i + 1) . ". {$subtask}\n";
+}
+```
 
-// ReAct Loop
-while ($iteration < $maxIterations) {
-    $iteration++;
-    
-    echo "Iteration {$iteration}\n";
-    
-    // REASON: Call Claude with current state
-    $response = $client->messages()->create([
-        'model' => 'claude-sonnet-4-5',
-        'max_tokens' => 4096,
-        'messages' => $messages,
-        'tools' => [$calculatorTool]
-    ]);
-    
-    echo "  Stop Reason: {$response->stop_reason}\n";
-    
-    // Add assistant response to history
-    $messages[] = [
-        'role' => 'assistant',
-        'content' => $response->content
-    ];
-    
-    // Check if done
-    if ($response->stop_reason === 'end_turn') {
-        $finalResponse = $response;
-        break;
+**Why It Works**: The decomposer uses Claude's reasoning to break complex goals into actionable subtasks, enabling parallel execution and better organization.
+
+## Step 2: Agent Pool (~15 min)
+
+The Agent Pool manages multiple specialized agents:
+
+```php
+<?php
+# filename: examples/02-agent-pool.php
+declare(strict_types=1);
+
+class AgentPool {
+    private array $agents = [];
+
+    public function registerAgent(string $name, callable $agent): void {
+        $this->agents[$name] = $agent;
     }
-    
-    // ACT: Execute tools if requested
-    if ($response->stop_reason === 'tool_use') {
-        $toolResults = [];
+
+    public function getAgent(string $name): ?callable {
+        return $this->agents[$name] ?? null;
+    }
+
+    public function executeWithAgent(string $agentName, string $task): mixed {
+        $agent = $this->getAgent($agentName);
+        if (!$agent) {
+            throw new Exception("Agent not found: {$agentName}");
+        }
+
+        return $agent($task);
+    }
+
+    public function listAgents(): array {
+        return array_keys($this->agents);
+    }
+}
+
+// Usage
+$pool = new AgentPool();
+
+// Register specialized agents
+$pool->registerAgent('researcher', function($task) {
+    // Research agent implementation
+    return "Research results for: {$task}";
+});
+
+$pool->registerAgent('writer', function($task) {
+    // Writing agent implementation
+    return "Written content for: {$task}";
+});
+
+$result = $pool->executeWithAgent('researcher', 'PHP 8.4 features');
+```
+
+**Why It Works**: The agent pool provides a centralized registry for managing multiple specialized agents, enabling easy delegation and parallel execution.
+
+## Step 3: State Manager (~15 min)
+
+The State Manager maintains context across workflows:
+
+```php
+<?php
+# filename: examples/03-state-manager.php
+declare(strict_types=1);
+
+class StateManager {
+    private array $state = [];
+    private array $history = [];
+
+    public function setState(string $key, mixed $value): void {
+        $this->state[$key] = $value;
+        $this->history[] = [
+            'action' => 'set',
+            'key' => $key,
+            'timestamp' => time()
+        ];
+    }
+
+    public function getState(string $key): mixed {
+        return $this->state[$key] ?? null;
+    }
+
+    public function getFullState(): array {
+        return $this->state;
+    }
+
+    public function getHistory(): array {
+        return $this->history;
+    }
+
+    public function clear(): void {
+        $this->state = [];
+        $this->history = [];
+    }
+}
+
+// Usage
+$stateManager = new StateManager();
+$stateManager->setState('subtask_1', 'Research completed');
+$stateManager->setState('subtask_2', 'Draft written');
+
+echo "Current state: " . json_encode($stateManager->getFullState(), JSON_PRETTY_PRINT) . "\n";
+```
+
+**Why It Works**: Centralized state management ensures all components have access to shared context and history, enabling coordination across agents.
+
+## Step 4: Complete Orchestrator (~30 min)
+
+The Orchestrator coordinates the entire workflow:
+
+```php
+<?php
+# filename: examples/04-complete-orchestrator.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use ClaudePhp\ClaudePhp;
+
+class Orchestrator {
+    public function __construct(
+        private TaskDecomposer $decomposer,
+        private AgentPool $agentPool,
+        private StateManager $stateManager
+    ) {}
+
+    public function execute(string $goal): string {
+        // 1. Decompose goal into subtasks
+        echo "Decomposing goal...\n";
+        $subtasks = $this->decomposer->decompose($goal);
         
+        // 2. Execute each subtask
+        $results = [];
+        foreach ($subtasks as $i => $subtask) {
+            echo "Executing subtask " . ($i + 1) . ": {$subtask}\n";
+            
+            $agentName = $this->selectAgent($subtask);
+            $result = $this->agentPool->executeWithAgent($agentName, $subtask);
+            $results[] = $result;
+            
+            // Store in state
+            $this->stateManager->setState("subtask_" . ($i + 1), $result);
+        }
+        
+        // 3. Synthesize results
+        echo "Synthesizing results...\n";
+        return $this->synthesize($goal, $results);
+    }
+
+    private function selectAgent(string $subtask): string {
+        // Simple agent selection logic
+        if (stripos($subtask, 'research') !== false) {
+            return 'researcher';
+        } elseif (stripos($subtask, 'write') !== false) {
+            return 'writer';
+        }
+        return 'general';
+    }
+
+    private function synthesize(string $goal, array $results): string {
+        // Use Claude to synthesize final result
+        $client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+        
+        $context = "Goal: {$goal}\n\nResults:\n";
+        foreach ($results as $i => $result) {
+            $context .= ($i + 1) . ". {$result}\n";
+        }
+        
+        $response = $client->messages()->create([
+            'model' => 'claude-sonnet-4-5',
+            'messages' => [[
+                'role' => 'user',
+                'content' => "{$context}\n\nSynthesize these results into a final answer."
+            ]]
+        ]);
+        
+        $text = '';
         foreach ($response->content as $block) {
-            if ($block['type'] === 'tool_use') {
-                echo "  Using tool: {$block['name']}\n";
-                
-                // Execute tool
-                $result = executeCalculator($block['input']['expression']);
-                echo "  Result: {$result}\n";
-                
-                // Format tool result
-                $toolResults[] = [
-                    'type' => 'tool_result',
-                    'tool_use_id' => $block['id'],
-                    'content' => $result
-                ];
+            if ($block['type'] === 'text') {
+                $text .= $block['text'];
             }
         }
         
-        // OBSERVE: Add results to conversation
-        if (!empty($toolResults)) {
-            $messages[] = [
-                'role' => 'user',
-                'content' => $toolResults
-            ];
-        }
+        return $text;
     }
 }
 
-// Display final answer
-if ($finalResponse) {
-    echo "\nFinal Answer:\n";
-    foreach ($finalResponse->content as $block) {
-        if ($block['type'] === 'text') {
-            echo $block['text'] . "\n";
-        }
-    }
-} else {
-    echo "\nMax iterations reached without completion\n";
+// Usage
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+$decomposer = new TaskDecomposer($client);
+$pool = new AgentPool();
+$stateManager = new StateManager();
+
+$orchestrator = new Orchestrator($decomposer, $pool, $stateManager);
+$result = $orchestrator->execute("Research PHP 8.4 and write a summary");
+echo "\nFinal Result:\n{$result}\n";
+```
+
+**Why It Works**: The orchestrator coordinates all components, managing the workflow from decomposition through execution to synthesis, creating a complete agentic system.
+
+## Best Practices
+
+### 1. Error Handling
+
+```php
+try {
+    $result = $orchestrator->execute($goal);
+} catch (Exception $e) {
+    // Log error and update state
+    $stateManager->setState('error', $e->getMessage());
+    // Retry or fallback
 }
 ```
 
-**Why It Works**: The ReAct loop maintains conversation history across iterations. Each iteration, Claude reasons about what to do next, acts by requesting tools, and observes the results. The loop continues until Claude determines the task is complete (`stop_reason === 'end_turn'`).
-
-## Step 2: Stop Conditions and Safety
-
-Always implement proper stop conditions:
+### 2. Parallel Execution
 
 ```php
-<?php
-# filename: examples/02-stop-conditions.php
-declare(strict_types=1);
-
-// Stop conditions
-$stopReasons = [
-    'end_turn' => 'Task complete',
-    'max_tokens' => 'Response truncated',
-    'tool_use' => 'Tool execution needed'
-];
-
-// Safety limits
-$maxIterations = 10;
-$maxTokens = 10000;
-$totalTokens = 0;
-
-while ($iteration < $maxIterations) {
-    $iteration++;
-    
-    $response = $client->messages()->create([...]);
-    
-    $totalTokens += $response->usage->input_tokens + $response->usage->output_tokens;
-    
-    // Check token limit
-    if ($totalTokens > $maxTokens) {
-        echo "Token limit reached\n";
-        break;
-    }
-    
-    // Check stop reason
-    if ($response->stop_reason === 'end_turn') {
-        break; // Success
-    }
-    
-    // Handle tool use...
+// Execute independent subtasks in parallel
+$promises = [];
+foreach ($subtasks as $subtask) {
+    $promises[] = asyncExecute($subtask);
 }
+$results = awaitAll($promises);
 ```
 
-## Step 3: Debugging Agent Reasoning
-
-Add debugging to understand agent behavior:
+### 3. Result Caching
 
 ```php
-<?php
-# filename: examples/03-debugging.php
-declare(strict_types=1);
-
-function debugIteration(int $iteration, object $response): void {
-    echo "\n╔════ Iteration {$iteration} ════╗\n";
-    echo "Stop Reason: {$response->stop_reason}\n";
-    echo "Tokens: {$response->usage->input_tokens} in, {$response->usage->output_tokens} out\n";
-    
-    foreach ($response->content as $block) {
-        if ($block['type'] === 'text') {
-            echo "Text: {$block['text']}\n";
-        } elseif ($block['type'] === 'tool_use') {
-            echo "Tool: {$block['name']}\n";
-            echo "  Input: " . json_encode($block['input']) . "\n";
-        }
-    }
+// Cache expensive operations
+$cacheKey = md5($subtask);
+if ($cached = $cache->get($cacheKey)) {
+    return $cached;
 }
-```
-
-## Common Issues and Solutions
-
-### Issue: Infinite Loop
-
-**Symptom**: Agent keeps making tool calls without completing
-
-**Solution**: Always set iteration limits and check for progress
-
-```php
-$maxIterations = 10;
-$hasProgressed = false;
-$previousToolCount = 0;
-
-while ($iteration < $maxIterations) {
-    // ... execute loop ...
-    
-    $currentToolCount = count(array_filter($response->content, fn($b) => $b['type'] === 'tool_use'));
-    
-    if ($currentToolCount > $previousToolCount) {
-        $hasProgressed = true;
-    }
-    
-    if ($iteration >= 5 && !$hasProgressed) {
-        echo "Warning: Agent may be stuck\n";
-        break;
-    }
-}
+$result = $agent->execute($subtask);
+$cache->set($cacheKey, $result);
 ```
 
 ## Next Steps
 
-Continue to the next chapter in the agent series:
+Explore more advanced agent patterns:
 
-- **[Chapter 47](/series/claude-php-developers/chapters/47-chain-of-thought)** - Next agent chapter
-- **[Chapter 33: Multi-Agent Systems](/series/claude-php-developers/chapters/33-multi-agent-systems)** - Advanced coordination
-- **[Chapter 40: Introduction to Agentic AI](/series/claude-php-developers/chapters/40-introduction-to-agentic-ai)** - Agent fundamentals
+- **[Chapter 47: Chain of Thought (CoT)](/series/claude-php-developers/chapters/47-chain-of-thought)** - Reasoning techniques
+- **[Chapter 48: Tree of Thoughts](/series/claude-php-developers/chapters/48-tree-of-thoughts)** - Advanced reasoning
+- **[Chapter 51: Hierarchical Agents](/series/claude-php-developers/chapters/51-hierarchical-agents)** - Multi-level agents
 
 ## Further Reading
 
 - [Claude PHP SDK Tutorials](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials) - Complete tutorial series
 - [Tutorial 6 Source](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/06-agentic-framework) - Original tutorial with code examples
-- [ReAct Paper](https://arxiv.org/abs/2210.03629) - Original research paper
+- [Agent Architecture Patterns](https://docs.anthropic.com/en/docs/build-with-claude/agentic-patterns) - Official documentation
 
 <ChapterCheckbox
   seriesId="claude-php-developers"
@@ -368,15 +436,24 @@ Continue to [Chapter 47](/series/claude-php-developers/chapters/47-chain-of-thou
 
 ## 💻 Code Samples
 
-Code examples for this chapter are available in the Claude PHP SDK repository:
+All code examples from this chapter are available in the GitHub repository:
 
-**[View Tutorial 6 Code](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/06-agentic-framework)**
+**[View Chapter 46 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-46)**
 
 Clone and run locally:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code/claude-php/chapter-46
+composer install
+export ANTHROPIC_API_KEY="sk-ant-your-key-here"
+php examples/04-complete-orchestrator.php
+```
+
+For the original tutorial code:
 ```bash
 git clone https://github.com/claude-php/Claude-PHP-SDK.git
 cd Claude-PHP-SDK/tutorials/06-agentic-framework
 composer install
 export ANTHROPIC_API_KEY="sk-ant-your-key-here"
-php react_agent.php
+php framework.php
 ```

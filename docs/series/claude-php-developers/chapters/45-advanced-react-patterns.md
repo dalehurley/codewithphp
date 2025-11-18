@@ -26,11 +26,11 @@ prerequisites:
 
 ## Overview
 
-Advanced ReAct Patterns enables agents to solve complex multi-step problems through iterative reasoning and tool execution. This chapter teaches you to implement the ReAct (Reason-Act-Observe) pattern, handle multiple tool calls in sequence, maintain conversation state, and build production-ready agents that can tackle complex tasks autonomously.
+You've built production-ready agents. Now let's make them smarter with **planning**, **reflection**, and **extended thinking**. This chapter teaches you advanced ReAct patterns that enable agents to solve complex problems through deliberate reasoning.
 
-By the end of this chapter, you'll understand how to build agents that can reason about problems, execute tools iteratively, observe results, and adapt their approach until the task is complete.
+You'll learn to implement the Plan-Execute-Reflect-Adjust pattern, use extended thinking for complex reasoning, enable agent self-correction, decompose complex tasks into subtasks, and balance thinking depth with costs.
 
-**Estimated Time**: 60-75 min
+**Estimated Time**: 60-75 minutes
 
 ## Prerequisites
 
@@ -46,83 +46,81 @@ Before starting, ensure you have:
 
 By the end of this chapter, you will have created:
 
-- A complete ReAct agent implementation with iterative reasoning
-- Tool execution handlers for multi-step workflows
-- Conversation state management across iterations
-- Proper stop condition handling
-- Debugging utilities for agent reasoning
-- Production-ready patterns for error handling and iteration limits
+- **Plan-Execute-Reflect-Adjust Pattern** - Advanced reasoning loop with planning and reflection
+- **Extended Thinking Implementation** - Deep reasoning for complex problems using thinking tokens
+- **Self-Correction System** - Agents that detect and fix their own mistakes
+- **Task Decomposition** - Breaking complex tasks into manageable subtasks
+- **Reflection Mechanisms** - Analyzing what worked and what didn't
+- **Adaptive Strategy Selection** - Agents that adjust their approach based on results
 
 ## Objectives
 
 By completing this chapter, you will:
 
-- **Understand** the ReAct pattern and its role in agentic AI
-- **Implement** iterative reasoning loops with proper state management
-- **Handle** multiple tool calls in sequence
-- **Maintain** conversation history across iterations
-- **Implement** proper stop conditions and iteration limits
-- **Debug** agent reasoning steps effectively
-- **Build** production-ready agents with error handling
+- **Implement** the Plan-Execute-Reflect-Adjust pattern for advanced reasoning
+- **Use** extended thinking for complex problem-solving
+- **Enable** agent self-correction and mistake detection
+- **Decompose** complex tasks into manageable subtasks
+- **Implement** reflection and adaptation mechanisms
+- **Balance** thinking depth with API costs
+- **Build** smarter agents that plan before acting
 
-## The ReAct Pattern
+## What is Advanced ReAct?
 
-**ReAct** stands for **Reason** → **Act** → **Observe**, and it's the fundamental pattern for autonomous agents.
+Standard ReAct: `Reason → Act → Observe → Repeat`
 
-### The Loop Flow
+Advanced ReAct adds:
+
+- **Planning**: Think ahead before acting
+- **Reflection**: Analyze what worked and what didn't
+- **Extended Thinking**: Deep reasoning for complex problems
+- **Self-Correction**: Detect and fix mistakes
+
+### The Advanced Pattern
 
 ```
-Start
-  ↓
-┌─────────────────────────────────┐
-│  REASON                         │
-│  "What do I need to do next?"   │
-│  "What info is missing?"        │
-└───────────┬─────────────────────┘
-            ↓
-┌─────────────────────────────────┐
-│  ACT                            │
-│  "Call tool X with params Y"    │
-│  Or "I have enough to answer"   │
-└───────────┬─────────────────────┘
-            ↓
-┌─────────────────────────────────┐
-│  OBSERVE                        │
-│  "Tool returned Z"              │
-│  "Do I have what I need?"       │
-└───────────┬─────────────────────┘
-            ↓
-        ┌───────┐
-        │ Done? │
-        └───┬───┘
-            │
-      No ───┴─── Yes
-      │           │
-      │           ↓
-      │        [Return Answer]
-      │
-      └──> (Back to REASON)
+┌────────────────────────────────────┐
+│  1. PLAN                           │
+│     "Break down the task"          │
+│     "What steps are needed?"       │
+│     "What could go wrong?"         │
+└────────────┬───────────────────────┘
+             ↓
+┌────────────────────────────────────┐
+│  2. EXECUTE (Standard ReAct)       │
+│     Reason → Act → Observe         │
+└────────────┬───────────────────────┘
+             ↓
+┌────────────────────────────────────┐
+│  3. REFLECT                        │
+│     "Did it work as expected?"     │
+│     "What went well?"              │
+│     "What needs improvement?"      │
+└────────────┬───────────────────────┘
+             ↓
+┌────────────────────────────────────┐
+│  4. ADJUST                         │
+│     "Change approach if needed"    │
+│     "Try alternative strategy"     │
+│     "Continue or complete"         │
+└────────────┬───────────────────────┘
+             │
+      ┌──────┴──────┐
+      │   Complete? │
+      └──────┬──────┘
+             │
+       No────┴────Yes
+       │           │
+       └─→ PLAN    └─→ [Done]
 ```
 
-### Why ReAct Matters
+## Step 1: Extended Thinking (~15 min)
 
-Without ReAct, agents can only:
-- Answer questions with their training data
-- Make ONE tool call per task
-
-With ReAct, agents can:
-- Gather information step-by-step
-- Chain multiple tools together
-- Adapt based on tool results
-- Solve complex multi-step problems
-
-## Step 1: Basic ReAct Loop Implementation
-
-Let's start with a complete working example:
+Extended thinking gives Claude more "thinking tokens" for complex reasoning:
 
 ```php
 <?php
-# filename: examples/01-react-loop.php
+# filename: examples/01-extended-thinking.php
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -131,230 +129,287 @@ use ClaudePhp\ClaudePhp;
 
 $client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
-// Define calculator tool
-$calculatorTool = [
-    'name' => 'calculate',
-    'description' => 'Perform precise mathematical calculations.',
-    'input_schema' => [
-        'type' => 'object',
-        'properties' => [
-            'expression' => [
-                'type' => 'string',
-                'description' => 'Mathematical expression to evaluate'
-            ]
-        ],
-        'required' => ['expression']
+// Enable extended thinking for complex problems
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5',
+    'max_tokens' => 4096,
+    'messages' => $messages,
+    'tools' => $tools,
+    'thinking' => [
+        'type' => 'enabled',
+        'budget_tokens' => 10000  // Up to 32K for Opus
     ]
+]);
+```
+
+### When to Use Extended Thinking
+
+- **Complex Analysis**: Multi-step logical reasoning
+- **Planning**: Breaking down complex tasks
+- **Problem Solving**: Finding non-obvious solutions
+- **Debugging**: Analyzing why something failed
+
+### Cost Considerations
+
+Thinking tokens are **priced differently**:
+- Sonnet 4.5: Input rate for both cache hit/miss
+- Opus: Input rate
+- Budget wisely (1K-32K tokens)
+
+**Why It Works**: Extended thinking allows Claude to reason deeply before acting, leading to better plans and fewer mistakes. Use it for complex problems where upfront planning saves iterations later.
+
+## Step 2: Planning Pattern (~15 min)
+
+Add planning phase before execution:
+
+```php
+<?php
+# filename: examples/02-planning-pattern.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+
+$planningSystem = "You are a meticulous planner. Before taking action:\n" .
+                  "1. Break down the task into clear steps\n" .
+                  "2. Identify what information is needed\n" .
+                  "3. Anticipate potential issues\n" .
+                  "4. Propose a strategy\n\n" .
+                  "Only after planning, execute the plan step by step.";
+
+// Phase 1: Planning
+$messages = [
+    ['role' => 'user', 'content' => "Task: {$task}\n\nCreate a detailed plan."]
 ];
 
-// Tool executor
-function executeCalculator(string $expression): string {
-    try {
-        // WARNING: eval() for demo only! Use proper parser in production
-        $result = eval("return {$expression};");
-        return (string)$result;
-    } catch (Exception $e) {
-        return "Error: " . $e->getMessage();
+$planResponse = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5',
+    'max_tokens' => 2048,
+    'system' => $planningSystem,
+    'messages' => $messages,
+    'thinking' => ['type' => 'enabled', 'budget_tokens' => 5000]
+]);
+
+$messages[] = ['role' => 'assistant', 'content' => $planResponse->content];
+
+// Phase 2: Execution (standard ReAct loop)
+$messages[] = ['role' => 'user', 'content' => 'Execute your plan step by step.'];
+// ... continue with standard ReAct loop ...
+```
+
+**Why It Works**: Planning upfront helps Claude break down complex tasks and anticipate issues, leading to more efficient execution and fewer mistakes.
+
+## Step 3: Reflection Pattern (~15 min)
+
+Add reflection phase after execution:
+
+```php
+<?php
+# filename: examples/03-reflection-pattern.php
+declare(strict_types=1);
+
+// After execution completes
+$reflectionPrompt = "Reflect on what happened:\n" .
+                    "1. Did it work as expected?\n" .
+                    "2. What went well?\n" .
+                    "3. What needs improvement?\n" .
+                    "4. Are there any issues to address?";
+
+$messages[] = ['role' => 'user', 'content' => $reflectionPrompt];
+
+$reflectionResponse = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5',
+    'max_tokens' => 2048,
+    'messages' => $messages,
+    'thinking' => ['type' => 'enabled', 'budget_tokens' => 3000]
+]);
+
+// Check if reflection reveals issues
+function extractTextContent(array $content): string {
+    $text = '';
+    foreach ($content as $block) {
+        if ($block['type'] === 'text') {
+            $text .= $block['text'] . ' ';
+        }
+    }
+    return $text;
+}
+
+$reflectionText = extractTextContent($reflectionResponse->content);
+$issueKeywords = ['issue', 'problem', 'incorrect', 'wrong', 'error', 'failed'];
+
+$hasIssues = false;
+foreach ($issueKeywords as $keyword) {
+    if (stripos($reflectionText, $keyword) !== false) {
+        $hasIssues = true;
+        break;
     }
 }
 
-// User task requiring multiple steps
-$task = "What is (50 × 30) + (100 - 25)?";
-echo "Task: {$task}\n\n";
+if ($hasIssues) {
+    echo "⚠️  Agent detected issues. Attempting correction...\n";
+    $messages[] = ['role' => 'assistant', 'content' => $reflectionResponse->content];
+    $messages[] = ['role' => 'user', 'content' => 'Please correct the identified issues.'];
+    // Continue loop for correction...
+}
+```
 
-// Initialize conversation
-$messages = [
-    ['role' => 'user', 'content' => $task]
-];
+**Why It Works**: Reflection allows the agent to self-assess and identify problems, enabling self-correction and continuous improvement.
 
-$maxIterations = 10;
-$iteration = 0;
-$finalResponse = null;
+## Step 4: Complete Advanced ReAct Implementation (~20 min)
 
-// ReAct Loop
-while ($iteration < $maxIterations) {
-    $iteration++;
-    
-    echo "Iteration {$iteration}\n";
-    
-    // REASON: Call Claude with current state
-    $response = $client->messages()->create([
-        'model' => 'claude-sonnet-4-5',
-        'max_tokens' => 4096,
-        'messages' => $messages,
-        'tools' => [$calculatorTool]
-    ]);
-    
-    echo "  Stop Reason: {$response->stop_reason}\n";
-    
-    // Add assistant response to history
-    $messages[] = [
-        'role' => 'assistant',
-        'content' => $response->content
+Combine planning, execution, and reflection:
+
+```php
+<?php
+# filename: examples/04-complete-advanced-react.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use ClaudePhp\ClaudePhp;
+
+function advancedReActAgent(ClaudePhp $client, string $task, array $tools): string {
+    $system = "You are a thoughtful agent that plans before acting " .
+              "and reflects after executing.";
+
+    // Phase 1: Planning
+    echo "Phase 1: Planning\n";
+    $messages = [
+        ['role' => 'user', 'content' => "Task: {$task}\n\nCreate a detailed plan."]
     ];
+
+    $planResponse = $client->messages()->create([
+        'model' => 'claude-sonnet-4-5',
+        'max_tokens' => 2048,
+        'system' => $system,
+        'messages' => $messages,
+        'thinking' => ['type' => 'enabled', 'budget_tokens' => 5000]
+    ]);
+
+    $messages[] = ['role' => 'assistant', 'content' => $planResponse->content];
+
+    // Phase 2: Execution (standard ReAct)
+    echo "\nPhase 2: Execution\n";
+    $messages[] = ['role' => 'user', 'content' => 'Execute your plan step by step.'];
     
-    // Check if done
-    if ($response->stop_reason === 'end_turn') {
-        $finalResponse = $response;
-        break;
-    }
+    $maxIterations = 10;
+    $iteration = 0;
     
-    // ACT: Execute tools if requested
-    if ($response->stop_reason === 'tool_use') {
-        $toolResults = [];
+    while ($iteration < $maxIterations) {
+        $iteration++;
         
-        foreach ($response->content as $block) {
-            if ($block['type'] === 'tool_use') {
-                echo "  Using tool: {$block['name']}\n";
-                
-                // Execute tool
-                $result = executeCalculator($block['input']['expression']);
-                echo "  Result: {$result}\n";
-                
-                // Format tool result
-                $toolResults[] = [
-                    'type' => 'tool_result',
-                    'tool_use_id' => $block['id'],
-                    'content' => $result
-                ];
+        $response = $client->messages()->create([
+            'model' => 'claude-sonnet-4-5',
+            'max_tokens' => 4096,
+            'system' => $system,
+            'messages' => $messages,
+            'tools' => $tools
+        ]);
+        
+        $messages[] = ['role' => 'assistant', 'content' => $response->content];
+        
+        if ($response->stop_reason === 'end_turn') {
+            break;
+        }
+        
+        if ($response->stop_reason === 'tool_use') {
+            $toolResults = [];
+            foreach ($response->content as $block) {
+                if ($block['type'] === 'tool_use') {
+                    $result = executeTool($block['name'], $block['input']);
+                    $toolResults[] = [
+                        'type' => 'tool_result',
+                        'tool_use_id' => $block['id'],
+                        'content' => $result
+                    ];
+                }
+            }
+            if (!empty($toolResults)) {
+                $messages[] = ['role' => 'user', 'content' => $toolResults];
             }
         }
-        
-        // OBSERVE: Add results to conversation
-        if (!empty($toolResults)) {
-            $messages[] = [
-                'role' => 'user',
-                'content' => $toolResults
-            ];
-        }
     }
-}
 
-// Display final answer
-if ($finalResponse) {
-    echo "\nFinal Answer:\n";
-    foreach ($finalResponse->content as $block) {
-        if ($block['type'] === 'text') {
-            echo $block['text'] . "\n";
-        }
-    }
-} else {
-    echo "\nMax iterations reached without completion\n";
-}
-```
+    // Phase 3: Reflection
+    echo "\nPhase 3: Reflection\n";
+    $messages[] = [
+        'role' => 'user',
+        'content' => "Reflect on the execution:\n" .
+                     "1. Did it work as expected?\n" .
+                     "2. What went well?\n" .
+                     "3. What needs improvement?"
+    ];
 
-**Why It Works**: The ReAct loop maintains conversation history across iterations. Each iteration, Claude reasons about what to do next, acts by requesting tools, and observes the results. The loop continues until Claude determines the task is complete (`stop_reason === 'end_turn'`).
+    $reflectionResponse = $client->messages()->create([
+        'model' => 'claude-sonnet-4-5',
+        'max_tokens' => 2048,
+        'messages' => $messages,
+        'thinking' => ['type' => 'enabled', 'budget_tokens' => 3000]
+    ]);
 
-## Step 2: Stop Conditions and Safety
-
-Always implement proper stop conditions:
-
-```php
-<?php
-# filename: examples/02-stop-conditions.php
-declare(strict_types=1);
-
-// Stop conditions
-$stopReasons = [
-    'end_turn' => 'Task complete',
-    'max_tokens' => 'Response truncated',
-    'tool_use' => 'Tool execution needed'
-];
-
-// Safety limits
-$maxIterations = 10;
-$maxTokens = 10000;
-$totalTokens = 0;
-
-while ($iteration < $maxIterations) {
-    $iteration++;
-    
-    $response = $client->messages()->create([...]);
-    
-    $totalTokens += $response->usage->input_tokens + $response->usage->output_tokens;
-    
-    // Check token limit
-    if ($totalTokens > $maxTokens) {
-        echo "Token limit reached\n";
-        break;
-    }
-    
-    // Check stop reason
-    if ($response->stop_reason === 'end_turn') {
-        break; // Success
-    }
-    
-    // Handle tool use...
-}
-```
-
-## Step 3: Debugging Agent Reasoning
-
-Add debugging to understand agent behavior:
-
-```php
-<?php
-# filename: examples/03-debugging.php
-declare(strict_types=1);
-
-function debugIteration(int $iteration, object $response): void {
-    echo "\n╔════ Iteration {$iteration} ════╗\n";
-    echo "Stop Reason: {$response->stop_reason}\n";
-    echo "Tokens: {$response->usage->input_tokens} in, {$response->usage->output_tokens} out\n";
-    
+    // Extract final answer
+    $finalAnswer = '';
     foreach ($response->content as $block) {
         if ($block['type'] === 'text') {
-            echo "Text: {$block['text']}\n";
-        } elseif ($block['type'] === 'tool_use') {
-            echo "Tool: {$block['name']}\n";
-            echo "  Input: " . json_encode($block['input']) . "\n";
+            $finalAnswer .= $block['text'];
         }
     }
+    
+    return $finalAnswer;
 }
 ```
 
-## Common Issues and Solutions
+**Why It Works**: The complete pattern combines planning (think ahead), execution (act), and reflection (learn), creating a more intelligent agent that improves over time.
 
-### Issue: Infinite Loop
+## Best Practices
 
-**Symptom**: Agent keeps making tool calls without completing
-
-**Solution**: Always set iteration limits and check for progress
+### 1. Balance Thinking Budget
 
 ```php
-$maxIterations = 10;
-$hasProgressed = false;
-$previousToolCount = 0;
+// Simple tasks: minimal thinking
+'thinking' => ['type' => 'enabled', 'budget_tokens' => 1000]
 
-while ($iteration < $maxIterations) {
-    // ... execute loop ...
-    
-    $currentToolCount = count(array_filter($response->content, fn($b) => $b['type'] === 'tool_use'));
-    
-    if ($currentToolCount > $previousToolCount) {
-        $hasProgressed = true;
-    }
-    
-    if ($iteration >= 5 && !$hasProgressed) {
-        echo "Warning: Agent may be stuck\n";
-        break;
-    }
+// Complex tasks: more thinking
+'thinking' => ['type' => 'enabled', 'budget_tokens' => 10000]
+```
+
+### 2. Use Planning for Complex Tasks
+
+```php
+// Simple calculation: skip planning
+if (isSimpleTask($task)) {
+    // Go straight to execution
+} else {
+    // Use planning phase
+}
+```
+
+### 3. Reflect After Major Milestones
+
+```php
+// Reflect after completing major steps
+if ($milestoneReached) {
+    triggerReflection();
 }
 ```
 
 ## Next Steps
 
-Continue to the next chapter in the agent series:
+Explore more advanced agent patterns:
 
-- **[Chapter 46](/series/claude-php-developers/chapters/46-complete-agentic-framework)** - Next agent chapter
-- **[Chapter 33: Multi-Agent Systems](/series/claude-php-developers/chapters/33-multi-agent-systems)** - Advanced coordination
-- **[Chapter 40: Introduction to Agentic AI](/series/claude-php-developers/chapters/40-introduction-to-agentic-ai)** - Agent fundamentals
+- **[Chapter 46: Complete Agentic Framework](/series/claude-php-developers/chapters/46-complete-agentic-framework)** - Full framework implementation
+- **[Chapter 47: Chain of Thought (CoT)](/series/claude-php-developers/chapters/47-chain-of-thought)** - Reasoning techniques
+- **[Chapter 49: Plan-and-Execute](/series/claude-php-developers/chapters/49-plan-and-execute)** - Planning strategies
 
 ## Further Reading
 
 - [Claude PHP SDK Tutorials](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials) - Complete tutorial series
 - [Tutorial 5 Source](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/05-advanced-react) - Original tutorial with code examples
-- [ReAct Paper](https://arxiv.org/abs/2210.03629) - Original research paper
+- [Extended Thinking Documentation](https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking) - Official guide
 
 <ChapterCheckbox
   seriesId="claude-php-developers"
@@ -368,15 +423,24 @@ Continue to [Chapter 46](/series/claude-php-developers/chapters/46-complete-agen
 
 ## 💻 Code Samples
 
-Code examples for this chapter are available in the Claude PHP SDK repository:
+All code examples from this chapter are available in the GitHub repository:
 
-**[View Tutorial 5 Code](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/05-advanced-react)**
+**[View Chapter 45 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-45)**
 
 Clone and run locally:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code/claude-php/chapter-45
+composer install
+export ANTHROPIC_API_KEY="sk-ant-your-key-here"
+php examples/04-complete-advanced-react.php
+```
+
+For the original tutorial code:
 ```bash
 git clone https://github.com/claude-php/Claude-PHP-SDK.git
 cd Claude-PHP-SDK/tutorials/05-advanced-react
 composer install
 export ANTHROPIC_API_KEY="sk-ant-your-key-here"
-php react_agent.php
+php advanced_react_agent.php
 ```
