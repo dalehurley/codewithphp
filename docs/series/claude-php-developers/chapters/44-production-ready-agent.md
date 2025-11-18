@@ -151,227 +151,302 @@ function callClaudeWithErrorHandling(ClaudePhp $client, array $params): object {
 
 **Why It Works**: Different error types require different handling strategies. Rate limits need waiting, network errors need retries, authentication errors should fail immediately, and server errors (5xx) can be retried while client errors (4xx) should not.
 
-## Step 1: Basic ReAct Loop Implementation
+## Step 2: Retry Logic with Exponential Backoff (~15 min)
 
-Let's start with a complete working example:
+Implement retry logic for transient failures:
 
 ```php
 <?php
-# filename: examples/01-react-loop.php
+# filename: examples/02-retry-logic.php
 declare(strict_types=1);
 
-require __DIR__ . '/../vendor/autoload.php';
+function retryWithBackoff(callable $fn, int $maxAttempts = 3): mixed {
+    $attempt = 0;
+    $delay = 1000; // Start with 1 second (in milliseconds)
 
-use ClaudePhp\ClaudePhp;
+    while ($attempt < $maxAttempts) {
+        try {
+            return $fn();
+        } catch (\ClaudePhp\Exceptions\RateLimitError $e) {
+            $attempt++;
+            if ($attempt >= $maxAttempts) {
+                throw $e;
+            }
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+            $retryAfter = $e->response->getHeaderLine('retry-after') ?? ($delay / 1000);
+            echo "Rate limited. Waiting {$retryAfter}s (attempt {$attempt}/{$maxAttempts})...\n";
+            sleep((int)$retryAfter);
+            $delay *= 2; // Exponential backoff
+        } catch (\ClaudePhp\Exceptions\APIConnectionError $e) {
+            $attempt++;
+            if ($attempt >= $maxAttempts) {
+                throw $e;
+            }
 
-// Define calculator tool
-$calculatorTool = [
-    'name' => 'calculate',
-    'description' => 'Perform precise mathematical calculations.',
-    'input_schema' => [
-        'type' => 'object',
-        'properties' => [
-            'expression' => [
-                'type' => 'string',
-                'description' => 'Mathematical expression to evaluate'
-            ]
-        ],
-        'required' => ['expression']
-    ]
-];
-
-// Tool executor
-function executeCalculator(string $expression): string {
-    try {
-        // WARNING: eval() for demo only! Use proper parser in production
-        $result = eval("return {$expression};");
-        return (string)$result;
-    } catch (Exception $e) {
-        return "Error: " . $e->getMessage();
+            $waitSeconds = $delay / 1000;
+            echo "Connection error. Retrying in {$waitSeconds}s (attempt {$attempt}/{$maxAttempts})...\n";
+            sleep((int)$waitSeconds);
+            $delay *= 2; // Exponential backoff
+        }
     }
+    
+    throw new Exception("Max retry attempts reached");
 }
 
-// User task requiring multiple steps
-$task = "What is (50 × 30) + (100 - 25)?";
-echo "Task: {$task}\n\n";
-
-// Initialize conversation
-$messages = [
-    ['role' => 'user', 'content' => $task]
-];
-
-$maxIterations = 10;
-$iteration = 0;
-$finalResponse = null;
-
-// ReAct Loop
-while ($iteration < $maxIterations) {
-    $iteration++;
-    
-    echo "Iteration {$iteration}\n";
-    
-    // REASON: Call Claude with current state
-    $response = $client->messages()->create([
+// Usage in ReAct loop
+$response = retryWithBackoff(function() use ($client, $messages, $tools) {
+    return $client->messages()->create([
         'model' => 'claude-sonnet-4-5',
         'max_tokens' => 4096,
         'messages' => $messages,
-        'tools' => [$calculatorTool]
+        'tools' => $tools
     ]);
+});
+```
+
+**Why It Works**: Exponential backoff prevents overwhelming the API during outages. Each retry waits longer, giving the service time to recover. Rate limit errors use the `retry-after` header when available.
+
+## Step 3: Tool Error Handling (~10 min)
+
+Handle tool execution failures gracefully:
+
+```php
+<?php
+# filename: examples/03-tool-error-handling.php
+declare(strict_types=1);
+
+function executeToolSafely(string $toolName, array $input): array {
+    try {
+        $result = executeTool($toolName, $input);
+        return [
+            'success' => true,
+            'content' => $result
+        ];
+    } catch (InvalidArgumentException $e) {
+        // Invalid input - don't retry
+        error_log("Tool {$toolName} invalid input: " . $e->getMessage());
+        return [
+            'success' => false,
+            'content' => "Error: Invalid input - " . $e->getMessage(),
+            'is_error' => true
+        ];
+    } catch (Exception $e) {
+        // Other errors - log and return error message
+        error_log("Tool {$toolName} failed: " . $e->getMessage());
+        return [
+            'success' => false,
+            'content' => "Error: " . $e->getMessage(),
+            'is_error' => true
+        ];
+    }
+}
+
+// Use in ReAct loop
+foreach ($response->content as $block) {
+    if ($block['type'] === 'tool_use') {
+        $result = executeToolSafely($block['name'], $block['input']);
+
+        $toolResults[] = [
+            'type' => 'tool_result',
+            'tool_use_id' => $block['id'],
+            'content' => $result['content'],
+            'is_error' => $result['is_error'] ?? false
+        ];
+    }
+}
+```
+
+**Why It Works**: Tool failures shouldn't crash the agent. By returning error messages as tool results, Claude can see what went wrong and adapt its approach, potentially trying a different tool or explaining the limitation to the user.
+
+## Step 4: Logging and Monitoring (~10 min)
+
+Add comprehensive logging for production debugging:
+
+```php
+<?php
+# filename: examples/04-logging.php
+declare(strict_types=1);
+
+class AgentLogger {
+    private string $logFile;
     
-    echo "  Stop Reason: {$response->stop_reason}\n";
-    
-    // Add assistant response to history
-    $messages[] = [
-        'role' => 'assistant',
-        'content' => $response->content
-    ];
-    
-    // Check if done
-    if ($response->stop_reason === 'end_turn') {
-        $finalResponse = $response;
-        break;
+    public function __construct(string $logFile = 'agent.log') {
+        $this->logFile = $logFile;
     }
     
-    // ACT: Execute tools if requested
-    if ($response->stop_reason === 'tool_use') {
-        $toolResults = [];
+    public function logIteration(int $iteration, object $response, array $context = []): void {
+        $logEntry = [
+            'timestamp' => date('Y-m-d H:i:s'),
+            'iteration' => $iteration,
+            'stop_reason' => $response->stop_reason,
+            'input_tokens' => $response->usage->input_tokens,
+            'output_tokens' => $response->usage->output_tokens,
+            'context' => $context
+        ];
         
-        foreach ($response->content as $block) {
-            if ($block['type'] === 'tool_use') {
-                echo "  Using tool: {$block['name']}\n";
-                
-                // Execute tool
-                $result = executeCalculator($block['input']['expression']);
-                echo "  Result: {$result}\n";
-                
-                // Format tool result
-                $toolResults[] = [
-                    'type' => 'tool_result',
-                    'tool_use_id' => $block['id'],
-                    'content' => $result
-                ];
-            }
+        file_put_contents(
+            $this->logFile,
+            json_encode($logEntry) . "\n",
+            FILE_APPEND
+        );
+    }
+    
+    public function logError(string $message, array $context = []): void {
+        $logEntry = [
+            'timestamp' => date('Y-m-d H:i:s'),
+            'level' => 'ERROR',
+            'message' => $message,
+            'context' => $context
+        ];
+        
+        file_put_contents(
+            $this->logFile,
+            json_encode($logEntry) . "\n",
+            FILE_APPEND
+        );
+    }
+    
+    public function logToolExecution(string $toolName, array $input, mixed $result): void {
+        $logEntry = [
+            'timestamp' => date('Y-m-d H:i:s'),
+            'tool' => $toolName,
+            'input' => $input,
+            'result' => is_string($result) ? $result : json_encode($result)
+        ];
+        
+        file_put_contents(
+            $this->logFile,
+            json_encode($logEntry) . "\n",
+            FILE_APPEND
+        );
+    }
+}
+
+// Usage
+$logger = new AgentLogger();
+
+while ($iteration < $maxIterations) {
+    $iteration++;
+    
+    try {
+        $response = $client->messages()->create([...]);
+        $logger->logIteration($iteration, $response);
+    } catch (Exception $e) {
+        $logger->logError($e->getMessage(), ['iteration' => $iteration]);
+        throw $e;
+    }
+}
+```
+
+**Why It Works**: Production systems need observability. Logging each iteration, tool execution, and error helps debug issues in production and understand agent behavior patterns.
+
+## Step 5: Graceful Degradation (~10 min)
+
+Continue working when tools fail:
+
+```php
+<?php
+# filename: examples/05-graceful-degradation.php
+declare(strict_types=1);
+
+$toolFailureCount = [];
+$maxToolFailures = 3;
+
+foreach ($response->content as $block) {
+    if ($block['type'] === 'tool_use') {
+        $toolName = $block['name'];
+        
+        // Check if tool has failed too many times
+        if (($toolFailureCount[$toolName] ?? 0) >= $maxToolFailures) {
+            $toolResults[] = [
+                'type' => 'tool_result',
+                'tool_use_id' => $block['id'],
+                'content' => "Tool temporarily unavailable. Please try again later."
+            ];
+            continue;
         }
         
-        // OBSERVE: Add results to conversation
-        if (!empty($toolResults)) {
-            $messages[] = [
-                'role' => 'user',
-                'content' => $toolResults
+        try {
+            $result = executeTool($toolName, $block['input']);
+            $toolFailureCount[$toolName] = 0; // Reset on success
+            $toolResults[] = [
+                'type' => 'tool_result',
+                'tool_use_id' => $block['id'],
+                'content' => $result
+            ];
+        } catch (Exception $e) {
+            $toolFailureCount[$toolName] = ($toolFailureCount[$toolName] ?? 0) + 1;
+            $toolResults[] = [
+                'type' => 'tool_result',
+                'tool_use_id' => $block['id'],
+                'content' => "Error: Tool temporarily unavailable. Please try again later."
             ];
         }
     }
 }
 
-// Display final answer
-if ($finalResponse) {
-    echo "\nFinal Answer:\n";
-    foreach ($finalResponse->content as $block) {
-        if ($block['type'] === 'text') {
-            echo $block['text'] . "\n";
-        }
+// Optionally disable unreliable tools
+foreach ($toolFailureCount as $toolName => $count) {
+    if ($count >= $maxToolFailures) {
+        echo "Disabling unreliable tool: {$toolName}\n";
+        $tools = array_filter($tools, fn($t) => $t['name'] !== $toolName);
     }
-} else {
-    echo "\nMax iterations reached without completion\n";
 }
 ```
 
-**Why It Works**: The ReAct loop maintains conversation history across iterations. Each iteration, Claude reasons about what to do next, acts by requesting tools, and observes the results. The loop continues until Claude determines the task is complete (`stop_reason === 'end_turn'`).
+**Why It Works**: When a tool fails repeatedly, disabling it prevents wasted API calls and allows the agent to work with available tools. Claude can adapt and use alternative approaches.
 
-## Step 2: Stop Conditions and Safety
+## Production Checklist
 
-Always implement proper stop conditions:
+Before deploying your agent to production:
+
+- [ ] All errors caught and handled appropriately
+- [ ] Retry logic implemented for transient failures
+- [ ] Tool execution wrapped in try-catch blocks
+- [ ] Logging configured and tested
+- [ ] Server-side tools configured (if needed)
+- [ ] Iteration limits set appropriately
+- [ ] Token usage monitored and limited
+- [ ] Graceful degradation strategies in place
+- [ ] Error scenarios tested thoroughly
+- [ ] Documentation for operators and monitoring
+
+## Best Practices
+
+### 1. Always Set Timeouts
 
 ```php
-<?php
-# filename: examples/02-stop-conditions.php
-declare(strict_types=1);
+$client = new ClaudePhp(
+    apiKey: $apiKey,
+    timeout: 30.0,  // 30 seconds
+    maxRetries: 2
+);
+```
 
-// Stop conditions
-$stopReasons = [
-    'end_turn' => 'Task complete',
-    'max_tokens' => 'Response truncated',
-    'tool_use' => 'Tool execution needed'
-];
+### 2. Validate Tool Input
 
-// Safety limits
-$maxIterations = 10;
-$maxTokens = 10000;
+```php
+function validateCalculatorInput(string $expression): bool {
+    // Only allow safe characters
+    if (!preg_match('/^[0-9+\-*\/().\s]+$/', $expression)) {
+        throw new InvalidArgumentException("Invalid expression");
+    }
+    return true;
+}
+```
+
+### 3. Monitor Token Usage
+
+```php
 $totalTokens = 0;
+$maxTokens = 100000; // Set appropriate limit
 
 while ($iteration < $maxIterations) {
-    $iteration++;
-    
     $response = $client->messages()->create([...]);
-    
     $totalTokens += $response->usage->input_tokens + $response->usage->output_tokens;
     
-    // Check token limit
     if ($totalTokens > $maxTokens) {
-        echo "Token limit reached\n";
-        break;
-    }
-    
-    // Check stop reason
-    if ($response->stop_reason === 'end_turn') {
-        break; // Success
-    }
-    
-    // Handle tool use...
-}
-```
-
-## Step 3: Debugging Agent Reasoning
-
-Add debugging to understand agent behavior:
-
-```php
-<?php
-# filename: examples/03-debugging.php
-declare(strict_types=1);
-
-function debugIteration(int $iteration, object $response): void {
-    echo "\n╔════ Iteration {$iteration} ════╗\n";
-    echo "Stop Reason: {$response->stop_reason}\n";
-    echo "Tokens: {$response->usage->input_tokens} in, {$response->usage->output_tokens} out\n";
-    
-    foreach ($response->content as $block) {
-        if ($block['type'] === 'text') {
-            echo "Text: {$block['text']}\n";
-        } elseif ($block['type'] === 'tool_use') {
-            echo "Tool: {$block['name']}\n";
-            echo "  Input: " . json_encode($block['input']) . "\n";
-        }
-    }
-}
-```
-
-## Common Issues and Solutions
-
-### Issue: Infinite Loop
-
-**Symptom**: Agent keeps making tool calls without completing
-
-**Solution**: Always set iteration limits and check for progress
-
-```php
-$maxIterations = 10;
-$hasProgressed = false;
-$previousToolCount = 0;
-
-while ($iteration < $maxIterations) {
-    // ... execute loop ...
-    
-    $currentToolCount = count(array_filter($response->content, fn($b) => $b['type'] === 'tool_use'));
-    
-    if ($currentToolCount > $previousToolCount) {
-        $hasProgressed = true;
-    }
-    
-    if ($iteration >= 5 && !$hasProgressed) {
-        echo "Warning: Agent may be stuck\n";
+        echo "Token limit exceeded\n";
         break;
     }
 }
@@ -379,17 +454,17 @@ while ($iteration < $maxIterations) {
 
 ## Next Steps
 
-Continue to the next chapter in the agent series:
+Now that you have a production-ready agent, explore advanced patterns:
 
-- **[Chapter 45](/series/claude-php-developers/chapters/45-advanced-react-patterns)** - Next agent chapter
-- **[Chapter 33: Multi-Agent Systems](/series/claude-php-developers/chapters/33-multi-agent-systems)** - Advanced coordination
-- **[Chapter 40: Introduction to Agentic AI](/series/claude-php-developers/chapters/40-introduction-to-agentic-ai)** - Agent fundamentals
+- **[Chapter 45: Advanced ReAct Patterns](/series/claude-php-developers/chapters/45-advanced-react-patterns)** - Advanced reasoning techniques
+- **[Chapter 46: Complete Agentic Framework](/series/claude-php-developers/chapters/46-complete-agentic-framework)** - Full framework implementation
+- **[Chapter 43: Multi-Tool Agent](/series/claude-php-developers/chapters/43-multi-tool-agent)** - Review multi-tool patterns
 
 ## Further Reading
 
 - [Claude PHP SDK Tutorials](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials) - Complete tutorial series
 - [Tutorial 4 Source](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/04-production-ready) - Original tutorial with code examples
-- [ReAct Paper](https://arxiv.org/abs/2210.03629) - Original research paper
+- [Error Handling Best Practices](https://docs.anthropic.com/en/docs/build-with-claude/error-handling) - Official error handling guide
 
 <ChapterCheckbox
   seriesId="claude-php-developers"
@@ -403,15 +478,24 @@ Continue to [Chapter 45](/series/claude-php-developers/chapters/45-advanced-reac
 
 ## 💻 Code Samples
 
-Code examples for this chapter are available in the Claude PHP SDK repository:
+All code examples from this chapter are available in the GitHub repository:
 
-**[View Tutorial 4 Code](https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials/04-production-ready)**
+**[View Chapter 44 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-44)**
 
 Clone and run locally:
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code/claude-php/chapter-44
+composer install
+export ANTHROPIC_API_KEY="sk-ant-your-key-here"
+php examples/01-error-handling.php
+```
+
+For the original tutorial code:
 ```bash
 git clone https://github.com/claude-php/Claude-PHP-SDK.git
 cd Claude-PHP-SDK/tutorials/04-production-ready
 composer install
 export ANTHROPIC_API_KEY="sk-ant-your-key-here"
-php react_agent.php
+php production_agent.php
 ```
