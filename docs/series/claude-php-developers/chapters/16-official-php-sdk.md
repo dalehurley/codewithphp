@@ -1,6 +1,6 @@
 ---
-title: "16: The Official PHP SDK"
-description: "Master the Anthropic PHP SDK architecture, advanced features, middleware, testing utilities, and best practices for production applications."
+title: "16: The Community PHP SDK"
+description: "Master the Claude PHP SDK (claude-php/Claude-PHP-SDK) architecture, advanced features, configuration, testing utilities, and best practices for production applications. This community SDK provides full parity with the Python SDK."
 series: "claude-php-developers"
 chapter: 16
 order: 16
@@ -24,11 +24,11 @@ prerequisites:
   <span>Chapter 16</span>
 </div>
 
-# Chapter 16: The Official PHP SDK
+# Chapter 16: The Community PHP SDK
 
 ## Overview
 
-The official Anthropic PHP SDK is more than just a wrapper around HTTP requests—it's a robust, production-ready library with advanced features like middleware, testing utilities, custom transports, and comprehensive type safety. This chapter explores the SDK's architecture, advanced capabilities, and best practices for building enterprise-grade applications.
+The Claude PHP SDK (claude-php/Claude-PHP-SDK) is a community-maintained, production-ready library that provides **full parity with the Python SDK**. Created by Dale Hurley, this SDK offers comprehensive Claude API coverage, PSR compliance, advanced features, and extensive examples. This chapter explores the SDK's architecture, advanced capabilities, and best practices for building enterprise-grade applications.
 
 By mastering the SDK's internals, you'll be able to customize behavior, implement sophisticated logging and monitoring, write comprehensive tests, and optimize performance for your specific use cases.
 
@@ -58,35 +58,39 @@ Before diving in, ensure you have:
 
 ## Installing the SDK
 
-If you haven't already installed the official Anthropic PHP SDK:
+Install the community Claude PHP SDK:
 
 ```bash
-# Install the official Anthropic PHP SDK
-composer require anthropic-ai/sdk
-
-# For advanced middleware features, also install Guzzle HTTP client
-composer require guzzlehttp/guzzle
+# Install the Claude PHP SDK (community SDK with full Python SDK parity)
+composer require claude-php/claude-php-sdk
 ```
 
 **Verify installation:**
 
 ```bash
 # Check that the package was installed correctly
-composer show anthropic-ai/sdk
+composer show claude-php/claude-php-sdk
 ```
 
-You should see package details including version, description, and dependencies. The SDK requires PHP 8.4+ and follows PSR standards for HTTP messaging.
+You should see package details including version, description, and dependencies. The SDK requires PHP 8.1+ and follows PSR standards for HTTP messaging.
 
-::: tip SDK vs Direct HTTP
-While you can make direct HTTP requests to the Claude API, the official SDK provides type safety, better error handling, and easier testing. For production applications, the SDK is strongly recommended.
+::: tip Community SDK Benefits
+The community Claude PHP SDK (claude-php/Claude-PHP-SDK) provides:
+- **Full Python SDK parity** - Complete feature coverage
+- **29 comprehensive examples** covering all Claude documentation pages
+- **PSR compliance** - Works with any PSR-18 HTTP client
+- **Production ready** - All examples tested and verified
+- **Active maintenance** - Regularly updated with latest Claude API features
+
+For production applications, this SDK is strongly recommended over direct HTTP requests.
 :::
 
 ## Objectives
 
 By completing this chapter, you will:
 
-- Understand the Anthropic PHP SDK architecture and core components
-- Master the factory pattern for client configuration and customization
+- Understand the Claude PHP SDK architecture and core components
+- Master client configuration and customization patterns
 - Implement custom HTTP transports and middleware for production needs
 - Work with strongly-typed response objects and their properties
 - Write comprehensive tests using mockable SDK interfaces
@@ -114,27 +118,21 @@ declare(strict_types=1);
 
 require 'vendor/autoload.php';
 
-use Anthropic\Anthropic;
-use Anthropic\Client;
-use Anthropic\Resources\Messages;
-use Anthropic\Contracts\ClientContract;
+use ClaudePhp\ClaudePhp;
 
-// The SDK uses a factory pattern for initialization
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->withBaseUrl('https://api.anthropic.com/v1') // Optional: custom endpoint
-    ->withHttpClient($customHttpClient)            // Optional: custom PSR-18 client
-    ->withStreamHandler($customStreamHandler)      // Optional: custom streaming
-    ->withHttpHeader('X-Custom-Header', 'value')   // Optional: custom headers
-    ->make();
-
-// The client implements ClientContract
-assert($client instanceof ClientContract);
-assert($client instanceof Client);
+// The SDK uses a simple constructor pattern for initialization
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY'),
+    baseUrl: 'https://api.anthropic.com/v1',  // Optional: custom endpoint
+    timeout: 30.0,                             // Optional: request timeout
+    maxRetries: 2,                             // Optional: auto-retry on 429/5xx
+    customHeaders: [                           // Optional: custom headers
+        'X-Custom-Header' => 'value'
+    ]
+);
 
 // Resources are accessed via the client
 $messagesResource = $client->messages();
-assert($messagesResource instanceof Messages);
 
 echo "SDK Architecture:\n";
 echo "- Client: " . get_class($client) . "\n";
@@ -143,23 +141,23 @@ echo "- Messages Resource: " . get_class($messagesResource) . "\n";
 
 ### Why It Works
 
-The factory pattern (`Anthropic::factory()`) provides a fluent interface for building clients with optional configuration. Each method returns the factory instance, allowing method chaining. The `make()` method finalizes the configuration and returns a fully configured client.
+The SDK uses a simple constructor pattern with named parameters for configuration. This provides a clean, readable API while maintaining flexibility. All configuration options are optional with sensible defaults, making it easy to get started while allowing customization for production needs.
 
-The client implements `ClientContract`, which defines the interface for all SDK operations. This contract-based design enables dependency injection and makes the SDK highly testable. Resources like `Messages` are accessed through the client, providing a clean API for different endpoint groups.
+Resources like `Messages` are accessed through the client, providing a clean API for different endpoint groups. The SDK is PSR-compliant and works with any PSR-18 HTTP client.
 
 ### Core Components
 
-1. **Factory** (`Anthropic::factory()`) - Fluent API for building clients
-2. **Client** (`Client`) - Main entry point, manages HTTP communication
-3. **Resources** (`Messages`, etc.) - API endpoint wrappers
-4. **Transports** - HTTP layer abstraction (PSR-7/PSR-18)
-5. **Responses** - Strongly-typed response objects
+1. **Client** (`ClaudePhp`) - Main entry point, manages HTTP communication
+2. **Resources** (`messages()`, etc.) - API endpoint wrappers
+3. **HTTP Layer** - PSR-18 compliant HTTP client abstraction
+4. **Responses** - Structured response objects with array access
+5. **Configuration** - Simple constructor-based configuration with named parameters
 
-## Advanced Factory Configuration
+## Advanced Client Configuration
 
-The factory pattern allows extensive customization. You can add middleware, configure timeouts, set custom headers, and even replace the HTTP client entirely. This is essential for production applications that need logging, metrics, retry logic, or custom authentication.
+The SDK constructor allows extensive customization through named parameters. You can configure timeouts, set custom headers, enable automatic retries, and customize the HTTP client. This is essential for production applications that need logging, metrics, retry logic, or custom authentication.
 
-### Why Customize the Factory?
+### Why Customize the Client?
 
 Production applications often need:
 - **Request/Response Logging**: Track all API calls for debugging
@@ -177,7 +175,7 @@ declare(strict_types=1);
 
 require 'vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
@@ -234,7 +232,7 @@ try {
         ]
     ]);
 
-    echo "Response: " . $response->content[0]->text . "\n";
+    echo "Response: " . $response->content[0]['text'] . "\n";
     echo "Request ID: " . $response->id . "\n";
 } catch (\Exception $e) {
     echo "Error: " . $e->getMessage() . "\n";
@@ -262,7 +260,7 @@ declare(strict_types=1);
 
 require 'vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -366,13 +364,11 @@ declare(strict_types=1);
 
 require 'vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Anthropic\Responses\Messages\CreateResponse;
 use Anthropic\Responses\Messages\Content\TextContent;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
@@ -408,9 +404,9 @@ echo "\n";
 
 // Usage statistics
 echo "Token Usage:\n";
-echo "  Input Tokens: {$response->usage->inputTokens}\n";
-echo "  Output Tokens: {$response->usage->outputTokens}\n";
-echo "  Total Tokens: " . ($response->usage->inputTokens + $response->usage->outputTokens) . "\n\n";
+echo "  Input Tokens: {$response->usage->input_tokens}\n";
+echo "  Output Tokens: {$response->usage->output_tokens}\n";
+echo "  Total Tokens: " . ($response->usage->input_tokens + $response->usage->output_tokens) . "\n\n";
 
 // Convert to array (useful for logging/storage)
 $responseArray = $response->toArray();
@@ -515,7 +511,7 @@ declare(strict_types=1);
 
 require 'vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
@@ -645,7 +641,7 @@ for ($i = 1; $i <= 3; $i++) {
             ['role' => 'user', 'content' => "Count to {$i}"]
         ]
     ]);
-    echo "Response: " . $response->content[0]->text . "\n\n";
+    echo "Response: " . $response->content[0]['text'] . "\n\n";
 }
 
 // Display metrics
@@ -682,15 +678,13 @@ declare(strict_types=1);
 
 require 'vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Anthropic\Exceptions\ErrorException;
 use Anthropic\Exceptions\RateLimitException;
 use Anthropic\Exceptions\InvalidRequestException;
 use Anthropic\Exceptions\AuthenticationException;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 function makeRequestWithRetry(
     Anthropic\Contracts\ClientContract $client,
@@ -760,7 +754,7 @@ try {
     ]);
 
     if ($response) {
-        echo "Success: " . $response->content[0]->text . "\n";
+        echo "Success: " . $response->content[0]['text'] . "\n";
     }
 
 } catch (\Exception $e) {
@@ -824,10 +818,10 @@ class ContentGenerator
             ]);
 
             $this->logger->info('Content generated successfully', [
-                'tokens_used' => $response->usage->outputTokens
+                'tokens_used' => $response->usage->output_tokens
             ]);
 
-            return $response->content[0]->text;
+            return $response->content[0]['text'];
 
         } catch (\Exception $e) {
             $this->logger->error('Content generation failed', [
@@ -908,7 +902,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Anthropic\Contracts\ClientContract;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\HandlerStack;
@@ -991,11 +985,9 @@ declare(strict_types=1);
 
 require 'vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Streaming configuration - use createStreamed() instead of create()
 $stream = $client->messages()->createStreamed([
@@ -1050,7 +1042,7 @@ declare(strict_types=1);
 
 require 'vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
@@ -1108,7 +1100,7 @@ for ($i = 1; $i <= 3; $i++) {
             ['role' => 'user', 'content' => "Say 'Request {$i}'"]
         ]
     ]);
-    echo $response->content[0]->text . "\n\n";
+    echo $response->content[0]['text'] . "\n\n";
 }
 ```
 
@@ -1136,7 +1128,7 @@ declare(strict_types=1);
 
 require 'vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class SDKMetricsCollector
 {
@@ -1160,9 +1152,9 @@ class SDKMetricsCollector
         $this->metrics[] = [
             'timestamp' => time(),
             'model' => $response->model,
-            'input_tokens' => $response->usage->inputTokens,
-            'output_tokens' => $response->usage->outputTokens,
-            'total_tokens' => $response->usage->inputTokens + $response->usage->outputTokens,
+            'input_tokens' => $response->usage->input_tokens,
+            'output_tokens' => $response->usage->output_tokens,
+            'total_tokens' => $response->usage->input_tokens + $response->usage->output_tokens,
             'duration_seconds' => $duration,
             'memory_used_bytes' => $memoryUsed,
             'stop_reason' => $response->stopReason,
@@ -1201,9 +1193,7 @@ class SDKMetricsCollector
 }
 
 // Usage
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $collector = new SDKMetricsCollector($client);
 
@@ -1249,7 +1239,7 @@ declare(strict_types=1);
 
 require 'vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
@@ -1302,7 +1292,7 @@ $response = $client->messages()->create([
     ]
 ]);
 
-echo "Response: " . $response->content[0]->text . "\n";
+echo "Response: " . $response->content[0]['text'] . "\n";
 echo "Request was signed for security.\n";
 ```
 
@@ -1325,7 +1315,7 @@ declare(strict_types=1);
 
 require 'vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class CostCalculator
 {
@@ -1378,8 +1368,8 @@ class CostCalculator
     {
         return $this->calculateCost(
             $response->model,
-            $response->usage->inputTokens,
-            $response->usage->outputTokens
+            $response->usage->input_tokens,
+            $response->usage->output_tokens
         );
     }
 
@@ -1397,9 +1387,7 @@ class CostCalculator
 }
 
 // Usage
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $calculator = new CostCalculator($client);
 
@@ -1421,9 +1409,9 @@ $response = $client->messages()->create($params);
 // Calculate actual cost
 $actualCost = $calculator->getActualCost($response);
 echo "Actual cost: $" . number_format($actualCost, 6) . "\n";
-echo "Input tokens: " . $response->usage->inputTokens . "\n";
-echo "Output tokens: " . $response->usage->outputTokens . "\n";
-echo "Response: " . substr($response->content[0]->text, 0, 100) . "...\n";
+echo "Input tokens: " . $response->usage->input_tokens . "\n";
+echo "Output tokens: " . $response->usage->output_tokens . "\n";
+echo "Response: " . substr($response->content[0]['text'], 0, 100) . "...\n";
 ```
 
 ### Why It Works
@@ -1447,7 +1435,7 @@ declare(strict_types=1);
 
 require 'vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\HandlerStack;
 use Psr\Http\Message\RequestInterface;
@@ -1531,7 +1519,7 @@ $response = $client->messages()->create([
     ]
 ]);
 
-echo "Response: " . $response->content[0]->text . "\n\n";
+echo "Response: " . $response->content[0]['text'] . "\n\n";
 
 // Save recording for later analysis
 $recorder->saveRecording();
@@ -1562,13 +1550,13 @@ Common issues and solutions when working with the SDK:
 
 **SDK not found after installation?**
 - Run `composer dump-autoload`
-- Verify `anthropic-ai/sdk` is in `composer.json` and `vendor/` directory
+- Verify `claude-php/claude-php-sdk` is in `composer.json` and `vendor/` directory
 - Check minimum PHP version (8.2+)
 
 **Type errors with response objects?**
 - Ensure strict types are enabled (`declare(strict_types=1)`)
 - Check you're using the correct response object properties
-- Review the SDK's type definitions in `vendor/anthropic-ai/sdk/src/Responses/`
+- Review the SDK's type definitions in `vendor/claude-php/claude-php-sdk/src/Responses/`
 
 **Custom HTTP client not working?**
 - Ensure your client implements `Psr\Http\Client\ClientInterface`

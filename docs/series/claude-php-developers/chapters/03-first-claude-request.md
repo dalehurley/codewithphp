@@ -82,13 +82,13 @@ By completing this chapter, you will:
 
 ## Installation
 
-### Installing the Anthropic SDK
+### Installing the Claude PHP SDK
 
-The official SDK is the recommended way to interact with Claude:
+The community Claude PHP SDK (claude-php/Claude-PHP-SDK) is the recommended way to interact with Claude. It provides full parity with the Python SDK:
 
 ```bash
-# Install the official Anthropic PHP SDK
-composer require anthropic-ai/sdk
+# Install the Claude PHP SDK (community SDK)
+composer require claude-php/claude-php-sdk
 ```
 
 **Verify installation:**
@@ -115,7 +115,7 @@ Create a clean project structure:
 ```bash
 mkdir claude-requests && cd claude-requests
 composer init --no-interaction
-composer require anthropic-ai/sdk vlucas/phpdotenv
+composer require claude-php/claude-php-sdk vlucas/phpdotenv
 mkdir -p src/{Services,Models,Exceptions} examples tests
 ```
 
@@ -151,12 +151,10 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 // Initialize client
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Make request
 $response = $client->messages()->create([
@@ -171,14 +169,14 @@ $response = $client->messages()->create([
 ]);
 
 // Output response
-echo $response->content[0]->text . "\n";
+echo $response->content[0]['text'] . "\n";
 ```
 
 **How It Works:**
 
-1. **Client Initialization**: `Anthropic::factory()` creates a client builder, `withApiKey()` sets your API key, and `make()` builds the client instance.
+1. **Client Initialization**: `new ClaudePhp(apiKey: ...)` creates a client instance with your API key.
 2. **Request Structure**: The `messages()->create()` method accepts an array with required parameters (`model`, `max_tokens`, `messages`) and optional parameters.
-3. **Response Access**: The response object contains a `content` array where each element has a `text` property containing Claude's response.
+3. **Response Access**: The response object contains a `content` array where each element is an array with `type` and `text` keys. Access text with `$response->content[0]['text']`.
 
 Run it:
 
@@ -213,11 +211,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $response = $client->messages()->create([
     // === Required Parameters ===
@@ -259,12 +255,12 @@ $response = $client->messages()->create([
 ]);
 
 echo "Response:\n";
-echo $response->content[0]->text . "\n\n";
+echo $response->content[0]['text'] . "\n\n";
 
 echo "Model used: {$response->model}\n";
 echo "Stop reason: {$response->stop_reason}\n";
-echo "Input tokens: {$response->usage->inputTokens}\n";
-echo "Output tokens: {$response->usage->outputTokens}\n";
+echo "Input tokens: {$response->usage->input_tokens}\n";
+echo "Output tokens: {$response->usage->output_tokens}\n";
 ```
 
 **Expected Result:**
@@ -416,11 +412,9 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Services\ClaudeRequestBuilder;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Build request fluently
 $builder = new ClaudeRequestBuilder();
@@ -437,7 +431,7 @@ $params = $builder
 // Make request
 $response = $client->messages()->create($params);
 
-echo $response->content[0]->text . "\n";
+echo $response->content[0]['text'] . "\n";
 ```
 
 **How It Works:**
@@ -514,11 +508,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Example 1: Code reviewer
 $codeToReview = <<<'PHP'
@@ -591,11 +583,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $prompt = 'Write a short story about a PHP developer.';
 
@@ -670,11 +660,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
@@ -713,9 +701,9 @@ if (empty($response->content)) {
 
 // Usage statistics
 echo "\n=== Usage ===\n";
-echo "Input Tokens: {$response->usage->inputTokens}\n";
-echo "Output Tokens: {$response->usage->outputTokens}\n";
-echo "Total Tokens: " . ($response->usage->inputTokens + $response->usage->outputTokens) . "\n";
+echo "Input Tokens: {$response->usage->input_tokens}\n";
+echo "Output Tokens: {$response->usage->output_tokens}\n";
+echo "Total Tokens: " . ($response->usage->input_tokens + $response->usage->output_tokens) . "\n";
 ```
 
 **Understanding Response Properties:**
@@ -740,7 +728,7 @@ The response `id` field (format: `msg_01ABC...`) is useful for:
 ```php
 // Example: Logging with request ID
 $response = $client->messages()->create([...]);
-error_log("Claude API Response [{$response->id}]: {$response->usage->inputTokens} input, {$response->usage->outputTokens} output tokens");
+error_log("Claude API Response [{$response->id}]: {$response->usage->input_tokens} input, {$response->usage->output_tokens} output tokens");
 ```
 
 **Content Array Safety:**
@@ -753,7 +741,7 @@ if (empty($response->content)) {
     throw new \RuntimeException('Response has no content');
 }
 
-$text = $response->content[0]->text ?? '';
+$text = $response->content[0]['text'] ?? '';
 
 // Or handle multiple content blocks
 foreach ($response->content as $block) {
@@ -803,11 +791,11 @@ class ClaudeResponse
     {
         return new self(
             id: $response->id,
-            text: $response->content[0]->text,
+            text: $response->content[0]['text'],
             model: $response->model,
             stopReason: $response->stop_reason,
-            inputTokens: $response->usage->inputTokens,
-            outputTokens: $response->usage->outputTokens,
+            inputTokens: $response->usage->input_tokens,
+            outputTokens: $response->usage->output_tokens,
             stopSequence: $response->stop_sequence,
             rawResponse: $response->toArray()
         );
@@ -902,11 +890,9 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Models\ClaudeResponse;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $sdkResponse = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
@@ -1007,11 +993,9 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Services\JsonExtractor;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
@@ -1022,7 +1006,7 @@ $response = $client->messages()->create([
     ]]
 ]);
 
-$text = $response->content[0]->text;
+$text = $response->content[0]['text'];
 echo "Raw response:\n{$text}\n\n";
 
 // Extract JSON
@@ -1109,7 +1093,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Anthropic\Exceptions\{
     ErrorException,
     RateLimitException,
@@ -1120,9 +1104,7 @@ use Anthropic\Exceptions\{
     UnprocessableEntityException
 };
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 try {
     $response = $client->messages()->create([
@@ -1133,7 +1115,7 @@ try {
         ]
     ]);
 
-    echo $response->content[0]->text;
+    echo $response->content[0]['text'];
 
 } catch (AuthenticationException $e) {
     // Invalid API key
@@ -1207,7 +1189,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Anthropic\Exceptions\RateLimitException;
 use Anthropic\Exceptions\ErrorException;
 
@@ -1286,11 +1268,9 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Services\RetryableClaudeClient;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $retryableClient = new RetryableClaudeClient($client);
 
@@ -1303,7 +1283,7 @@ try {
         ]
     ]);
 
-    echo $response->content[0]->text;
+    echo $response->content[0]['text'];
 
 } catch (\Exception $e) {
     echo "Request failed after retries: " . $e->getMessage() . "\n";
@@ -1532,7 +1512,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -1568,9 +1548,9 @@ class DebuggableClaudeClient
                     'duration' => round($duration, 3),
                     'model' => $response->model,
                     'stop_reason' => $response->stop_reason,
-                    'input_tokens' => $response->usage->inputTokens,
-                    'output_tokens' => $response->usage->outputTokens,
-                    'response_preview' => substr($response->content[0]->text, 0, 100),
+                    'input_tokens' => $response->usage->input_tokens,
+                    'output_tokens' => $response->usage->output_tokens,
+                    'response_preview' => substr($response->content[0]['text'], 0, 100),
                 ]);
             }
 
@@ -1621,7 +1601,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use GuzzleHttp\Client;
 
 // Configure HTTP client with custom timeout
@@ -1643,7 +1623,7 @@ $response = $client->messages()->create([
     ]
 ]);
 
-echo $response->content[0]->text;
+echo $response->content[0]['text'];
 ```
 
 ### Connection Pooling
@@ -1655,7 +1635,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Handler\CurlMultiHandler;
@@ -1829,7 +1809,7 @@ You now have the foundation to build sophisticated Claude integrations. In the n
 ## Further Reading
 
 - [Anthropic Messages API Documentation](https://docs.claude.com/en/api/messages) — Official API reference with all parameters and response formats
-- [Anthropic PHP SDK GitHub Repository](https://github.com/anthropics/anthropic-sdk-php) — Source code, examples, and issue tracking
+- [Claude PHP SDK GitHub Repository](https://github.com/claude-php/Claude-PHP-SDK) — Community SDK with full Python SDK parity, examples, and tutorials
 - [Guzzle HTTP Client Documentation](https://docs.guzzlephp.org/) — Complete guide to Guzzle for direct HTTP requests
 - [PSR-18 HTTP Client Standard](https://www.php-fig.org/psr/psr-18/) — PHP standard for HTTP client interfaces
 - [Chapter 04: Understanding Messages and Conversations](/series/claude-php-developers/chapters/04-messages-conversations) — Learn multi-turn conversation management

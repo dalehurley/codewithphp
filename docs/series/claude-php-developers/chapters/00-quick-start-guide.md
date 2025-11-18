@@ -54,7 +54,7 @@ mkdir claude-quickstart && cd claude-quickstart
 composer init --no-interaction
 
 # Install Anthropic SDK
-composer require anthropic-ai/sdk
+composer require claude-php/claude-php-sdk
 ```
 
 **Windows (PowerShell):**
@@ -67,7 +67,7 @@ Set-Location claude-quickstart
 composer init --no-interaction
 
 # Install Anthropic SDK
-composer require anthropic-ai/sdk
+composer require claude-php/claude-php-sdk
 ```
 
 ### Your First Claude Request
@@ -81,12 +81,10 @@ declare(strict_types=1);
 
 require 'vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 // Initialize Claude client
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Make your first API call
 $response = $client->messages()->create([
@@ -101,7 +99,11 @@ $response = $client->messages()->create([
 ]);
 
 // Output the response
-echo $response->content[0]->text;
+foreach ($response->content as $block) {
+    if ($block['type'] === 'text') {
+        echo $block['text'];
+    }
+}
 ```
 
 Run it with your API key:
@@ -177,11 +179,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 function generateProductDescription(Anthropic $client, string $productName, array $features): string
 {
@@ -196,7 +196,7 @@ function generateProductDescription(Anthropic $client, string $productName, arra
         ]]
     ]);
 
-    return $response->content[0]->text;
+    return $response->content[0]['text'];
 }
 
 // Example usage
@@ -227,11 +227,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 function analyzeCode(Anthropic $client, string $code): string
 {
@@ -244,7 +242,7 @@ function analyzeCode(Anthropic $client, string $code): string
         ]]
     ]);
 
-    return $response->content[0]->text;
+    return $response->content[0]['text'];
 }
 
 // Example: Analyze a potentially problematic function
@@ -273,11 +271,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 function extractContactInfo(Anthropic $client, string $text): array
 {
@@ -290,7 +286,7 @@ function extractContactInfo(Anthropic $client, string $text): array
         ]]
     ]);
 
-    $jsonText = $response->content[0]->text;
+    $jsonText = $response->content[0]['text'];
 
     // Extract JSON from response (may be wrapped in markdown code blocks)
     if (preg_match('/```json\s*(\{.*?\})\s*```/s', $jsonText, $matches)) {
@@ -330,11 +326,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // System prompt defines Claude's role and expertise
 $response = $client->messages()->create([
@@ -347,7 +341,7 @@ $response = $client->messages()->create([
     ]]
 ]);
 
-echo $response->content[0]->text;
+echo $response->content[0]['text'];
 ```
 
 ### Stream Responses
@@ -363,11 +357,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Stream responses for real-time output
 $stream = $client->messages()->createStreamed([
@@ -395,7 +387,7 @@ Every Claude API response follows this structure:
 $response = $client->messages()->create([...]);
 
 // Access the text content (most common)
-$text = $response->content[0]->text;
+$text = $response->content[0]['text'];
 
 // Handle multiple content blocks (if any)
 foreach ($response->content as $block) {
@@ -405,8 +397,8 @@ foreach ($response->content as $block) {
 }
 
 // Check usage (for cost tracking)
-$inputTokens = $response->usage->inputTokens;
-$outputTokens = $response->usage->outputTokens;
+$inputTokens = $response->usage->input_tokens;
+$outputTokens = $response->usage->output_tokens;
 
 // Get the model used
 $model = $response->model;
@@ -444,13 +436,11 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Anthropic\Exceptions\ErrorException;
 use Anthropic\Exceptions\RateLimitException;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 try {
     $response = $client->messages()->create([
@@ -462,7 +452,7 @@ try {
         ]]
     ]);
 
-    echo $response->content[0]->text;
+    echo $response->content[0]['text'];
 
 } catch (RateLimitException $e) {
     // Handle rate limiting
@@ -494,11 +484,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
@@ -510,8 +498,8 @@ $response = $client->messages()->create([
 ]);
 
 // Calculate cost
-$inputTokens = $response->usage->inputTokens;
-$outputTokens = $response->usage->outputTokens;
+$inputTokens = $response->usage->input_tokens;
+$outputTokens = $response->usage->output_tokens;
 
 // Sonnet pricing (as of 2025)
 $inputCostPer1M = 3.00;  // $3 per million input tokens
@@ -521,7 +509,7 @@ $inputCost = ($inputTokens / 1_000_000) * $inputCostPer1M;
 $outputCost = ($outputTokens / 1_000_000) * $outputCostPer1M;
 $totalCost = $inputCost + $outputCost;
 
-echo "Response:\n{$response->content[0]->text}\n\n";
+echo "Response:\n{$response->content[0]['text']}\n\n";
 echo "--- Usage Stats ---\n";
 echo "Input tokens: {$inputTokens}\n";
 echo "Output tokens: {$outputTokens}\n";
@@ -555,7 +543,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Dotenv\Dotenv;
 
 // Load environment variables
@@ -578,7 +566,7 @@ $response = $client->messages()->create([
     ]]
 ]);
 
-echo $response->content[0]->text;
+echo $response->content[0]['text'];
 ```
 
 **→ [Full Guide: Production Setup](/series/claude-php-developers/chapters/08-production-best-practices)**
