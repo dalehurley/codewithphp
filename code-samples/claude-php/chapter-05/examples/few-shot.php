@@ -9,7 +9,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\PromptEngineering\PromptTemplate;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/..');
@@ -20,7 +20,7 @@ $apiKey = getenv('ANTHROPIC_API_KEY');
 echo "=== Few-Shot Learning ===\n\n";
 
 try {
-    $client = Anthropic::factory()->withApiKey($apiKey)->make();
+    $client = new ClaudePhp(apiKey: $apiKey);
 
     $examples = [
         ['input' => 'The product is great!', 'output' => 'Positive'],
@@ -42,7 +42,7 @@ try {
         'messages' => [['role' => 'user', 'content' => $prompt]]
     ]);
 
-    echo "Classification: {$response->content[0]->text}\n\n";
+    echo "Classification: {$response->content[0]['text']}\n\n";
 
     echo "✓ Few-shot complete!\n";
 

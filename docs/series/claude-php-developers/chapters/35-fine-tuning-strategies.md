@@ -393,7 +393,7 @@ declare(strict_types=1);
 
 namespace App\FineTuning;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class DatasetPreparation
 {
@@ -526,7 +526,7 @@ PROMPT;
                 ]]
             ]);
 
-            $jsonText = $response->content[0]->text;
+            $jsonText = $response->content[0]['text'];
             if (preg_match('/\{.*\}/s', $jsonText, $matches)) {
                 $score = json_decode($matches[0], true);
                 if ($score) {
@@ -666,7 +666,7 @@ declare(strict_types=1);
 
 namespace App\FineTuning;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class ModelEvaluator
 {
@@ -699,7 +699,7 @@ class ModelEvaluator
                 ]]
             ]);
 
-            $actual = $response->content[0]->text;
+            $actual = $response->content[0]['text'];
 
             // Evaluate this example
             $exampleScores = $this->evaluateExample($prompt, $expected, $actual, $metrics);
@@ -775,7 +775,7 @@ PROMPT;
             ]]
         ]);
 
-        $jsonText = $response->content[0]->text;
+        $jsonText = $response->content[0]['text'];
         if (preg_match('/\{.*\}/s', $jsonText, $matches)) {
             $scores = json_decode($matches[0], true) ?? [];
         }
@@ -927,16 +927,14 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\FineTuning\DecisionFramework;
 use App\FineTuning\UseCase;
 use App\FineTuning\DatasetPreparation;
 use App\FineTuning\CostBenefitAnalyzer;
 
 // Initialize Claude
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 
 echo "=== Fine-tuning Strategy Analysis ===\n\n";
 
@@ -1048,7 +1046,7 @@ declare(strict_types=1);
 
 namespace App\FineTuning;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class ModelDeployment
 {
@@ -1224,7 +1222,7 @@ declare(strict_types=1);
 
 namespace App\FineTuning;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class ModelMonitoring
 {
@@ -1499,13 +1497,11 @@ require __DIR__ . '/../vendor/autoload.php';
 use App\FineTuning\DatasetPreparation;
 use App\FineTuning\ModelEvaluator;
 use App\FineTuning\CostBenefitAnalyzer;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 echo "=== Email Classification Fine-tuning Use Case ===\n\n";
 
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 
 // Prepare realistic training data
 $trainingExamples = [

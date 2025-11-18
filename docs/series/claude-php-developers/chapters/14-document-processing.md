@@ -251,7 +251,7 @@ declare(strict_types=1);
 
 namespace App\Document;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Vision\ImageHelper;
 
 class InvoiceProcessor
@@ -335,7 +335,7 @@ PROMPT
             ]
         ]);
 
-        $jsonText = $response->content[0]->text;
+        $jsonText = $response->content[0]['text'];
 
         // Extract JSON from response
         if (preg_match('/```json\s*(\{.*?\})\s*```/s', $jsonText, $matches)) {
@@ -454,7 +454,7 @@ declare(strict_types=1);
 
 namespace App\Document;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Vision\ImageHelper;
 
 class ContractAnalyzer
@@ -523,7 +523,7 @@ PROMPT
             ]
         ]);
 
-        return json_decode($this->extractJSON($response->content[0]->text), true) ?? [];
+        return json_decode($this->extractJSON($response->content[0]['text']), true) ?? [];
     }
 
     private function extractClauses(array $images): array
@@ -583,7 +583,7 @@ PROMPT
             ]
         ]);
 
-        return json_decode($this->extractJSON($response->content[0]->text), true) ?? [];
+        return json_decode($this->extractJSON($response->content[0]['text']), true) ?? [];
     }
 
     private function assessRisks(array $images): array
@@ -626,7 +626,7 @@ PROMPT
             ]
         ]);
 
-        return json_decode($this->extractJSON($response->content[0]->text), true) ?? [];
+        return json_decode($this->extractJSON($response->content[0]['text']), true) ?? [];
     }
 
     private function extractJSON(string $text): string
@@ -664,7 +664,7 @@ PROMPT
             ]
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 }
 ```
@@ -706,7 +706,7 @@ declare(strict_types=1);
 
 namespace App\Document;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Vision\ImageHelper;
 
 class ResumeProcessor
@@ -797,7 +797,7 @@ PROMPT
             ]
         ]);
 
-        $jsonText = $this->extractJSON($response->content[0]->text);
+        $jsonText = $this->extractJSON($response->content[0]['text']);
         return json_decode($jsonText, true) ?? [];
     }
 
@@ -837,7 +837,7 @@ PROMPT
             ]
         ]);
 
-        return json_decode($this->extractJSON($response->content[0]->text), true) ?? [];
+        return json_decode($this->extractJSON($response->content[0]['text']), true) ?? [];
     }
 
     public function generateInterviewQuestions(array $resumeData): array
@@ -870,7 +870,7 @@ PROMPT
             ]
         ]);
 
-        return json_decode($this->extractJSON($response->content[0]->text), true) ?? [];
+        return json_decode($this->extractJSON($response->content[0]['text']), true) ?? [];
     }
 
     private function extractJSON(string $text): string
@@ -921,15 +921,13 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Document\InvoiceProcessor;
 use App\Document\ContractAnalyzer;
 use App\Document\ResumeProcessor;
 use App\Document\PDFProcessor;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 
 class DocumentPipeline
 {
@@ -977,7 +975,7 @@ class DocumentPipeline
             ]
         ]);
 
-        return strtolower(trim($response->content[0]->text));
+        return strtolower(trim($response->content[0]['text']));
     }
 
     private function processAsInvoice(string $pdfPath): array
@@ -1032,7 +1030,7 @@ class DocumentPipeline
 
         return [
             'type' => 'generic',
-            'summary' => $response->content[0]->text,
+            'summary' => $response->content[0]['text'],
             'metadata' => PDFProcessor::getMetadata($pdfPath)
         ];
     }
@@ -1197,11 +1195,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 
 // Upload PDF file once
 $pdfPath = __DIR__ . '/documents/invoice.pdf';
@@ -1275,11 +1271,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 
 class BatchDocumentProcessor
 {

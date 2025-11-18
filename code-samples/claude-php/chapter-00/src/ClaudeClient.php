@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace ClaudePhp\QuickStart;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Anthropic\Client as AnthropicClient;
-use Anthropic\Exceptions\ErrorException;
+use ClaudePhp\Exceptions\APIError;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
@@ -38,9 +38,7 @@ class ClaudeClient
         int $maxTokens = 4096,
         float $temperature = 1.0
     ) {
-        $this->client = Anthropic::factory()
-            ->withApiKey($apiKey)
-            ->make();
+        $this->client = new ClaudePhp(apiKey: $apiKey);
 
         $this->model = $model;
         $this->maxTokens = $maxTokens;
@@ -80,8 +78,8 @@ class ClaudeClient
             $response = $this->client->messages()->create($params);
 
             $this->logger->info('Received response from Claude', [
-                'input_tokens' => $response->usage->inputTokens,
-                'output_tokens' => $response->usage->outputTokens,
+                'input_tokens' => $response->usage->input_tokens,
+                'output_tokens' => $response->usage->output_tokens,
                 'stop_reason' => $response->stopReason
             ]);
 
@@ -136,8 +134,8 @@ class ClaudeClient
             $response = $this->client->messages()->create($params);
 
             $this->logger->info('Received response from Claude', [
-                'input_tokens' => $response->usage->inputTokens,
-                'output_tokens' => $response->usage->outputTokens
+                'input_tokens' => $response->usage->input_tokens,
+                'output_tokens' => $response->usage->output_tokens
             ]);
 
             return $response;
@@ -157,7 +155,7 @@ class ClaudeClient
      */
     public function extractText(object $response): string
     {
-        return $response->content[0]->text ?? '';
+        return $response->content[0]['text'] ?? '';
     }
 
     /**
@@ -169,9 +167,9 @@ class ClaudeClient
     public function getUsage(object $response): array
     {
         return [
-            'inputTokens' => $response->usage->inputTokens,
-            'outputTokens' => $response->usage->outputTokens,
-            'totalTokens' => $response->usage->inputTokens + $response->usage->outputTokens
+            'inputTokens' => $response->usage->input_tokens,
+            'outputTokens' => $response->usage->output_tokens,
+            'totalTokens' => $response->usage->input_tokens + $response->usage->output_tokens
         ];
     }
 }

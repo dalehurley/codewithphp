@@ -62,7 +62,7 @@ Before starting, ensure you have:
 php --version
 
 # Verify Anthropic SDK is installed
-composer show anthropic/anthropic-sdk-php
+composer show anthropic/claude-php/Claude-PHP-SDK
 
 # Check if API key is set
 echo $ANTHROPIC_API_KEY | cut -c1-10
@@ -79,13 +79,11 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Workflow\WorkflowBuilder;
 
 // Initialize Claude
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY') ?: throw new RuntimeException('ANTHROPIC_API_KEY not set'))
-    ->make();
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 
 // Create a simple 3-step workflow
 $workflow = (new WorkflowBuilder($claude, 'Quick Start'))
@@ -142,7 +140,7 @@ declare(strict_types=1);
 
 namespace App\Workflow;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class Workflow
 {
@@ -445,7 +443,7 @@ class PromptStep extends WorkflowStep
 
         return new StepResult(
             status: 'success',
-            output: $response->content[0]->text
+            output: $response->content[0]['text']
         );
     }
 
@@ -697,7 +695,7 @@ use App\Workflow\Workflow;
 use App\Workflow\Steps\PromptStep;
 use App\Workflow\Steps\ValidationStep;
 use App\Workflow\Steps\TransformStep;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class ContentCreationWorkflow
 {
@@ -812,7 +810,7 @@ namespace App\Workflow\Workflows;
 use App\Workflow\Workflow;
 use App\Workflow\Steps\PromptStep;
 use App\Workflow\Steps\ValidationStep;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class CodeReviewWorkflow
 {
@@ -951,7 +949,7 @@ declare(strict_types=1);
 
 namespace App\Workflow;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Workflow\Steps\PromptStep;
 use App\Workflow\Steps\TransformStep;
 use App\Workflow\Steps\ValidationStep;
@@ -1196,7 +1194,7 @@ class VisionStep extends WorkflowStep
 
         return new StepResult(
             status: 'success',
-            output: $response->content[0]->text
+            output: $response->content[0]['text']
         );
     }
 }
@@ -1329,15 +1327,13 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Workflow\WorkflowBuilder;
 use App\Workflow\Workflows\ContentCreationWorkflow;
 use App\Workflow\Workflows\CodeReviewWorkflow;
 
 // Initialize Claude
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 
 echo "=== Workflow Orchestration Demo ===\n\n";
 
@@ -1481,7 +1477,7 @@ declare(strict_types=1);
 
 namespace App\Workflow;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 /**
  * WorkflowState manages data shared between workflow steps.

@@ -55,7 +55,7 @@ Complete guide to Claude API errors, debugging strategies, and solutions. Use th
 # filename: sdk-error-handling.php
 try {
     $response = $client->messages()->create([...]);
-} catch (\Anthropic\Exceptions\ErrorException $e) {
+} catch (\ClaudePhp\Exceptions\APIError $e) {
     echo $e->getMessage();      // Error message
     echo $e->getErrorType();    // Error type code
     echo $e->getStatusCode();   // HTTP status code
@@ -209,9 +209,7 @@ if (!str_starts_with($apiKey, 'sk-ant-')) {
 }
 
 // Initialize client
-$client = Anthropic::factory()
-    ->withApiKey($apiKey)
-    ->make();
+$client = new ClaudePhp(apiKey: $apiKey);
 ```
 
 **Debug Checklist:**
@@ -263,10 +261,7 @@ if (!in_array($model, $availableModels)) {
 }
 
 // For beta features, add beta header
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->withHttpHeader('anthropic-beta', 'prompt-caching-2024-07-31')
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 ```
 
 ---
@@ -303,9 +298,7 @@ $url = 'https://api.anthropic.com/v1/message'; // Missing 's'
 $url = 'https://api.anthropic.com/v1/messages';
 
 // When using SDK, this is handled automatically
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 ```
 
 ---
@@ -538,15 +531,7 @@ class OverloadHandler
 ```php
 # filename: connection-timeout.php
 // Set custom timeout
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->withHttpClient(
-        new \GuzzleHttp\Client([
-            'timeout' => 120, // 2 minutes
-            'connect_timeout' => 10 // 10 seconds to connect
-        ])
-    )
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 ```
 
 ### SSL Certificate Errors
@@ -556,24 +541,10 @@ $client = Anthropic::factory()
 ```php
 # filename: ssl-certificate-errors.php
 // Development only - DO NOT use in production
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->withHttpClient(
-        new \GuzzleHttp\Client([
-            'verify' => false // Disable SSL verification
-        ])
-    )
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 
 // Production - specify CA bundle
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->withHttpClient(
-        new \GuzzleHttp\Client([
-            'verify' => '/path/to/cacert.pem'
-        ])
-    )
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 ```
 
 ---
@@ -739,7 +710,7 @@ $response = $client->messages()->create([
     'messages' => $conversation->getMessages()
 ]);
 
-$conversation->addMessage('assistant', $response->content[0]->text);
+$conversation->addMessage('assistant', $response->content[0]['text']);
 ```
 
 ---
@@ -1091,7 +1062,7 @@ If you're still stuck after trying these solutions:
 1. **Check API Status**: [status.anthropic.com](https://status.anthropic.com)
 2. **Official Docs**: [docs.claude.com](https://docs.claude.com)
 3. **Discord Community**: [discord.gg/anthropic](https://discord.gg/anthropic)
-4. **GitHub Issues**: [github.com/anthropics/anthropic-sdk-php](https://github.com/anthropics/anthropic-sdk-php)
+4. **GitHub Issues**: [github.com/anthropics/claude-php/Claude-PHP-SDK](https://github.com/anthropics/claude-php/Claude-PHP-SDK)
 
 ---
 

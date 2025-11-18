@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CodeReview;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 /**
  * AI-Powered Pull Request Analyzer
@@ -15,9 +15,7 @@ class PullRequestAnalyzer
 
     public function __construct(string $apiKey)
     {
-        $this->client = Anthropic::factory()
-            ->withApiKey($apiKey)
-            ->make();
+        $this->client = new ClaudePhp(apiKey: $apiKey);
     }
 
     /**
@@ -36,7 +34,7 @@ class PullRequestAnalyzer
             ]],
         ]);
 
-        return $this->parseReview($response->content[0]->text);
+        return $this->parseReview($response->content[0]['text']);
     }
 
     /**
@@ -74,8 +72,8 @@ PROMPT;
 
         return [
             'filename' => $filename,
-            'review' => $response->content[0]->text,
-            'severity' => $this->detectSeverity($response->content[0]->text),
+            'review' => $response->content[0]['text'],
+            'severity' => $this->detectSeverity($response->content[0]['text']),
         ];
     }
 
@@ -106,7 +104,7 @@ PROMPT,
             ]],
         ]);
 
-        return $this->parseSecurityIssues($response->content[0]->text);
+        return $this->parseSecurityIssues($response->content[0]['text']);
     }
 
     /**
@@ -135,7 +133,7 @@ PROMPT,
         ]);
 
         return [
-            'suggestions' => $response->content[0]->text,
+            'suggestions' => $response->content[0]['text'],
             'priority' => 'medium',
         ];
     }
@@ -166,7 +164,7 @@ PROMPT,
             ]],
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 
     private function buildAnalysisPrompt(array $diff, array $context): string

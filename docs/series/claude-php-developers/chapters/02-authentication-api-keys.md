@@ -240,7 +240,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Models\Tenant;
 
 class MultiTenantClaudeService
@@ -261,9 +261,7 @@ class MultiTenantClaudeService
 
         // Cache clients per API key
         if (!isset($this->clients[$apiKey])) {
-            $this->clients[$apiKey] = Anthropic::factory()
-                ->withApiKey($apiKey)
-                ->make();
+            $this->clients[$apiKey] = new ClaudePhp(apiKey: $apiKey);
         }
 
         return $this->clients[$apiKey];
@@ -287,7 +285,7 @@ class MultiTenantClaudeService
         // Track usage per tenant
         $this->trackUsage($tenant, $response->usage);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 
     private function trackUsage(Tenant $tenant, object $usage): void
@@ -379,12 +377,10 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 // Direct API key (NOT RECOMMENDED for production)
-$client = Anthropic::factory()
-    ->withApiKey('sk-ant-api03-your-key-here')
-    ->make();
+$client = new ClaudePhp(apiKey: 'sk-ant-api03-your-key-here');
 
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
@@ -394,7 +390,7 @@ $response = $client->messages()->create([
     ]
 ]);
 
-echo $response->content[0]->text;
+echo $response->content[0]['text'];
 ```
 
 ::: danger
@@ -412,7 +408,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 // Load API key from environment variable
 $apiKey = getenv('ANTHROPIC_API_KEY');
@@ -421,9 +417,7 @@ if (!$apiKey) {
     die("Error: ANTHROPIC_API_KEY environment variable not set\n");
 }
 
-$client = Anthropic::factory()
-    ->withApiKey($apiKey)
-    ->make();
+$client = new ClaudePhp(apiKey: $apiKey);
 ```
 
 Set environment variable:
@@ -466,7 +460,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Dotenv\Dotenv;
 
 // Load .env file
@@ -477,9 +471,7 @@ $dotenv->load();
 $dotenv->required(['ANTHROPIC_API_KEY'])->notEmpty();
 
 // Create client with environment config
-$client = Anthropic::factory()
-    ->withApiKey($_ENV['ANTHROPIC_API_KEY'])
-    ->make();
+$client = new ClaudePhp(apiKey: $_ENV['ANTHROPIC_API_KEY']);
 
 // Use environment-based defaults
 $response = $client->messages()->create([
@@ -616,15 +608,13 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Config\ClaudeConfig;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 // Load configuration
 $config = new ClaudeConfig();
 
 // Create client
-$client = Anthropic::factory()
-    ->withApiKey($config->getApiKey())
-    ->make();
+$client = new ClaudePhp(apiKey: $config->getApiKey();
 
 // Use configuration defaults
 $response = $client->messages()->create([
@@ -646,7 +636,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Anthropic\Resources\Messages;
 use App\Config\ClaudeConfig;
 
@@ -656,9 +646,7 @@ class ClaudeService
 
     public function __construct(ClaudeConfig $config)
     {
-        $client = Anthropic::factory()
-            ->withApiKey($config->getApiKey())
-            ->make();
+        $client = new ClaudePhp(apiKey: $config->getApiKey();
 
         $this->messages = $client->messages();
     }
@@ -679,7 +667,7 @@ class ClaudeService
 
         $response = $this->messages->create($params);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 }
 ```
@@ -1017,7 +1005,7 @@ composer require aws/aws-sdk-php
 <?php
 use App\Security\AwsSecretsProvider;
 use Aws\SecretsManager\SecretsManagerClient;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 $secretsProvider = new AwsSecretsProvider(
     new SecretsManagerClient([
@@ -1027,9 +1015,7 @@ $secretsProvider = new AwsSecretsProvider(
     'prod/anthropic/api-key'
 );
 
-$client = Anthropic::factory()
-    ->withApiKey($secretsProvider->getApiKey())
-    ->make();
+$client = new ClaudePhp(apiKey: $secretsProvider->getApiKey();
 ```
 
 ::: info
@@ -1161,8 +1147,8 @@ declare(strict_types=1);
 
 namespace App\Security;
 
-use Anthropic\Anthropic;
-use Anthropic\Exceptions\AnthropicException;
+use ClaudePhp\ClaudePhp;
+use ClaudePhp\Exceptions\AnthropicException;
 
 class ApiKeyValidator
 {
@@ -1175,9 +1161,7 @@ class ApiKeyValidator
      */
     public function validateKey(string $apiKey): array
     {
-        $testClient = Anthropic::factory()
-            ->withApiKey($apiKey)
-            ->make();
+        $testClient = new ClaudePhp(apiKey: $apiKey);
 
         try {
             // Make minimal test request (1 token, cheapest model)
@@ -1246,7 +1230,7 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Security\ApiKeyValidator;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 $apiKey = getenv('ANTHROPIC_API_KEY');
 
@@ -1254,9 +1238,7 @@ if (!$apiKey) {
     die("Error: ANTHROPIC_API_KEY not set\n");
 }
 
-$client = Anthropic::factory()
-    ->withApiKey($apiKey)
-    ->make();
+$client = new ClaudePhp(apiKey: $apiKey);
 
 $validator = new ApiKeyValidator($client);
 
@@ -1290,7 +1272,7 @@ declare(strict_types=1);
 require __DIR__ . '/vendor/autoload.php';
 
 use App\Security\ApiKeyValidator;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 $apiKey = getenv('ANTHROPIC_API_KEY');
 
@@ -1305,7 +1287,7 @@ if (!str_starts_with($apiKey, 'sk-ant-')) {
 
 // Optional: Full validation (makes API call - use sparingly)
 if (getenv('VALIDATE_API_KEY_ON_STARTUP') === 'true') {
-    $client = Anthropic::factory()->withApiKey($apiKey)->make();
+    $client = new ClaudePhp(apiKey: $apiKey);
     $validator = new ApiKeyValidator($client);
     $result = $validator->validateKey($apiKey);
 
@@ -1355,7 +1337,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class DualKeyClaudeService
 {
@@ -1378,9 +1360,7 @@ class DualKeyClaudeService
 
     private function createClient(string $apiKey): Anthropic
     {
-        return Anthropic::factory()
-            ->withApiKey($apiKey)
-            ->make();
+        return new ClaudePhp(apiKey: $apiKey);
     }
 
     public function chat(string $prompt): string
@@ -1417,7 +1397,7 @@ class DualKeyClaudeService
             ]
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 }
 ```
@@ -1914,7 +1894,7 @@ declare(strict_types=1);
 namespace Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class ClaudeApiTest extends TestCase
 {
@@ -1928,9 +1908,7 @@ class ClaudeApiTest extends TestCase
             $this->markTestSkipped('ANTHROPIC_API_KEY_TEST not set');
         }
 
-        $this->client = Anthropic::factory()
-            ->withApiKey($apiKey)
-            ->make();
+        $this->client = new ClaudePhp(apiKey: $apiKey);
     }
 
     public function testCanMakeApiRequest(): void
@@ -1943,7 +1921,7 @@ class ClaudeApiTest extends TestCase
             ]
         ]);
 
-        $this->assertNotEmpty($response->content[0]->text);
+        $this->assertNotEmpty($response->content[0]['text']);
         $this->assertEquals('claude-haiku-4-20250514', $response->model);
     }
 }
@@ -1971,7 +1949,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Anthropic\Resources\Messages;
 use Mockery;
 

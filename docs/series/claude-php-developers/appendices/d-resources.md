@@ -73,14 +73,16 @@ Curated resources to deepen your knowledge of Claude AI and PHP integration. Boo
 
 ### Official Repositories
 
-**[anthropic-sdk-php](https://github.com/anthropics/anthropic-sdk-php)**
+**[claude-php/Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)**
 ```bash
-composer require anthropic-php/client
+composer require claude-php/claude-php-sdk
 ```
-- Official PHP SDK
-- Type-safe client
+- Community Claude PHP SDK with full Python SDK parity
+- 29 comprehensive examples covering all Claude features
+- Type-safe client with PSR compliance
 - Streaming support
 - Laravel integration examples
+- Created by Dale Hurley (dalehurley.com)
 
 **[anthropic-sdk-python](https://github.com/anthropics/anthropic-sdk-python)**
 - Python SDK (for reference)
@@ -116,29 +118,34 @@ composer require anthropic-php/client
 
 ## PHP Libraries and SDKs
 
-### Official SDK
+### Community SDK (Recommended)
 
-**[anthropic-php/client](https://github.com/anthropics/anthropic-sdk-php)**
+**[claude-php/Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)**
 ```bash
-composer require anthropic-php/client
+composer require claude-php/claude-php-sdk
 ```
 
 **Features:**
+- Full Python SDK parity
 - Messages API
 - Streaming responses
 - Tool use (function calling)
 - Vision API support
+- Structured outputs
+- Batch processing
+- Extended thinking
+- Prompt caching
+- 29 comprehensive examples
 - Type-safe requests
-- PSR-18 HTTP client
+- PSR-18 HTTP client compliance
+- Created by Dale Hurley (dalehurley.com)
 
 **Quick Start:**
 ```php
 # filename: sdk-quickstart.php
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
@@ -802,7 +809,7 @@ composer create-project anthropic/laravel-claude-starter
 | Console | [console.anthropic.com](https://console.anthropic.com) |
 | Status | [status.anthropic.com](https://status.anthropic.com) |
 | Pricing | [anthropic.com/pricing](https://www.anthropic.com/pricing) |
-| PHP SDK | [github.com/anthropics/anthropic-sdk-php](https://github.com/anthropics/anthropic-sdk-php) |
+| PHP SDK | [github.com/anthropics/claude-php/Claude-PHP-SDK](https://github.com/anthropics/claude-php/Claude-PHP-SDK) |
 | Cookbook | [github.com/anthropics/anthropic-cookbook](https://github.com/anthropics/anthropic-cookbook) |
 
 ### Support Channels
@@ -900,7 +907,7 @@ This resource guide is a living document. The Claude API and PHP ecosystem evolv
 
 **Next Steps:**
 1. Join the [Anthropic Discord](https://discord.gg/anthropic)
-2. Star the [PHP SDK repository](https://github.com/anthropics/anthropic-sdk-php)
+2. Star the [PHP SDK repository](https://github.com/anthropics/claude-php/Claude-PHP-SDK)
 3. Build something amazing with Claude!
 
 ---

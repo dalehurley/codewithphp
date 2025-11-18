@@ -1,6 +1,6 @@
 ---
 title: "03: Your First Claude Request in PHP"
-description: "Master making Claude API calls with detailed examples using Guzzle HTTP client and the official SDK. Learn request structure, response parsing, error handling, and best practices."
+description: "Master making Claude API calls with detailed examples using Guzzle HTTP client and the community Claude PHP SDK. Learn request structure, response parsing, error handling, and best practices."
 series: "claude-php-developers"
 chapter: 3
 order: 3
@@ -28,13 +28,13 @@ prerequisites:
 
 ## Overview
 
-Making your first successful API request is a milestone in any integration project. This chapter provides a comprehensive guide to making Claude API calls using both raw HTTP requests with Guzzle and the official Anthropic PHP SDK.
+Making your first successful API request is a milestone in any integration project. This chapter provides a comprehensive guide to making Claude API calls using both raw HTTP requests with Guzzle and the Claude PHP SDK (community SDK).
 
 You'll learn the complete anatomy of API requests and responses, how to properly structure your calls, parse responses effectively, handle errors gracefully, and follow best practices for production environments. By the end, you'll be confident making reliable, efficient Claude API calls.
 
 **What You'll Learn:**
 - Making API calls with Guzzle HTTP client
-- Using the official Anthropic PHP SDK
+- Using the Claude PHP SDK (community SDK)
 - Request structure and parameters
 - Response parsing and data extraction
 - Comprehensive error handling
@@ -95,7 +95,7 @@ composer require claude-php/claude-php-sdk
 
 ```bash
 # Check that the package was installed correctly
-composer show anthropic-ai/sdk
+composer show claude-php/claude-php-sdk
 ```
 
 You should see package details including version, description, and dependencies.
@@ -1094,7 +1094,7 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
-use Anthropic\Exceptions\{
+use ClaudePhp\Exceptions\{
     ErrorException,
     RateLimitException,
     ValidationException,
@@ -1190,8 +1190,8 @@ declare(strict_types=1);
 namespace App\Services;
 
 use ClaudePhp\ClaudePhp;
-use Anthropic\Exceptions\RateLimitException;
-use Anthropic\Exceptions\ErrorException;
+use ClaudePhp\Exceptions\RateLimitError;
+use ClaudePhp\Exceptions\APIError;
 
 class RetryableClaudeClient
 {
@@ -1610,10 +1610,7 @@ $httpClient = new Client([
     'connect_timeout' => 10.0,   // Connection timeout
 ]);
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->withHttpClient($httpClient)
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
@@ -1659,10 +1656,7 @@ class PooledClaudeClient
                 'timeout' => 30.0,
             ]);
 
-            self::$instance = Anthropic::factory()
-                ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-                ->withHttpClient($httpClient)
-                ->make();
+            self::$instance = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
         }
 
         return self::$instance;
@@ -1774,7 +1768,7 @@ class CostTracker
 
 Congratulations! You've completed a comprehensive guide to making Claude API requests in PHP. Here's what you've accomplished:
 
-- ✓ **Made your first API call** using the official Anthropic PHP SDK
+- ✓ **Made your first API call** using the Claude PHP SDK (community SDK)
 - ✓ **Built reusable components** including request builders, response models, and service wrappers
 - ✓ **Implemented robust error handling** with specific exception types and retry logic
 - ✓ **Mastered response parsing** including JSON extraction from markdown-formatted responses

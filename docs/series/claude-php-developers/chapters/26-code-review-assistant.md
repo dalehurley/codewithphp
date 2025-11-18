@@ -78,7 +78,7 @@ declare(strict_types=1);
 
 namespace App\CodeReview;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\CodeReview\GitHub\GitHubClient;
 
 class ReviewSystem
@@ -135,7 +135,7 @@ class ReviewSystem
             ]]
         ]);
 
-        return json_decode($response->content[0]->text, true);
+        return json_decode($response->content[0]['text'], true);
     }
 
     private function buildAnalysisPrompt(string $diff, array $files): string
@@ -388,7 +388,7 @@ declare(strict_types=1);
 
 namespace App\CodeReview;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class SecurityScanner
 {
@@ -503,7 +503,7 @@ PROMPT;
             ]]
         ]);
 
-        $jsonText = $response->content[0]->text;
+        $jsonText = $response->content[0]['text'];
 
         // Extract JSON from response
         if (preg_match('/```json\s*(\[.*?\])\s*```/s', $jsonText, $matches)) {
@@ -526,7 +526,7 @@ declare(strict_types=1);
 
 namespace App\CodeReview;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class BugDetector
 {
@@ -626,7 +626,7 @@ PROMPT;
             ]]
         ]);
 
-        $jsonText = $response->content[0]->text;
+        $jsonText = $response->content[0]['text'];
 
         // Extract and parse JSON
         if (preg_match('/```json\s*(\[.*?\])\s*```/s', $jsonText, $matches)) {
@@ -1041,7 +1041,7 @@ declare(strict_types=1);
 
 namespace App\CodeReview;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class CommentGenerator
 {
@@ -1741,7 +1741,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\CodeReview\ReviewSystem;
 use App\CodeReview\GitHub\GitHubClient;
 use App\CodeReview\GitLab\GitLabClient;
@@ -1765,9 +1765,7 @@ $cache = new \Symfony\Component\Cache\Simple\RedisCache(
 );
 
 // Initialize Claude
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 
 // Initialize GitHub or GitLab client
 $provider = getenv('GIT_PROVIDER') ?: 'github';
@@ -1966,7 +1964,7 @@ namespace Tests\CodeReview;
 
 use PHPUnit\Framework\TestCase;
 use App\CodeReview\SecurityScanner;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Mockery;
 
 class SecurityScannerTest extends TestCase

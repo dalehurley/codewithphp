@@ -360,7 +360,7 @@ php examples/example-file.php
 
 All chapters use:
 - **PHP 8.2+** - Modern PHP features
-- **Anthropic SDK** (`anthropic-ai/sdk: ^1.0`) - Claude AI integration
+- **Anthropic SDK** (`claude-php/claude-php-sdk: ^1.0`) - Claude AI integration
 - **Environment Variables** (`.env` files) - Configuration management
 
 Laravel chapters additionally use:
@@ -414,7 +414,7 @@ All code follows:
 ```php
 use Anthropic\Anthropic;
 
-$client = Anthropic::factory()
+$client = claude-php SDK()
     ->withApiKey($apiKey)
     ->make();
 

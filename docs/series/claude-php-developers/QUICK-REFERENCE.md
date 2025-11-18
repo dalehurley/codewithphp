@@ -36,16 +36,14 @@ description: Essential syntax, patterns, and examples for rapid development with
 
 ### Installation
 ```bash
-composer require anthropic-ai/sdk
+composer require claude-php/claude-php-sdk
 ```
 
 ### Initialize Client
 ```php
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 ```
 
 ### Environment Variables
@@ -69,7 +67,7 @@ $response = $client->messages()->create([
     ]
 ]);
 
-$text = $response->content[0]->text;
+$text = $response->content[0]['text'];
 ```
 
 ### With System Prompt
@@ -259,7 +257,7 @@ $response = $client->messages()->create([
 ]);
 
 // Check if Claude wants to use a tool
-if ($response->stopReason === 'tool_use') {
+if ($response->stop_reason === 'tool_use') {
     $toolUse = $response->content[1]; // content[0] is text, [1] is tool_use
 
     if ($toolUse->name === 'get_weather') {
@@ -294,8 +292,8 @@ if ($response->stopReason === 'tool_use') {
 
 ### Basic Try-Catch
 ```php
-use Anthropic\Exceptions\ErrorException;
-use Anthropic\Exceptions\RateLimitException;
+use ClaudePhp\Exceptions\APIError;
+use ClaudePhp\Exceptions\RateLimitError;
 
 try {
     $response = $client->messages()->create([...]);
@@ -415,9 +413,9 @@ function calculateCost(object $response, string $model): float
         'claude-opus-4-20250514' => ['input' => 15.00, 'output' => 75.00],
     ];
 
-    $inputCost = ($response->usage->inputTokens / 1_000_000)
+    $inputCost = ($response->usage->input_tokens / 1_000_000)
                  * $pricing[$model]['input'];
-    $outputCost = ($response->usage->outputTokens / 1_000_000)
+    $outputCost = ($response->usage->output_tokens / 1_000_000)
                   * $pricing[$model]['output'];
 
     return $inputCost + $outputCost;
@@ -532,7 +530,7 @@ $response = $client->messages()->create([
     ]
 ]);
 
-$data = json_decode($response->content[0]->text, true);
+$data = json_decode($response->content[0]['text'], true);
 ```
 
 ---
@@ -543,7 +541,7 @@ $data = json_decode($response->content[0]->text, true);
 ```php
 namespace App\Services;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class ClaudeService
 {
@@ -561,7 +559,7 @@ class ClaudeService
             ]
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 }
 ```
@@ -640,7 +638,7 @@ CLAUDE_TIMEOUT=120
 {
     "require": {
         "php": "^8.4",
-        "anthropic-ai/sdk": "^1.0",
+        "claude-php/claude-php-sdk": "^1.0",
         "vlucas/phpdotenv": "^5.5",
         "predis/predis": "^2.0"
     }
@@ -664,7 +662,7 @@ $log->debug('Claude request', ['prompt' => $prompt]);
 
 // Log response
 $log->debug('Claude response', [
-    'text' => $response->content[0]->text,
+    'text' => $response->content[0]['text'],
     'tokens' => $response->usage
 ]);
 ```
@@ -676,10 +674,10 @@ var_dump([
     'model' => $response->model,
     'role' => $response->role,
     'content' => $response->content,
-    'stop_reason' => $response->stopReason,
+    'stop_reason' => $response->stop_reason,
     'usage' => [
-        'input_tokens' => $response->usage->inputTokens,
-        'output_tokens' => $response->usage->outputTokens
+        'input_tokens' => $response->usage->input_tokens,
+        'output_tokens' => $response->usage->output_tokens
     ]
 ]);
 ```
@@ -691,7 +689,7 @@ var_dump([
 ### Response Structure
 ```php
 // ✅ CORRECT - Access text content
-$text = $response->content[0]->text;
+$text = $response->content[0]['text'];
 
 // ❌ WRONG - content is an array, not a string
 $text = $response->content; // This is an array!
@@ -700,7 +698,7 @@ $text = $response->content; // This is an array!
 ### Tool Use Response Handling
 ```php
 // ✅ CORRECT - Check stop_reason first
-if ($response->stopReason === 'tool_use') {
+if ($response->stop_reason === 'tool_use') {
     // Find tool_use block in content array
     foreach ($response->content as $block) {
         if ($block->type === 'tool_use') {
@@ -713,8 +711,8 @@ if ($response->stopReason === 'tool_use') {
 ### Token Counting
 ```php
 // ✅ CORRECT - Use usage object
-$inputTokens = $response->usage->inputTokens;
-$outputTokens = $response->usage->outputTokens;
+$inputTokens = $response->usage->input_tokens;
+$outputTokens = $response->usage->output_tokens;
 
 // ❌ WRONG - Don't estimate manually
 $estimatedTokens = strlen($prompt) / 4; // Inaccurate!
@@ -723,8 +721,8 @@ $estimatedTokens = strlen($prompt) / 4; // Inaccurate!
 ### Error Handling
 ```php
 // ✅ CORRECT - Catch specific exceptions
-use Anthropic\Exceptions\RateLimitException;
-use Anthropic\Exceptions\ErrorException;
+use ClaudePhp\Exceptions\RateLimitError;
+use ClaudePhp\Exceptions\APIError;
 
 try {
     $response = $client->messages()->create([...]);
@@ -740,7 +738,7 @@ try {
 ## Troubleshooting
 
 ### Issue: "Class 'Anthropic\Anthropic' not found"
-**Solution**: Run `composer require anthropic-ai/sdk` and ensure `vendor/autoload.php` is included.
+**Solution**: Run `composer require claude-php/claude-php-sdk` and ensure `vendor/autoload.php` is included.
 
 ### Issue: "Invalid API key"
 **Solution**: Verify your API key starts with `sk-ant-` and is set in environment variables.
@@ -749,7 +747,7 @@ try {
 **Solution**: Implement exponential backoff (see Error Handling section) or upgrade your API tier.
 
 ### Issue: "Content is empty"
-**Solution**: Check `$response->content` is an array. Access text with `$response->content[0]->text`.
+**Solution**: Check `$response->content` is an array. Access text with `$response->content[0]['text']`.
 
 ### Issue: "Tool use not working"
 **Solution**: Ensure `tools` array is included in the request and `stopReason` is checked before accessing content.
@@ -761,7 +759,7 @@ try {
 - **Full Series**: [Claude for PHP Developers](/series/claude-php-developers/)
 - **Learning Roadmap**: [Choose Your Path](/series/claude-php-developers/LEARNING-ROADMAP.md)
 - **API Docs**: [Anthropic Documentation](https://docs.claude.com)
-- **SDK**: [Anthropic PHP SDK](https://github.com/anthropics/anthropic-sdk-php)
+- **SDK**: [Claude PHP SDK](https://github.com/anthropics/claude-php/Claude-PHP-SDK)
 - **Console**: [console.anthropic.com](https://console.anthropic.com)
 
 ---

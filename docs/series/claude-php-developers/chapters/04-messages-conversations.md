@@ -143,11 +143,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 
 // ✓ Valid: User message starts
 $response1 = $client->messages()->create([
@@ -606,7 +604,7 @@ declare(strict_types=1);
 
 namespace App\Conversation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class BasicConversationManager
 {
@@ -639,7 +637,7 @@ class BasicConversationManager
             'messages' => $this->messages
         ]);
 
-        $assistantMessage = $response->content[0]->text;
+        $assistantMessage = $response->content[0]['text'];
 
         // Add assistant response to history
         $this->messages[] = [
@@ -677,11 +675,9 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Conversation\BasicConversationManager;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 
 $conversation = new BasicConversationManager($client);
 
@@ -712,7 +708,7 @@ declare(strict_types=1);
 
 namespace App\Conversation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class AdvancedConversationManager
 {
@@ -761,7 +757,7 @@ class AdvancedConversationManager
         // Make request
         $response = $this->client->messages()->create($params);
 
-        $assistantMessage = $response->content[0]->text;
+        $assistantMessage = $response->content[0]['text'];
 
         // Add assistant response to history
         $this->messages[] = [
@@ -773,16 +769,16 @@ class AdvancedConversationManager
         $this->metadata[] = [
             'timestamp' => time(),
             'model' => $response->model,
-            'input_tokens' => $response->usage->inputTokens,
-            'output_tokens' => $response->usage->outputTokens,
+            'input_tokens' => $response->usage->input_tokens,
+            'output_tokens' => $response->usage->output_tokens,
             'stop_reason' => $response->stop_reason,
         ];
 
         return [
             'text' => $assistantMessage,
             'usage' => [
-                'input_tokens' => $response->usage->inputTokens,
-                'output_tokens' => $response->usage->outputTokens,
+                'input_tokens' => $response->usage->input_tokens,
+                'output_tokens' => $response->usage->output_tokens,
             ],
             'stop_reason' => $response->stop_reason,
         ];
@@ -837,11 +833,9 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Conversation\AdvancedConversationManager;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 
 $conversation = new AdvancedConversationManager(
     client: $client,
@@ -936,7 +930,7 @@ declare(strict_types=1);
 
 namespace App\Conversation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Services\TokenEstimator;
 
 class TrimmableConversationManager
@@ -967,7 +961,7 @@ class TrimmableConversationManager
             'messages' => $this->messages
         ]);
 
-        $assistantMessage = $response->content[0]->text;
+        $assistantMessage = $response->content[0]['text'];
 
         // Add assistant response
         $this->messages[] = [
@@ -1024,7 +1018,7 @@ declare(strict_types=1);
 
 namespace App\Conversation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class SlidingWindowManager
 {
@@ -1056,7 +1050,7 @@ class SlidingWindowManager
             'messages' => $this->messages
         ]);
 
-        $assistantMessage = $response->content[0]->text;
+        $assistantMessage = $response->content[0]['text'];
 
         // Add assistant response
         $this->messages[] = [
@@ -1092,7 +1086,7 @@ declare(strict_types=1);
 
 namespace App\Conversation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Services\TokenEstimator;
 
 class SummarizingManager
@@ -1130,7 +1124,7 @@ class SummarizingManager
             'messages' => $requestMessages
         ]);
 
-        $assistantMessage = $response->content[0]->text;
+        $assistantMessage = $response->content[0]['text'];
 
         // Add to history
         $this->messages[] = [
@@ -1169,7 +1163,7 @@ class SummarizingManager
             ]]
         ]);
 
-        $this->conversationSummary = $response->content[0]->text;
+        $this->conversationSummary = $response->content[0]['text'];
 
         // Replace old messages with recent ones
         $this->messages = $recentMessages;
@@ -1473,7 +1467,7 @@ declare(strict_types=1);
 
 namespace App\Conversation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Storage\FileConversationStorage;
 
 class PersistentConversationManager
@@ -1509,7 +1503,7 @@ class PersistentConversationManager
             'messages' => $this->messages
         ]);
 
-        $assistantMessage = $response->content[0]->text;
+        $assistantMessage = $response->content[0]['text'];
 
         // Add assistant response
         $this->messages[] = [
@@ -1552,11 +1546,9 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use App\Conversation\PersistentConversationManager;
 use App\Storage\FileConversationStorage;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 
 $storage = new FileConversationStorage(__DIR__ . '/../storage/conversations');
 
@@ -1597,7 +1589,7 @@ declare(strict_types=1);
 
 namespace App\Conversation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class MultiPersonaManager
 {
@@ -1623,7 +1615,7 @@ class MultiPersonaManager
             'messages' => $this->messages
         ]);
 
-        $assistantMessage = $response->content[0]->text;
+        $assistantMessage = $response->content[0]['text'];
 
         // Add to history
         $this->messages[] = [
@@ -1651,11 +1643,9 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Conversation\MultiPersonaManager;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 
 $conversation = new MultiPersonaManager($client);
 
@@ -1685,7 +1675,7 @@ declare(strict_types=1);
 
 namespace App\Conversation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class BranchingManager
 {
@@ -1715,7 +1705,7 @@ class BranchingManager
             'messages' => $this->mainBranch
         ]);
 
-        $reply = $response->content[0]->text;
+        $reply = $response->content[0]['text'];
         $this->mainBranch[] = ['role' => 'assistant', 'content' => $reply];
 
         return $reply;
@@ -1736,7 +1726,7 @@ class BranchingManager
             'messages' => $this->branches[$branchId]
         ]);
 
-        $reply = $response->content[0]->text;
+        $reply = $response->content[0]['text'];
         $this->branches[$branchId][] = ['role' => 'assistant', 'content' => $reply];
 
         return $reply;
@@ -1880,7 +1870,7 @@ Create a `ContextAwareSummarizer` that uses Claude to summarize conversations:
 # filename: exercises/ContextAwareSummarizer.php
 declare(strict_types=1);
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class ContextAwareSummarizer
 {

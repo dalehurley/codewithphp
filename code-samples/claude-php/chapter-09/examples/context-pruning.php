@@ -9,7 +9,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\TokenManagement\TokenCounter;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/..');
@@ -20,7 +20,7 @@ $apiKey = getenv('ANTHROPIC_API_KEY');
 echo "=== Context Pruning ===\n\n";
 
 try {
-    $client = Anthropic::factory()->withApiKey($apiKey)->make();
+    $client = new ClaudePhp(apiKey: $apiKey);
 
     // Build up a conversation
     $messages = [];
@@ -51,8 +51,8 @@ try {
         'messages' => $prunedMessages
     ]);
 
-    echo "Response: {$response->content[0]->text}\n";
-    echo "Actual tokens: {$response->usage->inputTokens} input, {$response->usage->outputTokens} output\n\n";
+    echo "Response: {$response->content[0]['text']}\n";
+    echo "Actual tokens: {$response->usage->input_tokens} input, {$response->usage->output_tokens} output\n\n";
 
     echo "✓ Context pruning complete!\n";
 

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace CodeWithPHP\ClaudeShared;
 
-use Anthropic\Exceptions\RateLimitException;
-use Anthropic\Exceptions\ErrorException;
+use ClaudePhp\Exceptions\RateLimitError;
+use ClaudePhp\Exceptions\APIError;
 
 /**
  * Retry helper with exponential backoff

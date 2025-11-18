@@ -1163,7 +1163,7 @@ declare(strict_types=1);
 
 namespace App\VectorDB;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class HybridSearch
 {
@@ -1485,7 +1485,7 @@ use App\VectorDB\VectorDBManager;
 use App\VectorDB\HybridSearch;
 use App\VectorDB\PerformanceMonitor;
 use App\RAG\EmbeddingService;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 // Configuration
 $config = [
@@ -1512,9 +1512,7 @@ $embeddings = new EmbeddingService(
     provider: 'openai'
 );
 
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 
 $monitor = new PerformanceMonitor();
 

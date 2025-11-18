@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ClaudePhp\RealtimeChat;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Anthropic\Resources\Messages;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -27,9 +27,7 @@ class ChatService
         private readonly LoggerInterface $logger = new NullLogger(),
         int $maxHistoryLength = 50
     ) {
-        $client = Anthropic::factory()
-            ->withApiKey($this->apiKey)
-            ->make();
+        $client = new ClaudePhp(apiKey: $this->apiKey);
 
         $this->messages = $client->messages();
         $this->maxHistoryLength = $maxHistoryLength;
@@ -84,7 +82,7 @@ class ChatService
         } else {
             // Non-streaming mode
             $response = $this->messages->create($params);
-            $fullResponse = $response->content[0]->text;
+            $fullResponse = $response->content[0]['text'];
         }
 
         // Add assistant response to history
@@ -115,15 +113,15 @@ class ChatService
         }
 
         $response = $this->messages->create($params);
-        $assistantMessage = $response->content[0]->text;
+        $assistantMessage = $response->content[0]['text'];
 
         $this->addToHistory($userId, 'assistant', $assistantMessage);
 
         return [
             'message' => $assistantMessage,
             'usage' => [
-                'input_tokens' => $response->usage->inputTokens,
-                'output_tokens' => $response->usage->outputTokens,
+                'input_tokens' => $response->usage->input_tokens,
+                'output_tokens' => $response->usage->output_tokens,
             ],
             'model' => $response->model,
             'stop_reason' => $response->stopReason,

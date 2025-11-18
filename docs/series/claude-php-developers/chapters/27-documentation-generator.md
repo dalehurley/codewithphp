@@ -77,7 +77,7 @@ declare(strict_types=1);
 
 namespace App\Documentation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use PhpParser\ParserFactory;
 use PhpParser\NodeTraverser;
 
@@ -148,7 +148,7 @@ class DocumentationGenerator
             ]]
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 
     private function getDocumentationSystemPrompt(): string
@@ -501,7 +501,7 @@ declare(strict_types=1);
 
 namespace App\Documentation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class ApiDocGenerator
 {
@@ -526,7 +526,7 @@ class ApiDocGenerator
             ]]
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 
     private function buildClassPrompt(ClassInfo $class): string
@@ -658,7 +658,7 @@ PROMPT;
             ]]
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 
     private function formatMethodSignature(MethodInfo $method): string
@@ -695,7 +695,7 @@ declare(strict_types=1);
 
 namespace App\Documentation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class UserGuideGenerator
 {
@@ -727,7 +727,7 @@ class UserGuideGenerator
             ]]
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 
     private function buildGettingStartedPrompt(CodeStructure $structure): string
@@ -950,7 +950,7 @@ declare(strict_types=1);
 
 namespace App\Documentation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class ReadmeGenerator
 {
@@ -1055,7 +1055,7 @@ PROMPT;
             ]]
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 
     private function analyzeProject(CodeStructure $structure): array
@@ -1107,7 +1107,7 @@ declare(strict_types=1);
 
 namespace App\Documentation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class ExampleGenerator
 {
@@ -1164,7 +1164,7 @@ PROMPT;
             ]]
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 
     private function generateAdvancedExample(ClassInfo $class): string
@@ -1192,7 +1192,7 @@ PROMPT;
             ]]
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 
     private function generatePatternExamples(ClassInfo $class): string
@@ -1220,7 +1220,7 @@ PROMPT;
             ]]
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 }
 ````
@@ -1234,7 +1234,7 @@ declare(strict_types=1);
 
 namespace App\Documentation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class TutorialGenerator
 {
@@ -1319,7 +1319,7 @@ Create an engaging, educational tutorial with:
               ]]
           ]);
 
-          return $response->content[0]->text;
+          return $response->content[0]['text'];
       }
 
       private function formatStructure(CodeStructure $structure): string
@@ -1388,7 +1388,7 @@ PROMPT;
             ]]
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 
 }
@@ -1404,7 +1404,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Documentation\DocumentationGenerator;
 use App\Documentation\CodeParser;
 use App\Documentation\ApiDocGenerator;
@@ -1457,9 +1457,7 @@ if (!is_dir($outputPath)) {
 }
 
 // Initialize Claude
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 
 // Initialize components
 $parser = new CodeParser();

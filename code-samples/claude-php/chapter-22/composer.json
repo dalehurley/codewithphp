@@ -6,7 +6,7 @@
         "php": "^8.2",
         "laravel/framework": "^11.0",
         "livewire/livewire": "^3.0",
-        "anthropic-ai/sdk": "^1.0",
+        "claude-php/claude-php-sdk": "^1.0",
         "predis/predis": "^2.2"
     },
     "require-dev": {

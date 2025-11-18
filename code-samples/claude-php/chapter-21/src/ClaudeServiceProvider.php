@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ClaudePhp\LaravelIntegration;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Foundation\Application;
 
@@ -26,9 +26,7 @@ class ClaudeServiceProvider extends ServiceProvider
 
         // Register the main Claude client
         $this->app->singleton('claude', function (Application $app) {
-            return Anthropic::factory()
-                ->withApiKey(config('claude.api_key'))
-                ->make();
+            return new ClaudePhp(apiKey: config('claude.api_key');
         });
 
         // Register the Claude service

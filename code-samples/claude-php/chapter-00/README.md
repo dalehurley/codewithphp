@@ -77,7 +77,7 @@ php examples/cost-tracking.php
 ```php
 use Anthropic\Anthropic;
 
-$client = Anthropic::factory()
+$client = claude-php SDK()
     ->withApiKey(getenv('ANTHROPIC_API_KEY'))
     ->make();
 

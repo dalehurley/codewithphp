@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Anthropic\Resources\Messages;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -200,7 +200,7 @@ PROMPT;
                 'system' => 'You are a data validation expert. Analyze data carefully and provide detailed feedback.'
             ]);
 
-            $text = $response->content[0]->text;
+            $text = $response->content[0]['text'];
 
             if (preg_match('/```json\s*(.*?)\s*```/s', $text, $matches)) {
                 $text = $matches[1];

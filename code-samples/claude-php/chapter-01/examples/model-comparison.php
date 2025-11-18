@@ -145,7 +145,7 @@ try {
 
     echo "✓ Model comparison complete!\n";
 
-} catch (\Anthropic\Exceptions\ErrorException $e) {
+} catch (\ClaudePhp\Exceptions\APIError $e) {
     echo "✗ API Error: {$e->getMessage()}\n";
     exit(1);
 } catch (\Exception $e) {

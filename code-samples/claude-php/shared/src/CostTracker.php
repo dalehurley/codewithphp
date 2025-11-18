@@ -28,8 +28,8 @@ class CostTracker
     public function trackRequest(MessageContract $response, ?string $model = null): float
     {
         $model = $model ?? $response->model;
-        $inputTokens = $response->usage->inputTokens;
-        $outputTokens = $response->usage->outputTokens;
+        $inputTokens = $response->usage->input_tokens;
+        $outputTokens = $response->usage->output_tokens;
 
         $cost = $this->calculateCost($inputTokens, $outputTokens, $model);
 

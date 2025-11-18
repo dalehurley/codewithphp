@@ -24,17 +24,17 @@ try {
     // Turn 1
     echo "User: What is PHP?\n";
     $response = $conversation->send("What is PHP?");
-    echo "Claude: {$response->content[0]->text}\n\n";
+    echo "Claude: {$response->content[0]['text']}\n\n";
 
     // Turn 2
     echo "User: What version is current?\n";
     $response = $conversation->send("What version is current?");
-    echo "Claude: {$response->content[0]->text}\n\n";
+    echo "Claude: {$response->content[0]['text']}\n\n";
 
     // Turn 3
     echo "User: What are the major features?\n";
     $response = $conversation->send("What are the major features?");
-    echo "Claude: {$response->content[0]->text}\n\n";
+    echo "Claude: {$response->content[0]['text']}\n\n";
 
     echo "✓ Conversation complete!\n";
 

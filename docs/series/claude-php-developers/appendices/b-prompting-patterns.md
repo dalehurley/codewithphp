@@ -269,7 +269,7 @@ $prompt = <<<PROMPT
 Create a comprehensive README.md for a Laravel package with these details:
 
 Package Name: claude-php-sdk
-Purpose: Official PHP SDK for Anthropic's Claude API
+Purpose: Claude PHP SDK for Anthropic's Claude API
 Features:
 - Type-safe API client
 - Streaming support

@@ -9,7 +9,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\SystemPrompts\SystemPromptLibrary;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/..');
@@ -20,7 +20,7 @@ $apiKey = getenv('ANTHROPIC_API_KEY');
 echo "=== Specialized Assistants ===\n\n";
 
 try {
-    $client = Anthropic::factory()->withApiKey($apiKey)->make();
+    $client = new ClaudePhp(apiKey: $apiKey);
 
     // Customer Support Assistant
     echo "Customer Support Assistant:\n";
@@ -32,7 +32,7 @@ try {
             ['role' => 'user', 'content' => 'My payment failed. What should I do?']
         ]
     ]);
-    echo "{$response->content[0]->text}\n\n";
+    echo "{$response->content[0]['text']}\n\n";
 
     // Data Analyst Assistant
     echo "Data Analyst Assistant:\n";
@@ -44,7 +44,7 @@ try {
             ['role' => 'user', 'content' => 'Sales increased 25% last quarter. What does this mean?']
         ]
     ]);
-    echo "{$response->content[0]->text}\n\n";
+    echo "{$response->content[0]['text']}\n\n";
 
     echo "✓ Specialized assistants complete!\n";
 

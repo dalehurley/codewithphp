@@ -904,9 +904,9 @@ class ResponseCompressor
     {
         // Extract only essential data
         $compressed = [
-            't' => $response->content[0]->text,  // text
-            'i' => $response->usage->inputTokens,  // input tokens
-            'o' => $response->usage->outputTokens,  // output tokens
+            't' => $response->content[0]['text'],  // text
+            'i' => $response->usage->input_tokens,  // input tokens
+            'o' => $response->usage->output_tokens,  // output tokens
             'm' => $response->model,  // model
         ];
 
@@ -969,7 +969,7 @@ declare(strict_types=1);
 
 namespace App\Optimization;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class BatchProcessor
 {
@@ -997,7 +997,7 @@ class BatchProcessor
         ]);
 
         // Parse batch response
-        $results = $this->parseBatchResponse($response->content[0]->text, count($items));
+        $results = $this->parseBatchResponse($response->content[0]['text'], count($items));
 
         // Calculate savings
         $singleRequestCost = $this->calculateBatchCost($response);
@@ -1057,8 +1057,8 @@ PROMPT;
         $calculator = new \App\Billing\PricingCalculator();
         $cost = $calculator->calculateCost(
             $response->model,
-            $response->usage->inputTokens,
-            $response->usage->outputTokens
+            $response->usage->input_tokens,
+            $response->usage->output_tokens
         );
 
         return $cost['total_cost'];
@@ -1323,8 +1323,8 @@ $response = $client->messages()->create([...]);
 // Track actual cost
 $actualCost = $calculator->calculateCost(
     $response->model,
-    $response->usage->inputTokens,
-    $response->usage->outputTokens
+    $response->usage->input_tokens,
+    $response->usage->output_tokens
 )['total_cost'];
 
 $budgetTracker->trackSpending($actualCost, $userId);
@@ -2498,8 +2498,8 @@ $costAttribution->recordCost([
     'user_id' => $userId,
     'feature' => $feature,
     'model' => $response->model,
-    'input_tokens' => $response->usage->inputTokens,
-    'output_tokens' => $response->usage->outputTokens,
+    'input_tokens' => $response->usage->input_tokens,
+    'output_tokens' => $response->usage->output_tokens,
     'cost' => $cost,
     'request_id' => $requestId,
 ]);

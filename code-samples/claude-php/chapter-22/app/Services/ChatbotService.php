@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Conversation;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Anthropic\Resources\Messages;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -21,9 +21,7 @@ class ChatbotService
 
     public function __construct()
     {
-        $client = Anthropic::factory()
-            ->withApiKey(config('services.anthropic.api_key'))
-            ->make();
+        $client = new ClaudePhp(apiKey: config('services.anthropic.api_key');
 
         $this->messages = $client->messages();
     }
@@ -53,11 +51,11 @@ class ChatbotService
         $response = $this->messages->create($params);
 
         return [
-            'content' => $response->content[0]->text,
+            'content' => $response->content[0]['text'],
             'model' => $response->model,
             'usage' => [
-                'input_tokens' => $response->usage->inputTokens,
-                'output_tokens' => $response->usage->outputTokens,
+                'input_tokens' => $response->usage->input_tokens,
+                'output_tokens' => $response->usage->output_tokens,
             ],
         ];
     }
@@ -111,7 +109,7 @@ class ChatbotService
                     ]],
                 ]);
 
-                return trim($response->content[0]->text);
+                return trim($response->content[0]['text']);
 
             } catch (\Exception $e) {
                 Log::warning('Failed to generate conversation title', [
@@ -161,7 +159,7 @@ class ChatbotService
             ]],
         ]);
 
-        return strtolower(trim($response->content[0]->text));
+        return strtolower(trim($response->content[0]['text']));
     }
 
     /**
@@ -178,6 +176,6 @@ class ChatbotService
             ]],
         ]);
 
-        return strtolower(trim($response->content[0]->text));
+        return strtolower(trim($response->content[0]['text']));
     }
 }

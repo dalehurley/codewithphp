@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
@@ -17,9 +17,7 @@ class ToxicContentDetector
 
     public function __construct(string $apiKey)
     {
-        $this->client = Anthropic::factory()
-            ->withApiKey($apiKey)
-            ->make();
+        $this->client = new ClaudePhp(apiKey: $apiKey);
     }
 
     /**
@@ -59,7 +57,7 @@ PROMPT,
                 ]],
             ]);
 
-            return $this->parseAnalysis($response->content[0]->text);
+            return $this->parseAnalysis($response->content[0]['text']);
         });
     }
 

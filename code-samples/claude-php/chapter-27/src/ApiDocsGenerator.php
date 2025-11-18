@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DocsGenerator;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 /**
  * API Documentation Generator using Claude
@@ -15,9 +15,7 @@ class ApiDocsGenerator
 
     public function __construct(string $apiKey)
     {
-        $this->client = Anthropic::factory()
-            ->withApiKey($apiKey)
-            ->make();
+        $this->client = new ClaudePhp(apiKey: $apiKey);
     }
 
     /**
@@ -50,7 +48,7 @@ PROMPT,
             ]],
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 
     /**
@@ -84,7 +82,7 @@ PROMPT,
             ]],
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 
     /**
@@ -120,7 +118,7 @@ PROMPT,
             ]],
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 
     /**
@@ -154,7 +152,7 @@ PROMPT,
             ]],
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 
     /**
@@ -184,6 +182,6 @@ PROMPT,
             ]],
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 }

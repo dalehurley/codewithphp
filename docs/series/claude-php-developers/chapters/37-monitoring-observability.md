@@ -322,10 +322,10 @@ class RequestLoggingMiddleware
             $this->logger->logResponse(
                 messageId: $response->id,
                 model: $response->model,
-                inputTokens: $response->usage->inputTokens,
-                outputTokens: $response->usage->outputTokens,
+                inputTokens: $response->usage->input_tokens,
+                outputTokens: $response->usage->output_tokens,
                 duration: $duration,
-                stopReason: $response->stopReason,
+                stopReason: $response->stop_reason,
                 userId: $userId
             );
 
@@ -925,12 +925,12 @@ try {
 
     $tracer->addLog($claudeSpan, 'response_received', [
         'message_id' => $response->id,
-        'tokens' => $response->usage->inputTokens + $response->usage->outputTokens,
+        'tokens' => $response->usage->input_tokens + $response->usage->output_tokens,
     ]);
 
     $tracer->finishSpan($claudeSpan, [
         'status' => 'success',
-        'tokens' => $response->usage->inputTokens + $response->usage->outputTokens,
+        'tokens' => $response->usage->input_tokens + $response->usage->output_tokens,
     ]);
 
 } catch (\Exception $e) {
@@ -1445,8 +1445,8 @@ try {
 
     $datadog->trackClaudeRequest(
         model: $response->model,
-        inputTokens: $response->usage->inputTokens,
-        outputTokens: $response->usage->outputTokens,
+        inputTokens: $response->usage->input_tokens,
+        outputTokens: $response->usage->output_tokens,
         duration: $duration,
         status: 'success'
     );
@@ -1642,8 +1642,8 @@ try {
 
     $prometheus->trackClaudeRequest(
         model: $response->model,
-        inputTokens: $response->usage->inputTokens,
-        outputTokens: $response->usage->outputTokens,
+        inputTokens: $response->usage->input_tokens,
+        outputTokens: $response->usage->output_tokens,
         duration: $duration,
         status: 'success'
     );

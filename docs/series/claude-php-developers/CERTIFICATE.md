@@ -54,7 +54,7 @@ A Comprehensive 40-Chapter Series
 - ✅ Used structured outputs with JSON schema
 
 **PHP Integration (Chapters 16-20)**
-- ✅ Mastered the official Anthropic PHP SDK
+- ✅ Mastered the Claude PHP SDK (community SDK)
 - ✅ Built reusable service layer architecture
 - ✅ Implemented multi-tier caching strategies
 - ✅ Deployed queue-based async processing

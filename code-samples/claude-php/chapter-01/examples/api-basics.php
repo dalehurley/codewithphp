@@ -15,8 +15,8 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
-use Anthropic\Exceptions\ErrorException;
+use ClaudePhp\ClaudePhp;
+use ClaudePhp\Exceptions\APIError;
 use Dotenv\Dotenv;
 
 // Load environment variables
@@ -30,9 +30,7 @@ if (!$apiKey) {
 
 echo "=== Claude API Basics ===\n\n";
 
-$client = Anthropic::factory()
-    ->withApiKey($apiKey)
-    ->make();
+$client = new ClaudePhp(apiKey: $apiKey);
 
 try {
     // Example 1: Basic Request Structure
@@ -59,7 +57,7 @@ try {
     $response = $client->messages()->create($requestParams);
 
     echo "Response received!\n";
-    echo "Answer: {$response->content[0]->text}\n\n";
+    echo "Answer: {$response->content[0]['text']}\n\n";
 
     // Example 2: Understanding Response Structure
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
@@ -84,9 +82,9 @@ try {
     echo "\n";
 
     echo "Usage:\n";
-    echo "  Input Tokens: {$response->usage->inputTokens}\n";
-    echo "  Output Tokens: {$response->usage->outputTokens}\n";
-    echo "  Total Tokens: " . ($response->usage->inputTokens + $response->usage->outputTokens) . "\n\n";
+    echo "  Input Tokens: {$response->usage->input_tokens}\n";
+    echo "  Output Tokens: {$response->usage->output_tokens}\n";
+    echo "  Total Tokens: " . ($response->usage->input_tokens + $response->usage->output_tokens) . "\n\n";
 
     // Example 3: Optional Parameters
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
@@ -105,7 +103,7 @@ try {
         ]
     ]);
 
-    echo "Response: {$response->content[0]->text}\n\n";
+    echo "Response: {$response->content[0]['text']}\n\n";
 
     // Example 4: Stop Sequences
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
@@ -124,7 +122,7 @@ try {
     ]);
 
     echo "Response (should stop at 3 items):\n";
-    echo $response->content[0]->text . "\n";
+    echo $response->content[0]['text'] . "\n";
     echo "\nStop Reason: {$response->stopReason}\n";
     echo "Stop Sequence: " . ($response->stopSequence ?? 'null') . "\n\n";
 
@@ -146,7 +144,7 @@ try {
         ]
     ]);
 
-    echo "Response: {$response->content[0]->text}\n";
+    echo "Response: {$response->content[0]['text']}\n";
     echo "Request processed with metadata tracking.\n\n";
 
     // Example 6: Error Handling

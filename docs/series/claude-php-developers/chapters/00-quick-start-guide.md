@@ -43,7 +43,7 @@ Keep your API key secret! Never commit it to version control.
 
 ### Install the PHP SDK
 
-Create a new project directory and install the Anthropic PHP SDK:
+Create a new project directory and install the Claude PHP SDK:
 
 **Unix/Mac/Linux:**
 ```bash
@@ -406,7 +406,7 @@ $model = $response->model;
 // Response metadata
 $id = $response->id;
 $role = $response->role; // Always 'assistant'
-$stopReason = $response->stopReason; // 'end_turn', 'max_tokens', etc.
+$stopReason = $response->stop_reason; // 'end_turn', 'max_tokens', etc.
 ```
 
 ## 🚦 Model Selection Guide
@@ -437,8 +437,8 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
-use Anthropic\Exceptions\ErrorException;
-use Anthropic\Exceptions\RateLimitException;
+use ClaudePhp\Exceptions\APIError;
+use ClaudePhp\Exceptions\RateLimitError;
 
 $client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
@@ -551,9 +551,7 @@ $dotenv = Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
 
 // Create client with environment config
-$client = Anthropic::factory()
-    ->withApiKey($_ENV['ANTHROPIC_API_KEY'])
-    ->make();
+$client = new ClaudePhp(apiKey: $_ENV['ANTHROPIC_API_KEY']);
 
 // Use environment-based configuration
 $response = $client->messages()->create([
@@ -629,7 +627,7 @@ Now that you have Claude working in PHP, here's what to explore next:
 
 ## Key Takeaways
 
-- ✓ Claude API is accessible via the official PHP SDK
+- ✓ Claude API is accessible via the Claude PHP SDK
 - ✓ Basic usage requires: model, max_tokens, and messages array
 - ✓ Responses contain text content and usage statistics
 - ✓ Always implement error handling for production

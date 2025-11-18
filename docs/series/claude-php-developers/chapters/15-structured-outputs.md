@@ -101,11 +101,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 
 function extractContactInfo(string $text, Anthropic $client, bool $useNativeFormat = true): array
 {
@@ -160,12 +158,12 @@ function extractContactInfo(string $text, Anthropic $client, bool $useNativeForm
                 ]
             ]);
 
-            if (empty($response->content) || !isset($response->content[0]->text)) {
+            if (empty($response->content) || !isset($response->content[0]['text'])) {
                 throw new \RuntimeException('Empty response from Claude API');
             }
 
             // Native format returns valid JSON directly
-            $data = json_decode($response->content[0]->text, true);
+            $data = json_decode($response->content[0]['text'], true);
 
             if (json_last_error() !== JSON_ERROR_NONE) {
                 throw new \RuntimeException('Invalid JSON response: ' . json_last_error_msg());
@@ -213,11 +211,11 @@ PROMPT;
         ]
     ]);
 
-    if (empty($response->content) || !isset($response->content[0]->text)) {
+    if (empty($response->content) || !isset($response->content[0]['text'])) {
         throw new \RuntimeException('Empty response from Claude API');
     }
 
-    $responseText = $response->content[0]->text;
+    $responseText = $response->content[0]['text'];
 
     // Extract JSON from response
     if (preg_match('/```json\s*(\{.*?\})\s*```/s', $responseText, $matches)) {
@@ -300,7 +298,7 @@ declare(strict_types=1);
 
 namespace App\Extraction;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use JsonSchema\Validator;
 use JsonSchema\Constraints\Constraint;
 
@@ -388,11 +386,11 @@ class SchemaExtractor
             ]
         ]);
 
-        if (empty($response->content) || !isset($response->content[0]->text)) {
+        if (empty($response->content) || !isset($response->content[0]['text'])) {
             throw new \RuntimeException('Empty response from Claude API');
         }
 
-        return $this->parseJSON($response->content[0]->text);
+        return $this->parseJSON($response->content[0]['text']);
     }
 
     private function parseJSON(string $text): array
@@ -701,13 +699,11 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Extraction\SchemaExtractor;
 use App\Extraction\Schemas;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 
 $extractor = new SchemaExtractor($client);
 
@@ -940,14 +936,12 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Extraction\SchemaExtractor;
 use App\Extraction\CustomValidator;
 use App\Extraction\Schemas;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 
 $extractor = new SchemaExtractor($client);
 $validator = new CustomValidator();
@@ -1018,7 +1012,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Extraction\SchemaExtractor;
 use App\Extraction\Schemas;
 
@@ -1060,9 +1054,7 @@ class BatchExtractor
     }
 }
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 
 $extractor = new SchemaExtractor($client);
 $batchExtractor = new BatchExtractor($extractor);
@@ -1125,12 +1117,10 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Extraction\Schemas;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 
 // Example usage
 $inputText = "John Doe\njohn.doe@example.com\n+1-555-123-4567";

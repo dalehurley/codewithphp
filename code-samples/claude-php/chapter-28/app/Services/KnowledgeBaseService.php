@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Illuminate\Support\Facades\Cache;
 
 /**
@@ -17,9 +17,7 @@ class KnowledgeBaseService
 
     public function __construct(string $apiKey)
     {
-        $this->client = Anthropic::factory()
-            ->withApiKey($apiKey)
-            ->make();
+        $this->client = new ClaudePhp(apiKey: $apiKey);
 
         $this->loadKnowledgeBase();
     }
@@ -65,7 +63,7 @@ class KnowledgeBaseService
                 ]],
             ]);
 
-            return $this->parseSearchResults($response->content[0]->text);
+            return $this->parseSearchResults($response->content[0]['text']);
         });
     }
 
@@ -102,7 +100,7 @@ PROMPT,
             ]],
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 
     /**

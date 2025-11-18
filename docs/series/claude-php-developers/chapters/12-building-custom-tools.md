@@ -1031,7 +1031,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Tools\ToolRegistry;
 use App\Tools\Database\CustomerDatabaseTool;
 use App\Tools\Database\InventoryTool;
@@ -1056,9 +1056,7 @@ $registry
     ->register(new LogAnalyzerTool(__DIR__ . '/logs'));
 
 // Initialize Claude
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 
 // Agent function
 function runAgent(string $userMessage, ToolRegistry $registry): string
@@ -1093,7 +1091,7 @@ SYSTEM;
     ]);
 
     $iterations = 0;
-    while ($response->stopReason === 'tool_use' && $iterations < 15) {
+    while ($response->stop_reason === 'tool_use' && $iterations < 15) {
         $iterations++;
 
         $messages[] = [

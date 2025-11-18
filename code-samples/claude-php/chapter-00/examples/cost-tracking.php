@@ -188,7 +188,7 @@ try {
     echo "✓ All cost tracking examples completed successfully!\n";
     echo "\n💡 Tip: Use CostCalculator in your production code to monitor API usage!\n";
 
-} catch (\Anthropic\Exceptions\ErrorException $e) {
+} catch (\ClaudePhp\Exceptions\APIError $e) {
     echo "✗ API Error: {$e->getMessage()}\n";
     exit(1);
 } catch (\Exception $e) {

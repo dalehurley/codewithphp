@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/..');
@@ -24,9 +24,7 @@ if (!$apiKey) {
 echo "=== Making Claude Request with SDK ===\n\n";
 
 try {
-    $client = Anthropic::factory()
-        ->withApiKey($apiKey)
-        ->make();
+    $client = new ClaudePhp(apiKey: $apiKey);
 
     echo "Sending request...\n";
     $response = $client->messages()->create([
@@ -37,8 +35,8 @@ try {
         ]
     ]);
 
-    echo "Response: {$response->content[0]->text}\n";
-    echo "Tokens: {$response->usage->inputTokens} in, {$response->usage->outputTokens} out\n";
+    echo "Response: {$response->content[0]['text']}\n";
+    echo "Tokens: {$response->usage->input_tokens} in, {$response->usage->output_tokens} out\n";
 
 } catch (\Exception $e) {
     echo "✗ Error: {$e->getMessage()}\n";

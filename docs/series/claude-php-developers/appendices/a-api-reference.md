@@ -80,12 +80,9 @@ $headers = [
 
 ```php
 # filename: sdk-initialization.php
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->withHttpHeader('anthropic-version', '2023-06-01')
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 ```
 
 ---
@@ -270,7 +267,7 @@ $response = [
 ];
 
 // Accessing response text
-$text = $response->content[0]->text;
+$text = $response->content[0]['text'];
 
 // Accessing usage
 $inputTokens = $response->usage->input_tokens;
@@ -624,7 +621,7 @@ $response = $client->messages()->create([
 ]);
 
 // Response content will be valid JSON matching the schema
-$userData = json_decode($response->content[0]->text, true);
+$userData = json_decode($response->content[0]['text'], true);
 ```
 
 ### Schema Definition
@@ -669,7 +666,7 @@ try {
         ]
     ]);
 
-    $data = json_decode($response->content[0]->text, true);
+    $data = json_decode($response->content[0]['text'], true);
 
     if (json_last_error() !== JSON_ERROR_NONE) {
         throw new RuntimeException('Invalid JSON response: ' . json_last_error_msg());
@@ -718,8 +715,8 @@ try {
 
 ```php
 # filename: error-handling.php
-use Anthropic\Exceptions\AnthropicException;
-use Anthropic\Exceptions\ErrorException;
+use ClaudePhp\Exceptions\AnthropicException;
+use ClaudePhp\Exceptions\APIError;
 
 try {
     $response = $client->messages()->create([
@@ -841,13 +838,11 @@ _Check official pricing at anthropic.com/pricing for current rates._
 <?php
 require 'vendor/autoload.php';
 
-use Anthropic\Anthropic;
-use Anthropic\Exceptions\ErrorException;
+use ClaudePhp\ClaudePhp;
+use ClaudePhp\Exceptions\APIError;
 
 // Initialize client
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Define tools
 $tools = [
@@ -910,7 +905,7 @@ try {
 - **[Official API Documentation](https://docs.claude.com)** - Complete API reference
 - **[API Status Page](https://status.anthropic.com)** - Service status
 - **[Anthropic Console](https://console.anthropic.com)** - Manage API keys
-- **[PHP SDK Repository](https://github.com/anthropics/anthropic-sdk-php)** - SDK source code
+- **[PHP SDK Repository](https://github.com/anthropics/claude-php/Claude-PHP-SDK)** - SDK source code
 - **[Pricing Calculator](https://anthropic.com/pricing)** - Calculate costs
 
 ---

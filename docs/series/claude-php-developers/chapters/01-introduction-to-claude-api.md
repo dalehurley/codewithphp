@@ -478,11 +478,11 @@ $response = $client->messages()->create([...]);
 // Accessing response data
 $messageId = $response->id;                    // Unique message ID
 $assistantRole = $response->role;              // Always "assistant"
-$responseText = $response->content[0]->text;   // The generated text
+$responseText = $response->content[0]['text'];   // The generated text
 $modelUsed = $response->model;                 // Model that generated response
 $stopReason = $response->stop_reason;          // Why generation stopped
-$inputTokens = $response->usage->inputTokens;  // Tokens in request
-$outputTokens = $response->usage->outputTokens; // Tokens in response
+$inputTokens = $response->usage->input_tokens;  // Tokens in request
+$outputTokens = $response->usage->output_tokens; // Tokens in response
 ```
 
 ### Complete Example with Response Handling
@@ -494,11 +494,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 
 class ClaudeResponseHandler
 {
@@ -536,17 +534,17 @@ class ClaudeResponseHandler
         return [
             'success' => true,
             'message_id' => $response->id,
-            'text' => $response->content[0]->text,
+            'text' => $response->content[0]['text'],
             'model' => $response->model,
             'stop_reason' => $response->stop_reason,
             'usage' => [
-                'input_tokens' => $response->usage->inputTokens,
-                'output_tokens' => $response->usage->outputTokens,
-                'total_tokens' => $response->usage->inputTokens + $response->usage->outputTokens,
+                'input_tokens' => $response->usage->input_tokens,
+                'output_tokens' => $response->usage->output_tokens,
+                'total_tokens' => $response->usage->input_tokens + $response->usage->output_tokens,
             ],
             'performance' => [
                 'duration_seconds' => round($duration, 3),
-                'tokens_per_second' => round($response->usage->outputTokens / $duration, 2),
+                'tokens_per_second' => round($response->usage->output_tokens / $duration, 2),
             ],
             'cost' => $this->calculateCost($response, $model),
         ];
@@ -556,8 +554,8 @@ class ClaudeResponseHandler
     {
         $pricing = $this->getPricing($model);
 
-        $inputCost = ($response->usage->inputTokens / 1_000_000) * $pricing['input'];
-        $outputCost = ($response->usage->outputTokens / 1_000_000) * $pricing['output'];
+        $inputCost = ($response->usage->input_tokens / 1_000_000) * $pricing['input'];
+        $outputCost = ($response->usage->output_tokens / 1_000_000) * $pricing['output'];
 
         return [
             'input_cost' => $inputCost,
@@ -799,7 +797,7 @@ class BatchProcessor
             ]]
         ]);
 
-        return $this->parseResults($response->content[0]->text, count($items));
+        return $this->parseResults($response->content[0]['text'], count($items));
     }
 
     private function parseResults(string $text, int $expectedCount): array
@@ -878,11 +876,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 
 class ConversationManager
 {
@@ -921,7 +917,7 @@ class ConversationManager
             'messages' => $this->history
         ]);
 
-        $assistantResponse = $response->content[0]->text;
+        $assistantResponse = $response->content[0]['text'];
 
         // Add assistant response to history
         $this->addAssistantMessage($assistantResponse);
@@ -1006,7 +1002,7 @@ $response = $client->messages()->create([
 ]);
 
 // Claude responds as a Laravel expert with code examples
-echo $response->content[0]->text;
+echo $response->content[0]['text'];
 ```
 
 ### Context Window Management
@@ -1040,7 +1036,7 @@ class ManagedConversation
             'messages' => $this->history
         ]);
 
-        $reply = $response->content[0]->text;
+        $reply = $response->content[0]['text'];
         $this->history[] = ['role' => 'assistant', 'content' => $reply];
 
         return $reply;
@@ -1088,7 +1084,7 @@ class SimpleClaudeService
             ]
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 }
 
@@ -1132,7 +1128,7 @@ class ConfiguredClaudeService
 
         $response = $this->client->messages()->create($params);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 }
 
@@ -1182,7 +1178,7 @@ class ConversationalService
         }
 
         $response = $this->client->messages()->create($params);
-        $reply = $response->content[0]->text;
+        $reply = $response->content[0]['text'];
 
         $this->messages[] = [
             'role' => 'assistant',
@@ -1318,7 +1314,7 @@ $chat->chat("Design a system", 'complex'); // → Uses Opus 4.1
 - Check Anthropic documentation for latest model names
 
 **Unexpected response format?**
-- Always access text via `$response->content[0]->text`
+- Always access text via `$response->content[0]['text']`
 - Check `stop_reason` to understand why generation stopped
 - Verify you're not hitting max_tokens limit
 

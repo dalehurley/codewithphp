@@ -408,8 +408,8 @@ class TokenTracker
         $response = $this->client->messages()->create($request);
 
         // Get actual token counts from response
-        $actualInput = $response->usage->inputTokens;
-        $actualOutput = $response->usage->outputTokens;
+        $actualInput = $response->usage->input_tokens;
+        $actualOutput = $response->usage->output_tokens;
 
         // Calculate costs
         $model = $request['model'];
@@ -495,7 +495,7 @@ $response = $tracker->track([
     ]]
 ]);
 
-echo $response->content[0]->text . "\n\n";
+echo $response->content[0]['text'] . "\n\n";
 
 $stats = $tracker->getStats();
 echo "Token Usage Stats:\n";
@@ -642,7 +642,7 @@ class ConversationContextManager
             ]]
         ]);
 
-        $summary = $response->content[0]->text;
+        $summary = $response->content[0]['text'];
 
         // Replace old messages with summary
         $this->messages = [
@@ -1340,8 +1340,8 @@ class BudgetManager
         // Calculate actual cost
         $actualCost = ClaudeModelLimits::calculateCost(
             $request['model'],
-            $response->usage->inputTokens,
-            $response->usage->outputTokens
+            $response->usage->input_tokens,
+            $response->usage->output_tokens
         );
 
         // Track
@@ -1349,8 +1349,8 @@ class BudgetManager
         $this->transactions[] = [
             'timestamp' => time(),
             'model' => $request['model'],
-            'input_tokens' => $response->usage->inputTokens,
-            'output_tokens' => $response->usage->outputTokens,
+            'input_tokens' => $response->usage->input_tokens,
+            'output_tokens' => $response->usage->output_tokens,
             'cost' => $actualCost,
             'estimated_cost' => $estimatedCost,
         ];
@@ -1435,7 +1435,7 @@ try {
         ]]
     ]);
 
-    echo $response->content[0]->text . "\n\n";
+    echo $response->content[0]['text'] . "\n\n";
 
     $summary = $budget->getSummary();
     echo "Budget Summary:\n";
@@ -1677,13 +1677,13 @@ class TokenManagementService
         $this->stats[] = [
             'timestamp' => time(),
             'model' => $request['model'],
-            'input_tokens' => $response->usage->inputTokens,
-            'output_tokens' => $response->usage->outputTokens,
+            'input_tokens' => $response->usage->input_tokens,
+            'output_tokens' => $response->usage->output_tokens,
             'duration' => $duration,
             'cost' => ClaudeModelLimits::calculateCost(
                 $request['model'],
-                $response->usage->inputTokens,
-                $response->usage->outputTokens
+                $response->usage->input_tokens,
+                $response->usage->output_tokens
             ),
         ];
     }
@@ -1730,7 +1730,7 @@ $response = $service->query(
     maxTokens: 100
 );
 
-echo $response->content[0]->text . "\n\n";
+echo $response->content[0]['text'] . "\n\n";
 
 $stats = $service->getStats();
 echo "Token Management Stats:\n";

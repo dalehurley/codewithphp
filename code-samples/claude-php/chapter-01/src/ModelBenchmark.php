@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ClaudePhp\ApiIntro;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Anthropic\Client as AnthropicClient;
 
 /**
@@ -20,9 +20,7 @@ class ModelBenchmark
 
     public function __construct(string $apiKey)
     {
-        $this->client = Anthropic::factory()
-            ->withApiKey($apiKey)
-            ->make();
+        $this->client = new ClaudePhp(apiKey: $apiKey);
     }
 
     /**
@@ -51,10 +49,10 @@ class ModelBenchmark
         $result = [
             'model' => $model,
             'duration' => $duration,
-            'input_tokens' => $response->usage->inputTokens,
-            'output_tokens' => $response->usage->outputTokens,
-            'total_tokens' => $response->usage->inputTokens + $response->usage->outputTokens,
-            'response' => $response->content[0]->text,
+            'input_tokens' => $response->usage->input_tokens,
+            'output_tokens' => $response->usage->output_tokens,
+            'total_tokens' => $response->usage->input_tokens + $response->usage->output_tokens,
+            'response' => $response->content[0]['text'],
             'stop_reason' => $response->stopReason
         ];
 

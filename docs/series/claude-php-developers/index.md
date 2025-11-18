@@ -198,12 +198,10 @@ Want to make your first Claude API call right now? Here's a 2-minute example:
 <?php
 require 'vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 // Initialize Claude client
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 
 // Your first AI conversation!
 $response = $client->messages()->create([
@@ -215,19 +213,19 @@ $response = $client->messages()->create([
 ]);
 
 // Access the generated text
-echo $response->content[0]->text;
+echo $response->content[0]['text'];
 
 // Claude will generate a complete, working PHP function!
 ```
 
 **What This Does:**
-- Initializes the Anthropic PHP SDK with your API key
+- Initializes the Claude PHP SDK with your API key
 - Sends a message to Claude Sonnet 4.5 (latest model)
 - Receives and displays the AI-generated PHP code
 - Ready to run—just set your `ANTHROPIC_API_KEY` environment variable!
 
 **Setup Required:**
-1. Install the Anthropic PHP SDK: `composer require anthropics/anthropic-sdk-php`
+1. Install the Claude PHP SDK: `composer require anthropics/claude-php/Claude-PHP-SDK`
 2. Set your API key: `export ANTHROPIC_API_KEY='your-key-here'`
 3. Run the script: `php quickstart.php`
 
@@ -283,7 +281,7 @@ Build essential knowledge for working with Claude API.
   <img src="/images/claude-php/chapter-03-thumbnail.webp" alt="Chapter 03 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
   <div>
     <h4 style="margin-top: 0;"><a href="/series/claude-php-developers/chapters/03-first-claude-request">03 — Your First Claude Request in PHP</a></h4>
-    <p style="margin-bottom: 0;">Make your first API call using both Guzzle HTTP client and the official Anthropic PHP SDK. Understand request structure, response parsing, and basic error handling. Build a simple text generation script from scratch.</p>
+    <p style="margin-bottom: 0;">Make your first API call using both Guzzle HTTP client and the Claude PHP SDK (community SDK). Understand request structure, response parsing, and basic error handling. Build a simple text generation script from scratch.</p>
   </div>
 </div>
 
@@ -398,8 +396,8 @@ Integrate Claude into modern PHP applications and frameworks.
 <div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
   <img src="/images/claude-php/chapter-16-thumbnail.webp" alt="Chapter 16 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
   <div>
-    <h4 style="margin-top: 0;"><a href="/series/claude-php-developers/chapters/16-official-php-sdk">16 — The Official PHP SDK</a></h4>
-    <p style="margin-bottom: 0;">Master the official Anthropic PHP SDK. Explore its architecture, advanced features, middleware support, and testing utilities. Learn best practices for SDK integration in production applications and when to use raw HTTP vs the SDK.</p>
+    <h4 style="margin-top: 0;"><a href="/series/claude-php-developers/chapters/16-official-php-sdk">16 — The Community PHP SDK</a></h4>
+    <p style="margin-bottom: 0;">Master the Claude PHP SDK (community SDK). Explore its architecture, advanced features, middleware support, and testing utilities. Learn best practices for SDK integration in production applications and when to use raw HTTP vs the SDK.</p>
   </div>
 </div>
 
@@ -673,7 +671,7 @@ Want to dive deeper? These resources complement the series:
 
 ### PHP Resources
 
-- **[Anthropic PHP SDK](https://github.com/anthropics/anthropic-sdk-php)**: Official PHP SDK
+- **[Claude PHP SDK](https://github.com/anthropics/claude-php/Claude-PHP-SDK)**: Claude PHP SDK
 - **[Laravel](https://laravel.com)**: Modern PHP framework
 - **[Symfony](https://symfony.com)**: Enterprise PHP framework
 
