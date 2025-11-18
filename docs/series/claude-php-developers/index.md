@@ -601,6 +601,130 @@ Deploy, scale, and maintain Claude applications in production.
   </div>
 </div>
 
+### Part 9: Agentic AI (Chapters 40–54)
+
+Build autonomous AI agents with the ReAct pattern, multi-tool orchestration, and advanced reasoning techniques.
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/claude-php/chapter-40-thumbnail.webp" alt="Chapter 40 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/claude-php-developers/chapters/40-introduction-to-agentic-ai">40 — Introduction to Agentic AI</a></h4>
+    <p style="margin-bottom: 0;">Understand what makes AI systems agentic, learn the ReAct pattern, and discover when to use agents vs simple API calls. Foundation for building autonomous AI systems.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/claude-php/chapter-41-thumbnail.webp" alt="Chapter 41 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/claude-php-developers/chapters/41-your-first-agent">41 — Your First Agent</a></h4>
+    <p style="margin-bottom: 0;">Build your first working AI agent with a calculator tool. Learn the complete Request → Tool Call → Execute → Response cycle and master the fundamentals of agent development.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/claude-php/chapter-42-thumbnail.webp" alt="Chapter 42 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/claude-php-developers/chapters/42-react-loop-basics">42 — ReAct Loop Basics</a></h4>
+    <p style="margin-bottom: 0;">Implement the ReAct (Reason-Act-Observe) loop for multi-step problem solving. Handle multiple tool calls in sequence, maintain conversation state, and build iterative reasoning agents.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/claude-php/chapter-43-thumbnail.webp" alt="Chapter 43 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/claude-php-developers/chapters/43-multi-tool-agent">43 — Multi-Tool Agent</a></h4>
+    <p style="margin-bottom: 0;">Build agents that can choose from multiple tools, orchestrate complex workflows, and handle parallel tool execution. Master tool selection and result synthesis.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/claude-php/chapter-44-thumbnail.webp" alt="Chapter 44 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/claude-php-developers/chapters/44-production-ready-agent">44 — Production-Ready Agent</a></h4>
+    <p style="margin-bottom: 0;">Build production-ready agents with error handling, retries, logging, monitoring, and security. Implement robust agent patterns for real-world applications.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/claude-php/chapter-45-thumbnail.webp" alt="Chapter 45 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/claude-php-developers/chapters/45-advanced-react-patterns">45 — Advanced ReAct Patterns</a></h4>
+    <p style="margin-bottom: 0;">Master advanced ReAct patterns: planning, reflection, self-correction, and extended thinking. Build sophisticated agents that reason deeply before acting.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/claude-php/chapter-46-thumbnail.webp" alt="Chapter 46 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/claude-php-developers/chapters/46-complete-agentic-framework">46 — Complete Agentic Framework</a></h4>
+    <p style="margin-bottom: 0;">Build a complete agentic framework with task decomposition, parallel execution, result synthesis, and workflow orchestration. Production-ready agent architecture.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/claude-php/chapter-47-thumbnail.webp" alt="Chapter 47 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/claude-php-developers/chapters/47-chain-of-thought">47 — Chain of Thought (CoT)</a></h4>
+    <p style="margin-bottom: 0;">Implement Chain of Thought reasoning to break down complex problems into steps. Enable agents to show their reasoning process and solve multi-step problems systematically.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/claude-php/chapter-48-thumbnail.webp" alt="Chapter 48 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/claude-php-developers/chapters/48-tree-of-thoughts">48 — Tree of Thoughts (ToT)</a></h4>
+    <p style="margin-bottom: 0;">Build agents that explore multiple reasoning paths simultaneously. Implement Tree of Thoughts for complex problem-solving where multiple solution approaches are evaluated.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/claude-php/chapter-49-thumbnail.webp" alt="Chapter 49 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/claude-php-developers/chapters/49-plan-and-execute">49 — Plan-and-Execute</a></h4>
+    <p style="margin-bottom: 0;">Implement planning agents that create detailed plans before execution. Build agents that decompose tasks, create execution plans, and adapt when plans fail.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/claude-php/chapter-50-thumbnail.webp" alt="Chapter 50 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/claude-php-developers/chapters/50-reflection-self-critique">50 — Reflection & Self-Critique</a></h4>
+    <p style="margin-bottom: 0;">Build agents that can critique their own work, identify errors, and improve their outputs. Implement reflection loops for quality assurance and self-improvement.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/claude-php/chapter-51-thumbnail.webp" alt="Chapter 51 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/claude-php-developers/chapters/51-hierarchical-agents">51 — Hierarchical Agents</a></h4>
+    <p style="margin-bottom: 0;">Build hierarchical agent systems with supervisor-worker patterns. Create agent hierarchies where managers delegate tasks to specialized worker agents.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/claude-php/chapter-52-thumbnail.webp" alt="Chapter 52 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/claude-php-developers/chapters/52-multi-agent-debate">52 — Multi-Agent Debate</a></h4>
+    <p style="margin-bottom: 0;">Implement multi-agent debate systems where agents argue different perspectives and reach consensus. Build collaborative reasoning systems for complex decision-making.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/claude-php/chapter-53-thumbnail.webp" alt="Chapter 53 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/claude-php-developers/chapters/53-rag-pattern">53 — RAG Pattern</a></h4>
+    <p style="margin-bottom: 0;">Integrate Retrieval-Augmented Generation (RAG) with agents. Build agents that can search knowledge bases, retrieve relevant information, and use it in reasoning.</p>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <img src="/images/claude-php/chapter-54-thumbnail.webp" alt="Chapter 54 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/claude-php-developers/chapters/54-autonomous-agents">54 — Autonomous Agents</a></h4>
+    <p style="margin-bottom: 0;">Build fully autonomous agents that set goals, plan actions, execute tasks, and adapt to changing conditions. Create goal-directed agents for complex long-running tasks.</p>
+  </div>
+</div>
+
 ---
 
 ## Appendices
