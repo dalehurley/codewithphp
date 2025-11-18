@@ -26,11 +26,11 @@ prerequisites:
 
 ## Overview
 
-Production-Ready Agent enables agents to solve complex multi-step problems through iterative reasoning and tool execution. This chapter teaches you to implement the ReAct (Reason-Act-Observe) pattern, handle multiple tool calls in sequence, maintain conversation state, and build production-ready agents that can tackle complex tasks autonomously.
+You've built agents that work in ideal conditions. But production systems need to handle errors, failures, retries, and persistent state. This chapter teaches you to transform your agent into a robust, production-grade system that gracefully handles real-world failures.
 
-By the end of this chapter, you'll understand how to build agents that can reason about problems, execute tools iteratively, observe results, and adapt their approach until the task is complete.
+You'll learn to implement comprehensive error handling, add retry logic with exponential backoff, handle tool execution failures gracefully, integrate server-side tools, implement logging and monitoring, and build graceful degradation strategies.
 
-**Estimated Time**: 60-75 min
+**Estimated Time**: 60-75 minutes
 
 ## Prerequisites
 
@@ -46,75 +46,110 @@ Before starting, ensure you have:
 
 By the end of this chapter, you will have created:
 
-- A complete ReAct agent implementation with iterative reasoning
-- Tool execution handlers for multi-step workflows
-- Conversation state management across iterations
-- Proper stop condition handling
-- Debugging utilities for agent reasoning
-- Production-ready patterns for error handling and iteration limits
+- **Error Handling System** - Catch and handle all failure modes (API errors, tool failures, agent errors)
+- **Retry Logic** - Automatically retry transient failures with exponential backoff
+- **Server-Side Tools** - Integrate tools like Web Search that require external APIs
+- **Logging System** - Track agent behavior, errors, and performance metrics
+- **Graceful Degradation** - Continue working when tools fail, providing partial results
+- **Production-Ready Agent** - Robust agent that handles real-world production scenarios
 
 ## Objectives
 
 By completing this chapter, you will:
 
-- **Understand** the ReAct pattern and its role in agentic AI
-- **Implement** iterative reasoning loops with proper state management
-- **Handle** multiple tool calls in sequence
-- **Maintain** conversation history across iterations
-- **Implement** proper stop conditions and iteration limits
-- **Debug** agent reasoning steps effectively
-- **Build** production-ready agents with error handling
+- **Implement** comprehensive error handling for all failure modes
+- **Add** retry logic with exponential backoff for transient failures
+- **Handle** tool execution failures gracefully without breaking the agent
+- **Integrate** server-side tools that require external API calls
+- **Implement** logging and monitoring for production debugging
+- **Build** graceful degradation strategies when tools fail
+- **Test** error scenarios to ensure robustness
 
-## The ReAct Pattern
+## Production Failure Modes
 
-**ReAct** stands for **Reason** → **Act** → **Observe**, and it's the fundamental pattern for autonomous agents.
+Production agents face many failure scenarios that don't occur in ideal conditions:
 
-### The Loop Flow
+### Common Failures
 
+1. **API Errors**
+   - Rate limiting (429) - Too many requests
+   - Temporary outages (503) - Service unavailable
+   - Authentication issues (401) - Invalid API key
+   - Timeout errors - Network or processing delays
+
+2. **Tool Execution Errors**
+   - Invalid input parameters
+   - External API failures
+   - Calculation errors (division by zero, etc.)
+   - Resource unavailable (database down, etc.)
+
+3. **Agent Errors**
+   - Infinite loops (iteration limits exceeded)
+   - Context window overflow (too many tokens)
+   - Malformed responses from Claude
+   - Unexpected stop reasons
+
+4. **State Management Issues**
+   - Lost conversation history
+   - Memory inconsistencies
+   - Token limit exceeded
+
+## Step 1: Comprehensive Error Handling (~15 min)
+
+Handle all exception types properly:
+
+```php
+<?php
+# filename: examples/01-error-handling.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use ClaudePhp\ClaudePhp;
+use ClaudePhp\Exceptions\RateLimitError;
+use ClaudePhp\Exceptions\APIConnectionError;
+use ClaudePhp\Exceptions\AuthenticationError;
+use ClaudePhp\Exceptions\APIStatusError;
+
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+
+function callClaudeWithErrorHandling(ClaudePhp $client, array $params): object {
+    try {
+        return $client->messages()->create($params);
+    } catch (RateLimitError $e) {
+        // Handle rate limiting
+        $retryAfter = $e->response->getHeaderLine('retry-after') ?? 60;
+        echo "Rate limited. Waiting {$retryAfter}s...\n";
+        sleep((int)$retryAfter);
+        // Retry once after waiting
+        return $client->messages()->create($params);
+    } catch (APIConnectionError $e) {
+        // Network/timeout issue
+        error_log("Connection failed: " . $e->getMessage());
+        throw new Exception("Network error: " . $e->getMessage());
+    } catch (AuthenticationError $e) {
+        // Invalid API key - don't retry
+        error_log("Authentication failed: " . $e->getMessage());
+        throw new Exception("Invalid API key");
+    } catch (APIStatusError $e) {
+        // Other API errors
+        error_log("API error {$e->status_code}: {$e->message}");
+        
+        // Retry if 5xx (server error), fail if 4xx (client error)
+        if ($e->status_code >= 500) {
+            sleep(2); // Wait before retry
+            return $client->messages()->create($params);
+        }
+        throw $e;
+    } catch (Exception $e) {
+        // Unexpected error
+        error_log("Unexpected error: " . $e->getMessage());
+        throw $e;
+    }
+}
 ```
-Start
-  ↓
-┌─────────────────────────────────┐
-│  REASON                         │
-│  "What do I need to do next?"   │
-│  "What info is missing?"        │
-└───────────┬─────────────────────┘
-            ↓
-┌─────────────────────────────────┐
-│  ACT                            │
-│  "Call tool X with params Y"    │
-│  Or "I have enough to answer"   │
-└───────────┬─────────────────────┘
-            ↓
-┌─────────────────────────────────┐
-│  OBSERVE                        │
-│  "Tool returned Z"              │
-│  "Do I have what I need?"       │
-└───────────┬─────────────────────┘
-            ↓
-        ┌───────┐
-        │ Done? │
-        └───┬───┘
-            │
-      No ───┴─── Yes
-      │           │
-      │           ↓
-      │        [Return Answer]
-      │
-      └──> (Back to REASON)
-```
 
-### Why ReAct Matters
-
-Without ReAct, agents can only:
-- Answer questions with their training data
-- Make ONE tool call per task
-
-With ReAct, agents can:
-- Gather information step-by-step
-- Chain multiple tools together
-- Adapt based on tool results
-- Solve complex multi-step problems
+**Why It Works**: Different error types require different handling strategies. Rate limits need waiting, network errors need retries, authentication errors should fail immediately, and server errors (5xx) can be retried while client errors (4xx) should not.
 
 ## Step 1: Basic ReAct Loop Implementation
 
