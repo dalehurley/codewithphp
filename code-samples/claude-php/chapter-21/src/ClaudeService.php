@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ClaudePhp\LaravelIntegration;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Anthropic\Resources\Messages;
 use Illuminate\Contracts\Cache\Repository as CacheContract;
 use Psr\Log\LoggerInterface;
@@ -54,13 +54,13 @@ class ClaudeService
 
         $responseData = [
             'id' => $response->id,
-            'content' => $response->content[0]->text,
+            'content' => $response->content[0]['text'],
             'model' => $response->model,
             'role' => $response->role,
             'stop_reason' => $response->stopReason,
             'usage' => [
-                'input_tokens' => $response->usage->inputTokens,
-                'output_tokens' => $response->usage->outputTokens,
+                'input_tokens' => $response->usage->input_tokens,
+                'output_tokens' => $response->usage->output_tokens,
             ],
         ];
 

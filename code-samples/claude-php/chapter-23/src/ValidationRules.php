@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Rules;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Cache;
 
@@ -21,9 +21,7 @@ class ClaudeValidation implements Rule
 
     public function passes($attribute, $value): bool
     {
-        $client = Anthropic::factory()
-            ->withApiKey(config('services.anthropic.api_key'))
-            ->make();
+        $client = new ClaudePhp(apiKey: config('services.anthropic.api_key');
 
         $prompt = $this->buildPrompt($attribute, $value);
 
@@ -39,7 +37,7 @@ class ClaudeValidation implements Rule
                 ]],
             ]);
 
-            $result = strtolower(trim($response->content[0]->text));
+            $result = strtolower(trim($response->content[0]['text']));
             return str_contains($result, 'valid') || str_contains($result, 'yes');
         });
     }
@@ -77,9 +75,7 @@ class ContentQuality implements Rule
 
     public function passes($attribute, $value): bool
     {
-        $client = Anthropic::factory()
-            ->withApiKey(config('services.anthropic.api_key'))
-            ->make();
+        $client = new ClaudePhp(apiKey: config('services.anthropic.api_key');
 
         $response = $client->messages()->create([
             'model' => config('services.anthropic.model'),
@@ -96,7 +92,7 @@ class ContentQuality implements Rule
             ]],
         ]);
 
-        $score = (int) trim($response->content[0]->text);
+        $score = (int) trim($response->content[0]['text']);
         return $score >= $this->minQualityScore;
     }
 
@@ -118,9 +114,7 @@ class SpamDetection implements Rule
 
     public function passes($attribute, $value): bool
     {
-        $client = Anthropic::factory()
-            ->withApiKey(config('services.anthropic.api_key'))
-            ->make();
+        $client = new ClaudePhp(apiKey: config('services.anthropic.api_key');
 
         $response = $client->messages()->create([
             'model' => config('services.anthropic.model'),
@@ -138,7 +132,7 @@ class SpamDetection implements Rule
             ]],
         ]);
 
-        $result = explode('|', $response->content[0]->text);
+        $result = explode('|', $response->content[0]['text']);
         $score = (float) trim($result[0]);
 
         return $score < $this->threshold;
@@ -157,9 +151,7 @@ class PositiveSentiment implements Rule
 {
     public function passes($attribute, $value): bool
     {
-        $client = Anthropic::factory()
-            ->withApiKey(config('services.anthropic.api_key'))
-            ->make();
+        $client = new ClaudePhp(apiKey: config('services.anthropic.api_key');
 
         $response = $client->messages()->create([
             'model' => config('services.anthropic.model'),
@@ -170,7 +162,7 @@ class PositiveSentiment implements Rule
             ]],
         ]);
 
-        $sentiment = strtolower(trim($response->content[0]->text));
+        $sentiment = strtolower(trim($response->content[0]['text']));
         return $sentiment !== 'negative';
     }
 

@@ -9,7 +9,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\Temperature\SamplingConfig;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/..');
@@ -20,7 +20,7 @@ $apiKey = getenv('ANTHROPIC_API_KEY');
 echo "=== Adaptive Temperature ===\n\n";
 
 try {
-    $client = Anthropic::factory()->withApiKey($apiKey)->make();
+    $client = new ClaudePhp(apiKey: $apiKey);
 
     $tasks = [
         ['type' => 'code', 'prompt' => 'Write a function to validate email'],
@@ -43,7 +43,7 @@ try {
             'messages' => [['role' => 'user', 'content' => $task['prompt']]]
         ]);
 
-        echo "Response: {$response->content[0]->text}\n\n";
+        echo "Response: {$response->content[0]['text']}\n\n";
     }
 
     echo "✓ Adaptive temperature complete!\n";

@@ -244,7 +244,7 @@ $response = $client->generate($prompt, model: $model);
 
 ### Required Dependencies
 - **PHP**: 8.2+
-- **Anthropic SDK**: anthropic-ai/sdk ^1.0
+- **Anthropic SDK**: claude-php/claude-php-sdk ^1.0
 - **DotEnv**: vlucas/phpdotenv ^5.5
 - **Monolog**: monolog/monolog ^3.0
 

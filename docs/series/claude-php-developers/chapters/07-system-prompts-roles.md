@@ -99,11 +99,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // WITHOUT system prompt - generic response
 $response1 = $client->messages()->create([
@@ -417,19 +415,17 @@ PROMPT;
             ]]
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 }
 
 // Usage
 require __DIR__ . '/../../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use CodeWithPHP\Claude\Assistants\CodeReviewerAssistant;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $reviewer = new CodeReviewerAssistant($client);
 
@@ -534,7 +530,7 @@ PROMPT;
             ]]
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 
     public function documentAPI(array $endpoints): string
@@ -554,7 +550,7 @@ PROMPT;
             ]]
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 
     public function createReadme(string $projectName, string $description, array $features): string
@@ -571,7 +567,7 @@ PROMPT;
             ]]
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 }
 ```
@@ -666,7 +662,7 @@ PROMPT;
             ]]
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 
     public function addKnowledge(string $topic, string $information): void
@@ -747,7 +743,7 @@ class MultiPersonaAssistant
             ]]
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 
     public function getCurrentPersona(): ?string
@@ -811,11 +807,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $systemPrompt = <<<'PROMPT'
 You are a code analysis tool that ALWAYS returns valid JSON in this exact format:
@@ -851,7 +845,7 @@ $response = $client->messages()->create([
     ]]
 ]);
 
-$analysis = json_decode($response->content[0]->text, true);
+$analysis = json_decode($response->content[0]['text'], true);
 print_r($analysis);
 ```
 
@@ -1047,11 +1041,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $defensiveSystemPrompt = <<<'PROMPT'
 # Role
@@ -1093,7 +1085,7 @@ $response = $client->messages()->create([
     ]]
 ]);
 
-echo $response->content[0]->text;
+echo $response->content[0]['text'];
 // Expected: "I'm here to help with PHP programming. How can I assist you with your code?"
 ```
 
@@ -1163,20 +1155,18 @@ PROMPT;
             ]]
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 }
 
 // Usage
 require __DIR__ . '/../../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use CodeWithPHP\Claude\Security\SafeAssistant;
 use CodeWithPHP\Claude\Security\PromptSanitizer;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $assistant = new SafeAssistant($client, new PromptSanitizer());
 
@@ -1203,7 +1193,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 /**
  * System prompts count toward context window
@@ -1221,7 +1211,7 @@ use Anthropic\Anthropic;
 class SystemPromptOptimizer
 {
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     /**
@@ -1275,9 +1265,7 @@ class SystemPromptOptimizer
     }
 }
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $optimizer = new SystemPromptOptimizer($client);
 
@@ -1700,12 +1688,12 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class SystemPromptDebugger
 {
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     /**
@@ -1734,7 +1722,7 @@ PROMPT;
             ]]
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 
     /**
@@ -1757,8 +1745,8 @@ PROMPT;
 
             $results[$name] = [
                 'prompt' => $prompt,
-                'response' => $response->content[0]->text,
-                'length' => mb_strlen($response->content[0]->text),
+                'response' => $response->content[0]['text'],
+                'length' => mb_strlen($response->content[0]['text']),
             ];
         }
 
@@ -1800,9 +1788,7 @@ PROMPT;
 }
 
 // Usage
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $debugger = new SystemPromptDebugger($client);
 
@@ -2054,7 +2040,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Anthropic\Contracts\ClientContract;
 
 class SystemPromptABTest
@@ -2106,9 +2092,7 @@ class SystemPromptABTest
 }
 
 // Usage
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $tester = new SystemPromptABTest($client);
 

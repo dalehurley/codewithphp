@@ -55,7 +55,7 @@ This comprehensive **40-chapter series** teaches expert PHP developers how to bu
 - 15: Structured Outputs with JSON
 
 ### Part 4: PHP Integration Patterns (Chapters 16-20)
-- 16: The Official PHP SDK
+- 16: The Claude PHP SDK
 - 17: Building a Claude Service Class
 - 18: Caching Strategies for API Calls
 - 19: Queue-Based Processing with Laravel
@@ -103,7 +103,7 @@ Sign up at [console.anthropic.com](https://console.anthropic.com) and generate a
 ### 2. Install Dependencies
 
 ```bash
-composer require anthropic-ai/sdk
+composer require claude-php/claude-php-sdk
 ```
 
 ### 3. Make Your First Request
@@ -112,11 +112,9 @@ composer require anthropic-ai/sdk
 <?php
 require 'vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
@@ -126,7 +124,7 @@ $response = $client->messages()->create([
     ]
 ]);
 
-echo $response->content[0]->text;
+echo $response->content[0]['text'];
 ```
 
 ## 📚 Learning Paths
@@ -267,7 +265,7 @@ By the end of this series, you will:
 - [Anthropic Blog](https://www.anthropic.com/news)
 
 ### PHP Resources
-- [Anthropic PHP SDK](https://github.com/anthropics/anthropic-sdk-php)
+- [Claude PHP SDK](https://github.com/anthropics/claude-php/Claude-PHP-SDK)
 - [Laravel Documentation](https://laravel.com/docs)
 - [Symfony Documentation](https://symfony.com/doc)
 

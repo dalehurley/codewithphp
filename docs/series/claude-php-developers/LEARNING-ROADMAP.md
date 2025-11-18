@@ -88,7 +88,7 @@ Select the path that matches your goals and timeline:
 - [ ] **15**: Structured Outputs
 
 **Part 4: PHP Integration (8 hours)**
-- [ ] **16**: Official PHP SDK
+- [ ] **16**: Claude PHP SDK
 - [ ] **17**: Claude Service Class
 - [ ] **18**: Caching Strategies
 - [ ] **19**: Queue Processing
@@ -263,7 +263,7 @@ Select the path that matches your goals and timeline:
 
 ### Level 3: Advanced (Chapters 16-30)
 **Skills Acquired**:
-- ✅ Master the official SDK
+- ✅ Master the community Claude PHP SDK
 - ✅ Build service layer architecture
 - ✅ Implement caching strategies
 - ✅ Use queues for async processing

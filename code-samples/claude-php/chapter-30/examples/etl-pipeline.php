@@ -8,7 +8,7 @@ use App\ETLPipeline;
 use App\DocumentParser;
 use App\DataValidator;
 use App\AnalyticsEngine;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
@@ -24,10 +24,7 @@ $logger->pushHandler(new StreamHandler('php://stdout', Logger::INFO));
 
 // Initialize Claude client
 $apiKey = $_ENV['ANTHROPIC_API_KEY'] ?? throw new RuntimeException('ANTHROPIC_API_KEY not set');
-$client = Anthropic::factory()
-    ->withApiKey($apiKey)
-    ->withHttpHeader('anthropic-beta', 'max-tokens-3-5-sonnet-2024-07-15')
-    ->make();
+$client = new ClaudePhp(apiKey: $apiKey);
 
 // Initialize services
 $parser = new DocumentParser($logger);

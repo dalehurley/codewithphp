@@ -133,7 +133,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Services\ClaudeService;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class ClaudeServiceProvider extends ServiceProvider
 {
@@ -141,9 +141,7 @@ class ClaudeServiceProvider extends ServiceProvider
     {
         // Register bindings in the container
         $this->app->singleton(Anthropic::class, function ($app) {
-            return Anthropic::factory()
-                ->withApiKey(config('claude.api_key'))
-                ->make();
+            return new ClaudePhp(apiKey: config('claude.api_key'));
         });
 
         $this->app->singleton(ClaudeService::class, function ($app) {
@@ -293,7 +291,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Contracts\ClaudeInterface;
 use App\Services\ClaudeService;
 use Illuminate\Contracts\Foundation\Application;
@@ -322,10 +320,7 @@ class ClaudeServiceProvider extends ServiceProvider
                 );
             }
 
-            return Anthropic::factory()
-                ->withApiKey($apiKey)
-                ->withTimeout(config('claude.timeout', 60))
-                ->make();
+            return new ClaudePhp(apiKey: $apiKey));
         });
 
         // Register the Claude service
@@ -506,7 +501,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Contracts\ClaudeInterface;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -517,7 +512,7 @@ class ClaudeService implements ClaudeInterface
     private array $defaultOptions;
 
     public function __construct(
-        private readonly Anthropic $client,
+        private readonly ClaudePhp $client,
         private readonly array $config
     ) {
         $this->currentModel = $config['default_model'];
@@ -562,7 +557,7 @@ class ClaudeService implements ClaudeInterface
         // Make the API call
         try {
             $response = $this->client->messages()->create($requestOptions);
-            $text = $response->content[0]->text;
+            $text = $response->content[0]['text'];
 
             // Cache the response if enabled
             if ($this->isCacheEnabled()) {
@@ -573,8 +568,8 @@ class ClaudeService implements ClaudeInterface
             // Log usage for monitoring
             Log::info('Claude API call completed', [
                 'model' => $this->currentModel,
-                'input_tokens' => $response->usage->inputTokens,
-                'output_tokens' => $response->usage->outputTokens,
+                'input_tokens' => $response->usage->input_tokens,
+                'output_tokens' => $response->usage->output_tokens,
             ]);
 
             return $text;
@@ -610,7 +605,7 @@ class ClaudeService implements ClaudeInterface
         }
 
         $response = $this->client->messages()->create($requestOptions);
-        $reply = $response->content[0]->text;
+        $reply = $response->content[0]['text'];
 
         // Return updated history
         return [
@@ -619,8 +614,8 @@ class ClaudeService implements ClaudeInterface
             ]),
             'response' => $reply,
             'usage' => [
-                'input_tokens' => $response->usage->inputTokens,
-                'output_tokens' => $response->usage->outputTokens,
+                'input_tokens' => $response->usage->input_tokens,
+                'output_tokens' => $response->usage->output_tokens,
             ],
         ];
     }
@@ -915,7 +910,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Services;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Anthropic\Responses\Messages\CreateResponse;
 use App\Services\ClaudeService;
 use Mockery;
@@ -1034,7 +1029,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Facades\Claude;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Mockery;
 use Tests\TestCase;
 
@@ -1308,12 +1303,12 @@ Create a rate limit exception:
 
 ```php
 <?php
-# filename: app/Exceptions/Claude/RateLimitException.php
+# filename: app/Exceptions/Claude/RateLimitError.php
 declare(strict_types=1);
 
 namespace App\Exceptions\Claude;
 
-class RateLimitException extends ClaudeException
+class RateLimitError extends ClaudeException
 {
     public function __construct(
         string $message = 'Claude API rate limit exceeded',
@@ -1340,7 +1335,7 @@ Update the `ClaudeService` to throw these exceptions:
 
         try {
             $response = $this->client->messages()->create($requestOptions);
-            $text = $response->content[0]->text;
+            $text = $response->content[0]['text'];
             // ... rest of code
         } catch (\Exception $e) {
             Log::error('Claude API call failed', [
@@ -1350,7 +1345,7 @@ Update the `ClaudeService` to throw these exceptions:
 
             // Convert Anthropic exceptions to custom exceptions
             if (str_contains($e->getMessage(), 'rate_limit')) {
-                throw new \App\Exceptions\Claude\RateLimitException(
+                throw new \App\Exceptions\Claude\RateLimitError(
                     $e->getMessage(),
                     retryAfterSeconds: 60
                 );
@@ -1683,7 +1678,7 @@ packages/
     "require": {
         "php": "^8.2",
         "illuminate/support": "^11.0",
-        "anthropic-ai/sdk": "^0.6"
+        "claude-php/claude-php-sdk": "^0.6"
     },
     "require-dev": {
         "orchestra/testbench": "^9.0",
@@ -1990,7 +1985,7 @@ Route::get('/test/claude', [\App\Http\Controllers\ClaudeTestController::class, '
 - Verify key has proper API permissions in Anthropic console
 
 **Rate limiting errors?**
-- Catch `RateLimitException` specifically: `catch (RateLimitException $e)`
+- Catch `RateLimitError` specifically: `catch (RateLimitError $e)`
 - Implement exponential backoff: `sleep($e->getRetryAfter() ?? 60)`
 - Check usage in Anthropic console dashboard
 - Consider implementing queue-based processing (Chapter 19)

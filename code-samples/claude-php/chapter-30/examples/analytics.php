@@ -5,7 +5,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\AnalyticsEngine;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
@@ -21,9 +21,7 @@ $logger->pushHandler(new StreamHandler('php://stdout', Logger::INFO));
 
 // Initialize Claude client
 $apiKey = $_ENV['ANTHROPIC_API_KEY'] ?? throw new RuntimeException('ANTHROPIC_API_KEY not set');
-$client = Anthropic::factory()
-    ->withApiKey($apiKey)
-    ->make();
+$client = new ClaudePhp(apiKey: $apiKey);
 
 $analytics = new AnalyticsEngine($client, $logger);
 

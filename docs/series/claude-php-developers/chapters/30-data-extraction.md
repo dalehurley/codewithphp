@@ -77,13 +77,11 @@ Here's a quick example to get you started:
 # filename: quick-start.php
 require __DIR__ . '/vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\DataExtraction\ExtractionPipeline;
 // ... other imports
 
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $pipeline = new ExtractionPipeline(/* ... */);
 
@@ -106,12 +104,12 @@ declare(strict_types=1);
 
 namespace App\DataExtraction;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class ExtractionPipeline
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private DocumentParser $parser,
         private DataValidator $validator,
         private DataTransformer $transformer,
@@ -177,7 +175,7 @@ class ExtractionPipeline
             ]]
         ]);
 
-        return $this->parseExtractedData($response->content[0]->text, $schema);
+        return $this->parseExtractedData($response->content[0]['text'], $schema);
     }
 
     private function buildExtractionPrompt(ParsedDocument $document, array $schema): string
@@ -461,13 +459,13 @@ declare(strict_types=1);
 
 namespace App\DataExtraction\Extractors;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\DataExtraction\ParsedDocument;
 
 class InvoiceExtractor
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -537,7 +535,7 @@ PROMPT;
             ]]
         ]);
 
-        $jsonText = $response->content[0]->text;
+        $jsonText = $response->content[0]['text'];
         if (preg_match('/\{.*\}/s', $jsonText, $matches)) {
             return json_decode($matches[0], true) ?? [];
         }
@@ -616,13 +614,13 @@ declare(strict_types=1);
 
 namespace App\DataExtraction\Extractors;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\DataExtraction\ParsedDocument;
 
 class ResumeExtractor
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -717,7 +715,7 @@ PROMPT;
             ]]
         ]);
 
-        $jsonText = $response->content[0]->text;
+        $jsonText = $response->content[0]['text'];
         if (preg_match('/\{.*\}/s', $jsonText, $matches)) {
             return json_decode($matches[0], true) ?? [];
         }
@@ -762,7 +760,7 @@ PROMPT;
             ]]
         ]);
 
-        $jsonText = $response->content[0]->text;
+        $jsonText = $response->content[0]['text'];
         if (preg_match('/\{.*\}/s', $jsonText, $matches)) {
             return json_decode($matches[0], true) ?? [];
         }
@@ -955,12 +953,12 @@ declare(strict_types=1);
 
 namespace App\DataExtraction;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class QualityAnalyzer
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -1060,7 +1058,7 @@ PROMPT;
             ]]
         ]);
 
-        $jsonText = $response->content[0]->text;
+        $jsonText = $response->content[0]['text'];
         if (preg_match('/\[.*\]/s', $jsonText, $matches)) {
             return json_decode($matches[0], true) ?? [];
         }
@@ -1188,12 +1186,12 @@ declare(strict_types=1);
 
 namespace App\DataExtraction;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class AnalyticsGenerator
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -1269,7 +1267,7 @@ PROMPT;
             ]]
         ]);
 
-        $jsonText = $response->content[0]->text;
+        $jsonText = $response->content[0]['text'];
         if (preg_match('/\{.*\}/s', $jsonText, $matches)) {
             return json_decode($matches[0], true) ?? [];
         }
@@ -1303,7 +1301,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\DataExtraction\ExtractionPipeline;
 use App\DataExtraction\DocumentParser;
 use App\DataExtraction\DataValidator;
@@ -1354,9 +1352,7 @@ if (!isset($options['type']) || !isset($options['schema'])) {
 }
 
 // Initialize
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $parser = new DocumentParser();
 $validator = new DataValidator();
@@ -1621,7 +1617,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\DataExtraction\ExtractionPipeline;
 use App\DataExtraction\DocumentParser;
 use App\DataExtraction\DataValidator;
@@ -1630,9 +1626,7 @@ use App\DataExtraction\QualityAnalyzer;
 use App\DataExtraction\StorageManager;
 
 // Initialize Claude client
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Initialize components
 $parser = new DocumentParser();

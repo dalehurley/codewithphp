@@ -77,12 +77,12 @@ declare(strict_types=1);
 
 namespace App\RAG;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class RAGPipeline
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private DocumentProcessor $processor,
         private ChunkingStrategy $chunker,
         private EmbeddingService $embeddings,
@@ -203,13 +203,13 @@ class RAGPipeline
             );
 
             return new RAGResponse(
-                answer: $response->content[0]->text,
+                answer: $response->content[0]['text'],
                 sources: $optimizedContext->sources,
                 confidence: $optimizedContext->averageScore,
                 metadata: [
                     'chunks_retrieved' => count($retrievedChunks),
                     'chunks_used' => count($optimizedContext->chunks),
-                    'tokens_used' => $response->usage->inputTokens + $response->usage->outputTokens
+                    'tokens_used' => $response->usage->input_tokens + $response->usage->output_tokens
                 ]
             );
         } catch (\Exception $e) {
@@ -767,13 +767,13 @@ declare(strict_types=1);
 
 namespace App\RAG;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class RetrievalEngine
 {
     public function __construct(
         private VectorStore $vectorStore,
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private bool $enableReranking = true
     ) {}
 
@@ -837,7 +837,7 @@ PROMPT;
             ]]
         ]);
 
-        $jsonText = $response->content[0]->text;
+        $jsonText = $response->content[0]['text'];
         if (preg_match('/\[[\d,\s]+\]/', $jsonText, $matches)) {
             $indices = json_decode($matches[0], true);
 
@@ -1016,7 +1016,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\RAG\RAGPipeline;
 use App\RAG\DocumentProcessor;
 use App\RAG\Chunking\SemanticChunker;
@@ -1026,9 +1026,7 @@ use App\RAG\RetrievalEngine;
 use App\RAG\ContextOptimizer;
 
 // Initialize services
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $embeddings = new EmbeddingService(
     apiKey: getenv('OPENAI_API_KEY'),
@@ -1617,7 +1615,7 @@ declare(strict_types=1);
 namespace App\RAG\Evaluation;
 
 use App\RAG\EmbeddingService;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class RAGEvaluator
 {
@@ -1736,7 +1734,7 @@ class RAGEvaluator
     public function detectHallucinations(
         string $answer,
         array $retrievedChunks,
-        Anthropic $claude
+        ClaudePhp $claude
     ): HallucinationReport {
         $chunkContents = array_map(fn($c) => $c->content, $retrievedChunks);
         $context = implode("\n\n", $chunkContents);
@@ -1780,7 +1778,7 @@ PROMPT;
             ]]
         ]);
 
-        $jsonText = $response->content[0]->text;
+        $jsonText = $response->content[0]['text'];
         $jsonText = preg_replace('/```json\s*/', '', $jsonText);
         $jsonText = preg_replace('/```\s*/', '', $jsonText);
         $data = json_decode(trim($jsonText), true);
@@ -1848,12 +1846,12 @@ declare(strict_types=1);
 
 namespace App\RAG;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class CitationVerifier
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -1909,7 +1907,7 @@ PROMPT;
             ]]
         ]);
 
-        $jsonText = $response->content[0]->text;
+        $jsonText = $response->content[0]['text'];
         $jsonText = preg_replace('/```json\s*/', '', $jsonText);
         $jsonText = preg_replace('/```\s*/', '', $jsonText);
         $data = json_decode(trim($jsonText), true);
@@ -1948,11 +1946,9 @@ require __DIR__ . '/../vendor/autoload.php';
 use App\RAG\RAGPipeline;
 use App\RAG\Evaluation\RAGEvaluator;
 use App\RAG\CitationVerifier;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $pipeline = new RAGPipeline(/* ... */);
 $evaluator = new RAGEvaluator();

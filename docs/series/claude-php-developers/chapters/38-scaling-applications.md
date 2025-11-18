@@ -124,7 +124,7 @@ declare(strict_types=1);
 
 namespace App\Scaling;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class StatelessClaudeService
 {
@@ -133,7 +133,7 @@ class StatelessClaudeService
      * Can run on any server in the cluster
      */
     public function __construct(
-        private readonly Anthropic $client,
+        private readonly ClaudePhp $client,
         private readonly \Redis $redis,
         private readonly string $sessionStore = 'redis'
     ) {}
@@ -164,7 +164,7 @@ class StatelessClaudeService
         ]);
 
         // Extract response
-        $assistantMessage = $response->content[0]->text;
+        $assistantMessage = $response->content[0]['text'];
 
         // Save updated history to shared storage
         $messages[] = [
@@ -315,7 +315,7 @@ declare(strict_types=1);
 
 namespace App\Queue;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class ClaudeQueueJob
 {
@@ -329,7 +329,7 @@ class ClaudeQueueJob
         public array $metadata = []
     ) {}
 
-    public function handle(Anthropic $client, \Redis $redis): void
+    public function handle(ClaudePhp $client, \Redis $redis): void
     {
         $startTime = microtime(true);
 
@@ -349,11 +349,11 @@ class ClaudeQueueJob
             // Store result
             $result = [
                 'status' => 'completed',
-                'response' => $response->content[0]->text,
+                'response' => $response->content[0]['text'],
                 'message_id' => $response->id,
                 'tokens' => [
-                    'input' => $response->usage->inputTokens,
-                    'output' => $response->usage->outputTokens,
+                    'input' => $response->usage->input_tokens,
+                    'output' => $response->usage->output_tokens,
                 ],
                 'duration' => $duration,
                 'completed_at' => time(),
@@ -873,12 +873,12 @@ declare(strict_types=1);
 
 namespace App\Resilience;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class ResilientClaudeClient
 {
     public function __construct(
-        private readonly Anthropic $client,
+        private readonly ClaudePhp $client,
         private readonly CircuitBreaker $circuitBreaker,
         private readonly RetryManager $retryManager
     ) {}
@@ -1432,10 +1432,10 @@ class DistributedClaudeCache
         $key = $this->getKey($prompt, $model);
 
         $data = [
-            'response' => $response->content[0]->text,
+            'response' => $response->content[0]['text'],
             'tokens' => [
-                'input' => $response->usage->inputTokens,
-                'output' => $response->usage->outputTokens,
+                'input' => $response->usage->input_tokens,
+                'output' => $response->usage->output_tokens,
             ],
             'cached_at' => time(),
             'model' => $model,
@@ -1536,7 +1536,7 @@ $response = $client->messages()->create([
 // Cache response
 $cache->put($prompt, 'claude-sonnet-4-20250514', $response, ttl: 86400);
 
-return $response->content[0]->text;
+return $response->content[0]['text'];
 ```
 
 ### Cache Invalidation Strategy
@@ -1843,13 +1843,13 @@ declare(strict_types=1);
 
 namespace App\RateLimiting;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Redis;
 
 class HeaderAwareRateLimiter
 {
     public function __construct(
-        private readonly Anthropic $client,
+        private readonly ClaudePhp $client,
         private readonly Redis $redis,
         private readonly int $defaultMaxConcurrent = 10
     ) {}
@@ -1992,7 +1992,7 @@ declare(strict_types=1);
 
 namespace App\Performance;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class ClaudeConnectionPool
 {
@@ -2012,7 +2012,7 @@ class ClaudeConnectionPool
     /**
      * Get client from pool
      */
-    public function getClient(): Anthropic
+    public function getClient(): ClaudePhp
     {
         if (empty($this->pool)) {
             // Pool exhausted - create new client
@@ -2025,7 +2025,7 @@ class ClaudeConnectionPool
     /**
      * Return client to pool
      */
-    public function returnClient(Anthropic $client): void
+    public function returnClient(ClaudePhp $client): void
     {
         if (count($this->pool) < $this->poolSize) {
             $this->pool[] = $client;
@@ -2046,16 +2046,9 @@ class ClaudeConnectionPool
         }
     }
 
-    private function createClient(): Anthropic
+    private function createClient(): ClaudePhp
     {
-        return Anthropic::factory()
-            ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-            ->withHttpClient(new \GuzzleHttp\Client([
-                'timeout' => 60,
-                'connect_timeout' => 10,
-                'http_errors' => false,
-            ]))
-            ->make();
+        return new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
     }
 }
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 /**
  * PII (Personally Identifiable Information) Redaction Service
@@ -15,9 +15,7 @@ class PiiRedactionService
 
     public function __construct(string $apiKey)
     {
-        $this->client = Anthropic::factory()
-            ->withApiKey($apiKey)
-            ->make();
+        $this->client = new ClaudePhp(apiKey: $apiKey);
     }
 
     /**
@@ -66,7 +64,7 @@ PROMPT,
             ]],
         ]);
 
-        return $this->parsePiiDetection($response->content[0]->text);
+        return $this->parsePiiDetection($response->content[0]['text']);
     }
 
     /**
@@ -119,7 +117,7 @@ PROMPT,
             ]],
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 
     /**

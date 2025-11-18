@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/..');
@@ -21,7 +21,7 @@ $apiKey = getenv('ANTHROPIC_API_KEY');
 echo "=== Response Parsing Examples ===\n\n";
 
 try {
-    $client = Anthropic::factory()->withApiKey($apiKey)->make();
+    $client = new ClaudePhp(apiKey: $apiKey);
 
     // Example 1: Extract JSON
     echo "1. Extracting JSON Data\n";
@@ -33,7 +33,7 @@ try {
         ]
     ]);
 
-    $text = $response->content[0]->text;
+    $text = $response->content[0]['text'];
     echo "Raw: {$text}\n";
 
     // Extract JSON from response
@@ -53,7 +53,7 @@ try {
         ]
     ]);
 
-    $text = $response->content[0]->text;
+    $text = $response->content[0]['text'];
     preg_match('/```php\n(.*?)\n```/s', $text, $matches);
     if (isset($matches[1])) {
         echo "Extracted code:\n{$matches[1]}\n";

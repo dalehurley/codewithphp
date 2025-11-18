@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 /**
  * Support Ticket Classifier
@@ -15,9 +15,7 @@ class TicketClassifier
 
     public function __construct(string $apiKey)
     {
-        $this->client = Anthropic::factory()
-            ->withApiKey($apiKey)
-            ->make();
+        $this->client = new ClaudePhp(apiKey: $apiKey);
     }
 
     /**
@@ -47,7 +45,7 @@ PROMPT,
             ]],
         ]);
 
-        return $this->parseClassification($response->content[0]->text);
+        return $this->parseClassification($response->content[0]['text']);
     }
 
     /**
@@ -64,7 +62,7 @@ PROMPT,
             ]],
         ]);
 
-        return strtolower(trim($response->content[0]->text));
+        return strtolower(trim($response->content[0]['text']));
     }
 
     /**
@@ -94,7 +92,7 @@ PROMPT,
             ]],
         ]);
 
-        return json_decode($response->content[0]->text, true) ?? [];
+        return json_decode($response->content[0]['text'], true) ?? [];
     }
 
     /**
@@ -121,7 +119,7 @@ PROMPT,
             ]],
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 
     private function parseClassification(string $text): array

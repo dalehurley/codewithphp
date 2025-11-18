@@ -9,7 +9,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\TokenManagement\BudgetManager;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/..');
@@ -20,7 +20,7 @@ $apiKey = getenv('ANTHROPIC_API_KEY');
 echo "=== Budget Manager ===\n\n";
 
 try {
-    $client = Anthropic::factory()->withApiKey($apiKey)->make();
+    $client = new ClaudePhp(apiKey: $apiKey);
 
     // Set a budget: 5000 tokens
     $budget = new BudgetManager(5000);
@@ -49,7 +49,7 @@ try {
             'messages' => [['role' => 'user', 'content' => $prompt]]
         ]);
 
-        $totalTokens = $response->usage->inputTokens + $response->usage->outputTokens;
+        $totalTokens = $response->usage->input_tokens + $response->usage->output_tokens;
         $budget->addUsage($totalTokens);
 
         echo "Tokens used: {$totalTokens}\n";

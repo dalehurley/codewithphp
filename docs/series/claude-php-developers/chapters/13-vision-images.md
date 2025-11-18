@@ -97,11 +97,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Load and encode image
 $imagePath = __DIR__ . '/images/product-photo.jpg';
@@ -139,7 +137,7 @@ $response = $client->messages()->create([
 ]);
 
 echo "Image Analysis:\n";
-echo $response->content[0]->text . "\n";
+echo $response->content[0]['text'] . "\n";
 ```
 
 ### Expected Result
@@ -344,17 +342,15 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Vision\ImageHelper;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 class ReceiptProcessor
 {
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     public function processReceipt(string $imagePath): array
@@ -389,7 +385,7 @@ PROMPT
             ]
         ]);
 
-        $jsonText = $response->content[0]->text;
+        $jsonText = $response->content[0]['text'];
 
         // Extract JSON from response
         if (preg_match('/```json\s*(\{.*?\})\s*```/s', $jsonText, $matches)) {
@@ -462,17 +458,15 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Vision\ImageHelper;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 class ChartAnalyzer
 {
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     public function analyzeChart(string $imagePath): array
@@ -507,7 +501,7 @@ PROMPT
             ]
         ]);
 
-        $analysisText = $response->content[0]->text;
+        $analysisText = $response->content[0]['text'];
 
         // Try to extract JSON, fallback to text
         if (preg_match('/```json\s*(\{.*?\})\s*```/s', $analysisText, $matches)) {
@@ -545,7 +539,7 @@ PROMPT
             ]
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 }
 
@@ -619,17 +613,15 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Vision\ImageHelper;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 class ImageModerator
 {
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     public function moderateImage(string $imagePath): array
@@ -670,7 +662,7 @@ PROMPT
             ]
         ]);
 
-        $resultText = $response->content[0]->text;
+        $resultText = $response->content[0]['text'];
 
         if (preg_match('/```json\s*(\{.*?\})\s*```/s', $resultText, $matches)) {
             $resultText = $matches[1];
@@ -748,13 +740,13 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Vision\ImageHelper;
 
 class ProductImageAnalyzer
 {
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     public function analyzeProductImage(string $imagePath): array
@@ -792,7 +784,7 @@ PROMPT
             ]
         ]);
 
-        $text = $response->content[0]->text;
+        $text = $response->content[0]['text'];
 
         if (preg_match('/```json\s*(\{.*?\})\s*```/s', $text, $matches)) {
             return json_decode($matches[1], true) ?? [];
@@ -822,7 +814,7 @@ PROMPT
             ]
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 
     public function generateProductTitle(string $imagePath): string
@@ -846,13 +838,11 @@ PROMPT
             ]
         ]);
 
-        return trim($response->content[0]->text);
+        return trim($response->content[0]['text']);
     }
 }
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $analyzer = new ProductImageAnalyzer($client);
 
@@ -918,13 +908,13 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Vision\ImageHelper;
 
 class UIAnalyzer
 {
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     public function analyzeUI(string $screenshotPath): array
@@ -960,7 +950,7 @@ PROMPT
             ]
         ]);
 
-        $text = $response->content[0]->text;
+        $text = $response->content[0]['text'];
 
         if (preg_match('/```json\s*(\{.*?\})\s*```/s', $text, $matches)) {
             return json_decode($matches[1], true) ?? [];
@@ -991,15 +981,13 @@ PROMPT
         ]);
 
         return [
-            'extracted_text' => $response->content[0]->text,
+            'extracted_text' => $response->content[0]['text'],
             'source' => basename($screenshotPath)
         ];
     }
 }
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $analyzer = new UIAnalyzer($client);
 
@@ -1066,13 +1054,13 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Vision\ImageHelper;
 
 class MultiImageProcessor
 {
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     public function createProductListing(array $productImages): array
@@ -1110,7 +1098,7 @@ PROMPT
             ]
         ]);
 
-        $text = $response->content[0]->text;
+        $text = $response->content[0]['text'];
 
         if (preg_match('/```json\s*(\{.*?\})\s*```/s', $text, $matches)) {
             return json_decode($matches[1], true) ?? [];
@@ -1142,7 +1130,7 @@ PROMPT
         ]);
 
         return [
-            'analysis' => $response->content[0]->text,
+            'analysis' => $response->content[0]['text'],
             'images_analyzed' => count($imagePaths)
         ];
     }

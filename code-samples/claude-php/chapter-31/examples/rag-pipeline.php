@@ -8,7 +8,7 @@ use App\RAGPipeline;
 use App\ChunkingService;
 use App\EmbeddingService;
 use App\RetrievalEngine;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
@@ -24,7 +24,7 @@ echo "=== RAG Pipeline Examples ===\n\n";
 
 // Initialize components
 $apiKey = $_ENV['ANTHROPIC_API_KEY'] ?? throw new RuntimeException('ANTHROPIC_API_KEY not set');
-$client = Anthropic::factory()->withApiKey($apiKey)->make();
+$client = new ClaudePhp(apiKey: $apiKey);
 
 $chunker = new ChunkingService(chunkSize: 500, overlap: 100);
 $embedder = new EmbeddingService(provider: 'mock');  // Use 'openai' in production

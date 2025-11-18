@@ -1420,7 +1420,7 @@ try {
         ]]
     ]);
 
-    echo $response->content[0]->text . "\n\n";
+    echo $response->content[0]['text'] . "\n\n";
 
 } catch (\RuntimeException $e) {
     echo "Request failed: " . $e->getMessage() . "\n";
@@ -1552,7 +1552,7 @@ try {
         }
     );
 
-    echo $response->content[0]->text;
+    echo $response->content[0]['text'];
 
 } catch (\Throwable $e) {
     echo "All fallbacks exhausted: " . $e->getMessage();

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace ClaudePhp\Auth;
 
-use Anthropic\Anthropic;
-use Anthropic\Exceptions\ErrorException;
+use ClaudePhp\ClaudePhp;
+use ClaudePhp\Exceptions\APIError;
 
 /**
  * ApiKeyManager - Secure API key management and validation
@@ -35,7 +35,7 @@ class ApiKeyManager
     public function testKey(string $key): bool
     {
         try {
-            $client = Anthropic::factory()->withApiKey($key)->make();
+            $client = new ClaudePhp(apiKey: $key);
             $client->messages()->create([
                 'model' => 'claude-haiku-4-20250514',
                 'max_tokens' => 10,

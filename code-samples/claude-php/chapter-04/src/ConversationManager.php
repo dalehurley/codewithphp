@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ClaudePhp\Conversations;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 /**
  * ConversationManager - Manage multi-turn conversations with Claude
@@ -21,7 +21,7 @@ class ConversationManager
         string $model = 'claude-sonnet-4-20250514',
         int $maxTokens = 4096
     ) {
-        $this->client = Anthropic::factory()->withApiKey($apiKey)->make();
+        $this->client = new ClaudePhp(apiKey: $apiKey);
         $this->model = $model;
         $this->maxTokens = $maxTokens;
     }
@@ -58,7 +58,7 @@ class ConversationManager
         ]);
 
         // Add assistant response to conversation history
-        $this->addAssistantMessage($response->content[0]->text);
+        $this->addAssistantMessage($response->content[0]['text']);
 
         return $response;
     }

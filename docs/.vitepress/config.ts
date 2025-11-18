@@ -944,6 +944,26 @@ export default withMermaid(
             ]
           },
           {
+            text: 'Part 9: Agentic AI',
+            items: [
+              { text: '40 — Introduction to Agentic AI', link: '/series/claude-php-developers/chapters/40-introduction-to-agentic-ai' },
+              { text: '41 — Your First Agent', link: '/series/claude-php-developers/chapters/41-your-first-agent' },
+              { text: '42 — ReAct Loop Basics', link: '/series/claude-php-developers/chapters/42-react-loop-basics' },
+              { text: '43 — Multi-Tool Agent', link: '/series/claude-php-developers/chapters/43-multi-tool-agent' },
+              { text: '44 — Production-Ready Agent', link: '/series/claude-php-developers/chapters/44-production-ready-agent' },
+              { text: '45 — Advanced ReAct Patterns', link: '/series/claude-php-developers/chapters/45-advanced-react-patterns' },
+              { text: '46 — Complete Agentic Framework', link: '/series/claude-php-developers/chapters/46-complete-agentic-framework' },
+              { text: '47 — Chain of Thought (CoT)', link: '/series/claude-php-developers/chapters/47-chain-of-thought' },
+              { text: '48 — Tree of Thoughts (ToT)', link: '/series/claude-php-developers/chapters/48-tree-of-thoughts' },
+              { text: '49 — Plan-and-Execute', link: '/series/claude-php-developers/chapters/49-plan-and-execute' },
+              { text: '50 — Reflection & Self-Critique', link: '/series/claude-php-developers/chapters/50-reflection-self-critique' },
+              { text: '51 — Hierarchical Agents', link: '/series/claude-php-developers/chapters/51-hierarchical-agents' },
+              { text: '52 — Multi-Agent Debate', link: '/series/claude-php-developers/chapters/52-multi-agent-debate' },
+              { text: '53 — RAG Pattern', link: '/series/claude-php-developers/chapters/53-rag-pattern' },
+              { text: '54 — Autonomous Agents', link: '/series/claude-php-developers/chapters/54-autonomous-agents' }
+            ]
+          },
+          {
             text: 'Appendices',
             items: [
               { text: 'Appendix A — API Reference Quick Guide', link: '/series/claude-php-developers/appendices/a-api-reference' },

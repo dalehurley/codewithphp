@@ -187,11 +187,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $prompt = 'Complete this sentence: The future of PHP is';
 
@@ -213,7 +211,7 @@ foreach ($temperatures as $temp) {
             ]]
         ]);
 
-        echo "  {$i}. {$response->content[0]->text}\n";
+        echo "  {$i}. {$response->content[0]['text']}\n";
     }
     echo "\n";
 }
@@ -429,12 +427,10 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Anthropic\Contracts\ClientContract;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 function testTopP(ClientContract $client, float $topP): array
 {
@@ -452,7 +448,7 @@ function testTopP(ClientContract $client, float $topP): array
             ]]
         ]);
 
-        $responses[] = $response->content[0]->text;
+        $responses[] = $response->content[0]['text'];
     }
 
     return $responses;
@@ -557,14 +553,12 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 // Note: Claude API doesn't expose top_k as directly as some models
 // But understanding it helps grasp sampling mechanics
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Conceptual usage (if supported):
 $response = $client->messages()->create([
@@ -593,11 +587,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 class SamplingStrategy
 {
@@ -692,7 +684,7 @@ $response = $client->messages()->create([
 
 echo "Using strategy: {$strategy->description}\n";
 echo "Temperature: {$strategy->temperature}, Top-p: {$strategy->topP}\n\n";
-echo $response->content[0]->text;
+echo $response->content[0]['text'];
 ```
 
 ### Configuration Manager
@@ -779,11 +771,9 @@ class SamplingConfigManager
 // Usage
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $manager = new SamplingConfigManager();
 
@@ -843,7 +833,7 @@ class DataExtractor
             ]]
         ]);
 
-        $json = $response->content[0]->text;
+        $json = $response->content[0]['text'];
 
         // Clean potential markdown wrapping
         if (preg_match('/```json\s*(.*?)\s*```/s', $json, $matches)) {
@@ -857,11 +847,9 @@ class DataExtractor
 // Usage
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $extractor = new DataExtractor($client);
 
@@ -926,7 +914,7 @@ class CreativeWriter
                 ]]
             ]);
 
-            $variations[] = $response->content[0]->text;
+            $variations[] = $response->content[0]['text'];
         }
 
         return $variations;
@@ -949,7 +937,7 @@ class CreativeWriter
                 ]]
             ]);
 
-            $result = $response->content[0]->text;
+            $result = $response->content[0]['text'];
 
             // Check similarity against previous
             $isSimilar = false;
@@ -975,11 +963,9 @@ class CreativeWriter
 // Usage
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $writer = new CreativeWriter($client);
 
@@ -1038,7 +1024,7 @@ class CodeGenerator
             ]]
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 
     public function refactorCode(string $code, array $improvements = []): string
@@ -1057,18 +1043,16 @@ class CodeGenerator
             ]]
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 }
 
 // Usage
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $generator = new CodeGenerator($client);
 
@@ -1116,7 +1100,7 @@ class AdaptiveAssistant
             ]]
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 
     private function determineTemperature(string $message): float
@@ -1179,11 +1163,9 @@ class AdaptiveAssistant
 // Usage
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $assistant = new AdaptiveAssistant($client);
 
@@ -1210,11 +1192,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Stop sequences can help control output length with high temperature
 // High temperature might generate longer outputs, but stop sequences provide a safety net
@@ -1252,7 +1232,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Anthropic\Contracts\ClientContract;
 
 class SamplingABTester
@@ -1288,8 +1268,8 @@ class SamplingABTester
                 ]);
 
                 $totalTime += microtime(true) - $start;
-                $totalTokens += $response->usage->outputTokens ?? 0;
-                $responses[] = $response->content[0]->text;
+                $totalTokens += $response->usage->output_tokens ?? 0;
+                $responses[] = $response->content[0]['text'];
             }
 
             $results[$name] = [
@@ -1450,7 +1430,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Anthropic\Contracts\ClientContract;
 
 class SamplingCostAnalyzer
@@ -1481,8 +1461,8 @@ class SamplingCostAnalyzer
                     ]]
                 ]);
 
-                $tokens[] = $response->usage->outputTokens ?? 0;
-                $lengths[] = strlen($response->content[0]->text);
+                $tokens[] = $response->usage->output_tokens ?? 0;
+                $lengths[] = strlen($response->content[0]['text']);
             }
 
             $results[] = [
@@ -1553,7 +1533,7 @@ class ConsistencyTester
                 ]]
             ]);
 
-            $responses[] = $response->content[0]->text;
+            $responses[] = $response->content[0]['text'];
         }
 
         return [
@@ -1607,11 +1587,9 @@ class ConsistencyTester
 // Usage
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $tester = new ConsistencyTester($client);
 
@@ -1636,20 +1614,18 @@ foreach ([0.0, 0.5, 1.0, 1.5] as $temp) {
 
 ### Error: "Call to undefined method messages()"
 
-**Symptom**: `Fatal error: Call to undefined method Anthropic\Anthropic::messages()`
+**Symptom**: `Fatal error: Call to undefined method ClaudePhp\ClaudePhp::messages()`
 
-**Cause**: The client wasn't properly instantiated using the factory pattern.
+**Cause**: The client wasn't properly instantiated.
 
-**Solution**: Always use the factory to create the client:
+**Solution**: Always create the client using the constructor:
 
 ```php
 // Wrong
-$client = new Anthropic();
+$client = new ClaudePhp(); // Missing apiKey parameter
 
 // Correct
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 ```
 
 ### Problem: Inconsistent Outputs at Temperature 0.0

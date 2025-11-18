@@ -80,12 +80,9 @@ $headers = [
 
 ```php
 # filename: sdk-initialization.php
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->withHttpHeader('anthropic-version', '2023-06-01')
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 ```
 
 ---
@@ -270,7 +267,7 @@ $response = [
 ];
 
 // Accessing response text
-$text = $response->content[0]->text;
+$text = $response->content[0]['text'];
 
 // Accessing usage
 $inputTokens = $response->usage->input_tokens;
@@ -473,7 +470,7 @@ $response = $client->messages()->create([
 # filename: handle-tool-use.php
 // Check if Claude wants to use a tool
 foreach ($response->content as $block) {
-    if ($block->type === 'tool_use') {
+    if ($block['type'] === 'tool_use') {
         $toolName = $block->name;
         $toolInput = $block->input;
         $toolUseId = $block->id;
@@ -624,7 +621,7 @@ $response = $client->messages()->create([
 ]);
 
 // Response content will be valid JSON matching the schema
-$userData = json_decode($response->content[0]->text, true);
+$userData = json_decode($response->content[0]['text'], true);
 ```
 
 ### Schema Definition
@@ -669,12 +666,12 @@ try {
         ]
     ]);
 
-    $data = json_decode($response->content[0]->text, true);
+    $data = json_decode($response->content[0]['text'], true);
 
     if (json_last_error() !== JSON_ERROR_NONE) {
         throw new RuntimeException('Invalid JSON response: ' . json_last_error_msg());
     }
-} catch (ErrorException $e) {
+} catch (APIError $e) {
     // Handle API errors
     if ($e->getErrorType() === 'invalid_request_error') {
         // Schema might be invalid
@@ -718,8 +715,8 @@ try {
 
 ```php
 # filename: error-handling.php
-use Anthropic\Exceptions\AnthropicException;
-use Anthropic\Exceptions\ErrorException;
+use ClaudePhp\Exceptions\AnthropicException;
+use ClaudePhp\Exceptions\APIError;
 
 try {
     $response = $client->messages()->create([
@@ -729,7 +726,7 @@ try {
             ['role' => 'user', 'content' => 'Hello!']
         ]
     ]);
-} catch (ErrorException $e) {
+} catch (APIError $e) {
     $errorType = $e->getErrorType();
     $errorMessage = $e->getMessage();
 
@@ -781,7 +778,7 @@ function makeRequestWithRetry($client, $params, $maxRetries = 3) {
     while ($attempt < $maxRetries) {
         try {
             return $client->messages()->create($params);
-        } catch (ErrorException $e) {
+        } catch (APIError $e) {
             if ($e->getErrorType() === 'rate_limit_error') {
                 $attempt++;
                 $waitTime = min(pow(2, $attempt) * 1000000, 32000000);
@@ -841,13 +838,11 @@ _Check official pricing at anthropic.com/pricing for current rates._
 <?php
 require 'vendor/autoload.php';
 
-use Anthropic\Anthropic;
-use Anthropic\Exceptions\ErrorException;
+use ClaudePhp\ClaudePhp;
+use ClaudePhp\Exceptions\APIError;
 
 // Initialize client
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Define tools
 $tools = [
@@ -885,9 +880,9 @@ try {
 
     // Process response
     foreach ($response->content as $block) {
-        if ($block->type === 'text') {
-            echo $block->text . "\n";
-        } elseif ($block->type === 'tool_use') {
+        if ($block['type'] === 'text') {
+            echo $block['text'] . "\n";
+        } elseif ($block['type'] === 'tool_use') {
             echo "Tool: {$block->name}\n";
             echo "Input: " . json_encode($block->input) . "\n";
         }
@@ -897,7 +892,7 @@ try {
     echo "\nTokens used: {$response->usage->input_tokens} in, ";
     echo "{$response->usage->output_tokens} out\n";
 
-} catch (ErrorException $e) {
+} catch (APIError $e) {
     echo "Error: {$e->getMessage()}\n";
     echo "Type: {$e->getErrorType()}\n";
 }
@@ -910,7 +905,7 @@ try {
 - **[Official API Documentation](https://docs.claude.com)** - Complete API reference
 - **[API Status Page](https://status.anthropic.com)** - Service status
 - **[Anthropic Console](https://console.anthropic.com)** - Manage API keys
-- **[PHP SDK Repository](https://github.com/anthropics/anthropic-sdk-php)** - SDK source code
+- **[PHP SDK Repository](https://github.com/anthropics/claude-php/Claude-PHP-SDK)** - SDK source code
 - **[Pricing Calculator](https://anthropic.com/pricing)** - Calculate costs
 
 ---

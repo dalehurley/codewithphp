@@ -1,6 +1,6 @@
 ---
 title: "03: Your First Claude Request in PHP"
-description: "Master making Claude API calls with detailed examples using Guzzle HTTP client and the official SDK. Learn request structure, response parsing, error handling, and best practices."
+description: "Master making Claude API calls with detailed examples using Guzzle HTTP client and the community Claude PHP SDK. Learn request structure, response parsing, error handling, and best practices."
 series: "claude-php-developers"
 chapter: 3
 order: 3
@@ -28,13 +28,13 @@ prerequisites:
 
 ## Overview
 
-Making your first successful API request is a milestone in any integration project. This chapter provides a comprehensive guide to making Claude API calls using both raw HTTP requests with Guzzle and the official Anthropic PHP SDK.
+Making your first successful API request is a milestone in any integration project. This chapter provides a comprehensive guide to making Claude API calls using both raw HTTP requests with Guzzle and the Claude PHP SDK (community SDK).
 
 You'll learn the complete anatomy of API requests and responses, how to properly structure your calls, parse responses effectively, handle errors gracefully, and follow best practices for production environments. By the end, you'll be confident making reliable, efficient Claude API calls.
 
 **What You'll Learn:**
 - Making API calls with Guzzle HTTP client
-- Using the official Anthropic PHP SDK
+- Using the Claude PHP SDK (community SDK)
 - Request structure and parameters
 - Response parsing and data extraction
 - Comprehensive error handling
@@ -82,20 +82,20 @@ By completing this chapter, you will:
 
 ## Installation
 
-### Installing the Anthropic SDK
+### Installing the Claude PHP SDK
 
-The official SDK is the recommended way to interact with Claude:
+The community Claude PHP SDK (claude-php/Claude-PHP-SDK) is the recommended way to interact with Claude. It provides full parity with the Python SDK:
 
 ```bash
-# Install the official Anthropic PHP SDK
-composer require anthropic-ai/sdk
+# Install the Claude PHP SDK (community SDK)
+composer require claude-php/claude-php-sdk
 ```
 
 **Verify installation:**
 
 ```bash
 # Check that the package was installed correctly
-composer show anthropic-ai/sdk
+composer show claude-php/claude-php-sdk
 ```
 
 You should see package details including version, description, and dependencies.
@@ -115,7 +115,7 @@ Create a clean project structure:
 ```bash
 mkdir claude-requests && cd claude-requests
 composer init --no-interaction
-composer require anthropic-ai/sdk vlucas/phpdotenv
+composer require claude-php/claude-php-sdk vlucas/phpdotenv
 mkdir -p src/{Services,Models,Exceptions} examples tests
 ```
 
@@ -151,12 +151,10 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 // Initialize client
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 // Make request
 $response = $client->messages()->create([
@@ -171,14 +169,14 @@ $response = $client->messages()->create([
 ]);
 
 // Output response
-echo $response->content[0]->text . "\n";
+echo $response->content[0]['text'] . "\n";
 ```
 
 **How It Works:**
 
-1. **Client Initialization**: `Anthropic::factory()` creates a client builder, `withApiKey()` sets your API key, and `make()` builds the client instance.
+1. **Client Initialization**: `new ClaudePhp(apiKey: ...)` creates a client instance with your API key.
 2. **Request Structure**: The `messages()->create()` method accepts an array with required parameters (`model`, `max_tokens`, `messages`) and optional parameters.
-3. **Response Access**: The response object contains a `content` array where each element has a `text` property containing Claude's response.
+3. **Response Access**: The response object contains a `content` array where each element is an array with `type` and `text` keys. Access text with `$response->content[0]['text']`.
 
 Run it:
 
@@ -209,15 +207,13 @@ Complete example showing all available parameters:
 ```php
 <?php
 # filename: examples/02-complete-request.php
-declare(strict_types=1);
+declare(strict_types=1)));
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 $response = $client->messages()->create([
     // === Required Parameters ===
@@ -259,12 +255,12 @@ $response = $client->messages()->create([
 ]);
 
 echo "Response:\n";
-echo $response->content[0]->text . "\n\n";
+echo $response->content[0]['text'] . "\n\n";
 
 echo "Model used: {$response->model}\n";
 echo "Stop reason: {$response->stop_reason}\n";
-echo "Input tokens: {$response->usage->inputTokens}\n";
-echo "Output tokens: {$response->usage->outputTokens}\n";
+echo "Input tokens: {$response->usage->input_tokens}\n";
+echo "Output tokens: {$response->usage->output_tokens}\n";
 ```
 
 **Expected Result:**
@@ -416,11 +412,9 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Services\ClaudeRequestBuilder;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 // Build request fluently
 $builder = new ClaudeRequestBuilder();
@@ -437,7 +431,7 @@ $params = $builder
 // Make request
 $response = $client->messages()->create($params);
 
-echo $response->content[0]->text . "\n";
+echo $response->content[0]['text'] . "\n";
 ```
 
 **How It Works:**
@@ -488,7 +482,7 @@ $messages = [];  // ERROR
 5. **Content required**: Each message must have a non-empty `content` string
 
 ::: tip Message Validation
-Always validate your messages array before sending. The SDK will throw a `ValidationException` if these rules are violated, but validating early prevents unnecessary API calls.
+Always validate your messages array before sending. The SDK will throw a `APIError` if these rules are violated, but validating early prevents unnecessary API calls.
 :::
 
 ### System Prompts
@@ -514,11 +508,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 // Example 1: Code reviewer
 $codeToReview = <<<'PHP'
@@ -591,11 +583,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 $prompt = 'Write a short story about a PHP developer.';
 
@@ -670,11 +660,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
@@ -700,11 +688,11 @@ if (empty($response->content)) {
 } else {
     foreach ($response->content as $index => $block) {
         echo "Block {$index}:\n";
-        echo "  Type: {$block->type}\n";                   // "text"
+        echo "  Type: {$block['type']}\n";                   // "text"
         
         // Handle different content types
-        if ($block->type === 'text') {
-            echo "  Text: {$block->text}\n";               // The actual response
+        if ($block['type'] === 'text') {
+            echo "  Text: {$block['text']}\n";               // The actual response
         } else {
             echo "  Content: " . json_encode($block) . "\n"; // Other content types
         }
@@ -713,9 +701,9 @@ if (empty($response->content)) {
 
 // Usage statistics
 echo "\n=== Usage ===\n";
-echo "Input Tokens: {$response->usage->inputTokens}\n";
-echo "Output Tokens: {$response->usage->outputTokens}\n";
-echo "Total Tokens: " . ($response->usage->inputTokens + $response->usage->outputTokens) . "\n";
+echo "Input Tokens: {$response->usage->input_tokens}\n";
+echo "Output Tokens: {$response->usage->output_tokens}\n";
+echo "Total Tokens: " . ($response->usage->input_tokens + $response->usage->output_tokens) . "\n";
 ```
 
 **Understanding Response Properties:**
@@ -740,7 +728,7 @@ The response `id` field (format: `msg_01ABC...`) is useful for:
 ```php
 // Example: Logging with request ID
 $response = $client->messages()->create([...]);
-error_log("Claude API Response [{$response->id}]: {$response->usage->inputTokens} input, {$response->usage->outputTokens} output tokens");
+error_log("Claude API Response [{$response->id}]: {$response->usage->input_tokens} input, {$response->usage->output_tokens} output tokens");
 ```
 
 **Content Array Safety:**
@@ -753,12 +741,12 @@ if (empty($response->content)) {
     throw new \RuntimeException('Response has no content');
 }
 
-$text = $response->content[0]->text ?? '';
+$text = $response->content[0]['text'] ?? '';
 
 // Or handle multiple content blocks
 foreach ($response->content as $block) {
-    if ($block->type === 'text') {
-        echo $block->text;
+    if ($block['type'] === 'text') {
+        echo $block['text'];
     }
 }
 ```
@@ -803,11 +791,11 @@ class ClaudeResponse
     {
         return new self(
             id: $response->id,
-            text: $response->content[0]->text,
+            text: $response->content[0]['text'],
             model: $response->model,
             stopReason: $response->stop_reason,
-            inputTokens: $response->usage->inputTokens,
-            outputTokens: $response->usage->outputTokens,
+            inputTokens: $response->usage->input_tokens,
+            outputTokens: $response->usage->output_tokens,
             stopSequence: $response->stop_sequence,
             rawResponse: $response->toArray()
         );
@@ -902,11 +890,9 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Models\ClaudeResponse;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 $sdkResponse = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
@@ -1007,11 +993,9 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Services\JsonExtractor;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
@@ -1022,7 +1006,7 @@ $response = $client->messages()->create([
     ]]
 ]);
 
-$text = $response->content[0]->text;
+$text = $response->content[0]['text'];
 echo "Raw response:\n{$text}\n\n";
 
 // Extract JSON
@@ -1109,20 +1093,18 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
-use Anthropic\Exceptions\{
-    ErrorException,
-    RateLimitException,
-    ValidationException,
+use ClaudePhp\ClaudePhp;
+use ClaudePhp\Exceptions\{
+    APIError,
+    RateLimitError,
+    APIError,
     AuthenticationException,
     PermissionDeniedException,
     NotFoundException,
     UnprocessableEntityException
 };
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 try {
     $response = $client->messages()->create([
@@ -1133,19 +1115,19 @@ try {
         ]
     ]);
 
-    echo $response->content[0]->text;
+    echo $response->content[0]['text'];
 
 } catch (AuthenticationException $e) {
     // Invalid API key
     error_log("Authentication failed: " . $e->getMessage());
     echo "Error: Invalid API key\n";
 
-} catch (RateLimitException $e) {
+} catch (RateLimitError $e) {
     // Rate limit exceeded
     error_log("Rate limit exceeded: " . $e->getMessage());
     echo "Error: Too many requests. Please try again later.\n";
 
-} catch (ValidationException $e) {
+} catch (APIError $e) {
     // Invalid request parameters
     error_log("Validation error: " . $e->getMessage());
     echo "Error: Invalid request parameters\n";
@@ -1165,7 +1147,7 @@ try {
     error_log("Unprocessable: " . $e->getMessage());
     echo "Error: Request cannot be processed\n";
 
-} catch (ErrorException $e) {
+} catch (APIError $e) {
     // General API error
     error_log("API error: " . $e->getMessage());
     echo "Error: API request failed\n";
@@ -1179,7 +1161,7 @@ try {
 
 **Exception Handling Best Practices:**
 
-1. **Catch specific exceptions first**: Handle `RateLimitException` and `AuthenticationException` before generic `Exception`
+1. **Catch specific exceptions first**: Handle `RateLimitError` and `AuthenticationException` before generic `Exception`
 2. **Log errors appropriately**: Use appropriate log levels (error for failures, warning for retries)
 3. **Provide user-friendly messages**: Don't expose internal error details to end users
 4. **Implement retry logic**: Automatically retry transient failures (rate limits, server errors)
@@ -1207,9 +1189,9 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Anthropic\Anthropic;
-use Anthropic\Exceptions\RateLimitException;
-use Anthropic\Exceptions\ErrorException;
+use ClaudePhp\ClaudePhp;
+use ClaudePhp\Exceptions\RateLimitError;
+use ClaudePhp\Exceptions\APIError;
 
 class RetryableClaudeClient
 {
@@ -1217,7 +1199,7 @@ class RetryableClaudeClient
     private const INITIAL_DELAY = 1; // seconds
 
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     public function createMessage(array $params): mixed
@@ -1229,7 +1211,7 @@ class RetryableClaudeClient
             try {
                 return $this->client->messages()->create($params);
 
-            } catch (RateLimitException $e) {
+            } catch (RateLimitError $e) {
                 $attempt++;
 
                 if ($attempt >= self::MAX_RETRIES) {
@@ -1241,7 +1223,7 @@ class RetryableClaudeClient
                 sleep($delay);
                 $delay *= 2;
 
-            } catch (ErrorException $e) {
+            } catch (APIError $e) {
                 // Check if error is transient (5xx status codes)
                 if ($this->isTransientError($e)) {
                     $attempt++;
@@ -1263,7 +1245,7 @@ class RetryableClaudeClient
         throw new \RuntimeException('Max retries exceeded');
     }
 
-    private function isTransientError(ErrorException $e): bool
+    private function isTransientError(APIError $e): bool
     {
         $message = $e->getMessage();
 
@@ -1286,11 +1268,9 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Services\RetryableClaudeClient;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 $retryableClient = new RetryableClaudeClient($client);
 
@@ -1303,7 +1283,7 @@ try {
         ]
     ]);
 
-    echo $response->content[0]->text;
+    echo $response->content[0]['text'];
 
 } catch (\Exception $e) {
     echo "Request failed after retries: " . $e->getMessage() . "\n";
@@ -1371,7 +1351,7 @@ The Claude API uses standard HTTP status codes to indicate request results:
 
 - **2xx (Success)**: Request succeeded
 - **4xx (Client Error)**: Your request was invalid - don't retry without fixing
-- **5xx (Server Error)**: Anthropic's servers had an issue - safe to retry
+- **5xx (Server Error)**: ClaudePhp's servers had an issue - safe to retry
 
 ::: tip Retry Strategy
 Only retry on 5xx errors and 429 (rate limit). Never retry 4xx errors (except 429) as they indicate problems with your request that won't be fixed by retrying.
@@ -1532,14 +1512,14 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 class DebuggableClaudeClient
 {
     public function __construct(
-        private readonly Anthropic $client,
+        private readonly ClaudePhp $client,
         private readonly LoggerInterface $logger = new NullLogger(),
         private readonly bool $debugMode = false
     ) {}
@@ -1568,9 +1548,9 @@ class DebuggableClaudeClient
                     'duration' => round($duration, 3),
                     'model' => $response->model,
                     'stop_reason' => $response->stop_reason,
-                    'input_tokens' => $response->usage->inputTokens,
-                    'output_tokens' => $response->usage->outputTokens,
-                    'response_preview' => substr($response->content[0]->text, 0, 100),
+                    'input_tokens' => $response->usage->input_tokens,
+                    'output_tokens' => $response->usage->output_tokens,
+                    'response_preview' => substr($response->content[0]['text'], 0, 100),
                 ]);
             }
 
@@ -1621,7 +1601,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use GuzzleHttp\Client;
 
 // Configure HTTP client with custom timeout
@@ -1630,10 +1610,7 @@ $httpClient = new Client([
     'connect_timeout' => 10.0,   // Connection timeout
 ]);
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->withHttpClient($httpClient)
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
@@ -1643,7 +1620,7 @@ $response = $client->messages()->create([
     ]
 ]);
 
-echo $response->content[0]->text;
+echo $response->content[0]['text'];
 ```
 
 ### Connection Pooling
@@ -1655,7 +1632,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Handler\CurlMultiHandler;
@@ -1664,7 +1641,7 @@ class PooledClaudeClient
 {
     private static ?Anthropic $instance = null;
 
-    public static function getInstance(): Anthropic
+    public static function getInstance(): ClaudePhp
     {
         if (self::$instance === null) {
             // Create handler with connection pooling
@@ -1679,10 +1656,7 @@ class PooledClaudeClient
                 'timeout' => 30.0,
             ]);
 
-            self::$instance = Anthropic::factory()
-                ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-                ->withHttpClient($httpClient)
-                ->make();
+            self::$instance = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
         }
 
         return self::$instance;
@@ -1794,7 +1768,7 @@ class CostTracker
 
 Congratulations! You've completed a comprehensive guide to making Claude API requests in PHP. Here's what you've accomplished:
 
-- ✓ **Made your first API call** using the official Anthropic PHP SDK
+- ✓ **Made your first API call** using the Claude PHP SDK (community SDK)
 - ✓ **Built reusable components** including request builders, response models, and service wrappers
 - ✓ **Implemented robust error handling** with specific exception types and retry logic
 - ✓ **Mastered response parsing** including JSON extraction from markdown-formatted responses
@@ -1829,7 +1803,7 @@ You now have the foundation to build sophisticated Claude integrations. In the n
 ## Further Reading
 
 - [Anthropic Messages API Documentation](https://docs.claude.com/en/api/messages) — Official API reference with all parameters and response formats
-- [Anthropic PHP SDK GitHub Repository](https://github.com/anthropics/anthropic-sdk-php) — Source code, examples, and issue tracking
+- [Claude PHP SDK GitHub Repository](https://github.com/claude-php/Claude-PHP-SDK) — Community SDK with full Python SDK parity, examples, and tutorials
 - [Guzzle HTTP Client Documentation](https://docs.guzzlephp.org/) — Complete guide to Guzzle for direct HTTP requests
 - [PSR-18 HTTP Client Standard](https://www.php-fig.org/psr/psr-18/) — PHP standard for HTTP client interfaces
 - [Chapter 04: Understanding Messages and Conversations](/series/claude-php-developers/chapters/04-messages-conversations) — Learn multi-turn conversation management

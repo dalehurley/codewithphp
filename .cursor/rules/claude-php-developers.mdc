@@ -110,16 +110,14 @@ When covering tool use, reference these official tools:
 
 ## PHP Integration Patterns
 
-### Official PHP SDK
+### Community PHP SDK
 
-Always prefer the official Anthropic PHP SDK:
+Always use the community Claude PHP SDK (claude-php/Claude-PHP-SDK) which provides full parity with the Python SDK:
 
 ```php
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 ```
 
 ### Service Layer Pattern
@@ -453,7 +451,9 @@ If Claude API changes:
 
 - **Main Docs**: https://docs.claude.com
 - **API Reference**: https://docs.claude.com/en/api/overview
-- **PHP SDK**: https://github.com/anthropics/anthropic-sdk-php
+- **Community PHP SDK**: https://github.com/claude-php/Claude-PHP-SDK (Full parity with Python SDK)
+- **SDK Examples**: https://github.com/claude-php/Claude-PHP-SDK/tree/main/examples
+- **SDK Tutorials**: https://github.com/claude-php/Claude-PHP-SDK/tree/main/tutorials
 - **Console**: https://console.anthropic.com
 
 ### Series-Specific Resources

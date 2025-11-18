@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CodeWithPHP\ClaudeShared;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Anthropic\Contracts\MessageContract;
 
 /**
@@ -21,9 +21,7 @@ class BaseClaudeClient
         string $model = 'claude-sonnet-4-20250514',
         int $maxTokens = 4096
     ) {
-        $this->client = Anthropic::factory()
-            ->withApiKey($apiKey ?? getenv('ANTHROPIC_API_KEY'))
-            ->make();
+        $this->client = new ClaudePhp(apiKey: $apiKey ?? getenv('ANTHROPIC_API_KEY');
 
         $this->defaultModel = $model;
         $this->defaultMaxTokens = $maxTokens;

@@ -75,8 +75,8 @@ class CostCalculator
     public function addUsageFromResponse(object $response): void
     {
         $this->addUsage(
-            $response->usage->inputTokens,
-            $response->usage->outputTokens
+            $response->usage->input_tokens,
+            $response->usage->output_tokens
         );
     }
 

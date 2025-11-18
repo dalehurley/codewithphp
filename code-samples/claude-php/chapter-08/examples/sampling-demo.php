@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/..');
@@ -19,7 +19,7 @@ $apiKey = getenv('ANTHROPIC_API_KEY');
 echo "=== Sampling Parameters Demo ===\n\n";
 
 try {
-    $client = Anthropic::factory()->withApiKey($apiKey)->make();
+    $client = new ClaudePhp(apiKey: $apiKey);
 
     $prompt = "Write a creative opening line for a story.";
 
@@ -41,7 +41,7 @@ try {
                 'messages' => [['role' => 'user', 'content' => $prompt]]
             ]);
 
-            echo "  {$i}. {$response->content[0]->text}\n";
+            echo "  {$i}. {$response->content[0]['text']}\n";
         }
         echo "\n";
     }

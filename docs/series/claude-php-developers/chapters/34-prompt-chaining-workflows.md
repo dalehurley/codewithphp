@@ -62,7 +62,7 @@ Before starting, ensure you have:
 php --version
 
 # Verify Anthropic SDK is installed
-composer show anthropic/anthropic-sdk-php
+composer show anthropic/claude-php/Claude-PHP-SDK
 
 # Check if API key is set
 echo $ANTHROPIC_API_KEY | cut -c1-10
@@ -79,13 +79,11 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Workflow\WorkflowBuilder;
 
 // Initialize Claude
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY') ?: throw new RuntimeException('ANTHROPIC_API_KEY not set'))
-    ->make();
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Create a simple 3-step workflow
 $workflow = (new WorkflowBuilder($claude, 'Quick Start'))
@@ -142,7 +140,7 @@ declare(strict_types=1);
 
 namespace App\Workflow;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class Workflow
 {
@@ -151,7 +149,7 @@ class Workflow
     private WorkflowState $state;
 
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private string $workflowId,
         private string $name
     ) {
@@ -445,7 +443,7 @@ class PromptStep extends WorkflowStep
 
         return new StepResult(
             status: 'success',
-            output: $response->content[0]->text
+            output: $response->content[0]['text']
         );
     }
 
@@ -697,11 +695,11 @@ use App\Workflow\Workflow;
 use App\Workflow\Steps\PromptStep;
 use App\Workflow\Steps\ValidationStep;
 use App\Workflow\Steps\TransformStep;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class ContentCreationWorkflow
 {
-    public static function create(Anthropic $claude, string $topic): Workflow
+    public static function create(ClaudePhp $claude, string $topic): Workflow
     {
         $workflow = new Workflow($claude, uniqid('workflow_'), 'Content Creation');
 
@@ -812,11 +810,11 @@ namespace App\Workflow\Workflows;
 use App\Workflow\Workflow;
 use App\Workflow\Steps\PromptStep;
 use App\Workflow\Steps\ValidationStep;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class CodeReviewWorkflow
 {
-    public static function create(Anthropic $claude, string $code, string $language = 'php'): Workflow
+    public static function create(ClaudePhp $claude, string $code, string $language = 'php'): Workflow
     {
         $workflow = new Workflow($claude, uniqid('workflow_'), 'Code Review');
 
@@ -951,7 +949,7 @@ declare(strict_types=1);
 
 namespace App\Workflow;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Workflow\Steps\PromptStep;
 use App\Workflow\Steps\TransformStep;
 use App\Workflow\Steps\ValidationStep;
@@ -961,7 +959,7 @@ class WorkflowBuilder
     private Workflow $workflow;
 
     public function __construct(
-        Anthropic $claude,
+        ClaudePhp $claude,
         string $name = 'Custom Workflow'
     ) {
         $this->workflow = new Workflow($claude, uniqid('workflow_'), $name);
@@ -1099,7 +1097,7 @@ class ToolUseStep extends WorkflowStep
         // Handle tool calls
         $toolResults = [];
         foreach ($response->content as $block) {
-            if ($block->type === 'tool_use') {
+            if ($block['type'] === 'tool_use') {
                 // Execute the tool
                 $result = $this->executeTool($block->name, $block->input);
                 $toolResults[] = $result;
@@ -1196,7 +1194,7 @@ class VisionStep extends WorkflowStep
 
         return new StepResult(
             status: 'success',
-            output: $response->content[0]->text
+            output: $response->content[0]['text']
         );
     }
 }
@@ -1307,7 +1305,7 @@ class StructuredStep extends WorkflowStep
         $output = null;
         foreach ($response->content as $block) {
             if (property_exists($block, 'text')) {
-                $output = json_decode($block->text, true);
+                $output = json_decode($block['text'], true);
                 break;
             }
         }
@@ -1329,15 +1327,13 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Workflow\WorkflowBuilder;
 use App\Workflow\Workflows\ContentCreationWorkflow;
 use App\Workflow\Workflows\CodeReviewWorkflow;
 
 // Initialize Claude
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 echo "=== Workflow Orchestration Demo ===\n\n";
 
@@ -1481,7 +1477,7 @@ declare(strict_types=1);
 
 namespace App\Workflow;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 /**
  * WorkflowState manages data shared between workflow steps.
@@ -1519,7 +1515,7 @@ class WorkflowState
 readonly class StepContext
 {
     public function __construct(
-        public Anthropic $claude,
+        public ClaudePhp $claude,
         public WorkflowState $state,
         public int $attempt = 0
     ) {}
@@ -1836,7 +1832,7 @@ Workflows can leverage the Memory Tool for cross-workflow context:
 class WorkflowWithMemory
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private string $userId
     ) {}
 
@@ -1889,7 +1885,7 @@ Build a workflow that processes emails through multiple stages:
 <?php
 class EmailProcessingWorkflow
 {
-    public static function create(Anthropic $claude): Workflow
+    public static function create(ClaudePhp $claude): Workflow
     {
         // TODO: Create workflow that:
         // 1. Extracts key information from email
@@ -1913,7 +1909,7 @@ Create a multi-stage document analysis workflow:
 <?php
 class DocumentAnalysisWorkflow
 {
-    public static function create(Anthropic $claude): Workflow
+    public static function create(ClaudePhp $claude): Workflow
     {
         // TODO: Build workflow that:
         // 1. Extracts text from document (PDF, Word, etc.)
@@ -1938,7 +1934,7 @@ Implement a workflow with conditional branching:
 <?php
 class ConditionalWorkflow
 {
-    public static function create(Anthropic $claude): Workflow
+    public static function create(ClaudePhp $claude): Workflow
     {
         // TODO: Create workflow that:
         // 1. Analyzes input to determine complexity
@@ -1964,7 +1960,7 @@ Build a robust workflow with comprehensive error handling:
 <?php
 class ResilientWorkflow
 {
-    public static function create(Anthropic $claude): Workflow
+    public static function create(ClaudePhp $claude): Workflow
     {
         // TODO: Implement workflow that:
         // 1. Attempts primary processing path

@@ -9,7 +9,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\TokenManagement\TokenCounter;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/..');
@@ -20,7 +20,7 @@ $apiKey = getenv('ANTHROPIC_API_KEY');
 echo "=== Token Counter ===\n\n";
 
 try {
-    $client = Anthropic::factory()->withApiKey($apiKey)->make();
+    $client = new ClaudePhp(apiKey: $apiKey);
 
     // Example texts
     $texts = [
@@ -44,7 +44,7 @@ try {
             'messages' => [['role' => 'user', 'content' => $text]]
         ]);
 
-        echo "Actual input tokens: " . $response->usage->inputTokens . "\n\n";
+        echo "Actual input tokens: " . $response->usage->input_tokens . "\n\n";
     }
 
     echo "✓ Token counting complete!\n";

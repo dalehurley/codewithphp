@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Anthropic\Resources\Messages;
 
 class ContentGenerationService
@@ -13,9 +13,7 @@ class ContentGenerationService
 
     public function __construct()
     {
-        $client = Anthropic::factory()
-            ->withApiKey(config('services.anthropic.api_key'))
-            ->make();
+        $client = new ClaudePhp(apiKey: config('services.anthropic.api_key');
 
         $this->messages = $client->messages();
     }
@@ -52,8 +50,8 @@ class ContentGenerationService
         ]);
 
         return [
-            'text' => $response->content[0]->text,
-            'tokens' => $response->usage->inputTokens + $response->usage->outputTokens,
+            'text' => $response->content[0]['text'],
+            'tokens' => $response->usage->input_tokens + $response->usage->output_tokens,
             'metadata' => [
                 'topic' => $topic,
                 'tone' => $tone,
@@ -82,7 +80,7 @@ class ContentGenerationService
             ]],
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 
     public function generateSocialMediaPosts(string $content, array $platforms): array
@@ -107,7 +105,7 @@ class ContentGenerationService
                 ]],
             ]);
 
-            $posts[$platform] = $response->content[0]->text;
+            $posts[$platform] = $response->content[0]['text'];
         }
 
         return $posts;
@@ -137,7 +135,7 @@ class ContentGenerationService
             ]],
         ]);
 
-        $content = $response->content[0]->text;
+        $content = $response->content[0]['text'];
 
         // Parse response (simplified - would need better parsing)
         return [
@@ -190,7 +188,7 @@ class ContentGenerationService
         ]);
 
         return [
-            'text' => $response->content[0]->text,
+            'text' => $response->content[0]['text'],
             'changes' => $improvements,
         ];
     }

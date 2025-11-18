@@ -6,7 +6,7 @@ chapter: 17
 order: 17
 difficulty: "Expert"
 prerequisites:
-  - "Chapter 16: The Official PHP SDK"
+  - "Chapter 16: The Claude PHP SDK"
   - "SOLID principles understanding"
   - "Dependency injection concepts"
   - "PSR standards familiarity"
@@ -51,7 +51,7 @@ By the end of this chapter, you will have created:
 
 Before diving in, ensure you have:
 
-- ✓ Completed [Chapter 16: The Official PHP SDK](/series/claude-php-developers/chapters/16-official-php-sdk) or equivalent SDK knowledge
+- ✓ Completed [Chapter 16: The Community PHP SDK](/series/claude-php-developers/chapters/16-official-php-sdk) or equivalent SDK knowledge
 - ✓ Understanding of **SOLID principles** (especially dependency inversion)
 - ✓ Experience with **dependency injection** patterns
 - ✓ Familiarity with **unit testing** using PHPUnit
@@ -83,14 +83,12 @@ declare(strict_types=1);
 
 require 'vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Services\ClaudeService;
 use App\Contracts\ClaudeServiceInterface;
 
 // Initialize the SDK client
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Create a simple service instance
 $service = new ClaudeService(
@@ -189,7 +187,7 @@ namespace App\Services;
 use App\Contracts\ClaudeServiceInterface;
 use Anthropic\Contracts\ClientContract;
 use Anthropic\Responses\Messages\CreateResponse;
-use Anthropic\Exceptions\ErrorException;
+use ClaudePhp\Exceptions\APIError;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -234,16 +232,16 @@ class ClaudeService implements ClaudeServiceInterface
                 ]
             ]);
 
-            $text = $response->content[0]->text;
+            $text = $response->content[0]['text'];
 
             $this->logger->info('Text generated successfully', [
                 'output_length' => strlen($text),
-                'tokens_used' => $response->usage->outputTokens,
+                'tokens_used' => $response->usage->output_tokens,
             ]);
 
             return $text;
 
-        } catch (ErrorException $e) {
+        } catch (APIError $e) {
             $this->logger->error('Text generation failed', [
                 'error' => $e->getMessage(),
                 'prompt_length' => strlen($prompt),
@@ -277,14 +275,14 @@ class ClaudeService implements ClaudeServiceInterface
         $response = $this->createMessage($params);
 
         return [
-            'text' => $response->content[0]->text,
+            'text' => $response->content[0]['text'],
             'metadata' => [
                 'id' => $response->id,
                 'model' => $response->model,
-                'stop_reason' => $response->stopReason,
+                'stop_reason' => $response->stop_reason,
                 'usage' => [
-                    'input_tokens' => $response->usage->inputTokens,
-                    'output_tokens' => $response->usage->outputTokens,
+                    'input_tokens' => $response->usage->input_tokens,
+                    'output_tokens' => $response->usage->output_tokens,
                 ],
             ]
         ];
@@ -338,7 +336,7 @@ class ClaudeService implements ClaudeServiceInterface
                 ]
             ]);
 
-            return $response->content[0]->text !== null;
+            return $response->content[0]['text'] !== null;
 
         } catch (\Exception $e) {
             $this->logger->error('Health check failed', [
@@ -360,7 +358,7 @@ class ClaudeService implements ClaudeServiceInterface
             try {
                 return $this->client->messages()->create($params);
 
-            } catch (ErrorException $e) {
+            } catch (APIError $e) {
                 $attempt++;
 
                 if ($attempt >= $maxRetries || $e->getResponse()?->getStatusCode() < 500) {
@@ -474,7 +472,7 @@ namespace App\Factory;
 use App\Configuration\ClaudeConfig;
 use App\Contracts\ClaudeServiceInterface;
 use App\Services\ClaudeService;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Anthropic\Contracts\ClientContract;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\HandlerStack;
@@ -533,10 +531,7 @@ class ClaudeServiceFactory
             'timeout' => $config->timeout,
         ]);
 
-        return Anthropic::factory()
-            ->withApiKey($config->apiKey)
-            ->withHttpClient($guzzleClient)
-            ->make();
+        return new ClaudePhp(apiKey: $config->apiKey));
     }
 }
 ```
@@ -777,7 +772,7 @@ class ConversationService
         }
 
         $response = $this->client->messages()->create($params);
-        $text = $response->content[0]->text;
+        $text = $response->content[0]['text'];
 
         // Add assistant's response to conversation
         $this->addAssistantMessage($text);

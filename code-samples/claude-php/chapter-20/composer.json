@@ -4,7 +4,7 @@
     "type": "project",
     "require": {
         "php": "^8.2",
-        "anthropic-ai/sdk": "^1.0",
+        "claude-php/claude-php-sdk": "^1.0",
         "vlucas/phpdotenv": "^5.5",
         "ratchet/ratchet": "^0.4",
         "ratchet/pawl": "^0.4",

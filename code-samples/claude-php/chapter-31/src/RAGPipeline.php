@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Anthropic\Resources\Messages;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -154,7 +154,7 @@ PROMPT;
                 'system' => $systemPrompt
             ]);
 
-            return $response->content[0]->text;
+            return $response->content[0]['text'];
 
         } catch (\Throwable $e) {
             $this->logger->error('Response generation failed', [

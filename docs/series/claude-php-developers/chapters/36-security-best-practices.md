@@ -99,16 +99,14 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 // Secure: Load from environment
 $apiKey = getenv('ANTHROPIC_API_KEY') ?: throw new RuntimeException(
     'ANTHROPIC_API_KEY not set. Create a .env file or set environment variable.'
 );
 
-$client = Anthropic::factory()
-    ->withApiKey($apiKey)
-    ->make();
+$client = new ClaudePhp(apiKey: $apiKey));
 
 // Simple security check: validate key format
 if (!str_starts_with($apiKey, 'sk-ant-')) {
@@ -150,9 +148,7 @@ API keys are the gateway to your Claude account and budget. A compromised key ca
 # ❌ NEVER DO THIS - Hardcoded key
 declare(strict_types=1);
 
-$client = Anthropic::factory()
-    ->withApiKey('sk-ant-api03-hardcoded-key')  // SECURITY RISK!
-    ->make();
+$client = new ClaudePhp(apiKey: 'sk-ant-api03-hardcoded-key'));
 ```
 
 **Use environment variables:**
@@ -163,9 +159,7 @@ $client = Anthropic::factory()
 # ✓ Secure: Environment variable
 declare(strict_types=1);
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Validate key exists
 if (!getenv('ANTHROPIC_API_KEY')) {
@@ -391,9 +385,7 @@ $secretsProvider = new AwsSecretsProvider(
     'prod/anthropic/api-key'
 );
 
-$client = Anthropic::factory()
-    ->withApiKey($secretsProvider->getApiKey())
-    ->make();
+$client = new ClaudePhp(apiKey: $secretsProvider->getApiKey());
 ```
 
 ## Prompt Injection Prevention
@@ -536,14 +528,12 @@ namespace App\Security;
 class SecurityException extends \RuntimeException {}
 
 // Usage
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Security\PromptInjectionDefense;
 use App\Security\SecurityException;
 
 $defense = new PromptInjectionDefense();
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 try {
     $userInput = $_POST['user_input'] ?? '';
@@ -645,14 +635,12 @@ PROMPT;
 }
 
 // Usage
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Security\SecurePromptBuilder;
 
 $promptBuilder = new SecurePromptBuilder();
 $userInput = "This is the user's text to summarize.";
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $prompt = $promptBuilder->buildSecurePrompt(
     userInput: $userInput,
@@ -755,7 +743,7 @@ use App\Security\OutputValidator;
 
 $validator = new OutputValidator();
 // Assume $response is from Claude API call
-$claudeResponse = $response->content[0]->text ?? '';
+$claudeResponse = $response->content[0]['text'] ?? '';
 
 $validation = $validator->validateOutput($claudeResponse);
 
@@ -951,7 +939,7 @@ class DataMinimizer
 }
 
 // Usage
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Security\DataMinimizer;
 
 $minimizer = new DataMinimizer();
@@ -980,9 +968,7 @@ $customerData = $minimizer->minimizeCustomerData($fullCustomer, [
 $customers = [$fullCustomer]; // Array of customer records
 $anonymousData = $minimizer->anonymize($customers);
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
@@ -1107,15 +1093,13 @@ namespace App\Compliance;
 class ComplianceException extends \RuntimeException {}
 
 // Usage
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Compliance\GdprCompliance;
 use App\Compliance\ComplianceException;
 
 $gdpr = new GdprCompliance();
 $userId = 'user_12345';
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Before processing
 if (!$gdpr->hasConsent($userId, 'ai_content_analysis')) {
@@ -1203,14 +1187,12 @@ class HipaaCompliance
 }
 
 // Usage - ONLY with de-identified data
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Compliance\HipaaCompliance;
 use App\Compliance\ComplianceException;
 
 $hipaa = new HipaaCompliance();
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $medicalNote = "Patient John Smith (DOB: 05/15/1980, MRN: 123456) presents with...";
 $deidentified = $hipaa->deidentifyHealthData($medicalNote);
@@ -1357,7 +1339,7 @@ class RateLimiter
         if ($current >= $maxAttempts) {
             $ttl = $this->redis->ttl($key);
 
-            throw new RateLimitException(
+            throw new RateLimitError(
                 "Rate limit exceeded. Try again in $ttl seconds.",
                 remaining: 0,
                 reset_at: time() + $ttl
@@ -1440,7 +1422,7 @@ class RateLimiter
     }
 }
 
-class RateLimitException extends \Exception
+class RateLimitError extends \Exception
 {
     public function __construct(
         string $message,
@@ -1454,9 +1436,9 @@ class RateLimitException extends \Exception
 class BudgetLimitException extends \Exception {}
 
 // Usage
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Security\RateLimiter;
-use App\Security\RateLimitException;
+use App\Security\RateLimitError;
 use App\Security\BudgetLimitException;
 
 // Initialize Redis connection (example)
@@ -1465,9 +1447,7 @@ $redis->connect('127.0.0.1', 6379);
 
 $rateLimiter = new RateLimiter($redis);
 $userId = 'user_12345';
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 try {
     // Standard rate limiting
@@ -1495,7 +1475,7 @@ try {
         ]]
     ]);
 
-} catch (RateLimitException $e) {
+} catch (RateLimitError $e) {
     http_response_code(429);
     echo json_encode([
         'error' => 'Rate limit exceeded',

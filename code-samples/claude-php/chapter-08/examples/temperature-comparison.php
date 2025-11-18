@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/..');
@@ -19,7 +19,7 @@ $apiKey = getenv('ANTHROPIC_API_KEY');
 echo "=== Temperature Comparison ===\n\n";
 
 try {
-    $client = Anthropic::factory()->withApiKey($apiKey)->make();
+    $client = new ClaudePhp(apiKey: $apiKey);
 
     $tasks = [
         ['name' => 'Code Generation', 'prompt' => 'Write a PHP function to reverse a string', 'temp' => 0.0],
@@ -39,7 +39,7 @@ try {
             'messages' => [['role' => 'user', 'content' => $task['prompt']]]
         ]);
 
-        echo "Response: {$response->content[0]->text}\n\n";
+        echo "Response: {$response->content[0]['text']}\n\n";
     }
 
     echo "✓ Temperature comparison complete!\n";

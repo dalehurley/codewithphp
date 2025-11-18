@@ -87,7 +87,7 @@ declare(strict_types=1);
 
 namespace App\MultiAgent;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 abstract class Agent
 {
@@ -95,7 +95,7 @@ abstract class Agent
     protected array $capabilities = [];
 
     public function __construct(
-        protected Anthropic $claude,
+        protected ClaudePhp $claude,
         protected string $agentId,
         protected string $name,
         protected string $role,
@@ -137,7 +137,7 @@ abstract class Agent
         ]);
 
         // Handle tool calls if present
-        if ($response->stopReason === 'tool_use') {
+        if ($response->stop_reason === 'tool_use') {
             $response = $this->handleToolCalls($response, $messages);
         }
 
@@ -148,7 +148,7 @@ abstract class Agent
         ];
         $this->conversationHistory[] = [
             'role' => 'assistant',
-            'content' => $response->content[0]->text
+            'content' => $response->content[0]['text']
         ];
 
         return $response;
@@ -238,7 +238,7 @@ abstract class Agent
         $toolResults = [];
 
         foreach ($response->content as $block) {
-            if ($block->type !== 'tool_use') {
+            if ($block['type'] !== 'tool_use') {
                 continue;
             }
 
@@ -442,7 +442,7 @@ PROMPT;
         return new TaskResult(
             taskId: $task->id,
             status: 'completed',
-            output: $response->content[0]->text,
+            output: $response->content[0]['text'],
             metadata: [
                 'agent' => $this->agentId,
                 'model' => $response->model
@@ -551,7 +551,7 @@ PROMPT;
         return new TaskResult(
             taskId: $task->id,
             status: 'completed',
-            output: $response->content[0]->text,
+            output: $response->content[0]['text'],
             metadata: [
                 'agent' => $this->agentId,
                 'agent_type' => 'research'
@@ -631,7 +631,7 @@ PROMPT;
         return new TaskResult(
             taskId: $task->id,
             status: 'completed',
-            output: $response->content[0]->text,
+            output: $response->content[0]['text'],
             metadata: [
                 'agent' => $this->agentId,
                 'agent_type' => 'code'
@@ -709,7 +709,7 @@ PROMPT;
         return new TaskResult(
             taskId: $task->id,
             status: 'completed',
-            output: $response->content[0]->text,
+            output: $response->content[0]['text'],
             metadata: [
                 'agent' => $this->agentId,
                 'agent_type' => 'writer'
@@ -922,7 +922,7 @@ declare(strict_types=1);
 
 namespace App\MultiAgent;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class AgentOrchestrator
 {
@@ -930,7 +930,7 @@ class AgentOrchestrator
     private array $agents = [];
 
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {
         $this->messageBroker = new MessageBroker();
     }
@@ -1046,13 +1046,11 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\MultiAgent\AgentOrchestrator;
 
 // Initialize Claude
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Create orchestrator
 $orchestrator = new AgentOrchestrator($claude);

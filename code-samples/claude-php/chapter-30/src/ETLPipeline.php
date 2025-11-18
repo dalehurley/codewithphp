@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Anthropic\Resources\Messages;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -136,7 +136,7 @@ PROMPT;
             'system' => 'You are a data extraction expert. Extract information accurately and return valid JSON.'
         ]);
 
-        $text = $response->content[0]->text;
+        $text = $response->content[0]['text'];
 
         // Extract JSON from response
         if (preg_match('/```json\s*(.*?)\s*```/s', $text, $matches)) {

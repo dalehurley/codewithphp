@@ -28,7 +28,7 @@ prerequisites:
 
 ## Overview
 
-Caching is essential for production Claude applications—it reduces costs, improves response times, and provides resilience against API outages. This chapter covers multiple caching strategies: Anthropic's native prompt caching, response caching with Redis, intelligent cache invalidation, and semantic similarity caching for fuzzy matching.
+Caching is essential for production Claude applications—it reduces costs, improves response times, and provides resilience against API outages. This chapter covers multiple caching strategies: ClaudePhp's native prompt caching, response caching with Redis, intelligent cache invalidation, and semantic similarity caching for fuzzy matching.
 
 You'll learn to implement sophisticated caching layers that can reduce API costs by 90% while maintaining fresh, relevant responses.
 
@@ -114,11 +114,9 @@ declare(strict_types=1);
 
 require 'vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Large context that will be cached
 $documentationContext = file_get_contents(__DIR__ . '/large-documentation.txt');
@@ -262,7 +260,7 @@ class CachedClaudeService implements ClaudeServiceInterface
             ]
         ]);
 
-        $text = $response->content[0]->text;
+        $text = $response->content[0]['text'];
 
         // Cache the response
         $this->cache->set($cacheKey, $text, $this->defaultTtl);
@@ -296,14 +294,14 @@ class CachedClaudeService implements ClaudeServiceInterface
         ]);
 
         $result = [
-            'text' => $response->content[0]->text,
+            'text' => $response->content[0]['text'],
             'metadata' => [
                 'id' => $response->id,
                 'model' => $response->model,
-                'stop_reason' => $response->stopReason,
+                'stop_reason' => $response->stop_reason,
                 'usage' => [
-                    'input_tokens' => $response->usage->inputTokens,
-                    'output_tokens' => $response->usage->outputTokens,
+                    'input_tokens' => $response->usage->input_tokens,
+                    'output_tokens' => $response->usage->output_tokens,
                 ],
             ]
         ];
@@ -350,7 +348,7 @@ class CachedClaudeService implements ClaudeServiceInterface
                 ]
             ]);
 
-            return $response->content[0]->text !== null;
+            return $response->content[0]['text'] !== null;
         } catch (\Exception $e) {
             return false;
         }
@@ -407,7 +405,7 @@ declare(strict_types=1);
 
 require 'vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
 use Symfony\Component\Cache\Psr16Cache;
 
@@ -417,9 +415,7 @@ $redisAdapter = new RedisAdapter($redisConnection);
 $cache = new Psr16Cache($redisAdapter);
 
 // Create cached service
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $claudeService = new \App\Services\CachedClaudeService(
     client: $client,
@@ -525,7 +521,7 @@ class TieredCacheService implements ClaudeServiceInterface
             ]
         ]);
 
-        $text = $response->content[0]->text;
+        $text = $response->content[0]['text'];
 
         // Store in both cache layers
         $this->setInMemory($cacheKey, $text);
@@ -674,7 +670,7 @@ class SemanticCacheService implements ClaudeServiceInterface
             ]
         ]);
 
-        $text = $response->content[0]->text;
+        $text = $response->content[0]['text'];
 
         // Cache with prompt mapping
         $cacheKey = 'claude:semantic:' . md5($prompt);
@@ -884,7 +880,7 @@ declare(strict_types=1);
 require 'vendor/autoload.php';
 
 use App\Services\CachedClaudeService;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
 use Symfony\Component\Cache\Psr16Cache;
 
@@ -892,9 +888,7 @@ use Symfony\Component\Cache\Psr16Cache;
 $redisConnection = RedisAdapter::createConnection('redis://localhost');
 $cache = new Psr16Cache(new RedisAdapter($redisConnection));
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $claudeService = new CachedClaudeService($client, $cache);
 
@@ -1038,7 +1032,7 @@ declare(strict_types=1);
 require 'vendor/autoload.php';
 
 use App\Services\TieredCacheService;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
 use Symfony\Component\Cache\Psr16Cache;
 use Monolog\Logger;
@@ -1053,9 +1047,7 @@ $redisConnection = RedisAdapter::createConnection('redis://localhost');
 $cache = new Psr16Cache(new RedisAdapter($redisConnection));
 
 // Setup Claude client
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Create tiered cache service
 $claudeService = new TieredCacheService(

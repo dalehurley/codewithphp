@@ -66,12 +66,12 @@ declare(strict_types=1);
 
 namespace App\Moderation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class ModerationSystem
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private ContentAnalyzer $analyzer,
         private PolicyEngine $policyEngine,
         private ModerationQueue $queue,
@@ -214,12 +214,12 @@ declare(strict_types=1);
 
 namespace App\Moderation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class ContentAnalyzer
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -240,7 +240,7 @@ class ContentAnalyzer
             ]]
         ]);
 
-        return $this->parseAnalysis($response->content[0]->text);
+        return $this->parseAnalysis($response->content[0]['text']);
     }
 
     private function buildAnalysisPrompt(string $content, string $contentType): string
@@ -380,7 +380,7 @@ declare(strict_types=1);
 
 namespace App\Moderation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class ToxicityDetector
 {
@@ -400,7 +400,7 @@ class ToxicityDetector
     ];
 
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -496,7 +496,7 @@ PROMPT;
             ]]
         ]);
 
-        $jsonText = $response->content[0]->text;
+        $jsonText = $response->content[0]['text'];
         if (preg_match('/\{.*\}/s', $jsonText, $matches)) {
             return json_decode($matches[0], true) ?? [];
         }
@@ -515,7 +515,7 @@ declare(strict_types=1);
 
 namespace App\Moderation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class PIIDetector
 {
@@ -528,7 +528,7 @@ class PIIDetector
     ];
 
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -634,7 +634,7 @@ PROMPT;
             ]]
         ]);
 
-        $jsonText = $response->content[0]->text;
+        $jsonText = $response->content[0]['text'];
         if (preg_match('/\[.*\]/s', $jsonText, $matches)) {
             $items = json_decode($matches[0], true) ?? [];
             foreach ($items as &$item) {
@@ -688,12 +688,12 @@ declare(strict_types=1);
 
 namespace App\Moderation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class SpamDetector
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private \PDO $db
     ) {}
 
@@ -761,7 +761,7 @@ PROMPT;
             ]]
         ]);
 
-        $jsonText = $response->content[0]->text;
+        $jsonText = $response->content[0]['text'];
         if (preg_match('/\{.*\}/s', $jsonText, $matches)) {
             return json_decode($matches[0], true) ?? [];
         }
@@ -1557,7 +1557,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Moderation\ModerationSystem;
 use App\Moderation\ContentAnalyzer;
 use App\Moderation\PolicyEngine;
@@ -1571,9 +1571,7 @@ $db = new PDO(getenv('DATABASE_DSN'));
 $redis = new Redis();
 $redis->connect('localhost', 6379);
 
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $analyzer = new ContentAnalyzer($claude);
 $policyEngine = new PolicyEngine();
@@ -1929,16 +1927,14 @@ use App\Moderation\AuditLogger;
 use App\Moderation\ToxicityDetector;
 use App\Moderation\PIIDetector;
 use App\Moderation\SpamDetector;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 // Initialize components
 $db = new PDO(getenv('DATABASE_DSN'));
 $redis = new Redis();
 $redis->connect('localhost', 6379);
 
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $analyzer = new ContentAnalyzer($claude);
 $policyEngine = new PolicyEngine();

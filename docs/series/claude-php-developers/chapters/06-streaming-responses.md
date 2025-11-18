@@ -86,7 +86,7 @@ declare(strict_types=1);
 
 require 'vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 header('Content-Type: text/event-stream');
 header('Cache-Control: no-cache');
@@ -96,9 +96,7 @@ if (ob_get_level()) {
     ob_end_clean();
 }
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $stream = $client->messages()->createStreamed([
     'model' => 'claude-sonnet-4-20250514',
@@ -176,11 +174,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Non-streaming: User waits 5-10 seconds with no feedback
 $startTime = microtime(true);
@@ -197,7 +193,7 @@ $response = $client->messages()->create([
 $duration = microtime(true) - $startTime;
 
 echo "Response received after {$duration} seconds:\n\n";
-echo $response->content[0]->text;
+echo $response->content[0]['text'];
 ```
 
 **Output:**
@@ -306,7 +302,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 // Set SSE headers
 header('Content-Type: text/event-stream');
@@ -323,9 +319,7 @@ if (ob_get_level()) {
 $input = json_decode(file_get_contents('php://input'), true);
 $userMessage = $input['message'] ?? 'Hello, Claude!';
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 try {
     // Create streaming request
@@ -606,7 +600,7 @@ declare(strict_types=1);
 
 namespace CodeWithPHP\Claude;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Anthropic\Contracts\ClientContract;
 
 class StreamingService
@@ -615,9 +609,7 @@ class StreamingService
 
     public function __construct(?string $apiKey = null)
     {
-        $this->client = Anthropic::factory()
-            ->withApiKey($apiKey ?? getenv('ANTHROPIC_API_KEY'))
-            ->make();
+        $this->client = new ClaudePhp(apiKey: $apiKey ?? getenv('ANTHROPIC_API_KEY'));
     }
 
     public function stream(
@@ -2178,11 +2170,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Define a weather tool
 $tools = [[
@@ -2244,11 +2234,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 header('Content-Type: text/event-stream');
 if (ob_get_level()) ob_end_clean();
@@ -2306,11 +2294,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 header('Content-Type: text/event-stream');
 if (ob_get_level()) ob_end_clean();
@@ -2377,7 +2363,7 @@ class StreamingCacheService
 {
     public function __construct(
         private CacheInterface $cache,
-        private \Anthropic\Anthropic $client
+        private \ClaudePhp\ClaudePhp $client
     ) {}
 
     public function streamWithCache(string $message): void
@@ -2472,7 +2458,7 @@ Streaming costs the same as regular requests—there's **no cost savings**. The 
 - [PHP Output Buffering](https://www.php.net/manual/en/function.ob-start.php) — PHP output buffering documentation
 - [HTTP/1.1 Chunked Transfer Encoding](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Transfer-Encoding) — Transfer encoding specification
 - [Fetch API Stream Reading](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream) — Client-side streaming with fetch
-- [Anthropic PHP SDK](https://github.com/anthropics/anthropic-sdk-php) — Official PHP SDK repository
+- [Claude PHP SDK](https://github.com/anthropics/claude-php/Claude-PHP-SDK) — Claude PHP SDK repository
 
 ---
 

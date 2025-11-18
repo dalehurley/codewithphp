@@ -66,12 +66,12 @@ declare(strict_types=1);
 
 namespace App\Support;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class SupportBot
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private KnowledgeBase $knowledgeBase,
         private TicketSystem $ticketSystem,
         private ConversationManager $conversations,
@@ -141,7 +141,7 @@ class SupportBot
         ]);
 
         return new BotResponse(
-            text: $response->content[0]->text,
+            text: $response->content[0]['text'],
             confidence: $this->calculateConfidence($response),
             suggestedActions: $this->extractActions($response),
             escalationNeeded: $this->detectEscalationIntent($response)
@@ -193,7 +193,7 @@ class SupportBot
     private function calculateConfidence($response): float
     {
         // Simple confidence calculation based on response length and structure
-        $text = $response->content[0]->text;
+        $text = $response->content[0]['text'];
         $length = strlen($text);
 
         // Longer, structured responses tend to be more confident
@@ -209,7 +209,7 @@ class SupportBot
     private function extractActions($response): array
     {
         // Extract suggested actions from response text
-        $text = $response->content[0]->text;
+        $text = $response->content[0]['text'];
         $actions = [];
 
         // Look for action patterns
@@ -224,7 +224,7 @@ class SupportBot
 
     private function detectEscalationIntent($response): bool
     {
-        $text = strtolower($response->content[0]->text);
+        $text = strtolower($response->content[0]['text']);
         $escalationPhrases = [
             'connect you with',
             'transfer you to',
@@ -385,12 +385,12 @@ declare(strict_types=1);
 
 namespace App\Support;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class KnowledgeBase
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private \PDO $db,
         private VectorStore $vectorStore
     ) {}
@@ -441,7 +441,7 @@ PROMPT;
             ]]
         ]);
 
-        $jsonText = $response->content[0]->text;
+        $jsonText = $response->content[0]['text'];
         if (preg_match('/\{.*\}/s', $jsonText, $matches)) {
             return json_decode($matches[0], true) ?? [];
         }
@@ -535,12 +535,12 @@ declare(strict_types=1);
 
 namespace App\Support;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class TicketClassifier
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -582,7 +582,7 @@ PROMPT;
             ]]
         ]);
 
-        $jsonText = $response->content[0]->text;
+        $jsonText = $response->content[0]['text'];
         if (preg_match('/\{.*\}/s', $jsonText, $matches)) {
             $data = json_decode($matches[0], true);
             return new TicketClassification($data);
@@ -623,7 +623,7 @@ PROMPT;
             ]]
         ]);
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 
     private function formatConversation(array $conversation): string
@@ -647,14 +647,14 @@ declare(strict_types=1);
 
 namespace App\Support;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class SentimentAnalyzer
 {
     private array $cache = [];
 
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -696,7 +696,7 @@ PROMPT;
             ]]
         ]);
 
-        $jsonText = $response->content[0]->text;
+        $jsonText = $response->content[0]['text'];
         if (preg_match('/\{.*\}/s', $jsonText, $matches)) {
             $data = json_decode($matches[0], true);
             $score = $data['sentiment_score'] ?? 0.0;
@@ -1110,7 +1110,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Support\SupportBot;
 use App\Support\KnowledgeBase;
 use App\Support\TicketSystem;
@@ -1125,9 +1125,7 @@ $db = new PDO(getenv('DATABASE_DSN'));
 $redis = new Redis();
 $redis->connect('localhost', 6379);
 
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $knowledgeBase = new KnowledgeBase($claude, $db, new VectorStore());
 $ticketSystem = new TicketSystem($db);
@@ -1437,12 +1435,12 @@ declare(strict_types=1);
 
 namespace App\Support;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class QualityAssurance
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private \PDO $db
     ) {}
 
@@ -1484,7 +1482,7 @@ PROMPT;
             ]]
         ]);
 
-        $jsonText = $response->content[0]->text;
+        $jsonText = $response->content[0]['text'];
         if (preg_match('/\{.*\}/s', $jsonText, $matches)) {
             return json_decode($matches[0], true) ?? [];
         }
@@ -1652,12 +1650,12 @@ declare(strict_types=1);
 
 namespace App\Support;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class CachingStrategy
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private \Redis $redis
     ) {}
 
@@ -1706,7 +1704,7 @@ class CachingStrategy
             'article_count' => count($articles)
         ]));
 
-        return $response->content[0]->text;
+        return $response->content[0]['text'];
     }
 
     /**
@@ -1765,12 +1763,12 @@ declare(strict_types=1);
 
 namespace App\Support;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class CustomerMemory
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private \PDO $db
     ) {}
 
@@ -1810,7 +1808,7 @@ PROMPT;
             ]]
         ]);
 
-        $jsonText = $response->content[0]->text;
+        $jsonText = $response->content[0]['text'];
         if (preg_match('/\{.*\}/s', $jsonText, $matches)) {
             $memory = json_decode($matches[0], true);
             $this->storeCustomerMemory($customerId, $memory);
@@ -1892,12 +1890,12 @@ declare(strict_types=1);
 
 namespace App\Support;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class AttachmentHandler
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private \PDO $db,
         private string $uploadDir
     ) {}
@@ -1954,7 +1952,7 @@ class AttachmentHandler
             ]]
         ]);
 
-        $jsonText = $response->content[0]->text;
+        $jsonText = $response->content[0]['text'];
         if (preg_match('/\{.*\}/s', $jsonText, $matches)) {
             return json_decode($matches[0], true) ?? [];
         }
@@ -1991,7 +1989,7 @@ class AttachmentHandler
             ]]
         ]);
 
-        $jsonText = $response->content[0]->text;
+        $jsonText = $response->content[0]['text'];
         if (preg_match('/\{.*\}/s', $jsonText, $matches)) {
             return json_decode($matches[0], true) ?? [];
         }
@@ -2016,7 +2014,7 @@ class AttachmentHandler
             ]]
         ]);
 
-        $jsonText = $response->content[0]->text;
+        $jsonText = $response->content[0]['text'];
         if (preg_match('/\{.*\}/s', $jsonText, $matches)) {
             return json_decode($matches[0], true) ?? [];
         }
@@ -2068,11 +2066,11 @@ namespace Tests\Support;
 use PHPUnit\Framework\TestCase;
 use App\Support\SupportBot;
 use App\Support\BotResponse;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class SupportBotTest extends TestCase
 {
-    private Anthropic $claudeMock;
+    private ClaudePhp $claudeMock;
     private SupportBot $bot;
 
     protected function setUp(): void
@@ -2431,7 +2429,7 @@ try {
 **Solution**: Add better error handling and logging:
 
 ```php
-$jsonText = $response->content[0]->text;
+$jsonText = $response->content[0]['text'];
 if (preg_match('/\{.*\}/s', $jsonText, $matches)) {
     $data = json_decode($matches[0], true);
     if (json_last_error() !== JSON_ERROR_NONE) {

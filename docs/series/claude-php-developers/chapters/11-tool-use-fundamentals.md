@@ -108,11 +108,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Define a simple calculator tool
 $tools = [
@@ -151,7 +149,7 @@ $response = $client->messages()->create([
     ]]
 ]);
 
-echo "Response type: {$response->stopReason}\n";
+echo "Response type: {$response->stop_reason}\n";
 print_r($response->content);
 ```
 
@@ -170,11 +168,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Actual implementation of calculator
 function calculator(string $operation, float $a, float $b): float
@@ -219,10 +215,10 @@ $response = $client->messages()->create([
     'messages' => $messages
 ]);
 
-echo "Initial response stop reason: {$response->stopReason}\n\n";
+echo "Initial response stop reason: {$response->stop_reason}\n\n";
 
 // Process tool calls
-while ($response->stopReason === 'tool_use') {
+while ($response->stop_reason === 'tool_use') {
     // Add assistant's response to conversation
     $messages[] = [
         'role' => 'assistant',
@@ -232,7 +228,7 @@ while ($response->stopReason === 'tool_use') {
     // Process each tool use
     $toolResults = [];
     foreach ($response->content as $block) {
-        if ($block->type === 'tool_use') {
+        if ($block['type'] === 'tool_use') {
             echo "Claude wants to use tool: {$block->name}\n";
             echo "With input: " . json_encode($block->input) . "\n";
 
@@ -267,14 +263,14 @@ while ($response->stopReason === 'tool_use') {
         'messages' => $messages
     ]);
 
-    echo "Next response stop reason: {$response->stopReason}\n\n";
+    echo "Next response stop reason: {$response->stop_reason}\n\n";
 }
 
 // Final answer
 echo "Final Answer:\n";
 foreach ($response->content as $block) {
-    if ($block->type === 'text') {
-        echo $block->text . "\n";
+    if ($block['type'] === 'text') {
+        echo $block['text'] . "\n";
     }
 }
 ```
@@ -292,11 +288,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Simulated database functions
 function getOrderStatus(string $orderId): array
@@ -448,7 +442,7 @@ SYSTEM;
     $iterations = 0;
     $maxIterations = 10; // Prevent infinite loops
 
-    while ($response->stopReason === 'tool_use' && $iterations < $maxIterations) {
+    while ($response->stop_reason === 'tool_use' && $iterations < $maxIterations) {
         $iterations++;
 
         // Add assistant's response to conversation
@@ -460,7 +454,7 @@ SYSTEM;
         // Execute all tool calls
         $toolResults = [];
         foreach ($response->content as $block) {
-            if ($block->type === 'tool_use') {
+            if ($block['type'] === 'tool_use') {
                 echo "[TOOL] {$block->name}(" . json_encode($block->input) . ")\n";
 
                 $result = executeTool($block->name, (array)$block->input);
@@ -494,8 +488,8 @@ SYSTEM;
     // Extract final text response
     $finalResponse = '';
     foreach ($response->content as $block) {
-        if ($block->type === 'text') {
-            $finalResponse .= $block->text;
+        if ($block['type'] === 'text') {
+            $finalResponse .= $block['text'];
         }
     }
 
@@ -525,11 +519,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Define tools for weather and news
 $tools = [
@@ -592,12 +584,12 @@ $response = $client->messages()->create([
     'messages' => $messages
 ]);
 
-if ($response->stopReason === 'tool_use') {
+if ($response->stop_reason === 'tool_use') {
     echo "Claude requested " . count(array_filter($response->content, fn($b) => $b->type === 'tool_use')) . " parallel tool calls:\n\n";
 
     $toolResults = [];
     foreach ($response->content as $block) {
-        if ($block->type === 'tool_use') {
+        if ($block['type'] === 'tool_use') {
             echo "Tool: {$block->name}\n";
             echo "Input: " . json_encode($block->input) . "\n";
 
@@ -647,11 +639,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $tools = [
     [
@@ -679,7 +669,7 @@ $response = $client->messages()->create([
         'content' => 'Find products related to PHP'
     ]]
 ]);
-echo "Stop reason: {$response->stopReason}\n\n";
+echo "Stop reason: {$response->stop_reason}\n\n";
 
 // Example 2: Force specific tool
 echo "=== Force Specific Tool ===\n";
@@ -696,7 +686,7 @@ $response = $client->messages()->create([
         'content' => 'Laravel'
     ]]
 ]);
-echo "Stop reason: {$response->stopReason}\n\n";
+echo "Stop reason: {$response->stop_reason}\n\n";
 
 // Example 3: Auto (default - Claude decides)
 echo "=== Auto Mode ===\n";
@@ -710,7 +700,7 @@ $response = $client->messages()->create([
         'content' => 'Hello, how are you?'
     ]]
 ]);
-echo "Stop reason: {$response->stopReason}\n";
+echo "Stop reason: {$response->stop_reason}\n";
 ```
 
 **Why It Works**: The `tool_choice` parameter gives you control over when tools are used. `auto` (default) lets Claude decide, `any` forces Claude to use at least one tool, and `tool` with a specific name forces that exact tool. This is useful for deterministic workflows where you know which tool should be called, or for testing specific tool behavior. When forcing a tool, Claude will use it even if it could answer without it.
@@ -726,11 +716,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Tool with comprehensive validation and error handling
 function processPayment(string $customerId, float $amount, string $currency): array
@@ -838,9 +826,9 @@ $response = $client->messages()->create([
 ]);
 
 // Process tool calls with error handling
-if ($response->stopReason === 'tool_use') {
+if ($response->stop_reason === 'tool_use') {
     foreach ($response->content as $block) {
-        if ($block->type === 'tool_use') {
+        if ($block['type'] === 'tool_use') {
             echo "Tool: {$block->name}\n";
             echo "Input: " . json_encode($block->input) . "\n";
 
@@ -877,7 +865,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 // Secure tool execution wrapper
 class SecureToolExecutor
@@ -1114,20 +1102,18 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class ConversationalAgent
 {
     private array $messages = [];
     private array $tools;
-    private Anthropic $client;
+    private ClaudePhp $client;
 
     public function __construct(array $tools)
     {
         $this->tools = $tools;
-        $this->client = Anthropic::factory()
-            ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-            ->make();
+        $this->client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
     }
 
     public function chat(string $userMessage): string
@@ -1146,7 +1132,7 @@ class ConversationalAgent
         ]);
 
         // Process tool uses
-        while ($response->stopReason === 'tool_use') {
+        while ($response->stop_reason === 'tool_use') {
             $this->messages[] = [
                 'role' => 'assistant',
                 'content' => $response->content
@@ -1154,7 +1140,7 @@ class ConversationalAgent
 
             $toolResults = [];
             foreach ($response->content as $block) {
-                if ($block->type === 'tool_use') {
+                if ($block['type'] === 'tool_use') {
                     $result = $this->executeTool($block->name, (array)$block->input);
                     $toolResults[] = [
                         'type' => 'tool_result',
@@ -1186,8 +1172,8 @@ class ConversationalAgent
         // Extract text
         $text = '';
         foreach ($response->content as $block) {
-            if ($block->type === 'text') {
-                $text .= $block->text;
+            if ($block['type'] === 'text') {
+                $text .= $block['text'];
             }
         }
 

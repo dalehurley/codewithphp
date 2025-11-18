@@ -33,8 +33,8 @@ try {
         echo "Turn " . ($i + 1) . "\n";
         echo "User: {$prompt}\n";
         $response = $conversation->send($prompt);
-        echo "Claude: {$response->content[0]->text}\n";
-        echo "Tokens: {$response->usage->inputTokens} + {$response->usage->outputTokens}\n\n";
+        echo "Claude: {$response->content[0]['text']}\n";
+        echo "Tokens: {$response->usage->input_tokens} + {$response->usage->output_tokens}\n\n";
     }
 
     echo "Message history count: " . count($conversation->getMessages()) . "\n";
