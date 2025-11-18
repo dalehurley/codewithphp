@@ -84,7 +84,7 @@ use PhpParser\NodeTraverser;
 class DocumentationGenerator
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private CodeParser $parser,
         private TemplateEngine $templates
     ) {}
@@ -506,7 +506,7 @@ use ClaudePhp\ClaudePhp;
 class ApiDocGenerator
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -700,7 +700,7 @@ use ClaudePhp\ClaudePhp;
 class UserGuideGenerator
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -955,7 +955,7 @@ use ClaudePhp\ClaudePhp;
 class ReadmeGenerator
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -1112,7 +1112,7 @@ use ClaudePhp\ClaudePhp;
 class ExampleGenerator
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -1239,7 +1239,7 @@ use ClaudePhp\ClaudePhp;
 class TutorialGenerator
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -1457,7 +1457,7 @@ if (!is_dir($outputPath)) {
 }
 
 // Initialize Claude
-$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Initialize components
 $parser = new CodeParser();

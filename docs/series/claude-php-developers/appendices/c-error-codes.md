@@ -209,7 +209,7 @@ if (!str_starts_with($apiKey, 'sk-ant-')) {
 }
 
 // Initialize client
-$client = new ClaudePhp(apiKey: $apiKey);
+$client = new ClaudePhp(apiKey: $apiKey));
 ```
 
 **Debug Checklist:**
@@ -261,7 +261,7 @@ if (!in_array($model, $availableModels)) {
 }
 
 // For beta features, add beta header
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 ```
 
 ---
@@ -298,7 +298,7 @@ $url = 'https://api.anthropic.com/v1/message'; // Missing 's'
 $url = 'https://api.anthropic.com/v1/messages';
 
 // When using SDK, this is handled automatically
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 ```
 
 ---
@@ -338,7 +338,7 @@ class RateLimiter
     {
         try {
             return $request();
-        } catch (ErrorException $e) {
+        } catch (APIError $e) {
             if ($e->getErrorType() === 'rate_limit_error' && $attempt < $this->maxRetries) {
                 // Exponential backoff: 1s, 2s, 4s, 8s, 16s
                 $delay = $this->baseDelay * pow(2, $attempt);
@@ -455,7 +455,7 @@ class ApiErrorHandler
         while ($attempt < $maxAttempts) {
             try {
                 return $request();
-            } catch (ErrorException $e) {
+            } catch (APIError $e) {
                 if ($e->getErrorType() === 'api_error' && $attempt < $maxAttempts - 1) {
                     $attempt++;
                     $waitTime = min(pow(2, $attempt) * 1000000, 32000000); // Max 32s
@@ -500,7 +500,7 @@ class OverloadHandler
         while ($attempt < $maxRetries) {
             try {
                 return $request();
-            } catch (ErrorException $e) {
+            } catch (APIError $e) {
                 if ($e->getErrorType() === 'overloaded_error') {
                     $attempt++;
 
@@ -531,7 +531,7 @@ class OverloadHandler
 ```php
 # filename: connection-timeout.php
 // Set custom timeout
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 ```
 
 ### SSL Certificate Errors
@@ -541,10 +541,10 @@ $client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
 ```php
 # filename: ssl-certificate-errors.php
 // Development only - DO NOT use in production
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Production - specify CA bundle
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 ```
 
 ---
@@ -577,7 +577,7 @@ if (empty($response->content)) {
 if ($response->stop_reason === 'tool_use') {
     // Claude wants to use a tool - handle it
     foreach ($response->content as $block) {
-        if ($block->type === 'tool_use') {
+        if ($block['type'] === 'tool_use') {
             // Execute tool and continue conversation
         }
     }
@@ -624,7 +624,7 @@ class ResponseValidator
 
         $textBlocks = array_filter(
             $response->content,
-            fn($block) => $block->type === 'text'
+            fn($block) => $block['type'] === 'text'
         );
 
         if (empty($textBlocks)) {
@@ -632,7 +632,7 @@ class ResponseValidator
         }
 
         return implode("\n", array_map(
-            fn($block) => $block->text,
+            fn($block) => $block['text'],
             $textBlocks
         ));
     }
@@ -746,7 +746,7 @@ $tools = [
 
 // 2. Log tool use attempts
 foreach ($response->content as $block) {
-    if ($block->type === 'tool_use') {
+    if ($block['type'] === 'tool_use') {
         Log::info('Tool use detected', [
             'tool' => $block->name,
             'input' => $block->input,
@@ -890,10 +890,10 @@ class RequestInspector
         echo "Content Blocks: " . count($response->content) . "\n";
 
         foreach ($response->content as $i => $block) {
-            echo "  [{$i}] Type: {$block->type}\n";
-            if ($block->type === 'text') {
-                echo "      Length: " . strlen($block->text) . " chars\n";
-            } elseif ($block->type === 'tool_use') {
+            echo "  [{$i}] Type: {$block['type']}\n";
+            if ($block['type'] === 'text') {
+                echo "      Length: " . strlen($block['text']) . " chars\n";
+            } elseif ($block['type'] === 'tool_use') {
                 echo "      Tool: {$block->name}\n";
             }
         }
@@ -926,7 +926,7 @@ class ClaudeClient
         try {
             return $this->client->messages()->create($params);
 
-        } catch (ErrorException $e) {
+        } catch (APIError $e) {
             return $this->handleApiError($e, $params);
 
         } catch (\GuzzleHttp\Exception\ConnectException $e) {
@@ -951,7 +951,7 @@ class ClaudeClient
         }
     }
 
-    private function handleApiError(ErrorException $e, array $params): ?object
+    private function handleApiError(APIError $e, array $params): ?object
     {
         $errorType = $e->getErrorType();
 

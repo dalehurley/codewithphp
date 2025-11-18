@@ -95,7 +95,7 @@ abstract class Agent
     protected array $capabilities = [];
 
     public function __construct(
-        protected Anthropic $claude,
+        protected ClaudePhp $claude,
         protected string $agentId,
         protected string $name,
         protected string $role,
@@ -238,7 +238,7 @@ abstract class Agent
         $toolResults = [];
 
         foreach ($response->content as $block) {
-            if ($block->type !== 'tool_use') {
+            if ($block['type'] !== 'tool_use') {
                 continue;
             }
 
@@ -930,7 +930,7 @@ class AgentOrchestrator
     private array $agents = [];
 
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {
         $this->messageBroker = new MessageBroker();
     }
@@ -1050,7 +1050,7 @@ use ClaudePhp\ClaudePhp;
 use App\MultiAgent\AgentOrchestrator;
 
 // Initialize Claude
-$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Create orchestrator
 $orchestrator = new AgentOrchestrator($claude);

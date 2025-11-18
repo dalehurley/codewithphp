@@ -257,7 +257,7 @@ use App\Vision\ImageHelper;
 class InvoiceProcessor
 {
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     public function processInvoice(string $pdfPath): array
@@ -460,7 +460,7 @@ use App\Vision\ImageHelper;
 class ContractAnalyzer
 {
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     public function analyzeContract(string $pdfPath): array
@@ -712,7 +712,7 @@ use App\Vision\ImageHelper;
 class ResumeProcessor
 {
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     public function processResume(string $pdfPath): array
@@ -927,12 +927,12 @@ use App\Document\ContractAnalyzer;
 use App\Document\ResumeProcessor;
 use App\Document\PDFProcessor;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 class DocumentPipeline
 {
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     public function processDocument(string $pdfPath): array
@@ -1197,7 +1197,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Upload PDF file once
 $pdfPath = __DIR__ . '/documents/invoice.pdf';
@@ -1273,12 +1273,12 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 class BatchDocumentProcessor
 {
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     /**

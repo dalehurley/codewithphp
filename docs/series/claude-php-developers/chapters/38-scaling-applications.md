@@ -133,7 +133,7 @@ class StatelessClaudeService
      * Can run on any server in the cluster
      */
     public function __construct(
-        private readonly Anthropic $client,
+        private readonly ClaudePhp $client,
         private readonly \Redis $redis,
         private readonly string $sessionStore = 'redis'
     ) {}
@@ -329,7 +329,7 @@ class ClaudeQueueJob
         public array $metadata = []
     ) {}
 
-    public function handle(Anthropic $client, \Redis $redis): void
+    public function handle(ClaudePhp $client, \Redis $redis): void
     {
         $startTime = microtime(true);
 
@@ -878,7 +878,7 @@ use ClaudePhp\ClaudePhp;
 class ResilientClaudeClient
 {
     public function __construct(
-        private readonly Anthropic $client,
+        private readonly ClaudePhp $client,
         private readonly CircuitBreaker $circuitBreaker,
         private readonly RetryManager $retryManager
     ) {}
@@ -1849,7 +1849,7 @@ use Redis;
 class HeaderAwareRateLimiter
 {
     public function __construct(
-        private readonly Anthropic $client,
+        private readonly ClaudePhp $client,
         private readonly Redis $redis,
         private readonly int $defaultMaxConcurrent = 10
     ) {}
@@ -2012,7 +2012,7 @@ class ClaudeConnectionPool
     /**
      * Get client from pool
      */
-    public function getClient(): Anthropic
+    public function getClient(): ClaudePhp
     {
         if (empty($this->pool)) {
             // Pool exhausted - create new client
@@ -2025,7 +2025,7 @@ class ClaudeConnectionPool
     /**
      * Return client to pool
      */
-    public function returnClient(Anthropic $client): void
+    public function returnClient(ClaudePhp $client): void
     {
         if (count($this->pool) < $this->poolSize) {
             $this->pool[] = $client;
@@ -2046,9 +2046,9 @@ class ClaudeConnectionPool
         }
     }
 
-    private function createClient(): Anthropic
+    private function createClient(): ClaudePhp
     {
-        return new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+        return new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
     }
 }
 

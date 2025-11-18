@@ -215,8 +215,11 @@ $guzzleClient = new GuzzleClient([
     'connect_timeout' => 10,
 ]);
 
-// Create Anthropic client with custom configuration
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+// Create Claude client with custom HTTP client
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY'),
+    httpClient: $guzzleClient
+);
 
 try {
     $response = $client->messages()->create([
@@ -314,7 +317,7 @@ class CachingHttpClient implements ClientInterface
 $guzzleClient = new \GuzzleHttp\Client(['timeout' => 30]);
 $cachingClient = new CachingHttpClient($guzzleClient, ttl: 1800);
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // First request - cache miss
 $response1 = $client->messages()->create([
@@ -360,7 +363,7 @@ use ClaudePhp\ClaudePhp;
 use Anthropic\Responses\Messages\CreateResponse;
 use Anthropic\Responses\Messages\Content\TextContent;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
@@ -618,7 +621,7 @@ $guzzleClient = new GuzzleClient([
     'timeout' => 30,
 ]);
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Make several requests
 for ($i = 1; $i <= 3; $i++) {
@@ -670,23 +673,22 @@ require 'vendor/autoload.php';
 use ClaudePhp\ClaudePhp;
 use ClaudePhp\Exceptions\APIError;
 use ClaudePhp\Exceptions\RateLimitError;
-use ClaudePhp\Exceptions\InvalidRequestException;
 use ClaudePhp\Exceptions\AuthenticationError;
 
 $client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 function makeRequestWithRetry(
-    Anthropic\Contracts\ClientContract $client,
+    ClaudePhp $client,
     array $params,
     int $maxRetries = 3
-): ?Anthropic\Responses\Messages\CreateResponse {
+) {
     $attempt = 0;
 
     while ($attempt < $maxRetries) {
         try {
             return $client->messages()->create($params);
 
-        } catch (RateLimitException $e) {
+        } catch (RateLimitError $e) {
             $attempt++;
             $waitTime = min(pow(2, $attempt), 60); // Exponential backoff, max 60s
 
@@ -699,23 +701,25 @@ function makeRequestWithRetry(
 
             sleep($waitTime);
 
-        } catch (InvalidRequestException $e) {
-            // Don't retry invalid requests
-            echo "Invalid request: " . $e->getMessage() . "\n";
-            echo "Response body: " . $e->getResponse()?->getBody() . "\n";
-            throw $e;
+        } catch (APIError $e) {
+            // Don't retry invalid requests (4xx errors)
+            $statusCode = $e->getResponse()?->getStatusCode() ?? 0;
+            if ($statusCode >= 400 && $statusCode < 500) {
+                echo "Invalid request: " . $e->getMessage() . "\n";
+                throw $e;
+            }
 
-        } catch (AuthenticationException $e) {
+        } catch (AuthenticationError $e) {
             // Don't retry auth errors
             echo "Authentication failed: " . $e->getMessage() . "\n";
             throw $e;
 
-        } catch (ErrorException $e) {
-            // Retry server errors
-            $attempt++;
-            $statusCode = $e->getResponse()?->getStatusCode();
-
+        } catch (APIError $e) {
+            // Retry server errors (5xx)
+            $statusCode = $e->getResponse()?->getStatusCode() ?? 0;
+            
             if ($statusCode >= 500 && $attempt < $maxRetries) {
+                $attempt++;
                 $waitTime = $attempt * 2;
                 echo "Server error ({$statusCode}). Retrying in {$waitTime}s...\n";
                 sleep($waitTime);
@@ -756,10 +760,10 @@ try {
 
 Different exception types require different handling strategies:
 
-- **`RateLimitException`**: Retry with exponential backoff, respecting rate limit headers
-- **`InvalidRequestException`**: Don't retry—fix the request instead
-- **`AuthenticationException`**: Don't retry—check credentials
-- **`ErrorException`** (5xx): Retry—server errors are often transient
+- **`RateLimitError`**: Retry with exponential backoff, respecting rate limit headers
+- **`APIError`** (4xx): Don't retry—fix the request instead
+- **`AuthenticationError`**: Don't retry—check credentials
+- **`APIError`** (5xx): Retry—server errors are often transient
 
 The exponential backoff (`pow(2, $attempt)`) increases wait time with each retry: 1s, 2s, 4s, 8s. This prevents overwhelming a struggling server while still retrying transient failures.
 
@@ -935,7 +939,7 @@ class ClaudeServiceProvider extends ServiceProvider
             ]);
 
             // Create Claude client
-            return new ClaudePhp(apiKey: $config['api_key']);
+            return new ClaudePhp(apiKey: $config['api_key']));
         });
     }
 
@@ -973,7 +977,7 @@ require 'vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 // Streaming configuration - use createStreamed() instead of create()
 $stream = $client->messages()->createStreamed([
@@ -1071,7 +1075,7 @@ $guzzleClient = new GuzzleClient([
     ],
 ]);
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Make multiple requests to benefit from connection pooling
 for ($i = 1; $i <= 3; $i++) {
@@ -1118,7 +1122,7 @@ class SDKMetricsCollector
     private array $metrics = [];
 
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     public function trackRequest(array $params): void
@@ -1176,7 +1180,7 @@ class SDKMetricsCollector
 }
 
 // Usage
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 $collector = new SDKMetricsCollector($client);
 
@@ -1261,7 +1265,7 @@ $guzzleClient = new GuzzleClient([
     ],
 ]);
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Make request with signed headers
 $response = $client->messages()->create([
@@ -1316,7 +1320,7 @@ class CostCalculator
     ];
 
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     public function calculateCost(
@@ -1367,7 +1371,7 @@ class CostCalculator
 }
 
 // Usage
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 $calculator = new CostCalculator($client);
 
@@ -1483,7 +1487,7 @@ $handlerStack->push($recorder->middleware());
 
 $guzzleClient = new GuzzleClient(['handler' => $handlerStack]);
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Make requests - they'll be recorded
 echo "Making requests with debugging enabled...\n";

@@ -974,7 +974,7 @@ use ClaudePhp\ClaudePhp;
 class BatchProcessor
 {
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     /**

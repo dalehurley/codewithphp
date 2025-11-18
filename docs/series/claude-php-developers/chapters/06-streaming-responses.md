@@ -96,7 +96,7 @@ if (ob_get_level()) {
     ob_end_clean();
 }
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $stream = $client->messages()->createStreamed([
     'model' => 'claude-sonnet-4-20250514',
@@ -176,7 +176,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Non-streaming: User waits 5-10 seconds with no feedback
 $startTime = microtime(true);
@@ -319,7 +319,7 @@ if (ob_get_level()) {
 $input = json_decode(file_get_contents('php://input'), true);
 $userMessage = $input['message'] ?? 'Hello, Claude!';
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 try {
     // Create streaming request
@@ -609,7 +609,7 @@ class StreamingService
 
     public function __construct(?string $apiKey = null)
     {
-        $this->client = new ClaudePhp(apiKey: $apiKey ?? getenv('ANTHROPIC_API_KEY');
+        $this->client = new ClaudePhp(apiKey: $apiKey ?? getenv('ANTHROPIC_API_KEY'));
     }
 
     public function stream(
@@ -2172,7 +2172,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Define a weather tool
 $tools = [[
@@ -2236,7 +2236,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 header('Content-Type: text/event-stream');
 if (ob_get_level()) ob_end_clean();
@@ -2296,7 +2296,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 header('Content-Type: text/event-stream');
 if (ob_get_level()) ob_end_clean();
@@ -2363,7 +2363,7 @@ class StreamingCacheService
 {
     public function __construct(
         private CacheInterface $cache,
-        private \Anthropic\Anthropic $client
+        private \ClaudePhp\ClaudePhp $client
     ) {}
 
     public function streamWithCache(string $message): void

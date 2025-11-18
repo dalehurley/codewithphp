@@ -398,7 +398,7 @@ use ClaudePhp\ClaudePhp;
 class DatasetPreparation
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -671,7 +671,7 @@ use ClaudePhp\ClaudePhp;
 class ModelEvaluator
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -934,7 +934,7 @@ use App\FineTuning\DatasetPreparation;
 use App\FineTuning\CostBenefitAnalyzer;
 
 // Initialize Claude
-$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 echo "=== Fine-tuning Strategy Analysis ===\n\n";
 
@@ -1051,7 +1051,7 @@ use ClaudePhp\ClaudePhp;
 class ModelDeployment
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -1227,7 +1227,7 @@ use ClaudePhp\ClaudePhp;
 class ModelMonitoring
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -1501,7 +1501,7 @@ use ClaudePhp\ClaudePhp;
 
 echo "=== Email Classification Fine-tuning Use Case ===\n\n";
 
-$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Prepare realistic training data
 $trainingExamples = [

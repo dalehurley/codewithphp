@@ -470,7 +470,7 @@ $response = $client->messages()->create([
 # filename: handle-tool-use.php
 // Check if Claude wants to use a tool
 foreach ($response->content as $block) {
-    if ($block->type === 'tool_use') {
+    if ($block['type'] === 'tool_use') {
         $toolName = $block->name;
         $toolInput = $block->input;
         $toolUseId = $block->id;
@@ -671,7 +671,7 @@ try {
     if (json_last_error() !== JSON_ERROR_NONE) {
         throw new RuntimeException('Invalid JSON response: ' . json_last_error_msg());
     }
-} catch (ErrorException $e) {
+} catch (APIError $e) {
     // Handle API errors
     if ($e->getErrorType() === 'invalid_request_error') {
         // Schema might be invalid
@@ -726,7 +726,7 @@ try {
             ['role' => 'user', 'content' => 'Hello!']
         ]
     ]);
-} catch (ErrorException $e) {
+} catch (APIError $e) {
     $errorType = $e->getErrorType();
     $errorMessage = $e->getMessage();
 
@@ -778,7 +778,7 @@ function makeRequestWithRetry($client, $params, $maxRetries = 3) {
     while ($attempt < $maxRetries) {
         try {
             return $client->messages()->create($params);
-        } catch (ErrorException $e) {
+        } catch (APIError $e) {
             if ($e->getErrorType() === 'rate_limit_error') {
                 $attempt++;
                 $waitTime = min(pow(2, $attempt) * 1000000, 32000000);
@@ -880,9 +880,9 @@ try {
 
     // Process response
     foreach ($response->content as $block) {
-        if ($block->type === 'text') {
-            echo $block->text . "\n";
-        } elseif ($block->type === 'tool_use') {
+        if ($block['type'] === 'text') {
+            echo $block['text'] . "\n";
+        } elseif ($block['type'] === 'tool_use') {
             echo "Tool: {$block->name}\n";
             echo "Input: " . json_encode($block->input) . "\n";
         }
@@ -892,7 +892,7 @@ try {
     echo "\nTokens used: {$response->usage->input_tokens} in, ";
     echo "{$response->usage->output_tokens} out\n";
 
-} catch (ErrorException $e) {
+} catch (APIError $e) {
     echo "Error: {$e->getMessage()}\n";
     echo "Type: {$e->getErrorType()}\n";
 }

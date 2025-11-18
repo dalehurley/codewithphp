@@ -154,7 +154,7 @@ require __DIR__ . '/../vendor/autoload.php';
 use ClaudePhp\ClaudePhp;
 
 // Initialize client
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 // Make request
 $response = $client->messages()->create([
@@ -207,13 +207,13 @@ Complete example showing all available parameters:
 ```php
 <?php
 # filename: examples/02-complete-request.php
-declare(strict_types=1);
+declare(strict_types=1)));
 
 require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 $response = $client->messages()->create([
     // === Required Parameters ===
@@ -414,7 +414,7 @@ require __DIR__ . '/../vendor/autoload.php';
 use App\Services\ClaudeRequestBuilder;
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 // Build request fluently
 $builder = new ClaudeRequestBuilder();
@@ -482,7 +482,7 @@ $messages = [];  // ERROR
 5. **Content required**: Each message must have a non-empty `content` string
 
 ::: tip Message Validation
-Always validate your messages array before sending. The SDK will throw a `ValidationException` if these rules are violated, but validating early prevents unnecessary API calls.
+Always validate your messages array before sending. The SDK will throw a `APIError` if these rules are violated, but validating early prevents unnecessary API calls.
 :::
 
 ### System Prompts
@@ -510,7 +510,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 // Example 1: Code reviewer
 $codeToReview = <<<'PHP'
@@ -585,7 +585,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 $prompt = 'Write a short story about a PHP developer.';
 
@@ -662,7 +662,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
@@ -688,11 +688,11 @@ if (empty($response->content)) {
 } else {
     foreach ($response->content as $index => $block) {
         echo "Block {$index}:\n";
-        echo "  Type: {$block->type}\n";                   // "text"
+        echo "  Type: {$block['type']}\n";                   // "text"
         
         // Handle different content types
-        if ($block->type === 'text') {
-            echo "  Text: {$block->text}\n";               // The actual response
+        if ($block['type'] === 'text') {
+            echo "  Text: {$block['text']}\n";               // The actual response
         } else {
             echo "  Content: " . json_encode($block) . "\n"; // Other content types
         }
@@ -745,8 +745,8 @@ $text = $response->content[0]['text'] ?? '';
 
 // Or handle multiple content blocks
 foreach ($response->content as $block) {
-    if ($block->type === 'text') {
-        echo $block->text;
+    if ($block['type'] === 'text') {
+        echo $block['text'];
     }
 }
 ```
@@ -892,7 +892,7 @@ require __DIR__ . '/../vendor/autoload.php';
 use App\Models\ClaudeResponse;
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 $sdkResponse = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
@@ -995,7 +995,7 @@ require __DIR__ . '/../vendor/autoload.php';
 use App\Services\JsonExtractor;
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
@@ -1095,16 +1095,16 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 use ClaudePhp\Exceptions\{
-    ErrorException,
-    RateLimitException,
-    ValidationException,
+    APIError,
+    RateLimitError,
+    APIError,
     AuthenticationException,
     PermissionDeniedException,
     NotFoundException,
     UnprocessableEntityException
 };
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 try {
     $response = $client->messages()->create([
@@ -1122,12 +1122,12 @@ try {
     error_log("Authentication failed: " . $e->getMessage());
     echo "Error: Invalid API key\n";
 
-} catch (RateLimitException $e) {
+} catch (RateLimitError $e) {
     // Rate limit exceeded
     error_log("Rate limit exceeded: " . $e->getMessage());
     echo "Error: Too many requests. Please try again later.\n";
 
-} catch (ValidationException $e) {
+} catch (APIError $e) {
     // Invalid request parameters
     error_log("Validation error: " . $e->getMessage());
     echo "Error: Invalid request parameters\n";
@@ -1147,7 +1147,7 @@ try {
     error_log("Unprocessable: " . $e->getMessage());
     echo "Error: Request cannot be processed\n";
 
-} catch (ErrorException $e) {
+} catch (APIError $e) {
     // General API error
     error_log("API error: " . $e->getMessage());
     echo "Error: API request failed\n";
@@ -1161,7 +1161,7 @@ try {
 
 **Exception Handling Best Practices:**
 
-1. **Catch specific exceptions first**: Handle `RateLimitException` and `AuthenticationException` before generic `Exception`
+1. **Catch specific exceptions first**: Handle `RateLimitError` and `AuthenticationException` before generic `Exception`
 2. **Log errors appropriately**: Use appropriate log levels (error for failures, warning for retries)
 3. **Provide user-friendly messages**: Don't expose internal error details to end users
 4. **Implement retry logic**: Automatically retry transient failures (rate limits, server errors)
@@ -1199,7 +1199,7 @@ class RetryableClaudeClient
     private const INITIAL_DELAY = 1; // seconds
 
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     public function createMessage(array $params): mixed
@@ -1211,7 +1211,7 @@ class RetryableClaudeClient
             try {
                 return $this->client->messages()->create($params);
 
-            } catch (RateLimitException $e) {
+            } catch (RateLimitError $e) {
                 $attempt++;
 
                 if ($attempt >= self::MAX_RETRIES) {
@@ -1223,7 +1223,7 @@ class RetryableClaudeClient
                 sleep($delay);
                 $delay *= 2;
 
-            } catch (ErrorException $e) {
+            } catch (APIError $e) {
                 // Check if error is transient (5xx status codes)
                 if ($this->isTransientError($e)) {
                     $attempt++;
@@ -1245,7 +1245,7 @@ class RetryableClaudeClient
         throw new \RuntimeException('Max retries exceeded');
     }
 
-    private function isTransientError(ErrorException $e): bool
+    private function isTransientError(APIError $e): bool
     {
         $message = $e->getMessage();
 
@@ -1270,7 +1270,7 @@ require __DIR__ . '/../vendor/autoload.php';
 use App\Services\RetryableClaudeClient;
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 $retryableClient = new RetryableClaudeClient($client);
 
@@ -1351,7 +1351,7 @@ The Claude API uses standard HTTP status codes to indicate request results:
 
 - **2xx (Success)**: Request succeeded
 - **4xx (Client Error)**: Your request was invalid - don't retry without fixing
-- **5xx (Server Error)**: Anthropic's servers had an issue - safe to retry
+- **5xx (Server Error)**: ClaudePhp's servers had an issue - safe to retry
 
 ::: tip Retry Strategy
 Only retry on 5xx errors and 429 (rate limit). Never retry 4xx errors (except 429) as they indicate problems with your request that won't be fixed by retrying.
@@ -1519,7 +1519,7 @@ use Psr\Log\NullLogger;
 class DebuggableClaudeClient
 {
     public function __construct(
-        private readonly Anthropic $client,
+        private readonly ClaudePhp $client,
         private readonly LoggerInterface $logger = new NullLogger(),
         private readonly bool $debugMode = false
     ) {}
@@ -1610,7 +1610,7 @@ $httpClient = new Client([
     'connect_timeout' => 10.0,   // Connection timeout
 ]);
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
@@ -1641,7 +1641,7 @@ class PooledClaudeClient
 {
     private static ?Anthropic $instance = null;
 
-    public static function getInstance(): Anthropic
+    public static function getInstance(): ClaudePhp
     {
         if (self::$instance === null) {
             // Create handler with connection pooling
@@ -1656,7 +1656,7 @@ class PooledClaudeClient
                 'timeout' => 30.0,
             ]);
 
-            self::$instance = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+            self::$instance = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
         }
 
         return self::$instance;

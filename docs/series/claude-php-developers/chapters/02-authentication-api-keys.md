@@ -254,14 +254,14 @@ class MultiTenantClaudeService
     /**
      * Get Claude client for specific tenant
      */
-    public function getClientForTenant(Tenant $tenant): Anthropic
+    public function getClientForTenant(Tenant $tenant): ClaudePhp
     {
         // Check if tenant has custom API key
         $apiKey = $tenant->anthropic_api_key ?? $this->defaultApiKey;
 
         // Cache clients per API key
         if (!isset($this->clients[$apiKey])) {
-            $this->clients[$apiKey] = new ClaudePhp(apiKey: $apiKey);
+            $this->clients[$apiKey] = new ClaudePhp(apiKey: $apiKey));
         }
 
         return $this->clients[$apiKey];
@@ -380,7 +380,7 @@ require __DIR__ . '/../vendor/autoload.php';
 use ClaudePhp\ClaudePhp;
 
 // Direct API key (NOT RECOMMENDED for production)
-$client = new ClaudePhp(apiKey: 'sk-ant-api03-your-key-here');
+$client = new ClaudePhp(apiKey: 'sk-ant-api03-your-key-here'));
 
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
@@ -417,7 +417,7 @@ if (!$apiKey) {
     die("Error: ANTHROPIC_API_KEY environment variable not set\n");
 }
 
-$client = new ClaudePhp(apiKey: $apiKey);
+$client = new ClaudePhp(apiKey: $apiKey));
 ```
 
 Set environment variable:
@@ -471,7 +471,7 @@ $dotenv->load();
 $dotenv->required(['ANTHROPIC_API_KEY'])->notEmpty();
 
 // Create client with environment config
-$client = new ClaudePhp(apiKey: $_ENV['ANTHROPIC_API_KEY']);
+$client = new ClaudePhp(apiKey: $_ENV['ANTHROPIC_API_KEY']));
 
 // Use environment-based defaults
 $response = $client->messages()->create([
@@ -614,7 +614,7 @@ use ClaudePhp\ClaudePhp;
 $config = new ClaudeConfig();
 
 // Create client
-$client = new ClaudePhp(apiKey: $config->getApiKey();
+$client = new ClaudePhp(apiKey: $config->getApiKey());
 
 // Use configuration defaults
 $response = $client->messages()->create([
@@ -646,7 +646,7 @@ class ClaudeService
 
     public function __construct(ClaudeConfig $config)
     {
-        $client = new ClaudePhp(apiKey: $config->getApiKey();
+        $client = new ClaudePhp(apiKey: $config->getApiKey());
 
         $this->messages = $client->messages();
     }
@@ -1015,7 +1015,7 @@ $secretsProvider = new AwsSecretsProvider(
     'prod/anthropic/api-key'
 );
 
-$client = new ClaudePhp(apiKey: $secretsProvider->getApiKey();
+$client = new ClaudePhp(apiKey: $secretsProvider->getApiKey());
 ```
 
 ::: info
@@ -1153,7 +1153,7 @@ use ClaudePhp\Exceptions\AnthropicException;
 class ApiKeyValidator
 {
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     /**
@@ -1161,7 +1161,7 @@ class ApiKeyValidator
      */
     public function validateKey(string $apiKey): array
     {
-        $testClient = new ClaudePhp(apiKey: $apiKey);
+        $testClient = new ClaudePhp(apiKey: $apiKey));
 
         try {
             // Make minimal test request (1 token, cheapest model)
@@ -1238,7 +1238,7 @@ if (!$apiKey) {
     die("Error: ANTHROPIC_API_KEY not set\n");
 }
 
-$client = new ClaudePhp(apiKey: $apiKey);
+$client = new ClaudePhp(apiKey: $apiKey));
 
 $validator = new ApiKeyValidator($client);
 
@@ -1287,7 +1287,7 @@ if (!str_starts_with($apiKey, 'sk-ant-')) {
 
 // Optional: Full validation (makes API call - use sparingly)
 if (getenv('VALIDATE_API_KEY_ON_STARTUP') === 'true') {
-    $client = new ClaudePhp(apiKey: $apiKey);
+    $client = new ClaudePhp(apiKey: $apiKey));
     $validator = new ApiKeyValidator($client);
     $result = $validator->validateKey($apiKey);
 
@@ -1358,9 +1358,9 @@ class DualKeyClaudeService
         }
     }
 
-    private function createClient(string $apiKey): Anthropic
+    private function createClient(string $apiKey): ClaudePhp
     {
-        return new ClaudePhp(apiKey: $apiKey);
+        return new ClaudePhp(apiKey: $apiKey));
     }
 
     public function chat(string $prompt): string
@@ -1898,7 +1898,7 @@ use ClaudePhp\ClaudePhp;
 
 class ClaudeApiTest extends TestCase
 {
-    private Anthropic $client;
+    private ClaudePhp $client;
 
     protected function setUp(): void
     {
@@ -1908,7 +1908,7 @@ class ClaudeApiTest extends TestCase
             $this->markTestSkipped('ANTHROPIC_API_KEY_TEST not set');
         }
 
-        $this->client = new ClaudePhp(apiKey: $apiKey);
+        $this->client = new ClaudePhp(apiKey: $apiKey));
     }
 
     public function testCanMakeApiRequest(): void

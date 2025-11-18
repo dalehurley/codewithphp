@@ -189,7 +189,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $prompt = 'Complete this sentence: The future of PHP is';
 
@@ -430,7 +430,7 @@ require __DIR__ . '/../vendor/autoload.php';
 use ClaudePhp\ClaudePhp;
 use Anthropic\Contracts\ClientContract;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 function testTopP(ClientContract $client, float $topP): array
 {
@@ -558,7 +558,7 @@ use ClaudePhp\ClaudePhp;
 // Note: Claude API doesn't expose top_k as directly as some models
 // But understanding it helps grasp sampling mechanics
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Conceptual usage (if supported):
 $response = $client->messages()->create([
@@ -589,7 +589,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 class SamplingStrategy
 {
@@ -773,7 +773,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $manager = new SamplingConfigManager();
 
@@ -849,7 +849,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $extractor = new DataExtractor($client);
 
@@ -965,7 +965,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $writer = new CreativeWriter($client);
 
@@ -1052,7 +1052,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $generator = new CodeGenerator($client);
 
@@ -1165,7 +1165,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $assistant = new AdaptiveAssistant($client);
 
@@ -1194,7 +1194,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Stop sequences can help control output length with high temperature
 // High temperature might generate longer outputs, but stop sequences provide a safety net
@@ -1589,7 +1589,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $tester = new ConsistencyTester($client);
 
@@ -1614,18 +1614,18 @@ foreach ([0.0, 0.5, 1.0, 1.5] as $temp) {
 
 ### Error: "Call to undefined method messages()"
 
-**Symptom**: `Fatal error: Call to undefined method Anthropic\Anthropic::messages()`
+**Symptom**: `Fatal error: Call to undefined method ClaudePhp\ClaudePhp::messages()`
 
-**Cause**: The client wasn't properly instantiated using the factory pattern.
+**Cause**: The client wasn't properly instantiated.
 
-**Solution**: Always use the factory to create the client:
+**Solution**: Always create the client using the constructor:
 
 ```php
 // Wrong
-$client = new Anthropic();
+$client = new ClaudePhp(); // Missing apiKey parameter
 
 // Correct
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 ```
 
 ### Problem: Inconsistent Outputs at Temperature 0.0

@@ -28,7 +28,7 @@ prerequisites:
 
 ## Overview
 
-Caching is essential for production Claude applications—it reduces costs, improves response times, and provides resilience against API outages. This chapter covers multiple caching strategies: Anthropic's native prompt caching, response caching with Redis, intelligent cache invalidation, and semantic similarity caching for fuzzy matching.
+Caching is essential for production Claude applications—it reduces costs, improves response times, and provides resilience against API outages. This chapter covers multiple caching strategies: ClaudePhp's native prompt caching, response caching with Redis, intelligent cache invalidation, and semantic similarity caching for fuzzy matching.
 
 You'll learn to implement sophisticated caching layers that can reduce API costs by 90% while maintaining fresh, relevant responses.
 
@@ -116,7 +116,7 @@ require 'vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Large context that will be cached
 $documentationContext = file_get_contents(__DIR__ . '/large-documentation.txt');
@@ -415,7 +415,7 @@ $redisAdapter = new RedisAdapter($redisConnection);
 $cache = new Psr16Cache($redisAdapter);
 
 // Create cached service
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $claudeService = new \App\Services\CachedClaudeService(
     client: $client,
@@ -888,7 +888,7 @@ use Symfony\Component\Cache\Psr16Cache;
 $redisConnection = RedisAdapter::createConnection('redis://localhost');
 $cache = new Psr16Cache(new RedisAdapter($redisConnection));
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $claudeService = new CachedClaudeService($client, $cache);
 
@@ -1047,7 +1047,7 @@ $redisConnection = RedisAdapter::createConnection('redis://localhost');
 $cache = new Psr16Cache(new RedisAdapter($redisConnection));
 
 // Setup Claude client
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Create tiered cache service
 $claudeService = new TieredCacheService(

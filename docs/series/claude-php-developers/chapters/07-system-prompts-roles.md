@@ -101,7 +101,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // WITHOUT system prompt - generic response
 $response1 = $client->messages()->create([
@@ -425,7 +425,7 @@ require __DIR__ . '/../../vendor/autoload.php';
 use ClaudePhp\ClaudePhp;
 use CodeWithPHP\Claude\Assistants\CodeReviewerAssistant;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $reviewer = new CodeReviewerAssistant($client);
 
@@ -809,7 +809,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $systemPrompt = <<<'PROMPT'
 You are a code analysis tool that ALWAYS returns valid JSON in this exact format:
@@ -1043,7 +1043,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $defensiveSystemPrompt = <<<'PROMPT'
 # Role
@@ -1166,7 +1166,7 @@ use ClaudePhp\ClaudePhp;
 use CodeWithPHP\Claude\Security\SafeAssistant;
 use CodeWithPHP\Claude\Security\PromptSanitizer;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $assistant = new SafeAssistant($client, new PromptSanitizer());
 
@@ -1211,7 +1211,7 @@ use ClaudePhp\ClaudePhp;
 class SystemPromptOptimizer
 {
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     /**
@@ -1265,7 +1265,7 @@ class SystemPromptOptimizer
     }
 }
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $optimizer = new SystemPromptOptimizer($client);
 
@@ -1693,7 +1693,7 @@ use ClaudePhp\ClaudePhp;
 class SystemPromptDebugger
 {
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     /**
@@ -1788,7 +1788,7 @@ PROMPT;
 }
 
 // Usage
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $debugger = new SystemPromptDebugger($client);
 
@@ -2092,7 +2092,7 @@ class SystemPromptABTest
 }
 
 // Usage
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $tester = new SystemPromptABTest($client);
 

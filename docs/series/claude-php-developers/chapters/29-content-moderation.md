@@ -71,7 +71,7 @@ use ClaudePhp\ClaudePhp;
 class ModerationSystem
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private ContentAnalyzer $analyzer,
         private PolicyEngine $policyEngine,
         private ModerationQueue $queue,
@@ -219,7 +219,7 @@ use ClaudePhp\ClaudePhp;
 class ContentAnalyzer
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -400,7 +400,7 @@ class ToxicityDetector
     ];
 
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -528,7 +528,7 @@ class PIIDetector
     ];
 
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -693,7 +693,7 @@ use ClaudePhp\ClaudePhp;
 class SpamDetector
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private \PDO $db
     ) {}
 
@@ -1571,7 +1571,7 @@ $db = new PDO(getenv('DATABASE_DSN'));
 $redis = new Redis();
 $redis->connect('localhost', 6379);
 
-$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $analyzer = new ContentAnalyzer($claude);
 $policyEngine = new PolicyEngine();
@@ -1934,7 +1934,7 @@ $db = new PDO(getenv('DATABASE_DSN'));
 $redis = new Redis();
 $redis->connect('localhost', 6379);
 
-$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $analyzer = new ContentAnalyzer($claude);
 $policyEngine = new PolicyEngine();

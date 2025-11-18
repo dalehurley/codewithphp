@@ -141,7 +141,7 @@ Anthropic's 2025 Claude lineup includes Opus 4.1, Sonnet 4.5, and Haiku 4.5. Eac
 - Context Window: 200,000 tokens
 - Max Output: 16,384 tokens
 - Extended Thinking: Enabled for complex tasks
-- Availability: Anthropic API (check Bedrock/Vertex availability per account)
+- Availability: ClaudePhp API (check Bedrock/Vertex availability per account)
 
 **Best For:**
 - Complex reasoning tasks
@@ -191,7 +191,7 @@ $response = $client->messages()->create([
 - Context Window: 200,000 tokens (1M-token Beta tier for Sonnet 4.5 where enabled)
 - Max Output: 16,384 tokens
 - Prompt Caching: Supports 5-minute and 1-hour caches
-- Availability: Anthropic API, Amazon Bedrock, and Vertex AI (region dependent)
+- Availability: ClaudePhp API, Amazon Bedrock, and Vertex AI (region dependent)
 
 **Best For:**
 - General-purpose applications and most production workloads
@@ -240,7 +240,7 @@ $response = $client->messages()->create([
 - Context Window: 200,000 tokens
 - Max Output: 16,384 tokens
 - Latency: Sub-second responses for most prompts
-- Availability: Anthropic API plus partner clouds where enabled
+- Availability: ClaudePhp API plus partner clouds where enabled
 
 **Best For:**
 - High-volume processing and classification
@@ -377,7 +377,7 @@ Before diving into the request structure, here are the fundamental API details:
 - `400 Bad Request`: Invalid parameters or malformed request
 - `401 Unauthorized`: Invalid or missing API key
 - `429 Too Many Requests`: Rate limit exceeded
-- `500 Internal Server Error`: Anthropic service error
+- `500 Internal Server Error`: ClaudePhp service error
 - `529 Service Overloaded`: Service temporarily unavailable
 
 **Rate Limits:**
@@ -496,12 +496,12 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 class ClaudeResponseHandler
 {
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     public function processRequest(
@@ -773,7 +773,7 @@ declare(strict_types=1);
 class BatchProcessor
 {
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     /**
@@ -878,14 +878,14 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 class ConversationManager
 {
     private array $history = [];
 
     public function __construct(
-        private readonly Anthropic $client,
+        private readonly ClaudePhp $client,
         private readonly string $model = 'claude-sonnet-4-20250514'
     ) {}
 
@@ -1020,7 +1020,7 @@ class ManagedConversation
     private int $maxHistoryTokens = 10000;  // Keep last ~10K tokens
 
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     public function sendMessage(string $message): string
@@ -1071,7 +1071,7 @@ declare(strict_types=1);
 class SimpleClaudeService
 {
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     public function ask(string $question): string
@@ -1104,7 +1104,7 @@ declare(strict_types=1);
 class ConfiguredClaudeService
 {
     public function __construct(
-        private readonly Anthropic $client,
+        private readonly ClaudePhp $client,
         private readonly string $model = 'claude-sonnet-4-20250514',
         private readonly ?string $systemPrompt = null,
         private readonly int $maxTokens = 2048,
@@ -1156,7 +1156,7 @@ class ConversationalService
     private array $messages = [];
 
     public function __construct(
-        private readonly Anthropic $client,
+        private readonly ClaudePhp $client,
         private readonly string $systemPrompt = ''
     ) {}
 
@@ -1224,7 +1224,7 @@ declare(strict_types=1);
 class ModelComparison
 {
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     public function compareModels(string $prompt): array

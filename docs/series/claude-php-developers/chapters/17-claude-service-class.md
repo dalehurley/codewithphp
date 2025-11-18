@@ -88,7 +88,7 @@ use App\Services\ClaudeService;
 use App\Contracts\ClaudeServiceInterface;
 
 // Initialize the SDK client
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Create a simple service instance
 $service = new ClaudeService(
@@ -241,7 +241,7 @@ class ClaudeService implements ClaudeServiceInterface
 
             return $text;
 
-        } catch (ErrorException $e) {
+        } catch (APIError $e) {
             $this->logger->error('Text generation failed', [
                 'error' => $e->getMessage(),
                 'prompt_length' => strlen($prompt),
@@ -358,7 +358,7 @@ class ClaudeService implements ClaudeServiceInterface
             try {
                 return $this->client->messages()->create($params);
 
-            } catch (ErrorException $e) {
+            } catch (APIError $e) {
                 $attempt++;
 
                 if ($attempt >= $maxRetries || $e->getResponse()?->getStatusCode() < 500) {
@@ -531,7 +531,7 @@ class ClaudeServiceFactory
             'timeout' => $config->timeout,
         ]);
 
-        return new ClaudePhp(apiKey: $config->apiKey);
+        return new ClaudePhp(apiKey: $config->apiKey));
     }
 }
 ```

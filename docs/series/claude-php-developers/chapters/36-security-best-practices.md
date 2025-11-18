@@ -106,7 +106,7 @@ $apiKey = getenv('ANTHROPIC_API_KEY') ?: throw new RuntimeException(
     'ANTHROPIC_API_KEY not set. Create a .env file or set environment variable.'
 );
 
-$client = new ClaudePhp(apiKey: $apiKey);
+$client = new ClaudePhp(apiKey: $apiKey));
 
 // Simple security check: validate key format
 if (!str_starts_with($apiKey, 'sk-ant-')) {
@@ -148,7 +148,7 @@ API keys are the gateway to your Claude account and budget. A compromised key ca
 # ❌ NEVER DO THIS - Hardcoded key
 declare(strict_types=1);
 
-$client = new ClaudePhp(apiKey: 'sk-ant-api03-hardcoded-key');
+$client = new ClaudePhp(apiKey: 'sk-ant-api03-hardcoded-key'));
 ```
 
 **Use environment variables:**
@@ -159,7 +159,7 @@ $client = new ClaudePhp(apiKey: 'sk-ant-api03-hardcoded-key');
 # ✓ Secure: Environment variable
 declare(strict_types=1);
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Validate key exists
 if (!getenv('ANTHROPIC_API_KEY')) {
@@ -385,7 +385,7 @@ $secretsProvider = new AwsSecretsProvider(
     'prod/anthropic/api-key'
 );
 
-$client = new ClaudePhp(apiKey: $secretsProvider->getApiKey();
+$client = new ClaudePhp(apiKey: $secretsProvider->getApiKey());
 ```
 
 ## Prompt Injection Prevention
@@ -533,7 +533,7 @@ use App\Security\PromptInjectionDefense;
 use App\Security\SecurityException;
 
 $defense = new PromptInjectionDefense();
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 try {
     $userInput = $_POST['user_input'] ?? '';
@@ -640,7 +640,7 @@ use App\Security\SecurePromptBuilder;
 
 $promptBuilder = new SecurePromptBuilder();
 $userInput = "This is the user's text to summarize.";
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $prompt = $promptBuilder->buildSecurePrompt(
     userInput: $userInput,
@@ -968,7 +968,7 @@ $customerData = $minimizer->minimizeCustomerData($fullCustomer, [
 $customers = [$fullCustomer]; // Array of customer records
 $anonymousData = $minimizer->anonymize($customers);
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
@@ -1099,7 +1099,7 @@ use App\Compliance\ComplianceException;
 
 $gdpr = new GdprCompliance();
 $userId = 'user_12345';
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Before processing
 if (!$gdpr->hasConsent($userId, 'ai_content_analysis')) {
@@ -1192,7 +1192,7 @@ use App\Compliance\HipaaCompliance;
 use App\Compliance\ComplianceException;
 
 $hipaa = new HipaaCompliance();
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $medicalNote = "Patient John Smith (DOB: 05/15/1980, MRN: 123456) presents with...";
 $deidentified = $hipaa->deidentifyHealthData($medicalNote);
@@ -1339,7 +1339,7 @@ class RateLimiter
         if ($current >= $maxAttempts) {
             $ttl = $this->redis->ttl($key);
 
-            throw new RateLimitException(
+            throw new RateLimitError(
                 "Rate limit exceeded. Try again in $ttl seconds.",
                 remaining: 0,
                 reset_at: time() + $ttl
@@ -1422,7 +1422,7 @@ class RateLimiter
     }
 }
 
-class RateLimitException extends \Exception
+class RateLimitError extends \Exception
 {
     public function __construct(
         string $message,
@@ -1438,7 +1438,7 @@ class BudgetLimitException extends \Exception {}
 // Usage
 use ClaudePhp\ClaudePhp;
 use App\Security\RateLimiter;
-use App\Security\RateLimitException;
+use App\Security\RateLimitError;
 use App\Security\BudgetLimitException;
 
 // Initialize Redis connection (example)
@@ -1447,7 +1447,7 @@ $redis->connect('127.0.0.1', 6379);
 
 $rateLimiter = new RateLimiter($redis);
 $userId = 'user_12345';
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 try {
     // Standard rate limiting
@@ -1475,7 +1475,7 @@ try {
         ]]
     ]);
 
-} catch (RateLimitException $e) {
+} catch (RateLimitError $e) {
     http_response_code(429);
     echo json_encode([
         'error' => 'Rate limit exceeded',

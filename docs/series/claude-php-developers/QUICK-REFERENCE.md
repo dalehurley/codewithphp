@@ -43,7 +43,7 @@ composer require claude-php/claude-php-sdk
 ```php
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 ```
 
 ### Environment Variables
@@ -297,11 +297,11 @@ use ClaudePhp\Exceptions\RateLimitError;
 
 try {
     $response = $client->messages()->create([...]);
-} catch (RateLimitException $e) {
+} catch (RateLimitError $e) {
     // Rate limit hit - wait and retry
     sleep(60);
     $response = $client->messages()->create([...]);
-} catch (ErrorException $e) {
+} catch (APIError $e) {
     // API error
     logger()->error('Claude API error', [
         'message' => $e->getMessage(),
@@ -324,7 +324,7 @@ function callClaudeWithRetry(callable $fn, int $maxRetries = 3): mixed
     while ($attempt < $maxRetries) {
         try {
             return $fn();
-        } catch (RateLimitException $e) {
+        } catch (RateLimitError $e) {
             $attempt++;
             if ($attempt >= $maxRetries) {
                 throw $e;
@@ -546,7 +546,7 @@ use ClaudePhp\ClaudePhp;
 class ClaudeService
 {
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     public function generate(string $prompt, array $options = []): string
@@ -701,7 +701,7 @@ $text = $response->content; // This is an array!
 if ($response->stop_reason === 'tool_use') {
     // Find tool_use block in content array
     foreach ($response->content as $block) {
-        if ($block->type === 'tool_use') {
+        if ($block['type'] === 'tool_use') {
             // Handle tool call
         }
     }
@@ -726,9 +726,9 @@ use ClaudePhp\Exceptions\APIError;
 
 try {
     $response = $client->messages()->create([...]);
-} catch (RateLimitException $e) {
+} catch (RateLimitError $e) {
     // Handle rate limit specifically
-} catch (ErrorException $e) {
+} catch (APIError $e) {
     // Handle API errors
 }
 ```
@@ -737,7 +737,7 @@ try {
 
 ## Troubleshooting
 
-### Issue: "Class 'Anthropic\Anthropic' not found"
+### Issue: "Class 'ClaudePhp\ClaudePhp' not found"
 **Solution**: Run `composer require claude-php/claude-php-sdk` and ensure `vendor/autoload.php` is included.
 
 ### Issue: "Invalid API key"

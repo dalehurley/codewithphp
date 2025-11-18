@@ -110,7 +110,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Define a simple calculator tool
 $tools = [
@@ -170,7 +170,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Actual implementation of calculator
 function calculator(string $operation, float $a, float $b): float
@@ -228,7 +228,7 @@ while ($response->stop_reason === 'tool_use') {
     // Process each tool use
     $toolResults = [];
     foreach ($response->content as $block) {
-        if ($block->type === 'tool_use') {
+        if ($block['type'] === 'tool_use') {
             echo "Claude wants to use tool: {$block->name}\n";
             echo "With input: " . json_encode($block->input) . "\n";
 
@@ -269,8 +269,8 @@ while ($response->stop_reason === 'tool_use') {
 // Final answer
 echo "Final Answer:\n";
 foreach ($response->content as $block) {
-    if ($block->type === 'text') {
-        echo $block->text . "\n";
+    if ($block['type'] === 'text') {
+        echo $block['text'] . "\n";
     }
 }
 ```
@@ -290,7 +290,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Simulated database functions
 function getOrderStatus(string $orderId): array
@@ -454,7 +454,7 @@ SYSTEM;
         // Execute all tool calls
         $toolResults = [];
         foreach ($response->content as $block) {
-            if ($block->type === 'tool_use') {
+            if ($block['type'] === 'tool_use') {
                 echo "[TOOL] {$block->name}(" . json_encode($block->input) . ")\n";
 
                 $result = executeTool($block->name, (array)$block->input);
@@ -488,8 +488,8 @@ SYSTEM;
     // Extract final text response
     $finalResponse = '';
     foreach ($response->content as $block) {
-        if ($block->type === 'text') {
-            $finalResponse .= $block->text;
+        if ($block['type'] === 'text') {
+            $finalResponse .= $block['text'];
         }
     }
 
@@ -521,7 +521,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Define tools for weather and news
 $tools = [
@@ -589,7 +589,7 @@ if ($response->stop_reason === 'tool_use') {
 
     $toolResults = [];
     foreach ($response->content as $block) {
-        if ($block->type === 'tool_use') {
+        if ($block['type'] === 'tool_use') {
             echo "Tool: {$block->name}\n";
             echo "Input: " . json_encode($block->input) . "\n";
 
@@ -641,7 +641,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $tools = [
     [
@@ -718,7 +718,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Tool with comprehensive validation and error handling
 function processPayment(string $customerId, float $amount, string $currency): array
@@ -828,7 +828,7 @@ $response = $client->messages()->create([
 // Process tool calls with error handling
 if ($response->stop_reason === 'tool_use') {
     foreach ($response->content as $block) {
-        if ($block->type === 'tool_use') {
+        if ($block['type'] === 'tool_use') {
             echo "Tool: {$block->name}\n";
             echo "Input: " . json_encode($block->input) . "\n";
 
@@ -1108,12 +1108,12 @@ class ConversationalAgent
 {
     private array $messages = [];
     private array $tools;
-    private Anthropic $client;
+    private ClaudePhp $client;
 
     public function __construct(array $tools)
     {
         $this->tools = $tools;
-        $this->client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+        $this->client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
     }
 
     public function chat(string $userMessage): string
@@ -1140,7 +1140,7 @@ class ConversationalAgent
 
             $toolResults = [];
             foreach ($response->content as $block) {
-                if ($block->type === 'tool_use') {
+                if ($block['type'] === 'tool_use') {
                     $result = $this->executeTool($block->name, (array)$block->input);
                     $toolResults[] = [
                         'type' => 'tool_result',
@@ -1172,8 +1172,8 @@ class ConversationalAgent
         // Extract text
         $text = '';
         foreach ($response->content as $block) {
-            if ($block->type === 'text') {
-                $text .= $block->text;
+            if ($block['type'] === 'text') {
+                $text .= $block['text'];
             }
         }
 

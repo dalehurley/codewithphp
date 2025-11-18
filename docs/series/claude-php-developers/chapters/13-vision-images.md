@@ -99,7 +99,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Load and encode image
 $imagePath = __DIR__ . '/images/product-photo.jpg';
@@ -345,12 +345,12 @@ require __DIR__ . '/../vendor/autoload.php';
 use ClaudePhp\ClaudePhp;
 use App\Vision\ImageHelper;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 class ReceiptProcessor
 {
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     public function processReceipt(string $imagePath): array
@@ -461,12 +461,12 @@ require __DIR__ . '/../vendor/autoload.php';
 use ClaudePhp\ClaudePhp;
 use App\Vision\ImageHelper;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 class ChartAnalyzer
 {
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     public function analyzeChart(string $imagePath): array
@@ -616,12 +616,12 @@ require __DIR__ . '/../vendor/autoload.php';
 use ClaudePhp\ClaudePhp;
 use App\Vision\ImageHelper;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 class ImageModerator
 {
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     public function moderateImage(string $imagePath): array
@@ -746,7 +746,7 @@ use App\Vision\ImageHelper;
 class ProductImageAnalyzer
 {
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     public function analyzeProductImage(string $imagePath): array
@@ -842,7 +842,7 @@ PROMPT
     }
 }
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $analyzer = new ProductImageAnalyzer($client);
 
@@ -914,7 +914,7 @@ use App\Vision\ImageHelper;
 class UIAnalyzer
 {
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     public function analyzeUI(string $screenshotPath): array
@@ -987,7 +987,7 @@ PROMPT
     }
 }
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $analyzer = new UIAnalyzer($client);
 
@@ -1060,7 +1060,7 @@ use App\Vision\ImageHelper;
 class MultiImageProcessor
 {
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     public function createProductListing(array $productImages): array

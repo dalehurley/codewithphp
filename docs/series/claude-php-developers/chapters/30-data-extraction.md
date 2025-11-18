@@ -81,7 +81,7 @@ use ClaudePhp\ClaudePhp;
 use App\DataExtraction\ExtractionPipeline;
 // ... other imports
 
-$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $pipeline = new ExtractionPipeline(/* ... */);
 
@@ -109,7 +109,7 @@ use ClaudePhp\ClaudePhp;
 class ExtractionPipeline
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private DocumentParser $parser,
         private DataValidator $validator,
         private DataTransformer $transformer,
@@ -465,7 +465,7 @@ use App\DataExtraction\ParsedDocument;
 class InvoiceExtractor
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -620,7 +620,7 @@ use App\DataExtraction\ParsedDocument;
 class ResumeExtractor
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -958,7 +958,7 @@ use ClaudePhp\ClaudePhp;
 class QualityAnalyzer
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -1191,7 +1191,7 @@ use ClaudePhp\ClaudePhp;
 class AnalyticsGenerator
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -1352,7 +1352,7 @@ if (!isset($options['type']) || !isset($options['schema'])) {
 }
 
 // Initialize
-$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $parser = new DocumentParser();
 $validator = new DataValidator();
@@ -1626,7 +1626,7 @@ use App\DataExtraction\QualityAnalyzer;
 use App\DataExtraction\StorageManager;
 
 // Initialize Claude client
-$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Initialize components
 $parser = new DocumentParser();

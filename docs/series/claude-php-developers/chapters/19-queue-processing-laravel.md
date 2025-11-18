@@ -1391,7 +1391,7 @@ class BatchProcessingStrategy
      * Hybrid Approach:
      * - Small requests (< 50): Laravel queues for immediate results
      * - Medium batch (50-100): Laravel job batching
-     * - Large batch (100+): Anthropic Batch API overnight
+     * - Large batch (100+): ClaudePhp Batch API overnight
      */
     public static function hybrideApproach($items)
     {

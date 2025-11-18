@@ -84,7 +84,7 @@ require 'vendor/autoload.php';
 use ClaudePhp\ClaudePhp;
 
 // Initialize Claude client
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 // Make your first API call
 $response = $client->messages()->create([
@@ -181,9 +181,9 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
-function generateProductDescription(Anthropic $client, string $productName, array $features): string
+function generateProductDescription(ClaudePhp $client, string $productName, array $features): string
 {
     $featuresList = implode("\n", array_map(fn($f) => "- $f", $features));
 
@@ -229,9 +229,9 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
-function analyzeCode(Anthropic $client, string $code): string
+function analyzeCode(ClaudePhp $client, string $code): string
 {
     $response = $client->messages()->create([
         'model' => 'claude-sonnet-4-20250514',
@@ -273,9 +273,9 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
-function extractContactInfo(Anthropic $client, string $text): array
+function extractContactInfo(ClaudePhp $client, string $text): array
 {
     $response = $client->messages()->create([
         'model' => 'claude-sonnet-4-20250514',
@@ -328,7 +328,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 // System prompt defines Claude's role and expertise
 $response = $client->messages()->create([
@@ -359,7 +359,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 // Stream responses for real-time output
 $stream = $client->messages()->createStreamed([
@@ -391,8 +391,8 @@ $text = $response->content[0]['text'];
 
 // Handle multiple content blocks (if any)
 foreach ($response->content as $block) {
-    if ($block->type === 'text') {
-        echo $block->text;
+    if ($block['type'] === 'text') {
+        echo $block['text'];
     }
 }
 
@@ -440,7 +440,7 @@ use ClaudePhp\ClaudePhp;
 use ClaudePhp\Exceptions\APIError;
 use ClaudePhp\Exceptions\RateLimitError;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 try {
     $response = $client->messages()->create([
@@ -454,12 +454,12 @@ try {
 
     echo $response->content[0]['text'];
 
-} catch (RateLimitException $e) {
+} catch (RateLimitError $e) {
     // Handle rate limiting
     echo "Rate limit exceeded. Please try again later.\n";
     error_log("Rate limit: " . $e->getMessage());
 
-} catch (ErrorException $e) {
+} catch (APIError $e) {
     // Handle API errors
     echo "API error occurred: " . $e->getMessage() . "\n";
     error_log("Claude API error: " . $e->getMessage());
@@ -486,7 +486,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'))));
 
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',
@@ -551,7 +551,7 @@ $dotenv = Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
 
 // Create client with environment config
-$client = new ClaudePhp(apiKey: $_ENV['ANTHROPIC_API_KEY']);
+$client = new ClaudePhp(apiKey: $_ENV['ANTHROPIC_API_KEY']));
 
 // Use environment-based configuration
 $response = $client->messages()->create([

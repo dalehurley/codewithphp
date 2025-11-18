@@ -201,7 +201,7 @@ require 'vendor/autoload.php';
 use ClaudePhp\ClaudePhp;
 
 // Initialize Claude client
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Your first AI conversation!
 $response = $client->messages()->create([

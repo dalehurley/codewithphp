@@ -1169,7 +1169,7 @@ class HybridSearch
 {
     public function __construct(
         private VectorStore $vectorStore,
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private float $vectorWeight = 0.7,
         private float $keywordWeight = 0.3
     ) {}
@@ -1512,7 +1512,7 @@ $embeddings = new EmbeddingService(
     provider: 'openai'
 );
 
-$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $monitor = new PerformanceMonitor();
 

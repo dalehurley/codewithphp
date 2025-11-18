@@ -141,7 +141,7 @@ class ClaudeServiceProvider extends ServiceProvider
     {
         // Register bindings in the container
         $this->app->singleton(Anthropic::class, function ($app) {
-            return new ClaudePhp(apiKey: config('claude.api_key');
+            return new ClaudePhp(apiKey: config('claude.api_key'));
         });
 
         $this->app->singleton(ClaudeService::class, function ($app) {
@@ -320,7 +320,7 @@ class ClaudeServiceProvider extends ServiceProvider
                 );
             }
 
-            return new ClaudePhp(apiKey: $apiKey);
+            return new ClaudePhp(apiKey: $apiKey));
         });
 
         // Register the Claude service
@@ -512,7 +512,7 @@ class ClaudeService implements ClaudeInterface
     private array $defaultOptions;
 
     public function __construct(
-        private readonly Anthropic $client,
+        private readonly ClaudePhp $client,
         private readonly array $config
     ) {
         $this->currentModel = $config['default_model'];
@@ -1303,12 +1303,12 @@ Create a rate limit exception:
 
 ```php
 <?php
-# filename: app/Exceptions/Claude/RateLimitException.php
+# filename: app/Exceptions/Claude/RateLimitError.php
 declare(strict_types=1);
 
 namespace App\Exceptions\Claude;
 
-class RateLimitException extends ClaudeException
+class RateLimitError extends ClaudeException
 {
     public function __construct(
         string $message = 'Claude API rate limit exceeded',
@@ -1345,7 +1345,7 @@ Update the `ClaudeService` to throw these exceptions:
 
             // Convert Anthropic exceptions to custom exceptions
             if (str_contains($e->getMessage(), 'rate_limit')) {
-                throw new \App\Exceptions\Claude\RateLimitException(
+                throw new \App\Exceptions\Claude\RateLimitError(
                     $e->getMessage(),
                     retryAfterSeconds: 60
                 );
@@ -1985,7 +1985,7 @@ Route::get('/test/claude', [\App\Http\Controllers\ClaudeTestController::class, '
 - Verify key has proper API permissions in Anthropic console
 
 **Rate limiting errors?**
-- Catch `RateLimitException` specifically: `catch (RateLimitException $e)`
+- Catch `RateLimitError` specifically: `catch (RateLimitError $e)`
 - Implement exponential backoff: `sleep($e->getRetryAfter() ?? 60)`
 - Check usage in Anthropic console dashboard
 - Consider implementing queue-based processing (Chapter 19)

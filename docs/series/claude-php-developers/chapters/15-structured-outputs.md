@@ -103,9 +103,9 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
-function extractContactInfo(string $text, Anthropic $client, bool $useNativeFormat = true): array
+function extractContactInfo(string $text, ClaudePhp $client, bool $useNativeFormat = true): array
 {
     $schema = [
         'type' => 'object',
@@ -185,7 +185,7 @@ function extractContactInfo(string $text, Anthropic $client, bool $useNativeForm
     return extractContactInfoPromptBased($text, $client, $schema);
 }
 
-function extractContactInfoPromptBased(string $text, Anthropic $client, array $schema): array
+function extractContactInfoPromptBased(string $text, ClaudePhp $client, array $schema): array
 {
     $schema_json = json_encode($schema, JSON_PRETTY_PRINT);
 
@@ -305,7 +305,7 @@ use JsonSchema\Constraints\Constraint;
 class SchemaExtractor
 {
     public function __construct(
-        private Anthropic $client,
+        private ClaudePhp $client,
         private int $maxRetries = 3
     ) {}
 
@@ -703,7 +703,7 @@ use ClaudePhp\ClaudePhp;
 use App\Extraction\SchemaExtractor;
 use App\Extraction\Schemas;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $extractor = new SchemaExtractor($client);
 
@@ -941,7 +941,7 @@ use App\Extraction\SchemaExtractor;
 use App\Extraction\CustomValidator;
 use App\Extraction\Schemas;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $extractor = new SchemaExtractor($client);
 $validator = new CustomValidator();
@@ -1054,7 +1054,7 @@ class BatchExtractor
     }
 }
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $extractor = new SchemaExtractor($client);
 $batchExtractor = new BatchExtractor($extractor);
@@ -1120,7 +1120,7 @@ require __DIR__ . '/../vendor/autoload.php';
 use ClaudePhp\ClaudePhp;
 use App\Extraction\Schemas;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Example usage
 $inputText = "John Doe\njohn.doe@example.com\n+1-555-123-4567";
@@ -1134,7 +1134,7 @@ class StreamingExtractor
     private string $buffer = '';
 
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     public function extractWithStreaming(string $input, array $schema): array
@@ -1267,7 +1267,7 @@ Always pass dependencies (like the Anthropic client) through constructors or met
 // ✓ Good: Dependency injection
 class SchemaExtractor
 {
-    public function __construct(private Anthropic $client) {}
+    public function __construct(private ClaudePhp $client) {}
 }
 
 // ❌ Bad: Global variable
@@ -1414,7 +1414,7 @@ Cache extraction results for repeated inputs to reduce API costs:
 class CachedExtractor extends SchemaExtractor
 {
     public function __construct(
-        Anthropic $client,
+        ClaudePhp $client,
         private \Psr\SimpleCache\CacheInterface $cache,
         private int $ttl = 3600
     ) {

@@ -84,7 +84,7 @@ use App\CodeReview\GitHub\GitHubClient;
 class ReviewSystem
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private GitHubClient $github,
         private ReviewConfig $config,
         private SecurityScanner $securityScanner,
@@ -412,7 +412,7 @@ class SecurityScanner
     ];
 
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -531,7 +531,7 @@ use ClaudePhp\ClaudePhp;
 class BugDetector
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -1046,7 +1046,7 @@ use ClaudePhp\ClaudePhp;
 class CommentGenerator
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private ?string $template = null
     ) {}
 
@@ -1765,7 +1765,7 @@ $cache = new \Symfony\Component\Cache\Simple\RedisCache(
 );
 
 // Initialize Claude
-$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // Initialize GitHub or GitLab client
 $provider = getenv('GIT_PROVIDER') ?: 'github';
@@ -1974,7 +1974,7 @@ class SecurityScannerTest extends TestCase
         Mockery::close();
     }
 
-    private function getMockClaude(): Anthropic
+    private function getMockClaude(): ClaudePhp
     {
         $mock = Mockery::mock(Anthropic::class);
         $mockResponse = (object)[

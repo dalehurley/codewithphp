@@ -71,7 +71,7 @@ use ClaudePhp\ClaudePhp;
 class SupportBot
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private KnowledgeBase $knowledgeBase,
         private TicketSystem $ticketSystem,
         private ConversationManager $conversations,
@@ -390,7 +390,7 @@ use ClaudePhp\ClaudePhp;
 class KnowledgeBase
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private \PDO $db,
         private VectorStore $vectorStore
     ) {}
@@ -540,7 +540,7 @@ use ClaudePhp\ClaudePhp;
 class TicketClassifier
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -654,7 +654,7 @@ class SentimentAnalyzer
     private array $cache = [];
 
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -1125,7 +1125,7 @@ $db = new PDO(getenv('DATABASE_DSN'));
 $redis = new Redis();
 $redis->connect('localhost', 6379);
 
-$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $knowledgeBase = new KnowledgeBase($claude, $db, new VectorStore());
 $ticketSystem = new TicketSystem($db);
@@ -1440,7 +1440,7 @@ use ClaudePhp\ClaudePhp;
 class QualityAssurance
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private \PDO $db
     ) {}
 
@@ -1655,7 +1655,7 @@ use ClaudePhp\ClaudePhp;
 class CachingStrategy
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private \Redis $redis
     ) {}
 
@@ -1768,7 +1768,7 @@ use ClaudePhp\ClaudePhp;
 class CustomerMemory
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private \PDO $db
     ) {}
 
@@ -1895,7 +1895,7 @@ use ClaudePhp\ClaudePhp;
 class AttachmentHandler
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private \PDO $db,
         private string $uploadDir
     ) {}
@@ -2070,7 +2070,7 @@ use ClaudePhp\ClaudePhp;
 
 class SupportBotTest extends TestCase
 {
-    private Anthropic $claudeMock;
+    private ClaudePhp $claudeMock;
     private SupportBot $bot;
 
     protected function setUp(): void

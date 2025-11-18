@@ -145,7 +145,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 // ✓ Valid: User message starts
 $response1 = $client->messages()->create([
@@ -611,7 +611,7 @@ class BasicConversationManager
     private array $messages = [];
 
     public function __construct(
-        private readonly Anthropic $client,
+        private readonly ClaudePhp $client,
         private readonly string $model = 'claude-sonnet-4-20250514',
         private readonly int $maxTokens = 2048
     ) {}
@@ -677,7 +677,7 @@ require __DIR__ . '/../vendor/autoload.php';
 use App\Conversation\BasicConversationManager;
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $conversation = new BasicConversationManager($client);
 
@@ -717,7 +717,7 @@ class AdvancedConversationManager
     private array $metadata = [];
 
     public function __construct(
-        private readonly Anthropic $client,
+        private readonly ClaudePhp $client,
         private readonly string $model = 'claude-sonnet-4-20250514',
         private readonly int $maxTokens = 2048,
         private readonly float $temperature = 1.0,
@@ -835,7 +835,7 @@ require __DIR__ . '/../vendor/autoload.php';
 use App\Conversation\AdvancedConversationManager;
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $conversation = new AdvancedConversationManager(
     client: $client,
@@ -939,7 +939,7 @@ class TrimmableConversationManager
     private int $maxContextTokens = 150000; // Leave room for response
 
     public function __construct(
-        private readonly Anthropic $client,
+        private readonly ClaudePhp $client,
         private readonly string $model = 'claude-sonnet-4-20250514'
     ) {}
 
@@ -1026,7 +1026,7 @@ class SlidingWindowManager
     private int $maxMessages = 20; // Keep last 10 exchanges (20 messages)
 
     public function __construct(
-        private readonly Anthropic $client,
+        private readonly ClaudePhp $client,
         int $maxMessages = 20
     ) {
         $this->maxMessages = $maxMessages;
@@ -1096,7 +1096,7 @@ class SummarizingManager
     private int $maxContextTokens = 150000;
 
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     public function sendMessage(string $userMessage): string
@@ -1476,7 +1476,7 @@ class PersistentConversationManager
     private string $conversationId;
 
     public function __construct(
-        private readonly Anthropic $client,
+        private readonly ClaudePhp $client,
         private readonly FileConversationStorage $storage,
         ?string $conversationId = null
     ) {
@@ -1548,7 +1548,7 @@ use App\Conversation\PersistentConversationManager;
 use App\Storage\FileConversationStorage;
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $storage = new FileConversationStorage(__DIR__ . '/../storage/conversations');
 
@@ -1596,7 +1596,7 @@ class MultiPersonaManager
     private array $messages = [];
 
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     public function sendAsUser(string $message, string $systemPrompt): string
@@ -1645,7 +1645,7 @@ require __DIR__ . '/../vendor/autoload.php';
 use App\Conversation\MultiPersonaManager;
 use ClaudePhp\ClaudePhp;
 
-$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $conversation = new MultiPersonaManager($client);
 
@@ -1683,7 +1683,7 @@ class BranchingManager
     private array $branches = [];
 
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     public function sendMessage(string $message, ?string $branchId = null): string
@@ -1875,7 +1875,7 @@ use ClaudePhp\ClaudePhp;
 class ContextAwareSummarizer
 {
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     public function summarize(array $messages, int $targetLength = 500): string

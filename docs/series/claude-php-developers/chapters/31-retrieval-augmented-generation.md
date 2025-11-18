@@ -82,7 +82,7 @@ use ClaudePhp\ClaudePhp;
 class RAGPipeline
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private DocumentProcessor $processor,
         private ChunkingStrategy $chunker,
         private EmbeddingService $embeddings,
@@ -773,7 +773,7 @@ class RetrievalEngine
 {
     public function __construct(
         private VectorStore $vectorStore,
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private bool $enableReranking = true
     ) {}
 
@@ -1026,7 +1026,7 @@ use App\RAG\RetrievalEngine;
 use App\RAG\ContextOptimizer;
 
 // Initialize services
-$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $embeddings = new EmbeddingService(
     apiKey: getenv('OPENAI_API_KEY'),
@@ -1734,7 +1734,7 @@ class RAGEvaluator
     public function detectHallucinations(
         string $answer,
         array $retrievedChunks,
-        Anthropic $claude
+        ClaudePhp $claude
     ): HallucinationReport {
         $chunkContents = array_map(fn($c) => $c->content, $retrievedChunks);
         $context = implode("\n\n", $chunkContents);
@@ -1851,7 +1851,7 @@ use ClaudePhp\ClaudePhp;
 class CitationVerifier
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -1948,7 +1948,7 @@ use App\RAG\Evaluation\RAGEvaluator;
 use App\RAG\CitationVerifier;
 use ClaudePhp\ClaudePhp;
 
-$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY');
+$claude = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $pipeline = new RAGPipeline(/* ... */);
 $evaluator = new RAGEvaluator();
