@@ -77,14 +77,14 @@ declare(strict_types=1);
 
 namespace App\Documentation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use PhpParser\ParserFactory;
 use PhpParser\NodeTraverser;
 
 class DocumentationGenerator
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private CodeParser $parser,
         private TemplateEngine $templates
     ) {}
@@ -138,15 +138,17 @@ class DocumentationGenerator
         $prompt = $this->buildClassDocPrompt($class);
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 4096,
             'temperature' => 0.3,
             'system' => $this->getDocumentationSystemPrompt(),
-            'messages' => [[
-                'role' => 'user',
-                'content' => $prompt
-            ]]
-        ]);
+            'messages' => [
+                [
+                    'role' => 'user',
+                    'content' => $prompt
+                ]
+            ]
+        );
 
         return $response->content[0]->text;
     }
@@ -494,19 +496,19 @@ class StructureVisitor extends NodeVisitorAbstract
 
 ## API Documentation Generator
 
-````php
+```php
 <?php
 # filename: src/Documentation/ApiDocGenerator.php
 declare(strict_types=1);
 
 namespace App\Documentation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class ApiDocGenerator
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -517,14 +519,16 @@ class ApiDocGenerator
         $prompt = $this->buildClassPrompt($class);
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 6144,
             'temperature' => 0.3,
-            'messages' => [[
-                'role' => 'user',
-                'content' => $prompt
-            ]]
-        ]);
+            'messages' => [
+                [
+                    'role' => 'user',
+                    'content' => $prompt
+                ]
+            ]
+        );
 
         return $response->content[0]->text;
     }
@@ -629,7 +633,6 @@ PROMPT;
         $docBlock = $method->docComment ?? 'No documentation available';
 
         $prompt = <<<PROMPT
-
 Generate detailed documentation for this PHP method.
 
 Class: {$className}
@@ -649,14 +652,16 @@ Format in Markdown.
 PROMPT;
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 2048,
             'temperature' => 0.3,
-            'messages' => [[
-                'role' => 'user',
-                'content' => $prompt
-            ]]
-        ]);
+            'messages' => [
+                [
+                    'role' => 'user',
+                    'content' => $prompt
+                ]
+            ]
+        );
 
         return $response->content[0]->text;
     }
@@ -684,7 +689,7 @@ PROMPT;
 
 }
 
-````
+```
 
 ## User Guide Generator
 
@@ -695,12 +700,11 @@ declare(strict_types=1);
 
 namespace App\Documentation;
 
-use Anthropic\Anthropic;
 
 class UserGuideGenerator
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -717,7 +721,7 @@ class UserGuideGenerator
         };
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 8192,
             'temperature' => 0.4,
             'system' => $this->getUserGuideSystemPrompt(),
@@ -939,23 +943,22 @@ Always produce publication-ready documentation.
 SYSTEM;
     }
 }
-````
+```
 
 ## README Generator
 
-````php
+```php
 <?php
 # filename: src/Documentation/ReadmeGenerator.php
 declare(strict_types=1);
 
 namespace App\Documentation;
 
-use Anthropic\Anthropic;
 
 class ReadmeGenerator
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -1046,7 +1049,7 @@ Make it engaging, professional, and complete.
 PROMPT;
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 4096,
             'temperature' => 0.4,
             'messages' => [[
@@ -1096,7 +1099,7 @@ PROMPT;
 
 }
 
-````
+```
 
 ## Example Generator
 
@@ -1107,12 +1110,11 @@ declare(strict_types=1);
 
 namespace App\Documentation;
 
-use Anthropic\Anthropic;
 
 class ExampleGenerator
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -1155,7 +1157,7 @@ Format as Markdown with PHP code blocks.
 PROMPT;
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 2048,
             'temperature' => 0.3,
             'messages' => [[
@@ -1183,7 +1185,7 @@ Format as Markdown with complete, runnable code.
 PROMPT;
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 3072,
             'temperature' => 0.4,
             'messages' => [[
@@ -1211,7 +1213,7 @@ Format as Markdown with clear sections.
 PROMPT;
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 4096,
             'temperature' => 0.4,
             'messages' => [[
@@ -1223,23 +1225,22 @@ PROMPT;
         return $response->content[0]->text;
     }
 }
-````
+```
 
 ## Tutorial Generator
 
-````php
+```php
 <?php
 # filename: src/Documentation/TutorialGenerator.php
 declare(strict_types=1);
 
 namespace App\Documentation;
 
-use Anthropic\Anthropic;
 
 class TutorialGenerator
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -1290,6 +1291,13 @@ Tutorial format:
 
 How to test what you built
 
+## Further Reading
+
+- **[Official PHP SDK Documentation](https://github.com/anthropics/anthropic-sdk-php)** — The official Anthropic PHP SDK on GitHub
+- **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)** — Community resources and examples for Claude with PHP
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
+- **[PHP SDK Composer Package](https://packagist.org/packages/claude-php/claude-php-sdk)** — Official package on Packagist
+
 ## Next Steps
 
 - What to explore next
@@ -1310,7 +1318,7 @@ Create an engaging, educational tutorial with:
   PROMPT;
 
           $response = $this->claude->messages()->create([
-              'model' => 'claude-sonnet-4-20250514',
+              'model' => 'claude-sonnet-4-5-20250929',
               'max_tokens' => 8192,
               'temperature' => 0.5,
               'messages' => [[
@@ -1379,7 +1387,7 @@ Make it hands-on and educational.
 PROMPT;
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 3072,
             'temperature' => 0.4,
             'messages' => [[
@@ -1393,7 +1401,7 @@ PROMPT;
 
 }
 
-````
+```
 
 ## Complete Documentation Generator CLI
 
@@ -1404,7 +1412,6 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
 use App\Documentation\DocumentationGenerator;
 use App\Documentation\CodeParser;
 use App\Documentation\ApiDocGenerator;
@@ -1457,9 +1464,11 @@ if (!is_dir($outputPath)) {
 }
 
 // Initialize Claude
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+use ClaudePhp\ClaudePhp;
+
+$claude = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 // Initialize components
 $parser = new CodeParser();
@@ -1556,7 +1565,7 @@ if ($type === 'all' || $type === 'tutorials') {
 
 echo "🎉 Documentation generation complete!\n";
 echo "📁 Output directory: {$outputPath}\n";
-````
+```
 
 ## Best Practices
 
@@ -1612,7 +1621,7 @@ Use streaming for immediate feedback on long documentation generation:
 
 ```php
 $response = $this->claude->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 4096,
     'stream' => true,  // Enable streaming
     'messages' => [[
@@ -1636,9 +1645,9 @@ Choose the right model for each documentation type:
 ```php
 // Use Haiku for simple class documentation
 if (count($class->methods) < 5) {
-    $model = 'claude-haiku-4-20250514'; // Faster, cheaper
+    $model = 'claude-haiku-4-5-20251001'; // Faster, cheaper
 } else {
-    $model = 'claude-sonnet-4-20250514'; // More capable
+    $model = 'claude-sonnet-4-5-20250929'; // More capable
 }
 ```
 
@@ -1670,7 +1679,7 @@ $cachedSystemPrompt = [
 ];
 
 $response = $this->claude->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 4096,
     'system' => [$cachedSystemPrompt],
     'messages' => [[
@@ -1753,7 +1762,7 @@ Never hardcode API keys:
 $apiKey = 'sk-ant-...';
 
 // ✓ Good
-$apiKey = getenv('ANTHROPIC_API_KEY');
+$apiKey = $_ENV['ANTHROPIC_API_KEY'];
 if (!$apiKey) {
     throw new Exception('ANTHROPIC_API_KEY environment variable not set');
 }
@@ -1971,7 +1980,7 @@ try {
 
 1. Include more code context in prompts:
 
-````php
+```php
 $prompt = <<<PROMPT
 Generate documentation for this class:
 
@@ -1984,7 +1993,7 @@ Existing PHPDoc comments:
 Create documentation that reflects the actual implementation.
 PROMPT;
 
-````
+```
 
 2. Use more specific system prompts tailored to your domain
 3. Provide examples of desired documentation style
@@ -1998,12 +2007,13 @@ PROMPT;
 **Solution**:
 
 1. Batch multiple classes in a single request:
+
 ```php
 $prompt = "Generate docs for these classes:\n";
 foreach ($classes as $class) {
     $prompt .= $this->formatClass($class) . "\n\n";
 }
-````
+```
 
 2. Use parallel processing:
 

@@ -9,6 +9,9 @@ import { fileURLToPath } from 'url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
+// Cache for structured data to avoid regenerating on every page
+const structuredDataCache = new Map<string, object[]>()
+
 export default withMermaid(
   defineConfig({
     title: 'Code with PHP',
@@ -16,20 +19,7 @@ export default withMermaid(
     base: '/',
     cleanUrls: true,
     lastUpdated: true,
-    ignoreDeadLinks: true, // Temporarily disabled to test Quiz components
-    // ignoreDeadLinks: [
-    //   // Ignore localhost URLs used in tutorials
-    //   /^http:\/\/localhost/,
-    //   /^https:\/\/127\.0\.0\.1/,
-    //   // Ignore relative links to chapters that may not exist yet
-    //   /\.\.\/\.\.\/chapters\//,
-    //   // Ignore links to chapters that don't exist yet
-    //   /19b-testing-your-blog-application/,
-    //   // Ignore links to code files (PHP, CSV, JSON, etc.)
-    //   /\/series\/.*\/code\/.*\.(php|csv|json|txt|sql|sh|db|example)$/,
-    //   // Ignore links to code files without extension
-    //   /\/series\/.*\/code\/.*\/[^/]*$/
-    // ],
+    ignoreDeadLinks: true, // Dead links will be validated in a separate CI check
     head: [
       ['link', { rel: 'icon', href: '/favicon.ico' }],
       ['meta', { name: 'theme-color', content: '#3c8772' }],
@@ -111,31 +101,39 @@ export default withMermaid(
         head.push(['meta', { name: 'article:author', content: pageData.frontmatter.author }])
       }
       
-      // Structured data (JSON-LD)
-      const structuredData: object[] = []
+      // Structured data (JSON-LD) - with caching
+      const cacheKey = pageData.relativePath
+      let structuredData = structuredDataCache.get(cacheKey)
       
-      // Homepage: WebSite + Organization
-      if (pageData.relativePath === 'index.md') {
-        structuredData.push(generateWebSiteSchema())
-        structuredData.push(generateOrganizationSchema())
-      }
-      
-      // Series index: Course schema
-      if (pageData.relativePath.match(/series\/[^/]+\/index\.md$/)) {
-        const courseSchema = generateCourseSchema(pageData)
-        if (courseSchema) structuredData.push(courseSchema)
-      }
-      
-      // Chapter pages: LearningResource schema
-      if (pageData.frontmatter.series && pageData.frontmatter.chapter !== undefined) {
-        const learningResourceSchema = generateLearningResourceSchema(pageData)
-        if (learningResourceSchema) structuredData.push(learningResourceSchema)
-      }
-      
-      // Breadcrumb schema (for all non-homepage pages)
-      if (pageData.relativePath !== 'index.md') {
-        const breadcrumbSchema = generateBreadcrumbSchema(pageData)
-        if (breadcrumbSchema) structuredData.push(breadcrumbSchema)
+      if (!structuredData) {
+        structuredData = []
+        
+        // Homepage: WebSite + Organization
+        if (pageData.relativePath === 'index.md') {
+          structuredData.push(generateWebSiteSchema())
+          structuredData.push(generateOrganizationSchema())
+        }
+        
+        // Series index: Course schema
+        if (pageData.relativePath.match(/series\/[^/]+\/index\.md$/)) {
+          const courseSchema = generateCourseSchema(pageData)
+          if (courseSchema) structuredData.push(courseSchema)
+        }
+        
+        // Chapter pages: LearningResource schema
+        if (pageData.frontmatter.series && pageData.frontmatter.chapter !== undefined) {
+          const learningResourceSchema = generateLearningResourceSchema(pageData)
+          if (learningResourceSchema) structuredData.push(learningResourceSchema)
+        }
+        
+        // Breadcrumb schema (for all non-homepage pages)
+        if (pageData.relativePath !== 'index.md') {
+          const breadcrumbSchema = generateBreadcrumbSchema(pageData)
+          if (breadcrumbSchema) structuredData.push(breadcrumbSchema)
+        }
+        
+        // Cache it for future builds
+        structuredDataCache.set(cacheKey, structuredData)
       }
       
       // Inject structured data
@@ -279,6 +277,7 @@ export default withMermaid(
           { text: 'Overview', link: '/series/ai-ml-php-developers/' },
           {
             text: 'Chapters',
+            collapsed: true,
             items: [
               { text: '01 — Introduction to AI and Machine Learning for PHP Developers', link: '/series/ai-ml-php-developers/chapters/01-introduction-to-ai-and-machine-learning-for-php-developers' },
               { text: '02 — Setting Up Your AI Development Environment', link: '/series/ai-ml-php-developers/chapters/02-setting-up-your-ai-development-environment' },
@@ -313,6 +312,7 @@ export default withMermaid(
           { text: 'Overview', link: '/series/python-developers-love-php-laravel/' },
           {
             text: 'Chapters',
+            collapsed: true,
             items: [
               {
                 text: '00 — Introduction: Why Look at PHP & Laravel',
@@ -366,6 +366,7 @@ export default withMermaid(
           { text: 'Overview', link: '/series/php-typescript-developers/' },
           {
             text: 'Chapters',
+            collapsed: true,
             items: [
               { text: '01 — TypeScript to PHP: Type Systems Compared', link: '/series/php-typescript-developers/chapters/01-type-systems-compared' },
               { text: '02 — Modern PHP Syntax for TS Developers', link: '/series/php-typescript-developers/chapters/02-modern-php-syntax' },
@@ -390,6 +391,7 @@ export default withMermaid(
           { text: 'Overview', link: '/series/php-algorithms/' },
           {
             text: 'Part 1: Foundation',
+            collapsed: true,
             items: [
               {
                 text: '00 — Quick Start Guide',
@@ -415,6 +417,7 @@ export default withMermaid(
           },
           {
             text: 'Part 2: Sorting Algorithms',
+            collapsed: true,
             items: [
               {
                 text: '05 — Bubble Sort & Selection Sort',
@@ -444,6 +447,7 @@ export default withMermaid(
           },
           {
             text: 'Part 3: Searching Algorithms',
+            collapsed: true,
             items: [
               {
                 text: '11 — Linear Search & Variants',
@@ -465,6 +469,7 @@ export default withMermaid(
           },
           {
             text: 'Part 4: Data Structures',
+            collapsed: true,
             items: [
               {
                 text: '15 — Arrays & Dynamic Arrays',
@@ -494,6 +499,7 @@ export default withMermaid(
           },
           {
             text: 'Part 5: Graph Algorithms',
+            collapsed: true,
             items: [
               {
                 text: '21 — Graph Representations',
@@ -515,6 +521,7 @@ export default withMermaid(
           },
           {
             text: 'Part 6: Dynamic Programming',
+            collapsed: true,
             items: [
               {
                 text: '25 — Dynamic Programming Fundamentals',
@@ -528,6 +535,7 @@ export default withMermaid(
           },
           {
             text: 'Part 7: Practical Applications',
+            collapsed: true,
             items: [
               {
                 text: '27 — Caching & Memoization Strategies',
@@ -549,6 +557,7 @@ export default withMermaid(
           },
           {
             text: 'Part 8: Advanced Topics',
+            collapsed: true,
             items: [
               {
                 text: '31 — Concurrent Algorithms',
@@ -578,6 +587,7 @@ export default withMermaid(
           },
           {
             text: 'Appendices',
+            collapsed: true,
             items: [
               {
                 text: 'Appendix A — Complexity Cheat Sheet',
@@ -603,6 +613,7 @@ export default withMermaid(
           { text: 'Overview', link: '/series/build-crm-laravel-12/' },
           {
             text: 'Part 1: Core Setup',
+            collapsed: true,
             items: [
               {
                 text: '01 — Introduction & Series Overview',
@@ -620,6 +631,7 @@ export default withMermaid(
           },
           {
             text: 'Part 2: Database & Foundation',
+            collapsed: true,
             items: [
               {
                 text: '04 — Planning Application Architecture & Data Modeling',
@@ -653,6 +665,7 @@ export default withMermaid(
           },
           {
             text: 'Part 3: Core CRM Modules',
+            collapsed: true,
             items: [
               {
                 text: '11 — Contacts Module – Database & Model',
@@ -690,6 +703,7 @@ export default withMermaid(
           },
           {
             text: 'Part 4: Communication & API',
+            collapsed: true,
             items: [
               {
                 text: '19 — Notifications & Email Integration',
@@ -715,6 +729,7 @@ export default withMermaid(
           },
           {
             text: 'Part 5: Business Features',
+            collapsed: true,
             items: [
               {
                 text: '24 — Subscription Billing with Laravel Cashier',
@@ -740,6 +755,7 @@ export default withMermaid(
           },
           {
             text: 'Part 6: Background Processing',
+            collapsed: true,
             items: [
               {
                 text: '29 — Queues & Background Jobs',
@@ -753,6 +769,7 @@ export default withMermaid(
           },
           {
             text: 'Part 7: Testing & Production',
+            collapsed: true,
             items: [
               {
                 text: '31 — Automated Browser Testing with Laravel Dusk (Bonus)',
@@ -794,6 +811,7 @@ export default withMermaid(
           },
           {
             text: 'Bonus Chapter',
+            collapsed: true,
             items: [
               {
                 text: '40 — Jetstream Alternative — Team Management & Authentication (Bonus)',
@@ -807,6 +825,7 @@ export default withMermaid(
           { text: 'Overview', link: '/series/rails-developers-love-laravel/' },
           {
             text: 'Chapters',
+            collapsed: true,
             items: [
               {
                 text: '00 — Introduction: Why Look at Laravel',
@@ -860,12 +879,14 @@ export default withMermaid(
           { text: 'Overview', link: '/series/claude-php-developers/' },
           {
             text: 'Part 0: Getting Started',
+            collapsed: true,
             items: [
               { text: '00 — Quick Start Guide', link: '/series/claude-php-developers/chapters/00-quick-start-guide' }
             ]
           },
           {
             text: 'Part 1: Foundation',
+            collapsed: true,
             items: [
               { text: '01 — Introduction to Claude API', link: '/series/claude-php-developers/chapters/01-introduction-to-claude-api' },
               { text: '02 — Authentication and API Keys', link: '/series/claude-php-developers/chapters/02-authentication-api-keys' },
@@ -876,6 +897,7 @@ export default withMermaid(
           },
           {
             text: 'Part 2: Core Concepts',
+            collapsed: true,
             items: [
               { text: '06 — Streaming Responses in PHP', link: '/series/claude-php-developers/chapters/06-streaming-responses' },
               { text: '07 — System Prompts and Role Definition', link: '/series/claude-php-developers/chapters/07-system-prompts-roles' },
@@ -886,6 +908,7 @@ export default withMermaid(
           },
           {
             text: 'Part 3: Advanced Features',
+            collapsed: true,
             items: [
               { text: '11 — Tool Use (Function Calling) Fundamentals', link: '/series/claude-php-developers/chapters/11-tool-use-fundamentals' },
               { text: '12 — Building Custom Tools in PHP', link: '/series/claude-php-developers/chapters/12-building-custom-tools' },
@@ -896,6 +919,7 @@ export default withMermaid(
           },
           {
             text: 'Part 4: PHP Integration Patterns',
+            collapsed: true,
             items: [
               { text: '16 — The Official PHP SDK', link: '/series/claude-php-developers/chapters/16-official-php-sdk' },
               { text: '17 — Building a Claude Service Class', link: '/series/claude-php-developers/chapters/17-claude-service-class' },
@@ -906,6 +930,7 @@ export default withMermaid(
           },
           {
             text: 'Part 5: Laravel Deep Dive',
+            collapsed: true,
             items: [
               { text: '21 — Laravel Integration Patterns', link: '/series/claude-php-developers/chapters/21-laravel-integration' },
               { text: '22 — Building a Chatbot with Laravel', link: '/series/claude-php-developers/chapters/22-chatbot-laravel' },
@@ -916,6 +941,7 @@ export default withMermaid(
           },
           {
             text: 'Part 6: Real-World Applications',
+            collapsed: true,
             items: [
               { text: '26 — Building a Code Review Assistant', link: '/series/claude-php-developers/chapters/26-code-review-assistant' },
               { text: '27 — Documentation Generator', link: '/series/claude-php-developers/chapters/27-documentation-generator' },
@@ -926,6 +952,7 @@ export default withMermaid(
           },
           {
             text: 'Part 7: Advanced Techniques',
+            collapsed: true,
             items: [
               { text: '31 — Retrieval Augmented Generation (RAG)', link: '/series/claude-php-developers/chapters/31-retrieval-augmented-generation' },
               { text: '32 — Vector Databases in PHP', link: '/series/claude-php-developers/chapters/32-vector-databases' },
@@ -936,6 +963,7 @@ export default withMermaid(
           },
           {
             text: 'Part 8: Production & Deployment',
+            collapsed: true,
             items: [
               { text: '36 — Security Best Practices', link: '/series/claude-php-developers/chapters/36-security-best-practices' },
               { text: '37 — Monitoring and Observability', link: '/series/claude-php-developers/chapters/37-monitoring-observability' },
@@ -945,6 +973,7 @@ export default withMermaid(
           },
           {
             text: 'Appendices',
+            collapsed: true,
             items: [
               { text: 'Appendix A — API Reference Quick Guide', link: '/series/claude-php-developers/appendices/a-api-reference' },
               { text: 'Appendix B — Common Prompting Patterns', link: '/series/claude-php-developers/appendices/b-prompting-patterns' },
@@ -1034,12 +1063,12 @@ export default withMermaid(
           detailedView: true,
           miniSearch: {
             searchOptions: {
-              fuzzy: 0.2,
+              fuzzy: 0.1,
               prefix: true,
               boost: {
                 title: 4,
                 heading: 3,
-                text: 2
+                text: 1
               }
             }
           },
@@ -1082,17 +1111,55 @@ export default withMermaid(
       }
     },
     mermaid: {
-      theme: 'default'
+      theme: 'default',
+      startOnLoad: false,
+      securityLevel: 'loose',
+      flowchart: {
+        useMaxWidth: true,
+        htmlLabels: true
+      }
     },
     vite: {
+      build: {
+        // Reduce chunk size warnings threshold
+        chunkSizeWarningLimit: 1000,
+        
+        // Disable source maps in production
+        sourcemap: false,
+        
+        // Optimize chunk splitting
+        rollupOptions: {
+          external: id => id === 'd3-sankey',
+          output: {
+            manualChunks: {
+              'vitepress-core': ['vitepress/theme']
+            }
+          }
+        },
+        
+        // Minification with esbuild (default, no additional deps)
+        minify: 'esbuild',
+        
+        // Optimize assets - don't inline images as base64
+        assetsInlineLimit: 0
+      },
+      
       server: {
         hmr: {
           overlay: false // Disable error overlay for HMR type cache issues
         }
       },
+      
       optimizeDeps: {
-        include: ['vue']
-      }
+        include: ['vue', 'vitepress'],
+        exclude: []
+      },
+      
+      // Enable caching
+      cacheDir: 'docs/.vitepress/cache',
+      
+      // Include WebP images in asset processing
+      assetsInclude: ['**/*.webp']
     }
   })
 )

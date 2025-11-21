@@ -97,11 +97,11 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 // Load and encode image
 $imagePath = __DIR__ . '/images/product-photo.jpg';
@@ -114,8 +114,8 @@ $mimeType = finfo_file($finfo, $imagePath);
 finfo_close($finfo);
 
 // Send image to Claude
-$response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+$response = $client->messages()->create(
+    'model' => 'claude-sonnet-4-5',
     'max_tokens' => 1024,
     'messages' => [
         [
@@ -136,7 +136,7 @@ $response = $client->messages()->create([
             ]
         ]
     ]
-]);
+);
 
 echo "Image Analysis:\n";
 echo $response->content[0]->text . "\n";
@@ -146,8 +146,8 @@ echo $response->content[0]->text . "\n";
 
 ```
 Image Analysis:
-This product image shows a [description of the image]. The colors are [color details]. 
-The style appears to be [style description]. The condition looks [condition]. 
+This product image shows a [description of the image]. The colors are [color details].
+The style appears to be [style description]. The condition looks [condition].
 Visible text includes: [any text found]. Branding shows: [branding details].
 ```
 
@@ -308,6 +308,7 @@ class ImageHelper
 ### Expected Result
 
 The `ImageHelper` class provides three static methods:
+
 - `prepareImage($path)` returns a formatted image content array ready for Claude
 - `prepareImageFromUrl($url)` downloads and prepares remote images
 - `resizeIfNeeded($path, $maxWidth)` returns a resized image path if needed
@@ -337,32 +338,32 @@ Extract structured data from receipt images using Claude's OCR capabilities.
 
 Claude excels at extracting text from images:
 
-```php
+````php
 <?php
 # filename: examples/02-ocr-text-extraction.php
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Vision\ImageHelper;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 class ReceiptProcessor
 {
     public function __construct(
-        private Anthropic $client
+        private Client $client
     ) {}
 
     public function processReceipt(string $imagePath): array
     {
         $imageContent = ImageHelper::prepareImage($imagePath);
 
-        $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+        $response = $this->client->messages()->create(
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 2048,
             'messages' => [
                 [
@@ -387,7 +388,7 @@ PROMPT
                     ]
                 ]
             ]
-        ]);
+        );
 
         $jsonText = $response->content[0]->text;
 
@@ -408,25 +409,25 @@ $receiptData = $processor->processReceipt(__DIR__ . '/images/receipt.jpg');
 
 echo "Receipt Data:\n";
 echo json_encode($receiptData, JSON_PRETTY_PRINT) . "\n";
-```
+````
 
 ### Expected Result
 
 ```json
 {
-    "merchant_name": "Coffee Shop Downtown",
-    "date": "2024-01-15",
-    "total": 12.50,
-    "subtotal": 11.36,
-    "tax": 1.14,
-    "items": [
-        {
-            "name": "Latte",
-            "quantity": 2,
-            "price": 5.68
-        }
-    ],
-    "payment_method": "Credit Card"
+  "merchant_name": "Coffee Shop Downtown",
+  "date": "2024-01-15",
+  "total": 12.5,
+  "subtotal": 11.36,
+  "tax": 1.14,
+  "items": [
+    {
+      "name": "Latte",
+      "quantity": 2,
+      "price": 5.68
+    }
+  ],
+  "payment_method": "Credit Card"
 }
 ```
 
@@ -455,32 +456,32 @@ Extract data points, trends, and insights from chart and graph images.
 
 Extract insights from data visualizations:
 
-```php
+````php
 <?php
 # filename: examples/03-chart-analysis.php
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Vision\ImageHelper;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 class ChartAnalyzer
 {
     public function __construct(
-        private Anthropic $client
+        private Client $client
     ) {}
 
     public function analyzeChart(string $imagePath): array
     {
         $imageContent = ImageHelper::prepareImage($imagePath);
 
-        $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+        $response = $this->client->messages()->create(
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 2048,
             'messages' => [
                 [
@@ -505,7 +506,7 @@ PROMPT
                     ]
                 ]
             ]
-        ]);
+        );
 
         $analysisText = $response->content[0]->text;
 
@@ -534,8 +535,8 @@ PROMPT
             'text' => "Compare these charts. What are the key differences, similarities, and what story do they tell together?"
         ];
 
-        $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+        $response = $this->client->messages()->create(
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 3000,
             'messages' => [
                 [
@@ -543,7 +544,7 @@ PROMPT
                     'content' => $content
                 ]
             ]
-        ]);
+        );
 
         return $response->content[0]->text;
     }
@@ -562,28 +563,25 @@ $comparison = $analyzer->compareCharts([
     __DIR__ . '/images/q2-sales.png'
 ]);
 echo $comparison . "\n";
-```
+````
 
 ### Expected Result
 
 ```json
 {
-    "chart_type": "line",
-    "title": "Monthly Sales Revenue",
-    "x_axis": "Months (Jan-Dec)",
-    "y_axis": "Revenue in USD",
-    "data_points": [
-        {"month": "Jan", "value": 45000},
-        {"month": "Feb", "value": 52000}
-    ],
-    "trends": [
-        "Steady upward trend from January to June",
-        "Peak in December holiday season"
-    ],
-    "insights": [
-        "Revenue increased 25% year-over-year",
-        "Strongest growth in Q4"
-    ]
+  "chart_type": "line",
+  "title": "Monthly Sales Revenue",
+  "x_axis": "Months (Jan-Dec)",
+  "y_axis": "Revenue in USD",
+  "data_points": [
+    { "month": "Jan", "value": 45000 },
+    { "month": "Feb", "value": 52000 }
+  ],
+  "trends": [
+    "Steady upward trend from January to June",
+    "Peak in December holiday season"
+  ],
+  "insights": ["Revenue increased 25% year-over-year", "Strongest growth in Q4"]
 }
 ```
 
@@ -612,32 +610,32 @@ Build an automated content moderation system that flags inappropriate or unsafe 
 
 Analyze images for inappropriate or unsafe content:
 
-```php
+````php
 <?php
 # filename: examples/04-content-moderation.php
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Vision\ImageHelper;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 class ImageModerator
 {
     public function __construct(
-        private Anthropic $client
+        private Client $client
     ) {}
 
     public function moderateImage(string $imagePath): array
     {
         $imageContent = ImageHelper::prepareImage($imagePath);
 
-        $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+        $response = $this->client->messages()->create(
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 1024,
             'messages' => [
                 [
@@ -668,7 +666,7 @@ PROMPT
                     ]
                 ]
             ]
-        ]);
+        );
 
         $resultText = $response->content[0]->text;
 
@@ -704,7 +702,7 @@ echo "Safe: " . ($result['safe'] ? 'Yes' : 'No') . "\n";
 echo "Violations: " . implode(', ', $result['violations'] ?? []) . "\n";
 echo "Confidence: {$result['confidence']}\n";
 echo "Reasoning: {$result['reasoning']}\n";
-```
+````
 
 ### Expected Result
 
@@ -741,28 +739,28 @@ Automatically extract product information, generate SEO-friendly descriptions, a
 
 Extract product details from images:
 
-```php
+````php
 <?php
 # filename: examples/05-product-analysis.php
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Vision\ImageHelper;
 
 class ProductImageAnalyzer
 {
     public function __construct(
-        private Anthropic $client
+        private Client $client
     ) {}
 
     public function analyzeProductImage(string $imagePath): array
     {
         $imageContent = ImageHelper::prepareImage($imagePath);
 
-        $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+        $response = $this->client->messages()->create(
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 2048,
             'messages' => [
                 [
@@ -790,7 +788,7 @@ PROMPT
                     ]
                 ]
             ]
-        ]);
+        );
 
         $text = $response->content[0]->text;
 
@@ -814,13 +812,13 @@ PROMPT
             ]
         ];
 
-        $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+        $response = $this->client->messages()->create(
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 1024,
             'messages' => [
                 ['role' => 'user', 'content' => $content]
             ]
-        ]);
+        );
 
         return $response->content[0]->text;
     }
@@ -829,8 +827,8 @@ PROMPT
     {
         $imageContent = ImageHelper::prepareImage($imagePath);
 
-        $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+        $response = $this->client->messages()->create(
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 200,
             'messages' => [
                 [
@@ -844,15 +842,15 @@ PROMPT
                     ]
                 ]
             ]
-        ]);
+        );
 
         return trim($response->content[0]->text);
     }
 }
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $analyzer = new ProductImageAnalyzer($client);
 
@@ -864,25 +862,21 @@ echo json_encode($productData, JSON_PRETTY_PRINT) . "\n\n";
 // Generate title
 $title = $analyzer->generateProductTitle(__DIR__ . '/images/product.jpg');
 echo "Generated Title: {$title}\n";
-```
+````
 
 ### Expected Result
 
 ```json
 {
-    "category": "Electronics",
-    "product_type": "Wireless Headphones",
-    "brand": "TechBrand",
-    "colors": ["Black", "Silver"],
-    "condition": "New",
-    "key_features": [
-        "Noise cancellation",
-        "Bluetooth 5.0",
-        "30-hour battery"
-    ],
-    "quality_assessment": "high",
-    "suggested_tags": ["audio", "wireless", "premium"],
-    "seo_description": "Premium wireless headphones with active noise cancellation..."
+  "category": "Electronics",
+  "product_type": "Wireless Headphones",
+  "brand": "TechBrand",
+  "colors": ["Black", "Silver"],
+  "condition": "New",
+  "key_features": ["Noise cancellation", "Bluetooth 5.0", "30-hour battery"],
+  "quality_assessment": "high",
+  "suggested_tags": ["audio", "wireless", "premium"],
+  "seo_description": "Premium wireless headphones with active noise cancellation..."
 }
 ```
 
@@ -911,28 +905,28 @@ Analyze user interface screenshots to extract text, provide UX feedback, and ide
 
 Analyze screenshots and provide UX feedback:
 
-```php
+````php
 <?php
 # filename: examples/06-screenshot-analysis.php
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Vision\ImageHelper;
 
 class UIAnalyzer
 {
     public function __construct(
-        private Anthropic $client
+        private Client $client
     ) {}
 
     public function analyzeUI(string $screenshotPath): array
     {
         $imageContent = ImageHelper::prepareImage($screenshotPath);
 
-        $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+        $response = $this->client->messages()->create(
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 3000,
             'messages' => [
                 [
@@ -958,7 +952,7 @@ PROMPT
                     ]
                 ]
             ]
-        ]);
+        );
 
         $text = $response->content[0]->text;
 
@@ -973,8 +967,8 @@ PROMPT
     {
         $imageContent = ImageHelper::prepareImage($screenshotPath);
 
-        $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+        $response = $this->client->messages()->create(
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 2048,
             'messages' => [
                 [
@@ -988,7 +982,7 @@ PROMPT
                     ]
                 ]
             ]
-        ]);
+        );
 
         return [
             'extracted_text' => $response->content[0]->text,
@@ -997,40 +991,37 @@ PROMPT
     }
 }
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $analyzer = new UIAnalyzer($client);
 
 $uiAnalysis = $analyzer->analyzeUI(__DIR__ . '/images/app-screenshot.png');
 echo "UI Analysis:\n";
 echo json_encode($uiAnalysis, JSON_PRETTY_PRINT) . "\n";
-```
+````
 
 ### Expected Result
 
 ```json
 {
-    "overall_assessment": "Web application",
-    "layout_analysis": "Three-column layout with header navigation",
-    "visual_hierarchy": "Clear",
-    "accessibility_issues": [
-        "Low contrast text in footer",
-        "Missing alt text indicators"
-    ],
-    "ux_issues": [
-        "Search button placement unclear",
-        "Too many navigation items"
-    ],
-    "design_quality": "Professional, Modern",
-    "suggestions": [
-        "Increase footer text contrast",
-        "Consolidate navigation items",
-        "Add breadcrumb navigation",
-        "Improve mobile responsiveness",
-        "Add loading states for async actions"
-    ]
+  "overall_assessment": "Web application",
+  "layout_analysis": "Three-column layout with header navigation",
+  "visual_hierarchy": "Clear",
+  "accessibility_issues": [
+    "Low contrast text in footer",
+    "Missing alt text indicators"
+  ],
+  "ux_issues": ["Search button placement unclear", "Too many navigation items"],
+  "design_quality": "Professional, Modern",
+  "suggestions": [
+    "Increase footer text contrast",
+    "Consolidate navigation items",
+    "Add breadcrumb navigation",
+    "Improve mobile responsiveness",
+    "Add loading states for async actions"
+  ]
 }
 ```
 
@@ -1059,20 +1050,20 @@ Process multiple images together for product listings, duplicate detection, and 
 
 Process multiple images together:
 
-```php
+````php
 <?php
 # filename: examples/07-multi-image-workflow.php
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Vision\ImageHelper;
 
 class MultiImageProcessor
 {
     public function __construct(
-        private Anthropic $client
+        private Client $client
     ) {}
 
     public function createProductListing(array $productImages): array
@@ -1102,13 +1093,13 @@ Return as JSON.
 PROMPT
         ];
 
-        $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+        $response = $this->client->messages()->create(
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 2048,
             'messages' => [
                 ['role' => 'user', 'content' => $content]
             ]
-        ]);
+        );
 
         $text = $response->content[0]->text;
 
@@ -1133,13 +1124,13 @@ PROMPT
             'text' => 'Identify which images show the same or very similar products. Group duplicates together and explain similarities/differences.'
         ];
 
-        $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+        $response = $this->client->messages()->create(
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 2048,
             'messages' => [
                 ['role' => 'user', 'content' => $content]
             ]
-        ]);
+        );
 
         return [
             'analysis' => $response->content[0]->text,
@@ -1147,28 +1138,30 @@ PROMPT
         ];
     }
 }
-```
+````
 
 ### Expected Result
 
 For product listings:
+
 ```json
 {
-    "title": "Vintage Leather Jacket - Brown, Size M",
-    "category": "Clothing",
-    "description": "Classic brown leather jacket in excellent condition...",
-    "key_features": ["Genuine leather", "Lined", "Multiple pockets"],
-    "condition_assessment": "Excellent - minor wear",
-    "suggested_price_range": "$150-$200",
-    "tags": ["vintage", "leather", "jacket", "brown"]
+  "title": "Vintage Leather Jacket - Brown, Size M",
+  "category": "Clothing",
+  "description": "Classic brown leather jacket in excellent condition...",
+  "key_features": ["Genuine leather", "Lined", "Multiple pockets"],
+  "condition_assessment": "Excellent - minor wear",
+  "suggested_price_range": "$150-$200",
+  "tags": ["vintage", "leather", "jacket", "brown"]
 }
 ```
 
 For duplicate detection:
+
 ```
-Analysis: Images 1, 3, and 5 show the same product (vintage leather jacket) 
-from different angles. Images 2 and 4 are different products (denim jacket 
-and wool coat). Images 1 and 3 are nearly identical, with only slight 
+Analysis: Images 1, 3, and 5 show the same product (vintage leather jacket)
+from different angles. Images 2 and 4 are different products (denim jacket
+and wool coat). Images 1 and 3 are nearly identical, with only slight
 lighting differences.
 ```
 
@@ -1224,6 +1217,7 @@ Vision tasks often represent a significant portion of your Claude API costs. Und
 Claude's token counting for images works differently than text:
 
 **Base Image Costs:**
+
 - **Fixed cost**: Every image costs 1,100 tokens regardless of size
 - **Resolution cost**: Additional tokens based on image dimensions
 - **Total tokens**: ~1,100 base + (height × width / ~750) additional tokens
@@ -1245,19 +1239,19 @@ class VisionTokenCalculator
     ): int {
         // Base cost for any image
         $tokens = 1100;
-        
+
         // Resolution cost (approximately)
         $pixelCount = $width * $height;
         $resolutionTokens = (int)($pixelCount / 750);
-        
+
         // Quality multiplier
         if ($quality === 'high') {
             $resolutionTokens = (int)($resolutionTokens * 1.5);
         }
-        
+
         return $tokens + $resolutionTokens;
     }
-    
+
     /**
      * Recommend image dimensions to minimize tokens
      */
@@ -1269,10 +1263,10 @@ class VisionTokenCalculator
         // Work backwards from token budget
         // 1500 tokens = 1100 base + 400 resolution
         // 400 resolution tokens = 300k pixels
-        
+
         $maxPixels = (int)(($maxTokenBudget - 1100) * 750);
         $currentPixels = $originalWidth * $originalHeight;
-        
+
         if ($currentPixels <= $maxPixels) {
             return [
                 'width' => $originalWidth,
@@ -1281,12 +1275,12 @@ class VisionTokenCalculator
                 'recommendation' => 'Image is already optimized'
             ];
         }
-        
+
         // Calculate scale factor
         $scaleFactor = sqrt($maxPixels / $currentPixels);
         $newWidth = (int)($originalWidth * $scaleFactor);
         $newHeight = (int)($originalHeight * $scaleFactor);
-        
+
         return [
             'width' => $newWidth,
             'height' => $newHeight,
@@ -1297,7 +1291,7 @@ class VisionTokenCalculator
                 $originalHeight,
                 $newWidth,
                 $newHeight,
-                self::calculateTokens($originalWidth, $originalHeight) - 
+                self::calculateTokens($originalWidth, $originalHeight) -
                 self::calculateTokens($newWidth, $newHeight)
             )
         ];
@@ -1322,13 +1316,13 @@ $scenarios = [
     // [description, width, height, model, input_cost_per_1m, output_cost_per_1m]
     ['Small product photo (thumbnail)', 256, 256, 'haiku', 0.80, 4.00],
     ['Small product photo (thumbnail)', 256, 256, 'sonnet', 3.00, 15.00],
-    
+
     ['Medium product photo', 800, 600, 'haiku', 0.80, 4.00],
     ['Medium product photo', 800, 600, 'sonnet', 3.00, 15.00],
-    
+
     ['High-res product photo', 2048, 1536, 'haiku', 0.80, 4.00],
     ['High-res product photo', 2048, 1536, 'sonnet', 3.00, 15.00],
-    
+
     ['Document/screenshot', 1920, 1080, 'haiku', 0.80, 4.00],
     ['Document/screenshot', 1920, 1080, 'sonnet', 3.00, 15.00],
 ];
@@ -1337,18 +1331,18 @@ class VisionCostComparator
 {
     public static function compare(array $scenarios): void
     {
-        echo sprintf("%-30s | %-8s | %-8s | %-20s | %-20s\n", 
+        echo sprintf("%-30s | %-8s | %-8s | %-20s | %-20s\n",
             'Image Type', 'Tokens', 'Model', 'Input Cost', 'Per 1000 Images');
         echo str_repeat('-', 110) . "\n";
-        
+
         foreach ($scenarios as [$desc, $w, $h, $model, $inputCost, $outputCost]) {
             $tokens = 1100 + (int)(($w * $h) / 750);
-            
+
             // Calculate costs (assuming analysis fits in output tokens)
             $inputCostPer = ($tokens / 1_000_000) * $inputCost;
             $costPer1000 = $inputCostPer * 1000;
-            
-            echo sprintf("%-30s | %-8d | %-8s | $%.6f | $%.2f\n", 
+
+            echo sprintf("%-30s | %-8d | %-8s | $%.6f | $%.2f\n",
                 $desc, $tokens, $model, $inputCostPer, $costPer1000);
         }
     }
@@ -1358,6 +1352,7 @@ VisionCostComparator::compare($scenarios);
 ```
 
 **Results Table:**
+
 ```
 Image Type                     | Tokens   | Model   | Input Cost       | Per 1000 Images
 Small product (256x256)        | 1,186    | haiku   | $0.000949        | $0.95
@@ -1389,34 +1384,34 @@ class VisionModelSelector
     ): string {
         // Cost optimization (Haiku is cheapest)
         if ($prioritizeCost && !$needsAccuracy) {
-            return 'claude-haiku-4-20250514';
+            return 'claude-haiku-4-5-20251001';
         }
-        
+
         // Accuracy optimization (Sonnet is balanced)
         if ($needsAccuracy) {
-            return 'claude-sonnet-4-20250514';
+            return 'claude-sonnet-4-5';
         }
-        
+
         // Task-based selection
         return match($taskType) {
             // Simple tasks: use Haiku (4x cheaper than Sonnet)
-            'content-moderation' => 'claude-haiku-4-20250514',
-            'text-extraction' => 'claude-haiku-4-20250514',
-            'image-classification' => 'claude-haiku-4-20250514',
-            
+            'content-moderation' => 'claude-haiku-4-5-20251001',
+            'text-extraction' => 'claude-haiku-4-5-20251001',
+            'image-classification' => 'claude-haiku-4-5-20251001',
+
             // Medium complexity: use Sonnet (balanced)
-            'product-analysis' => 'claude-sonnet-4-20250514',
-            'document-analysis' => 'claude-sonnet-4-20250514',
-            'chart-analysis' => 'claude-sonnet-4-20250514',
-            
+            'product-analysis' => 'claude-sonnet-4-5',
+            'document-analysis' => 'claude-sonnet-4-5',
+            'chart-analysis' => 'claude-sonnet-4-5',
+
             // Complex: use best available
-            'comprehensive-ui-analysis' => 'claude-sonnet-4-20250514',
-            'contract-analysis' => 'claude-sonnet-4-20250514',
-            
-            default => 'claude-sonnet-4-20250514'
+            'comprehensive-ui-analysis' => 'claude-sonnet-4-5',
+            'contract-analysis' => 'claude-sonnet-4-5',
+
+            default => 'claude-sonnet-4-5'
         };
     }
-    
+
     /**
      * Calculate total cost for a batch operation
      */
@@ -1424,28 +1419,28 @@ class VisionModelSelector
         int $imageCount,
         int $avgImageTokens,
         int $avgOutputTokens,
-        string $model = 'claude-sonnet-4-20250514'
+        string $model = 'claude-sonnet-4-5'
     ): array {
         $inputCosts = [
-            'claude-haiku-4-20250514' => 0.80 / 1_000_000,
-            'claude-sonnet-4-20250514' => 3.00 / 1_000_000,
+            'claude-haiku-4-5-20251001' => 0.80 / 1_000_000,
+            'claude-sonnet-4-5' => 3.00 / 1_000_000,
         ];
-        
+
         $outputCosts = [
-            'claude-haiku-4-20250514' => 4.00 / 1_000_000,
-            'claude-sonnet-4-20250514' => 15.00 / 1_000_000,
+            'claude-haiku-4-5-20251001' => 4.00 / 1_000_000,
+            'claude-sonnet-4-5' => 15.00 / 1_000_000,
         ];
-        
-        $inputCost = $inputCosts[$model] ?? $inputCosts['claude-sonnet-4-20250514'];
-        $outputCost = $outputCosts[$model] ?? $outputCosts['claude-sonnet-4-20250514'];
-        
+
+        $inputCost = $inputCosts[$model] ?? $inputCosts['claude-sonnet-4-5'];
+        $outputCost = $outputCosts[$model] ?? $outputCosts['claude-sonnet-4-5'];
+
         $totalInputTokens = $imageCount * $avgImageTokens;
         $totalOutputTokens = $imageCount * $avgOutputTokens;
-        
+
         $inputCostTotal = $totalInputTokens * $inputCost;
         $outputCostTotal = $totalOutputTokens * $outputCost;
         $totalCost = $inputCostTotal + $outputCostTotal;
-        
+
         return [
             'total_images' => $imageCount,
             'avg_image_tokens' => $avgImageTokens,
@@ -1464,7 +1459,7 @@ $estimate = VisionModelSelector::estimateBatchCost(
     imageCount: 1000,
     avgImageTokens: 1741,  // Medium image (800x600)
     avgOutputTokens: 500,   // Product analysis output
-    model: 'claude-haiku-4-20250514'
+    'model' => 'claude-haiku-4-5-20251001'
 );
 
 echo "Batch Processing 1000 Product Images (Haiku):\n";
@@ -1479,22 +1474,26 @@ echo "  Cost per image: $" . number_format($estimate['cost_per_image'], 4) . "\n
 Apply these optimizations in order of impact:
 
 1. **Resize images appropriately** (25-40% savings)
+
    - Use `ImageHelper::resizeIfNeeded()` with appropriate max width
    - 800px width handles most use cases (e.g., product photos, UI screenshots)
    - Charts/documents: 1200-1400px for readability
 
 2. **Use Haiku for simple tasks** (75% savings vs. Sonnet)
+
    - Content moderation: Haiku is perfectly capable
    - Text extraction: Haiku works well for clear text
    - Image classification: Haiku fine for most cases
    - Switch to Sonnet only when needed
 
 3. **Batch process images** (50% savings with Anthropic's batch API)
+
    - Process overnight batches for non-urgent work
    - Combine multiple images in single API call when possible
    - See Chapter 18 on batch processing
 
 4. **Cache aggressively** (90% savings on repeated analyses)
+
    - Cache analysis results using image hash
    - Use prompt caching for repeated system prompts
    - See Chapter 18 on caching strategies
@@ -1559,7 +1558,8 @@ Create a `VisualSearch` class that:
 
 **Cause**: The file path is incorrect or the file doesn't exist at that location.
 
-**Solution**: 
+**Solution**:
+
 - Verify the file path is correct (use absolute paths when possible)
 - Check file permissions (ensure PHP can read the file)
 - Use `file_exists()` before processing: `if (!file_exists($path)) { throw new \RuntimeException("File not found"); }`
@@ -1571,6 +1571,7 @@ Create a `VisualSearch` class that:
 **Cause**: The image exceeds Claude's 5MB limit (after base64 encoding).
 
 **Solution**:
+
 - Resize the image using `ImageHelper::resizeIfNeeded()` before processing
 - Compress JPEG images: `imagejpeg($image, $path, 85)` (85% quality)
 - Consider using WebP format for better compression
@@ -1582,6 +1583,7 @@ Create a `VisualSearch` class that:
 **Cause**: The image format is not supported (Claude only supports JPEG, PNG, GIF, WebP).
 
 **Solution**:
+
 - Convert the image to a supported format using GD or ImageMagick
 - Check MIME type detection: `$finfo = finfo_open(FILEINFO_MIME_TYPE);`
 - Add format conversion: `imagecreatefrombmp()` → `imagejpeg()`
@@ -1593,6 +1595,7 @@ Create a `VisualSearch` class that:
 **Cause**: Image quality is too low, text is too small, or image is rotated.
 
 **Solution**:
+
 - Increase image resolution (at least 300 DPI for documents)
 - Ensure text is horizontal (rotate images if needed)
 - Improve contrast and brightness before processing
@@ -1605,10 +1608,17 @@ Create a `VisualSearch` class that:
 **Cause**: Sending full-resolution images when smaller versions would suffice.
 
 **Solution**:
+
 - Always resize images to appropriate dimensions (1568px width is often sufficient)
 - Cache analysis results using image hash as key
 - Batch similar requests together
 - Consider using lower-cost models for simple tasks
+
+## Further Reading
+
+- **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)** — The Community PHP SDK for Claude
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
+- **[PHP SDK Composer Package](https://packagist.org/packages/claude-php/claude-3-api)** — SDK package on Packagist
 
 ## Wrap-up
 
@@ -1654,6 +1664,7 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 13 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-13)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-13

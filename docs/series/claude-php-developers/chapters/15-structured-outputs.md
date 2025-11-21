@@ -73,11 +73,11 @@ By completing this chapter, you will:
 - **Apply** error recovery techniques and fallback strategies
 - **Design** production-ready extraction pipelines with multiple validation layers
 
-## Install Validation Library
+## Install Required Libraries
 
 ```bash
+composer require claude-php/Claude-PHP-SDK
 composer require justinrainbow/json-schema
-composer require symfony/validator
 ```
 
 ## Step 1: Basic Structured Output (~10 min)
@@ -94,20 +94,20 @@ Create a simple function that extracts structured contact information from unstr
 4. **Validate the JSON** and handle parsing errors gracefully
 5. **Test with sample data** to verify the extraction works correctly
 
-```php
+````php
 <?php
 # filename: examples/01-basic-structured-output.php
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
-function extractContactInfo(string $text, Anthropic $client, bool $useNativeFormat = true): array
+function extractContactInfo(string $text, ClaudePhp $client, bool $useNativeFormat = true): array
 {
     $schema = [
         'type' => 'object',
@@ -142,15 +142,15 @@ function extractContactInfo(string $text, Anthropic $client, bool $useNativeForm
     if ($useNativeFormat) {
         try {
             $response = $client->messages()->create([
-                'model' => 'claude-sonnet-4-20250514',
+                'model' => 'claude-sonnet-4-5',
                 'max_tokens' => 1024,
                 'messages' => [
                     [
                         'role' => 'user',
                         'content' => "Extract contact information from this text:\n\n{$text}"
-                    ]
+                    )
                 ],
-                'response_format' => [
+                responseFormat: [
                     'type' => 'json_schema',
                     'json_schema' => [
                         'name' => 'contact_extraction',
@@ -158,9 +158,9 @@ function extractContactInfo(string $text, Anthropic $client, bool $useNativeForm
                         'schema' => $schema
                     ]
                 ]
-            ]);
+            );
 
-            if (empty($response->content) || !isset($response->content[0]->text)) {
+            if (empty($response->content) || !isset($response->content[0]->text) {
                 throw new \RuntimeException('Empty response from Claude API');
             }
 
@@ -174,7 +174,7 @@ function extractContactInfo(string $text, Anthropic $client, bool $useNativeForm
             return $data;
         } catch (\Exception $e) {
             // Fallback to prompt-based if native format fails
-            if (str_contains($e->getMessage(), 'response_format') || 
+            if (str_contains($e->getMessage(), 'response_format') ||
                 str_contains($e->getMessage(), 'not supported')) {
                 // Model doesn't support native structured output, use fallback
                 return extractContactInfoPromptBased($text, $client, $schema);
@@ -187,7 +187,7 @@ function extractContactInfo(string $text, Anthropic $client, bool $useNativeForm
     return extractContactInfoPromptBased($text, $client, $schema);
 }
 
-function extractContactInfoPromptBased(string $text, Anthropic $client, array $schema): array
+function extractContactInfoPromptBased(string $text, ClaudePhp $client, array $schema): array
 {
     $schema_json = json_encode($schema, JSON_PRETTY_PRINT);
 
@@ -202,18 +202,18 @@ Return ONLY valid JSON matching the schema. Use null for missing fields.
 PROMPT;
 
     $response = $client->messages()->create([
-        'model' => 'claude-sonnet-4-20250514',
+        'model' => 'claude-sonnet-4-5',
         'max_tokens' => 1024,
-        'temperature' => 0.3, // Lower temperature for more consistent output
+        'temperature' => 0.3,
         'messages' => [
             [
                 'role' => 'user',
                 'content' => $prompt
-            ]
+            )
         ]
-    ]);
+    );
 
-    if (empty($response->content) || !isset($response->content[0]->text)) {
+    if (empty($response->content) || !isset($response->content[0]->text) {
         throw new \RuntimeException('Empty response from Claude API');
     }
 
@@ -246,17 +246,17 @@ TEXT;
 
 $contact = extractContactInfo($businessCard, $client);
 echo json_encode($contact, JSON_PRETTY_PRINT) . "\n";
-```
+````
 
 ### Expected Result
 
 ```json
 {
-    "name": "Dr. Sarah Johnson",
-    "email": "sarah.johnson@techcorp.com",
-    "phone": "+1 (555) 123-4567",
-    "company": "TechCorp Industries",
-    "title": "Chief Technology Officer"
+  "name": "Dr. Sarah Johnson",
+  "email": "sarah.johnson@techcorp.com",
+  "phone": "+1 (555) 123-4567",
+  "company": "TechCorp Industries",
+  "title": "Chief Technology Officer"
 }
 ```
 
@@ -269,13 +269,14 @@ Claude's `response_format` parameter with `json_schema` type enforces strict JSO
 For older models or when native format isn't available, we use prompt-based extraction. The function defines a JSON schema in the prompt, and Claude extracts information to match it. The regex patterns extract JSON from markdown code blocks (if Claude wraps it) or directly from the response text. Lower temperature (0.3) increases consistency. The `json_decode()` function parses the JSON string into a PHP array, and we validate it using `json_last_error()`.
 
 **When to Use Each Method:**
+
 - **Native `response_format`**: Use for Sonnet 4.5+ and Opus 4.1+ models when you need guaranteed schema compliance
 - **Prompt-based**: Use for older models or when you need more flexibility in the extraction process
 
 ### Troubleshooting
 
 - **Error: "Invalid JSON response"** — Claude may have returned explanatory text along with JSON. The regex patterns should handle this, but if it persists, check the raw response text to see what Claude actually returned. You can add `echo $responseText;` before parsing to debug.
-- **Error: "Empty response from Claude API"** — This indicates the API call succeeded but returned no content. Check your API key and model name. Ensure you're using a valid model like `claude-sonnet-4-20250514`.
+- **Error: "Empty response from Claude API"** — This indicates the API call succeeded but returned no content. Check your API key and model name. Ensure you're using a valid model like `claude-sonnet-4-5`.
 - **Missing fields** — If some fields are missing, Claude will use `null` for optional fields. Ensure required fields are marked in the schema.
 - **Malformed JSON** — If Claude returns JSON with syntax errors, the extraction will fail. Consider adding retry logic (shown in Step 2) to handle this.
 - **Variable scope issues** — The function now accepts `$client` as a parameter instead of using `global`. Make sure to pass the client when calling the function.
@@ -293,21 +294,21 @@ Build a reusable `SchemaExtractor` class that handles extraction, validation, re
 3. **Add schema validation** using the JSON Schema validator library
 4. **Create an `extractList` method** for extracting arrays of items
 
-```php
+````php
 <?php
 # filename: src/Extraction/SchemaExtractor.php
 declare(strict_types=1);
 
 namespace App\Extraction;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use JsonSchema\Validator;
 use JsonSchema\Constraints\Constraint;
 
 class SchemaExtractor
 {
     public function __construct(
-        private Anthropic $client,
+        private ClaudePhp $client,
         private int $maxRetries = 3
     ) {}
 
@@ -328,12 +329,12 @@ class SchemaExtractor
                 // Validate against schema
                 $validation = $this->validateSchema($data, $schema);
 
-                if ($validation['valid']) {
+                if ($validation['valid'] {
                     return $data;
                 }
 
                 // Store validation errors for next attempt
-                $lastError = implode(', ', $validation['errors']);
+                $lastError = implode(', ', $validation['errors'];
 
                 if ($attempt >= $this->maxRetries) {
                     throw new \RuntimeException(
@@ -377,18 +378,18 @@ class SchemaExtractor
         $prompt .= "Return ONLY valid JSON matching the schema exactly. No explanation or markdown.";
 
         $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 4096,
-            'temperature' => 0.3, // Lower temperature for more consistent output
+            'temperature' => 0.3,
             'messages' => [
                 [
                     'role' => 'user',
                     'content' => $prompt
-                ]
+                )
             ]
-        ]);
+        );
 
-        if (empty($response->content) || !isset($response->content[0]->text)) {
+        if (empty($response->content) || !isset($response->content[0]->text) {
             throw new \RuntimeException('Empty response from Claude API');
         }
 
@@ -398,9 +399,9 @@ class SchemaExtractor
     private function parseJSON(string $text): array
     {
         // Try to extract JSON from markdown code blocks first
-        if (preg_match('/```json\s*(\{.*\}|\[.*\])\s*```/s', $text, $matches)) {
+        if (preg_match('/```json\s*(\{.*\}|\[.*\]\s*```/s', $text, $matches)) {
             $text = $matches[1];
-        } elseif (preg_match('/(\{.*\}|\[.*\])/s', $text, $matches)) {
+        } elseif (preg_match('/(\{.*\}|\[.*\]/s', $text, $matches)) {
             // Match the outermost JSON object or array (greedy match)
             $text = $matches[1];
         }
@@ -429,7 +430,7 @@ class SchemaExtractor
         $errors = [];
         if (!$validator->isValid()) {
             foreach ($validator->getErrors() as $error) {
-                $errors[] = sprintf("[%s] %s", $error['property'], $error['message']);
+                $errors[] = sprintf("[%s] %s", $error['property'], $error['message'];
             }
         }
 
@@ -459,11 +460,12 @@ class SchemaExtractor
         return $result['items'] ?? [];
     }
 }
-```
+````
 
 ### Expected Result
 
 The class provides a robust extraction system that:
+
 - Automatically retries failed extractions up to 3 times
 - Validates outputs against the provided schema
 - Provides detailed error messages for validation failures
@@ -666,6 +668,7 @@ class Schemas
 ### Expected Result
 
 You'll have a `Schemas` class with five ready-to-use schema methods:
+
 - `person()` — Contact information with address
 - `product()` — Product details with pricing and specifications
 - `event()` — Event information with dates and location
@@ -701,13 +704,13 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
 use App\Extraction\SchemaExtractor;
 use App\Extraction\Schemas;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $extractor = new SchemaExtractor($client);
 
@@ -751,7 +754,7 @@ March 15, 2025 at 2:00 PM - 3:30 PM
 Conference Room A
 Organizer: Sarah Johnson
 
-Client Presentation
+ClaudePhp Presentation
 March 18, 2025 at 10:00 AM - 11:00 AM
 Virtual (Zoom link to follow)
 Organizer: Mike Chen
@@ -789,6 +792,7 @@ echo json_encode($transactions, JSON_PRETTY_PRINT) . "\n\n";
 ### Expected Result
 
 The script will extract structured data from three different text sources:
+
 - Products with names, prices, descriptions, and stock status
 - Events with dates, times, locations, and organizers
 - Transactions with amounts, dates, merchants, and status
@@ -884,10 +888,10 @@ class CustomValidator
     private function validateRange(string $field, $value, $params): void
     {
         if ($value !== null) {
-            if (isset($params['min']) && $value < $params['min']) {
+            if (isset($params['min'] && $value < $params['min'] {
                 $this->errors[$field][] = "Value below minimum {$params['min']}";
             }
-            if (isset($params['max']) && $value > $params['max']) {
+            if (isset($params['max'] && $value > $params['max'] {
                 $this->errors[$field][] = "Value above maximum {$params['max']}";
             }
         }
@@ -895,8 +899,8 @@ class CustomValidator
 
     private function validateEnum(string $field, $value, $params): void
     {
-        if ($value && !in_array($value, $params['values'])) {
-            $this->errors[$field][] = "Value not in allowed list: " . implode(', ', $params['values']);
+        if ($value && !in_array($value, $params['values']) {
+            $this->errors[$field][] = "Value not in allowed list: " . implode(', ', $params['values'];
         }
     }
 
@@ -911,10 +915,10 @@ class CustomValidator
     {
         if ($value) {
             $length = strlen($value);
-            if (isset($params['min']) && $length < $params['min']) {
+            if (isset($params['min'] && $length < $params['min'] {
                 $this->errors[$field][] = "Length below minimum {$params['min']}";
             }
-            if (isset($params['max']) && $length > $params['max']) {
+            if (isset($params['max'] && $length > $params['max'] {
                 $this->errors[$field][] = "Length above maximum {$params['max']}";
             }
         }
@@ -940,14 +944,14 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
 use App\Extraction\SchemaExtractor;
 use App\Extraction\CustomValidator;
 use App\Extraction\Schemas;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $extractor = new SchemaExtractor($client);
 $validator = new CustomValidator();
@@ -975,6 +979,7 @@ if (!$validator->validate($person, $rules)) {
 ### Expected Result
 
 You'll have a `CustomValidator` class that can validate:
+
 - Email addresses using PHP's `FILTER_VALIDATE_EMAIL`
 - Phone numbers with regex pattern matching
 - URLs using PHP's `FILTER_VALIDATE_URL`
@@ -989,6 +994,7 @@ You'll have a `CustomValidator` class that can validate:
 The validator uses a rule-based system where each field can have multiple validation rules. The `validate()` method iterates through rules and calls corresponding validation methods dynamically using `method_exists()`. Each validation method checks the value and adds errors to the `$errors` array if validation fails. This allows combining JSON Schema validation (structural) with custom validation (business logic) for comprehensive data quality checks.
 
 **When to use CustomValidator vs JSON Schema:**
+
 - **JSON Schema**: Use for structural validation (types, formats, required fields, nested structures)
 - **CustomValidator**: Use for business logic validation (complex rules, cross-field validation, domain-specific constraints)
 - **Best Practice**: Use JSON Schema first for structure, then CustomValidator for business rules
@@ -1018,7 +1024,6 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
 use App\Extraction\SchemaExtractor;
 use App\Extraction\Schemas;
 
@@ -1060,9 +1065,9 @@ class BatchExtractor
     }
 }
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $extractor = new SchemaExtractor($client);
 $batchExtractor = new BatchExtractor($extractor);
@@ -1091,6 +1096,7 @@ echo json_encode($result['results'], JSON_PRETTY_PRINT) . "\n";
 ### Expected Result
 
 The batch extractor will process all business cards and return:
+
 - A `results` array with successfully extracted contact information
 - An `errors` array with any failures (indexed by input position)
 - Summary statistics: `success_count`, `error_count`, and `total`
@@ -1118,19 +1124,19 @@ Create a `StreamingExtractor` class that processes structured output as it strea
 3. **Buffer the streamed content** until complete
 4. **Parse JSON** from the complete buffer with proper error handling
 
-```php
+````php
 <?php
 # filename: examples/04-streaming-structured.php
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
 use App\Extraction\Schemas;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 // Example usage
 $inputText = "John Doe\njohn.doe@example.com\n+1-555-123-4567";
@@ -1144,7 +1150,7 @@ class StreamingExtractor
     private string $buffer = '';
 
     public function __construct(
-        private Anthropic $client
+        private \ClaudePhp\ClaudePhp $client
     ) {}
 
     public function extractWithStreaming(string $input, array $schema): array
@@ -1163,12 +1169,12 @@ Return only valid JSON.
 PROMPT;
 
         $stream = $this->client->messages()->createStreamed([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 4096,
             'messages' => [
                 ['role' => 'user', 'content' => $prompt]
             ]
-        ]);
+        ];
 
         $this->buffer = '';
 
@@ -1208,7 +1214,7 @@ PROMPT;
         return $data;
     }
 }
-```
+````
 
 ### Expected Result
 
@@ -1231,12 +1237,14 @@ The `createStreamed()` method returns an iterable stream of events. We iterate t
 Understanding when to use structured outputs versus tool use (from [Chapter 11](/series/claude-php-developers/chapters/11-tool-use-fundamentals)) is important:
 
 **Use Structured Outputs When:**
+
 - Extracting data from text (documents, emails, user input)
 - Parsing unstructured information into structured formats
 - Converting text to JSON/arrays for storage or processing
 - One-way data extraction (no action needed)
 
 **Use Tool Use When:**
+
 - Claude needs to perform actions (database queries, API calls, file operations)
 - Multi-step workflows requiring external system interaction
 - Dynamic decision-making based on tool results
@@ -1277,7 +1285,7 @@ Always pass dependencies (like the Anthropic client) through constructors or met
 // ✓ Good: Dependency injection
 class SchemaExtractor
 {
-    public function __construct(private Anthropic $client) {}
+    public function __construct(private \ClaudePhp\ClaudePhp $client) {}
 }
 
 // ❌ Bad: Global variable
@@ -1336,7 +1344,7 @@ try {
 ```php
 // Layer 1: JSON Schema validation (structural)
 $validation = $extractor->validateSchema($data, $schema);
-if (!$validation['valid']) {
+if (!$validation['valid'] {
     // Handle schema validation errors
 }
 
@@ -1359,7 +1367,7 @@ $sanitized = $this->sanitizeData($data);
 
 Always handle edge cases when parsing JSON from Claude responses:
 
-```php
+````php
 // ✓ Good: Multiple extraction strategies with error handling
 private function parseJSON(string $text): array
 {
@@ -1371,15 +1379,15 @@ private function parseJSON(string $text): array
     }
 
     $data = json_decode($text, true);
-    
+
     if (json_last_error() !== JSON_ERROR_NONE) {
         throw new \RuntimeException('Invalid JSON: ' . json_last_error_msg());
     }
-    
+
     if (!is_array($data)) {
         throw new \RuntimeException('Expected array or object');
     }
-    
+
     return $data;
 }
 
@@ -1388,7 +1396,7 @@ private function parseJSON(string $text): array
 {
     return json_decode($text, true) ?? []; // Silent failure
 }
-```
+````
 
 ### 6. Integration with Error Handling
 
@@ -1434,14 +1442,14 @@ class CachedExtractor extends SchemaExtractor
     public function extract(string $input, array $schema, string $context = ''): array
     {
         $cacheKey = 'extract:' . md5($input . serialize($schema) . $context);
-        
+
         if ($this->cache->has($cacheKey)) {
             return $this->cache->get($cacheKey);
         }
 
         $result = parent::extract($input, $schema, $context);
         $this->cache->set($cacheKey, $result, $this->ttl);
-        
+
         return $result;
     }
 }
@@ -1496,6 +1504,7 @@ class VersionedSchema
 **Goal**: Create a schema and extraction function for invoice data.
 
 Create a new schema method `invoice()` in the `Schemas` class that includes:
+
 - Invoice number (required string)
 - Date (required date)
 - Due date (date)
@@ -1513,6 +1522,7 @@ Then create an extraction example that processes invoice text and extracts this 
 **Goal**: Extend the `CustomValidator` class with new validation rules.
 
 Add validation methods for:
+
 - `validateCreditCard()` — Validates credit card numbers using Luhn algorithm
 - `validatePostalCode()` — Validates US ZIP codes (5 digits or 5+4 format)
 - `validateAge()` — Validates age is between 0 and 150
@@ -1520,6 +1530,13 @@ Add validation methods for:
 Create a test that validates person data using these new rules.
 
 **Validation**: Ensure invalid data is caught and valid data passes all checks.
+
+## Further Reading
+
+- **[Official PHP SDK Documentation](https://github.com/anthropics/anthropic-sdk-php)** — The official Anthropic PHP SDK on GitHub
+- **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)** — Community resources and examples for Claude with PHP
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
+- **[PHP SDK Composer Package](https://packagist.org/packages/claude-php/claude-php-sdk)** — Official package on Packagist
 
 ## Wrap-up
 
@@ -1575,6 +1592,7 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 15 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-15)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-15

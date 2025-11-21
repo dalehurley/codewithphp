@@ -43,9 +43,10 @@ Keep your API key secret! Never commit it to version control.
 
 ### Install the PHP SDK
 
-Create a new project directory and install the Anthropic PHP SDK:
+Create a new project directory and install the Claude-PHP-SDK:
 
 **Unix/Mac/Linux:**
+
 ```bash
 # Create project directory
 mkdir claude-quickstart && cd claude-quickstart
@@ -53,11 +54,12 @@ mkdir claude-quickstart && cd claude-quickstart
 # Initialize composer
 composer init --no-interaction
 
-# Install Anthropic SDK
-composer require anthropic-ai/sdk
+# Install Claude-PHP-SDK
+composer require claude-php/claude-php-sdk
 ```
 
 **Windows (PowerShell):**
+
 ```powershell
 # Create project directory
 New-Item -ItemType Directory -Path claude-quickstart
@@ -66,8 +68,8 @@ Set-Location claude-quickstart
 # Initialize composer
 composer init --no-interaction
 
-# Install Anthropic SDK
-composer require anthropic-ai/sdk
+# Install Claude-PHP-SDK
+composer require claude-php/claude-php-sdk
 ```
 
 ### Your First Claude Request
@@ -81,16 +83,16 @@ declare(strict_types=1);
 
 require 'vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 // Initialize Claude client
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 // Make your first API call
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
     'messages' => [
         [
@@ -107,6 +109,7 @@ echo $response->content[0]->text;
 Run it with your API key:
 
 **Unix/Mac/Linux:**
+
 ```bash
 # Set your API key (replace with your actual key)
 export ANTHROPIC_API_KEY="sk-ant-your-key-here"
@@ -116,6 +119,7 @@ php quickstart.php
 ```
 
 **Windows (PowerShell):**
+
 ```powershell
 # Set your API key (replace with your actual key)
 $env:ANTHROPIC_API_KEY="sk-ant-your-key-here"
@@ -177,18 +181,18 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
-function generateProductDescription(Anthropic $client, string $productName, array $features): string
+function generateProductDescription(ClaudePhp $client, string $productName, array $features): string
 {
     $featuresList = implode("\n", array_map(fn($f) => "- $f", $features));
 
     $response = $client->messages()->create([
-        'model' => 'claude-sonnet-4-20250514',
+        'model' => 'claude-sonnet-4-5-20250929',
         'max_tokens' => 500,
         'messages' => [[
             'role' => 'user',
@@ -220,23 +224,23 @@ Need to review code for security issues, bugs, or improvements?
 
 **→ [Full Guide: Code Analysis](/series/claude-php-developers/chapters/06-code-analysis-and-review)**
 
-```php
+````php
 <?php
 # filename: examples/02-code-analysis.php
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
-function analyzeCode(Anthropic $client, string $code): string
+function analyzeCode(ClaudePhp $client, string $code): string
 {
     $response = $client->messages()->create([
-        'model' => 'claude-sonnet-4-20250514',
+        'model' => 'claude-sonnet-4-5-20250929',
         'max_tokens' => 2000,
         'messages' => [[
             'role' => 'user',
@@ -258,7 +262,7 @@ PHP;
 
 echo "Code Analysis:\n\n";
 echo analyzeCode($client, $codeToAnalyze);
-```
+````
 
 ### Extract Structured Data
 
@@ -266,23 +270,23 @@ Need to extract contact info, product details, or other structured data from tex
 
 **→ [Full Guide: Data Extraction](/series/claude-php-developers/chapters/07-structured-data-extraction)**
 
-```php
+````php
 <?php
 # filename: examples/03-data-extraction.php
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
-function extractContactInfo(Anthropic $client, string $text): array
+function extractContactInfo(ClaudePhp $client, string $text): array
 {
     $response = $client->messages()->create([
-        'model' => 'claude-sonnet-4-20250514',
+        'model' => 'claude-sonnet-4-5-20250929',
         'max_tokens' => 1024,
         'messages' => [[
             'role' => 'user',
@@ -315,7 +319,7 @@ $contact = extractContactInfo($client, $businessCard);
 
 echo "Extracted Contact Information:\n";
 print_r($contact);
-```
+````
 
 ### Use System Prompts
 
@@ -330,15 +334,15 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 // System prompt defines Claude's role and expertise
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 500,
     'system' => 'You are a senior PHP code reviewer. Analyze code for type safety, security issues, and best practices. Always suggest improvements using PHP 8.4+ features.',
     'messages' => [[
@@ -363,15 +367,15 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 // Stream responses for real-time output
-$stream = $client->messages()->createStreamed([
-    'model' => 'claude-sonnet-4-20250514',
+$stream = $client->messages()->createStream([
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
     'messages' => [[
         'role' => 'user',
@@ -380,8 +384,8 @@ $stream = $client->messages()->createStreamed([
 ]);
 
 foreach ($stream as $event) {
-    if (isset($event->type) && $event->type === 'content_block_delta') {
-        echo $event->delta->text;
+    if (isset($event['type']) && $event['type'] === 'content_block_delta') {
+        echo $event['delta']['text'];
         flush(); // Send output immediately
     }
 }
@@ -421,11 +425,11 @@ $stopReason = $response->stopReason; // 'end_turn', 'max_tokens', etc.
 
 Choose the right model for your use case:
 
-| Model | Speed | Cost | Best For |
-|-------|-------|------|----------|
-| **claude-haiku-4-20250514** | Fastest | Lowest | Simple tasks, high volume |
-| **claude-sonnet-4-20250514** | Balanced | Medium | Most use cases, best value |
-| **claude-opus-4-20250514** | Slowest | Highest | Complex reasoning, critical tasks |
+| Model                 | Speed    | Cost    | Best For                          |
+| --------------------- | -------- | ------- | --------------------------------- |
+| **claude-haiku-4-5**  | Fastest  | Lowest  | Simple tasks, high volume         |
+| **claude-sonnet-4-5** | Balanced | Medium  | Most use cases, best value        |
+| **claude-opus-4-1**   | Slowest  | Highest | Complex reasoning, critical tasks |
 
 For most PHP applications, start with **Sonnet**—it provides excellent quality at reasonable cost.
 
@@ -444,17 +448,17 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
-use Anthropic\Exceptions\ErrorException;
-use Anthropic\Exceptions\RateLimitException;
+use ClaudePhp\ClaudePhp;
+use ClaudePhp\Exceptions\ApiException;
+use ClaudePhp\Exceptions\RateLimitException;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 try {
     $response = $client->messages()->create([
-        'model' => 'claude-sonnet-4-20250514',
+        'model' => 'claude-sonnet-4-5-20250929',
         'max_tokens' => 1024,
         'messages' => [[
             'role' => 'user',
@@ -469,7 +473,7 @@ try {
     echo "Rate limit exceeded. Please try again later.\n";
     error_log("Rate limit: " . $e->getMessage());
 
-} catch (ErrorException $e) {
+} catch (ApiException $e) {
     // Handle API errors
     echo "API error occurred: " . $e->getMessage() . "\n";
     error_log("Claude API error: " . $e->getMessage());
@@ -494,14 +498,14 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
     'messages' => [[
         'role' => 'user',
@@ -537,7 +541,7 @@ For production applications, use environment variables:
 ```bash
 # .env file
 ANTHROPIC_API_KEY=sk-ant-your-key-here
-ANTHROPIC_MODEL=claude-sonnet-4-20250514
+ANTHROPIC_MODEL=claude-sonnet-4-5
 ANTHROPIC_MAX_TOKENS=4096
 ANTHROPIC_TEMPERATURE=1.0
 ```
@@ -555,7 +559,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Dotenv\Dotenv;
 
 // Load environment variables
@@ -563,13 +567,13 @@ $dotenv = Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
 
 // Create client with environment config
-$client = Anthropic::factory()
-    ->withApiKey($_ENV['ANTHROPIC_API_KEY'])
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 // Use environment-based configuration
 $response = $client->messages()->create([
-    'model' => $_ENV['ANTHROPIC_MODEL'] ?? 'claude-sonnet-4-20250514',
+    'model' => $_ENV['ANTHROPIC_MODEL'] ?? 'claude-sonnet-4-5-20250929',
     'max_tokens' => (int)($_ENV['ANTHROPIC_MAX_TOKENS'] ?? 1024),
     'temperature' => (float)($_ENV['ANTHROPIC_TEMPERATURE'] ?? 1.0),
     'messages' => [[
@@ -588,7 +592,7 @@ echo $response->content[0]->text;
 ```php
 $response = $client->messages()->create([
     // Required
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
     'messages' => [
         ['role' => 'user', 'content' => 'Your prompt here']
@@ -608,11 +612,13 @@ $response = $client->messages()->create([
 Now that you have Claude working in PHP, here's what to explore next:
 
 **If you have 30 minutes:**
+
 1. Read this guide
 2. [Chapter 01: Introduction to Claude API](/series/claude-php-developers/chapters/01-introduction-to-claude-api) — Understand models and capabilities
 3. [Chapter 05: Prompt Engineering Basics](/series/claude-php-developers/chapters/05-prompt-engineering-basics) — Write effective prompts
 
 **For deep learning:**
+
 - Start with [Chapter 01: Introduction to Claude API](/series/claude-php-developers/chapters/01-introduction-to-claude-api) for comprehensive understanding
 - [Chapter 03: Your First Claude Request](/series/claude-php-developers/chapters/03-first-claude-request) — Deep dive into request/response structure
 - [Chapter 11: Tool Use Fundamentals](/series/claude-php-developers/chapters/11-tool-use-fundamentals) — Extend Claude with function calling
@@ -620,21 +626,25 @@ Now that you have Claude working in PHP, here's what to explore next:
 ## ❓ FAQs
 
 **Q: API key not working?**
+
 - Ensure you've added a payment method to your Anthropic account
 - Check the key starts with `sk-ant-`
 - Verify the environment variable is set correctly
 
 **Q: Rate limit errors?**
+
 - You've exceeded your API rate limit
 - Implement exponential backoff retry logic → [Chapter 10: Error Handling](/series/claude-php-developers/chapters/10-error-handling-and-retries)
 - Consider upgrading your API tier
 
 **Q: Empty or unexpected responses?**
+
 - Check your `max_tokens` value (might be too low)
 - Review your prompt for clarity and specificity → [Chapter 05: Prompt Engineering](/series/claude-php-developers/chapters/05-prompt-engineering-basics)
 - Try a different model (Sonnet vs Haiku)
 
 **Q: JSON parsing fails?**
+
 - Claude may wrap JSON in markdown code blocks
 - Use regex to extract JSON from response (see data extraction example above)
 - Add "Return only valid JSON, no explanation" to your prompt
@@ -662,6 +672,13 @@ Now that you have Claude working in PHP, here's what to explore next:
   <a href="/series/claude-php-developers/chapters/01-introduction-to-claude-api" class="cta-button">Start Course →</a>
 </div>
 
+## Further Reading
+
+- **[Claude-PHP-SDK GitHub Repository](https://github.com/claude-php/Claude-PHP-SDK)** — Complete documentation and examples for the Claude-PHP-SDK
+- **[Claude-PHP-SDK on Packagist](https://packagist.org/packages/claude-php/claude-php-sdk)** — Install via Composer
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete Claude API reference and guides
+- **[Official Anthropic PHP SDK](https://github.com/anthropics/anthropic-sdk-php)** — Alternative official SDK from Anthropic
+
 ## 💻 Code Samples
 
 All code examples from this chapter are available in the GitHub repository:
@@ -669,6 +686,7 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 00 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-00)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-00

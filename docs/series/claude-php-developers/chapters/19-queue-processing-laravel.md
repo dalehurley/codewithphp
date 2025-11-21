@@ -86,7 +86,7 @@ flowchart TB
     G --> J[Trigger Notification]
     J --> K[WebSocket/Webhook/Polling]
     I --> L[Notify User of Failure]
-    
+
     style A fill:#e1f5ff
     style G fill:#d4edda
     style I fill:#f8d7da
@@ -161,27 +161,34 @@ class ProcessClaudeRequest implements ShouldQueue
                 'started_at' => now(),
             ]);
 
-            // Make Claude API call
-            $result = $claude->generateWithMetadata(
-                prompt: $this->request->prompt,
-                options: [
-                    'max_tokens' => $this->request->max_tokens ?? 4096,
-                    'temperature' => $this->request->temperature ?? 1.0,
-                    'model' => $this->request->model ?? 'claude-sonnet-4-20250514',
+            // Make Claude API call using SDK
+            $response = $claude->messages()->create([
+                'model' => $this->request->model ?? 'claude-sonnet-4-5-20250929',
+                'max_tokens' => $this->request->max_tokens ?? 4096,
+                'temperature' => $this->request->temperature ?? 1.0,
+                'messages' => [
+                    [
+                        'role' => 'user',
+                        'content' => $this->request->prompt
+                    ]
                 ]
-            );
+            ]);
 
             // Store result
             $this->request->update([
                 'status' => 'completed',
-                'response' => $result['text'],
-                'metadata' => $result['metadata'],
+                'response' => $response->content[0]->text,
+                'metadata' => [
+                    'usage' => $response->usage,
+                    'model' => $response->model,
+                    'stop_reason' => $response->stopReason
+                ],
                 'completed_at' => now(),
             ]);
 
             Log::info('Claude request completed', [
                 'request_id' => $this->request->id,
-                'tokens_used' => $result['metadata']['usage']['output_tokens']
+                'tokens_used' => $response->usage->outputTokens
             ]);
 
         } catch (\Exception $e) {
@@ -230,6 +237,7 @@ ProcessClaudeRequest::dispatch($claudeRequest);
 ```
 
 The job will automatically:
+
 - Be queued for background processing
 - Retry up to 3 times on failure
 - Wait 10 seconds between retries
@@ -276,7 +284,7 @@ return new class extends Migration
             $table->text('prompt');
             $table->longText('response')->nullable();
             $table->json('metadata')->nullable();
-            $table->string('model')->default('claude-sonnet-4-20250514');
+            $table->string('model')->default('claude-sonnet-4-5-20250929');
             $table->integer('max_tokens')->default(4096);
             $table->decimal('temperature', 3, 2)->default(1.0);
             $table->text('error_message')->nullable();
@@ -421,7 +429,7 @@ class ClaudeRequestController extends Controller
             'prompt' => 'required|string|max:50000',
             'max_tokens' => 'nullable|integer|min:1|max:200000',
             'temperature' => 'nullable|numeric|min:0|max:1',
-            'model' => 'nullable|string|in:claude-opus-4-20250514,claude-sonnet-4-20250514,claude-haiku-4-20250514',
+            'model' => 'nullable|string|in:claude-opus-4-1-20250805,claude-sonnet-4-5-20250929,claude-haiku-4-5-20251001',
         ]);
 
         // Create request record
@@ -430,7 +438,7 @@ class ClaudeRequestController extends Controller
             'prompt' => $validated['prompt'],
             'max_tokens' => $validated['max_tokens'] ?? 4096,
             'temperature' => $validated['temperature'] ?? 1.0,
-            'model' => $validated['model'] ?? 'claude-sonnet-4-20250514',
+            'model' => $validated['model'] ?? 'claude-sonnet-4-5-20250929',
             'status' => 'pending',
         ]);
 
@@ -562,19 +570,26 @@ class ProcessClaudeBatch implements ShouldQueue
         try {
             $this->item->update(['status' => 'processing']);
 
-            $result = $claude->generateWithMetadata(
-                prompt: $this->item->prompt,
-                options: [
-                    'max_tokens' => $this->item->batch->max_tokens,
-                    'temperature' => $this->item->batch->temperature,
-                    'model' => $this->item->batch->model,
+            $response = $claude->messages()->create([
+                'model' => $this->item->batch->model,
+                'max_tokens' => $this->item->batch->max_tokens,
+                'temperature' => $this->item->batch->temperature,
+                'messages' => [
+                    [
+                        'role' => 'user',
+                        'content' => $this->item->prompt
+                    ]
                 ]
-            );
+            ]);
 
             $this->item->update([
                 'status' => 'completed',
-                'response' => $result['text'],
-                'metadata' => $result['metadata'],
+                'response' => $response->content[0]->text,
+                'metadata' => [
+                    'usage' => $response->usage,
+                    'model' => $response->model,
+                    'stop_reason' => $response->stopReason
+                ],
                 'completed_at' => now(),
             ]);
 
@@ -628,7 +643,7 @@ class ClaudeBatchController extends Controller
             'total_items' => count($validated['prompts']),
             'max_tokens' => $validated['max_tokens'] ?? 4096,
             'temperature' => $validated['temperature'] ?? 1.0,
-            'model' => $validated['model'] ?? 'claude-sonnet-4-20250514',
+            'model' => $validated['model'] ?? 'claude-sonnet-4-5-20250929',
         ]);
 
         // Create batch items
@@ -830,38 +845,37 @@ event(new \App\Events\ClaudeRequestCompleted($this->request));
 ```javascript
 // resources/js/claude-listener.js
 
-import Echo from 'laravel-echo';
-import Pusher from 'pusher-js';
+import Echo from "laravel-echo";
+import Pusher from "pusher-js";
 
 window.Pusher = Pusher;
 
 window.Echo = new Echo({
-    broadcaster: 'pusher',
-    key: import.meta.env.VITE_PUSHER_APP_KEY,
-    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
-    forceTLS: true
+  broadcaster: "pusher",
+  key: import.meta.env.VITE_PUSHER_APP_KEY,
+  cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
+  forceTLS: true,
 });
 
 // Listen for Claude request completions
-Echo.private(`users.${userId}`)
-    .listen('.claude.request.completed', (event) => {
-        console.log('Claude request completed:', event);
+Echo.private(`users.${userId}`).listen(".claude.request.completed", (event) => {
+  console.log("Claude request completed:", event);
 
-        // Update UI
-        updateRequestStatus(event.request_id, {
-            status: event.status,
-            response: event.response,
-            metadata: event.metadata
-        });
-    });
+  // Update UI
+  updateRequestStatus(event.request_id, {
+    status: event.status,
+    response: event.response,
+    metadata: event.metadata,
+  });
+});
 
 function updateRequestStatus(requestId, data) {
-    const element = document.querySelector(`[data-request-id="${requestId}"]`);
-    if (element) {
-        element.querySelector('.status').textContent = data.status;
-        element.querySelector('.response').textContent = data.response;
-        element.classList.add('completed');
-    }
+  const element = document.querySelector(`[data-request-id="${requestId}"]`);
+  if (element) {
+    element.querySelector(".status").textContent = data.status;
+    element.querySelector(".response").textContent = data.response;
+    element.classList.add("completed");
+  }
 }
 ```
 
@@ -1036,7 +1050,7 @@ private function processRequest(ClaudeServiceInterface $claude): void
 Jobs will automatically throttle themselves:
 
 ```php
-// If 50 requests already processed this minute, 
+// If 50 requests already processed this minute,
 // this job will wait until next minute
 RateLimiter::attempt('claude-api', 50, function() {
     // Process request
@@ -1174,18 +1188,24 @@ class ProcessClaudeRequestJobTest extends TestCase
             'user_id' => $this->user->id,
             'prompt' => 'Test prompt',
             'status' => 'pending',
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 1024,
             'temperature' => 1.0,
         ]);
 
         // Mock the Claude service
         $this->mock(ClaudeServiceInterface::class, function ($mock) {
-            $mock->shouldReceive('generateWithMetadata')
+            $mock->shouldReceive('messages')
                 ->once()
-                ->andReturn([
-                    'text' => 'Test response',
-                    'metadata' => ['usage' => ['output_tokens' => 42]]
+                ->andReturnSelf();
+
+            $mock->shouldReceive('create')
+                ->once()
+                ->andReturn((object) [
+                    'content' => [(object) ['text' => 'Test response']],
+                    'usage' => (object) ['inputTokens' => 10, 'outputTokens' => 42],
+                    'model' => 'claude-sonnet-4-5-20250929',
+                    'stopReason' => 'end_turn'
                 ]);
         });
 
@@ -1211,9 +1231,13 @@ class ProcessClaudeRequestJobTest extends TestCase
 
         // Mock Claude service to throw exception
         $this->mock(ClaudeServiceInterface::class, function ($mock) {
-            $mock->shouldReceive('generateWithMetadata')
+            $mock->shouldReceive('messages')
                 ->once()
-                ->andThrow(new Exception('API Error'));
+                ->andReturnSelf();
+
+            $mock->shouldReceive('create')
+                ->once()
+                ->andThrow(new \Exception('API Error'));
         });
 
         $job = new ProcessClaudeRequest($request);
@@ -1250,6 +1274,7 @@ class ProcessClaudeRequestJobTest extends TestCase
 ### Expected Result
 
 Tests pass and verify:
+
 - Jobs execute successfully and update database
 - Failures are handled gracefully
 - Job dispatch works correctly
@@ -1298,14 +1323,27 @@ public function handle(ClaudeServiceInterface $claude): void
             $cacheKey,
             now()->addHours(24),
             function () use ($claude) {
-                return $claude->generateWithMetadata(
-                    prompt: $this->request->prompt,
-                    options: [
-                        'max_tokens' => $this->request->max_tokens ?? 4096,
-                        'temperature' => $this->request->temperature ?? 1.0,
-                        'model' => $this->request->model ?? 'claude-sonnet-4-20250514',
+                $response = $claude->messages()->create([
+                    'model' => $this->request->model ?? 'claude-sonnet-4-5-20250929',
+                    'max_tokens' => $this->request->max_tokens ?? 4096,
+                    'temperature' => $this->request->temperature ?? 1.0,
+                    'messages' => [
+                        [
+                            'role' => 'user',
+                            'content' => $this->request->prompt
+                        ]
                     ]
-                );
+                ]);
+
+                // Convert SDK response to our expected format
+                return [
+                    'text' => $response->content[0]->text,
+                    'metadata' => [
+                        'usage' => $response->usage,
+                        'model' => $response->model,
+                        'stop_reason' => $response->stopReason
+                    ]
+                ];
             }
         );
 
@@ -1359,7 +1397,7 @@ class BatchProcessingStrategy
      * 2. Results must be available within minutes
      * 3. User is waiting for status updates
      * 4. Different prompts have different requirements
-     * 
+     *
      * Example: User submitted 10 documents to analyze,
      * wants to see results as they complete
      */
@@ -1375,10 +1413,10 @@ class BatchProcessingStrategy
      * 3. Results can wait 24 hours
      * 4. All requests have identical parameters
      * 5. Bulk operations: daily reports, overnight backups
-     * 
+     *
      * Example: Process 10,000 customer support tickets
      * overnight, save 50% on API costs
-     * 
+     *
      * Cost savings: Batch API = $0.0015/million tokens vs
      * Standard = $0.003/million tokens (for Haiku)
      */
@@ -1409,6 +1447,7 @@ class BatchProcessingStrategy
 ### Expected Result
 
 Integrated queue processing with:
+
 - Cache hits before API calls
 - Metadata tracking for cached responses
 - Clear decision tree for batch processing strategies
@@ -1480,11 +1519,18 @@ class AnalyzeTextJob implements ShouldQueue
 
     public function handle(ClaudeServiceInterface $claude): void
     {
-        $analysis = $claude->generate(
-            prompt: "Analyze: " . $this->document->extracted_text
-        );
+        $response = $claude->messages()->create([
+            'model' => 'claude-sonnet-4-5-20250929',
+            'max_tokens' => 2048,
+            'messages' => [
+                [
+                    'role' => 'user',
+                    'content' => "Analyze: " . $this->document->extracted_text
+                ]
+            ]
+        ]);
 
-        $this->document->update(['analysis' => $analysis]);
+        $this->document->update(['analysis' => $response->content[0]->text]);
     }
 }
 
@@ -1496,11 +1542,18 @@ class GenerateSummaryJob implements ShouldQueue
 
     public function handle(ClaudeServiceInterface $claude): void
     {
-        $summary = $claude->generate(
-            prompt: "Summarize: " . $this->document->analysis
-        );
+        $response = $claude->messages()->create([
+            'model' => 'claude-sonnet-4-5-20250929',
+            'max_tokens' => 1024,
+            'messages' => [
+                [
+                    'role' => 'user',
+                    'content' => "Summarize: " . $this->document->analysis
+                ]
+            ]
+        ]);
 
-        $this->document->update(['summary' => $summary]);
+        $this->document->update(['summary' => $response->content[0]->text]);
     }
 }
 
@@ -1524,6 +1577,7 @@ class SendNotificationJob implements ShouldQueue
 ### Expected Result
 
 Complex workflows execute in sequence:
+
 - Step 1: Extract text
 - Step 2: Analyze with Claude
 - Step 3: Generate summary
@@ -1613,7 +1667,7 @@ SELECT * FROM claude_requests WHERE status = 'expired';
 
 **Cause**: The job class file wasn't created or autoloader hasn't refreshed
 
-**Solution**: 
+**Solution**:
 
 ```bash
 # Regenerate autoload files
@@ -1669,10 +1723,16 @@ $this->request = $this->request->fresh();
 
 ```php
 // In batch controller, add safety check
-$percentage = $batch->total_items > 0 
-    ? ($completed + $failed) / $batch->total_items * 100 
+$percentage = $batch->total_items > 0
+    ? ($completed + $failed) / $batch->total_items * 100
     : 0;
 ```
+
+## Further Reading
+
+- **[Claude-PHP-SDK Documentation](https://github.com/claude-php/Claude-PHP-SDK)** — The official PHP SDK for Claude
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
+- **[PHP SDK Composer Package](https://packagist.org/packages/claude-php/claude-3-api)** — Official package on Packagist
 
 ## Wrap-up
 
@@ -1736,6 +1796,7 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 19 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-19)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-19

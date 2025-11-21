@@ -79,13 +79,13 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
 use App\Workflow\WorkflowBuilder;
+use ClaudePhp\ClaudePhp;
 
 // Initialize Claude
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY') ?: throw new RuntimeException('ANTHROPIC_API_KEY not set'))
-    ->make();
+$claude = new ClaudePhp([
+    'apiKey' => $_ENV['ANTHROPIC_API_KEY']
+]);
 
 // Create a simple 3-step workflow
 $workflow = (new WorkflowBuilder($claude, 'Quick Start'))
@@ -142,7 +142,6 @@ declare(strict_types=1);
 
 namespace App\Workflow;
 
-use Anthropic\Anthropic;
 
 class Workflow
 {
@@ -151,7 +150,7 @@ class Workflow
     private WorkflowState $state;
 
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp\ClaudePhp $claude,
         private string $workflowId,
         private string $name
     ) {
@@ -432,15 +431,23 @@ class PromptStep extends WorkflowStep
         // Interpolate variables from state into prompt
         $prompt = $this->interpolatePrompt($this->prompt, $context->state);
 
+        $messages = [];
+        if ($this->options['system'] ?? null) {
+            $messages[] = [
+                'role' => 'system',
+                'content' => $this->options['system']
+            ];
+        }
+        $messages[] = [
+            'role' => 'user',
+            'content' => $prompt
+        ];
+
         $response = $context->claude->messages()->create([
-            'model' => $this->options['model'] ?? 'claude-sonnet-4-20250514',
+            'model' => $this->options['model'] ?? 'claude-sonnet-4-5-20250929',
             'max_tokens' => $this->options['max_tokens'] ?? 4096,
             'temperature' => $this->options['temperature'] ?? 0.7,
-            'system' => $this->options['system'] ?? null,
-            'messages' => [[
-                'role' => 'user',
-                'content' => $prompt
-            ]]
+            'messages' => $messages
         ]);
 
         return new StepResult(
@@ -697,11 +704,10 @@ use App\Workflow\Workflow;
 use App\Workflow\Steps\PromptStep;
 use App\Workflow\Steps\ValidationStep;
 use App\Workflow\Steps\TransformStep;
-use Anthropic\Anthropic;
 
 class ContentCreationWorkflow
 {
-    public static function create(Anthropic $claude, string $topic): Workflow
+    public static function create(ClaudePhp\ClaudePhp $claude, string $topic): Workflow
     {
         $workflow = new Workflow($claude, uniqid('workflow_'), 'Content Creation');
 
@@ -802,7 +808,7 @@ PROMPT, ['temperature' => 0.4])
 }
 ```
 
-```php
+````php
 <?php
 # filename: src/Workflow/Workflows/CodeReviewWorkflow.php
 declare(strict_types=1);
@@ -812,11 +818,10 @@ namespace App\Workflow\Workflows;
 use App\Workflow\Workflow;
 use App\Workflow\Steps\PromptStep;
 use App\Workflow\Steps\ValidationStep;
-use Anthropic\Anthropic;
 
 class CodeReviewWorkflow
 {
-    public static function create(Anthropic $claude, string $code, string $language = 'php'): Workflow
+    public static function create(ClaudePhp\ClaudePhp $claude, string $code, string $language = 'php'): Workflow
     {
         $workflow = new Workflow($claude, uniqid('workflow_'), 'Code Review');
 
@@ -827,20 +832,22 @@ Analyze this {language} code:
 
 ```{language}
 {code}
-```
+````
 
 Provide:
-1. Code structure overview
-2. Main functionality
-3. Dependencies identified
-4. Complexity assessment
-PROMPT, ['temperature' => 0.2])
-        );
 
-        // Step 2: Security review
-        $workflow->addStep(
-            new PromptStep('security', <<<PROMPT
-Perform security review of this {language} code:
+1.  Code structure overview
+2.  Main functionality
+3.  Dependencies identified
+4.  Complexity assessment
+    PROMPT, ['temperature' => 0.2])
+    );
+
+            // Step 2: Security review
+            $workflow->addStep(
+                new PromptStep('security', <<<PROMPT
+
+    Perform security review of this {language} code:
 
 ```{language}
 {code}
@@ -849,55 +856,61 @@ Perform security review of this {language} code:
 Analysis: {analyze}
 
 Identify:
-1. Security vulnerabilities
-2. Input validation issues
-3. Authentication/authorization concerns
-4. Data exposure risks
-5. Recommendations
-PROMPT, ['temperature' => 0.2])
-        );
 
-        // Step 3: Performance review
-        $workflow->addStep(
-            new PromptStep('performance', <<<PROMPT
-Review performance of this {language} code:
+1.  Security vulnerabilities
+2.  Input validation issues
+3.  Authentication/authorization concerns
+4.  Data exposure risks
+5.  Recommendations
+    PROMPT, ['temperature' => 0.2])
+    );
+
+            // Step 3: Performance review
+            $workflow->addStep(
+                new PromptStep('performance', <<<PROMPT
+
+    Review performance of this {language} code:
 
 ```{language}
 {code}
 ```
 
 Identify:
-1. Performance bottlenecks
-2. Inefficient algorithms
-3. Resource usage concerns
-4. Optimization opportunities
-5. Recommendations
-PROMPT, ['temperature' => 0.2])
-        );
 
-        // Step 4: Best practices review
-        $workflow->addStep(
-            new PromptStep('best_practices', <<<PROMPT
-Review best practices for this {language} code:
+1.  Performance bottlenecks
+2.  Inefficient algorithms
+3.  Resource usage concerns
+4.  Optimization opportunities
+5.  Recommendations
+    PROMPT, ['temperature' => 0.2])
+    );
+
+            // Step 4: Best practices review
+            $workflow->addStep(
+                new PromptStep('best_practices', <<<PROMPT
+
+    Review best practices for this {language} code:
 
 ```{language}
 {code}
 ```
 
 Assess:
-1. Code style and conventions
-2. Design patterns usage
-3. Error handling
-4. Documentation quality
-5. Testing considerations
-6. Recommendations
-PROMPT, ['temperature' => 0.3])
-        );
 
-        // Step 5: Synthesize final report
-        $workflow->addStep(
-            new PromptStep('report', <<<PROMPT
-Create a comprehensive code review report based on:
+1.  Code style and conventions
+2.  Design patterns usage
+3.  Error handling
+4.  Documentation quality
+5.  Testing considerations
+6.  Recommendations
+    PROMPT, ['temperature' => 0.3])
+    );
+
+            // Step 5: Synthesize final report
+            $workflow->addStep(
+                new PromptStep('report', <<<PROMPT
+
+    Create a comprehensive code review report based on:
 
 Security Review:
 {security}
@@ -909,6 +922,7 @@ Best Practices Review:
 {best_practices}
 
 Provide:
+
 1. Executive Summary
 2. Critical Issues (if any)
 3. Recommendations (prioritized)
@@ -917,12 +931,14 @@ Provide:
 
 Format as a professional code review report.
 PROMPT, ['temperature' => 0.4])
-        );
+);
 
         return $workflow;
     }
+
 }
-```
+
+````
 
 ### Why It Works
 
@@ -951,7 +967,6 @@ declare(strict_types=1);
 
 namespace App\Workflow;
 
-use Anthropic\Anthropic;
 use App\Workflow\Steps\PromptStep;
 use App\Workflow\Steps\TransformStep;
 use App\Workflow\Steps\ValidationStep;
@@ -961,7 +976,7 @@ class WorkflowBuilder
     private Workflow $workflow;
 
     public function __construct(
-        Anthropic $claude,
+        ClaudePhp\ClaudePhp $claude,
         string $name = 'Custom Workflow'
     ) {
         $this->workflow = new Workflow($claude, uniqid('workflow_'), $name);
@@ -1031,7 +1046,7 @@ class ConditionalBuilder
         return $this->workflow;
     }
 }
-```
+````
 
 ### Why It Works
 
@@ -1087,7 +1102,7 @@ class ToolUseStep extends WorkflowStep
 
         // Call Claude with tools available
         $response = $context->claude->messages()->create([
-            'model' => $this->options['model'] ?? 'claude-sonnet-4-20250514',
+            'model' => $this->options['model'] ?? 'claude-sonnet-4-5-20250929',
             'max_tokens' => $this->options['max_tokens'] ?? 4096,
             'tools' => $toolDefinitions,
             'messages' => [[
@@ -1186,7 +1201,7 @@ class VisionStep extends WorkflowStep
         ];
 
         $response = $context->claude->messages()->create([
-            'model' => $this->options['model'] ?? 'claude-sonnet-4-20250514',
+            'model' => $this->options['model'] ?? 'claude-sonnet-4-5-20250929',
             'max_tokens' => $this->options['max_tokens'] ?? 4096,
             'messages' => [[
                 'role' => 'user',
@@ -1234,7 +1249,7 @@ class StreamingStep extends WorkflowStep
 
         // Stream the response
         $stream = $context->claude->messages()->stream([
-            'model' => $this->options['model'] ?? 'claude-sonnet-4-20250514',
+            'model' => $this->options['model'] ?? 'claude-sonnet-4-5-20250929',
             'max_tokens' => $this->options['max_tokens'] ?? 4096,
             'messages' => [[
                 'role' => 'user',
@@ -1291,16 +1306,12 @@ class StructuredStep extends WorkflowStep
     public function execute(StepContext $context): StepResult
     {
         $response = $context->claude->messages()->create([
-            'model' => $this->options['model'] ?? 'claude-sonnet-4-20250514',
+            'model' => $this->options['model'] ?? 'claude-sonnet-4-5-20250929',
             'max_tokens' => $this->options['max_tokens'] ?? 4096,
             'messages' => [[
                 'role' => 'user',
                 'content' => $this->prompt
-            ]],
-            'thinking' => [
-                'type' => 'enabled',
-                'budget_tokens' => $this->options['thinking_budget'] ?? 1000
-            ]
+            ]]
         ]);
 
         // Use Extended Thinking for complex structured outputs
@@ -1329,15 +1340,16 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
 use App\Workflow\WorkflowBuilder;
 use App\Workflow\Workflows\ContentCreationWorkflow;
 use App\Workflow\Workflows\CodeReviewWorkflow;
 
 // Initialize Claude
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+use ClaudePhp\ClaudePhp;
+
+$claude = new ClaudePhp([
+    'apiKey' => $_ENV['ANTHROPIC_API_KEY']
+]);
 
 echo "=== Workflow Orchestration Demo ===\n\n";
 
@@ -1431,7 +1443,8 @@ This complete example demonstrates three workflow patterns:
 
 **Keep Steps Focused**: Each step should have a single, well-defined responsibility. If a step does multiple things, consider splitting it.
 
-**Use Appropriate Temperatures**: 
+**Use Appropriate Temperatures**:
+
 - Low (0.1-0.3): Factual extraction, analysis, validation
 - Medium (0.4-0.6): Balanced creativity and accuracy
 - High (0.7-1.0): Creative generation, brainstorming
@@ -1481,7 +1494,6 @@ declare(strict_types=1);
 
 namespace App\Workflow;
 
-use Anthropic\Anthropic;
 
 /**
  * WorkflowState manages data shared between workflow steps.
@@ -1519,7 +1531,7 @@ class WorkflowState
 readonly class StepContext
 {
     public function __construct(
-        public Anthropic $claude,
+        public ClaudePhp\ClaudePhp $claude,
         public WorkflowState $state,
         public int $attempt = 0
     ) {}
@@ -1587,7 +1599,7 @@ Combine retrieval steps with Claude calls:
 <?php
 // Add a retrieval step that queries a vector database
 $workflow->addStep(
-    (new PromptStep('retrieve_context', 'Search knowledge base for: {user_query}'))
+    (new PromptStep('retrieve_context', 'Search knowledge base for: {user_query}', ['temperature' => 0.3]))
         ->retry(2)
 );
 
@@ -1803,9 +1815,9 @@ Track and optimize workflow costs:
 class WorkflowCostCalculator
 {
     private array $modelPricing = [
-        'claude-haiku-4-20250514' => 0.80 / 1_000_000, // per input token
-        'claude-sonnet-4-20250514' => 3.00 / 1_000_000,
-        'claude-opus-4-20250514' => 15.00 / 1_000_000,
+        'claude-haiku-4-5-20251001' => 0.80 / 1_000_000, // per input token
+        'claude-sonnet-4-5' => 3.00 / 1_000_000,
+        'claude-opus-4-1' => 15.00 / 1_000_000,
     ];
 
     public function calculateCost(WorkflowResult $result): float
@@ -1816,7 +1828,7 @@ class WorkflowCostCalculator
             if ($log['status'] === 'success' && isset($log['output'])) {
                 // Estimate tokens from response
                 $tokens = strlen(json_encode($log['output'])) / 4; // Rough estimate
-                $model = 'claude-sonnet-4-20250514'; // Track model per step
+                $model = 'claude-sonnet-4-5'; // Track model per step
                 $totalCost += $tokens * $this->modelPricing[$model];
             }
         }
@@ -1836,7 +1848,7 @@ Workflows can leverage the Memory Tool for cross-workflow context:
 class WorkflowWithMemory
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp\ClaudePhp $claude,
         private string $userId
     ) {}
 
@@ -1889,7 +1901,7 @@ Build a workflow that processes emails through multiple stages:
 <?php
 class EmailProcessingWorkflow
 {
-    public static function create(Anthropic $claude): Workflow
+    public static function create(ClaudePhp\ClaudePhp $claude): Workflow
     {
         // TODO: Create workflow that:
         // 1. Extracts key information from email
@@ -1897,7 +1909,7 @@ class EmailProcessingWorkflow
         // 3. Validates that critical fields are present
         // 4. Generates response draft if needed
         // 5. Routes to appropriate team/workflow
-        
+
         // Use WorkflowBuilder for fluent API
     }
 }
@@ -1913,7 +1925,7 @@ Create a multi-stage document analysis workflow:
 <?php
 class DocumentAnalysisWorkflow
 {
-    public static function create(Anthropic $claude): Workflow
+    public static function create(ClaudePhp\ClaudePhp $claude): Workflow
     {
         // TODO: Build workflow that:
         // 1. Extracts text from document (PDF, Word, etc.)
@@ -1922,7 +1934,7 @@ class DocumentAnalysisWorkflow
         // 4. Extracts structured data (tables, lists)
         // 5. Generates analysis report
         // 6. Validates report completeness
-        
+
         // Include conditional steps based on document type
     }
 }
@@ -1938,7 +1950,7 @@ Implement a workflow with conditional branching:
 <?php
 class ConditionalWorkflow
 {
-    public static function create(Anthropic $claude): Workflow
+    public static function create(ClaudePhp\ClaudePhp $claude): Workflow
     {
         // TODO: Create workflow that:
         // 1. Analyzes input to determine complexity
@@ -1948,7 +1960,7 @@ class ConditionalWorkflow
         //    - Complex: Multi-agent collaboration
         // 3. Validates output based on branch taken
         // 4. Logs decision path for debugging
-        
+
         // Use when() conditions for branching
     }
 }
@@ -1964,7 +1976,7 @@ Build a robust workflow with comprehensive error handling:
 <?php
 class ResilientWorkflow
 {
-    public static function create(Anthropic $claude): Workflow
+    public static function create(ClaudePhp\ClaudePhp $claude): Workflow
     {
         // TODO: Implement workflow that:
         // 1. Attempts primary processing path
@@ -1972,7 +1984,7 @@ class ResilientWorkflow
         // 3. Implements circuit breaker pattern
         // 4. Logs all errors for analysis
         // 5. Provides graceful degradation
-        
+
         // Use retry() and continueOnError() strategically
     }
 }
@@ -2030,6 +2042,13 @@ class ResilientWorkflow
 - Ensure state keys match what conditions expect
 - Test conditions independently before adding to workflow
 
+## Further Reading
+
+- **[Official PHP SDK Documentation](https://github.com/anthropics/anthropic-sdk-php)** — The official Anthropic PHP SDK on GitHub
+- **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)** — Community resources and examples for Claude with PHP
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
+- **[PHP SDK Composer Package](https://packagist.org/packages/claude-php/claude-php-sdk)** — Official package on Packagist
+
 ## Wrap-up
 
 Congratulations! You've mastered prompt chaining and workflow orchestration. In this chapter, you've:
@@ -2070,6 +2089,7 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 34 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-34)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-34

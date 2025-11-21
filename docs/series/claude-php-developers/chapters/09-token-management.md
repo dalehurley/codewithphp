@@ -33,6 +33,10 @@ This chapter teaches you what tokens are and how they're calculated, how to coun
 
 By the end, you'll build production-ready token management systems that prevent cost overruns while maximizing Claude's capabilities.
 
+::: info SDK Note
+This chapter uses the **Claude-PHP-SDK** from [github.com/claude-php/Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK), which provides a modern PHP interface for the Claude API with complete 1-for-1 functionality equivalent to the official Anthropic Python SDK.
+:::
+
 ## Prerequisites
 
 Before starting, ensure you understand:
@@ -77,8 +81,9 @@ By the end of this chapter, you will:
 Tokens are not words - they're chunks of text that language models process.
 
 ```php
-<?php
 # filename: examples/01-token-basics.php
+<?php
+
 declare(strict_types=1);
 
 /**
@@ -149,8 +154,9 @@ echo "Actual tokens would need precise counting...\n";
 Claude models have consistent context windows but vary significantly in pricing. Understanding these limits helps you choose the right model and estimate costs accurately.
 
 ```php
-<?php
 # filename: examples/02-model-limits.php
+<?php
+
 declare(strict_types=1);
 
 class ClaudeModelLimits
@@ -171,8 +177,8 @@ class ClaudeModelLimits
         'claude-haiku-4-20250514' => [
             'context_window' => 200_000,
             'max_output' => 16_384,
-            'input_price_per_1m' => 0.80,
-            'output_price_per_1m' => 4.00,
+            'input_price_per_1m' => 0.25,
+            'output_price_per_1m' => 1.25,
         ],
     ];
 
@@ -231,8 +237,9 @@ Accurate token counting is essential for cost estimation and staying within cont
 ### Token Counter Implementation
 
 ```php
-<?php
 # filename: src/TokenCounter.php
+<?php
+
 declare(strict_types=1);
 
 namespace CodeWithPHP\Claude;
@@ -382,20 +389,59 @@ print_r($breakdown);
 Tracking actual token usage after API calls helps you refine your estimates and understand real costs. This system compares estimated vs actual tokens to improve accuracy over time.
 
 ```php
-<?php
 # filename: src/TokenTracker.php
+<?php
+
 declare(strict_types=1);
 
 namespace CodeWithPHP\Claude;
 
-use Anthropic\Contracts\ClientContract;
+use ClaudePhp\ClaudePhp;
+
+/**
+ * Model limits and pricing for Claude API
+ */
+class ClaudeModelLimits
+{
+    public const MODELS = [
+        'claude-opus-4-20250514' => [
+            'context_window' => 200_000,
+            'max_output' => 16_384,
+            'input_price_per_1m' => 15.00,
+            'output_price_per_1m' => 75.00,
+        ],
+        'claude-sonnet-4-20250514' => [
+            'context_window' => 200_000,
+            'max_output' => 16_384,
+            'input_price_per_1m' => 3.00,
+            'output_price_per_1m' => 15.00,
+        ],
+        'claude-haiku-4-20250514' => [
+            'context_window' => 200_000,
+            'max_output' => 16_384,
+            'input_price_per_1m' => 0.25,
+            'output_price_per_1m' => 1.25,
+        ],
+    ];
+
+    public static function calculateCost(
+        string $model,
+        int $inputTokens,
+        int $outputTokens
+    ): float {
+        $inputCost = ($inputTokens / 1_000_000) * self::MODELS[$model]['input_price_per_1m'];
+        $outputCost = ($outputTokens / 1_000_000) * self::MODELS[$model]['output_price_per_1m'];
+
+        return $inputCost + $outputCost;
+    }
+}
 
 class TokenTracker
 {
     private array $history = [];
 
     public function __construct(
-        private ClientContract $client,
+        private Client $client,
         private TokenCounter $counter
     ) {}
 
@@ -484,10 +530,13 @@ class TokenTracker
 }
 
 // Usage
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 $tracker = new TokenTracker($client, new TokenCounter());
 
 $response = $tracker->track([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5',
     'max_tokens' => 1024,
     'messages' => [[
         'role' => 'user',
@@ -512,13 +561,14 @@ Claude's 200K token context window is generous, but long conversations can still
 ### Conversation Context Manager
 
 ```php
-<?php
 # filename: src/ConversationContextManager.php
+<?php
+
 declare(strict_types=1);
 
 namespace CodeWithPHP\Claude;
 
-use Anthropic\Contracts\ClientContract;
+use ClaudePhp\ClaudePhp;
 
 class ConversationContextManager
 {
@@ -614,7 +664,7 @@ class ConversationContextManager
      * Summarize old messages to save tokens
      */
     public function summarizeOldMessages(
-        ClientContract $client,
+        ClaudePhp $client,
         int $keepRecentCount = 5
     ): void {
         if (count($this->messages) <= $keepRecentCount) {
@@ -634,7 +684,7 @@ class ConversationContextManager
         }
 
         $response = $client->messages()->create([
-            'model' => 'claude-haiku-4-20250514',  // Use fast model for summary
+            'model' => 'claude-haiku-4-5-20251001',  // Use fast model for summary
             'max_tokens' => 500,
             'messages' => [[
                 'role' => 'user',
@@ -684,8 +734,9 @@ if ($contextManager->canFit($newQuestion)) {
 ### Smart Context Pruning
 
 ```php
-<?php
 # filename: src/SmartContextPruner.php
+<?php
+
 declare(strict_types=1);
 
 namespace CodeWithPHP\Claude;
@@ -847,8 +898,8 @@ $messages = [
 
 $pruned = $pruner->prune($messages, targetTokens: 1000, strategy: 'balanced');
 
-echo "Original messages: " . count($messages) . "\n";
-echo "Pruned messages: " . count($pruned) . "\n";
+echo "Original 'messages' => " . count($messages) . "\n";
+echo "Pruned 'messages' => " . count($pruned) . "\n";
 ```
 
 ## Prompt Caching for Token Savings
@@ -860,13 +911,14 @@ Anthropic's native prompt caching reduces input tokens on repeated requests by *
 Prompt caching works by flagging blocks of your prompt as cacheable:
 
 ```php
-<?php
 # filename: src/PromptCacheManager.php
+<?php
+
 declare(strict_types=1);
 
 namespace CodeWithPHP\Claude;
 
-use Anthropic\Contracts\ClientContract;
+use ClaudePhp\ClaudePhp;
 
 class PromptCacheManager
 {
@@ -874,7 +926,7 @@ class PromptCacheManager
     // For longer caching (1 hour), use: ['type' => 'session']
 
     public function __construct(
-        private ClientContract $client,
+        private Client $client,
         private TokenCounter $counter
     ) {}
 
@@ -885,7 +937,7 @@ class PromptCacheManager
         string $userPrompt,
         string $staticContext,
         array $examples = [],
-        string $model = 'claude-sonnet-4-20250514'
+        string $model = 'claude-sonnet-4-5'
     ): object {
         // Build messages with cache control
         $systemBlocks = [];
@@ -933,9 +985,9 @@ class PromptCacheManager
      * Calculate cache savings
      *
      * Usage object includes:
-     * - input_tokens: Actual input tokens used
-     * - cache_creation_input_tokens: Tokens cached for future use
-     * - cache_read_input_tokens: Tokens read from cache
+     * - inputTokens: Actual input tokens used
+     * - cacheCreationInputTokens: Tokens cached for future use
+     * - cacheReadInputTokens: Tokens read from cache
      */
     public function analyzeCacheSavings(object $usage): array
     {
@@ -964,6 +1016,9 @@ class PromptCacheManager
 }
 
 // Usage
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 $cacheManager = new PromptCacheManager($client, new TokenCounter());
 
 $largeDocumentation = file_get_contents('api-documentation.md');
@@ -997,12 +1052,14 @@ echo "Savings: " . number_format($cacheManager->analyzeCacheSavings($response2->
 ### When to Use Prompt Caching
 
 ✅ **Use when:**
+
 - You have large, static context (>1024 tokens) that doesn't change frequently
 - You make multiple requests with the same system prompt or examples
 - Context consists of documentation, API specs, or reference materials
 - You need 5-minute or 1-hour cache durations
 
 ❌ **Avoid when:**
+
 - Context changes frequently (defeats cache efficiency)
 - Single one-off requests (overhead not worth it)
 - You need real-time context updates
@@ -1016,20 +1073,59 @@ Batch processing reduces Claude API costs by **50%** when you need to process mu
 ### Batch Processing Strategy
 
 ```php
-<?php
 # filename: src/BatchProcessor.php
+<?php
+
 declare(strict_types=1);
 
 namespace CodeWithPHP\Claude;
 
-use Anthropic\Contracts\ClientContract;
+use ClaudePhp\ClaudePhp;
+
+/**
+ * Model limits and pricing for Claude API
+ */
+class ClaudeModelLimits
+{
+    public const MODELS = [
+        'claude-opus-4-20250514' => [
+            'context_window' => 200_000,
+            'max_output' => 16_384,
+            'input_price_per_1m' => 15.00,
+            'output_price_per_1m' => 75.00,
+        ],
+        'claude-sonnet-4-20250514' => [
+            'context_window' => 200_000,
+            'max_output' => 16_384,
+            'input_price_per_1m' => 3.00,
+            'output_price_per_1m' => 15.00,
+        ],
+        'claude-haiku-4-20250514' => [
+            'context_window' => 200_000,
+            'max_output' => 16_384,
+            'input_price_per_1m' => 0.25,
+            'output_price_per_1m' => 1.25,
+        ],
+    ];
+
+    public static function calculateCost(
+        string $model,
+        int $inputTokens,
+        int $outputTokens
+    ): float {
+        $inputCost = ($inputTokens / 1_000_000) * self::MODELS[$model]['input_price_per_1m'];
+        $outputCost = ($outputTokens / 1_000_000) * self::MODELS[$model]['output_price_per_1m'];
+
+        return $inputCost + $outputCost;
+    }
+}
 
 class BatchProcessor
 {
     private const BATCH_COST_MULTIPLIER = 0.5;  // 50% discount
 
     public function __construct(
-        private ClientContract $client,
+        private Client $client,
         private TokenCounter $counter
     ) {}
 
@@ -1043,7 +1139,7 @@ class BatchProcessor
             return [
                 'custom_id' => "request-{$index}",
                 'params' => [
-                    'model' => $request['model'] ?? 'claude-sonnet-4-20250514',
+                    'model' => $request['model'] ?? 'claude-sonnet-4-5',
                     'max_tokens' => $request['max_tokens'] ?? 1024,
                     'system' => $request['system'] ?? null,
                     'messages' => $request['messages'],
@@ -1074,14 +1170,14 @@ class BatchProcessor
     {
         $batch = $this->client->batches()->retrieve($batchId);
 
-        if ($batch->processingStatus !== 'completed') {
+        if ($batch->processing_status !== 'completed') {
             throw new \RuntimeException(
-                "Batch {$batchId} not ready. Status: {$batch->processingStatus}"
+                "Batch {$batchId} not ready. Status: {$batch->processing_status}"
             );
         }
 
         $results = [];
-        foreach ($batch->requestCounts->succeeded as $result) {
+        foreach ($batch->request_counts->succeeded as $result) {
             $results[] = $result;
         }
 
@@ -1093,7 +1189,7 @@ class BatchProcessor
      */
     public function calculateBatchSavings(
         array $requests,
-        string $model = 'claude-sonnet-4-20250514'
+        string $model = 'claude-sonnet-4-5'
     ): array {
         $totalInputTokens = 0;
         $totalOutputTokens = 0;
@@ -1131,12 +1227,15 @@ class BatchProcessor
 }
 
 // Usage
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 $batchProcessor = new BatchProcessor($client, new TokenCounter());
 
 // Prepare bulk requests
 $requests = [
     [
-        'model' => 'claude-sonnet-4-20250514',
+        'model' => 'claude-sonnet-4-5',
         'max_tokens' => 200,
         'system' => 'Summarize the following text in one sentence.',
         'messages' => [
@@ -1177,12 +1276,14 @@ echo "Status: " . $batch->processingStatus . "\n";
 ### When to Use Batch Processing
 
 ✅ **Perfect for:**
+
 - Daily/weekly bulk analysis (document processing, data extraction)
 - Non-time-sensitive operations (content generation, summarization)
 - Bulk customer analysis or feedback processing
 - Report generation from large datasets
 
 ❌ **Not suitable for:**
+
 - Real-time user interactions (users won't wait 1+ hour)
 - Complex workflows with dependencies
 - Requests needing immediate responses
@@ -1194,8 +1295,9 @@ echo "Status: " . $batch->processingStatus . "\n";
 Images consume varying tokens based on their dimensions, not just a flat ~1000 tokens. Here's a more accurate calculation:
 
 ```php
-<?php
 # filename: src/ImageTokenCalculator.php
+<?php
+
 declare(strict_types=1);
 
 namespace CodeWithPHP\Claude;
@@ -1302,13 +1404,52 @@ Preventing cost overruns requires proactive budget management and cost optimizat
 ### Budget Manager
 
 ```php
-<?php
 # filename: src/BudgetManager.php
+<?php
+
 declare(strict_types=1);
 
 namespace CodeWithPHP\Claude;
 
-use Anthropic\Contracts\ClientContract;
+use ClaudePhp\ClaudePhp;
+
+/**
+ * Model limits and pricing for Claude API
+ */
+class ClaudeModelLimits
+{
+    public const MODELS = [
+        'claude-opus-4-20250514' => [
+            'context_window' => 200_000,
+            'max_output' => 16_384,
+            'input_price_per_1m' => 15.00,
+            'output_price_per_1m' => 75.00,
+        ],
+        'claude-sonnet-4-20250514' => [
+            'context_window' => 200_000,
+            'max_output' => 16_384,
+            'input_price_per_1m' => 3.00,
+            'output_price_per_1m' => 15.00,
+        ],
+        'claude-haiku-4-20250514' => [
+            'context_window' => 200_000,
+            'max_output' => 16_384,
+            'input_price_per_1m' => 0.25,
+            'output_price_per_1m' => 1.25,
+        ],
+    ];
+
+    public static function calculateCost(
+        string $model,
+        int $inputTokens,
+        int $outputTokens
+    ): float {
+        $inputCost = ($inputTokens / 1_000_000) * self::MODELS[$model]['input_price_per_1m'];
+        $outputCost = ($outputTokens / 1_000_000) * self::MODELS[$model]['output_price_per_1m'];
+
+        return $inputCost + $outputCost;
+    }
+}
 
 class BudgetManager
 {
@@ -1316,7 +1457,7 @@ class BudgetManager
     private array $transactions = [];
 
     public function __construct(
-        private ClientContract $client,
+        private ClaudePhp $client,
         private TokenCounter $counter,
         private float $budgetUSD,
         private ?string $period = 'monthly'
@@ -1418,6 +1559,9 @@ class BudgetManager
 }
 
 // Usage
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 $budget = new BudgetManager(
     client: $client,
     counter: new TokenCounter(),
@@ -1427,7 +1571,7 @@ $budget = new BudgetManager(
 
 try {
     $response = $budget->query([
-        'model' => 'claude-sonnet-4-20250514',
+        'model' => 'claude-sonnet-4-5',
         'max_tokens' => 1024,
         'messages' => [[
             'role' => 'user',
@@ -1449,11 +1593,50 @@ try {
 ### Cost Optimizer
 
 ```php
-<?php
 # filename: src/CostOptimizer.php
+<?php
+
 declare(strict_types=1);
 
 namespace CodeWithPHP\Claude;
+
+/**
+ * Model limits and pricing for Claude API
+ */
+class ClaudeModelLimits
+{
+    public const MODELS = [
+        'claude-opus-4-20250514' => [
+            'context_window' => 200_000,
+            'max_output' => 16_384,
+            'input_price_per_1m' => 15.00,
+            'output_price_per_1m' => 75.00,
+        ],
+        'claude-sonnet-4-20250514' => [
+            'context_window' => 200_000,
+            'max_output' => 16_384,
+            'input_price_per_1m' => 3.00,
+            'output_price_per_1m' => 15.00,
+        ],
+        'claude-haiku-4-20250514' => [
+            'context_window' => 200_000,
+            'max_output' => 16_384,
+            'input_price_per_1m' => 0.25,
+            'output_price_per_1m' => 1.25,
+        ],
+    ];
+
+    public static function calculateCost(
+        string $model,
+        int $inputTokens,
+        int $outputTokens
+    ): float {
+        $inputCost = ($inputTokens / 1_000_000) * self::MODELS[$model]['input_price_per_1m'];
+        $outputCost = ($outputTokens / 1_000_000) * self::MODELS[$model]['output_price_per_1m'];
+
+        return $inputCost + $outputCost;
+    }
+}
 
 class CostOptimizer
 {
@@ -1474,7 +1657,7 @@ class CostOptimizer
             str_contains($taskLower, 'simple') ||
             $estimatedInputTokens < 1000
         ) {
-            return 'claude-haiku-4-20250514';
+            return 'claude-haiku-4-5-20251001';
         }
 
         // Complex reasoning -> Opus
@@ -1483,11 +1666,11 @@ class CostOptimizer
             str_contains($taskLower, 'analyze deeply') ||
             str_contains($taskLower, 'comprehensive')
         ) {
-            return 'claude-opus-4-20250514';
+            return 'claude-opus-4-1';
         }
 
         // Default: Sonnet (best value)
-        return 'claude-sonnet-4-20250514';
+        return 'claude-sonnet-4-5';
     }
 
     /**
@@ -1578,12 +1761,12 @@ $model = $optimizer->chooseModel(
     maxOutputTokens: 100
 );
 
-echo "Recommended model: {$model}\n";
+echo "Recommended 'model' => {$model}\n";
 
 // Calculate savings
 $savings = $optimizer->calculateSavings(
-    originalModel: 'claude-opus-4-20250514',
-    optimizedModel: 'claude-haiku-4-20250514',
+    originalModel: 'claude-opus-4-1',
+    optimizedModel: 'claude-haiku-4-5-20251001',
     inputTokens: 1000,
     outputTokens: 500
 );
@@ -1597,13 +1780,52 @@ print_r($savings);
 ### Complete Token Management Service
 
 ```php
-<?php
 # filename: src/TokenManagementService.php
+<?php
+
 declare(strict_types=1);
 
 namespace CodeWithPHP\Claude;
 
-use Anthropic\Contracts\ClientContract;
+use ClaudePhp\ClaudePhp;
+
+/**
+ * Model limits and pricing for Claude API
+ */
+class ClaudeModelLimits
+{
+    public const MODELS = [
+        'claude-opus-4-20250514' => [
+            'context_window' => 200_000,
+            'max_output' => 16_384,
+            'input_price_per_1m' => 15.00,
+            'output_price_per_1m' => 75.00,
+        ],
+        'claude-sonnet-4-20250514' => [
+            'context_window' => 200_000,
+            'max_output' => 16_384,
+            'input_price_per_1m' => 3.00,
+            'output_price_per_1m' => 15.00,
+        ],
+        'claude-haiku-4-20250514' => [
+            'context_window' => 200_000,
+            'max_output' => 16_384,
+            'input_price_per_1m' => 0.25,
+            'output_price_per_1m' => 1.25,
+        ],
+    ];
+
+    public static function calculateCost(
+        string $model,
+        int $inputTokens,
+        int $outputTokens
+    ): float {
+        $inputCost = ($inputTokens / 1_000_000) * self::MODELS[$model]['input_price_per_1m'];
+        $outputCost = ($outputTokens / 1_000_000) * self::MODELS[$model]['output_price_per_1m'];
+
+        return $inputCost + $outputCost;
+    }
+}
 
 class TokenManagementService
 {
@@ -1613,7 +1835,7 @@ class TokenManagementService
     private array $stats = [];
 
     public function __construct(
-        private ClientContract $client,
+        private ClaudePhp $client,
         float $dailyBudget = 50.00
     ) {
         $this->counter = new TokenCounter();
@@ -1719,6 +1941,9 @@ class TokenManagementService
 }
 
 // Usage
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 $service = new TokenManagementService($client, dailyBudget: 25.00);
 
 $response = $service->query(
@@ -1746,6 +1971,7 @@ $service->exportReport('token_report.json');
 Build a web dashboard that displays real-time token usage and budget status.
 
 **Requirements:**
+
 - Show current budget utilization
 - Display token usage trends
 - Alert when approaching budget limits
@@ -1756,6 +1982,7 @@ Build a web dashboard that displays real-time token usage and budget status.
 Create a system that automatically adjusts context window usage based on conversation importance.
 
 **Requirements:**
+
 - Identify important vs filler messages
 - Summarize or prune strategically
 - Maintain conversation coherence
@@ -1766,6 +1993,7 @@ Create a system that automatically adjusts context window usage based on convers
 Build a tool that predicts costs before making requests.
 
 **Requirements:**
+
 - Estimate token counts accurately
 - Calculate cost ranges (min/max)
 - Suggest optimizations
@@ -1783,8 +2011,9 @@ For Exercise 1, create a class that stores usage data in a database and provides
 When combining this chapter with caching strategies (Chapter 18), design cache keys that account for token patterns:
 
 ```php
-<?php
 # filename: src/TokenAwareCacheKey.php
+<?php
+
 declare(strict_types=1);
 
 namespace CodeWithPHP\Claude;
@@ -1800,7 +2029,7 @@ class TokenAwareCacheKey
         TokenCounter $counter
     ): string {
         // Extract key components
-        $model = $request['model'] ?? 'claude-sonnet-4-20250514';
+        $model = $request['model'] ?? 'claude-sonnet-4-5';
         $system = $request['system'] ?? '';
         $userMessage = $request['messages'][0]['content'] ?? '';
 
@@ -1863,7 +2092,7 @@ class TokenAwareCacheKey
         $words2 = array_unique(preg_split('/\W+/', strtolower($msg2)));
 
         $intersection = count(array_intersect($words1, $words2));
-        $union = count(array_union($words1, $words2));
+        $union = count(array_unique(array_merge($words1, $words2)));
 
         $similarity = $union > 0 ? $intersection / $union : 0;
 
@@ -1873,7 +2102,7 @@ class TokenAwareCacheKey
 
 // Usage
 $key1 = TokenAwareCacheKey::generate([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5',
     'system' => 'You are a helpful assistant.',
     'messages' => [['role' => 'user', 'content' => 'What is PHP?']]
 ], $counter);
@@ -1883,11 +2112,11 @@ echo "Cache key: {$key1}\n";
 // Check similarity for deduplication
 $similar = TokenAwareCacheKey::isSimilar(
     [
-        'model' => 'claude-sonnet-4-20250514',
+        'model' => 'claude-sonnet-4-5',
         'messages' => [['role' => 'user', 'content' => 'What is PHP?']]
     ],
     [
-        'model' => 'claude-sonnet-4-20250514',
+        'model' => 'claude-sonnet-4-5',
         'messages' => [['role' => 'user', 'content' => 'Tell me about PHP']]
     ],
     $counter
@@ -1939,7 +2168,7 @@ if (!$contextManager->canFit($newMessage)) {
 
 ```php
 // Use actual output tokens for future estimates
-$avgOutputTokens = $tracker->getStats()['total_output_tokens'] / 
+$avgOutputTokens = $tracker->getStats()['total_output_tokens'] /
                    $tracker->getStats()['total_requests'];
 ```
 
@@ -1966,6 +2195,13 @@ $avgOutputTokens = $tracker->getStats()['total_output_tokens'] /
 - [Chapter 39: Cost Optimization and Billing](/series/claude-php-developers/chapters/39-cost-optimization-billing) — Complete cost optimization strategies for production
 - [Anthropic API Reference](https://docs.claude.com/en/api/messages) — Complete API documentation for messages endpoint
 
+## Further Reading
+
+- **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)** — The community PHP SDK used in this chapter
+- **[Official Anthropic PHP SDK](https://github.com/anthropics/anthropic-sdk-php)** — Alternative: Official Anthropic PHP SDK on GitHub
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
+- **[Claude-PHP-SDK on Packagist](https://packagist.org/packages/claude-php/sdk)** — Composer package for Claude-PHP-SDK
+
 <ChapterCheckbox
   seriesId="claude-php-developers"
   chapterId="09"
@@ -1983,6 +2219,7 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 09 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-09)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-09
@@ -1990,3 +2227,5 @@ composer install
 export ANTHROPIC_API_KEY="sk-ant-your-key-here"
 php examples/02-model-limits.php
 ```
+
+**Note:** The code examples use the Claude-PHP-SDK from [github.com/claude-php/Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK). This SDK provides complete 1-for-1 functionality with the official Anthropic Python SDK, adapted for PHP with native conventions. All API calls, property names, and patterns follow the SDK's specifications.

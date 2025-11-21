@@ -32,6 +32,7 @@ Conversations with AI are fundamentally different from traditional request-respo
 This chapter provides comprehensive coverage of message formatting, building stateful conversation managers, handling context windows efficiently, implementing conversation memory, and creating production-ready chat applications in PHP.
 
 **What You'll Learn:**
+
 - Message structure and formatting rules
 - Building multi-turn conversations
 - Context window management
@@ -108,6 +109,7 @@ $message = [
 The `content` field can be either:
 
 1. **Simple string** (most common):
+
    ```php
    'content' => 'Hello, Claude!'
    ```
@@ -127,11 +129,13 @@ For this chapter, we focus on simple string content. Multimodal content with ima
 ### Valid Message Roles
 
 **User Messages:**
+
 - Represent input from the user/application
 - Always start conversations
 - Can contain questions, commands, or data
 
 **Assistant Messages:**
+
 - Represent Claude's responses
 - Cannot start conversations
 - Used to maintain conversation history
@@ -143,45 +147,43 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: $_ENV['ANTHROPIC_API_KEY']);
 
-// ✓ Valid: User message starts
-$response1 = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
-    'max_tokens' => 1024,
-    'messages' => [
-        ['role' => 'user', 'content' => 'Hello!']
-    ]
-]);
+   // ✓ Valid: User message starts
+   $response1 = $client->messages()->create([
+       'model' => 'claude-sonnet-4-5-20250929',
+       'max_tokens' => 1024,
+       'messages' => [
+           ['role' => 'user', 'content' => 'Hello!']
+       ]
+   ]);
 
-// ✓ Valid: Alternating roles
-$response2 = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
-    'max_tokens' => 1024,
-    'messages' => [
-        ['role' => 'user', 'content' => 'What is PHP?'],
-        ['role' => 'assistant', 'content' => 'PHP is a server-side scripting language...'],
-        ['role' => 'user', 'content' => 'Tell me more about its history.']
-    ]
-]);
+   // ✓ Valid: Alternating roles
+   $response2 = $client->messages()->create([
+       'model' => 'claude-sonnet-4-5-20250929',
+       'max_tokens' => 1024,
+       'messages' => [
+           ['role' => 'user', 'content' => 'What is PHP?'],
+           ['role' => 'assistant', 'content' => 'PHP is a server-side scripting language...'],
+           ['role' => 'user', 'content' => 'Tell me more about its history.']
+       ]
+   ]);
 
-// ✗ Invalid: Cannot start with assistant
-// This will throw an error
-try {
-    $client->messages()->create([
-        'model' => 'claude-sonnet-4-20250514',
-        'max_tokens' => 1024,
-        'messages' => [
-            ['role' => 'assistant', 'content' => 'Hello!']  // ERROR
-        ]
-    ]);
-} catch (\Exception $e) {
-    echo "Error: " . $e->getMessage() . "\n";
-}
+   // ✗ Invalid: Cannot start with assistant
+   // This will throw an error
+   try {
+       $client->messages()->create([
+           'model' => 'claude-sonnet-4-5-20250929',
+           'max_tokens' => 1024,
+           'messages' => [
+               ['role' => 'assistant', 'content' => 'Hello!']  // ERROR
+           ]
+       ]);
+   } catch (\Exception $e) {
+       echo "Error: " . $e->getMessage() . "\n";
+   }
 ```
 
 ### Message Alternation Rules
@@ -260,7 +262,7 @@ class MessageValidator
 {
     /**
      * Validate a single message structure
-     * 
+     *
      * @throws \InvalidArgumentException if message is invalid
      */
     public static function validateMessage(array $message): void
@@ -347,7 +349,7 @@ class MessageValidator
 
     /**
      * Sanitize message content
-     * 
+     *
      * Ensures content is safe and properly formatted
      */
     public static function sanitizeContent(string $content): string
@@ -371,7 +373,7 @@ class MessageValidator
 
     /**
      * Validate and sanitize a message
-     * 
+     *
      * Returns sanitized message array
      */
     public static function validateAndSanitize(array $message): array
@@ -398,6 +400,7 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Validation\MessageValidator;
+use ClaudePhp\ClaudePhp;
 
 // ✓ Valid message
 $validMessage = [
@@ -452,7 +455,7 @@ class ConversationValidator
 {
     /**
      * Validate an entire conversation array
-     * 
+     *
      * @throws \InvalidArgumentException if conversation is invalid
      */
     public static function validateConversation(array $messages): void
@@ -510,7 +513,7 @@ class ConversationValidator
 
     /**
      * Validate and sanitize entire conversation
-     * 
+     *
      * Returns sanitized conversation array
      */
     public static function validateAndSanitize(array $messages): array
@@ -527,7 +530,7 @@ class ConversationValidator
 
     /**
      * Check if conversation is valid without throwing exceptions
-     * 
+     *
      * Returns [isValid: bool, errors: string[]]
      */
     public static function checkConversation(array $messages): array
@@ -606,15 +609,15 @@ declare(strict_types=1);
 
 namespace App\Conversation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class BasicConversationManager
 {
     private array $messages = [];
 
     public function __construct(
-        private readonly Anthropic $client,
-        private readonly string $model = 'claude-sonnet-4-20250514',
+        private readonly ClaudePhp $client,
+        private readonly string $model = 'claude-sonnet-4-5',
         private readonly int $maxTokens = 2048
     ) {}
 
@@ -639,7 +642,7 @@ class BasicConversationManager
             'messages' => $this->messages
         ]);
 
-        $assistantMessage = $response->content[0]->text;
+        $assistantMessage = $response->content[0]->text ?? '';
 
         // Add assistant response to history
         $this->messages[] = [
@@ -677,27 +680,25 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Conversation\BasicConversationManager;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: $_ENV['ANTHROPIC_API_KEY']);
 
 $conversation = new BasicConversationManager($client);
 
 // Turn 1
 echo "You: Hello! What's your name?\n";
-$reply1 = $conversation->sendMessage("Hello! What's your name?");
+$reply1 = $conversation->messages()->create("Hello! What's your name?");
 echo "Claude: {$reply1}\n\n";
 
 // Turn 2
 echo "You: Can you help me with PHP?\n";
-$reply2 = $conversation->sendMessage("Can you help me with PHP?");
+$reply2 = $conversation->messages()->create("Can you help me with PHP?");
 echo "Claude: {$reply2}\n\n";
 
 // Turn 3
 echo "You: What did I just ask you about?\n";
-$reply3 = $conversation->sendMessage("What did I just ask you about?");
+$reply3 = $conversation->messages()->create("What did I just ask you about?");
 echo "Claude: {$reply3}\n\n";
 
 // Claude remembers the conversation context!
@@ -712,7 +713,7 @@ declare(strict_types=1);
 
 namespace App\Conversation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class AdvancedConversationManager
 {
@@ -721,8 +722,8 @@ class AdvancedConversationManager
     private array $metadata = [];
 
     public function __construct(
-        private readonly Anthropic $client,
-        private readonly string $model = 'claude-sonnet-4-20250514',
+        private readonly ClaudePhp $client,
+        private readonly string $model = 'claude-sonnet-4-5',
         private readonly int $maxTokens = 2048,
         private readonly float $temperature = 1.0,
         ?string $systemPrompt = null
@@ -761,7 +762,7 @@ class AdvancedConversationManager
         // Make request
         $response = $this->client->messages()->create($params);
 
-        $assistantMessage = $response->content[0]->text;
+        $assistantMessage = $response->content[0]->text ?? '';
 
         // Add assistant response to history
         $this->messages[] = [
@@ -772,19 +773,19 @@ class AdvancedConversationManager
         // Store metadata
         $this->metadata[] = [
             'timestamp' => time(),
-            'model' => $response->model,
-            'input_tokens' => $response->usage->inputTokens,
-            'output_tokens' => $response->usage->outputTokens,
-            'stop_reason' => $response->stop_reason,
+            'model' => $response->model ?? $this->model,
+            'input_tokens' => $response->usage->inputTokens ?? 0,
+            'output_tokens' => $response->usage->outputTokens ?? 0,
+            'stop_reason' => $response->stopReason ?? 'end_turn',
         ];
 
         return [
             'text' => $assistantMessage,
             'usage' => [
-                'input_tokens' => $response->usage->inputTokens,
-                'output_tokens' => $response->usage->outputTokens,
+                'input_tokens' => $response->usage->inputTokens ?? 0,
+                'output_tokens' => $response->usage->outputTokens ?? 0,
             ],
-            'stop_reason' => $response->stop_reason,
+            'stop_reason' => $response->stopReason ?? 'end_turn',
         ];
     }
 
@@ -837,17 +838,15 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Conversation\AdvancedConversationManager;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: $_ENV['ANTHROPIC_API_KEY']);
 
 $conversation = new AdvancedConversationManager(
     client: $client,
-    model: 'claude-sonnet-4-20250514',
-    maxTokens: 2048,
-    temperature: 0.7,
+    'model' => 'claude-sonnet-4-5-20250929',
+    'max_tokens' => 2048,
+    'temperature' => 0.7,
     systemPrompt: 'You are a helpful PHP programming tutor. Provide clear explanations with code examples.'
 );
 
@@ -863,7 +862,7 @@ foreach ($turns as $i => $question) {
     echo "Turn " . ($i + 1) . "\n";
     echo "You: {$question}\n";
 
-    $result = $conversation->sendMessage($question);
+    $result = $conversation->messages()->create($question);
 
     echo "Claude: {$result['text']}\n";
     echo "Tokens: {$result['usage']['input_tokens']} in, {$result['usage']['output_tokens']} out\n\n";
@@ -936,7 +935,7 @@ declare(strict_types=1);
 
 namespace App\Conversation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Services\TokenEstimator;
 
 class TrimmableConversationManager
@@ -945,8 +944,8 @@ class TrimmableConversationManager
     private int $maxContextTokens = 150000; // Leave room for response
 
     public function __construct(
-        private readonly Anthropic $client,
-        private readonly string $model = 'claude-sonnet-4-20250514'
+        private readonly ClaudePhp $client,
+        private readonly string $model = 'claude-sonnet-4-5'
     ) {}
 
     public function sendMessage(string $userMessage): string
@@ -967,7 +966,7 @@ class TrimmableConversationManager
             'messages' => $this->messages
         ]);
 
-        $assistantMessage = $response->content[0]->text;
+        $assistantMessage = $response->content[0]->text ?? '';
 
         // Add assistant response
         $this->messages[] = [
@@ -1024,7 +1023,7 @@ declare(strict_types=1);
 
 namespace App\Conversation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class SlidingWindowManager
 {
@@ -1032,7 +1031,7 @@ class SlidingWindowManager
     private int $maxMessages = 20; // Keep last 10 exchanges (20 messages)
 
     public function __construct(
-        private readonly Anthropic $client,
+        private readonly ClaudePhp $client,
         int $maxMessages = 20
     ) {
         $this->maxMessages = $maxMessages;
@@ -1051,12 +1050,12 @@ class SlidingWindowManager
 
         // Get response
         $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 2048,
             'messages' => $this->messages
         ]);
 
-        $assistantMessage = $response->content[0]->text;
+        $assistantMessage = $response->content[0]->text ?? '';
 
         // Add assistant response
         $this->messages[] = [
@@ -1092,7 +1091,7 @@ declare(strict_types=1);
 
 namespace App\Conversation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Services\TokenEstimator;
 
 class SummarizingManager
@@ -1102,7 +1101,7 @@ class SummarizingManager
     private int $maxContextTokens = 150000;
 
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     public function sendMessage(string $userMessage): string
@@ -1125,12 +1124,12 @@ class SummarizingManager
 
         // Get response
         $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 2048,
             'messages' => $requestMessages
         ]);
 
-        $assistantMessage = $response->content[0]->text;
+        $assistantMessage = $response->content[0]->text ?? '';
 
         // Add to history
         $this->messages[] = [
@@ -1161,7 +1160,7 @@ class SummarizingManager
 
         // Ask Claude to summarize
         $response = $this->client->messages()->create([
-            'model' => 'claude-haiku-4-20250514', // Use Haiku for speed/cost
+            'model' => 'claude-haiku-4-5-20251001', // Use Haiku for speed/cost
             'max_tokens' => 500,
             'messages' => [[
                 'role' => 'user',
@@ -1169,7 +1168,7 @@ class SummarizingManager
             ]]
         ]);
 
-        $this->conversationSummary = $response->content[0]->text;
+        $this->conversationSummary = $response->content[0]->text ?? '';
 
         // Replace old messages with recent ones
         $this->messages = $recentMessages;
@@ -1370,6 +1369,7 @@ class DatabaseConversationStorage
 
     private function createTableIfNotExists(): void
     {
+        // Create table (works with SQLite, MySQL, PostgreSQL)
         $this->pdo->exec("
             CREATE TABLE IF NOT EXISTS conversations (
                 id VARCHAR(255) PRIMARY KEY,
@@ -1382,25 +1382,71 @@ class DatabaseConversationStorage
 
     public function save(string $conversationId, array $messages): void
     {
-        $stmt = $this->pdo->prepare("
-            INSERT INTO conversations (id, messages, created_at, updated_at)
-            VALUES (:id, :messages, :created_at, :updated_at)
-            ON CONFLICT(id) DO UPDATE SET
-                messages = :messages,
-                updated_at = :updated_at
-        ");
-
         $now = time();
+        $messagesJson = json_encode($messages);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \RuntimeException('Failed to encode messages: ' . json_last_error_msg());
+        }
 
         // Get existing created_at or use now
         $createdAt = $this->getCreatedAt($conversationId) ?? $now;
 
-        $stmt->execute([
-            ':id' => $conversationId,
-            ':messages' => json_encode($messages),
-            ':created_at' => $createdAt,
-            ':updated_at' => $now,
-        ]);
+        // Try INSERT first
+        $stmt = $this->pdo->prepare("
+            INSERT INTO conversations (id, messages, created_at, updated_at)
+            VALUES (:id, :messages, :created_at, :updated_at)
+        ");
+
+        try {
+            $stmt->execute([
+                ':id' => $conversationId,
+                ':messages' => $messagesJson,
+                ':created_at' => $createdAt,
+                ':updated_at' => $now,
+            ]);
+        } catch (\PDOException $e) {
+            // If INSERT fails (duplicate key), try UPDATE
+            if ($this->isDuplicateKeyError($e)) {
+                $stmt = $this->pdo->prepare("
+                    UPDATE conversations
+                    SET messages = :messages, updated_at = :updated_at
+                    WHERE id = :id
+                ");
+                $stmt->execute([
+                    ':id' => $conversationId,
+                    ':messages' => $messagesJson,
+                    ':updated_at' => $now,
+                ]);
+            } else {
+                throw $e;
+            }
+        }
+    }
+
+    /**
+     * Check if PDOException is a duplicate key error
+     */
+    private function isDuplicateKeyError(\PDOException $e): bool
+    {
+        $errorCode = $e->getCode();
+        $errorMessage = $e->getMessage();
+
+        // SQLite
+        if ($errorCode === '23000' && str_contains($errorMessage, 'UNIQUE constraint failed')) {
+            return true;
+        }
+
+        // MySQL
+        if ($errorCode === '23000' && str_contains($errorMessage, 'Duplicate entry')) {
+            return true;
+        }
+
+        // PostgreSQL
+        if ($errorCode === '23505') {
+            return true;
+        }
+
+        return false;
     }
 
     public function load(string $conversationId): array
@@ -1416,7 +1462,11 @@ class DatabaseConversationStorage
             return [];
         }
 
-        return json_decode($result['messages'], true) ?? [];
+        $decoded = json_decode($result['messages'], true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \RuntimeException('Failed to decode stored messages: ' . json_last_error_msg());
+        }
+        return $decoded;
     }
 
     public function exists(string $conversationId): bool
@@ -1473,7 +1523,7 @@ declare(strict_types=1);
 
 namespace App\Conversation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Storage\FileConversationStorage;
 
 class PersistentConversationManager
@@ -1482,7 +1532,7 @@ class PersistentConversationManager
     private string $conversationId;
 
     public function __construct(
-        private readonly Anthropic $client,
+        private readonly ClaudePhp $client,
         private readonly FileConversationStorage $storage,
         ?string $conversationId = null
     ) {
@@ -1504,12 +1554,12 @@ class PersistentConversationManager
 
         // Get response
         $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 2048,
             'messages' => $this->messages
         ]);
 
-        $assistantMessage = $response->content[0]->text;
+        $assistantMessage = $response->content[0]->text ?? '';
 
         // Add assistant response
         $this->messages[] = [
@@ -1552,11 +1602,9 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use App\Conversation\PersistentConversationManager;
 use App\Storage\FileConversationStorage;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: $_ENV['ANTHROPIC_API_KEY']);
 
 $storage = new FileConversationStorage(__DIR__ . '/../storage/conversations');
 
@@ -1565,10 +1613,10 @@ $conversation = new PersistentConversationManager($client, $storage);
 
 echo "Conversation ID: {$conversation->getConversationId()}\n\n";
 
-$reply1 = $conversation->sendMessage("My name is Sarah.");
+$reply1 = $conversation->messages()->create("My name is Sarah.");
 echo "Claude: {$reply1}\n\n";
 
-$reply2 = $conversation->sendMessage("I'm learning PHP.");
+$reply2 = $conversation->messages()->create("I'm learning PHP.");
 echo "Claude: {$reply2}\n\n";
 
 // Save the conversation ID for later
@@ -1581,7 +1629,7 @@ echo "\n--- Later, in a new session ---\n\n";
 $resumedId = file_get_contents('last_conversation_id.txt');
 $resumed = new PersistentConversationManager($client, $storage, $resumedId);
 
-$reply3 = $resumed->sendMessage("What do you know about me?");
+$reply3 = $resumed->messages()->create("What do you know about me?");
 echo "Claude: {$reply3}\n";
 // Claude remembers: name is Sarah, learning PHP
 ```
@@ -1597,14 +1645,14 @@ declare(strict_types=1);
 
 namespace App\Conversation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class MultiPersonaManager
 {
     private array $messages = [];
 
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     public function sendAsUser(string $message, string $systemPrompt): string
@@ -1617,13 +1665,13 @@ class MultiPersonaManager
 
         // Get response with specific persona
         $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 2048,
             'system' => $systemPrompt,
             'messages' => $this->messages
         ]);
 
-        $assistantMessage = $response->content[0]->text;
+        $assistantMessage = $response->content[0]->text ?? '';
 
         // Add to history
         $this->messages[] = [
@@ -1651,11 +1699,9 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Conversation\MultiPersonaManager;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: $_ENV['ANTHROPIC_API_KEY']);
 
 $conversation = new MultiPersonaManager($client);
 
@@ -1685,7 +1731,7 @@ declare(strict_types=1);
 
 namespace App\Conversation;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class BranchingManager
 {
@@ -1693,7 +1739,7 @@ class BranchingManager
     private array $branches = [];
 
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     public function sendMessage(string $message, ?string $branchId = null): string
@@ -1710,12 +1756,12 @@ class BranchingManager
         $this->mainBranch[] = ['role' => 'user', 'content' => $message];
 
         $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 2048,
             'messages' => $this->mainBranch
         ]);
 
-        $reply = $response->content[0]->text;
+        $reply = $response->content[0]->text ?? '';
         $this->mainBranch[] = ['role' => 'assistant', 'content' => $reply];
 
         return $reply;
@@ -1731,12 +1777,12 @@ class BranchingManager
         $this->branches[$branchId][] = ['role' => 'user', 'content' => $message];
 
         $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 2048,
             'messages' => $this->branches[$branchId]
         ]);
 
-        $reply = $response->content[0]->text;
+        $reply = $response->content[0]->text ?? '';
         $this->branches[$branchId][] = ['role' => 'assistant', 'content' => $reply];
 
         return $reply;
@@ -1787,6 +1833,7 @@ class ConversationAnalytics
 ```
 
 **Requirements:**
+
 - Count total messages in the conversation
 - Calculate average message length (characters)
 - Separate counts for user vs assistant messages
@@ -1847,6 +1894,7 @@ class ConversationExporter
 ```
 
 **Requirements:**
+
 - Markdown export should include a header with date/time
 - Format user messages with "**User:**" prefix
 - Format assistant messages with "**Assistant:**" prefix
@@ -1880,12 +1928,12 @@ Create a `ContextAwareSummarizer` that uses Claude to summarize conversations:
 # filename: exercises/ContextAwareSummarizer.php
 declare(strict_types=1);
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class ContextAwareSummarizer
 {
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     public function summarize(array $messages, int $targetLength = 500): string
@@ -1900,6 +1948,7 @@ class ContextAwareSummarizer
 ```
 
 **Requirements:**
+
 - Use Claude Haiku model for cost efficiency
 - Preserve important facts (names, dates, decisions)
 - Keep summary under target length
@@ -1937,24 +1986,35 @@ $summary = $summarizer->summarize($messages, 300);
 ## Troubleshooting
 
 **Conversation context lost?**
+
 - Ensure you're passing entire message history
 - Check storage is persisting correctly
 - Verify messages aren't being trimmed too aggressively
 
 **Role alternation errors?**
+
 - Validate messages alternate user/assistant
 - Check first message is always user
 - Don't have consecutive same-role messages
 
 **Out of context errors?**
+
 - Implement conversation trimming
 - Use summarization for long conversations
 - Monitor estimated token usage
 
 **Slow responses with long histories?**
+
 - Trim older messages
 - Increase timeout for large contexts
 - Consider conversation summarization
+
+## Further Reading
+
+- **[Official PHP SDK Documentation](https://github.com/anthropics/anthropic-sdk-php)** — The official Anthropic PHP SDK on GitHub
+- **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)** — Official PHP SDK for Claude API with 1-for-1 Python SDK functionality
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
+- **[PHP SDK Composer Package](https://packagist.org/packages/claude-php/claude-php-sdk)** — Official package on Packagist
 
 ## Wrap-up
 
@@ -1999,25 +2059,27 @@ Continue to [Chapter 05: Prompt Engineering Basics](/series/claude-php-developer
 
 ## Further Reading
 
-- [Anthropic Messages API Documentation](https://docs.claude.com/en/api/messages) — Official API reference for message structure and parameters
-- [Anthropic Context Window Guide](https://docs.claude.com/en/docs/build-with-claude/context-windows) — Understanding context limits and best practices
-- [PHP Sessions Documentation](https://www.php.net/manual/en/book.session.php) — PHP session management for conversation persistence
-- [PDO Database Access](https://www.php.net/manual/en/book.pdo.php) — PHP Data Objects for database-backed conversation storage
-- [Chapter 03: Your First Claude Request](/series/claude-php-developers/chapters/03-first-claude-request) — Review API request fundamentals
-- [Chapter 05: Prompt Engineering Basics](/series/claude-php-developers/chapters/05-prompt-engineering-basics) — Learn effective prompting techniques
+- **[Claude-PHP-SDK GitHub](https://github.com/claude-php/Claude-PHP-SDK)** — Official PHP SDK providing complete 1-for-1 functionality of the Python SDK
+- **[Claude Messages API Documentation](https://docs.claude.com/en/api/messages)** — Official API reference for message structure and parameters
+- **[Claude Context Window Guide](https://docs.claude.com/en/docs/build-with-claude/context-windows)** — Understanding context limits and best practices
+- **[PHP Sessions Documentation](https://www.php.net/manual/en/book.session.php)** — PHP session management for conversation persistence
+- **[PDO Database Access](https://www.php.net/manual/en/book.pdo.php)** — PHP Data Objects for database-backed conversation storage
+- **[Chapter 03: Your First Claude Request](/series/claude-php-developers/chapters/03-first-claude-request)** — Review API request fundamentals
+- **[Chapter 05: Prompt Engineering Basics](/series/claude-php-developers/chapters/05-prompt-engineering-basics)** — Learn effective prompting techniques
 
 ## 💻 Code Samples
 
-All code examples from this chapter are available in the GitHub repository:
+All code examples from this chapter use the **Claude-PHP-SDK**. Install and run locally:
 
-**[View Chapter 04 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-04)**
-
-Clone and run locally:
 ```bash
-git clone https://github.com/dalehurley/codewithphp.git
-cd codewithphp/code/claude-php/chapter-04
-composer install
-cp .env.example .env
-# Add your API key to .env
-php examples/02-basic-conversation.php
+# Install the Claude-PHP-SDK
+composer require claude-php/claude-php-sdk
+
+# Set up your API key
+export ANTHROPIC_API_KEY="your-api-key-here"
+
+# Copy and run the examples from this chapter
 ```
+
+For the complete tutorial project with all chapters, visit:
+**[Code with PHP - Claude Series](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php)**

@@ -55,6 +55,7 @@ Before starting, ensure you have:
 - ✓ **PDO/Database experience** — Prepared statements and query execution
 - ✓ **REST API knowledge** — HTTP requests, JSON handling, error responses
 - ✓ **PHP 8.4+ with type declarations** — Interfaces, classes, and strict typing
+- ✓ **Claude-PHP-SDK installed** — `composer require claude-php/claude-php-sdk`
 
 **Estimated Time**: 60-75 minutes
 
@@ -1031,7 +1032,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Tools\ToolRegistry;
 use App\Tools\Database\CustomerDatabaseTool;
 use App\Tools\Database\InventoryTool;
@@ -1055,10 +1056,10 @@ $registry
     ->register(new FileReaderTool(__DIR__ . '/data'))
     ->register(new LogAnalyzerTool(__DIR__ . '/logs'));
 
-// Initialize Claude
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+// Initialize Claude using Claude-PHP-SDK
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 // Agent function
 function runAgent(string $userMessage, ToolRegistry $registry): string
@@ -1084,13 +1085,13 @@ Available capabilities:
 Always be helpful, accurate, and secure. Never process payments without explicit confirmation.
 SYSTEM;
 
-    $response = $client->messages()->create([
-        'model' => 'claude-sonnet-4-20250514',
+    $response = $client->messages()->create(
+        'model' => 'claude-sonnet-4-5',
         'max_tokens' => 4096,
         'system' => $systemPrompt,
-        'tools' => $registry->getDefinitions(),
+        tools: $registry->getDefinitions(),
         'messages' => $messages
-    ]);
+    );
 
     $iterations = 0;
     while ($response->stopReason === 'tool_use' && $iterations < 15) {
@@ -1121,19 +1122,23 @@ SYSTEM;
             'content' => $toolResults
         ];
 
-        $response = $client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+        $response = $client->messages()->create(
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 4096,
             'system' => $systemPrompt,
-            'tools' => $registry->getDefinitions(),
+            tools: $registry->getDefinitions(),
             'messages' => $messages
-        ]);
+        );
     }
 
     $finalText = '';
-    foreach ($response->content as $block) {
-        if ($block->type === 'text') {
-            $finalText .= $block->text;
+    if (is_array($response->content)) {
+        foreach ($response->content as $block) {
+            if (isset($block['type']) && $block['type'] === 'text') {
+                $finalText .= $block['text'] ?? '';
+            } elseif (isset($block->type) && $block->type === 'text') {
+                $finalText .= $block->text ?? '';
+            }
         }
     }
 
@@ -1281,6 +1286,7 @@ A security wrapper that validates inputs, logs tool usage, and prevents executio
 Security wrappers add an extra layer of protection around tools. By validating inputs against schemas, logging all executions, and implementing timeouts, we prevent abuse and make debugging easier. This pattern can be applied to any tool without modifying the tool itself.
 
 The enhanced `validateInput()` method now checks:
+
 - Required fields are present
 - Enum values match allowed options
 - Numeric values are within min/max ranges
@@ -1825,6 +1831,13 @@ Extend the `SecureToolWrapper` to:
 
 **Validation**: Test with invalid inputs and verify helpful error messages are returned.
 
+## Further Reading
+
+- **[Claude-PHP-SDK Documentation](https://github.com/claude-php/Claude-PHP-SDK)** — The official Claude PHP SDK on GitHub with comprehensive examples
+- **[Claude-PHP-SDK on Packagist](https://packagist.org/packages/claude-php/claude-php-sdk)** — Install via Composer: `composer require claude-php/claude-php-sdk`
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides for Claude models
+- **[Tool Use Guide](https://docs.claude.com/en/docs/agents-and-tools/tool-use)** — Official documentation for tool use patterns
+
 ## Wrap-up
 
 Congratulations! You've completed Chapter 12. Here's what you've accomplished:
@@ -1846,11 +1859,11 @@ In the next chapter, you'll learn how to work with images and visual content usi
 
 ## Further Reading
 
-- [Anthropic Tool Use Documentation](https://docs.claude.com/en/docs/agents-and-tools/tool-use) — Official guide to tool use patterns
-- [PDO Prepared Statements](https://www.php.net/manual/en/pdo.prepared-statements.php) — PHP documentation on secure database queries
-- [Stripe API Reference](https://stripe.com/docs/api) — Payment processing API documentation
-- [PSR-3 Logger Interface](https://www.php-fig.org/psr/psr-3/) — Standard logging interface for PHP
-- [PHPUnit Testing Guide](https://phpunit.de/documentation.html) — Comprehensive testing framework documentation
+- **[Claude Tool Use Guide](https://docs.anthropic.com/en/docs/agents-and-tools/tool-use)** — Official documentation for implementing tool use
+- **[PDO Prepared Statements](https://www.php.net/manual/en/pdo.prepared-statements.php)** — Secure database query execution
+- **[Stripe API Reference](https://stripe.com/docs/api)** — Payment processing API documentation
+- **[PSR-3 Logger Interface](https://www.php-fig.org/psr/psr-3/)** — Standard logging in PHP applications
+- **[PHPUnit Testing Guide](https://phpunit.de/documentation.html)** — Comprehensive unit testing framework
 
 ## Key Takeaways
 
@@ -1888,6 +1901,7 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 12 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-12)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-12

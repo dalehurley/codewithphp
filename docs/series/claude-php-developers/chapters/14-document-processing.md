@@ -64,13 +64,14 @@ This chapter demonstrates the **vision API approach** (converting PDFs to images
 
 ### Three Ways to Process Documents
 
-| Approach | Best For | Cost | Speed | Setup |
-|----------|----------|------|-------|-------|
-| **Vision API** (Chapter 14) | Single/few documents, formatting matters | Medium | Fast | Simple |
-| **Files API** (Beta) | Persistent storage, reusable documents | Low | Medium | Moderate |
-| **Batch API** | High volume, cost optimization | **Very Low** (50% off) | Slow | Complex |
+| Approach                    | Best For                                 | Cost                   | Speed  | Setup    |
+| --------------------------- | ---------------------------------------- | ---------------------- | ------ | -------- |
+| **Vision API** (Chapter 14) | Single/few documents, formatting matters | Medium                 | Fast   | Simple   |
+| **Files API** (Beta)        | Persistent storage, reusable documents   | Low                    | Medium | Moderate |
+| **Batch API**               | High volume, cost optimization           | **Very Low** (50% off) | Slow   | Complex  |
 
 **Recommended Path:**
+
 1. Start with **Vision API** for small-scale processing (this chapter)
 2. Add **Files API** for persistent document storage
 3. Use **Batch API** for 1000+ document jobs
@@ -78,9 +79,10 @@ This chapter demonstrates the **vision API approach** (converting PDFs to images
 
 ## Required Libraries
 
-Install necessary PHP libraries for PDF processing:
+Install necessary PHP libraries for PDF processing and the Claude SDK:
 
 ```bash
+composer require claude-php/sdk vlucas/phpdotenv
 composer require smalot/pdfparser
 composer require setasign/fpdf
 composer require tecnickcom/tcpdf
@@ -244,20 +246,20 @@ Claude's vision capabilities excel at reading structured documents like invoices
 
 Extract structured data from invoices:
 
-```php
+````php
 <?php
 # filename: src/Document/InvoiceProcessor.php
 declare(strict_types=1);
 
 namespace App\Document;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Vision\ImageHelper;
 
 class InvoiceProcessor
 {
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     public function processInvoice(string $pdfPath): array
@@ -281,7 +283,7 @@ class InvoiceProcessor
         $imageContent = ImageHelper::prepareImage($imagePath);
 
         $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 4096,
             'messages' => [
                 [
@@ -414,7 +416,7 @@ PROMPT
         ];
     }
 }
-```
+````
 
 ## Step 3: Contract Analysis (~20 min)
 
@@ -447,20 +449,20 @@ Legal contracts require multiple analysis passes: first to understand structure,
 
 Analyze legal contracts and extract key terms:
 
-```php
+````php
 <?php
 # filename: src/Document/ContractAnalyzer.php
 declare(strict_types=1);
 
 namespace App\Document;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Vision\ImageHelper;
 
 class ContractAnalyzer
 {
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     public function analyzeContract(string $pdfPath): array
@@ -491,7 +493,7 @@ class ContractAnalyzer
         $imageContent = ImageHelper::prepareImage($firstPageImage);
 
         $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 2048,
             'messages' => [
                 [
@@ -576,7 +578,7 @@ PROMPT
         ];
 
         $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 4096,
             'messages' => [
                 ['role' => 'user', 'content' => $content]
@@ -619,7 +621,7 @@ PROMPT
         ];
 
         $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 4096,
             'messages' => [
                 ['role' => 'user', 'content' => $content]
@@ -657,7 +659,7 @@ PROMPT
         ];
 
         $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 4096,
             'messages' => [
                 ['role' => 'user', 'content' => $content]
@@ -667,7 +669,7 @@ PROMPT
         return $response->content[0]->text;
     }
 }
-```
+````
 
 ## Step 4: Resume/CV Processing (~15 min)
 
@@ -699,20 +701,20 @@ Resumes have varied formats but consistent information types. Claude's vision ca
 
 Extract structured data from resumes:
 
-```php
+````php
 <?php
 # filename: src/Document/ResumeProcessor.php
 declare(strict_types=1);
 
 namespace App\Document;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Vision\ImageHelper;
 
 class ResumeProcessor
 {
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     public function processResume(string $pdfPath): array
@@ -790,7 +792,7 @@ PROMPT
         ];
 
         $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 4096,
             'messages' => [
                 ['role' => 'user', 'content' => $content]
@@ -806,7 +808,7 @@ PROMPT
         $resumeJson = json_encode($resumeData, JSON_PRETTY_PRINT);
 
         $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 2048,
             'messages' => [
                 [
@@ -845,7 +847,7 @@ PROMPT
         $resumeJson = json_encode($resumeData, JSON_PRETTY_PRINT);
 
         $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 2048,
             'messages' => [
                 [
@@ -884,7 +886,7 @@ PROMPT
         return $text;
     }
 }
-```
+````
 
 ## Step 5: Complete Document Processing Pipeline (~10 min)
 
@@ -921,20 +923,18 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Document\InvoiceProcessor;
 use App\Document\ContractAnalyzer;
 use App\Document\ResumeProcessor;
 use App\Document\PDFProcessor;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: $_ENV['ANTHROPIC_API_KEY']);
 
 class DocumentPipeline
 {
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     public function processDocument(string $pdfPath): array
@@ -961,7 +961,7 @@ class DocumentPipeline
         $imageContent = \App\Vision\ImageHelper::prepareImage($firstPage);
 
         $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 200,
             'messages' => [
                 [
@@ -1020,7 +1020,7 @@ class DocumentPipeline
         $textData = PDFProcessor::extractText($pdfPath);
 
         $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 2048,
             'messages' => [
                 [
@@ -1159,6 +1159,7 @@ Learn when and how to use the Files API (Beta) as an alternative to image conver
 ### When to Use Files API
 
 Use the **Files API** instead of vision when:
+
 - You process the same documents multiple times
 - You need persistent storage across sessions
 - You want to reduce bandwidth for large files
@@ -1197,11 +1198,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: $_ENV['ANTHROPIC_API_KEY']);
 
 // Upload PDF file once
 $pdfPath = __DIR__ . '/documents/invoice.pdf';
@@ -1216,7 +1215,7 @@ $fileHandle = fopen($pdfPath, 'r');
 
 // Reuse file multiple times without re-uploading
 // $response = $client->messages()->create([
-//     'model' => 'claude-sonnet-4-20250514',
+//     'model' => 'claude-sonnet-4-5',
 //     'max_tokens' => 4096,
 //     'messages' => [
 //         [
@@ -1244,13 +1243,13 @@ echo "For production use, check: https://docs.claude.com/en/docs/capabilities/fi
 
 ### Why Choose Each Approach
 
-| Feature | Vision API | Files API | Batch API |
-|---------|-----------|-----------|-----------|
-| Real-time processing | ✅ Yes | ✅ Yes | ❌ Async only |
-| Persistent storage | ❌ No | ✅ Yes | ✅ Yes |
-| One-time setup | ✅ Yes | ⚠️ Moderate | ❌ Complex |
-| Cost per document | Medium | Lower (reuse) | Lowest (50% off) |
-| Processing speed | Fast | Fast | Slow (async) |
+| Feature              | Vision API | Files API     | Batch API        |
+| -------------------- | ---------- | ------------- | ---------------- |
+| Real-time processing | ✅ Yes     | ✅ Yes        | ❌ Async only    |
+| Persistent storage   | ❌ No      | ✅ Yes        | ✅ Yes           |
+| One-time setup       | ✅ Yes     | ⚠️ Moderate   | ❌ Complex       |
+| Cost per document    | Medium     | Lower (reuse) | Lowest (50% off) |
+| Processing speed     | Fast       | Fast          | Slow (async)     |
 
 ## Step 8: Batch Processing for Scale (~10 min)
 
@@ -1261,6 +1260,7 @@ Learn to use the Batch API for cost-effective processing of large document volum
 ### When Batch Processing Makes Sense
 
 Use **Batch API** when:
+
 - Processing 1000+ documents
 - Cost savings (50% discount) matter more than speed
 - Processing can happen asynchronously
@@ -1275,16 +1275,14 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: $_ENV['ANTHROPIC_API_KEY']);
 
 class BatchDocumentProcessor
 {
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
 
     /**
@@ -1300,7 +1298,7 @@ class BatchDocumentProcessor
             $requests[] = [
                 'custom_id' => "doc-{$index}",
                 'params' => [
-                    'model' => 'claude-sonnet-4-20250514',
+                    'model' => 'claude-sonnet-4-5',
                     'max_tokens' => 4096,
                     'messages' => [
                         [
@@ -1464,6 +1462,7 @@ if (!$validation['valid']) {
 ### PDF Conversion Issues
 
 **Problem**: Imagick extension not found
+
 ```bash
 # Ubuntu/Debian
 sudo apt-get install php-imagick
@@ -1477,6 +1476,7 @@ php -m | grep imagick
 ```
 
 **Problem**: PDF conversion produces blank images
+
 - Check if PDF is password-protected
 - Verify PDF is not corrupted: `file document.pdf`
 - Try increasing DPI: `setResolution(300, 300)`
@@ -1484,7 +1484,8 @@ php -m | grep imagick
 ### Data Extraction Issues
 
 **Problem**: Claude returns invalid JSON
-```php
+
+````php
 // Add robust JSON extraction
 private function extractJSON(string $text): string
 {
@@ -1499,9 +1500,10 @@ private function extractJSON(string $text): string
     // Last resort: return as-is and let json_decode handle it
     return $text;
 }
-```
+````
 
 **Problem**: Missing data in extracted results
+
 - Increase `max_tokens` for complex documents
 - Break complex extractions into multiple passes
 - Provide more specific examples in prompts
@@ -1509,12 +1511,14 @@ private function extractJSON(string $text): string
 ### Performance Issues
 
 **Problem**: Processing is too slow
+
 - Implement caching for repeated documents
 - Process pages in parallel where possible
 - Use lower DPI for faster conversion (150 vs 300)
 - Batch similar documents together
 
 **Problem**: High API costs
+
 - Cache all processed documents
 - Use text extraction for simple documents (no vision needed)
 - Combine multiple analyses into single requests
@@ -1523,6 +1527,7 @@ private function extractJSON(string $text): string
 ### Memory Issues
 
 **Problem**: Out of memory errors with large PDFs
+
 ```php
 // Process pages individually instead of loading all
 foreach ($imagick as $pageIndex => $page) {
@@ -1564,6 +1569,13 @@ foreach ($imagick as $pageIndex => $page) {
 - ✓ Implement rate limiting for API calls
 - ✓ Secure sensitive document data (Chapter 36)
 - ✓ Plan for scaling as document volume grows (Chapter 38)
+
+## Further Reading
+
+- **[Claude-PHP-SDK Repository](https://github.com/claude-php/Claude-PHP-SDK)** — The community-maintained PHP SDK for Claude API
+- **[Claude-PHP-SDK on Packagist](https://packagist.org/packages/claude-php/sdk)** — Install via Composer
+- **[Anthropic API Documentation](https://docs.claude.com)** — Complete API reference and guides
+- **[Official Anthropic PHP SDK](https://github.com/anthropics/anthropic-sdk-php)** — Alternative official SDK from Anthropic
 
 <ChapterCheckbox
   seriesId="claude-php-developers"
@@ -1614,6 +1626,7 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 14 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-14)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-14

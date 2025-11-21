@@ -1,0 +1,15 @@
+{
+    "name": "claude-php/chapter-26-code-review",
+    "description": "AI-Powered Code Review Assistant",
+    "type": "project",
+    "require": {
+        "php": "^8.2",
+        "claude-php/claude-3-api": "^1.0",
+        "guzzlehttp/guzzle": "^7.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "CodeReview\\": "src/"
+        }
+    }
+}

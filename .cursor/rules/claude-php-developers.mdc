@@ -17,27 +17,31 @@ This rule file provides comprehensive guidelines for authoring and maintaining t
 
 ### Current Model Lineup (2025)
 
-**Claude Sonnet 4.5** - Latest smartest model
-- Model ID: `claude-sonnet-4-20250514` (verify latest version)
-- Best for: Complex agents, coding, advanced tasks
-- Context: 1M tokens (Beta) or 200K tokens (standard)
-- Use when: You need the best balance of capability and cost
+| Feature                                                               | Claude Sonnet 4.5                                                                                                                                                                                      | Claude Haiku 4.5                                                                       | Claude Opus 4.1                                                                        |
+| :-------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------- |
+| **Description**                                                       | Our smartest model for complex agents and coding                                                                                                                                                       | Our fastest model with near-frontier intelligence                                      | Exceptional model for specialized reasoning tasks                                      |
+| **Claude API ID**                                                     | claude-sonnet-4-5-20250929                                                                                                                                                                             | claude-haiku-4-5-20251001                                                              | claude-opus-4-1-20250805                                                               |
+| **Claude API alias**<sup>1</sup>                                      | claude-sonnet-4-5                                                                                                                                                                                      | claude-haiku-4-5                                                                       | claude-opus-4-1                                                                        |
+| **AWS Bedrock ID**                                                    | anthropic.claude-sonnet-4-5-20250929-v1:0                                                                                                                                                              | anthropic.claude-haiku-4-5-20251001-v1:0                                               | anthropic.claude-opus-4-1-20250805-v1:0                                                |
+| **GCP Vertex AI ID**                                                  | claude-sonnet-4-5@20250929                                                                                                                                                                             | claude-haiku-4-5@20251001                                                              | claude-opus-4-1@20250805                                                               |
+| **Pricing**<sup>2</sup>                                               | \$3 / input MTok<br/>\$15 / output MTok                                                                                                                                                                | \$1 / input MTok<br/>\$5 / output MTok                                                 | \$15 / input MTok<br/>\$75 / output MTok                                               |
+| **[Extended thinking](/docs/en/build-with-claude/extended-thinking)** | Yes                                                                                                                                                                                                    | Yes                                                                                    | Yes                                                                                    |
+| **[Priority Tier](/docs/en/api/service-tiers)**                       | Yes                                                                                                                                                                                                    | Yes                                                                                    | Yes                                                                                    |
+| **Comparative latency**                                               | Fast                                                                                                                                                                                                   | Fastest                                                                                | Moderate                                                                               |
+| **Context window**                                                    | <Tooltip tooltipContent="~150K words \ ~680K unicode characters">200K tokens</Tooltip> / <br/> <Tooltip tooltipContent="~750K words \ ~3.4M unicode characters">1M tokens</Tooltip> (beta)<sup>3</sup> | <Tooltip tooltipContent="~150K words \ ~680K unicode characters">200K tokens</Tooltip> | <Tooltip tooltipContent="~150K words \ ~680K unicode characters">200K tokens</Tooltip> |
+| **Max output**                                                        | 64K tokens                                                                                                                                                                                             | 64K tokens                                                                             | 32K tokens                                                                             |
+| **Reliable knowledge cutoff**                                         | Jan 2025<sup>4</sup>                                                                                                                                                                                   | Feb 2025                                                                               | Jan 2025<sup>4</sup>                                                                   |
+| **Training data cutoff**                                              | Jul 2025                                                                                                                                                                                               | Jul 2025                                                                               | Mar 2025                                                                               |
 
-**Claude Haiku 4.5** - Latest fastest model
-- Model ID: `claude-haiku-4-20250514` (verify latest version)
-- Best for: Speed-critical applications, simple tasks
-- Context: 200K tokens
-- Use when: Latency matters more than capability
-
-**Claude Opus 4.1** - Specialized advanced reasoning
-- Model ID: `claude-opus-4-20250514` (verify latest version)
-- Best for: Specialized tasks requiring advanced reasoning
-- Context: 200K tokens
-- Use when: Maximum capability is required
+¹ _API aliases are shorter, more convenient identifiers that point to the latest version of each model._  
+² _Pricing shown in USD per million tokens._  
+³ _1M token context window is currently in beta and may not be available in all regions._  
+⁴ _Models have access to information up to their training data cutoff, with reliable knowledge typically being more current._
 
 ### Model Selection Guidelines
 
 When writing chapters, always:
+
 - ✅ Reference the latest model versions from [docs.claude.com](https://docs.claude.com)
 - ✅ Explain when to use each model variant
 - ✅ Include cost considerations in model selection
@@ -53,18 +57,21 @@ When writing chapters, always:
 When writing chapters, ensure coverage of these Claude capabilities:
 
 #### 1. Messages API (Foundation)
+
 - Message structure (user, assistant, system roles)
 - Multi-turn conversations
 - Context management
 - Token limits and optimization
 
 #### 2. Streaming Responses
+
 - Server-Sent Events (SSE) implementation
 - Real-time UX patterns
 - Partial response handling
 - PHP streaming examples
 
 #### 3. Tool Use (Function Calling)
+
 - Tool definition and schema
 - Tool execution patterns
 - Error handling in tools
@@ -72,18 +79,21 @@ When writing chapters, ensure coverage of these Claude capabilities:
 - Custom tool building in PHP
 
 #### 4. Vision Capabilities
+
 - Image analysis
 - PDF processing
 - Document understanding
 - Multi-modal inputs
 
 #### 5. Structured Outputs
+
 - JSON schema enforcement
 - Type validation
 - Error handling
 - PHP object mapping
 
 #### 6. Advanced Features (Latest)
+
 - **Agent Skills** (Beta) - Extend Claude with Skills
 - **1M Token Context Window** (Beta) - Extended context processing
 - **Context Editing** (Beta) - Automatic context management
@@ -110,21 +120,177 @@ When covering tool use, reference these official tools:
 
 ## PHP Integration Patterns
 
-### Official PHP SDK
+### PHP SDK (Recommended)
 
-Always prefer the official Anthropic PHP SDK:
+**Use the PHP SDK** - The PHP library for accessing Claude API:
+
+### Installation
+
+```bash
+composer require claude-php/claude-php-sdk
+```
+
+### Basic Usage
 
 ```php
-use Anthropic\Anthropic;
+<?php
+require 'vendor/autoload.php';
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
+
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
+    'max_tokens' => 1024,
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => 'Hello Claude, what is 2+2?'
+        ]
+    ]
+]);
+
+echo $response->content[0]->text;
+```
+
+### Why PHP SDK?
+
+- ✅ **Latest Features**: Immediate access to new Claude capabilities
+- ✅ **Production Ready**: Battle-tested and enterprise-supported
+- ✅ **Comprehensive Documentation**: API reference and examples
+- ✅ **Framework Friendly**: Works seamlessly with Laravel, Symfony, etc.
+- ✅ **Type Safety**: Strong typing and error handling
+
+### Repository & Resources
+
+- **GitHub**: https://github.com/claude-php/Claude-PHP-SDK
+- **Packagist**: https://packagist.org/packages/claude-php/Claude-PHP-SDK
+
+## Extensive Code Examples & Tutorials
+
+The tutorial series provides **comprehensive examples** using the PHP SDK, covering everything from basic API calls to advanced production implementations.
+
+### Code Samples Repository Structure
+
+```
+code/claude-php/
+├── chapter-00/          # Quick Start Guide
+├── chapter-01/          # Introduction to Claude API
+├── chapter-02/          # Authentication & API Keys
+├── chapter-03/          # Your First Claude Request
+├── chapter-04/          # Messages & Conversations
+├── chapter-05/          # Prompt Engineering Basics
+├── chapter-06/          # Streaming Responses
+├── chapter-07/          # System Prompts & Roles
+├── chapter-08/          # Temperature & Sampling
+├── chapter-09/          # Token Management
+├── chapter-10/          # Error Handling & Rate Limiting
+├── chapter-11/          # Tool Use Fundamentals
+├── chapter-12/          # Building Custom Tools
+├── chapter-13/          # Vision - Working with Images
+├── chapter-14/          # Document Processing
+├── chapter-15/          # Structured Outputs
+├── chapter-16/          # PHP SDK Deep Dive
+├── chapter-17/          # Claude Service Class
+├── chapter-18/          # Caching Strategies
+├── chapter-19/          # Queue Processing with Laravel
+├── chapter-20/          # Real-time Chat with WebSockets
+├── chapter-21/          # Laravel Integration Patterns
+├── chapter-22/          # Building a Chatbot with Laravel
+├── chapter-23/          # AI Form Validation
+├── chapter-24/          # Content Generation API
+├── chapter-25/          # Admin Panel with AI Features
+├── chapter-26/          # Code Review Assistant
+├── chapter-27/          # Documentation Generator
+├── chapter-28/          # Customer Support Bot
+├── chapter-29/          # Content Moderation System
+├── chapter-30/          # Data Extraction & Analysis
+├── chapter-31/          # Retrieval Augmented Generation
+├── chapter-32/          # Vector Databases in PHP
+├── chapter-33/          # Multi-Agent Systems
+├── chapter-34/          # Prompt Chaining & Workflows
+├── chapter-35/          # Fine-tuning Strategies
+├── chapter-36/          # Security Best Practices
+├── chapter-37/          # Monitoring & Observability
+├── chapter-38/          # Scaling Applications
+└── chapter-39/          # Cost Optimization
+```
+
+### Key Tutorial Categories
+
+#### Foundation Chapters (00-05)
+
+- **Quick Start**: Basic API calls, text generation, code analysis
+- **Authentication**: API keys, environment variables, security patterns
+- **Conversations**: Multi-turn chats, context management
+- **Prompt Engineering**: Effective prompting techniques
+
+#### Core Features (06-15)
+
+- **Streaming**: Server-Sent Events, real-time responses
+- **Tools**: Function calling, custom tool creation, orchestration
+- **Vision**: Image analysis, document processing, multi-modal inputs
+- **Structured Outputs**: JSON schema validation, typed responses
+
+#### Framework Integration (16-25)
+
+- **Service Classes**: Clean abstraction layers, dependency injection
+- **Laravel Integration**: Service providers, facades, queue processing
+- **Real Applications**: Chatbots, content APIs, admin panels
+- **Production Patterns**: Caching, error handling, performance optimization
+
+#### Advanced Techniques (26-35)
+
+- **RAG Systems**: Document chunking, embedding generation, semantic search
+- **Multi-Agent**: Agent orchestration, task delegation, conflict resolution
+- **Workflows**: Prompt chaining, complex automation, business logic integration
+
+#### Production & Scale (36-39)
+
+- **Security**: Input validation, output sanitization, compliance
+- **Monitoring**: Observability, logging, alerting strategies
+- **Scaling**: Performance optimization, load balancing, cost management
+
+### Example Quality Standards
+
+Each chapter includes:
+
+- ✅ **Complete, Runnable Code** - No partial snippets or placeholders
+- ✅ **PHP 8.4+ Compatible** - Modern syntax and features throughout
+- ✅ **Error Handling** - Comprehensive try-catch with meaningful messages
+- ✅ **Security Best Practices** - Input validation, API key management
+- ✅ **Cost Tracking** - Token usage monitoring and cost calculations
+- ✅ **Documentation** - PHPDoc comments, usage examples, README files
+- ✅ **Testing Support** - Unit tests where applicable
+- ✅ **Environment Configuration** - .env.example files with all required variables
+
+### Quick Start with Examples
+
+```bash
+# Clone the repository
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp/code/claude-php
+
+# Start with Chapter 00
+cd chapter-00
+composer install
+cp .env.example .env
+# Edit .env with your ANTHROPIC_API_KEY
+php examples/quickstart.php
+
+# Explore other chapters
+cd ../chapter-11  # Tool use examples
+composer install
+php examples/basic-tools.php
 ```
 
 ### Service Layer Pattern
 
 Chapters should demonstrate:
+
 - Dependency injection
 - Service classes for Claude integration
 - Configuration management
@@ -134,6 +300,7 @@ Chapters should demonstrate:
 ### Framework Integration
 
 For Laravel/Symfony chapters:
+
 - Service providers
 - Facades (Laravel)
 - Configuration files
@@ -142,43 +309,61 @@ For Laravel/Symfony chapters:
 
 ## Code Quality Standards
 
-### PHP Requirements
+### PHP Requirements (SDK Standards)
 
-- **PHP Version**: PHP 8.2+ (prefer PHP 8.4 features when appropriate)
-- **Type Declarations**: Always use strict types (`declare(strict_types=1);`)
+- **PHP Version**: PHP 8.2+ (optimized for PHP 8.4 features)
+- **Type Declarations**: Always use `declare(strict_types=1);`
 - **Type Hints**: Use type hints for all parameters and return types
-- **Error Handling**: Comprehensive try-catch blocks with meaningful errors
+- **Named Parameters**: Leverage PHP 8 named parameters for clarity
+- **Array Responses**: Work with array-based responses (easier debugging)
+- **Error Handling**: Comprehensive try-catch with specific exception types
 - **PSR Standards**: Follow PSR-12 coding standards
 
-### Code Examples Must Include
+### Code Examples Must Include (SDK Patterns)
 
 1. **Complete, Runnable Code**
-   - No partial snippets
-   - Include all necessary imports
-   - Show full class definitions
 
-2. **Error Handling**
-   - API error handling
-   - Network failures
-   - Rate limiting
-   - Invalid responses
+   - No partial snippets - all examples must be immediately executable
+   - Include all necessary imports (`use ClaudePhp\ClaudePhp;`)
+   - Show full class definitions with proper namespace structure
+   - Use named parameters for all API calls
 
-3. **Security Best Practices**
-   - API key management
-   - Input validation
-   - Output sanitization
-   - Prompt injection prevention
+2. **Modern PHP 8 Patterns**
 
-4. **Cost Optimization**
-   - Token counting
-   - Model selection rationale
-   - Caching strategies
-   - Batch processing where applicable
+   - Named parameters: `'model' => 'claude-sonnet-4-5', 'max_tokens' => 1024`
+   - Array-based response handling: `$response->content[0]['text']`
+   - Null coalescing and safe array access: `$response->usage->inputTokens ?? 0`
+   - Proper type declarations and strict types
 
-5. **Comments and Documentation**
-   - PHPDoc blocks for classes/methods
-   - Inline comments for complex logic
-   - Usage examples
+3. **Error Handling (SDK Style)**
+
+   - Try-catch blocks with specific exception types
+   - API error handling with meaningful error messages
+   - Network failure recovery strategies
+   - Rate limiting with exponential backoff
+   - Invalid response validation
+
+4. **Security Best Practices**
+
+   - Environment variable API key management
+   - Input validation and sanitization
+   - Output filtering for safe display
+   - Prompt injection attack prevention
+   - Secure configuration patterns
+
+5. **Cost Optimization & Monitoring**
+
+   - Token usage tracking: `$response->usage->inputTokens + $response->usage->outputTokens`
+   - Model selection with cost justification
+   - Response caching strategies
+   - Batch processing for cost savings
+   - Real-time cost calculation utilities
+
+6. **Documentation & Comments**
+   - PHPDoc blocks for all classes and methods
+   - Inline comments explaining complex Claude API interactions
+   - Usage examples with realistic scenarios
+   - Parameter descriptions and return type documentation
 
 ## Chapter Structure Requirements
 
@@ -224,6 +409,7 @@ prerequisites:
 ### Always Verify
 
 Before writing about any Claude feature:
+
 - ✅ Check [docs.claude.com](https://docs.claude.com) for latest documentation
 - ✅ Verify model IDs and availability
 - ✅ Confirm API endpoint structure
@@ -233,6 +419,7 @@ Before writing about any Claude feature:
 ### Documentation Links
 
 Always link to official documentation:
+
 - Main docs: `https://docs.claude.com`
 - API reference: `https://docs.claude.com/en/api/overview`
 - Feature guides: Link to specific feature pages
@@ -242,6 +429,7 @@ Always link to official documentation:
 ### Agent Skills (Beta)
 
 When covering Agent Skills:
+
 - Explain progressive disclosure concept
 - Show how Skills extend Claude capabilities
 - Demonstrate pre-built Skills (PowerPoint, Excel, Word, PDF)
@@ -285,21 +473,25 @@ When covering Agent Skills:
 Every chapter must address:
 
 1. **API Key Management**
+
    - Environment variables
    - Key rotation strategies
    - Never commit keys to code
 
 2. **Input Validation**
+
    - Sanitize user inputs
    - Validate prompts
    - Prevent prompt injection
 
 3. **Output Validation**
+
    - Verify response structure
    - Sanitize AI-generated content
    - Handle unexpected outputs
 
 4. **Rate Limiting**
+
    - Respect API limits
    - Implement backoff strategies
    - Queue management
@@ -314,16 +506,19 @@ Every chapter must address:
 Always include cost considerations:
 
 1. **Model Selection**
+
    - When to use Haiku vs Sonnet vs Opus
    - Cost per token comparisons
    - Performance trade-offs
 
 2. **Token Management**
+
    - Token counting utilities
    - Context optimization
    - Prompt compression techniques
 
 3. **Caching Strategies**
+
    - Response caching
    - Prompt caching
    - Semantic caching
@@ -354,20 +549,24 @@ Always include cost considerations:
 For Laravel chapters (21-25):
 
 1. **Service Providers**
+
    - Register Claude service
    - Bind interfaces
    - Configuration management
 
 2. **Facades**
+
    - Create facades for easy access
    - Show usage examples
 
 3. **Queues**
+
    - Queue jobs for async processing
    - Progress tracking
    - Error handling
 
 4. **Caching**
+
    - Redis integration
    - Cache tags
    - TTL strategies
@@ -403,6 +602,118 @@ For Laravel chapters (21-25):
 - Security hardening
 - Incident response
 
+## Tutorial Series Structure (40 Chapters)
+
+### Chapter Organization Philosophy
+
+The Claude for PHP Developers series follows a **progressive disclosure** approach, building from simple concepts to complex production applications. Each chapter includes complete, runnable code examples that demonstrate real-world usage patterns.
+
+### Series Progression Map
+
+#### **Foundation Building (Chapters 00-05)**
+
+Focus: Basic API usage and fundamental concepts
+
+- **Chapter 00**: Quick Start - First API call, basic text generation
+- **Chapter 01**: API Introduction - Models, authentication, basic patterns
+- **Chapter 02**: Authentication - API keys, environment variables, security
+- **Chapter 03**: First Requests - Simple API calls with the SDK
+- **Chapter 04**: Conversations - Multi-turn chats, context management
+- **Chapter 05**: Prompt Engineering - Effective prompting techniques
+
+**Goal**: Readers can make basic API calls and understand core concepts
+
+#### **Core Features Deep Dive (Chapters 06-15)**
+
+Focus: Advanced Claude capabilities and PHP integration
+
+- **Chapter 06**: Streaming - Real-time responses, Server-Sent Events
+- **Chapter 07**: System Prompts - Role definition, behavior control
+- **Chapter 08**: Sampling Parameters - Temperature, creativity control
+- **Chapter 09**: Token Management - Usage tracking, optimization
+- **Chapter 10**: Error Handling - Rate limits, retry strategies, resilience
+- **Chapter 11**: Tool Use Fundamentals - Function calling basics
+- **Chapter 12**: Custom Tools - Building and integrating tools
+- **Chapter 13**: Vision API - Image analysis, document processing
+- **Chapter 14**: Document Processing - PDF analysis, structured extraction
+- **Chapter 15**: Structured Outputs - JSON schemas, typed responses
+
+**Goal**: Readers master all major Claude API features
+
+#### **PHP Integration & Applications (Chapters 16-25)**
+
+Focus: Production-ready PHP applications with Claude
+
+- **Chapter 16**: SDK Deep Dive - Advanced SDK usage
+- **Chapter 17**: Service Classes - Clean abstraction layers
+- **Chapter 18**: Caching Strategies - Performance optimization
+- **Chapter 19**: Laravel Queues - Async processing patterns
+- **Chapter 20**: WebSockets - Real-time chat applications
+- **Chapter 21**: Laravel Integration - Framework-specific patterns
+- **Chapter 22**: Chatbot Building - Complete conversational AI
+- **Chapter 23**: AI Form Validation - Smart input validation
+- **Chapter 24**: Content Generation API - Automated content creation
+- **Chapter 25**: Admin Panel AI - Administrative interfaces
+
+**Goal**: Readers can build complete applications with Claude
+
+#### **Advanced Techniques & AI Systems (Chapters 26-35)**
+
+Focus: Cutting-edge AI patterns and complex systems
+
+- **Chapter 26**: Code Review Assistant - Automated code analysis
+- **Chapter 27**: Documentation Generator - AI-powered docs
+- **Chapter 28**: Customer Support Bot - Advanced conversational AI
+- **Chapter 29**: Content Moderation - AI safety and filtering
+- **Chapter 30**: Data Extraction - Complex information retrieval
+- **Chapter 31**: RAG Systems - Document search and retrieval
+- **Chapter 32**: Vector Databases - Semantic search in PHP
+- **Chapter 33**: Multi-Agent Systems - AI agent orchestration
+- **Chapter 34**: Prompt Chaining - Complex workflow automation
+- **Chapter 35**: Fine-tuning Strategies - Custom model adaptation
+
+**Goal**: Readers understand advanced AI system design
+
+#### **Production Deployment & Scale (Chapters 36-39)**
+
+Focus: Production deployment, monitoring, and optimization
+
+- **Chapter 36**: Security Best Practices - Production security
+- **Chapter 37**: Monitoring & Observability - System monitoring
+- **Chapter 38**: Scaling Applications - Performance at scale
+- **Chapter 39**: Cost Optimization - Budget management strategies
+
+**Goal**: Readers can deploy and maintain production AI systems
+
+### Chapter Writing Guidelines
+
+#### **Progressive Complexity**
+
+- Start with simple, working examples
+- Build complexity gradually within each chapter
+- End with production-ready patterns
+- Include both basic and advanced variations
+
+#### **Code Example Structure**
+
+- Each chapter includes multiple complete examples
+- Examples progress from simple to complex
+- Include error handling and edge cases
+- Provide both CLI and web-ready versions where applicable
+
+#### **Learning Objectives**
+
+- Clear learning goals for each chapter
+- Prerequisites clearly stated
+- "What You'll Build" sections with concrete deliverables
+- Success criteria for completion
+
+#### **Cross-References**
+
+- Reference earlier chapters for foundational concepts
+- Preview upcoming chapters for context
+- Link related concepts across the series
+
 ## Content Updates
 
 ### Regular Review Checklist
@@ -420,6 +731,7 @@ When updating chapters, verify:
 ### Breaking Changes
 
 If Claude API changes:
+
 1. Update affected chapters immediately
 2. Add migration notes
 3. Update code examples
@@ -453,7 +765,7 @@ If Claude API changes:
 
 - **Main Docs**: https://docs.claude.com
 - **API Reference**: https://docs.claude.com/en/api/overview
-- **PHP SDK**: https://github.com/anthropics/anthropic-sdk-php
+- **PHP SDK**: https://github.com/claude-php/Claude-PHP-SDK
 - **Console**: https://console.anthropic.com
 
 ### Series-Specific Resources
@@ -488,21 +800,25 @@ If Claude API changes:
 ## Chapter-Specific Notes
 
 ### Early Chapters (00-10)
+
 - Focus on fundamentals
 - Build confidence with simple examples
 - Establish patterns used throughout series
 
 ### Middle Chapters (11-20)
+
 - Introduce advanced features
 - Show integration patterns
 - Build toward real applications
 
 ### Application Chapters (21-30)
+
 - Complete, production-ready applications
 - Best practices and patterns
 - Real-world scenarios
 
 ### Advanced Chapters (31-39)
+
 - Cutting-edge techniques
 - Scalability and optimization
 - Production deployment

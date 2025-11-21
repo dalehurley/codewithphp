@@ -198,12 +198,12 @@ Want to make your first Claude API call right now? Here's a 2-minute example:
 <?php
 require 'vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 // Initialize Claude client
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
 
 // Your first AI conversation!
 $response = $client->messages()->create([
@@ -227,7 +227,7 @@ echo $response->content[0]->text;
 - Ready to run—just set your `ANTHROPIC_API_KEY` environment variable!
 
 **Setup Required:**
-1. Install the Anthropic PHP SDK: `composer require anthropics/anthropic-sdk-php`
+1. Install the Claude PHP SDK: `composer require claude-php/claude-php-sdk`
 2. Set your API key: `export ANTHROPIC_API_KEY='your-key-here'`
 3. Run the script: `php quickstart.php`
 
@@ -398,7 +398,7 @@ Integrate Claude into modern PHP applications and frameworks.
 <div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
   <img src="/images/claude-php/chapter-16-thumbnail.webp" alt="Chapter 16 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
   <div>
-    <h4 style="margin-top: 0;"><a href="/series/claude-php-developers/chapters/16-official-php-sdk">16 — The Official PHP SDK</a></h4>
+    <h4 style="margin-top: 0;"><a href="/series/claude-php-developers/chapters/16-claude-php-sdk">16 — The Claude PHP SDK</a></h4>
     <p style="margin-bottom: 0;">Master the official Anthropic PHP SDK. Explore its architecture, advanced features, middleware support, and testing utilities. Learn best practices for SDK integration in production applications and when to use raw HTTP vs the SDK.</p>
   </div>
 </div>
@@ -673,7 +673,9 @@ Want to dive deeper? These resources complement the series:
 
 ### PHP Resources
 
-- **[Anthropic PHP SDK](https://github.com/anthropics/anthropic-sdk-php)**: Official PHP SDK
+- **[Official Anthropic PHP SDK](https://github.com/anthropics/anthropic-sdk-php)**: Official PHP implementation by Anthropic
+- **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)**: Community resources and additional examples
+- **[PHP SDK on Packagist](https://packagist.org/packages/claude-php/claude-php-sdk)**: Install via Composer
 - **[Laravel](https://laravel.com)**: Modern PHP framework
 - **[Symfony](https://symfony.com)**: Enterprise PHP framework
 

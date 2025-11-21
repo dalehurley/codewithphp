@@ -1,0 +1,16 @@
+{
+    "name": "claude-php/chapter-27-docs-generator",
+    "description": "AI-Powered Documentation Generator",
+    "type": "project",
+    "require": {
+        "php": "^8.2",
+        "claude-php/claude-3-api": "^1.0",
+        "nikic/php-parser": "^5.0",
+        "league/commonmark": "^2.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "DocsGenerator\\": "src/"
+        }
+    }
+}

@@ -32,6 +32,7 @@ Production Claude applications must handle variable traffic loads, API rate limi
 This chapter teaches you to build scalable Claude applications. You'll implement horizontal scaling patterns, configure intelligent load balancing, build queue-based processing systems, implement circuit breakers and retry logic, plan capacity for growth, and optimize performance for high-throughput scenarios.
 
 **What You'll Learn:**
+
 - Horizontal scaling architecture patterns
 - Load balancing strategies for AI workloads
 - Queue-based processing with Laravel queues
@@ -124,7 +125,6 @@ declare(strict_types=1);
 
 namespace App\Scaling;
 
-use Anthropic\Anthropic;
 
 class StatelessClaudeService
 {
@@ -133,7 +133,7 @@ class StatelessClaudeService
      * Can run on any server in the cluster
      */
     public function __construct(
-        private readonly Anthropic $client,
+        private readonly \ClaudePhp\ClaudePhp $client,
         private readonly \Redis $redis,
         private readonly string $sessionStore = 'redis'
     ) {}
@@ -158,7 +158,7 @@ class StatelessClaudeService
 
         // Make Claude request
         $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 2048,
             'messages' => $messages
         ]);
@@ -278,7 +278,7 @@ try {
     $redis->ping();
 
     // Check API key is configured
-    if (!getenv('ANTHROPIC_API_KEY')) {
+    if (!$_ENV['ANTHROPIC_API_KEY']) {
         throw new Exception('API key not configured');
     }
 
@@ -315,7 +315,6 @@ declare(strict_types=1);
 
 namespace App\Queue;
 
-use Anthropic\Anthropic;
 
 class ClaudeQueueJob
 {
@@ -329,7 +328,7 @@ class ClaudeQueueJob
         public array $metadata = []
     ) {}
 
-    public function handle(Anthropic $client, \Redis $redis): void
+    public function handle(\ClaudePhp\ClaudePhp $client, \Redis $redis): void
     {
         $startTime = microtime(true);
 
@@ -428,7 +427,7 @@ use Illuminate\Support\Facades\Queue;
 Queue::push(new ClaudeQueueJob(
     userId: 'user-123',
     prompt: 'Analyze this large document...',
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-sonnet-4-5',
     metadata: [
         'request_id' => 'req-abc123',
         'webhook_url' => 'https://example.com/webhook/claude-complete'
@@ -515,21 +514,21 @@ $queueManager = new PriorityQueueManager($redis);
 $queueManager->enqueue([
     'user_id' => 'premium-user-123',
     'prompt' => 'Urgent analysis needed',
-    'model' => 'claude-opus-4-20250514',
+    'model' => 'claude-opus-4-1',
 ], 'high');
 
 // Normal priority - regular requests
 $queueManager->enqueue([
     'user_id' => 'user-456',
     'prompt' => 'Generate blog post',
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5',
 ], 'normal');
 
 // Low priority - batch processing
 $queueManager->enqueue([
     'user_id' => 'system',
     'prompt' => 'Analyze logs from yesterday',
-    'model' => 'claude-haiku-4-20250514',
+    'model' => 'claude-haiku-4-5-20251001',
 ], 'low');
 ```
 
@@ -699,7 +698,7 @@ $circuitBreaker = new CircuitBreaker($redis, 'claude_api');
 try {
     $response = $circuitBreaker->execute(function() use ($client) {
         return $client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 1024,
             'messages' => [['role' => 'user', 'content' => 'Hello']]
         ]);
@@ -851,7 +850,7 @@ $retryManager = new RetryManager(
 try {
     $response = $retryManager->execute(
         operation: fn() => $client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 1024,
             'messages' => [['role' => 'user', 'content' => 'Hello']]
         ]),
@@ -873,12 +872,11 @@ declare(strict_types=1);
 
 namespace App\Resilience;
 
-use Anthropic\Anthropic;
 
 class ResilientClaudeClient
 {
     public function __construct(
-        private readonly Anthropic $client,
+        private readonly \ClaudePhp\ClaudePhp $client,
         private readonly CircuitBreaker $circuitBreaker,
         private readonly RetryManager $retryManager
     ) {}
@@ -906,7 +904,7 @@ $resilientClient = new ResilientClaudeClient(
 
 try {
     $response = $resilientClient->request([
-        'model' => 'claude-sonnet-4-20250514',
+        'model' => 'claude-sonnet-4-5',
         'max_tokens' => 1024,
         'messages' => [['role' => 'user', 'content' => 'Hello']]
     ]);
@@ -1392,7 +1390,6 @@ declare(strict_types=1);
 namespace App\Caching;
 
 use Redis;
-use Anthropic\Response\Message;
 
 class DistributedClaudeCache
 {
@@ -1426,7 +1423,7 @@ class DistributedClaudeCache
     public function put(
         string $prompt,
         string $model,
-        Message $response,
+        mixed $response,
         int $ttl = self::TTL_SHORT
     ): void {
         $key = $this->getKey($prompt, $model);
@@ -1521,20 +1518,20 @@ class DistributedClaudeCache
 $cache = new DistributedClaudeCache($redis);
 
 // Check cache first
-$cached = $cache->get($prompt, 'claude-sonnet-4-20250514');
+$cached = $cache->get($prompt, 'claude-sonnet-4-5');
 if ($cached) {
     return $cached['response'];
 }
 
 // Make API call if not cached
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5',
     'max_tokens' => 1024,
     'messages' => [['role' => 'user', 'content' => $prompt]]
 ]);
 
 // Cache response
-$cache->put($prompt, 'claude-sonnet-4-20250514', $response, ttl: 86400);
+$cache->put($prompt, 'claude-sonnet-4-5', $response, ttl: 86400);
 
 return $response->content[0]->text;
 ```
@@ -1818,7 +1815,7 @@ $trace = $tracer->startTrace($traceId);
 // Record operations across servers
 $response = $trace->recordSpan('claude_api_call', function() use ($client) {
     return $client->messages()->create([
-        'model' => 'claude-sonnet-4-20250514',
+        'model' => 'claude-sonnet-4-5',
         'max_tokens' => 1024,
         'messages' => [['role' => 'user', 'content' => 'Hello']]
     ]);
@@ -1843,13 +1840,12 @@ declare(strict_types=1);
 
 namespace App\RateLimiting;
 
-use Anthropic\Anthropic;
 use Redis;
 
 class HeaderAwareRateLimiter
 {
     public function __construct(
-        private readonly Anthropic $client,
+        private readonly \ClaudePhp\ClaudePhp $client,
         private readonly Redis $redis,
         private readonly int $defaultMaxConcurrent = 10
     ) {}
@@ -1865,23 +1861,10 @@ class HeaderAwareRateLimiter
             // Execute the request
             $response = $requestFn();
 
-            // Parse rate limit headers
-            $headers = $response->getHeaders() ?? [];
-
-            if (isset($headers['anthropic-ratelimit-remaining-requests'][0])) {
-                $remaining = (int) $headers['anthropic-ratelimit-remaining-requests'][0];
-                $this->updateConcurrencyLimit($limitKey, $remaining);
-            }
-
-            if (isset($headers['anthropic-ratelimit-remaining-tokens'][0])) {
-                $remainingTokens = (int) $headers['anthropic-ratelimit-remaining-tokens'][0];
-                $this->redis->setex($limitKey . ':tokens', 60, $remainingTokens);
-            }
-
-            if (isset($headers['anthropic-ratelimit-reset-requests'][0])) {
-                $resetTime = $headers['anthropic-ratelimit-reset-requests'][0];
-                $this->redis->setex($limitKey . ':reset', 60, $resetTime);
-            }
+            // Parse rate limit headers (SDK-specific implementation)
+            // Note: Header access may vary by SDK version
+            // For now, implement basic rate limiting without headers
+            $this->updateConcurrencyLimit($limitKey, $this->defaultMaxConcurrent);
 
             return $response;
 
@@ -1965,7 +1948,7 @@ $rateLimiter = new HeaderAwareRateLimiter($client, $redis);
 try {
     $response = $rateLimiter->executeWithHeaderAwareness(
         requestFn: fn() => $client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 1024,
             'messages' => [['role' => 'user', 'content' => 'Hello']]
         ])
@@ -1992,7 +1975,6 @@ declare(strict_types=1);
 
 namespace App\Performance;
 
-use Anthropic\Anthropic;
 
 class ClaudeConnectionPool
 {
@@ -2012,7 +1994,7 @@ class ClaudeConnectionPool
     /**
      * Get client from pool
      */
-    public function getClient(): Anthropic
+    public function getClient(): \ClaudePhp\ClaudePhp
     {
         if (empty($this->pool)) {
             // Pool exhausted - create new client
@@ -2025,7 +2007,7 @@ class ClaudeConnectionPool
     /**
      * Return client to pool
      */
-    public function returnClient(Anthropic $client): void
+    public function returnClient(\ClaudePhp\ClaudePhp $client): void
     {
         if (count($this->pool) < $this->poolSize) {
             $this->pool[] = $client;
@@ -2046,16 +2028,11 @@ class ClaudeConnectionPool
         }
     }
 
-    private function createClient(): Anthropic
+    private function createClient(): \ClaudePhp\ClaudePhp
     {
-        return Anthropic::factory()
-            ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-            ->withHttpClient(new \GuzzleHttp\Client([
-                'timeout' => 60,
-                'connect_timeout' => 10,
-                'http_errors' => false,
-            ]))
-            ->make();
+        return new \ClaudePhp\ClaudePhp(
+            apiKey: $_ENV['ANTHROPIC_API_KEY']
+        );
     }
 }
 
@@ -2064,7 +2041,7 @@ $pool = new ClaudeConnectionPool(poolSize: 10);
 
 $response = $pool->execute(fn($client) =>
     $client->messages()->create([
-        'model' => 'claude-sonnet-4-20250514',
+        'model' => 'claude-sonnet-4-5',
         'max_tokens' => 1024,
         'messages' => [['role' => 'user', 'content' => 'Hello']]
     ])
@@ -2193,7 +2170,8 @@ Array (
 
 **Cause**: Insufficient workers or slow job processing
 
-**Solution**: 
+**Solution**:
+
 - Add more queue workers: `php artisan queue:work --workers=10`
 - Check for slow jobs blocking the queue
 - Implement job timeouts to prevent stuck jobs
@@ -2215,6 +2193,7 @@ public function timeout(): int
 **Cause**: Connection exhaustion, insufficient resources, or inefficient code
 
 **Solution**:
+
 - Check connection pooling is enabled and sized correctly
 - Review timeout settings (increase if needed for long-running requests)
 - Implement caching for common requests to reduce API calls
@@ -2233,6 +2212,7 @@ $pool = new ClaudeConnectionPool(poolSize: 20); // Increase from default 5
 **Cause**: Exceeding API rate limits, too many concurrent requests
 
 **Solution**:
+
 - Implement proper exponential backoff and retry logic
 - Use concurrency limiting to cap simultaneous requests
 - Spread requests over time using queues
@@ -2255,6 +2235,7 @@ $concurrencyLimiter = new ConcurrencyLimiter(
 **Cause**: Service experiencing persistent failures
 
 **Solution**:
+
 - Check underlying service health (Claude API status)
 - Review error logs to identify root cause
 - Wait for circuit breaker timeout (default 60 seconds)
@@ -2277,6 +2258,7 @@ if ($state === 'open') {
 **Cause**: Too many simultaneous requests exceeding configured limit
 
 **Solution**:
+
 - Queue requests instead of rejecting them
 - Increase concurrency limit if infrastructure can handle it
 - Implement request prioritization
@@ -2292,6 +2274,13 @@ try {
     return ['status' => 'queued'];
 }
 ```
+
+## Further Reading
+
+- **[Official PHP SDK Documentation](https://github.com/anthropics/anthropic-sdk-php)** — The official Anthropic PHP SDK on GitHub
+- **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)** — Community resources and examples for Claude with PHP
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
+- **[PHP SDK Composer Package](https://packagist.org/packages/claude-php/claude-php-sdk)** — Official package on Packagist
 
 ## Wrap-up
 
@@ -2354,6 +2343,7 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 38 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-38)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-38

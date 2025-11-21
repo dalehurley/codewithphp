@@ -71,20 +71,20 @@ By completing this chapter, you will:
 
 ## Architecture Overview
 
-```php
+````php
 <?php
 # filename: src/CodeReview/ReviewSystem.php
 declare(strict_types=1);
 
 namespace App\CodeReview;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\CodeReview\GitHub\GitHubClient;
 
 class ReviewSystem
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private GitHubClient $github,
         private ReviewConfig $config,
         private SecurityScanner $securityScanner,
@@ -125,7 +125,7 @@ class ReviewSystem
         $prompt = $this->buildAnalysisPrompt($diff, $files);
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 8192,
             'temperature' => 0.3,
             'system' => $this->getSystemPrompt(),
@@ -144,14 +144,14 @@ class ReviewSystem
         $prompt .= "Files changed: " . count($files) . "\n\n";
         $prompt .= "Diff:\n```diff\n{$diff}\n```\n\n";
         $prompt .= "Return JSON with analysis including security issues, bugs, code quality concerns, and suggestions.";
-        
+
         return $prompt;
     }
 
     private function generateComments(array $analysis, array $files): array
     {
         $allIssues = [];
-        
+
         // Security scanning
         if ($this->config->enableSecurityScan) {
             foreach ($files as $file) {
@@ -159,7 +159,7 @@ class ReviewSystem
                 if (empty($filePath)) {
                     continue;
                 }
-                
+
                 try {
                     $fileContent = $this->github->getFileContents($filePath);
                     $securityIssues = $this->securityScanner->scanCode($fileContent, $filePath);
@@ -170,7 +170,7 @@ class ReviewSystem
                 }
             }
         }
-        
+
         // Bug detection
         if ($this->config->enableBugDetection) {
             $bugIssues = $this->bugDetector->detectBugs($files);
@@ -178,39 +178,39 @@ class ReviewSystem
                 $allIssues[$filePath] = array_merge($allIssues[$filePath] ?? [], $bugs);
             }
         }
-        
+
         return $this->commentGenerator->generateComments($allIssues, $files);
     }
 
     private function postReview(int $prNumber, array $comments, array $analysis): void
     {
         $summary = $this->commentGenerator->generateSummary($analysis, $comments);
-        
+
         // Filter comments by minimum severity
         $filteredComments = array_filter($comments, function($comment) {
             $priority = ['CRITICAL' => 0, 'HIGH' => 1, 'MEDIUM' => 2, 'LOW' => 3];
             $minPriority = $priority[$this->config->minSeverity] ?? 3;
             return ($priority[$comment['severity']] ?? 99) <= $minPriority;
         });
-        
+
         // Limit number of comments
         if (count($filteredComments) > $this->config->maxComments) {
             $filteredComments = array_slice($filteredComments, 0, $this->config->maxComments);
         }
-        
+
         // Determine review decision
         $decision = new \App\CodeReview\ReviewDecision();
         $event = $decision->decide($filteredComments, $this->config);
-        
+
         // Post review with decision
         $this->github->postReview($prNumber, $filteredComments, $summary, $event);
-        
+
         // Create status check if enabled
         if ($this->config->enableStatusChecks) {
             $sha = $this->github->getPrHeadSha($prNumber);
             $state = ($event === 'APPROVE') ? 'success' : (($event === 'REQUEST_CHANGES') ? 'failure' : 'pending');
             $description = $decision->getEventMessage($event, $filteredComments);
-            
+
             $this->github->createStatusCheck($sha, $state, $description);
         }
     }
@@ -242,7 +242,7 @@ Always provide code examples for suggested improvements.
 SYSTEM;
     }
 }
-```
+````
 
 ## PR Analysis Engine
 
@@ -381,14 +381,13 @@ class DiffAnalyzer
 
 ## Security Vulnerability Detection
 
-```php
+````php
 <?php
 # filename: src/CodeReview/SecurityScanner.php
 declare(strict_types=1);
 
 namespace App\CodeReview;
 
-use Anthropic\Anthropic;
 
 class SecurityScanner
 {
@@ -412,7 +411,7 @@ class SecurityScanner
     ];
 
     public function __construct(
-        private Anthropic $claude
+        private \ClaudePhp\ClaudePhp $claude
     ) {}
 
     /**
@@ -465,9 +464,10 @@ File: {$filename}
 Code:
 ```php
 {$code}
-```
+````
 
 Look for:
+
 1. SQL injection vulnerabilities
 2. XSS (Cross-Site Scripting)
 3. CSRF (Cross-Site Request Forgery)
@@ -481,20 +481,20 @@ Look for:
 
 For each issue found, return:
 {
-  "type": "security",
-  "severity": "CRITICAL|HIGH|MEDIUM|LOW",
-  "category": "vulnerability type",
-  "line": line_number,
-  "message": "description of the issue",
-  "suggestion": "how to fix it",
-  "code_example": "fixed code example"
+"type": "security",
+"severity": "CRITICAL|HIGH|MEDIUM|LOW",
+"category": "vulnerability type",
+"line": line_number,
+"message": "description of the issue",
+"suggestion": "how to fix it",
+"code_example": "fixed code example"
 }
 
 Return ONLY valid JSON array, no explanation.
 PROMPT;
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 4096,
             'temperature' => 0.2,
             'messages' => [[
@@ -514,8 +514,10 @@ PROMPT;
 
         return json_decode($jsonText, true) ?? [];
     }
+
 }
-```
+
+````
 
 ## Bug Detection and Code Quality Analysis
 
@@ -526,12 +528,11 @@ declare(strict_types=1);
 
 namespace App\CodeReview;
 
-use Anthropic\Anthropic;
 
 class BugDetector
 {
     public function __construct(
-        private Anthropic $claude
+        private \ClaudePhp\ClaudePhp $claude
     ) {}
 
     /**
@@ -581,9 +582,10 @@ File: {$filename}
 
 ```php
 {$code}
-```
+````
 
 Check for:
+
 1. Logic errors and edge cases
 2. Null pointer exceptions
 3. Type errors
@@ -601,23 +603,23 @@ Check for:
 
 Return JSON array with format:
 [
-  {
-    "severity": "CRITICAL|HIGH|MEDIUM|LOW",
-    "line": line_number,
-    "type": "bug|performance|quality",
-    "category": "specific issue type",
-    "message": "clear description",
-    "suggestion": "how to fix",
-    "code_before": "problematic code",
-    "code_after": "suggested fix"
-  }
+{
+"severity": "CRITICAL|HIGH|MEDIUM|LOW",
+"line": line_number,
+"type": "bug|performance|quality",
+"category": "specific issue type",
+"message": "clear description",
+"suggestion": "how to fix",
+"code_before": "problematic code",
+"code_after": "suggested fix"
+}
 ]
 
 Return ONLY valid JSON, no explanation.
 PROMPT;
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 6144,
             'temperature' => 0.2,
             'messages' => [[
@@ -637,8 +639,10 @@ PROMPT;
 
         return json_decode($jsonText, true) ?? [];
     }
+
 }
-```
+
+````
 
 ## GitHub/GitLab Integration
 
@@ -736,9 +740,9 @@ class WebhookHandler
         ];
     }
 }
-```
+````
 
-### GitLab Client
+### GitLab ClaudePhp
 
 ```php
 <?php
@@ -844,7 +848,7 @@ class GitLabClient
 }
 ```
 
-### GitHub Client
+### GitHub ClaudePhp
 
 ```php
 <?php
@@ -1034,19 +1038,18 @@ class ReviewDecision
 
 ## Review Comment Generator
 
-```php
+````php
 <?php
 # filename: src/CodeReview/CommentGenerator.php
 declare(strict_types=1);
 
 namespace App\CodeReview;
 
-use Anthropic\Anthropic;
 
 class CommentGenerator
 {
     public function __construct(
-        private Anthropic $claude,
+        private \ClaudePhp\ClaudePhp $claude,
         private ?string $template = null
     ) {}
 
@@ -1184,7 +1187,7 @@ class CommentGenerator
         );
     }
 }
-```
+````
 
 ## Caching for Code Reviews
 
@@ -1319,17 +1322,17 @@ class CostTracker
     /**
      * Track API costs for a review
      */
-    public function trackReview(int $prNumber, int $inputTokens, int $outputTokens, string $model = 'claude-sonnet-4-20250514'): float
+    public function trackReview(int $prNumber, int $inputTokens, int $outputTokens, string $model = 'claude-sonnet-4-5'): float
     {
         // Pricing per 1M tokens (as of 2025)
         $pricing = [
-            'claude-sonnet-4-20250514' => ['input' => 3.00, 'output' => 15.00],
-            'claude-haiku-4-20250514' => ['input' => 0.25, 'output' => 1.25],
-            'claude-opus-4-20250514' => ['input' => 15.00, 'output' => 75.00],
+            'claude-sonnet-4-5' => ['input' => 3.00, 'output' => 15.00],
+            'claude-haiku-4-5-20251001' => ['input' => 0.25, 'output' => 1.25],
+            'claude-opus-4-1' => ['input' => 15.00, 'output' => 75.00],
         ];
 
-        $modelPricing = $pricing[$model] ?? $pricing['claude-sonnet-4-20250514'];
-        
+        $modelPricing = $pricing[$model] ?? $pricing['claude-sonnet-4-5'];
+
         $inputCost = ($inputTokens / 1_000_000) * $modelPricing['input'];
         $outputCost = ($outputTokens / 1_000_000) * $modelPricing['output'];
         $totalCost = $inputCost + $outputCost;
@@ -1371,7 +1374,7 @@ class CostTracker
     {
         $today = date('Y-m-d');
         $todayCosts = array_filter($this->costs, fn($cost) => date('Y-m-d', $cost['timestamp']) === $today);
-        
+
         return [
             'date' => $today,
             'reviews' => count($todayCosts),
@@ -1399,10 +1402,10 @@ class IncrementalReviewer
     public function reviewChanges(array $diff, array $files): array
     {
         $issues = [];
-        
+
         foreach ($files as $file) {
             $changedLines = $this->extractChangedLines($diff, $file['path']);
-            
+
             if (empty($changedLines)) {
                 continue;
             }
@@ -1410,7 +1413,7 @@ class IncrementalReviewer
             // Only review changed lines with context
             $context = $this->getContextLines($file['path'], $changedLines);
             $reviewCode = $this->buildReviewableCode($context, $changedLines);
-            
+
             // Review only the changed code
             $fileIssues = $this->reviewCode($reviewCode, $file['path']);
             $issues[$file['path']] = $fileIssues;
@@ -1423,24 +1426,24 @@ class IncrementalReviewer
     {
         $lines = [];
         $inFile = false;
-        
+
         foreach (explode("\n", $diff) as $line) {
             if (str_contains($line, $filePath)) {
                 $inFile = true;
                 continue;
             }
-            
+
             if ($inFile && str_starts_with($line, '@@')) {
                 preg_match('/\+(\d+)/', $line, $matches);
                 $startLine = (int)($matches[1] ?? 0);
                 continue;
             }
-            
+
             if ($inFile && str_starts_with($line, '+') && !str_starts_with($line, '+++')) {
                 $lines[] = ['line' => $startLine++, 'content' => substr($line, 1)];
             }
         }
-        
+
         return $lines;
     }
 
@@ -1449,17 +1452,17 @@ class IncrementalReviewer
         // Get 3 lines before and after each changed line
         $context = [];
         $lineNumbers = array_column($changedLines, 'line');
-        
+
         if (empty($lineNumbers)) {
             return [];
         }
 
         $minLine = max(1, min($lineNumbers) - 3);
         $maxLine = max($lineNumbers) + 3;
-        
+
         $fileContent = file_get_contents($filePath);
         $allLines = explode("\n", $fileContent);
-        
+
         return array_slice($allLines, $minLine - 1, $maxLine - $minLine + 1);
     }
 
@@ -1530,7 +1533,7 @@ class ReviewRetry
     {
         // Retry on rate limits, timeouts, and server errors
         $message = strtolower($e->getMessage());
-        
+
         return str_contains($message, 'rate limit') ||
                str_contains($message, 'timeout') ||
                str_contains($message, '503') ||
@@ -1575,12 +1578,12 @@ class ReviewAnalytics
     public function getCommonIssues(int $limit = 10): array
     {
         $issueCounts = [];
-        
+
         foreach ($this->history as $review) {
             // Aggregate issue types
             // Implementation depends on storing issue details
         }
-        
+
         arsort($issueCounts);
         return array_slice($issueCounts, 0, $limit, true);
     }
@@ -1593,7 +1596,7 @@ class ReviewAnalytics
         $totalReviews = count($this->history);
         $totalIssues = array_sum(array_column($this->history, 'issues_found'));
         $totalCost = array_sum(array_column($this->history, 'cost'));
-        
+
         return [
             'total_reviews' => $totalReviews,
             'average_issues_per_review' => $totalReviews > 0 ? $totalIssues / $totalReviews : 0,
@@ -1664,7 +1667,7 @@ class CustomRules
     public static function fromConfig(array $config): self
     {
         $rules = new self();
-        
+
         foreach ($config as $name => $rule) {
             $rules->addRule(
                 $name,
@@ -1673,7 +1676,7 @@ class CustomRules
                 $rule['message']
             );
         }
-        
+
         return $rules;
     }
 }
@@ -1708,7 +1711,7 @@ class ProcessCodeReview implements ShouldQueue
     {
         try {
             $result = $reviewSystem->reviewPullRequest($this->prNumber);
-            
+
             // Store result in database, send notification, etc.
             \Log::info("Review completed for PR #{$this->prNumber}", [
                 'issues_found' => count($result->comments),
@@ -1741,7 +1744,6 @@ declare(strict_types=1);
 
 require __DIR__ . '/vendor/autoload.php';
 
-use Anthropic\Anthropic;
 use App\CodeReview\ReviewSystem;
 use App\CodeReview\GitHub\GitHubClient;
 use App\CodeReview\GitLab\GitLabClient;
@@ -1765,9 +1767,11 @@ $cache = new \Symfony\Component\Cache\Simple\RedisCache(
 );
 
 // Initialize Claude
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+use ClaudePhp\ClaudePhp;
+
+$claude = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 // Initialize GitHub or GitLab client
 $provider = getenv('GIT_PROVIDER') ?: 'github';
@@ -1966,7 +1970,6 @@ namespace Tests\CodeReview;
 
 use PHPUnit\Framework\TestCase;
 use App\CodeReview\SecurityScanner;
-use Anthropic\Anthropic;
 use Mockery;
 
 class SecurityScannerTest extends TestCase
@@ -1976,9 +1979,9 @@ class SecurityScannerTest extends TestCase
         Mockery::close();
     }
 
-    private function getMockClaude(): Anthropic
+    private function getMockClaude(): \ClaudePhp\ClaudePhp
     {
-        $mock = Mockery::mock(Anthropic::class);
+        $mock = Mockery::mock(\ClaudePhp\ClaudePhp::class);
         $mockResponse = (object)[
             'content' => [(object)['text' => '[]']]
         ];
@@ -2017,6 +2020,13 @@ PHP;
     }
 }
 ```
+
+## Further Reading
+
+- **[Official PHP SDK Documentation](https://github.com/anthropics/anthropic-sdk-php)** — The official Anthropic PHP SDK on GitHub
+- **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)** — Community resources and examples for Claude with PHP
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
+- **[PHP SDK Composer Package](https://packagist.org/packages/claude-php/claude-php-sdk)** — Official package on Packagist
 
 ## Wrap-up
 
@@ -2097,6 +2107,7 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 26 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-26)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-26

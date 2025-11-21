@@ -66,7 +66,6 @@ declare(strict_types=1);
 
 namespace App\Moderation;
 
-use Anthropic\Anthropic;
 
 class ModerationSystem
 {
@@ -97,12 +96,12 @@ class ModerationSystem
 
         // Create result
         $result = new ModerationResult(
-            approved: $action->approved,
-            violations: $violations,
-            severity: $action->severity,
-            action: $action->type,
-            explanation: $action->explanation,
-            confidence: $analysis->confidence
+            $action->approved,
+            $violations,
+            $action->severity,
+            $action->type,
+            $action->explanation,
+            $analysis->confidence
         );
 
         // Queue for human review if needed
@@ -125,9 +124,9 @@ class ModerationSystem
 
         foreach ($items as $item) {
             $results[$item['id']] = $this->moderateContent(
-                content: $item['content'],
-                contentType: $item['type'] ?? 'text',
-                context: $item['context'] ?? []
+                $item['content'],
+                $item['type'] ?? 'text',
+                $item['context'] ?? []
             );
         }
 
@@ -214,7 +213,6 @@ declare(strict_types=1);
 
 namespace App\Moderation;
 
-use Anthropic\Anthropic;
 
 class ContentAnalyzer
 {
@@ -230,7 +228,7 @@ class ContentAnalyzer
         $prompt = $this->buildAnalysisPrompt($content, $contentType);
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 4096,
             'temperature' => 0.2,
             'system' => $this->getAnalysisSystemPrompt(),
@@ -380,7 +378,6 @@ declare(strict_types=1);
 
 namespace App\Moderation;
 
-use Anthropic\Anthropic;
 
 class ToxicityDetector
 {
@@ -487,7 +484,7 @@ Return ONLY valid JSON.
 PROMPT;
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 1024,
             'temperature' => 0.2,
             'messages' => [[
@@ -515,7 +512,6 @@ declare(strict_types=1);
 
 namespace App\Moderation;
 
-use Anthropic\Anthropic;
 
 class PIIDetector
 {
@@ -625,9 +621,10 @@ Return ONLY valid JSON array.
 PROMPT;
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-haiku-4-20250514',
+            'model' => 'claude-haiku-4-5-20251001',
             'max_tokens' => 1024,
             'temperature' => 0.1,
+            'system' => 'You are a PII detection expert. Identify all personally identifiable information accurately.',
             'messages' => [[
                 'role' => 'user',
                 'content' => $prompt
@@ -688,7 +685,6 @@ declare(strict_types=1);
 
 namespace App\Moderation;
 
-use Anthropic\Anthropic;
 
 class SpamDetector
 {
@@ -752,9 +748,10 @@ Return ONLY valid JSON.
 PROMPT;
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-haiku-4-20250514',
+            'model' => 'claude-haiku-4-5-20251001',
             'max_tokens' => 512,
             'temperature' => 0.2,
+            'system' => 'You are a spam detection expert. Analyze content for spam characteristics and behavioral patterns.',
             'messages' => [[
                 'role' => 'user',
                 'content' => $prompt
@@ -1061,14 +1058,14 @@ class PolicyEngine
 
             if ($policy && $this->violatesPolicy($violation, $policy, $context)) {
                 $violations[] = new PolicyViolation(
-                    policy: $policy['name'],
-                    category: $violation['category'],
-                    type: $violation['type'],
-                    severity: $violation['severity'],
-                    severityScore: $this->calculateSeverityScore($violation, $policy),
-                    reason: $violation['reason'],
-                    evidence: $violation['evidence'] ?? null,
-                    action: $policy['action']
+                    $policy['name'],
+                    $violation['category'],
+                    $violation['type'],
+                    $violation['severity'],
+                    $this->calculateSeverityScore($violation, $policy),
+                    $violation['reason'],
+                    $violation['evidence'] ?? null,
+                    $policy['action']
                 );
             }
         }
@@ -1209,7 +1206,7 @@ class AuditLogger
     ): int {
         $stmt = $this->db->prepare(
             "INSERT INTO moderation_audit_log
-             (content_hash, content_preview, approved, action, severity, violations, 
+             (content_hash, content_preview, approved, action, severity, violations,
               explanation, confidence, context, user_id, ip_address, created_at)
              VALUES (:hash, :preview, :approved, :action, :severity, :violations,
                      :explanation, :confidence, :context, :user_id, :ip, NOW())"
@@ -1468,21 +1465,21 @@ class ModeratorWorkflow
 
             // Log in audit trail
             $this->auditLogger->log(
-                content: $this->getContentPreview($queueId),
-                result: new ModerationResult(
-                    approved: $decision === 'approve',
-                    violations: [],
-                    severity: 'none',
-                    action: $decision,
-                    explanation: "Moderator decision: {$notes}",
-                    confidence: 1.0
+                $this->getContentPreview($queueId),
+                new ModerationResult(
+                    $decision === 'approve',
+                    [],
+                    'none',
+                    $decision,
+                    "Moderator decision: {$notes}",
+                    1.0
                 ),
-                action: new ModerationAction(
-                    approved: $decision === 'approve',
-                    type: $decision,
-                    severity: 'none',
-                    requiresHumanReview: false,
-                    explanation: "Moderated by {$moderatorId}"
+                new ModerationAction(
+                    $decision === 'approve',
+                    $decision,
+                    'none',
+                    false,
+                    "Moderated by {$moderatorId}"
                 ),
                 context: ['moderator_reasoning' => $reasoning]
             );
@@ -1557,7 +1554,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Moderation\ModerationSystem;
 use App\Moderation\ContentAnalyzer;
 use App\Moderation\PolicyEngine;
@@ -1571,9 +1568,9 @@ $db = new PDO(getenv('DATABASE_DSN'));
 $redis = new Redis();
 $redis->connect('localhost', 6379);
 
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$claude = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $analyzer = new ContentAnalyzer($claude);
 $policyEngine = new PolicyEngine();
@@ -1581,11 +1578,11 @@ $queue = new ModerationQueue($db, $redis);
 $auditLogger = new AuditLogger($db);
 
 $moderationSystem = new ModerationSystem(
-    claude: $claude,
-    analyzer: $analyzer,
-    policyEngine: $policyEngine,
-    queue: $queue,
-    auditLogger: $auditLogger
+    $claude,
+    $analyzer,
+    $policyEngine,
+    $queue,
+    $auditLogger
 );
 
 // Handle request
@@ -1599,7 +1596,7 @@ if (!isset($input['content'])) {
 
 try {
     $result = $moderationSystem->moderateContent(
-        content: $input['content'],
+        'content' => $input['content'],
         contentType: $input['type'] ?? 'text',
         context: $input['context'] ?? []
     );
@@ -1921,6 +1918,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
+use ClaudePhp\ClaudePhp;
 use App\Moderation\ModerationSystem;
 use App\Moderation\ContentAnalyzer;
 use App\Moderation\PolicyEngine;
@@ -1929,16 +1927,15 @@ use App\Moderation\AuditLogger;
 use App\Moderation\ToxicityDetector;
 use App\Moderation\PIIDetector;
 use App\Moderation\SpamDetector;
-use Anthropic\Anthropic;
 
 // Initialize components
 $db = new PDO(getenv('DATABASE_DSN'));
 $redis = new Redis();
 $redis->connect('localhost', 6379);
 
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$claude = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $analyzer = new ContentAnalyzer($claude);
 $policyEngine = new PolicyEngine();
@@ -1946,11 +1943,11 @@ $queue = new ModerationQueue($db, $redis);
 $auditLogger = new AuditLogger($db);
 
 $moderationSystem = new ModerationSystem(
-    claude: $claude,
-    analyzer: $analyzer,
-    policyEngine: $policyEngine,
-    queue: $queue,
-    auditLogger: $auditLogger
+    $claude,
+    $analyzer,
+    $policyEngine,
+    $queue,
+    $auditLogger
 );
 
 // Example 1: Moderate text content
@@ -1958,7 +1955,7 @@ echo "Example 1: Moderate Text Content\n";
 echo str_repeat('=', 50) . "\n";
 
 $result = $moderationSystem->moderateContent(
-    content: "This is a great product! I love it.",
+    'content' => "This is a great product! I love it.",
     contentType: 'text',
     context: ['user_id' => 'user123', 'ip_address' => '192.168.1.1']
 );
@@ -2009,7 +2006,7 @@ echo str_repeat('=', 50) . "\n";
 
 $spamDetector = new SpamDetector($claude, $db);
 $spamReport = $spamDetector->detect(
-    content: "Click here now! Amazing deals! Buy now!",
+    'content' => "Click here now! Amazing deals! Buy now!",
     userId: 'user456',
     context: []
 );
@@ -2059,27 +2056,55 @@ declare(strict_types=1);
 
 namespace App\Moderation;
 
-readonly class ModerationResult
+// Note: These classes would typically be in separate files in a real application
+
+class ModerationResult
 {
+    public readonly bool $approved;
+    public readonly array $violations;
+    public readonly string $severity;
+    public readonly string $action;
+    public readonly string $explanation;
+    public readonly float $confidence;
+
     public function __construct(
-        public bool $approved,
-        public array $violations,
-        public string $severity,
-        public string $action,
-        public string $explanation,
-        public float $confidence
-    ) {}
+        bool $approved,
+        array $violations,
+        string $severity,
+        string $action,
+        string $explanation,
+        float $confidence
+    ) {
+        $this->approved = $approved;
+        $this->violations = $violations;
+        $this->severity = $severity;
+        $this->action = $action;
+        $this->explanation = $explanation;
+        $this->confidence = $confidence;
+    }
 }
 
-readonly class ModerationAction
+class ModerationAction
 {
+    public readonly bool $approved;
+    public readonly string $type;
+    public readonly string $severity;
+    public readonly bool $requiresHumanReview;
+    public readonly string $explanation;
+
     public function __construct(
-        public bool $approved,
-        public string $type,
-        public string $severity,
-        public bool $requiresHumanReview,
-        public string $explanation
-    ) {}
+        bool $approved,
+        string $type,
+        string $severity,
+        bool $requiresHumanReview,
+        string $explanation
+    ) {
+        $this->approved = $approved;
+        $this->type = $type;
+        $this->severity = $severity;
+        $this->requiresHumanReview = $requiresHumanReview;
+        $this->explanation = $explanation;
+    }
 }
 
 class ContentAnalysis
@@ -2111,53 +2136,113 @@ class ContentAnalysis
         return !empty($confidences) ? array_sum($confidences) / count($confidences) : 0.5;
     }
 }
-
-readonly class PolicyViolation
-{
-    public function __construct(
-        public string $policy,
-        public string $category,
-        public string $type,
-        public float $severity,
-        public float $severityScore,
-        public string $reason,
-        public ?string $evidence,
-        public string $action
-    ) {}
 }
 
-readonly class ToxicityReport
+class PolicyViolation
 {
+    public readonly string $policy;
+    public readonly string $category;
+    public readonly string $type;
+    public readonly float $severity;
+    public readonly float $severityScore;
+    public readonly string $reason;
+    public readonly ?string $evidence;
+    public readonly string $action;
+
     public function __construct(
-        public bool $isToxic,
-        public float $toxicityScore,
-        public array $categories,
-        public array $targetedGroups,
-        public array $contextualFactors,
-        public string $recommendation
-    ) {}
+        string $policy,
+        string $category,
+        string $type,
+        float $severity,
+        float $severityScore,
+        string $reason,
+        ?string $evidence,
+        string $action
+    ) {
+        $this->policy = $policy;
+        $this->category = $category;
+        $this->type = $type;
+        $this->severity = $severity;
+        $this->severityScore = $severityScore;
+        $this->reason = $reason;
+        $this->evidence = $evidence;
+        $this->action = $action;
+    }
 }
 
-readonly class PIIReport
+class ToxicityReport
 {
+    public readonly bool $isToxic;
+    public readonly float $toxicityScore;
+    public readonly array $categories;
+    public readonly array $targetedGroups;
+    public readonly array $contextualFactors;
+    public readonly string $recommendation;
+
     public function __construct(
-        public bool $hasPII,
-        public array $items,
-        public string $riskLevel
-    ) {}
+        bool $isToxic,
+        float $toxicityScore,
+        array $categories,
+        array $targetedGroups,
+        array $contextualFactors,
+        string $recommendation
+    ) {
+        $this->isToxic = $isToxic;
+        $this->toxicityScore = $toxicityScore;
+        $this->categories = $categories;
+        $this->targetedGroups = $targetedGroups;
+        $this->contextualFactors = $contextualFactors;
+        $this->recommendation = $recommendation;
+    }
 }
 
-readonly class SpamReport
+class PIIReport
 {
+    public readonly bool $hasPII;
+    public readonly array $items;
+    public readonly string $riskLevel;
+
     public function __construct(
-        public bool $isSpam,
-        public float $spamScore,
-        public array $indicators,
-        public string $type,
-        public string $recommendation
-    ) {}
+        bool $hasPII,
+        array $items,
+        string $riskLevel
+    ) {
+        $this->hasPII = $hasPII;
+        $this->items = $items;
+        $this->riskLevel = $riskLevel;
+    }
+}
+
+class SpamReport
+{
+    public readonly bool $isSpam;
+    public readonly float $spamScore;
+    public readonly array $indicators;
+    public readonly string $type;
+    public readonly string $recommendation;
+
+    public function __construct(
+        bool $isSpam,
+        float $spamScore,
+        array $indicators,
+        string $type,
+        string $recommendation
+    ) {
+        $this->isSpam = $isSpam;
+        $this->spamScore = $spamScore;
+        $this->indicators = $indicators;
+        $this->type = $type;
+        $this->recommendation = $recommendation;
+    }
 }
 ```
+
+## Further Reading
+
+- **[Official PHP SDK Documentation](https://github.com/anthropics/anthropic-sdk-php)** — The official Anthropic PHP SDK on GitHub
+- **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)** — Community resources and examples for Claude with PHP
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
+- **[PHP SDK Composer Package](https://packagist.org/packages/claude-php/claude-php-sdk)** — Official package on Packagist
 
 ## Wrap-up
 
@@ -2272,7 +2357,7 @@ Return JSON array with ALL matches found. Be thorough.
 PROMPT;
 
     $response = $this->claude->messages()->create([
-        'model' => 'claude-sonnet-4-20250514', // Use Sonnet for better detection
+        'model' => 'claude-sonnet-4-5', // Use Sonnet for better detection
         'max_tokens' => 2048, // Increase for more matches
         'temperature' => 0.1, // Lower for consistency
         'messages' => [[
@@ -2305,13 +2390,13 @@ public function getNext(string $moderatorId): ?array
 
         // Get highest priority item
         $items = $this->redis->zrevrange('moderation:queue', 0, 0);
-        
+
         if (empty($items)) {
             return null;
         }
 
         $queueId = (int)$items[0];
-        
+
         // Verify item exists in database
         $item = $this->getItem($queueId);
         if (!$item) {
@@ -2430,6 +2515,7 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 29 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-29)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-29

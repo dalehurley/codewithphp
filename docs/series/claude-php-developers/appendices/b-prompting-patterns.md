@@ -68,8 +68,14 @@ PROMPT;
 
 ```php
 # filename: use-code-generation-prompt.php
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 2048,
     'temperature' => 0.3, // Lower for more consistent code
     'messages' => [
@@ -82,6 +88,12 @@ $response = $client->messages()->create([
 
 ```php
 # filename: generate-api-endpoint-prompt.php
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 $prompt = <<<PROMPT
 Generate a Laravel API endpoint with the following specifications:
 
@@ -108,12 +120,27 @@ Requirements:
 
 Provide the FormRequest, Controller method, and API Resource class.
 PROMPT;
+
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
+    'max_tokens' => 2048,
+    'temperature' => 0.3,
+    'messages' => [
+        ['role' => 'user', 'content' => $prompt]
+    ]
+]);
 ```
 
 ### Generate Database Migration
 
 ```php
 # filename: generate-migration-prompt.php
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 $prompt = <<<PROMPT
 Create a Laravel migration for the following database schema:
 
@@ -137,6 +164,15 @@ Additional requirements:
 
 Return the complete migration file.
 PROMPT;
+
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
+    'max_tokens' => 1024,
+    'temperature' => 0.3,
+    'messages' => [
+        ['role' => 'user', 'content' => $prompt]
+    ]
+]);
 ```
 
 ---
@@ -147,7 +183,13 @@ PROMPT;
 
 ```php
 # filename: code-review-prompt.php
+use ClaudePhp\ClaudePhp;
+
 $code = file_get_contents('path/to/code.php');
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
 
 $prompt = <<<PROMPT
 Review the following PHP code and provide detailed feedback:
@@ -190,12 +232,27 @@ For each issue found:
 
 Format as a structured report.
 PROMPT;
+
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
+    'max_tokens' => 4096,
+    'temperature' => 0.2,
+    'messages' => [
+        ['role' => 'user', 'content' => $prompt]
+    ]
+]);
 ```
 
 ### Security Audit
 
 ````php
 # filename: security-audit-prompt.php
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 $prompt = <<<PROMPT
 Perform a security audit on this PHP code. Focus exclusively on security vulnerabilities:
 
@@ -227,6 +284,15 @@ For each vulnerability:
 Return findings in order of severity.
 PROMPT;
 
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
+    'max_tokens' => 4096,
+    'temperature' => 0.1,
+    'messages' => [
+        ['role' => 'user', 'content' => $prompt]
+    ]
+]);
+
 ````
 
 ---
@@ -237,12 +303,18 @@ PROMPT;
 
 ```php
 # filename: generate-phpdoc-prompt.php
+use ClaudePhp\ClaudePhp;
+
 $code = <<<'PHP'
 public function processPayment($amount, $currency, $customerId, array $options = [])
 {
     // Implementation here
 }
 PHP;
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
 
 $prompt = <<<PROMPT
 Generate comprehensive PHPDoc documentation for this method:
@@ -259,12 +331,27 @@ Include:
 
 Follow PSR-5 PHPDoc standard.
 PROMPT;
+
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
+    'max_tokens' => 1024,
+    'temperature' => 0.3,
+    'messages' => [
+        ['role' => 'user', 'content' => $prompt]
+    ]
+]);
 ````
 
 ### Generate README
 
 ```php
 # filename: generate-readme-prompt.php
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 $prompt = <<<PROMPT
 Create a comprehensive README.md for a Laravel package with these details:
 
@@ -296,6 +383,15 @@ Include these sections:
 
 Use clear formatting, code examples in PHP, and professional tone.
 PROMPT;
+
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
+    'max_tokens' => 2048,
+    'temperature' => 0.4,
+    'messages' => [
+        ['role' => 'user', 'content' => $prompt]
+    ]
+]);
 ```
 
 ### API Documentation
@@ -348,7 +444,13 @@ PROMPT;
 
 ```php
 # filename: extract-structured-data-prompt.php
+use ClaudePhp\ClaudePhp;
+
 $text = "John Smith ordered 3 MacBook Pros for $6,000 on March 15, 2024...";
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
 
 $prompt = <<<PROMPT
 Extract structured data from this text and return as JSON:
@@ -377,12 +479,27 @@ Example output format:
     "order_date": "2024-03-15"
 }
 PROMPT;
+
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
+    'max_tokens' => 1024,
+    'temperature' => 0.1,
+    'messages' => [
+        ['role' => 'user', 'content' => $prompt]
+    ]
+]);
 ````
 
 ### Parse Email Content
 
 ```php
 # filename: parse-email-prompt.php
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 $prompt = <<<PROMPT
 Parse this email and extract key information as JSON:
 
@@ -411,12 +528,27 @@ Extract:
 
 Return ONLY the JSON, no explanation.
 PROMPT;
+
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
+    'max_tokens' => 1024,
+    'temperature' => 0.1,
+    'messages' => [
+        ['role' => 'user', 'content' => $prompt]
+    ]
+]);
 ```
 
 ### Extract Invoice Data
 
 ```php
 # filename: extract-invoice-prompt.php
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 $prompt = <<<PROMPT
 Extract all relevant data from this invoice text and structure it as JSON:
 
@@ -456,6 +588,15 @@ Required fields:
 Validate that line_items sum to subtotal.
 Return ONLY valid JSON.
 PROMPT;
+
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
+    'max_tokens' => 1024,
+    'temperature' => 0.1,
+    'messages' => [
+        ['role' => 'user', 'content' => $prompt]
+    ]
+]);
 ```
 
 ---
@@ -466,6 +607,12 @@ PROMPT;
 
 ```php
 # filename: generate-product-description-prompt.php
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 $prompt = <<<PROMPT
 Generate a compelling product description for an e-commerce website:
 
@@ -488,12 +635,27 @@ Include:
 
 Focus on benefits over features. Use persuasive language.
 PROMPT;
+
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
+    'max_tokens' => 1024,
+    'temperature' => 0.7,
+    'messages' => [
+        ['role' => 'user', 'content' => $prompt]
+    ]
+]);
 ```
 
 ### Blog Post Outline
 
 ```php
 # filename: generate-blog-outline-prompt.php
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 $prompt = <<<PROMPT
 Create a detailed blog post outline on this topic:
 
@@ -516,12 +678,27 @@ Generate an outline with:
 
 Make it SEO-optimized and engaging.
 PROMPT;
+
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
+    'max_tokens' => 1024,
+    'temperature' => 0.6,
+    'messages' => [
+        ['role' => 'user', 'content' => $prompt]
+    ]
+]);
 ```
 
 ### Email Template
 
 ```php
 # filename: generate-email-template-prompt.php
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 $prompt = <<<PROMPT
 Write a professional email template for:
 
@@ -540,6 +717,15 @@ Include:
 Format as HTML email template with inline CSS.
 Keep it mobile-responsive.
 PROMPT;
+
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
+    'max_tokens' => 2048,
+    'temperature' => 0.5,
+    'messages' => [
+        ['role' => 'user', 'content' => $prompt]
+    ]
+]);
 ```
 
 ---
@@ -550,6 +736,12 @@ PROMPT;
 
 ```php
 # filename: sentiment-analysis-prompt.php
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 $prompt = <<<PROMPT
 Analyze the sentiment of this customer review:
 
@@ -573,12 +765,27 @@ Provide analysis as JSON:
 
 Return ONLY the JSON.
 PROMPT;
+
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
+    'max_tokens' => 1024,
+    'temperature' => 0.1,
+    'messages' => [
+        ['role' => 'user', 'content' => $prompt]
+    ]
+]);
 ```
 
 ### Content Classification
 
 ```php
 # filename: content-classification-prompt.php
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 $prompt = <<<PROMPT
 Classify this user-generated content:
 
@@ -601,12 +808,27 @@ Classify as JSON:
 
 Be conservative with toxicity flagging.
 PROMPT;
+
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
+    'max_tokens' => 1024,
+    'temperature' => 0.1,
+    'messages' => [
+        ['role' => 'user', 'content' => $prompt]
+    ]
+]);
 ```
 
 ### Topic Extraction
 
 ```php
 # filename: topic-extraction-prompt.php
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 $prompt = <<<PROMPT
 Extract and categorize topics from this article:
 
@@ -630,6 +852,15 @@ Return JSON:
     "recommended_tags": ["seo", "friendly", "tags"]
 }
 PROMPT;
+
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
+    'max_tokens' => 1024,
+    'temperature' => 0.2,
+    'messages' => [
+        ['role' => 'user', 'content' => $prompt]
+    ]
+]);
 ```
 
 ---
@@ -640,8 +871,14 @@ PROMPT;
 
 ```php
 # filename: debug-error-prompt.php
+use ClaudePhp\ClaudePhp;
+
 $error = "Call to undefined method App\Models\User::getFullname()";
 $code = file_get_contents('User.php');
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
 
 $prompt = <<<PROMPT
 Debug this PHP error:
@@ -665,18 +902,33 @@ Provide:
 
 Be specific and actionable.
 PROMPT;
+
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
+    'max_tokens' => 2048,
+    'temperature' => 0.2,
+    'messages' => [
+        ['role' => 'user', 'content' => $prompt]
+    ]
+]);
 ```
 
 ### Performance Optimization
 
 ````php
 # filename: performance-optimization-prompt.php
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 $prompt = <<<PROMPT
 Analyze this code for performance issues and suggest optimizations:
 
 ```php
 {CODE}
-````
+```
 
 Current performance metrics:
 
@@ -702,6 +954,15 @@ For each issue:
 Prioritize by impact.
 PROMPT;
 
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
+    'max_tokens' => 2048,
+    'temperature' => 0.2,
+    'messages' => [
+        ['role' => 'user', 'content' => $prompt]
+    ]
+]);
+
 ````
 
 ---
@@ -710,15 +971,21 @@ PROMPT;
 
 ### Refactor to Design Pattern
 
-```php
+````php
 # filename: refactor-pattern-prompt.php
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 $prompt = <<<PROMPT
 Refactor this code to use an appropriate design pattern:
 
 Current Code:
 ```php
 {CODE}
-````
+```
 
 Issues with current code:
 
@@ -737,19 +1004,34 @@ Requirements:
 Use PHP 8.4+ features where appropriate.
 PROMPT;
 
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
+    'max_tokens' => 2048,
+    'temperature' => 0.3,
+    'messages' => [
+        ['role' => 'user', 'content' => $prompt]
+    ]
+]);
+
 ````
 
 ### Extract Service Class
 
-```php
+````php
 # filename: extract-service-prompt.php
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 $prompt = <<<PROMPT
 This controller has too much business logic. Extract it into a service class:
 
 Current Controller:
 ```php
 {CONTROLLER_CODE}
-````
+```
 
 Create:
 
@@ -766,6 +1048,15 @@ Follow:
 - PSR-12 standards
   PROMPT;
 
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
+    'max_tokens' => 2048,
+    'temperature' => 0.3,
+    'messages' => [
+        ['role' => 'user', 'content' => $prompt]
+    ]
+]);
+
 ````
 
 ---
@@ -774,15 +1065,21 @@ Follow:
 
 ### Generate Unit Test
 
-```php
+````php
 # filename: generate-unit-test-prompt.php
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 $prompt = <<<PROMPT
 Generate comprehensive PHPUnit tests for this class:
 
 Class to Test:
 ```php
 {CLASS_CODE}
-````
+```
 
 Create tests that:
 
@@ -799,12 +1096,27 @@ Use PHPUnit 10 syntax.
 Include descriptive test method names.
 PROMPT;
 
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
+    'max_tokens' => 2048,
+    'temperature' => 0.3,
+    'messages' => [
+        ['role' => 'user', 'content' => $prompt]
+    ]
+]);
+
 ````
 
 ### Generate Test Cases
 
-```php
+````php
 # filename: generate-test-cases-prompt.php
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 $prompt = <<<PROMPT
 Generate test cases for this user registration feature:
 
@@ -832,6 +1144,15 @@ Format as a test case table with:
 - Expected result
 - Priority (P0/P1/P2)
 PROMPT;
+
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
+    'max_tokens' => 1024,
+    'temperature' => 0.2,
+    'messages' => [
+        ['role' => 'user', 'content' => $prompt]
+    ]
+]);
 ````
 
 ---
@@ -976,7 +1297,7 @@ Prompt caching allows you to cache frequently used system prompts or message pre
 # filename: prompt-caching-example.php
 // Cache a system prompt for 5 minutes
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
     'system' => 'You are an expert PHP code reviewer. Review code for security, performance, and best practices.',
     'messages' => [
@@ -992,7 +1313,7 @@ $response = $client->messages()->create([
 
 // For 1-hour cache (important but less frequent)
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
     'system' => 'You are an expert PHP code reviewer...',
     'messages' => [

@@ -120,7 +120,7 @@ $calculator = new PricingCalculator();
 
 // Calculate cost for a typical request
 $cost = $calculator->calculateCost(
-    model: 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     inputTokens: 200,
     outputTokens: 400
 );
@@ -172,15 +172,15 @@ class PricingCalculator
 {
     // Prices per million tokens (as of 2025)
     private const PRICING = [
-        'claude-opus-4-20250514' => [
+        'claude-opus-4-1' => [
             'input' => 15.00,
             'output' => 75.00,
         ],
-        'claude-sonnet-4-20250514' => [
+        'claude-sonnet-4-5' => [
             'input' => 3.00,
             'output' => 15.00,
         ],
-        'claude-haiku-4-20250514' => [
+        'claude-haiku-4-5-20251001' => [
             'input' => 0.25,
             'output' => 1.25,
         ],
@@ -298,7 +298,7 @@ $calculator = new PricingCalculator();
 
 // Calculate actual cost
 $cost = $calculator->calculateCost(
-    model: 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     inputTokens: 150,
     outputTokens: 300
 );
@@ -321,7 +321,7 @@ Sonnet costs 44x more than Haiku for the same request!
 
 // Monthly projection
 $projection = $calculator->projectMonthlyCost(
-    model: 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     avgInputTokens: 200,
     avgOutputTokens: 400,
     requestsPerDay: 1000
@@ -357,29 +357,29 @@ class ModelRouter
         // High budget priority → use cheapest suitable model
         if ($budgetPriority) {
             return match($complexity) {
-                'simple' => 'claude-haiku-4-20250514',
-                'medium' => 'claude-haiku-4-20250514',
-                'complex' => 'claude-sonnet-4-20250514',
-                default => 'claude-haiku-4-20250514'
+                'simple' => 'claude-haiku-4-5-20251001',
+                'medium' => 'claude-haiku-4-5-20251001',
+                'complex' => 'claude-sonnet-4-5',
+                default => 'claude-haiku-4-5-20251001'
             };
         }
 
         // Speed critical → use fastest model
         if ($responseTimeRequired === 'fast') {
-            return 'claude-haiku-4-20250514';
+            return 'claude-haiku-4-5-20251001';
         }
 
         // Quality critical → use best model
         if ($qualityRequired === 'critical') {
-            return 'claude-opus-4-20250514';
+            return 'claude-opus-4-1';
         }
 
         // Default routing based on complexity
         return match($complexity) {
-            'simple' => 'claude-haiku-4-20250514',
-            'medium' => 'claude-sonnet-4-20250514',
-            'complex' => 'claude-opus-4-20250514',
-            default => 'claude-sonnet-4-20250514'
+            'simple' => 'claude-haiku-4-5-20251001',
+            'medium' => 'claude-sonnet-4-5',
+            'complex' => 'claude-opus-4-1',
+            default => 'claude-sonnet-4-5'
         };
     }
 
@@ -864,16 +864,22 @@ class ClaudeCache
 }
 
 // Usage
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
+
 $cache = new ClaudeCache($redis, defaultTtl: 3600);
 
 // Cached request
 $prompt = "What are the benefits of PHP 8.4?";
-$cacheKey = $cache->generateKey($prompt, ['model' => 'claude-sonnet-4-20250514']);
+$cacheKey = $cache->generateKey($prompt, ['model' => 'claude-sonnet-4-5']);
 
 $response = $cache->remember(
     cacheKey: $cacheKey,
     callback: fn() => $client->messages()->create([
-        'model' => 'claude-sonnet-4-20250514',
+        'model' => 'claude-sonnet-4-5-20250929',
         'max_tokens' => 1024,
         'messages' => [['role' => 'user', 'content' => $prompt]]
     ]),
@@ -969,19 +975,20 @@ declare(strict_types=1);
 
 namespace App\Optimization;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
+
 
 class BatchProcessor
 {
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     /**
      * Process multiple items in a single request
      * Much more cost-effective than individual requests
      */
-    public function processBatch(array $items, string $task, string $model = 'claude-haiku-4-20250514'): array
+    public function processBatch(array $items, string $task, string $model = 'claude-haiku-4-5-20251001'): array
     {
         // Build batch prompt
         $batchPrompt = $this->buildBatchPrompt($items, $task);
@@ -1087,7 +1094,7 @@ $emails = [
 $result = $batchProcessor->processBatch(
     items: $emails,
     task: "Classify each as: positive, negative, or neutral",
-    model: 'claude-haiku-4-20250514'
+    'model' => 'claude-haiku-4-5-20251001'
 );
 
 echo "Processed {count($emails)} items\n";
@@ -1304,6 +1311,12 @@ class BudgetTracker
 }
 
 // Usage
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
+
 $budgetTracker = new BudgetTracker($redis, [
     'hourly' => 10.00,
     'daily' => 200.00,
@@ -1318,7 +1331,11 @@ if ($budgetTracker->wouldExceedBudget($estimatedCost)) {
 }
 
 // Make request
-$response = $client->messages()->create([...]);
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
+    'max_tokens' => 1024,
+    'messages' => [['role' => 'user', 'content' => 'Hello Claude!']]
+]);
 
 // Track actual cost
 $actualCost = $calculator->calculateCost(
@@ -1484,7 +1501,7 @@ $costAttribution = new CostAttribution($pdo);
 $costAttribution->recordCost([
     'user_id' => 'user-123',
     'feature' => 'chatbot',
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'input_tokens' => 150,
     'output_tokens' => 300,
     'cost' => 0.00495,
@@ -1692,7 +1709,7 @@ $tracker->recordTenantCost([
     'user_id' => 'user-567',
     'workspace_id' => 'workspace-789',
     'feature' => 'document-analysis',
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'input_tokens' => 2000,
     'output_tokens' => 500,
     'cost' => 0.0375,
@@ -2252,7 +2269,7 @@ $decision = $costControl->selectModel(
 );
 
 // Should downgrade to Haiku
-assert($decision['model'] === 'claude-haiku-4-20250514');
+assert($decision['model'] === 'claude-haiku-4-5-20251001');
 assert($decision['reason'] === 'budget_pressure');
 assert($decision['budget_usage'] === 0.90);
 echo "✓ Automatic cost control working correctly\n";
@@ -2519,6 +2536,13 @@ try {
     $queue->push('record-cost', $attribution);
 }
 ```
+
+## Further Reading
+
+- **[Official PHP SDK Documentation](https://github.com/anthropics/anthropic-sdk-php)** — The official Anthropic PHP SDK on GitHub
+- **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)** — Community resources and examples for Claude with PHP
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
+- **[PHP SDK Composer Package](https://packagist.org/packages/claude-php/claude-php-sdk)** — Official package on Packagist
 
 ## Wrap-up
 

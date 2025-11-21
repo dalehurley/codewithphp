@@ -27,14 +27,19 @@ prerequisites:
 
 ## Overview
 
-Security is paramount when working with AI APIs. A leaked API key can lead to unauthorized usage, unexpected costs, and potential data breaches. This chapter provides a comprehensive guide to secure authentication with the Claude API.
+Security is paramount when working with AI APIs. A leaked API key can lead to unauthorized usage, unexpected costs, and potential data breaches. This chapter provides a comprehensive guide to secure authentication with the Claude API using the [Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK).
 
 You'll learn how to properly set up your Anthropic account, generate and manage API keys, implement secure authentication patterns in PHP, use environment variables correctly, handle key rotation, and follow security best practices. By the end, you'll have production-ready authentication strategies that protect your API keys and your budget.
 
+**About the Claude-PHP-SDK:**
+
+This chapter uses the [Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK) v0.2 — a community-maintained PHP library that provides a streamlined interface for interacting with the Claude API. It's available on Packagist and can be installed via Composer with `composer require claude-php/claude-php-sdk:"^0.2":"^0.2"`. The SDK handles HTTP communication, error handling, and response parsing, allowing you to focus on building great applications.
+
 **What You'll Learn:**
+
 - Setting up your Anthropic account correctly
 - Generating and managing API keys
-- Secure authentication patterns in PHP
+- Secure authentication patterns in PHP using Claude-PHP-SDK
 - Environment variable management
 - CI/CD integration for automated pipelines
 - Secrets management services for enterprise applications
@@ -52,8 +57,18 @@ Before starting, ensure you have:
 - ✓ **Email address** for account creation
 - ✓ **Payment method** (required for API access)
 - ✓ **PHP 8.4+** with Composer installed
+- ✓ **Claude-PHP-SDK v0.2+**: Install via `composer require claude-php/claude-php-sdk:"^0.2":"^0.2"`
 
 **Estimated Time**: ~25-35 minutes
+
+**Quick Setup:**
+
+```bash
+# Create a new project
+mkdir my-claude-app && cd my-claude-app
+composer init
+composer require claude-php/claude-php-sdk:"^0.2":"^0.2" vlucas/phpdotenv
+```
 
 ## What You'll Build
 
@@ -96,10 +111,12 @@ By the end of this chapter, you will have created:
 ### Creating Your Account
 
 1. **Navigate to Anthropic Console**
+
    - Visit [console.anthropic.com](https://console.anthropic.com)
    - Click "Sign Up" or "Get Started"
 
 2. **Registration**
+
    - Enter your email address
    - Create a strong password
    - Verify your email address
@@ -118,10 +135,12 @@ Use a corporate email for business projects. Personal emails should only be used
 API access requires a payment method on file:
 
 1. **Navigate to Billing**
+
    - Go to Settings → Billing
    - Click "Add Payment Method"
 
 2. **Add Card**
+
    - Enter credit/debit card information
    - Verify billing address
    - Save payment method
@@ -139,6 +158,7 @@ Setting budget limits prevents unexpected charges. You'll receive alerts before 
 ### Understanding Billing
 
 **How Billing Works:**
+
 - **Pay-as-you-go**: Charged only for actual usage
 - **No minimum fees**: Zero cost if you don't use the API
 - **Token-based**: Billed per input/output token
@@ -147,11 +167,11 @@ Setting budget limits prevents unexpected charges. You'll receive alerts before 
 **Usage Tiers:**
 Anthropic offers different tiers with varying rate limits:
 
-| Tier | Requirements | Rate Limit |
-|------|-------------|------------|
-| **Tier 1** | New accounts | 50 requests/min |
-| **Tier 2** | $25 spent | 1,000 requests/min |
-| **Tier 3** | $250 spent | 2,000 requests/min |
+| Tier       | Requirements  | Rate Limit          |
+| ---------- | ------------- | ------------------- |
+| **Tier 1** | New accounts  | 50 requests/min     |
+| **Tier 2** | $25 spent     | 1,000 requests/min  |
+| **Tier 3** | $250 spent    | 2,000 requests/min  |
 | **Tier 4** | $1,000+ spent | 4,000+ requests/min |
 
 ::: tip
@@ -163,6 +183,7 @@ Start with Tier 1, upgrade automatically as you use more. Contact Anthropic for 
 ### Creating Your First API Key
 
 1. **Navigate to API Keys**
+
    - Go to Settings → API Keys
    - Click "Create Key"
 
@@ -181,6 +202,7 @@ Start with Tier 1, upgrade automatically as you use more. Contact Anthropic for 
    - Never share or commit to version control
 
 **Example Key Format:**
+
 ```
 sk-ant-api03-1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890
 ```
@@ -224,6 +246,7 @@ ANTHROPIC_API_KEY=sk-ant-api03-development-key-here
 ```
 
 **Benefits:**
+
 - **Isolation**: Separate keys per environment
 - **Tracking**: Monitor usage by environment
 - **Security**: Revoke compromised keys without affecting others
@@ -240,7 +263,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Models\Tenant;
 
 class MultiTenantClaudeService
@@ -254,16 +277,16 @@ class MultiTenantClaudeService
     /**
      * Get Claude client for specific tenant
      */
-    public function getClientForTenant(Tenant $tenant): Anthropic
+    public function getClientForTenant(Tenant $tenant): ClaudePhp
     {
         // Check if tenant has custom API key
         $apiKey = $tenant->anthropic_api_key ?? $this->defaultApiKey;
 
         // Cache clients per API key
         if (!isset($this->clients[$apiKey])) {
-            $this->clients[$apiKey] = Anthropic::factory()
-                ->withApiKey($apiKey)
-                ->make();
+            $this->clients[$apiKey] = new ClaudePhp(
+                apiKey: $apiKey
+            );
         }
 
         return $this->clients[$apiKey];
@@ -277,7 +300,7 @@ class MultiTenantClaudeService
         $client = $this->getClientForTenant($tenant);
 
         $response = $client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 2048,
             'messages' => [
                 ['role' => 'user', 'content' => $prompt]
@@ -285,12 +308,12 @@ class MultiTenantClaudeService
         ]);
 
         // Track usage per tenant
-        $this->trackUsage($tenant, $response->usage);
+        $this->trackUsage($tenant, $response->usage ?? null);
 
         return $response->content[0]->text;
     }
 
-    private function trackUsage(Tenant $tenant, object $usage): void
+    private function trackUsage(Tenant $tenant, array $usage): void
     {
         // Log usage for billing/analytics
         // Implementation depends on your tracking system
@@ -337,6 +360,7 @@ $response = $service->chatForTenant($tenant, "Generate a product description");
 ```
 
 **Benefits:**
+
 - **Cost Allocation**: Track usage per tenant for accurate billing
 - **Custom Keys**: Allow enterprise tenants to use their own API keys
 - **Isolation**: Separate rate limits and usage per tenant
@@ -349,6 +373,7 @@ For high-volume multi-tenant applications, consider using Anthropic's organizati
 ### Viewing and Revoking Keys
 
 **View Active Keys:**
+
 1. Go to Settings → API Keys
 2. See list of all active keys with:
    - Key name
@@ -357,6 +382,7 @@ For high-volume multi-tenant applications, consider using Anthropic's organizati
    - Usage statistics
 
 **Revoke a Key:**
+
 1. Find the key in the list
 2. Click "Revoke" or trash icon
 3. Confirm revocation
@@ -367,6 +393,84 @@ Revoking a key immediately breaks any application using it. Update applications 
 :::
 
 ## Secure Authentication in PHP
+
+### Error Handling with Claude-PHP-SDK
+
+The Claude-PHP-SDK provides specific exception types for different error conditions. Always use these for proper error handling:
+
+```php
+<?php
+# filename: examples/sdk-error-handling.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use ClaudePhp\ClaudePhp;
+use ClaudePhp\Exceptions\{
+    APIConnectionError,
+    RateLimitError,
+    AuthenticationError,
+    APIStatusError
+};
+
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
+
+try {
+    $response = $client->messages()->create([
+        'model' => 'claude-sonnet-4-5-20250929',
+        'max_tokens' => 1024,
+        'messages' => [
+            ['role' => 'user', 'content' => 'Hello, Claude!']
+        ]
+    ]);
+
+    echo $response->content[0]->text;
+
+} catch (AuthenticationError $e) {
+    // Invalid API key or authentication failure
+    error_log("Authentication failed: " . $e->getMessage());
+    http_response_code(401);
+    echo "Authentication failed. Please check your API key.\n";
+
+} catch (RateLimitError $e) {
+    // Rate limit exceeded
+    $retryAfter = $e->response->getHeaderLine('retry-after');
+    error_log("Rate limit exceeded. Retry after: {$retryAfter} seconds");
+    http_response_code(429);
+    echo "Rate limit exceeded. Please try again later.\n";
+
+} catch (APIConnectionError $e) {
+    // Network or connection issues
+    error_log("Connection failed: " . $e->getMessage());
+    http_response_code(503);
+    echo "Service temporarily unavailable. Please try again.\n";
+
+} catch (APIStatusError $e) {
+    // Other API errors (4xx/5xx)
+    error_log("API Error {$e->status_code}: " . $e->message);
+    http_response_code(500);
+    echo "An error occurred while processing your request.\n";
+
+} catch (\Exception $e) {
+    // Catch any other unexpected errors
+    error_log("Unexpected error: " . $e->getMessage());
+    http_response_code(500);
+    echo "An unexpected error occurred.\n";
+}
+```
+
+**Exception Types:**
+
+- **`AuthenticationError`**: Invalid API key, expired key, or authentication failure
+- **`RateLimitError`**: API rate limit exceeded (includes retry-after header)
+- **`APIConnectionError`**: Network issues, timeouts, or connection failures
+- **`APIStatusError`**: Other HTTP errors (4xx/5xx responses)
+
+::: tip
+Always catch `AuthenticationError` specifically to handle invalid or expired API keys gracefully.
+:::
 
 ### Basic Authentication
 
@@ -379,15 +483,15 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 // Direct API key (NOT RECOMMENDED for production)
-$client = Anthropic::factory()
-    ->withApiKey('sk-ant-api03-your-key-here')
-    ->make();
+$client = new ClaudePhp(
+    apiKey: 'sk-ant-api03-your-key-here'
+);
 
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
     'messages' => [
         ['role' => 'user', 'content' => 'Hello, Claude!']
@@ -412,18 +516,18 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 // Load API key from environment variable
-$apiKey = getenv('ANTHROPIC_API_KEY');
+$apiKey = $_ENV['ANTHROPIC_API_KEY'];
 
 if (!$apiKey) {
     die("Error: ANTHROPIC_API_KEY environment variable not set\n");
 }
 
-$client = Anthropic::factory()
-    ->withApiKey($apiKey)
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $apiKey
+);
 ```
 
 Set environment variable:
@@ -452,7 +556,7 @@ Create `.env` file:
 ```bash
 # .env
 ANTHROPIC_API_KEY=sk-ant-api03-your-development-key-here
-ANTHROPIC_MODEL=claude-sonnet-4-20250514
+ANTHROPIC_MODEL=claude-sonnet-4-5
 ANTHROPIC_MAX_TOKENS=2048
 APP_ENV=development
 ```
@@ -466,7 +570,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Dotenv\Dotenv;
 
 // Load .env file
@@ -477,13 +581,13 @@ $dotenv->load();
 $dotenv->required(['ANTHROPIC_API_KEY'])->notEmpty();
 
 // Create client with environment config
-$client = Anthropic::factory()
-    ->withApiKey($_ENV['ANTHROPIC_API_KEY'])
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 // Use environment-based defaults
 $response = $client->messages()->create([
-    'model' => $_ENV['ANTHROPIC_MODEL'] ?? 'claude-sonnet-4-20250514',
+    'model' => $_ENV['ANTHROPIC_MODEL'] ?? 'claude-sonnet-4-5-20250929',
     'max_tokens' => (int)($_ENV['ANTHROPIC_MAX_TOKENS'] ?? 1024),
     'messages' => [
         ['role' => 'user', 'content' => 'Hello!']
@@ -511,6 +615,8 @@ declare(strict_types=1);
 
 namespace App\Config;
 
+use ClaudePhp\ClaudePhp;
+
 class ClaudeConfig
 {
     private string $apiKey;
@@ -518,16 +624,20 @@ class ClaudeConfig
     private int $maxTokens;
     private float $temperature;
     private bool $debug;
+    private ClaudePhp $client;
 
     public function __construct()
     {
         $this->apiKey = $this->getEnv('ANTHROPIC_API_KEY');
-        $this->model = $this->getEnv('ANTHROPIC_MODEL', 'claude-sonnet-4-20250514');
+        $this->model = $this->getEnv('ANTHROPIC_MODEL', 'claude-sonnet-4-5-20250929');
         $this->maxTokens = (int)$this->getEnv('ANTHROPIC_MAX_TOKENS', '2048');
         $this->temperature = (float)$this->getEnv('ANTHROPIC_TEMPERATURE', '1.0');
         $this->debug = $this->getEnv('APP_DEBUG', 'false') === 'true';
 
         $this->validate();
+        $this->client = new ClaudePhp(
+            apiKey: $this->apiKey
+        );
     }
 
     private function getEnv(string $key, ?string $default = null): string
@@ -550,13 +660,16 @@ class ClaudeConfig
 
         // Validate model
         $validModels = [
-            'claude-opus-4-20250514',
-            'claude-sonnet-4-20250514',
-            'claude-haiku-4-20250514',
+            'claude-opus-4-1',
+            'claude-opus-4-1-20250805',
+            'claude-sonnet-4-5',
+            'claude-sonnet-4-5-20250929',
+            'claude-haiku-4-5-20251001',
+            'claude-haiku-4-5-20251001',
         ];
 
         if (!in_array($this->model, $validModels)) {
-            throw new \InvalidArgumentException("Invalid model: {$this->model}");
+            throw new \InvalidArgumentException("Invalid 'model' => {$this->model}");
         }
 
         // Validate max tokens
@@ -595,6 +708,11 @@ class ClaudeConfig
         return $this->debug;
     }
 
+    public function getClient(): ClaudePhp
+    {
+        return $this->client;
+    }
+
     public function toArray(): array
     {
         return [
@@ -616,15 +734,12 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Config\ClaudeConfig;
-use Anthropic\Anthropic;
 
 // Load configuration
 $config = new ClaudeConfig();
 
-// Create client
-$client = Anthropic::factory()
-    ->withApiKey($config->getApiKey())
-    ->make();
+// Get client from config
+$client = $config->getClient();
 
 // Use configuration defaults
 $response = $client->messages()->create([
@@ -646,27 +761,22 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Anthropic\Anthropic;
-use Anthropic\Resources\Messages;
+use ClaudePhp\ClaudePhp;
 use App\Config\ClaudeConfig;
 
 class ClaudeService
 {
-    private Messages $messages;
+    private ClaudePhp $client;
 
     public function __construct(ClaudeConfig $config)
     {
-        $client = Anthropic::factory()
-            ->withApiKey($config->getApiKey())
-            ->make();
-
-        $this->messages = $client->messages();
+        $this->client = $config->getClient();
     }
 
     public function chat(string $prompt, ?string $systemPrompt = null): string
     {
         $params = [
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 2048,
             'messages' => [
                 ['role' => 'user', 'content' => $prompt]
@@ -677,7 +787,7 @@ class ClaudeService
             $params['system'] = $systemPrompt;
         }
 
-        $response = $this->messages->create($params);
+        $response = $this->client->messages()->create($params);
 
         return $response->content[0]->text;
     }
@@ -753,7 +863,7 @@ APP_ENV=development
 APP_DEBUG=true
 
 ANTHROPIC_API_KEY=sk-ant-api03-dev-key-here
-ANTHROPIC_MODEL=claude-sonnet-4-20250514
+ANTHROPIC_MODEL=claude-sonnet-4-5
 ANTHROPIC_MAX_TOKENS=2048
 ANTHROPIC_TIMEOUT=30
 
@@ -768,7 +878,7 @@ LOG_LEVEL=debug
 
 ```apache
 SetEnv ANTHROPIC_API_KEY "sk-ant-api03-prod-key-here"
-SetEnv ANTHROPIC_MODEL "claude-sonnet-4-20250514"
+SetEnv ANTHROPIC_MODEL "claude-sonnet-4-5"
 ```
 
 **Nginx (with PHP-FPM):**
@@ -776,7 +886,7 @@ SetEnv ANTHROPIC_MODEL "claude-sonnet-4-20250514"
 ```nginx
 # /etc/php/8.2/fpm/pool.d/www.conf
 env[ANTHROPIC_API_KEY] = sk-ant-api03-prod-key-here
-env[ANTHROPIC_MODEL] = claude-sonnet-4-20250514
+env[ANTHROPIC_MODEL] = claude-sonnet-4-5
 ```
 
 **Docker:**
@@ -789,7 +899,7 @@ services:
     build: .
     environment:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
-      - ANTHROPIC_MODEL=claude-sonnet-4-20250514
+      - ANTHROPIC_MODEL=claude-sonnet-4-5
 ```
 
 ```bash
@@ -820,13 +930,13 @@ spec:
   template:
     spec:
       containers:
-      - name: app
-        env:
-        - name: ANTHROPIC_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: claude-api-secret
-              key: api-key
+        - name: app
+          env:
+            - name: ANTHROPIC_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: claude-api-secret
+                  key: api-key
 ```
 
 **AWS Lambda:**
@@ -854,15 +964,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
-      
+          php-version: "8.2"
+
       - name: Install dependencies
         run: composer install
-      
+
       - name: Run tests
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -944,13 +1054,13 @@ For enterprise applications, consider using dedicated secrets management service
 
 **Available Services:**
 
-| Service | Provider | Best For |
-|---------|----------|----------|
-| **AWS Secrets Manager** | Amazon | AWS-hosted applications |
-| **Azure Key Vault** | Microsoft | Azure-hosted applications |
-| **Google Secret Manager** | Google | GCP-hosted applications |
-| **HashiCorp Vault** | HashiCorp | Multi-cloud, on-premises |
-| **1Password Secrets Automation** | 1Password | Team collaboration |
+| Service                          | Provider  | Best For                  |
+| -------------------------------- | --------- | ------------------------- |
+| **AWS Secrets Manager**          | Amazon    | AWS-hosted applications   |
+| **Azure Key Vault**              | Microsoft | Azure-hosted applications |
+| **Google Secret Manager**        | Google    | GCP-hosted applications   |
+| **HashiCorp Vault**              | HashiCorp | Multi-cloud, on-premises  |
+| **1Password Secrets Automation** | 1Password | Team collaboration        |
 
 **Example: AWS Secrets Manager Integration**
 
@@ -1017,7 +1127,7 @@ composer require aws/aws-sdk-php
 <?php
 use App\Security\AwsSecretsProvider;
 use Aws\SecretsManager\SecretsManagerClient;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 $secretsProvider = new AwsSecretsProvider(
     new SecretsManagerClient([
@@ -1027,9 +1137,9 @@ $secretsProvider = new AwsSecretsProvider(
     'prod/anthropic/api-key'
 );
 
-$client = Anthropic::factory()
-    ->withApiKey($secretsProvider->getApiKey())
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $secretsProvider->getApiKey()
+);
 ```
 
 ::: info
@@ -1055,7 +1165,7 @@ class EnvironmentValidator
     ];
 
     private const OPTIONAL_VARS = [
-        'ANTHROPIC_MODEL' => 'claude-sonnet-4-20250514',
+        'ANTHROPIC_MODEL' => 'claude-sonnet-4-5-20250929',
         'ANTHROPIC_MAX_TOKENS' => '2048',
         'ANTHROPIC_TIMEOUT' => '30',
     ];
@@ -1094,7 +1204,7 @@ class EnvironmentValidator
         ];
 
         // Check API key exists
-        $apiKey = getenv('ANTHROPIC_API_KEY');
+        $apiKey = $_ENV['ANTHROPIC_API_KEY'];
         $health['checks']['api_key'] = [
             'status' => $apiKey ? 'ok' : 'error',
             'format' => str_starts_with($apiKey, 'sk-ant-') ? 'valid' : 'invalid'
@@ -1131,6 +1241,7 @@ require __DIR__ . '/vendor/autoload.php';
 
 use App\Bootstrap\EnvironmentValidator;
 use Dotenv\Dotenv;
+use ClaudePhp\ClaudePhp;
 
 // Load .env in non-production environments
 if (getenv('APP_ENV') !== 'production') {
@@ -1152,6 +1263,66 @@ try {
 
 ### Key Validation and Testing
 
+### Token Counting and Usage Monitoring
+
+The Claude-PHP-SDK provides built-in token counting to help monitor API usage and costs:
+
+```php
+<?php
+# filename: examples/token-counting.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
+
+// Count tokens without making API call
+$message = [
+    'model' => 'claude-sonnet-4-5-20250929',
+    'messages' => [
+        ['role' => 'user', 'content' => 'Hello, how are you today?']
+    ]
+];
+
+$tokenCount = $client->messages()->countTokens($message);
+echo "Estimated input tokens: " . $tokenCount->input_tokens . "\n";
+
+// After API call, get actual usage
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
+    'max_tokens' => 1024,
+    'messages' => [
+        ['role' => 'user', 'content' => 'Hello, how are you today?']
+    ]
+]);
+
+$inputTokens = $response->usage->inputTokens;
+$outputTokens = $response->usage->outputTokens;
+$totalTokens = $inputTokens + $outputTokens;
+
+echo "Actual usage - Input: {$inputTokens}, Output: {$outputTokens}, Total: {$totalTokens}\n";
+
+// Cost calculation (approximate rates as of 2025)
+$inputCostPerToken = 0.000003;  // $3 per million input tokens
+$outputCostPerToken = 0.000015; // $15 per million output tokens
+
+$totalCost = ($inputTokens * $inputCostPerToken) + ($outputTokens * $outputCostPerToken);
+echo "Estimated cost: $" . number_format($totalCost, 6) . "\n";
+```
+
+**Token Counting Benefits:**
+
+- **Cost Monitoring**: Track API usage costs in real-time
+- **Rate Limiting**: Implement custom rate limits based on token usage
+- **Budget Alerts**: Set up alerts when approaching spending limits
+- **Usage Analytics**: Monitor which features consume the most tokens
+
+### API Key Validation and Testing
+
 Before using an API key in production, validate that it's active and has proper permissions:
 
 ```php
@@ -1161,13 +1332,13 @@ declare(strict_types=1);
 
 namespace App\Security;
 
-use Anthropic\Anthropic;
-use Anthropic\Exceptions\AnthropicException;
+use ClaudePhp\ClaudePhp;
+use Exception;
 
 class ApiKeyValidator
 {
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     /**
@@ -1175,14 +1346,14 @@ class ApiKeyValidator
      */
     public function validateKey(string $apiKey): array
     {
-        $testClient = Anthropic::factory()
-            ->withApiKey($apiKey)
-            ->make();
+        $testClient = new ClaudePhp(
+            apiKey: $apiKey
+        );
 
         try {
             // Make minimal test request (1 token, cheapest model)
             $response = $testClient->messages()->create([
-                'model' => 'claude-haiku-4-20250514', // Cheapest model for validation
+                'model' => 'claude-haiku-4-5-20251001', // Cheapest model for validation
                 'max_tokens' => 1, // Minimal token usage
                 'messages' => [
                     ['role' => 'user', 'content' => 'Hi']
@@ -1192,10 +1363,10 @@ class ApiKeyValidator
             return [
                 'valid' => true,
                 'model' => $response->model ?? 'unknown',
-                'tokens_used' => $response->usage->input_tokens + $response->usage->output_tokens,
+                'tokens_used' => ($response->usage->inputTokens ?? 0) + ($response->usage->outputTokens ?? 0),
             ];
 
-        } catch (AnthropicException $e) {
+        } catch (Exception $e) {
             return [
                 'valid' => false,
                 'error' => $e->getMessage(),
@@ -1230,7 +1401,7 @@ class ApiKeyValidator
         return [
             'has_permissions' => true,
             'can_read' => true,
-            'can_write' => true, // Anthropic API keys are all-or-nothing
+            'can_write' => true, // Claude API keys are all-or-nothing
         ];
     }
 }
@@ -1246,17 +1417,17 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Security\ApiKeyValidator;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$apiKey = getenv('ANTHROPIC_API_KEY');
+$apiKey = $_ENV['ANTHROPIC_API_KEY'];
 
 if (!$apiKey) {
     die("Error: ANTHROPIC_API_KEY not set\n");
 }
 
-$client = Anthropic::factory()
-    ->withApiKey($apiKey)
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $apiKey
+);
 
 $validator = new ApiKeyValidator($client);
 
@@ -1290,9 +1461,9 @@ declare(strict_types=1);
 require __DIR__ . '/vendor/autoload.php';
 
 use App\Security\ApiKeyValidator;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$apiKey = getenv('ANTHROPIC_API_KEY');
+$apiKey = $_ENV['ANTHROPIC_API_KEY'];
 
 if (!$apiKey) {
     throw new RuntimeException('ANTHROPIC_API_KEY not set');
@@ -1305,12 +1476,24 @@ if (!str_starts_with($apiKey, 'sk-ant-')) {
 
 // Optional: Full validation (makes API call - use sparingly)
 if (getenv('VALIDATE_API_KEY_ON_STARTUP') === 'true') {
-    $client = Anthropic::factory()->withApiKey($apiKey)->make();
+    $client = new ClaudePhp(
+        apiKey: $apiKey
+    );
     $validator = new ApiKeyValidator($client);
     $result = $validator->validateKey($apiKey);
 
     if (!$result['valid']) {
-        throw new RuntimeException("API key validation failed: {$result['error']}");
+        $errorType = $result['error_type'] ?? 'unknown';
+        $errorMsg = $result['error'] ?? 'Validation failed';
+
+        if ($errorType === 'authentication_error') {
+            throw new \RuntimeException("Invalid API key: {$errorMsg}");
+        } elseif ($errorType === 'rate_limit_error') {
+            error_log("Rate limit hit during startup validation: {$errorMsg}");
+            // Continue anyway - rate limits are temporary
+        } else {
+            throw new \RuntimeException("API key validation failed: {$errorMsg}");
+        }
     }
 }
 
@@ -1328,10 +1511,12 @@ Regular key rotation improves security and limits exposure if a key is compromis
 ### When to Rotate Keys
 
 **Scheduled Rotation:**
+
 - Every 90 days (recommended)
 - Every 180 days (minimum)
 
 **Immediate Rotation:**
+
 - Key suspected of being compromised
 - Team member with key access leaves
 - Security audit recommendation
@@ -1342,12 +1527,14 @@ Regular key rotation improves security and limits exposure if a key is compromis
 Rotate keys without service interruption:
 
 **Step 1: Generate New Key**
+
 ```bash
 # Create new key in Anthropic Console
 # Name it with version: production-v2
 ```
 
 **Step 2: Dual-Key Period**
+
 ```php
 <?php
 # filename: src/Services/DualKeyClaudeService.php
@@ -1355,7 +1542,8 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
+use ClaudePhp\Exceptions\AuthenticationError;
 
 class DualKeyClaudeService
 {
@@ -1376,11 +1564,11 @@ class DualKeyClaudeService
         }
     }
 
-    private function createClient(string $apiKey): Anthropic
+    private function createClient(string $apiKey): ClaudePhp
     {
-        return Anthropic::factory()
-            ->withApiKey($apiKey)
-            ->make();
+        return new ClaudePhp(
+            apiKey: $apiKey
+        );
     }
 
     public function chat(string $prompt): string
@@ -1389,8 +1577,12 @@ class DualKeyClaudeService
         if (isset($this->clients['primary'])) {
             try {
                 return $this->attemptChat($this->clients['primary'], $prompt);
+            } catch (AuthenticationError $e) {
+                error_log("Primary key authentication failed: " . $e->getMessage());
+                // Primary key is invalid, don't retry
             } catch (\Exception $e) {
                 error_log("Primary key failed: " . $e->getMessage());
+                // Try secondary key for other errors
             }
         }
 
@@ -1398,6 +1590,9 @@ class DualKeyClaudeService
         if (isset($this->clients['secondary'])) {
             try {
                 return $this->attemptChat($this->clients['secondary'], $prompt);
+            } catch (AuthenticationError $e) {
+                error_log("Secondary key authentication failed: " . $e->getMessage());
+                throw new \RuntimeException('Both API keys are invalid', 0, $e);
             } catch (\Exception $e) {
                 error_log("Secondary key failed: " . $e->getMessage());
                 throw $e;
@@ -1410,7 +1605,7 @@ class DualKeyClaudeService
     private function attemptChat($client, string $prompt): string
     {
         $response = $client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 2048,
             'messages' => [
                 ['role' => 'user', 'content' => $prompt]
@@ -1423,6 +1618,7 @@ class DualKeyClaudeService
 ```
 
 **Step 3: Update Environment Variables**
+
 ```bash
 # Deploy with both keys
 ANTHROPIC_API_KEY_PRIMARY=sk-ant-api03-new-key-here
@@ -1430,6 +1626,7 @@ ANTHROPIC_API_KEY_SECONDARY=sk-ant-api03-old-key-here
 ```
 
 **Step 4: Monitor and Verify**
+
 ```bash
 # Monitor logs for 24-48 hours
 # Ensure all services using new key
@@ -1437,6 +1634,7 @@ ANTHROPIC_API_KEY_SECONDARY=sk-ant-api03-old-key-here
 ```
 
 **Step 5: Remove Old Key**
+
 ```bash
 # After verification period
 # Update to single key
@@ -1528,6 +1726,7 @@ echo "4. Run: php finalize-rotation.php (after verification)\n";
 ### 1. Never Commit API Keys
 
 **Bad:**
+
 ```php
 <?php
 // NEVER DO THIS
@@ -1535,13 +1734,15 @@ $apiKey = 'sk-ant-api03-1234567890abcdef';
 ```
 
 **Good:**
+
 ```php
 <?php
 // Always use environment variables
-$apiKey = getenv('ANTHROPIC_API_KEY');
+$apiKey = $_ENV['ANTHROPIC_API_KEY'];
 ```
 
 **Ensure .gitignore is configured:**
+
 ```bash
 # .gitignore
 .env
@@ -1847,7 +2048,7 @@ Create dedicated API keys for testing:
 ```bash
 # .env.testing
 ANTHROPIC_API_KEY=sk-ant-api03-test-key-here
-ANTHROPIC_MODEL=claude-haiku-4-20250514  # Cheapest for testing
+ANTHROPIC_MODEL=claude-haiku-4-5  # Cheapest for testing
 ```
 
 **PHPUnit Configuration:**
@@ -1878,6 +2079,8 @@ namespace Tests\Unit;
 use PHPUnit\Framework\TestCase;
 use App\Services\ClaudeService;
 use App\Config\ClaudeConfig;
+use ClaudePhp\ClaudePhp;
+use ClaudePhp\Exceptions\AuthenticationError;
 use Mockery;
 
 class ClaudeServiceTest extends TestCase
@@ -1891,13 +2094,39 @@ class ClaudeServiceTest extends TestCase
     {
         // Mock configuration
         $config = Mockery::mock(ClaudeConfig::class);
-        $config->shouldReceive('getApiKey')
-            ->andReturn('sk-ant-api03-test-key');
+        $mockClient = Mockery::mock(ClaudePhp::class);
+        $config->shouldReceive('getClient')
+            ->andReturn($mockClient);
 
         // Create service with mocked config
         $service = new ClaudeService($config);
 
         $this->assertInstanceOf(ClaudeService::class, $service);
+    }
+
+    public function testServiceHandlesAuthenticationErrors(): void
+    {
+        $config = Mockery::mock(ClaudeConfig::class);
+        $mockClient = Mockery::mock(ClaudePhp::class);
+
+        // Mock the messages API chain
+        $messagesApi = Mockery::mock();
+        $mockClient->shouldReceive('messages')
+            ->andReturn($messagesApi);
+
+        // Mock API call to throw AuthenticationError
+        $messagesApi->shouldReceive('create')
+            ->andThrow(new AuthenticationError('Invalid API key'));
+
+        $config->shouldReceive('getClient')
+            ->andReturn($mockClient);
+
+        $service = new ClaudeService($config);
+
+        $this->expectException(AuthenticationError::class);
+        $this->expectExceptionMessage('Invalid API key');
+
+        $service->chat('Test prompt');
     }
 }
 ```
@@ -1914,11 +2143,12 @@ declare(strict_types=1);
 namespace Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
+use ClaudePhp\Exceptions\AuthenticationError;
 
 class ClaudeApiTest extends TestCase
 {
-    private Anthropic $client;
+    private ClaudePhp $client;
 
     protected function setUp(): void
     {
@@ -1928,15 +2158,15 @@ class ClaudeApiTest extends TestCase
             $this->markTestSkipped('ANTHROPIC_API_KEY_TEST not set');
         }
 
-        $this->client = Anthropic::factory()
-            ->withApiKey($apiKey)
-            ->make();
+        $this->client = new ClaudePhp(
+            apiKey: $apiKey
+        );
     }
 
     public function testCanMakeApiRequest(): void
     {
         $response = $this->client->messages()->create([
-            'model' => 'claude-haiku-4-20250514',
+            'model' => 'claude-haiku-4-5-20251001',
             'max_tokens' => 10,
             'messages' => [
                 ['role' => 'user', 'content' => 'Say "test"']
@@ -1944,7 +2174,43 @@ class ClaudeApiTest extends TestCase
         ]);
 
         $this->assertNotEmpty($response->content[0]->text);
-        $this->assertEquals('claude-haiku-4-20250514', $response->model);
+        $this->assertEquals('claude-haiku-4-5-20251001', $response->model);
+        $this->assertIsObject($response->usage);
+        $this->assertIsInt($response->usage->inputTokens);
+        $this->assertIsInt($response->usage->outputTokens);
+    }
+
+    public function testTokenCountingWorks(): void
+    {
+        $message = [
+            'model' => 'claude-haiku-4-5-20251001',
+            'messages' => [
+                ['role' => 'user', 'content' => 'Hello world']
+            ]
+        ];
+
+        $tokenCount = $this->client->messages()->countTokens($message);
+
+        $this->assertIsInt($tokenCount->input_tokens);
+        $this->assertGreaterThan(0, $tokenCount->input_tokens);
+    }
+
+    public function testHandlesAuthenticationError(): void
+    {
+        // Create client with invalid key
+        $invalidClient = new ClaudePhp(
+            apiKey: 'sk-ant-invalid-key-for-testing'
+        );
+
+        $this->expectException(AuthenticationError::class);
+
+        $invalidClient->messages()->create([
+            'model' => 'claude-haiku-4-5-20251001',
+            'max_tokens' => 10,
+            'messages' => [
+                ['role' => 'user', 'content' => 'Test']
+            ]
+        ]);
     }
 }
 ```
@@ -1971,34 +2237,33 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Anthropic\Anthropic;
-use Anthropic\Resources\Messages;
+use ClaudePhp\ClaudePhp;
 use Mockery;
 
 class ClaudeServiceMockTest extends TestCase
 {
     public function testHandlesApiResponse(): void
     {
-        // Mock the Anthropic client
-        $client = Mockery::mock(Anthropic::class);
-        $messages = Mockery::mock(Messages::class);
+        // Mock the Claude client
+        $client = Mockery::mock(ClaudePhp::class);
+        $messagesApi = Mockery::mock();
 
         $client->shouldReceive('messages')
-            ->andReturn($messages);
+            ->andReturn($messagesApi);
 
         // Mock API response
-        $mockResponse = (object)[
+        $mockResponse = [
             'content' => [
-                (object)['text' => 'Mocked response']
+                ['text' => 'Mocked response']
             ],
-            'model' => 'claude-sonnet-4-20250514',
-            'usage' => (object)[
+            'model' => 'claude-sonnet-4-5-20250929',
+            'usage' => [
                 'input_tokens' => 10,
                 'output_tokens' => 5,
             ],
         ];
 
-        $messages->shouldReceive('create')
+        $messagesApi->shouldReceive('create')
             ->once()
             ->andReturn($mockResponse);
 
@@ -2034,7 +2299,7 @@ if (!getenv('ANTHROPIC_API_KEY_TEST')) {
 **Best Practices:**
 
 - **Use separate test keys**: Never use production keys in tests
-- **Use cheapest model**: Use `claude-haiku-4-20250514` for testing to minimize costs
+- **Use cheapest model**: Use `claude-haiku-4-5` for testing to minimize costs
 - **Limit token usage**: Set `max_tokens` to minimum needed (e.g., 10-50)
 - **Mock when possible**: Use mocks for unit tests, real API only for integration tests
 - **Skip expensive tests**: Use `markTestSkipped()` if test key not available
@@ -2045,12 +2310,14 @@ if (!getenv('ANTHROPIC_API_KEY_TEST')) {
 ### Pitfall 1: Committing .env Files
 
 **Problem:**
+
 ```bash
 git add .env
 git commit -m "Add configuration"
 ```
 
 **Solution:**
+
 ```bash
 # Add to .gitignore FIRST
 echo ".env" >> .gitignore
@@ -2066,27 +2333,31 @@ git add .env.example
 ### Pitfall 2: Logging API Keys
 
 **Problem:**
+
 ```php
 <?php
 error_log("Using API key: {$apiKey}");  // BAD!
 ```
 
 **Solution:**
+
 ```php
 <?php
 $keyPreview = substr($apiKey, 0, 10) . '...';
 error_log("Using API key: {$keyPreview}");  // GOOD
 ```
 
-### Pitfall 3: Client-Side Exposure
+### Pitfall 3: ClaudePhp-Side Exposure
 
 **Problem:**
+
 ```javascript
 // NEVER do this in JavaScript
-const apiKey = 'sk-ant-api03-your-key';
+const apiKey = "sk-ant-api03-your-key";
 ```
 
 **Solution:**
+
 ```php
 <?php
 // Always make API calls from server-side PHP
@@ -2096,6 +2367,7 @@ const apiKey = 'sk-ant-api03-your-key';
 ### Pitfall 4: Insufficient Access Controls
 
 **Problem:**
+
 ```php
 <?php
 // Anyone can access
@@ -2103,6 +2375,7 @@ $apiKey = file_get_contents('/config/api-key.txt');
 ```
 
 **Solution:**
+
 ```bash
 # Restrict file permissions
 chmod 600 /config/api-key.txt
@@ -2117,6 +2390,8 @@ Build a configuration manager with validation and encryption:
 
 ```php
 <?php
+declare(strict_types=1);
+
 class SecureConfigManager
 {
     public function __construct(private string $configPath) {}
@@ -2144,6 +2419,8 @@ Create an automated key rotation system:
 
 ```php
 <?php
+declare(strict_types=1);
+
 class KeyRotationManager
 {
     public function initiateRotation(string $newKey): void
@@ -2175,6 +2452,8 @@ Build a system to monitor and alert on unusual API usage:
 
 ```php
 <?php
+declare(strict_types=1);
+
 class UsageMonitor
 {
     public function trackRequest($response): void
@@ -2213,28 +2492,41 @@ class UsageMonitor
 ## Troubleshooting
 
 **API key not recognized?**
+
 - Verify key starts with `sk-ant-`
 - Check for extra spaces or newlines
 - Ensure payment method is added to account
 - Try generating a new key
 
 **Environment variable not found?**
+
 - Check variable name spelling
 - Verify .env file is in correct directory
 - Ensure Dotenv is loaded before accessing variables
-- Check if using $_ENV vs getenv()
+- Check if using $\_ENV vs getenv()
 
 **Key works locally but not in production?**
+
 - Verify environment variables are set in production
 - Check file permissions on .env file
 - Ensure web server has access to environment variables
 - Review server logs for errors
 
 **Rate limit errors immediately?**
+
 - Check if using wrong key (test key vs production)
 - Verify account tier and limits
 - Implement exponential backoff
 - Contact Anthropic support for limit increase
+
+## Further Reading
+
+- **[Claude-PHP-SDK Repository](https://github.com/claude-php/Claude-PHP-SDK)** — The community-maintained PHP SDK for Claude API
+- **[Claude-PHP-SDK on Packagist](https://packagist.org/packages/claude-php/claude-php-sdk)** — Install via Composer
+- **[Anthropic API Documentation](https://docs.claude.com)** — Complete API reference and guides
+- **[Official Anthropic PHP SDK](https://github.com/anthropics/anthropic-sdk-php)** — Alternative official SDK from Anthropic
+- **[Environment Variables Best Practices](https://12factor.net/config)** — The Twelve-Factor App methodology for configuration management
+- **[PHP Dotenv Documentation](https://github.com/vlucas/phpdotenv)** — Complete guide to managing .env files
 
 ## Wrap-up
 
@@ -2281,12 +2573,13 @@ You now have a secure authentication system in place. In the next chapter, you'l
 
 ## Further Reading
 
-- [Anthropic API Keys Documentation](https://docs.claude.com/en/docs/get-started/quickstart) — Official guide to managing API keys and account settings
-- [Environment Variables Best Practices](https://12factor.net/config) — The Twelve-Factor App methodology for configuration management
-- [PHP Dotenv Documentation](https://github.com/vlucas/phpdotenv) — Complete guide to using vlucas/phpdotenv for .env file management
-- [OWASP API Security Top 10](https://owasp.org/www-project-api-security/) — Security best practices for API development
-- [Chapter 01: Introduction to Claude API](/series/claude-php-developers/chapters/01-introduction-to-claude-api) — Review Claude's capabilities and architecture
-- [Chapter 03: Your First Claude Request in PHP](/series/claude-php-developers/chapters/03-first-claude-request) — Start making API calls with your secure credentials
+- **[Claude-PHP-SDK Repository](https://github.com/claude-php/Claude-PHP-SDK)** — The community-maintained PHP SDK for Claude API with examples and documentation
+- **[Anthropic API Keys Documentation](https://docs.claude.com/en/docs/get-started/quickstart)** — Official guide to managing API keys and account settings
+- **[Environment Variables Best Practices](https://12factor.net/config)** — The Twelve-Factor App methodology for configuration management
+- **[PHP Dotenv Documentation](https://github.com/vlucas/phpdotenv)** — Complete guide to using vlucas/phpdotenv for .env file management
+- **[OWASP API Security Top 10](https://owasp.org/www-project-api-security/)** — Security best practices for API development
+- **[Chapter 01: Introduction to Claude API](/series/claude-php-developers/chapters/01-introduction-to-claude-api)** — Review Claude's capabilities and architecture
+- **[Chapter 03: Your First Claude Request in PHP](/series/claude-php-developers/chapters/03-first-claude-request)** — Start making API calls with your secure credentials
 
 <ChapterCheckbox
   seriesId="claude-php-developers"
@@ -2305,11 +2598,20 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 02 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-02)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-02
 composer install
 cp .env.example .env
 # Add your API key to .env
-php examples/dotenv-auth.php
+ANTHROPIC_API_KEY=sk-ant-your-key-here php examples/dotenv-auth.php
+```
+
+**Installation:**
+
+The Claude-PHP-SDK is available on Packagist and can be installed via Composer:
+
+```bash
+composer require claude-php/claude-php-sdk:"^0.2"
 ```

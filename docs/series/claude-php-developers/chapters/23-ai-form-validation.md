@@ -32,6 +32,7 @@ Traditional form validation checks syntax and format, but it can't understand co
 You'll build custom validation rules that leverage Claude's language understanding to create smarter, more sophisticated validation that improves data quality and user experience while preventing abuse.
 
 **What You'll Learn:**
+
 - Creating custom validation rules with Claude
 - Content quality and coherence validation
 - Spam and promotional content detection
@@ -50,10 +51,34 @@ You'll build custom validation rules that leverage Claude's language understandi
 Before starting, ensure you have:
 
 - ✓ **Laravel 11+** installed
-- ✓ **Claude service** from [Chapter 21: Laravel Integration Patterns](/series/claude-php-developers/chapters/21-laravel-integration)
+- ✓ **Claude SDK** installed (`composer require claude-php/claude-php-sdk`)
 - ✓ **Understanding of Laravel validation**
 - ✓ **Redis** for caching (recommended)
 - ✓ **Basic knowledge of custom validation rules**
+- ✓ **Anthropic API key** configured in `config/services.php`
+
+## Configuration Setup
+
+Before starting, configure your Anthropic API key in Laravel:
+
+**Add to `config/services.php`:**
+
+```php
+# filename: config/services.php
+return [
+    // ... existing config
+
+    'anthropic' => [
+        'api_key' => env('ANTHROPIC_API_KEY'),
+    ],
+];
+```
+
+**Add to `.env`:**
+
+```bash
+ANTHROPIC_API_KEY=your_api_key_here
+```
 
 ## What You'll Build
 
@@ -96,7 +121,7 @@ declare(strict_types=1);
 
 namespace App\Rules;
 
-use App\Facades\Claude;
+use ClaudePhp\ClaudePhp;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Cache;
@@ -162,10 +187,20 @@ Text:
 Return ONLY a single number from 1-10, nothing else.
 PROMPT;
 
-            $response = Claude::withModel('claude-haiku-4-20250514')
-                ->generate($prompt, null, ['temperature' => 0.0, 'max_tokens' => 10]);
+            // Create Claude client
+            $client = new ClaudePhp(apiKey: config('services.anthropic.api_key'));
 
-            preg_match('/\d+/', $response, $matches);
+            $response = $client->messages()->create(
+                'model' => 'claude-haiku-4-5-20251001',
+                'max_tokens' => 10,
+                'temperature' => 0.0,
+                'messages' => [
+                    ['role' => 'user', 'content' => $prompt]
+                ]
+            );
+
+            $text = $response->content[0]->text ?? '';
+            preg_match('/\d+/', $text, $matches);
 
             return isset($matches[0]) ? (int) $matches[0] : 5;
         });
@@ -182,7 +217,7 @@ declare(strict_types=1);
 
 namespace App\Rules;
 
-use App\Facades\Claude;
+use ClaudePhp\ClaudePhp;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Cache;
@@ -232,10 +267,20 @@ Text:
 Is this spam? Respond with ONLY 'YES' or 'NO'.
 PROMPT;
 
-            $response = Claude::withModel('claude-haiku-4-20250514')
-                ->generate($prompt, null, ['temperature' => 0.0, 'max_tokens' => 10]);
+            $client = new ClaudePhp(apiKey: config('services.anthropic.api_key'));
 
-            return stripos($response, 'YES') !== false;
+            $response = $client->messages()->create(
+                'model' => 'claude-haiku-4-5-20251001',
+                'max_tokens' => 10,
+                'temperature' => 0.0,
+                'messages' => [
+                    ['role' => 'user', 'content' => $prompt]
+                ]
+            );
+
+            $text = $response->content[0]->text ?? '';
+
+            return stripos($text, 'YES') !== false;
         });
     }
 }
@@ -250,7 +295,7 @@ declare(strict_types=1);
 
 namespace App\Rules;
 
-use App\Facades\Claude;
+use ClaudePhp\ClaudePhp;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Cache;
@@ -306,15 +351,25 @@ Examples:
 Response:
 PROMPT;
 
-            $response = Claude::withModel('claude-haiku-4-20250514')
-                ->generate($prompt, null, ['temperature' => 0.0, 'max_tokens' => 50]);
+            $client = new ClaudePhp(apiKey: config('services.anthropic.api_key'));
 
-            if (stripos($response, 'NONE') !== false) {
+            $response = $client->messages()->create(
+                'model' => 'claude-haiku-4-5-20251001',
+                'max_tokens' => 50,
+                'temperature' => 0.0,
+                'messages' => [
+                    ['role' => 'user', 'content' => $prompt]
+                ]
+            );
+
+            $text = $response->content[0]->text ?? 'NONE';
+
+            if (stripos($text, 'NONE') !== false) {
                 return [];
             }
 
             // Parse comma-separated violations
-            $violations = array_map('trim', explode(',', strtolower($response)));
+            $violations = array_map('trim', explode(',', strtolower($text)));
 
             return array_intersect($violations, $this->categories);
         });
@@ -331,7 +386,7 @@ declare(strict_types=1);
 
 namespace App\Rules;
 
-use App\Facades\Claude;
+use ClaudePhp\ClaudePhp;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
@@ -378,15 +433,25 @@ Business Description:
 List ONLY the missing elements, one per line. If all elements are present, respond with 'COMPLETE'.
 PROMPT;
 
-        $response = Claude::withModel('claude-haiku-4-20250514')
-            ->generate($prompt, null, ['temperature' => 0.0, 'max_tokens' => 100]);
+        $client = app(ClaudePhp::class);
 
-        if (stripos($response, 'COMPLETE') !== false) {
+        $response = $client->messages()->create(
+            'model' => 'claude-haiku-4-5-20251001',
+            'max_tokens' => 100,
+            'temperature' => 0.0,
+            'messages' => [
+                ['role' => 'user', 'content' => $prompt]
+            ]
+        );
+
+        $text = $response->content[0]->text ?? 'COMPLETE';
+
+        if (stripos($text, 'COMPLETE') !== false) {
             return [];
         }
 
         // Parse missing elements
-        $lines = explode("\n", trim($response));
+        $lines = explode("\n", trim($text));
         $missing = [];
 
         foreach ($lines as $line) {
@@ -412,7 +477,7 @@ declare(strict_types=1);
 
 namespace App\Rules;
 
-use App\Facades\Claude;
+use ClaudePhp\ClaudePhp;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
@@ -458,14 +523,24 @@ Email Content:
 List any issues found, one per line. If the email is appropriate, respond with 'APPROPRIATE'.
 PROMPT;
 
-        $response = Claude::withModel('claude-sonnet-4-20250514')
-            ->generate($prompt, null, ['temperature' => 0.0, 'max_tokens' => 200]);
+        $client = app(ClaudePhp::class);
 
-        if (stripos($response, 'APPROPRIATE') !== false) {
+        $response = $client->messages()->create(
+            'model' => 'claude-sonnet-4-5',
+            'max_tokens' => 200,
+            'temperature' => 0.0,
+            'messages' => [
+                ['role' => 'user', 'content' => $prompt]
+            ]
+        );
+
+        $text = $response->content[0]->text ?? 'APPROPRIATE';
+
+        if (stripos($text, 'APPROPRIATE') !== false) {
             return [];
         }
 
-        return array_filter(explode("\n", trim($response)));
+        return array_filter(explode("\n", trim($text)));
     }
 }
 ```
@@ -479,11 +554,16 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Facades\Claude;
+use ClaudePhp\ClaudePhp;
 use Illuminate\Support\Facades\Cache;
 
 class AiValidationService
 {
+    private function getClient(): ClaudePhp
+    {
+        return new ClaudePhp(apiKey: config('services.anthropic.api_key'));
+    }
+
     /**
      * Validate content quality score (1-10)
      */
@@ -498,10 +578,17 @@ class AiValidationService
 
             $prompt = "Rate this text from 1-10 based on {$criteriaText}. Return only the number.\n\n{$content}";
 
-            $response = Claude::withModel('claude-haiku-4-20250514')
-                ->generate($prompt, null, ['temperature' => 0.0, 'max_tokens' => 10]);
+            $response = $this->getClient()->messages()->create(
+                'model' => 'claude-haiku-4-5-20251001',
+                'max_tokens' => 10,
+                'temperature' => 0.0,
+                'messages' => [
+                    ['role' => 'user', 'content' => $prompt]
+                ]
+            );
 
-            preg_match('/\d+/', $response, $matches);
+            $text = $response->content[0]->text ?? '';
+            preg_match('/\d+/', $text, $matches);
 
             return isset($matches[0]) ? min(10, max(1, (int) $matches[0])) : 5;
         });
@@ -527,10 +614,18 @@ Text: {$content}
 Answer: YES or NO
 PROMPT;
 
-            $response = Claude::withModel('claude-haiku-4-20250514')
-                ->generate($prompt, null, ['temperature' => 0.0, 'max_tokens' => 5]);
+            $response = $this->getClient()->messages()->create(
+                'model' => 'claude-haiku-4-5-20251001',
+                'max_tokens' => 5,
+                'temperature' => 0.0,
+                'messages' => [
+                    ['role' => 'user', 'content' => $prompt]
+                ]
+            );
 
-            return stripos($response, 'YES') !== false;
+            $text = $response->content[0]->text ?? '';
+
+            return stripos($text, 'YES') !== false;
         });
     }
 
@@ -555,14 +650,22 @@ Text: {$content}
 List detected categories comma-separated, or 'NONE' if clean.
 PROMPT;
 
-            $response = Claude::withModel('claude-haiku-4-20250514')
-                ->generate($prompt, null, ['temperature' => 0.0, 'max_tokens' => 50]);
+            $response = $this->getClient()->messages()->create(
+                'model' => 'claude-haiku-4-5-20251001',
+                'max_tokens' => 50,
+                'temperature' => 0.0,
+                'messages' => [
+                    ['role' => 'user', 'content' => $prompt]
+                ]
+            );
 
-            if (stripos($response, 'NONE') !== false) {
+            $text = $response->content[0]->text ?? 'NONE';
+
+            if (stripos($text, 'NONE') !== false) {
                 return [];
             }
 
-            return array_map('trim', explode(',', strtolower($response)));
+            return array_map('trim', explode(',', strtolower($text)));
         });
     }
 
@@ -582,14 +685,22 @@ Content: {$content}
 List any violated rules, or 'VALID' if all rules are met.
 PROMPT;
 
-        $response = Claude::withModel('claude-sonnet-4-20250514')
-            ->generate($prompt, null, ['temperature' => 0.0, 'max_tokens' => 200]);
+        $response = $this->client->messages()->create(
+            'model' => 'claude-sonnet-4-5',
+            'max_tokens' => 200,
+            'temperature' => 0.0,
+            'messages' => [
+                ['role' => 'user', 'content' => $prompt]
+            ]
+        );
 
-        if (stripos($response, 'VALID') !== false) {
+        $text = $response->content[0]->text ?? 'VALID';
+
+        if (stripos($text, 'VALID') !== false) {
             return [];
         }
 
-        return array_filter(explode("\n", trim($response)));
+        return array_filter(explode("\n", trim($text)));
     }
 
     /**
@@ -767,11 +878,15 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Facades\Claude;
+use ClaudePhp\ClaudePhp;
 use Illuminate\Support\Collection;
 
 class BatchValidationService
 {
+    public function __construct(
+        private readonly ClaudePhp $client
+    ) {}
+
     /**
      * Validate multiple items in a single request
      */
@@ -783,10 +898,15 @@ class BatchValidationService
 
         $prompt = $this->getBatchPrompt($validationType, $itemsList);
 
-        $response = Claude::withModel('claude-haiku-4-20250514')
-            ->generate($prompt, null, ['temperature' => 0.0]);
+        $response = $this->getClient()->messages()->create(
+            'model' => 'claude-haiku-4-5-20251001',
+            'temperature' => 0.0,
+            'messages' => [
+                ['role' => 'user', 'content' => $prompt]
+            ]
+        );
 
-        return $this->parseBatchResults($response, count($items));
+        return $this->parseBatchResults($response->content[0]->text ?? '', count($items));
     }
 
     private function getBatchPrompt(string $type, string $itemsList): string
@@ -887,18 +1007,37 @@ namespace Tests\Feature;
 use App\Rules\ContentQuality;
 use App\Rules\NotSpam;
 use App\Rules\NoOffensiveLanguage;
-use App\Facades\Claude;
+use ClaudePhp\ClaudePhp;
 use Illuminate\Support\Facades\Validator;
+use Mockery;
 use Tests\TestCase;
 
 class AiValidationTest extends TestCase
 {
+    private $mockClient;
+    private $mockMessages;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Mock ClaudePhp globally for all tests
+        $this->mockClient = Mockery::mock('overload:ClaudePhp\ClaudePhp');
+        $this->mockMessages = Mockery::mock();
+        $this->mockClient->shouldReceive('messages')->andReturn($this->mockMessages);
+    }
+
     public function test_content_quality_passes_for_good_content(): void
     {
-        Claude::shouldReceive('withModel')
-            ->andReturnSelf()
-            ->shouldReceive('generate')
-            ->andReturn('8');
+        $mockResponse = (object) [
+            'content' => [
+                ['text' => '8']
+            ]
+        ];
+
+        $this->mockMessages->shouldReceive('create')
+            ->once()
+            ->andReturn($mockResponse);
 
         $validator = Validator::make(
             ['content' => 'This is a well-written, clear, and coherent piece of content.'],
@@ -910,10 +1049,15 @@ class AiValidationTest extends TestCase
 
     public function test_spam_detection_fails_for_spam_content(): void
     {
-        Claude::shouldReceive('withModel')
-            ->andReturnSelf()
-            ->shouldReceive('generate')
-            ->andReturn('YES');
+        $mockResponse = (object) [
+            'content' => [
+                ['text' => 'YES']
+            ]
+        ];
+
+        $this->mockMessages->shouldReceive('create')
+            ->once()
+            ->andReturn($mockResponse);
 
         $validator = Validator::make(
             ['content' => 'BUY NOW! LIMITED TIME OFFER! Click here!!!'],
@@ -925,10 +1069,15 @@ class AiValidationTest extends TestCase
 
     public function test_offensive_language_detection(): void
     {
-        Claude::shouldReceive('withModel')
-            ->andReturnSelf()
-            ->shouldReceive('generate')
-            ->andReturn('profanity, hate_speech');
+        $mockResponse = (object) [
+            'content' => [
+                ['text' => 'profanity, hate_speech']
+            ]
+        ];
+
+        $this->mockMessages->shouldReceive('create')
+            ->once()
+            ->andReturn($mockResponse);
 
         $validator = Validator::make(
             ['content' => 'Offensive content here'],
@@ -1013,28 +1162,38 @@ class FactualAccuracy implements ValidationRule
 ## Troubleshooting
 
 **Validation is too slow?**
+
 - Implement caching with longer TTL for common patterns
 - Use Haiku model for faster responses
 - Consider async validation for non-critical fields
 - Batch multiple validations together
 
 **False positives in spam detection?**
+
 - Adjust detection threshold
 - Provide more context in prompt
 - Allow users to appeal/report false positives
 - Combine AI with traditional heuristics
 
 **API costs too high?**
+
 - Cache aggressively (same content = same validation)
 - Only validate longer content (skip short strings)
 - Use batch validation when possible
 - Implement rate limiting per user
 
 **Validation failing on API errors?**
+
 - Always catch exceptions in validation rules
 - Implement fallback to basic validation
 - Log errors for monitoring
 - Don't block user on temporary API issues
+
+## Further Reading
+
+- **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)** — Community SDK on GitHub
+- **[Claude-PHP-SDK Packagist](https://packagist.org/packages/claude-php/claude-3-api)** — Package details and versions
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
 
 ## Wrap-up
 
@@ -1090,6 +1249,7 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 23 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-23)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-23

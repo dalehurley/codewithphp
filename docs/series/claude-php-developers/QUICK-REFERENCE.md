@@ -36,16 +36,16 @@ description: Essential syntax, patterns, and examples for rapid development with
 
 ### Installation
 ```bash
-composer require anthropic-ai/sdk
+composer require claude-php/claude-php-sdk
 ```
 
-### Initialize Client
+### Initialize ClaudePhp
 ```php
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+        apiKey: $1)
+    ) {
 ```
 
 ### Environment Variables
@@ -294,8 +294,8 @@ if ($response->stopReason === 'tool_use') {
 
 ### Basic Try-Catch
 ```php
-use Anthropic\Exceptions\ErrorException;
-use Anthropic\Exceptions\RateLimitException;
+use ClaudePhp\Exceptions\ErrorException;
+use ClaudePhp\Exceptions\RateLimitException;
 
 try {
     $response = $client->messages()->create([...]);
@@ -543,7 +543,7 @@ $data = json_decode($response->content[0]->text, true);
 ```php
 namespace App\Services;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class ClaudeService
 {
@@ -640,7 +640,7 @@ CLAUDE_TIMEOUT=120
 {
     "require": {
         "php": "^8.4",
-        "anthropic-ai/sdk": "^1.0",
+        "claude-php/claude-php-sdk": "^0.3.0",
         "vlucas/phpdotenv": "^5.5",
         "predis/predis": "^2.0"
     }
@@ -723,8 +723,8 @@ $estimatedTokens = strlen($prompt) / 4; // Inaccurate!
 ### Error Handling
 ```php
 // ✅ CORRECT - Catch specific exceptions
-use Anthropic\Exceptions\RateLimitException;
-use Anthropic\Exceptions\ErrorException;
+use ClaudePhp\Exceptions\RateLimitException;
+use ClaudePhp\Exceptions\ErrorException;
 
 try {
     $response = $client->messages()->create([...]);
@@ -739,8 +739,8 @@ try {
 
 ## Troubleshooting
 
-### Issue: "Class 'Anthropic\Anthropic' not found"
-**Solution**: Run `composer require anthropic-ai/sdk` and ensure `vendor/autoload.php` is included.
+### Issue: "Class 'ClaudePhp\ClaudePhp' not found"
+**Solution**: Run `composer require claude-php/claude-php-sdk` and ensure `vendor/autoload.php` is included.
 
 ### Issue: "Invalid API key"
 **Solution**: Verify your API key starts with `sk-ant-` and is set in environment variables.

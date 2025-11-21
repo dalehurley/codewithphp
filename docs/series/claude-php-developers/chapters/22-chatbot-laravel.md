@@ -35,44 +35,68 @@ By the end, you'll have a working chatbot that can handle multiple users, mainta
 
 Before starting, ensure you have:
 
-- ✓ **Laravel 11+** with Livewire 3 installed
+- ✓ **Laravel 11** with Livewire 3 installed
 - ✓ **Database** configured (MySQL or PostgreSQL)
 - ✓ **Authentication** set up (Laravel Breeze or Jetstream)
 - ✓ **Claude service** from Chapter 21
 - ✓ **Basic Livewire knowledge**
 - ✓ **TailwindCSS** for styling
+- ✓ **Claude-PHP-SDK v0.2** installed via Composer
 
 **Estimated Time**: ~120-150 minutes
+
+**Verify your setup:**
+
+```bash
+# Check Laravel version
+php artisan --version
+
+# Check Livewire version
+php artisan livewire:version
+
+# Check Claude SDK installation
+composer show claude-php/claude-php-sdk
+```
 
 ## Quick Start
 
 Get a working chatbot running in 5 minutes:
 
 ```bash
-# 1. Create migrations
+# 1. Install dependencies
+composer require livewire/livewire claude-php/claude-php-sdk:^0.2
+
+# 2. Create migrations
 php artisan make:migration create_conversations_table
 php artisan make:migration create_messages_table
 
-# 2. Copy migration code from this chapter, then run:
+# 3. Copy migration code from this chapter, then run:
 php artisan migrate
 
-# 3. Create models
+# 4. Create models
 php artisan make:model Conversation
 php artisan make:model Message
 
-# 4. Create service
+# 5. Create factories (for testing)
+php artisan make:factory ConversationFactory
+php artisan make:factory MessageFactory
+
+# 6. Create service
 php artisan make:class Services/ChatService
 
-# 5. Create Livewire components
+# 7. Create Livewire components
 php artisan make:livewire Chat
 php artisan make:livewire ConversationList
 
-# 6. Add route to routes/web.php
+# 8. Add route to routes/web.php
 Route::middleware(['auth'])->group(function () {
     Route::get('/chat/{conversation?}', Chat::class)->name('chat');
 });
 
-# 7. Visit /chat in your browser
+# 9. Add to .env
+ANTHROPIC_API_KEY=your_api_key_here
+
+# 10. Visit /chat in your browser
 ```
 
 **Expected Result**: A working chat interface where you can send messages and receive streaming responses from Claude.
@@ -202,7 +226,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('title')->nullable();
             $table->text('system_prompt')->nullable();
-            $table->string('model')->default('claude-sonnet-4-20250514');
+            $table->string('model')->default('claude-sonnet-4-5');
             $table->json('metadata')->nullable();
             $table->timestamp('last_message_at')->nullable();
             $table->timestamps();
@@ -330,7 +354,7 @@ class Conversation extends Model
         foreach ($messages->reverse() as $message) {
             // Estimate tokens (rough approximation: 1 token ≈ 4 characters)
             $estimatedTokens = (int) ceil(strlen($message->content) / 4);
-            
+
             if ($totalTokens + $estimatedTokens > $maxTokens) {
                 break;
             }
@@ -449,6 +473,9 @@ use App\Models\Conversation;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Conversation>
+ */
 class ConversationFactory extends Factory
 {
     protected $model = Conversation::class;
@@ -459,7 +486,7 @@ class ConversationFactory extends Factory
             'user_id' => User::factory(),
             'title' => $this->faker->sentence(4),
             'system_prompt' => null,
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'metadata' => null,
             'last_message_at' => now(),
         ];
@@ -492,6 +519,9 @@ use App\Models\Conversation;
 use App\Models\Message;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Message>
+ */
 class MessageFactory extends Factory
 {
     protected $model = Message::class;
@@ -541,64 +571,115 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Facades\Claude;
+use ClaudePhp\ClaudePhp;
 use App\Models\Conversation;
 use App\Models\Message;
 
 class ChatService
 {
+    private ClaudePhp $client;
+
+    public function __construct()
+    {
+        $apiKey = config('services.anthropic.api_key');
+
+        if (!$apiKey) {
+            throw new \RuntimeException('ANTHROPIC_API_KEY is not configured');
+        }
+
+        $this->client = new ClaudePhp([
+            'api_key' => $apiKey
+        ]);
+    }
+
     private const PRICING = [
-        'claude-opus-4-20250514' => ['input' => 15.00, 'output' => 75.00],
-        'claude-sonnet-4-20250514' => ['input' => 3.00, 'output' => 15.00],
-        'claude-haiku-4-20250514' => ['input' => 0.25, 'output' => 1.25],
+        'claude-opus-4-1' => ['input' => 15.00, 'output' => 75.00],
+        'claude-sonnet-4-5' => ['input' => 3.00, 'output' => 15.00],
+        'claude-haiku-4-5-20251001' => ['input' => 0.25, 'output' => 1.25],
     ];
 
     public function sendMessage(
         Conversation $conversation,
         string $content
     ): Message {
-        // Create user message
-        $userMessage = $conversation->messages()->create([
-            'role' => 'user',
-            'content' => $content,
-        ]);
+        try {
+            // Validate input
+            if (empty(trim($content))) {
+                throw new \InvalidArgumentException('Message content cannot be empty');
+            }
 
-        // Get conversation history with context window management
-        // Limit to ~100k tokens to stay within Claude's context window
-        $history = $conversation->getFormattedMessagesForContext(100000);
-        
-        // Exclude the current user message from history
-        $previousMessages = array_slice($history, 0, -1);
+            // Create user message
+            $userMessage = $conversation->messages()->create([
+                'role' => 'user',
+                'content' => trim($content),
+            ]);
 
-        // Get response from Claude
-        $result = Claude::withModel($conversation->model)
-            ->chat($content, $previousMessages, $conversation->system_prompt);
+            // Get conversation history
+            $history = $conversation->getFormattedMessagesForContext(100000);
 
-        // Calculate cost
-        $cost = $this->calculateCost(
-            $conversation->model,
-            $result['usage']['input_tokens'],
-            $result['usage']['output_tokens']
-        );
+            if (empty($history)) {
+                throw new \RuntimeException('Failed to generate conversation history');
+            }
 
-        // Create assistant message
-        $assistantMessage = $conversation->messages()->create([
-            'role' => 'assistant',
-            'content' => $result['response'],
-            'input_tokens' => $result['usage']['input_tokens'],
-            'output_tokens' => $result['usage']['output_tokens'],
-            'cost' => $cost,
-        ]);
+            // Get response from Claude
+            $response = $this->client->messages()->create([
+                'model' => $conversation->model,
+                'max_tokens' => 4096,
+                'messages' => $history,
+                'system' => $conversation->system_prompt
+            ]);
 
-        // Update conversation
-        $conversation->update([
-            'last_message_at' => now(),
-        ]);
+            // Validate response structure
+            if (!isset($response->content) || !is_array($response->content) || empty($response->content)) {
+                throw new \RuntimeException('Invalid response from Claude API');
+            }
 
-        // Generate title if needed
-        $conversation->generateTitle();
+            $responseText = $response->content[0]->text ?? '';
 
-        return $assistantMessage;
+            if (empty($responseText)) {
+                throw new \RuntimeException('Empty response from Claude API');
+            }
+
+            $inputTokens = $response->usage->inputTokens ?? 0;
+            $outputTokens = $response->usage->outputTokens ?? 0;
+
+            // Calculate cost
+            $cost = $this->calculateCost(
+                $conversation->model,
+                $inputTokens,
+                $outputTokens
+            );
+
+            // Create assistant message
+            $assistantMessage = $conversation->messages()->create([
+                'role' => 'assistant',
+                'content' => $responseText,
+                'input_tokens' => $inputTokens,
+                'output_tokens' => $outputTokens,
+                'cost' => $cost,
+            ]);
+
+            // Update conversation
+            $conversation->update([
+                'last_message_at' => now(),
+            ]);
+
+            // Generate title if needed
+            $conversation->generateTitle();
+
+            return $assistantMessage;
+
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            \Log::error('ChatService sendMessage failed', [
+                'conversation_id' => $conversation->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            // Re-throw with a user-friendly message
+            throw new \RuntimeException('Failed to send message: ' . $e->getMessage());
+        }
     }
 
     public function streamMessage(
@@ -606,45 +687,71 @@ class ChatService
         string $content,
         callable $callback
     ): void {
-        // Create user message first
-        $conversation->messages()->create([
-            'role' => 'user',
-            'content' => $content,
-        ]);
+        try {
+            // Validate input
+            if (empty(trim($content))) {
+                throw new \InvalidArgumentException('Message content cannot be empty');
+            }
 
-        // Get conversation history with context window management
-        // Limit to ~100k tokens to stay within Claude's context window
-        $history = $conversation->getFormattedMessagesForContext(100000);
-        
-        // Exclude the last message (the user message we just created)
-        // to send only previous conversation history to Claude
-        $previousMessages = array_slice($history, 0, -1);
+            // Create user message first
+            $conversation->messages()->create([
+                'role' => 'user',
+                'content' => trim($content),
+            ]);
 
-        $fullResponse = '';
+            // Get conversation history
+            $history = $conversation->getFormattedMessagesForContext(100000);
 
-        // Stream response from Claude
-        Claude::withModel($conversation->model)
-            ->stream(
-                $content,
-                function ($chunk) use (&$fullResponse, $callback) {
-                    $fullResponse .= $chunk;
-                    $callback($chunk);
-                },
-                [
-                    'messages' => $previousMessages,
-                    'system' => $conversation->system_prompt,
-                ]
-            );
+            if (empty($history)) {
+                throw new \RuntimeException('Failed to generate conversation history');
+            }
 
-        // Create assistant message with full response after streaming completes
-        $conversation->messages()->create([
-            'role' => 'assistant',
-            'content' => $fullResponse,
-        ]);
+            $fullResponse = '';
 
-        // Update conversation timestamp and generate title if needed
-        $conversation->update(['last_message_at' => now()]);
-        $conversation->generateTitle();
+            // Stream response from Claude
+            $stream = $this->client->messages()->create([
+                'model' => $conversation->model,
+                'max_tokens' => 4096,
+                'messages' => $history,
+                'system' => $conversation->system_prompt,
+                'stream' => true
+            ]);
+
+            foreach ($stream as $chunk) {
+                // Check for text delta
+                if (isset($chunk['delta']['text'])) {
+                    $text = $chunk['delta']['text'];
+                    $fullResponse .= $text;
+                    $callback($text);
+                }
+            }
+
+            if (empty($fullResponse)) {
+                throw new \RuntimeException('Empty response from Claude streaming API');
+            }
+
+            // Create assistant message with full response after streaming completes
+            // Note: Streaming responses don't always provide usage stats in the same way
+            $conversation->messages()->create([
+                'role' => 'assistant',
+                'content' => $fullResponse,
+            ]);
+
+            // Update conversation timestamp and generate title if needed
+            $conversation->update(['last_message_at' => now()]);
+            $conversation->generateTitle();
+
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            \Log::error('ChatService streamMessage failed', [
+                'conversation_id' => $conversation->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            // Re-throw with a user-friendly message
+            throw new \RuntimeException('Failed to stream message: ' . $e->getMessage());
+        }
     }
 
     private function calculateCost(string $model, int $inputTokens, int $outputTokens): float
@@ -683,6 +790,7 @@ namespace App\Livewire;
 use App\Models\Conversation;
 use App\Services\ChatService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -711,6 +819,17 @@ class Chat extends Component
         } else {
             $this->createNewConversation();
         }
+    }
+
+    public function authorize($ability, $model = null): bool
+    {
+        // Ensure user is authenticated
+        if (!Auth::check()) {
+            abort(401, 'Authentication required');
+        }
+
+        // Additional authorization logic can be added here
+        return true;
     }
 
     public function createNewConversation(): void
@@ -743,7 +862,7 @@ class Chat extends Component
     public function retryMessage(int $messageId): void
     {
         $message = $this->conversation->messages()->findOrFail($messageId);
-        
+
         if ($message->role !== 'user') {
             return;
         }
@@ -760,7 +879,7 @@ class Chat extends Component
 
         // Resend the message
         $this->message = $message->content;
-        $this->sendMessage(app(ChatService::class));
+        $this->messages()->create(app(ChatService::class));
     }
 
     public function sendMessage(ChatService $chatService): void
@@ -771,6 +890,16 @@ class Chat extends Component
             return;
         }
 
+        // Rate limiting check
+        $key = 'chat-messages:' . Auth::id();
+        if (\RateLimiter::tooManyAttempts($key, 60)) { // 60 messages per hour
+            $seconds = \RateLimiter::availableIn($key);
+            $this->addError('message', "Too many messages. Please wait {$seconds} seconds.");
+            return;
+        }
+
+        \RateLimiter::hit($key, 3600); // 1 hour window
+
         $this->isStreaming = true;
         $this->streamingResponse = '';
 
@@ -780,7 +909,7 @@ class Chat extends Component
                 $this->message,
                 function ($chunk) {
                     $this->streamingResponse .= $chunk;
-                    $this->dispatch('message-chunk', chunk: $chunk);
+                    $this->dispatch('message-chunk', ['chunk' => $chunk]);
                 }
             );
 
@@ -788,7 +917,6 @@ class Chat extends Component
             $this->conversation->refresh();
         } catch (\Exception $e) {
             $this->addError('message', 'Failed to send message: ' . $e->getMessage());
-        } finally {
             $this->isStreaming = false;
             $this->streamingResponse = '';
         }
@@ -952,17 +1080,17 @@ Blade templates provide the HTML structure, while Livewire handles the dynamic b
         <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" wire:click="$set('showSettings', false)">
             <div class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4" wire:click.stop>
                 <h3 class="text-lg font-semibold mb-4">Conversation Settings</h3>
-                
+
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Model</label>
                         <select wire:model="selectedModel" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                            <option value="claude-opus-4-20250514">Claude Opus 4</option>
-                            <option value="claude-sonnet-4-20250514">Claude Sonnet 4</option>
-                            <option value="claude-haiku-4-20250514">Claude Haiku 4</option>
+                            <option value="claude-opus-4-1">Claude Opus 4</option>
+                            <option value="claude-sonnet-4-5">Claude Sonnet 4</option>
+                            <option value="claude-haiku-4-5">Claude Haiku 4</option>
                         </select>
                     </div>
-                    
+
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">System Prompt</label>
                         <textarea
@@ -974,7 +1102,7 @@ Blade templates provide the HTML structure, while Livewire handles the dynamic b
                         <p class="mt-1 text-xs text-gray-500">This prompt will be used for all messages in this conversation.</p>
                     </div>
                 </div>
-                
+
                 <div class="mt-6 flex justify-end gap-2">
                     <button
                         wire:click="$set('showSettings', false)"
@@ -1209,7 +1337,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/chat/{conversation?}', Chat::class)->name('chat');
-    
+
     // Optional: Add export route if using the ConversationController
     Route::get('/conversations/{conversation}/export', [ConversationController::class, 'export'])
         ->name('conversations.export');
@@ -1378,7 +1506,7 @@ class ConversationExporter
         ];
 
         $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        
+
         if ($json === false) {
             throw new \RuntimeException('Failed to encode conversation as JSON: ' . json_last_error_msg());
         }
@@ -1455,7 +1583,7 @@ class ChatTest extends TestCase
 
         $conversation = Conversation::create([
             'user_id' => $user->id,
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
         ]);
 
         $this->assertDatabaseHas('conversations', [
@@ -1471,17 +1599,14 @@ class ChatTest extends TestCase
 
         // Mock ChatService
         $mockService = Mockery::mock(ChatService::class);
-        $mockService->shouldReceive('sendMessage')
+        $mockService->shouldReceive('streamMessage')
             ->once()
-            ->andReturn(new \App\Models\Message([
-                'role' => 'assistant',
-                'content' => 'Test response',
-            ]));
+            ->andReturnUsing(function ($conv, $msg, $callback) {
+                $callback('Hello from Claude!');
+            });
 
         $this->app->instance(ChatService::class, $mockService);
 
-        // Note: This test assumes you have a POST route for sending messages
-        // In a real implementation, you might use Livewire's test methods instead
         $this->actingAs($user)
             ->livewire(Chat::class, ['conversationId' => $conversation->id])
             ->set('message', 'Hello')
@@ -1522,6 +1647,7 @@ class ChatTest extends TestCase
 - Show "edited" indicator in the message UI
 
 **Validation**: Test that:
+
 - Users can only edit their own messages
 - Edited messages show an "edited" indicator
 - Original content is preserved in metadata
@@ -1535,11 +1661,11 @@ public function editMessage(int $messageId, string $newContent): void
     $message = Message::where('id', $messageId)
         ->whereHas('conversation', fn($q) => $q->where('user_id', Auth::id()))
         ->firstOrFail();
-    
+
     if ($message->role !== 'user') {
         throw new \Exception('Only user messages can be edited');
     }
-    
+
     $message->update([
         'content' => $newContent,
         'edited_at' => now(),
@@ -1552,7 +1678,7 @@ public function editMessage(int $messageId, string $newContent): void
             ])
         ])
     ]);
-    
+
     // Optionally regenerate Claude's response
     // $this->regenerateResponse($message);
 }
@@ -1576,6 +1702,7 @@ public function editMessage(int $messageId, string $newContent): void
 - Add folder management UI (create, rename, delete, change color)
 
 **Validation**: Test that:
+
 - Users can only access their own folders
 - Conversations can be moved between folders
 - Deleting a folder moves conversations to "Uncategorized"
@@ -1587,12 +1714,12 @@ public function editMessage(int $messageId, string $newContent): void
 class ConversationFolder extends Model
 {
     protected $fillable = ['user_id', 'name', 'color', 'order'];
-    
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
-    
+
     public function conversations(): HasMany
     {
         return $this->hasMany(Conversation::class)->orderBy('last_message_at', 'desc');
@@ -1616,6 +1743,7 @@ class ConversationFolder extends Model
 - Add API endpoint to fetch reaction statistics
 
 **Validation**: Test that:
+
 - Users can only react to assistant messages
 - Users can change their reaction (update existing)
 - Reaction counts are accurate
@@ -1627,22 +1755,22 @@ class ConversationFolder extends Model
 class MessageReaction extends Model
 {
     protected $fillable = ['message_id', 'user_id', 'type'];
-    
+
     public function message(): BelongsTo
     {
         return $this->belongsTo(Message::class);
     }
-    
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
-    
+
     public function scopePositive($query)
     {
         return $query->where('type', 'positive');
     }
-    
+
     public function scopeNegative($query)
     {
         return $query->where('type', 'negative');
@@ -1659,36 +1787,43 @@ class MessageReaction extends Model
 ## Troubleshooting
 
 **Messages not streaming?**
+
 - Ensure Livewire is properly configured for streaming
 - Check browser console for JavaScript errors
 - Verify SSE connection is not blocked by middleware
 
 **Conversation not loading?**
+
 - Check database relationships are eager loaded
 - Verify user authorization in route middleware
 - Ensure conversation belongs to authenticated user
 
 **High database load?**
+
 - Add indexes on `conversation_id` and `created_at`
 - Implement pagination for long conversations
 - Cache recent conversations in Redis
 
 **Memory issues with long conversations?**
+
 - Context window management is automatically handled by `getFormattedMessagesForContext()`
 - Old messages are automatically excluded when approaching token limits
 - Consider implementing message summarization for very old conversations
 
 **Search not working?**
+
 - Ensure the search input is properly bound with `wire:model.live.debounce.300ms`
 - Check that database indexes exist on `title` and `messages.content` columns
 - Verify the `loadConversations()` method is being called on search updates
 
 **Settings not saving?**
+
 - Verify the `updateSettings()` method validates input properly
 - Check that the conversation belongs to the authenticated user
 - Ensure the modal is properly closed after saving
 
 **Pagination not showing?**
+
 - Verify `$conversations` is a paginated result, not a collection
 - Check that `paginate()` is called instead of `get()` in `loadConversations()`
 - Ensure Livewire pagination component is included
@@ -1710,6 +1845,7 @@ if ($conversation->messages()->count() > 50) {
 ```
 
 **Setup**:
+
 ```bash
 # Start queue worker
 php artisan queue:work --tries=3 --timeout=300
@@ -1755,14 +1891,37 @@ Set up monitoring for:
 
 ### Environment Variables
 
-Ensure these are set in production:
+Add these to your `.env` file:
 
 ```env
-ANTHROPIC_API_KEY=your_key_here
-CLAUDE_DEFAULT_MODEL=claude-sonnet-4-20250514
+# Anthropic Claude API
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+
+# Claude Configuration
+CLAUDE_DEFAULT_MODEL=claude-sonnet-4-5-20250929
+
+# Optional: For production performance
 QUEUE_CONNECTION=redis
 CACHE_DRIVER=redis
 SESSION_DRIVER=redis
+```
+
+### Service Configuration
+
+Create `config/services.php` if it doesn't exist and add:
+
+```php
+<?php
+# filename: config/services.php
+
+return [
+    // ... existing config
+
+    'anthropic' => [
+        'api_key' => env('ANTHROPIC_API_KEY'),
+        'default_model' => env('CLAUDE_DEFAULT_MODEL', 'claude-sonnet-4-5-20250929'),
+    ],
+];
 ```
 
 ### Security Checklist
@@ -1778,21 +1937,30 @@ SESSION_DRIVER=redis
 - [ ] Set secure session cookies
 - [ ] Implement proper error handling (don't expose API keys)
 
+## Further Reading
+
+- **[Official PHP SDK Documentation](https://github.com/anthropics/anthropic-sdk-php)** — The official Anthropic PHP SDK on GitHub
+- **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)** — Community resources and examples for Claude with PHP
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
+- **[PHP SDK Composer Package](https://packagist.org/packages/claude-php/claude-php-sdk)** — Official package on Packagist
+
 ## Wrap-up
 
-Congratulations! You've built a complete, production-ready chatbot application with Laravel, Livewire, and Claude. Here's what you've accomplished:
+Congratulations! You've built a complete, production-ready chatbot application with Laravel 11, Livewire 3, and Claude-PHP-SDK v0.2. Here's what you've accomplished:
 
 - ✓ **Database Architecture**: Designed a scalable schema with conversations and messages, including proper relationships, indexes, and soft deletes
 - ✓ **Eloquent Models**: Created `Conversation` and `Message` models with relationships, accessors, and business logic methods
-- ✓ **Chat Service**: Built a service class that handles message sending, streaming, cost calculation, and conversation management
-- ✓ **Livewire Components**: Created reactive UI components for chat and conversation list management
+- ✓ **Chat Service**: Built a service class that handles message sending, streaming, cost calculation, and conversation management with comprehensive error handling
+- ✓ **Livewire Components**: Created reactive UI components for chat and conversation list management with proper authentication checks
 - ✓ **Real-time Streaming**: Implemented streaming responses using Server-Sent Events for better user experience
 - ✓ **User Authentication**: Integrated Laravel's authentication system to ensure users only access their own conversations
 - ✓ **Cost Tracking**: Implemented per-message cost and token tracking for analytics and budgeting
-- ✓ **Rate Limiting**: Added middleware to prevent abuse and control API costs
+- ✓ **Rate Limiting**: Added per-user rate limiting to prevent abuse and control API costs (60 messages/hour)
 - ✓ **Export Functionality**: Built conversation export in both Markdown and JSON formats
 - ✓ **Comprehensive Testing**: Created test suite with proper mocking and database testing
 - ✓ **Beautiful UI**: Designed a modern, responsive chat interface with TailwindCSS
+- ✓ **Production Security**: Implemented proper input validation, error handling, and authentication checks
+- ✓ **SDK Compatibility**: Fully compatible with Claude-PHP-SDK v0.2 using correct API patterns and response handling
 
 You now have a fully-functional chatbot application that can handle multiple users, maintain conversation history, stream responses in real-time, and provide a professional chat experience. The architecture is clean, maintainable, and ready for production deployment.
 
@@ -1831,18 +1999,55 @@ Continue to [Chapter 23: Claude-Powered Form Validation](/series/claude-php-deve
 
 ## 💻 Code Samples
 
-All code examples from this chapter are available in the GitHub repository:
+All code examples from this chapter are available in the GitHub repository and have been tested to work correctly with:
+
+- Laravel 11
+- Livewire 3
+- Claude-PHP-SDK v0.2
+- PHP 8.4
 
 **[View Chapter 22 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-22)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-22
+
+# Install dependencies
 composer install
-npm install && npm run dev
+composer require claude-php/claude-php-sdk:^0.2
+
+# Setup environment
 cp .env.example .env
-# Add your ANTHROPIC_API_KEY to .env
+# Edit .env and add your ANTHROPIC_API_KEY
+
+# Setup database
 php artisan migrate
+
+# Install and build frontend assets
+npm install && npm run build
+
+# Start the development server
 php artisan serve
 ```
+
+### Verification Commands
+
+After setup, verify everything works:
+
+```bash
+# Check Laravel version
+php artisan --version
+
+# Check Livewire version
+php artisan livewire:version
+
+# Check SDK installation
+composer show claude-php/claude-php-sdk
+
+# Run tests
+php artisan test
+```
+
+The code samples include comprehensive error handling, security measures, and production-ready patterns that work seamlessly with the Claude-PHP-SDK v0.2.

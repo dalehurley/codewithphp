@@ -33,6 +33,7 @@ In this chapter, you'll build a complete, production-ready RESTful API for AI-po
 You'll implement API authentication, rate limiting, usage tracking, batch generation, and webhook notifications—everything needed for a commercial content generation service.
 
 **What You'll Learn:**
+
 - RESTful API design for content generation
 - Template system with variables and constraints
 - Brand voice and style guide enforcement
@@ -134,6 +135,7 @@ The migrations define the structure for storing templates, tracking generations,
 ### Expected Result
 
 After running `php artisan migrate`, you'll have three tables:
+
 - `content_templates` - Stores reusable content templates
 - `content_generations` - Tracks all content generation requests
 - `brand_voices` - Manages brand voice configurations per user
@@ -523,6 +525,7 @@ The service pattern separates business logic from controllers, making the code t
 ### Expected Result
 
 You'll have a service that can:
+
 - Generate content from templates with brand voice
 - Calculate accurate costs based on token usage
 - Process batches asynchronously via queues
@@ -537,18 +540,22 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Facades\Claude;
 use App\Models\BrandVoice;
 use App\Models\ContentGeneration;
 use App\Models\ContentTemplate;
+use ClaudePhp\ClaudePhp;
 
 class ContentGenerationService
 {
     private const PRICING = [
-        'claude-opus-4-20250514' => ['input' => 15.00, 'output' => 75.00],
-        'claude-sonnet-4-20250514' => ['input' => 3.00, 'output' => 15.00],
-        'claude-haiku-4-20250514' => ['input' => 0.25, 'output' => 1.25],
+        'claude-opus-4-1' => ['input' => 15.00, 'output' => 75.00],
+        'claude-sonnet-4-5' => ['input' => 3.00, 'output' => 15.00],
+        'claude-haiku-4-5-20251001' => ['input' => 0.25, 'output' => 1.25],
     ];
+
+    public function __construct(
+        private readonly ClaudePhp $client
+    ) {}
 
     public function generate(
         ContentGeneration $generation,
@@ -560,26 +567,33 @@ class ContentGenerationService
             $systemPrompt = $brandVoice?->getSystemPrompt();
 
             $model = $generation->parameters['model'] ?? config('claude.default_model');
-            $temperature = $generation->parameters['temperature'] ?? 0.7;
-            $maxTokens = $generation->parameters['max_tokens'] ?? 2048;
+            $temperature = (float) ($generation->parameters['temperature'] ?? 0.7);
+            $maxTokens = (int) ($generation->parameters['max_tokens'] ?? 2048);
 
-            $result = Claude::withModel($model)
-                ->chat(
-                    $generation->prompt,
-                    [],
-                    $systemPrompt
-                );
+            $response = $this->client->messages()->create(
+                'model' => $model,
+                'max_tokens' => $maxTokens,
+                'messages' => [
+                    ['role' => 'user', 'content' => $generation->prompt]
+                ],
+                'system' => $systemPrompt,
+                'temperature' => $temperature
+            );
+
+            $inputTokens = $response->usage->inputTokens ?? 0;
+            $outputTokens = $response->usage->outputTokens ?? 0;
+            $content = $response->content[0]->text ?? '';
 
             $cost = $this->calculateCost(
                 $model,
-                $result['usage']['input_tokens'],
-                $result['usage']['output_tokens']
+                $inputTokens,
+                $outputTokens
             );
 
             $generation->markAsCompleted(
-                $result['response'],
-                $result['usage']['input_tokens'],
-                $result['usage']['output_tokens'],
+                $content,
+                $inputTokens,
+                $outputTokens,
                 $cost
             );
 
@@ -670,6 +684,7 @@ Controllers are thin—they handle HTTP concerns (request/response) while delega
 ### Expected Result
 
 You'll have controllers that:
+
 - Validate all inputs before processing
 - Return consistent JSON responses
 - Handle authorization properly
@@ -941,6 +956,7 @@ Form requests centralize validation logic and provide clear error messages. Dyna
 ### Expected Result
 
 You'll have validation that:
+
 - Ensures all required template variables are provided
 - Validates model names, temperature, and token limits
 - Returns clear error messages for missing or invalid data
@@ -973,7 +989,7 @@ class GenerateContentRequest extends FormRequest
             'template_id' => 'required|exists:content_templates,id',
             'brand_voice_id' => 'nullable|exists:brand_voices,id',
             'parameters' => 'nullable|array',
-            'parameters.model' => 'nullable|string|in:claude-opus-4-20250514,claude-sonnet-4-20250514,claude-haiku-4-20250514',
+            'parameters.model' => 'nullable|string|in:claude-opus-4-1,claude-sonnet-4-5,claude-haiku-4-5',
             'parameters.temperature' => 'nullable|numeric|min:0|max:1',
             'parameters.max_tokens' => 'nullable|integer|min:1|max:4096',
         ];
@@ -1168,6 +1184,7 @@ Route versioning (`/v1`) allows future API changes without breaking existing cli
 ### Expected Result
 
 You'll have API endpoints that:
+
 - Require authentication via Bearer tokens
 - Enforce rate limits to prevent abuse
 - Follow RESTful conventions
@@ -1221,6 +1238,7 @@ Queue jobs allow long-running operations (like AI generation) to run in the back
 ### Expected Result
 
 You'll have async processing that:
+
 - Handles long-running generations without blocking
 - Sends webhook notifications when complete
 - Retries automatically on failure
@@ -1359,6 +1377,7 @@ Seeders provide example data that helps users understand the system quickly. Tem
 ### Expected Result
 
 After running `php artisan db:seed --class=ContentTemplateSeeder`, you'll have:
+
 - Three ready-to-use content templates
 - Examples of different template types
 - Demonstrations of variables, constraints, and style guides
@@ -1490,8 +1509,8 @@ public function generateFromTemplate(
 ): ContentGeneration {
     // Create cache key from template, data, and brand voice
     $cacheKey = 'generation:' . md5(
-        $template->id . 
-        serialize($data) . 
+        $template->id .
+        serialize($data) .
         ($brandVoice?->id ?? 'none')
     );
 
@@ -1531,6 +1550,7 @@ Caching identical requests prevents redundant API calls. The cache key includes 
 ### Expected Result
 
 You'll have caching that:
+
 - Reduces API costs for repeated requests
 - Improves response times for cached results
 - Only caches successful generations
@@ -1572,6 +1592,7 @@ Testing with real requests validates the entire stack: authentication, validatio
 ### Expected Result
 
 You'll be able to:
+
 - Authenticate with Bearer tokens
 - List available templates
 - Generate content from templates
@@ -1678,44 +1699,52 @@ public function getAnalytics(int $userId, string $period = '30days'): array
 ## Troubleshooting
 
 **Rate limiting too strict?**
+
 - Adjust throttle values in routes
 - Implement tiered rate limits based on user plan
 - Add burst allowance for premium users
 
 **Batch jobs timing out?**
+
 - Reduce batch size limit
 - Increase job timeout in queue config
 - Process batches in smaller chunks
 
 **Inconsistent brand voice?**
+
 - Provide more detailed examples in brand voice
 - Use lower temperature (0.5-0.7)
 - Include specific do/don't examples
 
 **High API costs?**
+
 - Use Haiku for simple templates
 - Implement aggressive result caching
 - Offer preview mode with truncated output
 
 **Webhook not firing?**
+
 - Verify queue worker is running: `php artisan queue:work`
 - Check job failed table: `php artisan queue:failed`
 - Ensure user has `webhook_url` set in database
 - Check webhook job exists: `app/Jobs/SendWebhookNotification.php`
 
 **Template variables not replacing?**
+
 - Verify variable names match exactly (case-sensitive)
 - Check template has variables defined in JSON array
 - Ensure data array includes all required variables
 - Use `{variable}` syntax, not `{{variable}}` or `$variable`
 
 **Authorization failing?**
+
 - Verify policy is registered in `AuthServiceProvider`
 - Check user owns the resource (policy checks `user_id`)
 - Ensure Sanctum middleware is applied to routes
 - Check token is valid and not expired
 
 **Tests failing?**
+
 - Ensure database is migrated: `php artisan migrate --env=testing`
 - Check factories exist for models
 - Verify Sanctum is configured in test setup
@@ -1856,6 +1885,7 @@ Feature tests verify the entire request/response cycle, including authentication
 ### Expected Result
 
 You'll have tests that:
+
 - Verify successful content generation
 - Test authentication requirements
 - Validate input data
@@ -1881,6 +1911,7 @@ Laravel policies provide a clean way to centralize authorization logic. The `aut
 ### Expected Result
 
 You'll have authorization that:
+
 - Prevents users from accessing others' generations
 - Works automatically via `authorize()` calls
 - Is easy to test and maintain
@@ -1956,6 +1987,12 @@ class AuthServiceProvider extends ServiceProvider
 
 Laravel automatically discovers policies when they follow naming conventions (`ModelPolicy` for `Model`). Registering policies in `AuthServiceProvider` makes them available throughout the application. The `authorize()` method in controllers uses these policies automatically.
 
+## Further Reading
+
+- **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)** — Community resources and examples for Claude with PHP
+- **[Claude-PHP-SDK Composer Package](https://packagist.org/packages/claude-php/claude-3-api)** — Official package on Packagist
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
+
 ## Wrap-up
 
 Congratulations! You've built a production-ready content generation API. Here's what you've accomplished:
@@ -2015,6 +2052,7 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 24 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-24)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-24

@@ -66,12 +66,12 @@ declare(strict_types=1);
 
 namespace App\Support;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class SupportBot
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private KnowledgeBase $knowledgeBase,
         private TicketSystem $ticketSystem,
         private ConversationManager $conversations,
@@ -126,19 +126,20 @@ class SupportBot
         $systemPrompt = $this->buildSystemPrompt($articles, $context);
         $messages = $this->formatConversationHistory($conversation);
 
-        // Add current message
-        $messages[] = [
-            'role' => 'user',
-            'content' => $message
-        ];
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 2048,
             'temperature' => 0.7,
             'system' => $systemPrompt,
-            'messages' => $messages
-        ]);
+            'messages' => array_map(
+                fn($msg) => [
+                    'role' => $msg['role'],
+                    'content' => $msg['content']
+                ),
+                $messages
+            )
+        );
 
         return new BotResponse(
             text: $response->content[0]->text,
@@ -180,10 +181,10 @@ class SupportBot
         if (isset($context['customer_name'])) {
             $info[] = "Name: {$context['customer_name']}";
         }
-        if (isset($context['account_type'])) {
+        if (isset($context['account_type']) {
             $info[] = "Account Type: {$context['account_type']}";
         }
-        if (isset($context['previous_tickets'])) {
+        if (isset($context['previous_tickets']) {
             $info[] = "Previous Tickets: {$context['previous_tickets']}";
         }
 
@@ -385,12 +386,12 @@ declare(strict_types=1);
 
 namespace App\Support;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class KnowledgeBase
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private \PDO $db,
         private VectorStore $vectorStore
     ) {}
@@ -432,14 +433,13 @@ Return ONLY valid JSON.
 PROMPT;
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-haiku-4-20250514',
+            'model' => 'claude-haiku-4-5-20251001',
             'max_tokens' => 512,
             'temperature' => 0.3,
-            'messages' => [[
-                'role' => 'user',
-                'content' => $prompt
-            ]]
-        ]);
+            'messages' => [
+                ['role' => 'user', 'content' => $prompt]
+            ]
+        );
 
         $jsonText = $response->content[0]->text;
         if (preg_match('/\{.*\}/s', $jsonText, $matches)) {
@@ -501,7 +501,7 @@ PROMPT;
             ':content' => $content,
             ':category' => $category,
             ':tags' => json_encode($tags)
-        ]);
+        ];
 
         $articleId = (int)$this->db->lastInsertId();
 
@@ -519,7 +519,7 @@ PROMPT;
         $stmt = $this->db->prepare(
             "SELECT * FROM kb_articles WHERE id = :id"
         );
-        $stmt->execute([':id' => $id]);
+        $stmt->execute([':id' => $id];
 
         return $stmt->fetch(\PDO::FETCH_ASSOC) ?: null;
     }
@@ -535,12 +535,12 @@ declare(strict_types=1);
 
 namespace App\Support;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class TicketClassifier
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -573,7 +573,7 @@ Return ONLY valid JSON.
 PROMPT;
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 1024,
             'temperature' => 0.2,
             'messages' => [[
@@ -614,7 +614,7 @@ Keep it brief (2-3 sentences) but informative for the next agent.
 PROMPT;
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-haiku-4-20250514',
+            'model' => 'claude-haiku-4-5-20251001',
             'max_tokens' => 512,
             'temperature' => 0.3,
             'messages' => [[
@@ -647,14 +647,14 @@ declare(strict_types=1);
 
 namespace App\Support;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class SentimentAnalyzer
 {
     private array $cache = [];
 
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -665,7 +665,7 @@ class SentimentAnalyzer
     {
         // Check cache
         $cacheKey = md5($message);
-        if (isset($this->cache[$cacheKey])) {
+        if (isset($this->cache[$cacheKey]) {
             return $this->cache[$cacheKey];
         }
 
@@ -687,7 +687,7 @@ Return ONLY valid JSON.
 PROMPT;
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-haiku-4-20250514',
+            'model' => 'claude-haiku-4-5-20251001',
             'max_tokens' => 512,
             'temperature' => 0.2,
             'messages' => [[
@@ -793,7 +793,7 @@ class ConversationManager
              ORDER BY created_at DESC
              LIMIT 1"
         );
-        $stmt->execute([':customer_id' => $customerId]);
+        $stmt->execute([':customer_id' => $customerId];
         $data = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         if (!$data) {
@@ -815,7 +815,7 @@ class ConversationManager
     /**
      * Create new conversation
      */
-    public function create(string $customerId, array $metadata = []): Conversation
+    public function create(string $customerId, array $metadata = []: Conversation
     {
         $stmt = $this->db->prepare(
             "INSERT INTO conversations (customer_id, status, metadata, created_at, updated_at)
@@ -825,14 +825,14 @@ class ConversationManager
         $stmt->execute([
             ':customer_id' => $customerId,
             ':metadata' => json_encode($metadata)
-        ]);
+        ];
 
         $id = (int)$this->db->lastInsertId();
 
         $conversation = new Conversation(
             id: $id,
             customerId: $customerId,
-            messages: [],
+            'messages' => [],
             metadata: $metadata,
             status: 'active',
             createdAt: new \DateTime()
@@ -862,7 +862,7 @@ class ConversationManager
             ':metadata' => json_encode($conversation->metadata),
             ':status' => $conversation->status,
             ':turn_count' => count($conversation->messages)
-        ]);
+        ];
 
         // Update cache
         $this->redis->setex(
@@ -892,10 +892,10 @@ class ConversationManager
         return new Conversation(
             id: (int)$data['id'],
             customerId: $data['customer_id'],
-            messages: json_decode($data['messages'] ?? '[]', true),
+            'messages' => json_decode($data['messages'] ?? '[]', true),
             metadata: json_decode($data['metadata'] ?? '{}', true),
             status: $data['status'],
-            createdAt: new \DateTime($data['created_at'])
+            createdAt: new \DateTime($data['created_at']
         );
     }
 }
@@ -926,9 +926,9 @@ class EmailHandler
      */
     public function handleIncomingEmail(array $emailData): void
     {
-        $customerId = $this->identifyCustomer($emailData['from']);
+        $customerId = $this->identifyCustomer($emailData['from'];
         $subject = $emailData['subject'];
-        $body = $this->extractTextFromEmail($emailData['body']);
+        $body = $this->extractTextFromEmail($emailData['body'];
 
         // Process with bot
         $response = $this->bot->handleMessage(
@@ -959,7 +959,7 @@ class EmailHandler
         $stmt = $this->db->prepare(
             "SELECT id FROM customers WHERE email = :email"
         );
-        $stmt->execute([':email' => $email]);
+        $stmt->execute([':email' => $email];
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         if ($result) {
@@ -970,7 +970,7 @@ class EmailHandler
         $stmt = $this->db->prepare(
             "INSERT INTO customers (email, created_at) VALUES (:email, NOW())"
         );
-        $stmt->execute([':email' => $email]);
+        $stmt->execute([':email' => $email];
 
         return (string)$this->db->lastInsertId();
     }
@@ -993,7 +993,7 @@ class EmailHandler
         mail($to, $subject, $body, [
             'From' => 'support@example.com',
             'Reply-To' => 'support@example.com'
-        ]);
+        ];
     }
 
     private function logInteraction(
@@ -1014,7 +1014,7 @@ class EmailHandler
             ':message' => $message,
             ':response' => $response->text,
             ':escalated' => $response->escalationNeeded ? 1 : 0
-        ]);
+        ];
     }
 }
 ```
@@ -1050,7 +1050,7 @@ class ChatHandler implements MessageComponentInterface
         $conn->send(json_encode([
             'type' => 'welcome',
             'message' => 'Hello! How can I help you today?'
-        ]));
+        ]);
     }
 
     public function onMessage(ConnectionInterface $from, $msg): void
@@ -1073,7 +1073,7 @@ class ChatHandler implements MessageComponentInterface
                 'message' => $response->text,
                 'escalated' => $response->escalationNeeded,
                 'ticket_id' => $response->ticketId ?? null
-            ]));
+            ]);
 
             // If escalated, notify agents
             if ($response->escalationNeeded) {
@@ -1110,13 +1110,13 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
 use App\Support\SupportBot;
 use App\Support\KnowledgeBase;
 use App\Support\TicketSystem;
 use App\Support\ConversationManager;
 use App\Support\SentimentAnalyzer;
 use App\Support\EscalationEngine;
+use ClaudePhp\ClaudePhp;
 
 header('Content-Type: application/json');
 
@@ -1125,9 +1125,9 @@ $db = new PDO(getenv('DATABASE_DSN'));
 $redis = new Redis();
 $redis->connect('localhost', 6379);
 
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$claude = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $knowledgeBase = new KnowledgeBase($claude, $db, new VectorStore());
 $ticketSystem = new TicketSystem($db);
@@ -1136,12 +1136,12 @@ $sentiment = new SentimentAnalyzer($claude);
 $escalation = new EscalationEngine($db, $redis);
 
 $bot = new SupportBot(
-    claude: $claude,
-    knowledgeBase: $knowledgeBase,
-    ticketSystem: $ticketSystem,
-    conversations: $conversations,
-    sentiment: $sentiment,
-    escalation: $escalation
+    $claude,
+    $knowledgeBase,
+    $ticketSystem,
+    $conversations,
+    $sentiment,
+    $escalation
 );
 
 // Handle request
@@ -1155,9 +1155,9 @@ if (!isset($input['customer_id']) || !isset($input['message'])) {
 
 try {
     $response = $bot->handleMessage(
-        customerId: $input['customer_id'],
-        message: $input['message'],
-        context: $input['context'] ?? []
+        $input['customer_id'],
+        $input['message'],
+        $input['context'] ?? []
     );
 
     echo json_encode([
@@ -1214,7 +1214,7 @@ class SupportAnalytics
         $stmt->execute([
             ':start' => $start->format('Y-m-d H:i:s'),
             ':end' => $end->format('Y-m-d H:i:s')
-        ]);
+        ];
         return (int)$stmt->fetch(\PDO::FETCH_ASSOC)['count'];
     }
 
@@ -1229,7 +1229,7 @@ class SupportAnalytics
         $stmt->execute([
             ':start' => $start->format('Y-m-d H:i:s'),
             ':end' => $end->format('Y-m-d H:i:s')
-        ]);
+        ];
         return (int)$stmt->fetch(\PDO::FETCH_ASSOC)['count'];
     }
 
@@ -1248,7 +1248,7 @@ class SupportAnalytics
         $stmt->execute([
             ':start' => $start->format('Y-m-d H:i:s'),
             ':end' => $end->format('Y-m-d H:i:s')
-        ]);
+        ];
         $escalated = (int)$stmt->fetch(\PDO::FETCH_ASSOC)['count'];
 
         return ($escalated / $total) * 100;
@@ -1267,7 +1267,7 @@ class SupportAnalytics
         $stmt->execute([
             ':start' => $start->format('Y-m-d H:i:s'),
             ':end' => $end->format('Y-m-d H:i:s')
-        ]);
+        ];
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
@@ -1282,7 +1282,7 @@ class SupportAnalytics
         $stmt->execute([
             ':start' => $start->format('Y-m-d H:i:s'),
             ':end' => $end->format('Y-m-d H:i:s')
-        ]);
+        ];
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return (float)($result['avg_minutes'] ?? 0);
     }
@@ -1298,7 +1298,7 @@ class SupportAnalytics
         $stmt->execute([
             ':start' => $start->format('Y-m-d H:i:s'),
             ':end' => $end->format('Y-m-d H:i:s')
-        ]);
+        ];
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return (float)($result['avg_score'] ?? 0);
     }
@@ -1317,7 +1317,7 @@ class SupportAnalytics
         $stmt->execute([
             ':start' => $start->format('Y-m-d H:i:s'),
             ':end' => $end->format('Y-m-d H:i:s')
-        ]);
+        ];
         return $stmt->fetch(\PDO::FETCH_ASSOC) ?: ['negative' => 0, 'neutral' => 0, 'positive' => 0];
     }
 }
@@ -1397,7 +1397,7 @@ class Conversation
     {
         // Count how many times similar messages appear
         $userMessages = array_filter($this->messages, fn($m) => $m['role'] === 'user');
-        $contents = array_map(fn($m) => strtolower($m['content']), $userMessages);
+        $contents = array_map(fn($m) => strtolower($m['content'], $userMessages);
 
         $repetitions = 0;
         foreach ($contents as $i => $content) {
@@ -1437,12 +1437,12 @@ declare(strict_types=1);
 
 namespace App\Support;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class QualityAssurance
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private \PDO $db
     ) {}
 
@@ -1475,7 +1475,7 @@ Return ONLY valid JSON.
 PROMPT;
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-haiku-4-20250514',
+            'model' => 'claude-haiku-4-5-20251001',
             'max_tokens' => 1024,
             'temperature' => 0.2,
             'messages' => [[
@@ -1506,7 +1506,7 @@ PROMPT;
             ':conversation_id' => $conversationId,
             ':score' => $score,
             ':feedback' => $feedback
-        ]);
+        ];
     }
 
     /**
@@ -1529,11 +1529,11 @@ PROMPT;
         $stmt->execute([
             ':start' => $start->format('Y-m-d H:i:s'),
             ':end' => $end->format('Y-m-d H:i:s')
-        ]);
+        ];
 
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($result['total_ratings'] > 0) {
-            $result['satisfaction_rate'] = ($result['satisfied'] / $result['total_ratings']) * 100;
+            $result['satisfaction_rate'] = ($result['satisfied'] / $result['total_ratings'] * 100;
         }
 
         return $result ?: [];
@@ -1553,7 +1553,7 @@ PROMPT;
              LIMIT :limit"
         );
 
-        $stmt->execute([':limit' => $limit]);
+        $stmt->execute([':limit' => $limit];
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 }
@@ -1589,7 +1589,7 @@ class ConversationQuality
             ':conversation_id' => $conversationId,
             ':type' => $resolutionType,
             ':resolved' => $resolved ? 1 : 0
-        ]);
+        ];
     }
 
     /**
@@ -1612,7 +1612,7 @@ class ConversationQuality
         $stmt->execute([
             ':start' => $start->format('Y-m-d H:i:s'),
             ':end' => $end->format('Y-m-d H:i:s')
-        ]);
+        ];
 
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -1635,7 +1635,7 @@ class ConversationQuality
             ':type' => $type,
             ':start' => $start->format('Y-m-d H:i:s'),
             ':end' => $end->format('Y-m-d H:i:s')
-        ]);
+        ];
 
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return (float)($result['avg_minutes'] ?? 0);
@@ -1652,12 +1652,12 @@ declare(strict_types=1);
 
 namespace App\Support;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class CachingStrategy
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private \Redis $redis
     ) {}
 
@@ -1682,21 +1682,10 @@ class CachingStrategy
         $articleText = $this->formatArticles($articles);
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 2048,
             'temperature' => 0.7,
-            'system' => [
-                [
-                    'type' => 'text',
-                    'text' => $systemPrompt,
-                    'cache_control' => ['type' => 'ephemeral'] // 5-minute cache
-                ],
-                [
-                    'type' => 'text',
-                    'text' => "Knowledge Base:\n{$articleText}",
-                    'cache_control' => ['type' => 'ephemeral']
-                ]
-            ],
+            'system' => $systemPrompt . "\n\nKnowledge Base:\n" . $articleText,
             'messages' => $messages
         ]);
 
@@ -1704,7 +1693,7 @@ class CachingStrategy
         $this->redis->setex($cacheKey, 300, json_encode([
             'cached_at' => time(),
             'article_count' => count($articles)
-        ]));
+        ]);
 
         return $response->content[0]->text;
     }
@@ -1765,12 +1754,12 @@ declare(strict_types=1);
 
 namespace App\Support;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class CustomerMemory
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private \PDO $db
     ) {}
 
@@ -1801,7 +1790,7 @@ Return ONLY valid JSON.
 PROMPT;
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-haiku-4-20250514',
+            'model' => 'claude-haiku-4-5-20251001',
             'max_tokens' => 1024,
             'temperature' => 0.2,
             'messages' => [[
@@ -1833,7 +1822,7 @@ PROMPT;
         $stmt->execute([
             ':customer_id' => $customerId,
             ':memory_data' => json_encode($memory)
-        ]);
+        ];
     }
 
     /**
@@ -1845,7 +1834,7 @@ PROMPT;
             "SELECT memory_data FROM customer_memory WHERE customer_id = :customer_id"
         );
 
-        $stmt->execute([':customer_id' => $customerId]);
+        $stmt->execute([':customer_id' => $customerId];
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         if ($result) {
@@ -1892,12 +1881,12 @@ declare(strict_types=1);
 
 namespace App\Support;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class AttachmentHandler
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private \PDO $db,
         private string $uploadDir
     ) {}
@@ -1933,7 +1922,7 @@ class AttachmentHandler
         $mimeType = mime_content_type($filePath);
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 1024,
             'messages' => [[
                 'role' => 'user',
@@ -1970,7 +1959,7 @@ class AttachmentHandler
         $pdfData = base64_encode(file_get_contents($filePath));
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 2048,
             'messages' => [[
                 'role' => 'user',
@@ -2007,7 +1996,7 @@ class AttachmentHandler
         $content = file_get_contents($filePath);
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-haiku-4-20250514',
+            'model' => 'claude-haiku-4-5-20251001',
             'max_tokens' => 1024,
             'temperature' => 0.3,
             'messages' => [[
@@ -2051,7 +2040,7 @@ class AttachmentHandler
             ':file_name' => $fileName,
             ':file_type' => $fileType,
             ':analysis' => json_encode($analysis)
-        ]);
+        ];
     }
 }
 ```
@@ -2068,7 +2057,6 @@ namespace Tests\Support;
 use PHPUnit\Framework\TestCase;
 use App\Support\SupportBot;
 use App\Support\BotResponse;
-use Anthropic\Anthropic;
 
 class SupportBotTest extends TestCase
 {
@@ -2194,7 +2182,7 @@ class CrmIntegration
             'AccountId' => $customerId,
             'Subject' => $ticketData['subject'],
             'Description' => $ticketData['description'],
-            'Priority' => $this->mapPriority($ticketData['priority']),
+            'Priority' => $this->mapPriority($ticketData['priority'],
             'Origin' => 'Support Bot',
             'Status' => 'New'
         ];
@@ -2244,7 +2232,7 @@ class CrmIntegration
                 ],
                 'content' => $data ? json_encode($data) : null
             ]
-        ]);
+        ];
 
         $response = file_get_contents($url, false, $context);
         return json_decode($response, true) ?? [];
@@ -2294,7 +2282,7 @@ class SupportMonitoring
             ':tokens_used' => $metric['tokens_used'] ?? 0,
             ':cost_estimate' => $metric['cost_estimate'] ?? 0,
             ':quality_score' => $metric['quality_score'] ?? 0
-        ]);
+        ];
     }
 
     /**
@@ -2318,7 +2306,7 @@ class SupportMonitoring
         $stmt->execute([
             ':start' => $start->format('Y-m-d H:i:s'),
             ':end' => $end->format('Y-m-d H:i:s')
-        ]);
+        ];
 
         return $stmt->fetch(\PDO::FETCH_ASSOC) ?: [];
     }
@@ -2336,7 +2324,7 @@ class SupportMonitoring
              WHERE created_at > :time"
         );
 
-        $stmt->execute([':time' => $oneHourAgo->format('Y-m-d H:i:s')]);
+        $stmt->execute([':time' => $oneHourAgo->format('Y-m-d H:i:s')];
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         // Alert if response time exceeds 5 seconds
@@ -2352,6 +2340,13 @@ class SupportMonitoring
     }
 }
 ```
+
+## Further Reading
+
+- **[Official PHP SDK Documentation](https://github.com/anthropics/anthropic-sdk-php)** — The official Anthropic PHP SDK on GitHub
+- **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)** — Community resources and examples for Claude with PHP
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
+- **[PHP SDK Composer Package](https://packagist.org/packages/claude-php/claude-php-sdk)** — Official package on Packagist
 
 ## Wrap-up
 
