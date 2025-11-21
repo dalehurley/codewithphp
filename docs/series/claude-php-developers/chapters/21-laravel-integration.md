@@ -6,7 +6,7 @@ chapter: 21
 order: 21
 difficulty: "Intermediate"
 prerequisites:
-  - "Laravel 11+ installed"
+  - "Laravel 12+ installed"
   - "Understanding of service containers"
   - "Completion of Chapters 00-20"
 ---
@@ -50,7 +50,7 @@ By the end of this chapter, you will have created:
 
 Before starting, ensure you have:
 
-- ✓ **Laravel 11+** installed and configured
+- ✓ **Laravel 12+** installed and configured
 - ✓ **Anthropic API key** set up
 - ✓ **PHP 8.4+** with Composer
 - ✓ **Understanding of Laravel architecture** (service container, facades, providers)
@@ -63,7 +63,7 @@ Create or update your `.env` file with these Claude-specific variables:
 ```bash
 # .env
 ANTHROPIC_API_KEY=sk-ant-xxxxxxxxxxxxxxxxxxxxx
-CLAUDE_MODEL=claude-sonnet-4-20250514
+CLAUDE_MODEL=claude-sonnet-4-5-20250929
 CLAUDE_MAX_TOKENS=2048
 CLAUDE_TEMPERATURE=1.0
 CLAUDE_TIMEOUT=60
@@ -73,8 +73,9 @@ CLAUDE_CACHE_STORE=redis
 ```
 
 **Environment Variable Reference:**
+
 - `ANTHROPIC_API_KEY` — Your API key from [console.anthropic.com](https://console.anthropic.com)
-- `CLAUDE_MODEL` — Default model (latest: `claude-sonnet-4-20250514`)
+- `CLAUDE_MODEL` — Default model (latest: `claude-sonnet-4-5-20250929`)
 - `CLAUDE_MAX_TOKENS` — Maximum tokens per response (1-4096)
 - `CLAUDE_TEMPERATURE` — Randomness (0.0 deterministic → 1.0 creative)
 - `CLAUDE_TIMEOUT` — Request timeout in seconds
@@ -112,7 +113,7 @@ Laravel's service container is a powerful dependency injection system:
 $this->app->singleton(ClaudeService::class, function ($app) {
     return new ClaudeService(
         apiKey: config('claude.api_key'),
-        model: config('claude.default_model')
+        'model' => config('claude.default_model')
     );
 });
 
@@ -133,21 +134,21 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Services\ClaudeService;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class ClaudeServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
         // Register bindings in the container
-        $this->app->singleton(Anthropic::class, function ($app) {
-            return Anthropic::factory()
-                ->withApiKey(config('claude.api_key'))
-                ->make();
+        $this->app->singleton(ClaudePhp::class, function ($app) {
+            return new ClaudePhp(
+                apiKey: config('claude.api_key')
+            );
         });
 
         $this->app->singleton(ClaudeService::class, function ($app) {
-            return new ClaudeService($app->make(Anthropic::class));
+            return new ClaudeService($app->make(\ClaudePhp\ClaudePhp::class));
         });
     }
 
@@ -199,10 +200,10 @@ return [
     |--------------------------------------------------------------------------
     |
     | The default Claude model to use for API calls.
-    | Options: claude-opus-4-20250514, claude-sonnet-4-20250514, claude-haiku-4-20250514
+    | Options: claude-opus-4-1-20250805, claude-sonnet-4-5-20250929, claude-haiku-4-5-20251001
     |
     */
-    'default_model' => env('CLAUDE_MODEL', 'claude-sonnet-4-20250514'),
+    'default_model' => env('CLAUDE_MODEL', 'claude-sonnet-4-5-20250929'),
 
     /*
     |--------------------------------------------------------------------------
@@ -267,6 +268,7 @@ return [
 ### Expected Result
 
 You'll have a configuration file that:
+
 - Loads sensitive values (API key) from environment variables
 - Provides sensible defaults for all settings
 - Organizes cache, timeout, and system prompt settings
@@ -293,7 +295,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Contracts\ClaudeInterface;
 use App\Services\ClaudeService;
 use Illuminate\Contracts\Foundation\Application;
@@ -312,8 +314,8 @@ class ClaudeServiceProvider extends ServiceProvider
             'claude'
         );
 
-        // Register the Anthropic client
-        $this->app->singleton(Anthropic::class, function (Application $app) {
+        // Register the Claude Client
+        $this->app->singleton(\ClaudePhp\ClaudePhp::class, function (Application $app) {
             $apiKey = config('claude.api_key');
 
             if (empty($apiKey)) {
@@ -322,17 +324,16 @@ class ClaudeServiceProvider extends ServiceProvider
                 );
             }
 
-            return Anthropic::factory()
-                ->withApiKey($apiKey)
-                ->withTimeout(config('claude.timeout', 60))
-                ->make();
+            return new \ClaudePhp\ClaudePhp(
+                apiKey: $apiKey
+            );
         });
 
         // Register the Claude service
         $this->app->singleton(ClaudeInterface::class, ClaudeService::class);
         $this->app->singleton(ClaudeService::class, function (Application $app) {
             return new ClaudeService(
-                client: $app->make(Anthropic::class),
+                client: $app->make(\ClaudePhp\ClaudePhp::class),
                 config: config('claude')
             );
         });
@@ -360,7 +361,7 @@ class ClaudeServiceProvider extends ServiceProvider
     public function provides(): array
     {
         return [
-            Anthropic::class,
+            \ClaudePhp\ClaudePhp::class,
             ClaudeInterface::class,
             ClaudeService::class,
             'claude',
@@ -372,6 +373,7 @@ class ClaudeServiceProvider extends ServiceProvider
 ### Expected Result
 
 After creating the service provider, you'll be able to:
+
 - Resolve `ClaudeService` and `ClaudeInterface` from the container
 - Access Claude functionality via dependency injection
 - Use the `'claude'` alias for convenient access
@@ -480,6 +482,7 @@ interface ClaudeInterface
 ### Expected Result
 
 You'll have a contract that:
+
 - Defines all Claude service methods with proper type hints
 - Enables dependency injection of the interface (not concrete class)
 - Allows easy mocking in tests
@@ -499,14 +502,14 @@ Create a production-ready service implementation that handles API calls, caching
 
 1. **Create the service class** at `app/Services/ClaudeService.php`:
 
-```php
+````php
 <?php
 # filename: app/Services/ClaudeService.php
 declare(strict_types=1);
 
 namespace App\Services;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use App\Contracts\ClaudeInterface;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -517,13 +520,13 @@ class ClaudeService implements ClaudeInterface
     private array $defaultOptions;
 
     public function __construct(
-        private readonly Anthropic $client,
+        private readonly \ClaudePhp\ClaudePhp $client,
         private readonly array $config
     ) {
         $this->currentModel = $config['default_model'];
         $this->defaultOptions = [
             'temperature' => $config['temperature'],
-            'max_tokens' => $config['max_tokens'],
+            'maxTokens' => $config['max_tokens'],
         ];
     }
 
@@ -548,6 +551,7 @@ class ClaudeService implements ClaudeInterface
         }
 
         // Merge options with defaults
+        // Mapping max_tokens to maxTokens if needed, handled in constructor/merge
         $requestOptions = array_merge($this->defaultOptions, $options, [
             'model' => $this->currentModel,
             'messages' => [
@@ -562,7 +566,7 @@ class ClaudeService implements ClaudeInterface
         // Make the API call
         try {
             $response = $this->client->messages()->create($requestOptions);
-            $text = $response->content[0]->text;
+            $text = $response->content[0]->text ?? '';
 
             // Cache the response if enabled
             if ($this->isCacheEnabled()) {
@@ -571,10 +575,13 @@ class ClaudeService implements ClaudeInterface
             }
 
             // Log usage for monitoring
+            $inputTokens = $response->usage->inputTokens ?? 0;
+            $outputTokens = $response->usage->outputTokens ?? 0;
+
             Log::info('Claude API call completed', [
                 'model' => $this->currentModel,
-                'input_tokens' => $response->usage->inputTokens,
-                'output_tokens' => $response->usage->outputTokens,
+                'input_tokens' => $inputTokens,
+                'output_tokens' => $outputTokens,
             ]);
 
             return $text;
@@ -601,7 +608,7 @@ class ClaudeService implements ClaudeInterface
 
         $requestOptions = [
             'model' => $this->currentModel,
-            'max_tokens' => $this->defaultOptions['max_tokens'],
+            'maxTokens' => $this->defaultOptions['maxTokens'],
             'messages' => $messages,
         ];
 
@@ -610,7 +617,7 @@ class ClaudeService implements ClaudeInterface
         }
 
         $response = $this->client->messages()->create($requestOptions);
-        $reply = $response->content[0]->text;
+        $reply = $response->content[0]->text ?? '';
 
         // Return updated history
         return [
@@ -619,8 +626,8 @@ class ClaudeService implements ClaudeInterface
             ]),
             'response' => $reply,
             'usage' => [
-                'input_tokens' => $response->usage->inputTokens,
-                'output_tokens' => $response->usage->outputTokens,
+                'input_tokens' => $response->usage->inputTokens ?? 0,
+                'output_tokens' => $response->usage->outputTokens ?? 0,
             ],
         ];
     }
@@ -687,6 +694,7 @@ class ClaudeService implements ClaudeInterface
         $stream = $this->client->messages()->create($requestOptions);
 
         foreach ($stream as $event) {
+            // Handle streaming response based on Claude SDK structure
             if (isset($event->delta->text)) {
                 $callback($event->delta->text);
             }
@@ -732,11 +740,12 @@ class ClaudeService implements ClaudeInterface
         ]));
     }
 }
-```
+````
 
 ### Expected Result
 
 Your service will:
+
 - Cache responses when enabled, reducing API costs
 - Log all API calls for monitoring and debugging
 - Handle errors gracefully with proper exception handling
@@ -794,6 +803,7 @@ class Claude extends Facade
 ### Expected Result
 
 You'll be able to use Claude functionality statically:
+
 ```php
 Claude::generate('Hello');
 Claude::analyzeCode($code);
@@ -896,6 +906,7 @@ abstract class TestCase extends BaseTestCase
 ### Expected Result
 
 Your test base class will:
+
 - Set test API keys automatically
 - Disable caching for predictable test results
 - Provide a clean environment for each test
@@ -904,7 +915,7 @@ Your test base class will:
 
 The `setUp()` method runs before each test, ensuring consistent configuration. Disabling cache prevents tests from interfering with each other, and using test API keys ensures you never accidentally make real API calls during testing.
 
-### Mock the Anthropic Client
+### Mock the Anthropic ClaudePhp
 
 2. **Create unit tests** for the service in `tests/Unit/Services/ClaudeServiceTest.php`:
 
@@ -915,8 +926,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Services;
 
-use Anthropic\Anthropic;
-use Anthropic\Responses\Messages\CreateResponse;
+use ClaudePhp\ClaudePhp;
 use App\Services\ClaudeService;
 use Mockery;
 use Tests\TestCase;
@@ -931,17 +941,18 @@ class ClaudeServiceTest extends TestCase
 
     public function test_generate_returns_response_text(): void
     {
-        // Mock the Anthropic client
-        $mockClient = Mockery::mock(Anthropic::class);
+        // Mock the Claude Client
+        $mockClient = Mockery::mock(\ClaudePhp\ClaudePhp::class);
         $mockMessages = Mockery::mock();
 
         $mockClient->shouldReceive('messages')
             ->andReturn($mockMessages);
 
         // Mock the response
-        $mockResponse = Mockery::mock(CreateResponse::class);
-        $mockContent = (object) ['text' => 'Test response from Claude'];
-        $mockResponse->content = [$mockContent];
+        $mockResponse = Mockery::mock();
+        // SDK uses array access for content or property access?
+        // Following pattern: $response->content[0]->text
+        $mockResponse->content = [['text' => 'Test response from Claude']];
         $mockResponse->usage = (object) [
             'inputTokens' => 10,
             'outputTokens' => 5
@@ -962,15 +973,14 @@ class ClaudeServiceTest extends TestCase
 
     public function test_chat_maintains_history(): void
     {
-        $mockClient = Mockery::mock(Anthropic::class);
+        $mockClient = Mockery::mock(\ClaudePhp\ClaudePhp::class);
         $mockMessages = Mockery::mock();
 
         $mockClient->shouldReceive('messages')
             ->andReturn($mockMessages);
 
-        $mockResponse = Mockery::mock(CreateResponse::class);
-        $mockContent = (object) ['text' => 'Assistant response'];
-        $mockResponse->content = [$mockContent];
+        $mockResponse = Mockery::mock();
+        $mockResponse->content = [['text' => 'Assistant response']];
         $mockResponse->usage = (object) [
             'inputTokens' => 15,
             'outputTokens' => 8
@@ -998,13 +1008,13 @@ class ClaudeServiceTest extends TestCase
 
     public function test_with_model_creates_clone_with_different_model(): void
     {
-        $mockClient = Mockery::mock(Anthropic::class);
+        $mockClient = Mockery::mock(\ClaudePhp\ClaudePhp::class);
         $service = new ClaudeService($mockClient, config('claude'));
 
-        $newService = $service->withModel('claude-opus-4-20250514');
+        $newService = $service->withModel('claude-opus-4-1');
 
         $this->assertNotSame($service, $newService);
-        $this->assertEquals('claude-opus-4-20250514', $newService->getModel());
+        $this->assertEquals('claude-opus-4-1', $newService->getModel());
         $this->assertEquals(config('claude.default_model'), $service->getModel());
     }
 }
@@ -1013,6 +1023,7 @@ class ClaudeServiceTest extends TestCase
 ### Expected Result
 
 Your tests will:
+
 - Verify service methods return expected results
 - Test conversation history management
 - Validate model switching functionality
@@ -1034,7 +1045,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Facades\Claude;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Mockery;
 use Tests\TestCase;
 
@@ -1049,19 +1060,18 @@ class ClaudeFacadeTest extends TestCase
     public function test_facade_calls_service(): void
     {
         // Mock the client
-        $mockClient = Mockery::mock(Anthropic::class);
+        $mockClient = Mockery::mock(\ClaudePhp\ClaudePhp::class);
         $mockMessages = Mockery::mock();
         $mockClient->shouldReceive('messages')->andReturn($mockMessages);
 
         $mockResponse = Mockery::mock();
-        $mockContent = (object) ['text' => 'Facade test response'];
-        $mockResponse->content = [$mockContent];
+        $mockResponse->content = [['text' => 'Facade test response']];
         $mockResponse->usage = (object) ['inputTokens' => 5, 'outputTokens' => 3];
 
         $mockMessages->shouldReceive('create')->once()->andReturn($mockResponse);
 
         // Bind mock to container
-        $this->app->instance(Anthropic::class, $mockClient);
+        $this->app->instance(\ClaudePhp\ClaudePhp::class, $mockClient);
 
         // Use facade
         $result = Claude::generate('Test via facade');
@@ -1074,6 +1084,7 @@ class ClaudeFacadeTest extends TestCase
 ### Expected Result
 
 Your feature tests will verify that:
+
 - Facades correctly resolve services from the container
 - Static calls work as expected
 - Integration between facade and service is seamless
@@ -1104,15 +1115,15 @@ class ModelSelector
         return match($task) {
             'classification',
             'extraction',
-            'simple' => 'claude-haiku-4-20250514',
+            'simple' => 'claude-haiku-4-5-20251001',
 
             'analysis',
             'generation',
-            'moderate' => 'claude-sonnet-4-20250514',
+            'moderate' => 'claude-sonnet-4-5-20250929',
 
             'complex',
             'creative',
-            'architecture' => 'claude-opus-4-20250514',
+            'architecture' => 'claude-opus-4-1-20250805',
 
             default => config('claude.default_model'),
         };
@@ -1121,9 +1132,9 @@ class ModelSelector
     public static function forCost(string $priority): string
     {
         return match($priority) {
-            'low' => 'claude-haiku-4-20250514',
-            'medium' => 'claude-sonnet-4-20250514',
-            'high' => 'claude-opus-4-20250514',
+            'low' => 'claude-haiku-4-5-20251001',
+            'medium' => 'claude-sonnet-4-5-20250929',
+            'high' => 'claude-opus-4-1-20250805',
             default => config('claude.default_model'),
         };
     }
@@ -1181,9 +1192,9 @@ use App\Models\ClaudeUsage;
 class UsageTracker
 {
     private const PRICING = [
-        'claude-opus-4-20250514' => ['input' => 15.00, 'output' => 75.00],
-        'claude-sonnet-4-20250514' => ['input' => 3.00, 'output' => 15.00],
-        'claude-haiku-4-20250514' => ['input' => 0.25, 'output' => 1.25],
+        'claude-opus-4-1-20250805' => ['input' => 15.00, 'output' => 75.00],
+        'claude-sonnet-4-5-20250929' => ['input' => 3.00, 'output' => 15.00],
+        'claude-haiku-4-5-20251001' => ['input' => 0.25, 'output' => 1.25],
     ];
 
     public function track(
@@ -1621,7 +1632,7 @@ Run the test command:
 php artisan claude:test
 
 # Test with custom model
-php artisan claude:test --model=claude-haiku-4-20250514
+php artisan claude:test --model=claude-haiku-4-5
 
 # Test with custom timeout
 php artisan claude:test --timeout=60
@@ -1634,7 +1645,7 @@ php artisan claude:test --timeout=60
 
 📋 Environment Check:
   ✓ ANTHROPIC_API_KEY = ***xxxx
-  ✓ CLAUDE_MODEL = claude-sonnet-4-20250514
+  ✓ CLAUDE_MODEL = claude-sonnet-4-5-20250929
 
 ✅ Testing Basic Generation:
   Testing: Generate a simple response...
@@ -1677,38 +1688,36 @@ packages/
 
 ```json
 {
-    "name": "yourname/claude-laravel",
-    "description": "Laravel integration for Anthropic Claude AI",
-    "type": "library",
-    "require": {
-        "php": "^8.2",
-        "illuminate/support": "^11.0",
-        "anthropic-ai/sdk": "^0.6"
-    },
-    "require-dev": {
-        "orchestra/testbench": "^9.0",
-        "phpunit/phpunit": "^10.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "YourName\\ClaudeLaravel\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "YourName\\ClaudeLaravel\\Tests\\": "tests/"
-        }
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "YourName\\ClaudeLaravel\\ClaudeServiceProvider"
-            ],
-            "aliases": {
-                "Claude": "YourName\\ClaudeLaravel\\Facades\\Claude"
-            }
-        }
+  "name": "yourname/claude-laravel",
+  "description": "Laravel integration for Anthropic Claude AI",
+  "type": "library",
+  "require": {
+    "php": "^8.2",
+    "illuminate/support": "^12.0",
+    "claude-php/claude-php-sdk": "^0.2"
+  },
+  "require-dev": {
+    "orchestra/testbench": "^10.0",
+    "phpunit/phpunit": "^10.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "YourName\\ClaudeLaravel\\": "src/"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "YourName\\ClaudeLaravel\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": ["YourName\\ClaudeLaravel\\ClaudeServiceProvider"],
+      "aliases": {
+        "Claude": "YourName\\ClaudeLaravel\\Facades\\Claude"
+      }
+    }
+  }
 }
 ```
 
@@ -1719,6 +1728,7 @@ packages/
 **Goal**: Create a rate limiting system to control Claude API usage per user.
 
 **Requirements**:
+
 - Implement `attempt()` method that checks if a user can make a request
 - Implement `remaining()` method that returns requests left for the hour
 - Use Laravel Cache with keys like `claude:ratelimit:{userId}:{hour}`
@@ -1773,6 +1783,7 @@ class ClaudeRateLimiter
 **Goal**: Build a reusable prompt template system that loads templates from storage and replaces variables.
 
 **Requirements**:
+
 - Store templates in `storage/app/prompts/` directory
 - Support variable replacement using `{{variable}}` syntax
 - Load template files by name (e.g., `code_review.txt`)
@@ -1823,6 +1834,7 @@ class PromptTemplate
 **Goal**: Create an intelligent caching system that stores Claude responses with configurable TTL and supports pattern-based invalidation.
 
 **Requirements**:
+
 - Generate cache keys using prompt and model hash
 - Use Laravel's `Cache::remember()` for automatic retrieval/storage
 - Support custom TTL (default from config)
@@ -1922,7 +1934,7 @@ class ClaudeTestController extends Controller
             if (auth()->check()) {
                 $tracker->track(
                     userId: auth()->id(),
-                    model: $claude->getModel(),
+                    'model' => $claude->getModel(),
                     prompt: 'Explain Laravel service providers...',
                     response: $response,
                     inputTokens: 15,
@@ -1959,30 +1971,35 @@ Route::get('/test/claude', [\App\Http\Controllers\ClaudeTestController::class, '
 ## Troubleshooting
 
 **Service provider not loading?**
+
 - Ensure provider is registered in `bootstrap/providers.php`
 - Run `php artisan config:clear` to clear cached config
 - Check for syntax errors in provider
 - Run `php artisan provider:list` to see registered providers
 
 **Facade not working?**
+
 - Verify facade accessor returns correct binding name
 - Check provider registers the service with that name
 - Run `php artisan optimize:clear` to clear all caches
 - Verify facade is imported: `use App\Facades\Claude;`
 
 **Tests failing with API errors?**
+
 - Ensure you're mocking the Anthropic client, not making real calls
 - Use `Mockery::close()` in `tearDown()` to clean up mocks
 - Check test configuration in `TestCase.php`
 - Use `$this->app->instance()` to bind mocks to container
 
 **Cache not working?**
+
 - Verify Redis/cache driver is configured correctly
 - Check `CLAUDE_CACHE_ENABLED` is true in `.env`
 - Ensure cache store specified in config exists
 - Run `php artisan cache:clear` to clear old entries
 
 **API key not recognized?**
+
 - Verify `ANTHROPIC_API_KEY` is set in `.env`
 - Ensure key starts with `sk-ant-`
 - Check for trailing whitespace in `.env`
@@ -1990,16 +2007,25 @@ Route::get('/test/claude', [\App\Http\Controllers\ClaudeTestController::class, '
 - Verify key has proper API permissions in Anthropic console
 
 **Rate limiting errors?**
+
 - Catch `RateLimitException` specifically: `catch (RateLimitException $e)`
 - Implement exponential backoff: `sleep($e->getRetryAfter() ?? 60)`
 - Check usage in Anthropic console dashboard
 - Consider implementing queue-based processing (Chapter 19)
 
 **Exception handling issues?**
+
 - Import custom exceptions: `use App\Exceptions\Claude\ClaudeException;`
 - Check exception is caught before generic `\Exception` handler
 - Use `->isRateLimit()` and `->isAuthenticationError()` helpers
 - Log exception details: `Log::error($e->getMessage(), $e->getTrace())`
+
+## Further Reading
+
+- **[Claude-PHP-SDK Documentation](https://github.com/claude-php/Claude-PHP-SDK)** — The official repository for the Claude-PHP SDK
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
+- **[Laravel Service Providers Documentation](https://laravel.com/docs/providers)** — Official guide to creating and registering service providers
+- **[Claude-PHP-SDK on Packagist](https://packagist.org/packages/claude-php/claude-php-sdk)** — Composer package details
 
 ## Wrap-up
 
@@ -2045,6 +2071,7 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 21 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-21)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-21

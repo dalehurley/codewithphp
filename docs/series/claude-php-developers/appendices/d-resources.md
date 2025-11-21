@@ -134,14 +134,14 @@ composer require anthropic-php/client
 **Quick Start:**
 ```php
 # filename: sdk-quickstart.php
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
 
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
     'messages' => [
         ['role' => 'user', 'content' => 'Hello, Claude!']
@@ -180,7 +180,7 @@ composer require guzzlehttp/guzzle
 - Middleware support
 - Used by Anthropic SDK
 
-**[Symfony HTTP Client](https://symfony.com/doc/current/http_client.html)**
+**[Symfony HTTP ClaudePhp](https://symfony.com/doc/current/http_client.html)**
 ```bash
 composer require symfony/http-client
 ```
@@ -259,7 +259,7 @@ composer require --dev pestphp/pest
 http POST https://api.anthropic.com/v1/messages \
   x-api-key:$ANTHROPIC_API_KEY \
   anthropic-version:2023-06-01 \
-  model=claude-sonnet-4-20250514 \
+  model=claude-sonnet-4-5-20250929 \
   max_tokens:=1024 \
   messages:='[{"role":"user","content":"Hello"}]'
 ```
@@ -347,7 +347,7 @@ composer require sentry/sentry-laravel
 - Server-Sent Events
 - Handling stream events
 - Error handling
-- Client implementation
+- ClaudePhp implementation
 
 ### PHP Learning Resources
 
@@ -781,8 +781,8 @@ composer create-project anthropic/laravel-claude-starter
 | Model | Context | Best For | Cost |
 |-------|---------|----------|------|
 | claude-opus-4-20250514 | 200K | Complex reasoning | $$$ |
-| claude-sonnet-4-20250514 | 200K | Balanced tasks | $$ |
-| claude-haiku-4-20250514 | 200K | Simple, fast | $ |
+| claude-sonnet-4-5-20250929 | 200K | Balanced tasks | $$ |
+| claude-haiku-4-5-20251001 | 200K | Simple, fast | $ |
 
 ### Token Limits
 

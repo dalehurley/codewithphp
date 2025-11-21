@@ -1,0 +1,22 @@
+{
+    "name": "codewithphp/claude-php-chapter-02",
+    "description": "Chapter 02: Authentication and API Keys - Claude for PHP Developers",
+    "type": "project",
+    "require": {
+        "php": "^8.2",
+        "claude-php/claude-php-sdk": "^0.3",
+        "vlucas/phpdotenv": "^5.5",
+        "monolog/monolog": "^3.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "ClaudePhp\\Auth\\": "src/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

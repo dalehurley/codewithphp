@@ -134,3 +134,5 @@ class Deal extends Model
 
 
 
+
+

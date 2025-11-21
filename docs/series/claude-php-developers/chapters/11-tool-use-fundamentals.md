@@ -108,11 +108,11 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
 
 // Define a simple calculator tool
 $tools = [
@@ -142,7 +142,7 @@ $tools = [
 ];
 
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
     'tools' => $tools,
     'messages' => [[
@@ -170,11 +170,11 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
 
 // Actual implementation of calculator
 function calculator(string $operation, float $a, float $b): float
@@ -213,7 +213,7 @@ $messages = [[
 
 // Initial request
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
     'tools' => $tools,
     'messages' => $messages
@@ -248,7 +248,7 @@ while ($response->stopReason === 'tool_use') {
             $toolResults[] = [
                 'type' => 'tool_result',
                 'tool_use_id' => $block->id,
-                'content' => (string)$result
+                'content' => json_encode($result)
             ];
         }
     }
@@ -261,7 +261,7 @@ while ($response->stopReason === 'tool_use') {
 
     // Continue conversation
     $response = $client->messages()->create([
-        'model' => 'claude-sonnet-4-20250514',
+        'model' => 'claude-sonnet-4-5-20250929',
         'max_tokens' => 1024,
         'tools' => $tools,
         'messages' => $messages
@@ -292,11 +292,11 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
 
 // Simulated database functions
 function getOrderStatus(string $orderId): array
@@ -438,7 +438,7 @@ Guidelines:
 SYSTEM;
 
     $response = $client->messages()->create([
-        'model' => 'claude-sonnet-4-20250514',
+        'model' => 'claude-sonnet-4-5-20250929',
         'max_tokens' => 2048,
         'system' => $systemPrompt,
         'tools' => $tools,
@@ -483,7 +483,7 @@ SYSTEM;
 
         // Continue conversation
         $response = $client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 2048,
             'system' => $systemPrompt,
             'tools' => $tools,
@@ -525,11 +525,11 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
 
 // Define tools for weather and news
 $tools = [
@@ -586,7 +586,7 @@ $messages = [[
 ]];
 
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
     'tools' => $tools,
     'messages' => $messages
@@ -618,12 +618,18 @@ if ($response->stopReason === 'tool_use') {
     }
 
     // Return all results at once
-    $messages[] = ['role' => 'assistant', 'content' => $response->content];
-    $messages[] = ['role' => 'user', 'content' => $toolResults];
+    $messages[] = [
+        'role' => 'assistant',
+        'content' => $response->content
+    ];
+    $messages[] = [
+        'role' => 'user',
+        'content' => $toolResults
+    ];
 
     // Get final response
     $finalResponse = $client->messages()->create([
-        'model' => 'claude-sonnet-4-20250514',
+        'model' => 'claude-sonnet-4-5-20250929',
         'max_tokens' => 1024,
         'tools' => $tools,
         'messages' => $messages
@@ -647,11 +653,11 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
 
 $tools = [
     [
@@ -670,7 +676,7 @@ $tools = [
 // Example 1: Force tool use
 echo "=== Force Tool Use ===\n";
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
     'tools' => $tools,
     'tool_choice' => ['type' => 'any'], // Force Claude to use a tool
@@ -684,7 +690,7 @@ echo "Stop reason: {$response->stopReason}\n\n";
 // Example 2: Force specific tool
 echo "=== Force Specific Tool ===\n";
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
     'tools' => $tools,
     'tool_choice' => [
@@ -701,7 +707,7 @@ echo "Stop reason: {$response->stopReason}\n\n";
 // Example 3: Auto (default - Claude decides)
 echo "=== Auto Mode ===\n";
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
     'tools' => $tools,
     'tool_choice' => ['type' => 'auto'], // Claude decides
@@ -726,11 +732,11 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
 
 // Tool with comprehensive validation and error handling
 function processPayment(string $customerId, float $amount, string $currency): array
@@ -831,7 +837,7 @@ $messages = [[
 ]];
 
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
     'tools' => $tools,
     'messages' => $messages
@@ -877,7 +883,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 // Secure tool execution wrapper
 class SecureToolExecutor
@@ -1114,20 +1120,20 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class ConversationalAgent
 {
     private array $messages = [];
     private array $tools;
-    private Anthropic $client;
+    private ClaudePhp $client;
 
     public function __construct(array $tools)
     {
         $this->tools = $tools;
-        $this->client = Anthropic::factory()
-            ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-            ->make();
+        $this->client = new ClaudePhp(
+            apiKey: getenv('ANTHROPIC_API_KEY')
+        );
     }
 
     public function chat(string $userMessage): string
@@ -1139,7 +1145,7 @@ class ConversationalAgent
         ];
 
         $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 2048,
             'tools' => $this->tools,
             'messages' => $this->messages
@@ -1170,7 +1176,7 @@ class ConversationalAgent
             ];
 
             $response = $this->client->messages()->create([
-                'model' => 'claude-sonnet-4-20250514',
+                'model' => 'claude-sonnet-4-5-20250929',
                 'max_tokens' => 2048,
                 'tools' => $this->tools,
                 'messages' => $this->messages
@@ -1375,12 +1381,14 @@ $tester->printResults();
 ## Troubleshooting
 
 **Tool not being called?**
+
 - Ensure your tool description clearly explains when to use it
 - Check that the user's request matches the tool's purpose
 - Try using `tool_choice: ['type' => 'any']` to force tool use
 - Verify your tool schema is valid JSON
 
 **Invalid parameters passed to tool?**
+
 - Add detailed descriptions to each parameter
 - Use enums for fields with limited options
 - Include examples in descriptions
@@ -1388,18 +1396,21 @@ $tester->printResults();
 - Implement client-side validation before calling the tool
 
 **Tool execution fails with cryptic errors?**
+
 - Return structured error responses with specific error codes
 - Include context about what went wrong
 - Log detailed error information for debugging
 - Test your tools with various invalid inputs
 
 **Infinite tool loop?**
+
 - Implement iteration limits in your tool processing loop
 - Return clear, structured results from tools
 - Ensure tool results actually answer Claude's query
 - Check for errors in tool execution
 
 **Tool results not understood?**
+
 - Return results as structured JSON
 - Include relevant context in results
 - Avoid returning too much data (summarize when needed)
@@ -1407,12 +1418,14 @@ $tester->printResults();
 - Validate tool output before returning it
 
 **Permission denied errors?**
+
 - Verify user has required permissions
 - Check tool is registered with correct permissions
 - Ensure permission strings match exactly
 - Log permission denials for audit trail
 
 **Tool timeout or slow execution?**
+
 - Implement reasonable timeouts for long-running tools
 - Consider async execution for heavy operations (Chapter 38)
 - Cache tool results when appropriate (Chapter 18)
@@ -1425,6 +1438,7 @@ $tester->printResults();
 Create a weather information tool that Claude can use to get current weather conditions.
 
 **Requirements:**
+
 - Define a tool called `get_weather` with city parameter
 - Implement a PHP function that returns simulated weather data
 - Handle tool calls and return formatted results to Claude
@@ -1437,6 +1451,7 @@ Create a weather information tool that Claude can use to get current weather con
 Build a shopping assistant with three tools: `search_products`, `add_to_cart`, and `checkout`.
 
 **Requirements:**
+
 - Create tool definitions for all three operations
 - Implement PHP functions for each tool (simulated data is fine)
 - Build a conversation loop that handles multiple sequential tool calls
@@ -1449,6 +1464,7 @@ Build a shopping assistant with three tools: `search_products`, `add_to_cart`, a
 Create a system that forces Claude to use a specific tool based on user intent detection.
 
 **Requirements:**
+
 - Detect user intent (e.g., "calculate", "search", "convert")
 - Dynamically set `tool_choice` based on detected intent
 - Handle cases where no tool matches the intent
@@ -1462,6 +1478,11 @@ Create a system that forces Claude to use a specific tool based on user intent d
 For Exercise 1, use a simple array-based weather database. For Exercise 2, maintain conversation state between tool calls. For Exercise 3, use keyword matching or a simple intent classifier to determine which tool to force.
 
 </details>
+
+## Further Reading
+
+- **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)** — The PHP SDK for Claude
+- **[Official Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
 
 ## Wrap-up
 
@@ -1523,6 +1544,7 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 11 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-11)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-11

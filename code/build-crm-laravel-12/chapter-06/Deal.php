@@ -55,3 +55,5 @@ class Deal extends Model
 
 
 
+
+

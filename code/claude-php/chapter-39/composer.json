@@ -1,0 +1,16 @@
+{
+    "name": "claude-php/chapter-39",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": "^8.2",
+        "claude-php/claude-php-sdk": "^0.3",
+        "predis/predis": "^2.2",
+        "monolog/monolog": "^3.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    }
+}

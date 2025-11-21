@@ -32,6 +32,7 @@ Security is paramount when building production AI applications. Claude applicati
 This chapter provides comprehensive security guidance for production Claude applications. You'll learn proven strategies for protecting API keys, preventing prompt injection attacks, validating AI-generated outputs, handling personally identifiable information (PII), implementing compliance frameworks, and building defense-in-depth security layers.
 
 **What You'll Learn:**
+
 - Secure API key storage and rotation strategies
 - Prompt injection attack vectors and prevention
 - Output validation and sanitization techniques
@@ -99,16 +100,16 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 // Secure: Load from environment
-$apiKey = getenv('ANTHROPIC_API_KEY') ?: throw new RuntimeException(
+$apiKey = $_ENV['ANTHROPIC_API_KEY'] ?: throw new RuntimeException(
     'ANTHROPIC_API_KEY not set. Create a .env file or set environment variable.'
 );
 
-$client = Anthropic::factory()
-    ->withApiKey($apiKey)
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $apiKey
+);
 
 // Simple security check: validate key format
 if (!str_starts_with($apiKey, 'sk-ant-')) {
@@ -116,7 +117,7 @@ if (!str_starts_with($apiKey, 'sk-ant-')) {
 }
 
 echo "✓ API key loaded securely from environment\n";
-echo "✓ Client initialized successfully\n";
+echo "✓ ClaudePhp initialized successfully\n";
 ```
 
 Run this example:
@@ -133,7 +134,7 @@ Expected output:
 
 ```
 ✓ API key loaded securely from environment
-✓ Client initialized successfully
+✓ ClaudePhp initialized successfully
 ```
 
 ## API Key Security
@@ -150,9 +151,11 @@ API keys are the gateway to your Claude account and budget. A compromised key ca
 # ❌ NEVER DO THIS - Hardcoded key
 declare(strict_types=1);
 
-$client = Anthropic::factory()
-    ->withApiKey('sk-ant-api03-hardcoded-key')  // SECURITY RISK!
-    ->make();
+$client =
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+        apiKey: 'sk-ant-api03-hardcoded-key'  // SECURITY RISK!
 ```
 
 **Use environment variables:**
@@ -163,14 +166,16 @@ $client = Anthropic::factory()
 # ✓ Secure: Environment variable
 declare(strict_types=1);
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+use ClaudePhp\ClaudePhp;
 
 // Validate key exists
-if (!getenv('ANTHROPIC_API_KEY')) {
+if (!$_ENV['ANTHROPIC_API_KEY']) {
     throw new RuntimeException('ANTHROPIC_API_KEY environment variable not set');
 }
+
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 ```
 
 ### Environment File Protection
@@ -391,9 +396,10 @@ $secretsProvider = new AwsSecretsProvider(
     'prod/anthropic/api-key'
 );
 
-$client = Anthropic::factory()
-    ->withApiKey($secretsProvider->getApiKey())
-    ->make();
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: $secretsProvider->getApiKey()
 ```
 
 ## Prompt Injection Prevention
@@ -536,22 +542,23 @@ namespace App\Security;
 class SecurityException extends \RuntimeException {}
 
 // Usage
-use Anthropic\Anthropic;
 use App\Security\PromptInjectionDefense;
 use App\Security\SecurityException;
 
 $defense = new PromptInjectionDefense();
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
 
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 try {
     $userInput = $_POST['user_input'] ?? '';
     $safeInput = $defense->sanitizeInput($userInput);
 
     // Use sanitized input in prompt
     $response = $client->messages()->create([
-        'model' => 'claude-sonnet-4-20250514',
+        'model' => 'claude-sonnet-4-5',
         'max_tokens' => 1024,
         'messages' => [[
             'role' => 'user',
@@ -645,22 +652,23 @@ PROMPT;
 }
 
 // Usage
-use Anthropic\Anthropic;
 use App\Security\SecurePromptBuilder;
 
 $promptBuilder = new SecurePromptBuilder();
 $userInput = "This is the user's text to summarize.";
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
 
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 $prompt = $promptBuilder->buildSecurePrompt(
     userInput: $userInput,
     task: "Summarize this text in 2 sentences"
 );
 
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5',
     'max_tokens' => 1024,
     'system' => $prompt['system'],
     'messages' => [[
@@ -951,7 +959,6 @@ class DataMinimizer
 }
 
 // Usage
-use Anthropic\Anthropic;
 use App\Security\DataMinimizer;
 
 $minimizer = new DataMinimizer();
@@ -980,12 +987,14 @@ $customerData = $minimizer->minimizeCustomerData($fullCustomer, [
 $customers = [$fullCustomer]; // Array of customer records
 $anonymousData = $minimizer->anonymize($customers);
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5',
     'max_tokens' => 2048,
     'messages' => [[
         'role' => 'user',
@@ -1107,16 +1116,17 @@ namespace App\Compliance;
 class ComplianceException extends \RuntimeException {}
 
 // Usage
-use Anthropic\Anthropic;
 use App\Compliance\GdprCompliance;
 use App\Compliance\ComplianceException;
 
 $gdpr = new GdprCompliance();
 $userId = 'user_12345';
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
 
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 // Before processing
 if (!$gdpr->hasConsent($userId, 'ai_content_analysis')) {
     throw new ComplianceException('User consent required for AI processing');
@@ -1132,7 +1142,7 @@ $gdpr->logProcessing(
 
 // Process with Claude
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5',
     'max_tokens' => 1024,
     'messages' => [[
         'role' => 'user',
@@ -1203,15 +1213,16 @@ class HipaaCompliance
 }
 
 // Usage - ONLY with de-identified data
-use Anthropic\Anthropic;
 use App\Compliance\HipaaCompliance;
 use App\Compliance\ComplianceException;
 
 $hipaa = new HipaaCompliance();
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
 
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 $medicalNote = "Patient John Smith (DOB: 05/15/1980, MRN: 123456) presents with...";
 $deidentified = $hipaa->deidentifyHealthData($medicalNote);
 
@@ -1224,7 +1235,7 @@ if (!$validation['is_compliant']) {
 
 // Only send de-identified data
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5',
     'max_tokens' => 1024,
     'messages' => [[
         'role' => 'user',
@@ -1307,9 +1318,9 @@ class SecurityLogger
     private function calculateCost(string $model, int $inputTokens, int $outputTokens): float
     {
         $pricing = match($model) {
-            'claude-opus-4-20250514' => ['input' => 15.00, 'output' => 75.00],
-            'claude-sonnet-4-20250514' => ['input' => 3.00, 'output' => 15.00],
-            'claude-haiku-4-20250514' => ['input' => 0.25, 'output' => 1.25],
+            'claude-opus-4-1' => ['input' => 15.00, 'output' => 75.00],
+            'claude-sonnet-4-5' => ['input' => 3.00, 'output' => 15.00],
+            'claude-haiku-4-5-20251001' => ['input' => 0.25, 'output' => 1.25],
             default => ['input' => 0, 'output' => 0],
         };
 
@@ -1454,7 +1465,6 @@ class RateLimitException extends \Exception
 class BudgetLimitException extends \Exception {}
 
 // Usage
-use Anthropic\Anthropic;
 use App\Security\RateLimiter;
 use App\Security\RateLimitException;
 use App\Security\BudgetLimitException;
@@ -1465,10 +1475,12 @@ $redis->connect('127.0.0.1', 6379);
 
 $rateLimiter = new RateLimiter($redis);
 $userId = 'user_12345';
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
 
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 try {
     // Standard rate limiting
     $rateLimiter->checkLimit(
@@ -1487,7 +1499,7 @@ try {
 
     // Make Claude request
     $response = $client->messages()->create([
-        'model' => 'claude-sonnet-4-20250514',
+        'model' => 'claude-sonnet-4-5',
         'max_tokens' => 1024,
         'messages' => [[
             'role' => 'user',
@@ -1642,6 +1654,7 @@ echo "✓ Intrusion detection system working correctly\n";
 ## Troubleshooting
 
 **API key compromised?**
+
 - Immediately rotate key in Anthropic Console
 - Check usage logs for unauthorized access
 - Update environment variables across all servers
@@ -1649,6 +1662,7 @@ echo "✓ Intrusion detection system working correctly\n";
 - Implement monitoring for unusual usage patterns
 
 **PII accidentally sent to Claude?**
+
 - Document the incident per compliance requirements
 - Review and update PII detection rules
 - Notify affected users if required by regulations
@@ -1656,10 +1670,18 @@ echo "✓ Intrusion detection system working correctly\n";
 - Consider implementing approval workflows
 
 **Rate limiting too strict?**
+
 - Review legitimate usage patterns
 - Implement tiered limits based on user roles
 - Add request queuing for burst traffic
 - Consider adaptive limits based on behavior
+
+## Further Reading
+
+- **[Official PHP SDK Documentation](https://github.com/anthropics/anthropic-sdk-php)** — The official Anthropic PHP SDK on GitHub
+- **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)** — Community resources and examples for Claude with PHP
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
+- **[PHP SDK Composer Package](https://packagist.org/packages/claude-php/claude-php-sdk)** — Official package on Packagist
 
 ## Wrap-up
 
@@ -1712,6 +1734,7 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 36 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-36)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-36

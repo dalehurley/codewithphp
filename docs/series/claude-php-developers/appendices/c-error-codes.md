@@ -26,7 +26,7 @@ Complete guide to Claude API errors, debugging strategies, and solutions. Use th
 ## Table of Contents
 
 - [Error Response Format](#error-response-format)
-- [Client Errors (4xx)](#client-errors-4xx)
+- [ClaudePhp Errors (4xx)](#client-errors-4xx)
 - [Server Errors (5xx)](#server-errors-5xx)
 - [SDK-Specific Errors](#sdk-specific-errors)
 - [Common Issues](#common-issues)
@@ -53,9 +53,15 @@ Complete guide to Claude API errors, debugging strategies, and solutions. Use th
 
 ```php
 # filename: sdk-error-handling.php
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 try {
     $response = $client->messages()->create([...]);
-} catch (\Anthropic\Exceptions\ErrorException $e) {
+} catch (\ClaudePhp\Exceptions\ErrorException $e) {
     echo $e->getMessage();      // Error message
     echo $e->getErrorType();    // Error type code
     echo $e->getStatusCode();   // HTTP status code
@@ -64,7 +70,7 @@ try {
 
 ---
 
-## Client Errors (4xx)
+## ClaudePhp Errors (4xx)
 
 Errors caused by invalid requests from your application.
 
@@ -91,7 +97,7 @@ Errors caused by invalid requests from your application.
 # filename: fix-missing-max-tokens.php
 // ❌ Wrong - missing max_tokens
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'messages' => [
         ['role' => 'user', 'content' => 'Hello']
     ]
@@ -99,7 +105,7 @@ $response = $client->messages()->create([
 
 // ✅ Correct
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,  // Required!
     'messages' => [
         ['role' => 'user', 'content' => 'Hello']
@@ -197,6 +203,8 @@ if (!empty($errors)) {
 
 ```php
 # filename: fix-authentication-error.php
+use ClaudePhp\ClaudePhp;
+
 // Check if API key is set
 $apiKey = getenv('ANTHROPIC_API_KEY');
 if (!$apiKey) {
@@ -209,9 +217,9 @@ if (!str_starts_with($apiKey, 'sk-ant-')) {
 }
 
 // Initialize client
-$client = Anthropic::factory()
-    ->withApiKey($apiKey)
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $apiKey
+);
 ```
 
 **Debug Checklist:**
@@ -251,11 +259,13 @@ $client = Anthropic::factory()
 
 ```php
 # filename: fix-permission-error.php
+use ClaudePhp\ClaudePhp;
+
 // Check model availability
 $availableModels = [
     'claude-opus-4-20250514',
-    'claude-sonnet-4-20250514',
-    'claude-haiku-4-20250514'
+    'claude-sonnet-4-5-20250929',
+    'claude-haiku-4-5-20251001'
 ];
 
 if (!in_array($model, $availableModels)) {
@@ -263,10 +273,10 @@ if (!in_array($model, $availableModels)) {
 }
 
 // For beta features, add beta header
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->withHttpHeader('anthropic-beta', 'prompt-caching-2024-07-31')
-    ->make();
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY'),
+    betaFeatures: ['prompt-caching-2024-07-31']
+);
 ```
 
 ---
@@ -296,6 +306,8 @@ $client = Anthropic::factory()
 
 ```php
 # filename: fix-not-found-error.php
+use ClaudePhp\ClaudePhp;
+
 // ❌ Wrong
 $url = 'https://api.anthropic.com/v1/message'; // Missing 's'
 
@@ -303,9 +315,9 @@ $url = 'https://api.anthropic.com/v1/message'; // Missing 's'
 $url = 'https://api.anthropic.com/v1/messages';
 
 // When using SDK, this is handled automatically
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
 ```
 
 ---
@@ -336,6 +348,8 @@ $client = Anthropic::factory()
 
 ```php
 # filename: RateLimiter.php
+use ClaudePhp\Exceptions\ErrorException;
+
 class RateLimiter
 {
     private int $maxRetries = 5;
@@ -348,7 +362,7 @@ class RateLimiter
         } catch (ErrorException $e) {
             if ($e->getErrorType() === 'rate_limit_error' && $attempt < $this->maxRetries) {
                 // Exponential backoff: 1s, 2s, 4s, 8s, 16s
-                $delay = $this->baseDelay * pow(2, $attempt);
+                $delay = min($this->baseDelay * pow(2, $attempt), 32000000); // Max 32s
 
                 // Add jitter to prevent thundering herd
                 $jitter = random_int(0, 100000); // 0-100ms
@@ -406,6 +420,12 @@ class RedisRateLimiter
 }
 
 // Usage
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 $limiter = new RedisRateLimiter($redis, 50);
 $limiter->waitForSlot('user_123');
 
@@ -453,6 +473,8 @@ Errors on Anthropic's side. Usually transient.
 
 ```php
 # filename: ApiErrorHandler.php
+use ClaudePhp\Exceptions\ErrorException;
+
 class ApiErrorHandler
 {
     public function makeRequestWithRetry(callable $request, int $maxAttempts = 3): mixed
@@ -498,6 +520,8 @@ class ApiErrorHandler
 
 ```php
 # filename: OverloadHandler.php
+use ClaudePhp\Exceptions\ErrorException;
+
 class OverloadHandler
 {
     public function makeRequest(callable $request, int $maxRetries = 5): mixed
@@ -537,16 +561,16 @@ class OverloadHandler
 
 ```php
 # filename: connection-timeout.php
+use ClaudePhp\ClaudePhp;
+
 // Set custom timeout
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->withHttpClient(
-        new \GuzzleHttp\Client([
-            'timeout' => 120, // 2 minutes
-            'connect_timeout' => 10 // 10 seconds to connect
-        ])
-    )
-    ->make();
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY'),
+    httpClientOptions: [
+        'timeout' => 120, // 2 minutes
+        'connect_timeout' => 10 // 10 seconds to connect
+    ]
+);
 ```
 
 ### SSL Certificate Errors
@@ -555,25 +579,23 @@ $client = Anthropic::factory()
 
 ```php
 # filename: ssl-certificate-errors.php
+use ClaudePhp\ClaudePhp;
+
 // Development only - DO NOT use in production
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->withHttpClient(
-        new \GuzzleHttp\Client([
-            'verify' => false // Disable SSL verification
-        ])
-    )
-    ->make();
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY'),
+    httpClientOptions: [
+        'verify' => false // Disable SSL verification
+    ]
+);
 
 // Production - specify CA bundle
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->withHttpClient(
-        new \GuzzleHttp\Client([
-            'verify' => '/path/to/cacert.pem'
-        ])
-    )
-    ->make();
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY'),
+    httpClientOptions: [
+        'verify' => '/path/to/cacert.pem'
+    ]
+);
 ```
 
 ---
@@ -734,7 +756,7 @@ $conversation = new ConversationManager();
 $conversation->addMessage('user', 'Hello');
 
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
     'messages' => $conversation->getMessages()
 ]);
@@ -856,8 +878,8 @@ class ClaudeDebugger
     {
         $pricing = [
             'claude-opus-4-20250514' => ['input' => 15, 'output' => 75],
-            'claude-sonnet-4-20250514' => ['input' => 3, 'output' => 15],
-            'claude-haiku-4-20250514' => ['input' => 0.8, 'output' => 4],
+            'claude-sonnet-4-5-20250929' => ['input' => 3, 'output' => 15],
+            'claude-haiku-4-5-20251001' => ['input' => 1, 'output' => 5],
         ];
 
         $rates = $pricing[$model] ?? ['input' => 3, 'output' => 15];
@@ -945,10 +967,19 @@ RequestInspector::inspectResponse($response);
 
 ```php
 # filename: ClaudeClient.php
+use ClaudePhp\ClaudePhp;
+use ClaudePhp\Exceptions\ErrorException;
+
 class ClaudeClient
 {
-    private $client;
+    private ClaudePhp $client;
     private LoggerInterface $logger;
+
+    public function __construct(string $apiKey, LoggerInterface $logger)
+    {
+        $this->client = new ClaudePhp(apiKey: $apiKey);
+        $this->logger = $logger;
+    }
 
     public function sendMessage(array $params): ?object
     {
@@ -1020,6 +1051,8 @@ class ClaudeClient
 
 ```php
 # filename: CircuitBreaker.php
+use ClaudePhp\ClaudePhp;
+
 class CircuitBreaker
 {
     private const STATE_CLOSED = 'closed';
@@ -1070,6 +1103,10 @@ class CircuitBreaker
 }
 
 // Usage
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 $breaker = new CircuitBreaker();
 
 try {

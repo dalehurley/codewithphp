@@ -103,34 +103,35 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 // ✗ Bad: Vague prompt
 $vagueResponse = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
-    'messages' => [[
-        'role' => 'user',
-        'content' => 'Tell me about PHP.'
-    ]]
-]);
+    'messages' => [
+        ['role' => 'user', 'content' => 'Tell me about PHP.')
+    ]
+);
 
 echo "Vague prompt result:\n";
 echo $vagueResponse->content[0]->text . "\n\n";
 
 // ✓ Good: Specific prompt
 $specificResponse = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
-    'messages' => [[
-        'role' => 'user',
-        'content' => 'Explain the benefits of PHP 8.4\'s typed class constants in 3 bullet points. Include one code example.'
-    ]]
-]);
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => 'Explain the benefits of PHP 8.4\'s typed class constants in 3 bullet points. Include one code example.'
+        )
+    ]
+);
 
 echo "Specific prompt result:\n";
 echo $specificResponse->content[0]->text . "\n\n";
@@ -147,11 +148,11 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $userCode = <<<'PHP'
 class UserRepository {
@@ -163,23 +164,27 @@ PHP;
 
 // ✗ Bad: No context
 $noContextResponse = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
-    'messages' => [[
-        'role' => 'user',
-        'content' => "Review this code:\n\n{$userCode}"
-    ]]
-]);
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => "Review this code:\n\n{$userCode}"
+        )
+    ]
+);
 
 // ✓ Good: With context
 $withContextResponse = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
-    'messages' => [[
-        'role' => 'user',
-        'content' => "You are reviewing a Laravel 11 application that handles sensitive user data. Review this repository class for security issues, type safety, and error handling:\n\n{$userCode}"
-    ]]
-]);
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => "You are reviewing a Laravel 11 application that handles sensitive user data. Review this repository class for security issues, type safety, and error handling:\n\n{$userCode}"
+        )
+    ]
+);
 
 echo "With context:\n";
 echo $withContextResponse->content[0]->text . "\n";
@@ -196,26 +201,28 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
-    'messages' => [[
-        'role' => 'user',
-        'content' => 'List 5 PHP design patterns. Format as JSON with fields: name, category, use_case, difficulty. Return only valid JSON.'
-    ]]
-]);
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => 'List 5 PHP design patterns. Format as JSON with fields: name, category, use_case, difficulty. Return only valid JSON.'
+        )
+    ]
+);
 
 echo $response->content[0]->text . "\n";
 
 // Parse the JSON
 $text = $response->content[0]->text;
-if (preg_match('/```json\s*(\{.*?\}|\[.*?\])\s*```/s', $text, $matches)) {
+if (preg_match('/```json\s*(\{.*?\}|\[.*?\]\s*```/s', $text, $matches)) {
     $json = $matches[1];
 } else {
     $json = $text;
@@ -236,20 +243,21 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $emailContent = "Hi, I need help with my order #12345. It hasn't arrived yet. Please refund ASAP!";
 
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 512,
-    'messages' => [[
-        'role' => 'user',
-        'content' => <<<PROMPT
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => <<<PROMPT
 Analyze the customer email below and extract:
 1. Order number
 2. Issue category (delivery, refund, product, etc.)
@@ -262,8 +270,9 @@ Return as JSON.
 {$emailContent}
 --- EMAIL ENDS ---
 PROMPT
-    ]]
-]);
+        )
+    ]
+);
 
 echo $response->content[0]->text . "\n";
 ```
@@ -281,21 +290,23 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 // No examples provided
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 512,
-    'messages' => [[
-        'role' => 'user',
-        'content' => 'Classify this text as positive, negative, or neutral: "The product is okay, nothing special."'
-    ]]
-]);
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => 'Classify this text as positive, negative, or neutral: "The product is okay, nothing special."'
+        )
+    ]
+);
 
 echo "Zero-shot classification:\n";
 echo $response->content[0]->text . "\n\n";
@@ -310,18 +321,19 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 512,
-    'messages' => [[
-        'role' => 'user',
-        'content' => <<<PROMPT
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => <<<PROMPT
 Classify customer feedback sentiment.
 
 Example:
@@ -332,8 +344,9 @@ Now classify this:
 Input: "The product is okay, nothing special."
 Output:
 PROMPT
-    ]]
-]);
+        )
+    ]
+);
 
 echo "One-shot classification:\n";
 echo $response->content[0]->text . "\n\n";
@@ -348,18 +361,19 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 512,
-    'messages' => [[
-        'role' => 'user',
-        'content' => <<<PROMPT
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => <<<PROMPT
 Classify customer feedback sentiment as: positive, negative, or neutral.
 
 Examples:
@@ -380,8 +394,9 @@ Now classify this:
 Input: "Not what I expected, but it works fine."
 Output:
 PROMPT
-    ]]
-]);
+        )
+    ]
+);
 
 echo "Few-shot classification:\n";
 echo $response->content[0]->text . "\n\n";
@@ -396,12 +411,12 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class FewShotClassifier
 {
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     public function classify(string $text, array $examples, array $categories): string
@@ -421,13 +436,15 @@ Output:
 PROMPT;
 
         $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 100,
-            'temperature' => 0.0, // Deterministic for classification
-            'messages' => [[
-                'role' => 'user',
-                'content' => $prompt
-            ]]
+            'temperature' => 0.0,
+            'messages' => [
+                [
+                    'role' => 'user',
+                    'content' => $prompt
+                ]
+            ]
         ]);
 
         return trim($response->content[0]->text);
@@ -456,11 +473,11 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Services\FewShotClassifier;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $classifier = new FewShotClassifier($client);
 
@@ -490,19 +507,20 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 // Classification with negative examples
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 512,
-    'messages' => [[
-        'role' => 'user',
-        'content' => <<<PROMPT
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => <<<PROMPT
 Classify customer feedback as: positive, negative, or neutral.
 
 Positive examples:
@@ -523,8 +541,9 @@ Now classify this:
 Input: "Not what I expected, but it works fine."
 Output:
 PROMPT
-    ]]
-]);
+        )
+    ]
+);
 
 echo "Classification with negative examples:\n";
 echo $response->content[0]->text . "\n\n";
@@ -544,11 +563,11 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $code = <<<'PHP'
 function getUser($id) {
@@ -557,11 +576,12 @@ function getUser($id) {
 PHP;
 
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
-    'messages' => [[
-        'role' => 'user',
-        'content' => <<<PROMPT
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => <<<PROMPT
 Review this PHP code for security issues.
 
 Good security practices:
@@ -579,8 +599,9 @@ Code to review:
 
 Identify security issues and explain why they're problematic.
 PROMPT
-    ]]
-]);
+        )
+    ]
+);
 
 echo $response->content[0]->text . "\n";
 ```
@@ -598,34 +619,38 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 // Without chain-of-thought
 $direct = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 512,
-    'messages' => [[
-        'role' => 'user',
-        'content' => 'Should I use a singleton pattern for my database connection in PHP?'
-    ]]
-]);
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => 'Should I use a singleton pattern for my database connection in PHP?'
+        )
+    ]
+);
 
 echo "Direct answer:\n";
 echo $direct->content[0]->text . "\n\n";
 
 // With chain-of-thought
 $cot = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
-    'messages' => [[
-        'role' => 'user',
-        'content' => 'Should I use a singleton pattern for my database connection in PHP? Think through this step by step, considering: 1) Performance implications, 2) Testing challenges, 3) Modern alternatives like dependency injection.'
-    ]]
-]);
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => 'Should I use a singleton pattern for my database connection in PHP? Think through this step by step, considering: 1) Performance implications, 2) Testing challenges, 3) Modern alternatives like dependency injection.'
+        )
+    ]
+);
 
 echo "Chain-of-thought answer:\n";
 echo $cot->content[0]->text . "\n\n";
@@ -640,11 +665,11 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $code = <<<'PHP'
 function processOrder($order) {
@@ -652,19 +677,20 @@ function processOrder($order) {
     foreach ($order['items'] as $item) {
         $total += $item['price'] * $item['quantity'];
     }
-    if ($order['discount']) {
-        $total = $total - ($total * $order['discount']);
+    if ($order['discount'] {
+        $total = $total - ($total * $order['discount'];
     }
     return $total;
 }
 PHP;
 
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 2048,
-    'messages' => [[
-        'role' => 'user',
-        'content' => <<<PROMPT
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => <<<PROMPT
 Refactor this PHP function following these steps:
 
 1. Identify issues (type safety, error handling, naming)
@@ -675,8 +701,9 @@ Refactor this PHP function following these steps:
 Code to refactor:
 {$code}
 PROMPT
-    ]]
-]);
+        )
+    ]
+);
 
 echo $response->content[0]->text . "\n";
 ```
@@ -690,12 +717,12 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class ChainOfThoughtSolver
 {
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     public function solve(string $problem, int $attempts = 3): array
@@ -704,12 +731,13 @@ class ChainOfThoughtSolver
 
         for ($i = 0; $i < $attempts; $i++) {
             $response = $this->client->messages()->create([
-                'model' => 'claude-sonnet-4-20250514',
+                'model' => 'claude-sonnet-4-5-20250929',
                 'max_tokens' => 2048,
-                'temperature' => 0.7, // Some variation
-                'messages' => [[
-                    'role' => 'user',
-                    'content' => <<<PROMPT
+                'temperature' => 0.7,
+                'messages' => [
+                    [
+                        'role' => 'user',
+                        'content' => <<<PROMPT
 {$problem}
 
 Think through this step by step:
@@ -721,8 +749,9 @@ Think through this step by step:
 
 Format your response with clear sections.
 PROMPT
-                ]]
-            ]);
+                    )
+                ]
+            );
 
             $solutions[] = $response->content[0]->text;
         }
@@ -739,19 +768,21 @@ PROMPT
         $combined = implode("\n\n--- SOLUTION ---\n\n", $solutions);
 
         $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 1024,
-            'messages' => [[
-                'role' => 'user',
-                'content' => <<<PROMPT
+            'messages' => [
+                [
+                    'role' => 'user',
+                    'content' => <<<PROMPT
 I have multiple solutions to a problem. Identify the consensus or best approach:
 
 {$combined}
 
 Provide a concise summary of the best solution.
 PROMPT
-            ]]
-        ]);
+                )
+            ]
+        );
 
         return $response->content[0]->text;
     }
@@ -771,11 +802,11 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 // Different roles produce different perspectives
 $roles = [
@@ -792,14 +823,16 @@ PHP;
 
 foreach ($roles as $roleName => $rolePrompt) {
     $response = $client->messages()->create([
-        'model' => 'claude-sonnet-4-20250514',
+        'model' => 'claude-sonnet-4-5-20250929',
         'max_tokens' => 1024,
         'system' => $rolePrompt,
-        'messages' => [[
-            'role' => 'user',
-            'content' => "Review this code:\n\n{$code}"
-        ]]
-    ]);
+        'messages' => [
+            [
+                'role' => 'user',
+                'content' => "Review this code:\n\n{$code}"
+            )
+        ]
+    );
 
     echo "=== {$roleName} ===\n";
     echo $response->content[0]->text . "\n\n";
@@ -815,11 +848,11 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $persona = <<<PERSONA
 You are an expert PHP architect with these attributes:
@@ -861,14 +894,16 @@ class OrderProcessor {
 PHP;
 
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 3000,
     'system' => $persona,
-    'messages' => [[
-        'role' => 'user',
-        'content' => "Review this OrderProcessor class and suggest architectural improvements:\n\n{$code}"
-    ]]
-]);
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => "Review this OrderProcessor class and suggest architectural improvements:\n\n{$code}"
+        )
+    ]
+);
 
 echo $response->content[0]->text . "\n";
 ```
@@ -968,11 +1003,11 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Services\PersonaBuilder;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $persona = (new PersonaBuilder())
     ->role('Laravel Security Consultant')
@@ -994,19 +1029,21 @@ echo "Generated Persona:\n{$persona}\n\n";
 $code = <<<'PHP'
 Route::get('/user/{id}', function($id) {
     $user = DB::select("SELECT * FROM users WHERE id = " . $id);
-    return view('profile', ['user' => $user]);
+    return view('profile', ['user' => $user];
 });
 PHP;
 
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 2048,
     'system' => $persona,
-    'messages' => [[
-        'role' => 'user',
-        'content' => "Review this Laravel route for security issues:\n\n{$code}"
-    ]]
-]);
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => "Review this Laravel route for security issues:\n\n{$code}"
+        )
+    ]
+);
 
 echo "Security Review:\n";
 echo $response->content[0]->text . "\n";
@@ -1023,18 +1060,19 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
-    'messages' => [[
-        'role' => 'user',
-        'content' => <<<PROMPT
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => <<<PROMPT
 Extract information from this text and return as JSON:
 
 "John Doe, senior developer at Acme Corp, can be reached at john@acme.com or 555-1234. He specializes in PHP and Laravel."
@@ -1051,8 +1089,9 @@ Required JSON structure:
 
 Return only valid JSON, no explanation.
 PROMPT
-    ]]
-]);
+        )
+    ]
+);
 
 $text = $response->content[0]->text;
 
@@ -1078,18 +1117,19 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
-    'messages' => [[
-        'role' => 'user',
-        'content' => <<<PROMPT
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => <<<PROMPT
 Generate PHPUnit test configuration XML for a Laravel project with these requirements:
 - Test suite: Unit tests in tests/Unit
 - Test suite: Feature tests in tests/Feature
@@ -1099,8 +1139,9 @@ Generate PHPUnit test configuration XML for a Laravel project with these require
 
 Return only valid XML, no explanation.
 PROMPT
-    ]]
-]);
+        )
+    ]
+);
 
 $xml = $response->content[0]->text;
 
@@ -1127,25 +1168,27 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
-    'messages' => [[
-        'role' => 'user',
-        'content' => <<<PROMPT
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => <<<PROMPT
 Generate a CSV file with 5 sample PHP developers with these columns:
 name, email, years_experience, primary_framework, hourly_rate
 
 Include header row. Return only CSV, no explanation.
 PROMPT
-    ]]
-]);
+        )
+    ]
+);
 
 $csv = $response->content[0]->text;
 
@@ -1175,18 +1218,19 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 2048,
-    'messages' => [[
-        'role' => 'user',
-        'content' => <<<PROMPT
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => <<<PROMPT
 Create technical documentation for a Laravel middleware that handles API rate limiting.
 
 Format as Markdown with:
@@ -1197,8 +1241,9 @@ Format as Markdown with:
 - Usage examples
 - Best practices
 PROMPT
-    ]]
-]);
+        )
+    ]
+);
 
 $markdown = $response->content[0]->text;
 
@@ -1306,11 +1351,11 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Services\PromptTemplate;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 // Code review template
 $template = PromptTemplate::codeReview();
@@ -1323,15 +1368,15 @@ $prompt = $template->render([
     'aspect2' => 'Performance issues',
     'aspect3' => 'Code maintainability',
     'code' => 'function getUser($id) { return DB::query("SELECT * FROM users WHERE id = " . $id); }'
-]);
+];
 
 echo "Generated prompt:\n{$prompt}\n\n";
 
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 2048,
     'messages' => [['role' => 'user', 'content' => $prompt]]
-]);
+);
 
 echo "Response:\n{$response->content[0]->text}\n";
 ```
@@ -1370,9 +1415,9 @@ class PromptLibrary
         ],
     ];
 
-    public static function get(string $name, array $variables = []): string
+    public static function get(string $name, array $variables = []: string
     {
-        if (!isset(self::PROMPTS[$name])) {
+        if (!isset(self::PROMPTS[$name]) {
             throw new \InvalidArgumentException("Prompt template '{$name}' not found");
         }
 
@@ -1408,11 +1453,11 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Services\PromptLibrary;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 // List available prompts
 echo "Available prompts:\n";
@@ -1436,15 +1481,15 @@ $prompt = PromptLibrary::get('test_generation', [
     'code' => $code,
     'test_framework' => 'PHPUnit',
     'code_type' => 'function'
-]);
+];
 
 echo "Generated prompt:\n{$prompt}\n\n";
 
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 2048,
     'messages' => [['role' => 'user', 'content' => $prompt]]
-]);
+);
 
 echo "Generated tests:\n{$response->content[0]->text}\n";
 ```
@@ -1477,11 +1522,11 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 // Simple token estimation (rough: 1 token ≈ 4 characters)
 function estimateTokens(string $text): int
@@ -1499,7 +1544,7 @@ PROMPT;
 
 $estimatedTokens = estimateTokens($prompt);
 echo "Estimated prompt tokens: {$estimatedTokens}\n";
-echo "Recommended max_tokens: " . max(512, 200000 - $estimatedTokens - 1000) . "\n";
+echo "Recommended 'max_tokens' => " . max(512, 200000 - $estimatedTokens - 1000) . "\n";
 ```
 
 ### Optimizing Prompt Length
@@ -1513,11 +1558,11 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 // ✗ Bad: Verbose and repetitive
 $verbosePrompt = <<<PROMPT
@@ -1550,11 +1595,11 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 // For classification tasks, use compact format
 $compactPrompt = <<<PROMPT
@@ -1570,10 +1615,10 @@ PROMPT;
 
 // Claude understands abbreviations in context
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 50,
     'messages' => [['role' => 'user', 'content' => $compactPrompt]]
-]);
+);
 
 echo $response->content[0]->text . "\n";
 ```
@@ -1587,11 +1632,11 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 // Put critical instructions first
 $optimizedPrompt = <<<PROMPT
@@ -1671,7 +1716,11 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Services\PromptLengthManager;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $manager = new PromptLengthManager();
 $longPrompt = str_repeat("This is a very long prompt. ", 10000);
@@ -1681,7 +1730,7 @@ $maxTokens = $manager->getRecommendedMaxTokens($optimized);
 
 echo "Original length: " . strlen($longPrompt) . " chars\n";
 echo "Optimized length: " . strlen($optimized) . " chars\n";
-echo "Recommended max_tokens: {$maxTokens}\n";
+echo "Recommended 'max_tokens' => {$maxTokens}\n";
 ```
 
 ### Best Practices
@@ -1714,12 +1763,12 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class PromptRefiner
 {
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     public function refine(
@@ -1757,13 +1806,15 @@ class PromptRefiner
 
         foreach ($testCases as $testCase) {
             $response = $this->client->messages()->create([
-                'model' => 'claude-sonnet-4-20250514',
+                'model' => 'claude-sonnet-4-5-20250929',
                 'max_tokens' => 512,
-                'messages' => [[
-                    'role' => 'user',
-                    'content' => $prompt . "\n\nInput: " . $testCase['input']
-                ]]
-            ]);
+                'messages' => [
+                    [
+                        'role' => 'user',
+                        'content' => $prompt . "\n\nInput: " . $testCase['input']
+                    )
+                ]
+            );
 
             $results[] = [
                 'input' => $testCase['input'],
@@ -1782,7 +1833,7 @@ class PromptRefiner
         $matchCount = 0;
 
         foreach ($results as $result) {
-            if (!$result['match']) {
+            if (!$result['match'] {
                 $issues[] = [
                     'input' => $result['input'],
                     'expected' => $result['expected'],
@@ -1818,7 +1869,7 @@ Return only the improved prompt, no explanation.
 PROMPT;
 
         $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 1024,
             'messages' => [['role' => 'user', 'content' => $refinementPrompt]]
         ]);
@@ -1853,11 +1904,11 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Services\PromptRefiner;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $refiner = new PromptRefiner($client);
 
@@ -1929,7 +1980,7 @@ class PromptVersionTracker
 {
     private array $versions = [];
 
-    public function saveVersion(string $prompt, array $metrics = []): string
+    public function saveVersion(string $prompt, array $metrics = []: string
     {
         $version = [
             'id' => uniqid('v', true),
@@ -1966,7 +2017,7 @@ class PromptVersionTracker
         return [
             'length_diff' => $v2['length'] - $v1['length'],
             'token_diff' => $v2['estimated_tokens'] - $v1['estimated_tokens'],
-            'metrics_diff' => $this->compareMetrics($v1['metrics'], $v2['metrics'])
+            'metrics_diff' => $this->compareMetrics($v1['metrics'], $v2['metrics']
         ];
     }
 
@@ -1974,7 +2025,7 @@ class PromptVersionTracker
     {
         $diff = [];
         foreach ($m2 as $key => $value) {
-            if (isset($m1[$key])) {
+            if (isset($m1[$key]) {
                 $diff[$key] = $value - $m1[$key];
             } else {
                 $diff[$key] = $value;
@@ -2003,12 +2054,12 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 class PromptTester
 {
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     public function test(
@@ -2025,13 +2076,15 @@ class PromptTester
 
             for ($i = 0; $i < $runs; $i++) {
                 $response = $this->client->messages()->create([
-                    'model' => 'claude-sonnet-4-20250514',
+                    'model' => 'claude-sonnet-4-5-20250929',
                     'max_tokens' => $options['max_tokens'] ?? 512,
                     'temperature' => $temperature,
-                    'messages' => [[
-                        'role' => 'user',
-                        'content' => $this->formatPrompt($prompt, $testCase['input'])
-                    ]]
+                    'messages' => [
+                        [
+                            'role' => 'user',
+                            'content' => $this->formatPrompt($prompt, $testCase['input'])
+                        ]
+                    ]
                 ]);
 
                 $caseResults[] = [
@@ -2081,7 +2134,7 @@ class PromptTester
 
         $matches = 0;
         foreach ($runs as $run) {
-            if ($this->matches($expected, $run['response'])) {
+            if ($this->matches($expected, $run['response']) {
                 $matches++;
             }
         }
@@ -2123,7 +2176,7 @@ class PromptTester
             'total_cases' => $totalCases,
             'consistency_rate' => $consistentCases / $totalCases,
             'accuracy_rate' => $accurateCases / $totalCases,
-            'avg_tokens_per_case' => $totalTokens / ($totalCases * count($results[0]['runs']))
+            'avg_tokens_per_case' => $totalTokens / ($totalCases * count($results[0]['runs'])
         ];
     }
 }
@@ -2139,11 +2192,11 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Services\PromptTester;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $tester = new PromptTester($client);
 
@@ -2158,10 +2211,10 @@ $testCases = [
 $results = $tester->test($prompt, $testCases, [
     'runs_per_case' => 3,
     'temperature' => 0.0
-]);
+];
 
 echo "Test Summary:\n";
-print_r($results['summary']);
+print_r($results['summary'];
 
 echo "\nDetailed Results:\n";
 foreach ($results['results'] as $result) {
@@ -2189,11 +2242,11 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Services\PromptTester;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $tester = new PromptTester($client);
 
@@ -2222,7 +2275,7 @@ $resultsB = $tester->test($promptB, $testCases);
 echo "Version A Accuracy: " . ($resultsA['summary']['accuracy_rate'] * 100) . "%\n";
 echo "Version B Accuracy: " . ($resultsB['summary']['accuracy_rate'] * 100) . "%\n";
 
-if ($resultsB['summary']['accuracy_rate'] > $resultsA['summary']['accuracy_rate']) {
+if ($resultsB['summary']['accuracy_rate'] > $resultsA['summary']['accuracy_rate'] {
     echo "\n✓ Version B performs better\n";
 } else {
     echo "\n✓ Version A performs better\n";
@@ -2425,6 +2478,56 @@ class PromptABTester
 - Use appropriate model (Opus for complex tasks)
 - Implement chain-of-thought reasoning
 - Provide few-shot examples
+
+## Claude-PHP-SDK Features
+
+The examples in this chapter use the official [Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK), which provides complete 1-for-1 functionality with the official Python SDK. Key features demonstrated include:
+
+### Token Counting
+
+```php
+// Count tokens before making API calls
+$count = $client->messages()->countTokens([
+    'model' => 'claude-sonnet-4-5-20250929',
+    'messages' => [['role' => 'user', 'content' => 'Hello!']]
+]);
+
+echo "Token count: " . $count->input_tokens;
+```
+
+### Comprehensive Error Handling
+
+```php
+use ClaudePhp\Exceptions\{
+    APIConnectionError,
+    RateLimitError,
+    AuthenticationError,
+    APIStatusError
+};
+
+try {
+    $response = $client->messages()->create([...]);
+} catch (RateLimitError $e) {
+    echo "Rate limited. Retry after: " . $e->response->getHeaderLine('retry-after');
+} catch (AuthenticationError $e) {
+    echo "Invalid API key";
+}
+```
+
+### Additional SDK Capabilities
+
+- **Streaming Responses**: Real-time response processing
+- **Tool Use**: Function calling and custom tools
+- **Vision API**: Image analysis and processing
+- **Batch Processing**: Cost-effective bulk operations
+- **Structured Outputs**: JSON schema enforcement
+
+## Further Reading
+
+- **[Official PHP SDK Documentation](https://github.com/anthropics/anthropic-sdk-php)** — The official Anthropic PHP SDK on GitHub
+- **[Claude-PHP-SDK](https://packagist.org/packages/claude-php/claude-php-sdk)** — PHP SDK for Claude (`composer require claude-php/claude-php-sdk ^0.2`)
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
+- **[PHP SDK Composer Package](https://packagist.org/packages/claude-php/claude-php-sdk)** — Official package on Packagist
 
 ## Wrap-up
 

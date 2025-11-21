@@ -240,9 +240,9 @@ class ClaudeLogger
     private function calculateCost(string $model, int $inputTokens, int $outputTokens): array
     {
         $pricing = match($model) {
-            'claude-opus-4-20250514' => ['input' => 15.00, 'output' => 75.00],
-            'claude-sonnet-4-20250514' => ['input' => 3.00, 'output' => 15.00],
-            'claude-haiku-4-20250514' => ['input' => 0.25, 'output' => 1.25],
+            'claude-opus-4-1' => ['input' => 15.00, 'output' => 75.00],
+            'claude-sonnet-4-5-20250929' => ['input' => 3.00, 'output' => 15.00],
+            'claude-haiku-4-5-20251001' => ['input' => 0.25, 'output' => 1.25],
             default => ['input' => 0, 'output' => 0],
         };
 
@@ -262,21 +262,21 @@ $logger = new ClaudeLogger();
 
 // Log request
 $logger->logRequest(
-    model: 'claude-sonnet-4-20250514',
-    inputTokens: 150,
-    userId: 'user-123',
-    metadata: ['feature' => 'chatbot', 'session_id' => 'sess-456']
+    'claude-sonnet-4-5-20250929',
+    150,
+    'user-123',
+    ['feature' => 'chatbot', 'session_id' => 'sess-456']
 );
 
 // Log response
 $logger->logResponse(
-    messageId: 'msg_abc123',
-    model: 'claude-sonnet-4-20250514',
-    inputTokens: 150,
-    outputTokens: 300,
-    duration: 2.5,
-    stopReason: 'end_turn',
-    userId: 'user-123'
+    'msg_abc123',
+    'claude-sonnet-4-5-20250929',
+    150,
+    300,
+    2.5,
+    'end_turn',
+    'user-123'
 );
 ```
 
@@ -320,13 +320,13 @@ class RequestLoggingMiddleware
 
             // Log successful response
             $this->logger->logResponse(
-                messageId: $response->id,
-                model: $response->model,
-                inputTokens: $response->usage->inputTokens,
-                outputTokens: $response->usage->outputTokens,
-                duration: $duration,
-                stopReason: $response->stopReason,
-                userId: $userId
+                $response->id,
+                $response->model,
+                $response->usage->inputTokens,
+                $response->usage->outputTokens,
+                $duration,
+                $response->stopReason,
+                $userId
             );
 
             return $response;
@@ -352,11 +352,17 @@ class RequestLoggingMiddleware
 }
 
 // Usage
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
+
 $loggingMiddleware = new RequestLoggingMiddleware($logger);
 
 $response = $loggingMiddleware->loggedRequest(
     claudeRequest: fn() => $client->messages()->create([
-        'model' => 'claude-sonnet-4-20250514',
+        'model' => 'claude-sonnet-4-5-20250929',
         'max_tokens' => 1024,
         'messages' => [['role' => 'user', 'content' => $prompt]]
     ]),
@@ -770,12 +776,12 @@ $claudeMetrics = new ClaudeMetrics($metrics);
 
 // Track request
 $claudeMetrics->trackRequest(
-    model: 'claude-sonnet-4-20250514',
-    inputTokens: 150,
-    outputTokens: 300,
-    duration: 2.5,
-    stopReason: 'end_turn',
-    userId: 'user-123'
+    'claude-sonnet-4-5-20250929',
+    150,
+    300,
+    2.5,
+    'end_turn',
+    'user-123'
 );
 
 // Get dashboard data
@@ -901,6 +907,12 @@ class RequestTracer
 }
 
 // Usage
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
+
 $tracer = new RequestTracer();
 
 // Start trace
@@ -916,7 +928,7 @@ $tracer->finishSpan($dbSpan, ['rows_fetched' => 10]);
 
 // Claude API span
 $claudeSpan = $tracer->startSpan('claude_api_request', [
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
 ]);
 
@@ -1171,7 +1183,7 @@ $data = $dashboardProvider->getRealTimeDashboard();
         .card { background: white; padding: 20px; border-radius: 8px;
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .card h2 { font-size: 18px; margin-bottom: 15px; color: #666; }
-        .metric { display: flex; justify-content: space-between; align-items: center;
+        .metric { display: flex; justify-'content' => space-between; align-items: center;
                   padding: 10px 0; border-bottom: 1px solid #eee; }
         .metric:last-child { border-bottom: none; }
         .metric-label { color: #666; }
@@ -1255,6 +1267,7 @@ $data = $dashboardProvider->getRealTimeDashboard();
     </div>
 
     <script>
+        <?= "
         // Latency chart
         new Chart(document.getElementById('latencyChart'), {
             type: 'bar',
@@ -1263,10 +1276,10 @@ $data = $dashboardProvider->getRealTimeDashboard();
                 datasets: [{
                     label: 'Latency (ms)',
                     data: [
-                        <?= $data['performance']['latency']['p50'] ?>,
-                        <?= $data['performance']['latency']['p75'] ?>,
-                        <?= $data['performance']['latency']['p95'] ?>,
-                        <?= $data['performance']['latency']['p99'] ?>
+                        {$data['performance']['latency']['p50']},
+                        {$data['performance']['latency']['p75']},
+                        {$data['performance']['latency']['p95']},
+                        {$data['performance']['latency']['p99']}
                     ],
                     backgroundColor: ['#4CAF50', '#8BC34A', '#FFC107', '#FF5722']
                 }]
@@ -1282,6 +1295,7 @@ $data = $dashboardProvider->getRealTimeDashboard();
 
         // Auto-refresh every 30 seconds
         setTimeout(() => location.reload(), 30000);
+        " ?>
     </script>
 </body>
 </html>
@@ -1350,13 +1364,19 @@ class SentryIntegration
 }
 
 // Usage
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
+
 $sentry = new SentryIntegration(getenv('SENTRY_DSN'));
 
 $response = $sentry->traceClaudeRequest(
     fn() => $client->messages()->create([...]),
     context: [
         'operation' => 'chatbot_response',
-        'model' => 'claude-sonnet-4-20250514',
+        'model' => 'claude-sonnet-4-5-20250929',
         'user_id' => 'user-123',
     ]
 );
@@ -1434,6 +1454,12 @@ class DatadogIntegration
 }
 
 // Usage
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
+
 $datadog = new DatadogIntegration();
 
 $startTime = microtime(true);
@@ -1444,22 +1470,22 @@ try {
     $duration = microtime(true) - $startTime;
 
     $datadog->trackClaudeRequest(
-        model: $response->model,
-        inputTokens: $response->usage->inputTokens,
-        outputTokens: $response->usage->outputTokens,
-        duration: $duration,
-        status: 'success'
+        $response->model,
+        $response->usage->inputTokens,
+        $response->usage->outputTokens,
+        $duration,
+        'success'
     );
 
 } catch (\Exception $e) {
     $duration = microtime(true) - $startTime;
 
     $datadog->trackClaudeRequest(
-        model: 'unknown',
-        inputTokens: 0,
-        outputTokens: 0,
-        duration: $duration,
-        status: 'error'
+        'unknown',
+        0,
+        0,
+        $duration,
+        'error'
     );
 
     throw $e;
@@ -1632,6 +1658,12 @@ class PrometheusIntegration
 }
 
 // Usage
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
+
 $prometheus = new PrometheusIntegration();
 
 $startTime = microtime(true);
@@ -1641,22 +1673,22 @@ try {
     $duration = microtime(true) - $startTime;
 
     $prometheus->trackClaudeRequest(
-        model: $response->model,
-        inputTokens: $response->usage->inputTokens,
-        outputTokens: $response->usage->outputTokens,
-        duration: $duration,
-        status: 'success'
+        $response->model,
+        $response->usage->inputTokens,
+        $response->usage->outputTokens,
+        $duration,
+        'success'
     );
 
 } catch (\Exception $e) {
     $duration = microtime(true) - $startTime;
 
     $prometheus->trackClaudeRequest(
-        model: 'unknown',
-        inputTokens: 0,
-        outputTokens: 0,
-        duration: $duration,
-        status: 'error'
+        'unknown',
+        0,
+        0,
+        $duration,
+        'error'
     );
 
     throw $e;
@@ -1861,13 +1893,13 @@ $elk = new ElkStackIntegration('localhost', 9200);
 
 // Log a request
 $elk->logClaudeRequest(
-    model: 'claude-sonnet-4-20250514',
-    inputTokens: 200,
-    outputTokens: 400,
-    duration: 2.5,
-    status: 'success',
-    userId: 'user-123',
-    requestId: 'req_abc123'
+    'claude-sonnet-4-5-20250929',
+    200,
+    400,
+    2.5,
+    'success',
+    'user-123',
+    'req_abc123'
 );
 
 // Query error logs
@@ -2602,6 +2634,13 @@ A production system generating just 1GB/day of metrics produces 365GB yearly. Ra
 - Archive audit logs for 7 years (compliance requirements)
 
 This reduces yearly storage from $9,125 to under $1,000 while maintaining operational and compliance requirements.
+
+## Further Reading
+
+- **[Official PHP SDK Documentation](https://github.com/anthropics/anthropic-sdk-php)** — The official Anthropic PHP SDK on GitHub
+- **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)** — Community resources and examples for Claude with PHP
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
+- **[PHP SDK Composer Package](https://packagist.org/packages/claude-php/claude-php-sdk)** — Official package on Packagist
 
 ## Wrap-up
 

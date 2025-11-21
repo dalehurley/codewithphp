@@ -38,8 +38,10 @@ Before diving in, ensure you have:
 
 - **Laravel 11+** with Reverb installed
 - **Laravel Broadcasting** configured
+- **Claude-PHP-SDK** installed via Composer: `composer require claude-php/claude-php-sdk`
 - **Chapter 06** completed (Streaming knowledge) — [Streaming Responses in PHP](/series/claude-php-developers/chapters/06-streaming-responses)
 - **WebSockets** basic understanding
+- **ANTHROPIC_API_KEY** environment variable set
 
 **Estimated Time**: 75-90 minutes
 
@@ -77,7 +79,7 @@ flowchart TB
     D -->|Stream Chunks| C
     C -->|Broadcast Events| B
     B -->|WebSocket Push| E[All Connected Clients]
-    
+
     style A fill:#e1f5ff
     style B fill:#fff4e1
     style C fill:#e8f5e9
@@ -171,7 +173,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('title')->nullable();
-            $table->string('model')->default('claude-sonnet-4-20250514');
+            $table->string('model')->default('claude-sonnet-4-5');
             $table->text('system_prompt')->nullable();
             $table->json('metadata')->nullable();
             $table->timestamps();
@@ -497,14 +499,19 @@ use App\Events\MessageChunkReceived;
 use App\Events\MessageCompleted;
 use App\Models\ChatConversation;
 use App\Models\ChatMessage;
-use Anthropic\Contracts\ClientContract;
+use ClaudePhp\ClaudePhp;
 use Illuminate\Support\Facades\Log;
 
 class ChatService
 {
-    public function __construct(
-        private ClientContract $client
-    ) {}
+    private ClaudePhp $client;
+
+    public function __construct()
+    {
+        $this->client = new ClaudePhp(
+            apiKey: config('services.anthropic.api_key') ?? env('ANTHROPIC_API_KEY')
+        );
+    }
 
     public function sendMessage(
         ChatConversation $conversation,
@@ -553,11 +560,11 @@ class ChatService
                 $params['system'] = $conversation->system_prompt;
             }
 
-            $stream = $this->client->messages()->createStreamed($params);
+            $stream = $this->client->messages()->stream($params);
 
             foreach ($stream as $event) {
-                if ($event->type === 'content_block_delta') {
-                    $chunk = $event->delta->text ?? '';
+                if ($event['type'] === 'content_block_delta' && isset($event['delta']['text'])) {
+                    $chunk = $event['delta']['text'];
 
                     if ($chunk) {
                         $fullContent .= $chunk;
@@ -647,14 +654,14 @@ class ChatController extends Controller
     {
         $validated = $request->validate([
             'title' => 'nullable|string|max:255',
-            'model' => 'nullable|string|in:claude-opus-4-20250514,claude-sonnet-4-20250514,claude-haiku-4-20250514',
+            'model' => 'nullable|string|in:claude-opus-4-1,claude-sonnet-4-5,claude-haiku-4-5',
             'system_prompt' => 'nullable|string|max:10000',
         ]);
 
         $conversation = ChatConversation::create([
             'user_id' => $request->user()->id,
             'title' => $validated['title'] ?? 'New Conversation',
-            'model' => $validated['model'] ?? 'claude-sonnet-4-20250514',
+            'model' => $validated['model'] ?? 'claude-sonnet-4-5',
             'system_prompt' => $validated['system_prompt'] ?? null,
         ]);
 
@@ -677,8 +684,8 @@ class ChatController extends Controller
 
         try {
             $message = $this->chatService->sendMessage(
-                conversation: $conversation,
-                userMessage: $validated['message']
+                $conversation,
+                $validated['message']
             );
 
             return response()->json([
@@ -813,25 +820,32 @@ Create a Vue.js component that connects to WebSocket channels and displays real-
 
 ```javascript
 // filename: resources/js/bootstrap.js or resources/js/app.js
-import Echo from 'laravel-echo';
-import Pusher from 'pusher-js';
+import Echo from "laravel-echo";
+import Pusher from "pusher-js";
 
 window.Pusher = Pusher;
 
+// Get auth token from meta tag or localStorage
+const authToken =
+  document.querySelector('meta[name="api-token"]')?.getAttribute("content") ||
+  localStorage.getItem("auth_token");
+
 window.Echo = new Echo({
-    broadcaster: 'reverb',
-    key: import.meta.env.VITE_REVERB_APP_KEY,
-    wsHost: import.meta.env.VITE_REVERB_HOST,
-    wsPort: import.meta.env.VITE_REVERB_PORT ?? 80,
-    wssPort: import.meta.env.VITE_REVERB_PORT ?? 443,
-    forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
-    enabledTransports: ['ws', 'wss'],
-    authEndpoint: '/broadcasting/auth',
-    auth: {
+  broadcaster: "reverb",
+  key: import.meta.env.VITE_REVERB_APP_KEY,
+  wsHost: import.meta.env.VITE_REVERB_HOST,
+  wsPort: import.meta.env.VITE_REVERB_PORT ?? 80,
+  wssPort: import.meta.env.VITE_REVERB_PORT ?? 443,
+  forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? "https") === "https",
+  enabledTransports: ["ws", "wss"],
+  authEndpoint: "/broadcasting/auth",
+  auth: authToken
+    ? {
         headers: {
-            Authorization: `Bearer ${yourAuthToken}`,
+          Authorization: `Bearer ${authToken}`,
         },
-    },
+      }
+    : undefined,
 });
 ```
 
@@ -844,7 +858,8 @@ window.Echo = new Echo({
     <div class="chat-header">
       <h2>{{ conversation.title }}</h2>
       <span v-if="typingUsers.length" class="typing-indicator">
-        {{ typingUsers.join(', ') }} {{ typingUsers.length === 1 ? 'is' : 'are' }} typing...
+        {{ typingUsers.join(", ") }}
+        {{ typingUsers.length === 1 ? "is" : "are" }} typing...
       </span>
     </div>
 
@@ -880,20 +895,20 @@ window.Echo = new Echo({
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue';
-import Echo from 'laravel-echo';
-import axios from 'axios';
+import { ref, onMounted, onUnmounted, nextTick, watch } from "vue";
+import Echo from "laravel-echo";
+import axios from "axios";
 
 const props = defineProps({
   conversationId: {
     type: Number,
-    required: true
-  }
+    required: true,
+  },
 });
 
 const conversation = ref({});
 const messages = ref([]);
-const newMessage = ref('');
+const newMessage = ref("");
 const isSending = ref(false);
 const typingUsers = ref([]);
 const messagesContainer = ref(null);
@@ -911,12 +926,18 @@ onUnmounted(() => {
   }
 });
 
-watch(messages, () => {
-  nextTick(() => scrollToBottom());
-}, { deep: true });
+watch(
+  messages,
+  () => {
+    nextTick(() => scrollToBottom());
+  },
+  { deep: true }
+);
 
 async function loadConversation() {
-  const response = await axios.get(`/api/conversations/${props.conversationId}`);
+  const response = await axios.get(
+    `/api/conversations/${props.conversationId}`
+  );
   conversation.value = response.data.conversation;
   messages.value = response.data.messages;
 }
@@ -925,16 +946,16 @@ function setupWebSocket() {
   channel = window.Echo.private(`conversation.${props.conversationId}`);
 
   // Listen for message chunks
-  channel.listen('.message.chunk', (event) => {
-    const message = messages.value.find(m => m.id === event.message_id);
-    if (message) {
+  channel.listen(".message.chunk", (event) => {
+    const message = messages.value.find((m) => m.id === event.message_id);
+    if (message && message.is_streaming) {
       message.content += event.chunk;
     }
   });
 
   // Listen for message completion
-  channel.listen('.message.completed', (event) => {
-    const message = messages.value.find(m => m.id === event.message.id);
+  channel.listen(".message.completed", (event) => {
+    const message = messages.value.find((m) => m.id === event.message.id);
     if (message) {
       message.is_streaming = false;
       message.content = event.message.content;
@@ -943,13 +964,15 @@ function setupWebSocket() {
   });
 
   // Listen for typing indicators
-  channel.listen('.user.typing', (event) => {
+  channel.listen(".user.typing", (event) => {
     if (event.is_typing) {
       if (!typingUsers.value.includes(event.user_name)) {
         typingUsers.value.push(event.user_name);
       }
     } else {
-      typingUsers.value = typingUsers.value.filter(u => u !== event.user_name);
+      typingUsers.value = typingUsers.value.filter(
+        (u) => u !== event.user_name
+      );
     }
   });
 }
@@ -958,7 +981,7 @@ async function sendMessage() {
   if (!newMessage.value.trim() || isSending.value) return;
 
   const messageText = newMessage.value;
-  newMessage.value = '';
+  newMessage.value = "";
   isSending.value = true;
 
   // Stop typing indicator
@@ -968,10 +991,10 @@ async function sendMessage() {
     // Add user message immediately
     const userMsg = {
       id: Date.now(),
-      role: 'user',
-      content: messageText,
+      'role' => "user",
+      'content' => messageText,
       created_at: new Date().toISOString(),
-      is_streaming: false
+      is_streaming: false,
     };
     messages.value.push(userMsg);
 
@@ -985,15 +1008,15 @@ async function sendMessage() {
     if (response.data.success) {
       messages.value.push({
         id: response.data.message.id,
-        role: 'assistant',
-        content: '',
+        'role' => "assistant",
+        'content' => "",
         created_at: new Date().toISOString(),
-        is_streaming: true
+        is_streaming: true,
       });
     }
   } catch (error) {
-    console.error('Failed to send message:', error);
-    alert('Failed to send message. Please try again.');
+    console.error("Failed to send message:", error);
+    alert("Failed to send message. Please try again.");
   } finally {
     isSending.value = false;
   }
@@ -1011,10 +1034,10 @@ function handleTyping() {
 async function broadcastTyping(isTyping) {
   try {
     await axios.post(`/api/conversations/${props.conversationId}/typing`, {
-      is_typing: isTyping
+      is_typing: isTyping,
     });
   } catch (error) {
-    console.error('Failed to broadcast typing:', error);
+    console.error("Failed to broadcast typing:", error);
   }
 }
 
@@ -1026,7 +1049,7 @@ function scrollToBottom() {
 
 function formatTime(dateString) {
   const date = new Date(dateString);
-  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 </script>
 
@@ -1092,8 +1115,14 @@ function formatTime(dateString) {
 }
 
 @keyframes blink {
-  0%, 49% { opacity: 1; }
-  50%, 100% { opacity: 0; }
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
 }
 
 .message-time {
@@ -1183,11 +1212,11 @@ use Illuminate\Support\Facades\Broadcast;
 
 Broadcast::channel('conversation.{conversationId}', function ($user, $conversationId) {
     $conversation = ChatConversation::find($conversationId);
-    
+
     if ($conversation && $user->id === $conversation->user_id) {
         return ['id' => $user->id, 'name' => $user->name];
     }
-    
+
     return false;
 });
 ```
@@ -1266,9 +1295,10 @@ npm run dev
 2. **Test WebSocket connection**:
 
 Open browser console and verify Echo connects:
+
 ```javascript
 // Should see connection established
-window.Echo.connector.socket.connected // true
+window.Echo.connector.socket.connected; // true
 ```
 
 3. **Create a conversation**:
@@ -1310,12 +1340,14 @@ See the comprehensive troubleshooting section below.
 **Solution**:
 
 1. Verify Reverb is running:
+
 ```bash
 php artisan reverb:start
 # Should see: "Starting Reverb server on localhost:8080..."
 ```
 
 2. Check environment variables match:
+
 ```bash
 # Backend .env
 REVERB_APP_KEY=your-key
@@ -1329,6 +1361,7 @@ VITE_REVERB_PORT=8080
 ```
 
 3. Verify authentication endpoint:
+
 ```bash
 curl http://localhost:8000/broadcasting/auth \
   -H "Authorization: Bearer YOUR_TOKEN"
@@ -1344,12 +1377,14 @@ curl http://localhost:8000/broadcasting/auth \
 **Solution**:
 
 1. Verify broadcasting driver:
+
 ```bash
 # .env
 BROADCAST_CONNECTION=reverb
 ```
 
 2. Check channel authorization:
+
 ```php
 // routes/channels.php - ensure this returns true for authorized users
 Broadcast::channel('conversation.{conversationId}', function ($user, $conversationId) {
@@ -1358,12 +1393,14 @@ Broadcast::channel('conversation.{conversationId}', function ($user, $conversati
 ```
 
 3. Check Laravel logs:
+
 ```bash
 tail -f storage/logs/laravel.log
 # Look for broadcasting errors
 ```
 
 4. Test event broadcasting manually:
+
 ```php
 // In tinker: php artisan tinker
 broadcast(new \App\Events\MessageChunkReceived(
@@ -1382,6 +1419,7 @@ broadcast(new \App\Events\MessageChunkReceived(
 **Solution**:
 
 1. Use PresenceChannel for typing events:
+
 ```php
 // app/Events/UserTyping.php
 public function broadcastOn(): Channel
@@ -1393,9 +1431,10 @@ public function broadcastOn(): Channel
 2. Configure presence callbacks in channels.php (see Step 8)
 
 3. Verify Echo presence methods:
+
 ```javascript
 channel.here((users) => {
-    console.log('Users present:', users);
+  console.log("Users present:", users);
 });
 ```
 
@@ -1408,6 +1447,7 @@ channel.here((users) => {
 **Solution**:
 
 1. Scale Reverb horizontally:
+
 ```bash
 # Run multiple Reverb instances on different ports
 php artisan reverb:start --port=8080
@@ -1416,6 +1456,7 @@ php artisan reverb:start --port=8081
 ```
 
 2. Use Redis for horizontal scaling:
+
 ```bash
 # .env
 BROADCAST_CONNECTION=redis
@@ -1423,6 +1464,7 @@ REDIS_CLIENT=phpredis
 ```
 
 3. Implement message pagination:
+
 ```php
 // Load only recent messages
 $messages = $conversation->messages()
@@ -1432,6 +1474,7 @@ $messages = $conversation->messages()
 ```
 
 4. Rate limit typing broadcasts:
+
 ```php
 // In controller
 RateLimiter::attempt(
@@ -1502,26 +1545,26 @@ When WebSockets fail, fall back to polling:
 ```javascript
 // filename: resources/js/composables/useRobustConnection.js
 export function useRobustConnection(conversationId) {
-  const connectionStatus = ref('disconnected');
+  const connectionStatus = ref("disconnected");
   const pollInterval = ref(null);
 
   function setupWebSocket() {
     try {
       const channel = window.Echo.private(`conversation.${conversationId}`);
-      channel.listen('.message.chunk', (event) => {
+      channel.listen(".message.chunk", (event) => {
         // Handle message chunk
       });
-      connectionStatus.value = 'connected';
+      connectionStatus.value = "connected";
       return true;
     } catch (error) {
-      console.warn('WebSocket failed, falling back to polling');
+      console.warn("WebSocket failed, falling back to polling");
       fallbackToPolling();
       return false;
     }
   }
 
   function fallbackToPolling() {
-    connectionStatus.value = 'polling';
+    connectionStatus.value = "polling";
     pollInterval.value = setInterval(async () => {
       const response = await axios.get(`/api/conversations/${conversationId}`);
       // Handle polling response
@@ -1549,16 +1592,16 @@ Use multiple guards for flexible authentication:
 
 Broadcast::channel('conversation.{conversationId}', function ($user, $conversationId) {
     $conversation = ChatConversation::find($conversationId);
-    
+
     if (!$conversation || $user->id !== $conversation->user_id) {
         return false;
     }
-    
+
     // Verify token hasn't expired (optional)
     if ($user->token && now()->isAfter($user->token->expires_at)) {
         return false;
     }
-    
+
     return ['id' => $user->id, 'name' => $user->name];
 }, ['guards' => ['web', 'sanctum']]);
 ```
@@ -1624,7 +1667,7 @@ Implement heartbeat and exponential backoff for resilience:
 // filename: resources/js/composables/useWebSocketConnection.js
 
 export function useWebSocketConnection(conversationId) {
-  const connectionState = ref('disconnected');
+  const connectionState = ref("disconnected");
   const reconnectAttempts = ref(0);
   const maxAttempts = 10;
   let heartbeatInterval = null;
@@ -1639,7 +1682,7 @@ export function useWebSocketConnection(conversationId) {
   function connectWebSocket() {
     try {
       const channel = window.Echo.private(`conversation.${conversationId}`);
-      
+
       // Setup heartbeat to detect stale connections
       heartbeatInterval = setInterval(() => {
         // Check for stale connection (no activity for 30 seconds)
@@ -1648,7 +1691,7 @@ export function useWebSocketConnection(conversationId) {
         }
       }, 5000);
 
-      connectionState.value = 'connected';
+      connectionState.value = "connected";
       reconnectAttempts.value = 0;
     } catch (error) {
       attemptReconnect();
@@ -1657,14 +1700,14 @@ export function useWebSocketConnection(conversationId) {
 
   function attemptReconnect() {
     if (reconnectAttempts.value >= maxAttempts) {
-      connectionState.value = 'failed';
+      connectionState.value = "failed";
       return;
     }
 
     reconnectAttempts.value++;
-    connectionState.value = 'reconnecting';
+    connectionState.value = "reconnecting";
     const delay = getReconnectDelay();
-    
+
     setTimeout(() => {
       connectWebSocket();
     }, delay);
@@ -1697,6 +1740,13 @@ export function useWebSocketConnection(conversationId) {
   label="You've built a real-time chat application with Claude!"
 />
 
+## Further Reading
+
+- **[Claude-PHP-SDK on GitHub](https://github.com/claude-php/Claude-PHP-SDK)** — Comprehensive PHP SDK for Claude with streaming support
+- **[Claude-PHP-SDK Documentation](https://github.com/claude-php/Claude-PHP-SDK#readme)** — Complete guide and examples
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Official Claude API reference and guides
+- **[Laravel Integration Guide](https://github.com/claude-php/Claude-PHP-SDK#laravel-integration)** — Laravel-specific setup and examples
+
 ## Wrap-up
 
 Congratulations on completing Chapter 20! You've built a production-ready real-time chat application with Claude. Here's what you accomplished:
@@ -1725,13 +1775,19 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 20 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-20)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-20
 composer install
 npm install
+# Set up environment variables
+cp .env.example .env
+php artisan key:generate
 php artisan migrate
-php artisan reverb:start
-# In another terminal:
-npm run dev
+# Start services
+php artisan reverb:start  # Terminal 1
+php artisan queue:work    # Terminal 2
+php artisan serve         # Terminal 3
+npm run dev               # Terminal 4
 ```

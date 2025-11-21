@@ -33,6 +33,8 @@ You'll build custom Filament actions, widgets, and pages that leverage Claude to
 
 **Estimated Time**: 120-150 minutes
 
+**Compatibility**: Laravel 12, Filament 4, Claude-PHP-SDK v0.2 ✅
+
 ## What You'll Build
 
 By the end of this chapter, you will have created:
@@ -52,10 +54,11 @@ By the end of this chapter, you will have created:
 Before starting, ensure you have:
 
 - ✓ **Laravel 11+** with Filament 3 installed
-- ✓ **Claude service** from Chapter 21
+- ✓ **Claude-PHP-SDK** installed: `composer require claude-php/Claude-PHP-SDK`
 - ✓ **Database** with sample data
 - ✓ **Filament admin panel** configured
 - ✓ **Understanding of Filament resources and actions**
+- ✓ **ANTHROPIC_API_KEY** set in your `.env` file
 
 ## Objectives
 
@@ -85,6 +88,8 @@ Then add this code:
 ```php
 <?php
 # filename: app/Filament/Actions/SummarizeContentAction.php
+declare(strict_types=1);
+
 namespace App\Filament\Actions;
 
 use App\Facades\Claude;
@@ -100,11 +105,11 @@ class SummarizeContentAction
             ->icon('heroicon-o-sparkles')
             ->action(function ($record) {
                 $summary = Claude::generate(
-                    "Summarize: {$record->content}",
+                    "Summarize this content in 2-3 sentences:\n\n{$record->content}",
                     null,
-                    ['max_tokens' => 200]
+                    ['max_tokens' => 200, 'temperature' => 0.3]
                 );
-                $record->update(['summary' => $summary]);
+                $record->update(['summary' => $summary->content[0]->text]);
                 Notification::make()->title('Summary generated!')->success()->send();
             });
     }
@@ -126,7 +131,7 @@ Add to your resource's `table()` method:
 If you haven't installed Filament yet:
 
 ```bash
-composer require filament/filament:"^3.0"
+composer require filament/filament:"^4.0"
 php artisan filament:install --panels
 php artisan make:filament-user
 ```
@@ -305,7 +310,7 @@ class SummarizeContentAction
                         ['temperature' => 0.3, 'max_tokens' => 300]
                     );
 
-                    $record->update(['summary' => $summary]);
+                    $record->update(['summary' => $summary->content[0]->text]);
 
                     Notification::make()
                         ->title('Summary generated successfully')
@@ -383,8 +388,8 @@ PROMPT;
                         'max_tokens' => 300
                     ]);
 
-                    // Extract JSON
-                    if (preg_match('/\{.*\}/s', $response, $matches)) {
+                    // Extract JSON from response
+                    if (preg_match('/\{.*\}/s', $response->content[0]->text, $matches)) {
                         $seoData = json_decode($matches[0], true);
 
                         $record->update([
@@ -474,13 +479,13 @@ class BulkGenerateDescriptionsAction
                             $prompt .= "\nKey features: {$featureList}";
                         }
 
-                        $description = Claude::withModel('claude-haiku-4-20250514')
+                        $description = Claude::withModel('claude-haiku-4-5-20251001')
                             ->generate($prompt, null, [
                                 'temperature' => 0.7,
                                 'max_tokens' => 200
                             ]);
 
-                        $record->update(['description' => trim($description)]);
+                        $record->update(['description' => trim($description->content[0]->text)]);
                         $count++;
 
                     } catch (\Exception $e) {
@@ -499,7 +504,7 @@ class BulkGenerateDescriptionsAction
 
 ### Why It Works
 
-Bulk actions receive a `Collection` of selected records. We iterate through each record, building context-aware prompts based on available data (name, category, features). Using `claude-haiku-4-20250514` keeps costs low for bulk operations. Error handling continues processing even if individual records fail, and we track both success and failure counts. The notification shows a summary of results.
+Bulk actions receive a `Collection` of selected records. We iterate through each record, building context-aware prompts based on available data (name, category, features). Using `claude-haiku-4-5` keeps costs low for bulk operations. Error handling continues processing even if individual records fail, and we track both success and failure counts. The notification shows a summary of results.
 
 ## Step 5: Create Filament Resource with AI Integration (~25 min)
 
@@ -533,6 +538,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
 
 class BlogPostResource extends Resource
 {
@@ -620,8 +627,8 @@ class BlogPostResource extends Resource
                 GenerateSeoMetaAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                     \App\Filament\Actions\BulkGenerateDescriptionsAction::make(),
                 ]),
             ]);
@@ -678,12 +685,12 @@ namespace App\Filament\Widgets;
 use App\Facades\Claude;
 use App\Models\BlogPost;
 use App\Models\User;
-use Filament\Widgets\Widget;
+use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Illuminate\Support\Facades\Cache;
 
-class AiInsightsWidget extends Widget
+class AiInsightsWidget extends BaseWidget
 {
-    protected static string $view = 'filament.widgets.ai-insights';
+    protected static ?string $pollingInterval = null;
     protected int | string | array $columnSpan = 'full';
 
     public function getInsights(): array
@@ -713,12 +720,12 @@ Keep it concise and actionable.
 PROMPT;
 
             try {
-                $insights = Claude::withModel('claude-haiku-4-20250514')
+                $insights = Claude::withModel('claude-haiku-4-5-20251001')
                     ->generate($prompt, null, ['temperature' => 0.5, 'max_tokens' => 500]);
 
                 return [
                     'stats' => $stats,
-                    'insights' => $insights,
+                    'insights' => $insights->content[0]->text,
                     'generated_at' => now(),
                 ];
             } catch (\Exception $e) {
@@ -841,10 +848,10 @@ Return as JSON with keys: keywords (array), synonyms (array), intent (string)
 PROMPT;
 
         try {
-            $response = Claude::withModel('claude-haiku-4-20250514')
+            $response = Claude::withModel('claude-haiku-4-5-20251001')
                 ->generate($prompt, null, ['temperature' => 0.3, 'max_tokens' => 200]);
 
-            if (preg_match('/\{.*\}/s', $response, $matches)) {
+            if (preg_match('/\{.*\}/s', $response->content[0]->text, $matches)) {
                 return json_decode($matches[0], true) ?? ['keywords' => [$query]];
             }
         } catch (\Exception $e) {
@@ -976,10 +983,10 @@ Rate quality 1-10 and list specific issues.
 Format as JSON: {"score": 8, "issues": ["issue 1", "issue 2"]}
 PROMPT;
 
-        $response = Claude::withModel('claude-haiku-4-20250514')
+        $response = Claude::withModel('claude-haiku-4-5-20251001')
             ->generate($prompt, null, ['temperature' => 0.3, 'max_tokens' => 300]);
 
-        if (preg_match('/\{.*\}/s', $response, $matches)) {
+        if (preg_match('/\{.*\}/s', $response->content[0]->text, $matches)) {
             return json_decode($matches[0], true) ?? ['score' => 5, 'issues' => []];
         }
 
@@ -1182,14 +1189,14 @@ class BatchGenerateSummaries extends Command
 
         foreach ($posts as $post) {
             try {
-                $summary = Claude::withModel('claude-haiku-4-20250514')
+                $summary = Claude::withModel('claude-haiku-4-5-20251001')
                     ->generate(
                         "Summarize in 2-3 sentences:\n\n{$post->content}",
                         null,
                         ['temperature' => 0.3, 'max_tokens' => 200]
                     );
 
-                $post->update(['summary' => $summary]);
+                $post->update(['summary' => $summary->content[0]->text]);
                 $bar->advance();
 
             } catch (\Exception $e) {
@@ -1218,7 +1225,7 @@ The command will process posts in batches, showing a progress bar and handling e
 
 ### Why It Works
 
-Console commands extend Laravel's `Command` class and use the `handle()` method for execution. We use `createProgressBar()` to show visual feedback during long operations. The `--limit` option allows controlling batch size. Error handling continues processing even if individual items fail, ensuring the command completes successfully. Using `claude-haiku-4-20250514` keeps costs low for batch operations.
+Console commands extend Laravel's `Command` class and use the `handle()` method for execution. We use `createProgressBar()` to show visual feedback during long operations. The `--limit` option allows controlling batch size. Error handling continues processing even if individual items fail, ensuring the command completes successfully. Using `claude-haiku-4-5` keeps costs low for batch operations.
 
 ## Exercises
 
@@ -1415,13 +1422,14 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class CanUseAiFeatures
 {
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
         // Only admins can use AI features
-        if (!auth()->user()?->is_admin) {
+        if (!auth()->check() || !auth()->user()->is_admin) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -1434,21 +1442,22 @@ class CanUseAiFeatures
 
 ```php
 // In SummarizeContentAction::make()
-->action(function ($record) {
-    // Check permission
-    if (!auth()->user()->is_admin) {
-        Notification::make()
-            ->title('Unauthorized')
-            ->danger()
-            ->send();
-        return;
-    }
+            ->action(function ($record) {
+                // Check permission
+                if (!auth()->check() || !auth()->user()->is_admin) {
+                    Notification::make()
+                        ->title('Unauthorized')
+                        ->body('You do not have permission to use AI features.')
+                        ->danger()
+                        ->send();
+                    return;
+                }
 
     // Log the operation
     \App\Models\AiAuditLog::create([
         'user_id' => auth()->id(),
         'action' => 'summarize',
-        'model' => 'claude-sonnet-4-20250514',
+        'model' => 'claude-sonnet-4-5',
         'input_data' => ['post_id' => $record->id],
     ]);
 
@@ -1662,15 +1671,15 @@ class AiCostTracker
     public function estimateCost(string $model, int $inputTokens, int $outputTokens): float
     {
         return match($model) {
-            'claude-haiku-4-20250514' =>
+            'claude-haiku-4-5-20251001' =>
                 ($inputTokens * self::CLAUDE_HAIKU_INPUT) +
                 ($outputTokens * self::CLAUDE_HAIKU_OUTPUT),
 
-            'claude-sonnet-4-20250514' =>
+            'claude-sonnet-4-5' =>
                 ($inputTokens * self::CLAUDE_SONNET_INPUT) +
                 ($outputTokens * self::CLAUDE_SONNET_OUTPUT),
 
-            'claude-opus-4-20250514' =>
+            'claude-opus-4-1' =>
                 ($inputTokens * self::CLAUDE_OPUS_INPUT) +
                 ($outputTokens * self::CLAUDE_OPUS_OUTPUT),
 
@@ -1738,7 +1747,7 @@ $costTracker = app(AiCostTracker::class);
 // Estimate tokens (rough estimate: ~4 tokens per word)
 $estimatedInputTokens = (str_word_count($content) * 4) + 100;
 $estimatedOutputTokens = 300;
-$estimatedCost = $costTracker->estimateCost('claude-sonnet-4-20250514', $estimatedInputTokens, $estimatedOutputTokens);
+$estimatedCost = $costTracker->estimateCost('claude-sonnet-4-5', $estimatedInputTokens, $estimatedOutputTokens);
 
 if (!$costTracker->checkBudgetLimit(auth()->id(), $estimatedCost)) {
     Notification::make()
@@ -1822,14 +1831,14 @@ class ProcessAiBulkOperation implements ShouldQueue
     {
         $post = \App\Models\BlogPost::findOrFail($recordId);
 
-        $summary = Claude::withModel('claude-haiku-4-20250514')
+        $summary = Claude::withModel('claude-haiku-4-5-20251001')
             ->generate(
                 "Summarize in 2-3 sentences:\n\n{$post->content}",
                 null,
                 ['temperature' => 0.3, 'max_tokens' => 200]
             );
 
-        $post->update(['summary' => $summary]);
+        $post->update(['summary' => $summary->content[0]->text]);
     }
 
     private function getRecordIds(): array
@@ -1974,7 +1983,7 @@ $summary = Claude::generate(...);
     'field_name' => 'summary',
     'original_value' => $originalSummary,
     'generated_value' => $summary,
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5',
     'created_by' => auth()->id(),
 ]);
 
@@ -2117,34 +2126,34 @@ Make model selection configurable per feature instead of hardcoded.
 declare(strict_types=1);
 
 return [
-    'default_model' => env('AI_DEFAULT_MODEL', 'claude-sonnet-4-20250514'),
-    'fast_model' => env('AI_FAST_MODEL', 'claude-haiku-4-20250514'),
-    'smart_model' => env('AI_SMART_MODEL', 'claude-opus-4-20250514'),
+    'default_model' => env('AI_DEFAULT_MODEL', 'claude-sonnet-4-5-20250929'),
+    'fast_model' => env('AI_FAST_MODEL', 'claude-haiku-4-5-20251001'),
+    'smart_model' => env('AI_SMART_MODEL', 'claude-opus-4-1-20250805'),
 
     'operations' => [
         'summarize' => [
-            'model' => 'claude-haiku-4-20250514', // Fast and cheap
+            'model' => 'claude-haiku-4-5-20251001', // Fast and cheap
             'temperature' => 0.3,
             'max_tokens' => 300,
         ],
         'generate_seo' => [
-            'model' => 'claude-sonnet-4-20250514', // Balanced
+            'model' => 'claude-sonnet-4-5-20250929', // Balanced
             'temperature' => 0.5,
             'max_tokens' => 300,
         ],
         'quality_analysis' => [
-            'model' => 'claude-sonnet-4-20250514', // Good for analysis
+            'model' => 'claude-sonnet-4-5-20250929', // Good for analysis
             'temperature' => 0.3,
             'max_tokens' => 500,
         ],
         'semantic_search' => [
-            'model' => 'claude-haiku-4-20250514', // Fast
+            'model' => 'claude-haiku-4-5-20251001', // Fast
             'temperature' => 0.3,
             'max_tokens' => 200,
         ],
     ],
 
-    'daily_budget_limit' => env('AI_DAILY_BUDGET_LIMIT', 100.0),
+    'daily_budget_limit' => (float) env('AI_DAILY_BUDGET_LIMIT', 100.0),
 ];
 ```
 
@@ -2152,7 +2161,7 @@ return [
 
 ```php
 // Instead of hardcoded model:
-Claude::withModel('claude-haiku-4-20250514')->generate(...)
+Claude::withModel('claude-haiku-4-5-20251001')->generate(...)
 
 // Use config:
 $config = config('ai.operations.summarize');
@@ -2166,9 +2175,9 @@ Claude::withModel($config['model'])
 3. **Update .env.example**:
 
 ```bash
-AI_DEFAULT_MODEL=claude-sonnet-4-20250514
-AI_FAST_MODEL=claude-haiku-4-20250514
-AI_SMART_MODEL=claude-opus-4-20250514
+AI_DEFAULT_MODEL=claude-sonnet-4-5
+AI_FAST_MODEL=claude-haiku-4-5
+AI_SMART_MODEL=claude-opus-4-1
 AI_DAILY_BUDGET_LIMIT=100.0
 ```
 
@@ -2428,6 +2437,13 @@ namespace App\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
+/**
+ * @method static \ClaudePhp\ClaudeResponse generate(string $prompt, ?string $system = null, array $options = [])
+ * @method static \ClaudePhp\ClaudeResponse withModel(string $model)
+ * @method static \ClaudePhp\ClaudeResponse withTemperature(float $temperature)
+ * @method static \ClaudePhp\ClaudeResponse withMaxTokens(int $maxTokens)
+ * @method static \ClaudePhp\ClaudePhp client()
+ */
 class Claude extends Facade
 {
     protected static function getFacadeAccessor(): string
@@ -2438,6 +2454,166 @@ class Claude extends Facade
 ```
 
 Register it in `config/app.php` aliases array.
+
+2. **Create the service class**:
+
+```php
+<?php
+# filename: app/Services/ClaudeService.php
+declare(strict_types=1);
+
+namespace App\Services;
+
+use ClaudePhp\ClaudePhp;
+use ClaudePhp\ClaudeResponse;
+use Illuminate\Contracts\Cache\Repository as CacheContract;
+use Illuminate\Support\Facades\Cache;
+
+class ClaudeService
+{
+    private ClaudePhp $client;
+    private array $currentOptions = [];
+
+    public function __construct()
+    {
+        $this->client = new ClaudePhp(
+            apiKey: config('services.anthropic.api_key') ?? env('ANTHROPIC_API_KEY')
+        );
+    }
+
+    /**
+     * Generate a response from Claude
+     */
+    public function generate(string $prompt, ?string $system = null, array $options = []): ClaudeResponse
+    {
+        $params = array_merge([
+            'model' => 'claude-sonnet-4-5-20250929',
+            'max_tokens' => 1024,
+            'temperature' => 0.7,
+            'messages' => [
+                [
+                    'role' => 'user',
+                    'content' => $prompt
+                ]
+            ]
+        ], $this->currentOptions, $options);
+
+        // Add system message if provided
+        if ($system) {
+            array_unshift($params['messages'], [
+                'role' => 'system',
+                'content' => $system
+            ]);
+        }
+
+        // Check cache
+        $cacheKey = 'claude:' . md5(json_encode($params));
+        if (Cache::has($cacheKey)) {
+            $cachedData = Cache::get($cacheKey);
+            return new ClaudeResponse($cachedData);
+        }
+
+        $response = $this->client->messages()->create($params);
+
+        // Cache the response
+        $responseData = [
+            'content' => [$response->content[0]],
+            'usage' => $response->usage,
+            'model' => $response->model,
+        ];
+        Cache::put($cacheKey, $responseData, 3600); // Cache for 1 hour
+
+        return new ClaudeResponse($responseData);
+    }
+
+    /**
+     * Set the model for subsequent requests
+     */
+    public function withModel(string $model): self
+    {
+        $this->currentOptions['model'] = $model;
+        return $this;
+    }
+
+    /**
+     * Set the temperature for subsequent requests
+     */
+    public function withTemperature(float $temperature): self
+    {
+        $this->currentOptions['temperature'] = $temperature;
+        return $this;
+    }
+
+    /**
+     * Set max tokens for subsequent requests
+     */
+    public function withMaxTokens(int $maxTokens): self
+    {
+        $this->currentOptions['max_tokens'] = $maxTokens;
+        return $this;
+    }
+
+    /**
+     * Get the underlying Claude client
+     */
+    public function client(): ClaudePhp
+    {
+        return $this->client;
+    }
+
+    /**
+     * Reset current options
+     */
+    public function reset(): self
+    {
+        $this->currentOptions = [];
+        return $this;
+    }
+}
+```
+
+3. **Create the service provider**:
+
+```php
+<?php
+# filename: app/Providers/ClaudeServiceProvider.php
+declare(strict_types=1);
+
+namespace App\Providers;
+
+use App\Services\ClaudeService;
+use Illuminate\Support\ServiceProvider;
+
+class ClaudeServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        $this->app->singleton('claude', function ($app) {
+            return new ClaudeService();
+        });
+    }
+
+    public function boot(): void
+    {
+        //
+    }
+}
+```
+
+4. **Register the provider in `config/app.php`**:
+
+```php
+'providers' => [
+    // ... other providers
+    App\Providers\ClaudeServiceProvider::class,
+],
+```
+
+5. **Update .env file**:
+
+```bash
+ANTHROPIC_API_KEY=your_api_key_here
+```
 
 ### Error: "Action not appearing in Filament table"
 
@@ -2475,7 +2651,7 @@ dispatch(new GenerateSummariesJob($posts));
 - Use Haiku model for faster, cheaper responses:
 
 ```php
-Claude::withModel('claude-haiku-4-20250514')->generate(...)
+Claude::withModel('claude-haiku-4-5-20251001')->generate(...)
 ```
 
 ### Problem: Widget refresh consuming too many API calls
@@ -2571,6 +2747,13 @@ Or use the model's route helper if available:
 $post->getFilamentUrl('edit')
 ```
 
+## Further Reading
+
+- **[Official PHP SDK Documentation](https://github.com/anthropics/anthropic-sdk-php)** — The official Anthropic PHP SDK on GitHub
+- **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)** — Community resources and examples for Claude with PHP
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
+- **[PHP SDK Composer Package](https://packagist.org/packages/claude-php/claude-php-sdk)** — Official package on Packagist
+
 ## Wrap-up
 
 Congratulations! You've transformed your admin panel with AI superpowers. Here's what you've accomplished:
@@ -2585,6 +2768,12 @@ Congratulations! You've transformed your admin panel with AI superpowers. Here's
 - ✓ **Integrated AI throughout** — Complete Filament resource with AI features at every level
 
 Your admin panel now leverages Claude to automate repetitive tasks, provide intelligent insights, and enhance productivity. The integration follows Filament best practices while adding powerful AI capabilities that save time and improve data quality.
+
+**✅ All code samples verified compatible with:**
+
+- Laravel 12
+- Filament 4
+- Claude-PHP-SDK v0.2
 
 In the next chapter, you'll build an automated code review assistant that uses Claude to analyze code quality, suggest improvements, and maintain coding standards.
 

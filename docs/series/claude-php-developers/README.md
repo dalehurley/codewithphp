@@ -103,7 +103,7 @@ Sign up at [console.anthropic.com](https://console.anthropic.com) and generate a
 ### 2. Install Dependencies
 
 ```bash
-composer require anthropic-ai/sdk
+composer require claude-php/claude-php-sdk
 ```
 
 ### 3. Make Your First Request
@@ -112,11 +112,11 @@ composer require anthropic-ai/sdk
 <?php
 require 'vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
 
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-20250514',

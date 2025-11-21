@@ -71,7 +71,7 @@ Before starting, ensure you have:
 php --version
 
 # Verify you have access to Claude API
-php -r "echo getenv('ANTHROPIC_API_KEY') ? 'API key found' : 'API key not set';"
+php -r "echo $_ENV['ANTHROPIC_API_KEY'] ? 'API key found' : 'API key not set';"
 ```
 
 ## Quick Start
@@ -105,6 +105,11 @@ $useCase = new UseCase(
     requiresCitations: false,
     requiresFlexibility: true,
     domainSpecific: false
+);
+
+// Initialize Claude client
+$claude = new \ClaudePhp\ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY'] ?? throw new \RuntimeException('ANTHROPIC_API_KEY not set')
 );
 
 // Analyze the use case
@@ -393,12 +398,11 @@ declare(strict_types=1);
 
 namespace App\FineTuning;
 
-use Anthropic\Anthropic;
 
 class DatasetPreparation
 {
     public function __construct(
-        private Anthropic $claude
+        private \ClaudePhp\ClaudePhp $claude
     ) {}
 
     /**
@@ -517,7 +521,7 @@ Return JSON:
 PROMPT;
 
             $response = $this->claude->messages()->create([
-                'model' => 'claude-haiku-4-20250514', // Use fast model for quality checks
+                'model' => 'claude-haiku-4-5-20251001', // Use fast model for quality checks
                 'max_tokens' => 512,
                 'temperature' => 0.2,
                 'messages' => [[
@@ -666,12 +670,11 @@ declare(strict_types=1);
 
 namespace App\FineTuning;
 
-use Anthropic\Anthropic;
 
 class ModelEvaluator
 {
     public function __construct(
-        private Anthropic $claude
+        private \ClaudePhp\ClaudePhp $claude
     ) {}
 
     /**
@@ -766,7 +769,7 @@ PROMPT;
         $evalPrompt .= "\n\nReturn JSON with scores for each metric.";
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 512,
             'temperature' => 0.2,
             'messages' => [[
@@ -927,16 +930,15 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
 use App\FineTuning\DecisionFramework;
 use App\FineTuning\UseCase;
 use App\FineTuning\DatasetPreparation;
 use App\FineTuning\CostBenefitAnalyzer;
 
 // Initialize Claude
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$claude = new \ClaudePhp\ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY'] ?? throw new \RuntimeException('ANTHROPIC_API_KEY not set')
+);
 
 echo "=== Fine-tuning Strategy Analysis ===\n\n";
 
@@ -1048,12 +1050,11 @@ declare(strict_types=1);
 
 namespace App\FineTuning;
 
-use Anthropic\Anthropic;
 
 class ModelDeployment
 {
     public function __construct(
-        private Anthropic $claude
+        private \ClaudePhp\ClaudePhp $claude
     ) {}
 
     /**
@@ -1224,12 +1225,11 @@ declare(strict_types=1);
 
 namespace App\FineTuning;
 
-use Anthropic\Anthropic;
 
 class ModelMonitoring
 {
     public function __construct(
-        private Anthropic $claude
+        private \ClaudePhp\ClaudePhp $claude
     ) {}
 
     /**
@@ -1415,7 +1415,7 @@ echo "   - Use cross-validation with small datasets\n\n";
 
 // PITFALL 3: No Baseline
 echo "3. Inadequate Performance Baseline (WRONG):\n";
-echo "   ❌ Fine-tuned model: 85% accuracy\n";
+echo "   ❌ Fine-tuned 'model' => 85% accuracy\n";
 echo "   ❌ No comparison to base model\n";
 echo "   ❌ Is the improvement from fine-tuning or just from prompt?\n\n";
 
@@ -1499,13 +1499,12 @@ require __DIR__ . '/../vendor/autoload.php';
 use App\FineTuning\DatasetPreparation;
 use App\FineTuning\ModelEvaluator;
 use App\FineTuning\CostBenefitAnalyzer;
-use Anthropic\Anthropic;
 
 echo "=== Email Classification Fine-tuning Use Case ===\n\n";
 
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$claude = new \ClaudePhp\ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY'] ?? throw new \RuntimeException('ANTHROPIC_API_KEY not set')
+);
 
 // Prepare realistic training data
 $trainingExamples = [
@@ -1817,7 +1816,7 @@ readonly class ROIAnalysis
 
 **Cause**: The quality assessment found that your training examples don't meet the minimum quality threshold (0.7).
 
-**Solution**: 
+**Solution**:
 
 1. Review individual quality scores to identify problematic examples
 2. Remove or improve low-quality examples
@@ -1892,6 +1891,13 @@ $evaluation = $evaluator->evaluate($modelId, $sampledTestSet);
 4. Evaluate if hybrid approaches might work better
 5. Don't force fine-tuning if it's not appropriate
 
+## Further Reading
+
+- **[Official PHP SDK Documentation](https://github.com/anthropics/anthropic-sdk-php)** — The official Anthropic PHP SDK on GitHub
+- **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)** — Community resources and examples for Claude with PHP
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
+- **[PHP SDK Composer Package](https://packagist.org/packages/claude-php/claude-php-sdk)** — Official package on Packagist
+
 ## Wrap-up
 
 Congratulations! You've completed a comprehensive guide to fine-tuning strategies for Claude applications. In this chapter, you've:
@@ -1946,6 +1952,7 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 35 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-35)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-35

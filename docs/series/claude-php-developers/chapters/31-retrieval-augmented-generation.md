@@ -77,12 +77,11 @@ declare(strict_types=1);
 
 namespace App\RAG;
 
-use Anthropic\Anthropic;
 
 class RAGPipeline
 {
     public function __construct(
-        private Anthropic $claude,
+        private \ClaudePhp\ClaudePhp $claude,
         private DocumentProcessor $processor,
         private ChunkingStrategy $chunker,
         private EmbeddingService $embeddings,
@@ -178,7 +177,7 @@ class RAGPipeline
             $optimizedContext = $this->optimizer->optimize(
                 chunks: $retrievedChunks,
                 query: $question,
-                maxTokens: $options['max_context_tokens'] ?? 4000
+                'max_tokens' => $options['max_context_tokens'] ?? 4000
             );
 
             if (empty($optimizedContext->chunks)) {
@@ -246,14 +245,16 @@ Answer:
 PROMPT;
 
         return $this->claude->messages()->create([
-            'model' => $options['model'] ?? 'claude-sonnet-4-20250514',
+            'model' => $options['model'] ?? 'claude-sonnet-4-5-20250929',
             'max_tokens' => $options['max_tokens'] ?? 2048,
             'temperature' => $options['temperature'] ?? 0.2,
             'system' => $this->getRAGSystemPrompt(),
-            'messages' => [[
-                'role' => 'user',
-                'content' => $prompt
-            ]]
+            'messages' => [
+                [
+                    'role' => 'user',
+                    'content' => $prompt
+                ]
+            ]
         ]);
     }
 
@@ -444,7 +445,7 @@ class SemanticChunker implements ChunkingStrategy
         $content = implode(' ', $sentences);
 
         return new Chunk(
-            content: $content,
+            'content' => $content,
             index: $index,
             tokenCount: $this->estimateTokenCount($content),
             metadata: [
@@ -490,7 +491,7 @@ class HierarchicalChunker implements ChunkingStrategy
         foreach ($sections as $sectionIndex => $section) {
             // Create parent chunk
             $parentChunk = new Chunk(
-                content: $section['content'],
+                'content' => $section['content'],
                 index: count($chunks),
                 tokenCount: $this->estimateTokenCount($section['content']),
                 metadata: [
@@ -598,7 +599,7 @@ class HierarchicalChunker implements ChunkingStrategy
         $content = implode(' ', $sentences);
 
         return new Chunk(
-            content: $content,
+            'content' => $content,
             index: $index,
             tokenCount: $this->estimateTokenCount($content),
             metadata: [
@@ -633,23 +634,29 @@ declare(strict_types=1);
 
 namespace App\RAG;
 
-use GuzzleHttp\Client;
+use GuzzleHttp\ClaudePhp;
+use GuzzleHttp\Exception\RequestException;
 
 class EmbeddingService
 {
-    private Client $client;
+    private ClaudePhp $client;
     private string $model = 'text-embedding-3-small';
 
     public function __construct(
         private string $apiKey,
         private string $provider = 'openai' // or 'voyage', 'cohere'
     ) {
-        $this->client = new Client([
+        if (empty($apiKey)) {
+            throw new \InvalidArgumentException('API key is required for embedding service');
+        }
+
+        $this->client = new ClaudePhp([
             'base_uri' => $this->getBaseUri(),
             'headers' => [
                 'Authorization' => "Bearer {$apiKey}",
                 'Content-Type' => 'application/json'
-            ]
+            ],
+            'timeout' => 30
         ]);
     }
 
@@ -695,8 +702,7 @@ class EmbeddingService
                         'json' => [
                             'model' => $this->model,
                             'input' => $batch
-                        ],
-                        'timeout' => 30
+                        ]
                     ]);
 
                     if ($response->getStatusCode() !== 200) {
@@ -723,7 +729,7 @@ class EmbeddingService
                     }
 
                     break; // Success, exit retry loop
-                } catch (\GuzzleHttp\Exception\RequestException $e) {
+                } catch (RequestException $e) {
                     $lastException = $e;
                     $retries--;
 
@@ -767,13 +773,12 @@ declare(strict_types=1);
 
 namespace App\RAG;
 
-use Anthropic\Anthropic;
 
 class RetrievalEngine
 {
     public function __construct(
         private VectorStore $vectorStore,
-        private Anthropic $claude,
+        private \ClaudePhp\ClaudePhp $claude,
         private bool $enableReranking = true
     ) {}
 
@@ -828,13 +833,15 @@ PROMPT;
         $prompt .= "\nReturn ONLY a JSON array of indices, like: [2, 0, 5, 1, 3, 4]";
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-haiku-4-20250514', // Use fast model for re-ranking
+            'model' => 'claude-haiku-4-5-20251001', // Use fast model for re-ranking
             'max_tokens' => 256,
             'temperature' => 0.1,
-            'messages' => [[
-                'role' => 'user',
-                'content' => $prompt
-            ]]
+            'messages' => [
+                [
+                    'role' => 'user',
+                    'content' => $prompt
+                ]
+            ]
         ]);
 
         $jsonText = $response->content[0]->text;
@@ -1016,7 +1023,6 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
 use App\RAG\RAGPipeline;
 use App\RAG\DocumentProcessor;
 use App\RAG\Chunking\SemanticChunker;
@@ -1026,12 +1032,26 @@ use App\RAG\RetrievalEngine;
 use App\RAG\ContextOptimizer;
 
 // Initialize services
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+use ClaudePhp\ClaudePhp;
+
+// Validate environment variables
+$anthropicKey = getenv('ANTHROPIC_API_KEY');
+$openaiKey = getenv('OPENAI_API_KEY');
+
+if (!$anthropicKey) {
+    die("Error: ANTHROPIC_API_KEY environment variable is required\n");
+}
+
+if (!$openaiKey) {
+    die("Error: OPENAI_API_KEY environment variable is required for embeddings\n");
+}
+
+$claude = new ClaudePhp(
+    apiKey: $anthropicKey
+);
 
 $embeddings = new EmbeddingService(
-    apiKey: getenv('OPENAI_API_KEY'),
+    apiKey: $openaiKey,
     provider: 'openai'
 );
 
@@ -1136,7 +1156,7 @@ class DocumentProcessor
 
             return new Document(
                 id: uniqid('doc_'),
-                content: $this->cleanText($content),
+                'content' => $this->cleanText($content),
                 source: $filePath,
                 metadata: array_merge([
                     'file_type' => $extension,
@@ -1152,13 +1172,13 @@ class DocumentProcessor
     private function processMarkdown(string $filePath): string
     {
         $content = file_get_contents($filePath);
-        
+
         // Remove markdown syntax but keep structure
         $content = preg_replace('/#{1,6}\s+(.+)/', '$1', $content);
         $content = preg_replace('/\*\*(.+?)\*\*/', '$1', $content);
         $content = preg_replace('/\*(.+?)\*/', '$1', $content);
         $content = preg_replace('/\[(.+?)\]\(.+?\)/', '$1', $content);
-        
+
         return $content;
     }
 
@@ -1167,7 +1187,7 @@ class DocumentProcessor
         // For production, use a library like smalot/pdfparser
         // This is a simplified example
         throw new \RuntimeException("PDF processing requires smalot/pdfparser. Install with: composer require smalot/pdfparser");
-        
+
         // Example with library:
         // $parser = new \Smalot\PdfParser\Parser();
         // $pdf = $parser->parseFile($filePath);
@@ -1177,14 +1197,14 @@ class DocumentProcessor
     private function processHTML(string $filePath): string
     {
         $html = file_get_contents($filePath);
-        
+
         // Strip HTML tags and decode entities
         $text = strip_tags($html);
         $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-        
+
         // Remove excessive whitespace
         $text = preg_replace('/\s+/', ' ', $text);
-        
+
         return trim($text);
     }
 
@@ -1197,13 +1217,13 @@ class DocumentProcessor
     {
         // Remove excessive whitespace
         $text = preg_replace('/\s+/', ' ', $text);
-        
+
         // Remove control characters except newlines
         $text = preg_replace('/[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]/', '', $text);
-        
+
         // Normalize line endings
         $text = str_replace(["\r\n", "\r"], "\n", $text);
-        
+
         return trim($text);
     }
 }
@@ -1231,7 +1251,7 @@ class SimpleVectorStore implements VectorStore
         private string $storagePath = null
     ) {
         $this->dimension = 1536; // Default for text-embedding-3-small
-        
+
         if ($storagePath && file_exists($storagePath)) {
             $this->loadFromDisk();
         }
@@ -1286,7 +1306,7 @@ class SimpleVectorStore implements VectorStore
 
         // Calculate cosine similarity for all vectors
         $similarities = [];
-        
+
         foreach ($this->vectors as $id => $vector) {
             // Apply filters
             if (!$this->matchesFilters($this->metadata[$id], $filters)) {
@@ -1302,13 +1322,13 @@ class SimpleVectorStore implements VectorStore
 
         // Get top K results
         $topIds = array_slice(array_keys($similarities), 0, $limit, true);
-        
+
         // Build result chunks
         $results = [];
         foreach ($topIds as $id) {
             $meta = $this->metadata[$id];
             $results[] = new Chunk(
-                content: $meta['content'] ?? '',
+                'content' => $meta['content'] ?? '',
                 index: $meta['chunk_index'] ?? 0,
                 tokenCount: $this->estimateTokens($meta['content'] ?? ''),
                 metadata: $meta,
@@ -1339,7 +1359,7 @@ class SimpleVectorStore implements VectorStore
         }
 
         $denominator = sqrt($normA) * sqrt($normB);
-        
+
         if ($denominator == 0) {
             return 0.0;
         }
@@ -1357,7 +1377,7 @@ class SimpleVectorStore implements VectorStore
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -1389,7 +1409,7 @@ class SimpleVectorStore implements VectorStore
     private function loadFromDisk(): void
     {
         $data = unserialize(file_get_contents($this->storagePath));
-        
+
         $this->vectors = $data['vectors'] ?? [];
         $this->metadata = $data['metadata'] ?? [];
         $this->dimension = $data['dimension'] ?? 1536;
@@ -1609,7 +1629,7 @@ $this->metricsLogger->log($metrics);
 
 Evaluating RAG system quality requires measuring both retrieval and generation performance. Here's a comprehensive evaluation framework:
 
-```php
+````php
 <?php
 # filename: src/RAG/Evaluation/RAGEvaluator.php
 declare(strict_types=1);
@@ -1617,7 +1637,6 @@ declare(strict_types=1);
 namespace App\RAG\Evaluation;
 
 use App\RAG\EmbeddingService;
-use Anthropic\Anthropic;
 
 class RAGEvaluator
 {
@@ -1631,17 +1650,17 @@ class RAGEvaluator
     ): RetrievalMetrics {
         $retrievedIds = array_map(fn($c) => $c->metadata['id'] ?? '', $retrievedChunks);
         $retrievedIds = array_slice($retrievedIds, 0, $topK);
-        
+
         $relevantRetrieved = array_intersect($retrievedIds, $relevantChunkIds);
-        
-        $precision = count($retrievedIds) > 0 
-            ? count($relevantRetrieved) / count($retrievedIds) 
+
+        $precision = count($retrievedIds) > 0
+            ? count($relevantRetrieved) / count($retrievedIds)
             : 0.0;
-            
+
         $recall = count($relevantChunkIds) > 0
             ? count($relevantRetrieved) / count($relevantChunkIds)
             : 0.0;
-            
+
         $f1 = ($precision + $recall) > 0
             ? 2 * ($precision * $recall) / ($precision + $recall)
             : 0.0;
@@ -1771,13 +1790,15 @@ Return JSON format:
 PROMPT;
 
         $response = $claude->messages()->create([
-            'model' => 'claude-haiku-4-20250514',
+            'model' => 'claude-haiku-4-5-20251001',
             'max_tokens' => 1024,
             'temperature' => 0.1,
-            'messages' => [[
-                'role' => 'user',
-                'content' => $prompt
-            ]]
+            'messages' => [
+                [
+                    'role' => 'user',
+                    'content' => $prompt
+                ]
+            ]
         ]);
 
         $jsonText = $response->content[0]->text;
@@ -1835,25 +1856,24 @@ readonly class HallucinationReport
         public int $totalClaimsCount
     ) {}
 }
-```
+````
 
 ## Citation Verification
 
 Ensuring answers cite sources correctly is critical for RAG systems. Here's a citation verification system:
 
-```php
+````php
 <?php
 # filename: src/RAG/CitationVerifier.php
 declare(strict_types=1);
 
 namespace App\RAG;
 
-use Anthropic\Anthropic;
 
 class CitationVerifier
 {
     public function __construct(
-        private Anthropic $claude
+        private \ClaudePhp\ClaudePhp $claude
     ) {}
 
     /**
@@ -1900,13 +1920,15 @@ Return JSON:
 PROMPT;
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-haiku-4-20250514',
+            'model' => 'claude-haiku-4-5-20251001',
             'max_tokens' => 512,
             'temperature' => 0.1,
-            'messages' => [[
-                'role' => 'user',
-                'content' => $prompt
-            ]]
+            'messages' => [
+                [
+                    'role' => 'user',
+                    'content' => $prompt
+                ]
+            ]
         ]);
 
         $jsonText = $response->content[0]->text;
@@ -1932,7 +1954,7 @@ readonly class CitationVerification
         public float $citationAccuracy
     ) {}
 }
-```
+````
 
 ## Using Evaluation in Practice
 
@@ -1948,11 +1970,18 @@ require __DIR__ . '/../vendor/autoload.php';
 use App\RAG\RAGPipeline;
 use App\RAG\Evaluation\RAGEvaluator;
 use App\RAG\CitationVerifier;
-use Anthropic\Anthropic;
 
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+use ClaudePhp\ClaudePhp;
+
+// Validate environment variables
+$anthropicKey = getenv('ANTHROPIC_API_KEY');
+if (!$anthropicKey) {
+    die("Error: ANTHROPIC_API_KEY environment variable is required\n");
+}
+
+$claude = new ClaudePhp(
+    apiKey: $anthropicKey
+);
 
 $pipeline = new RAGPipeline(/* ... */);
 $evaluator = new RAGEvaluator();
@@ -2132,7 +2161,7 @@ if (empty($retrievedChunks)) {
     // Check if vector store has any vectors
     $stats = $this->vectorStore->getStats();
     error_log("Vector store stats: " . json_encode($stats));
-    
+
     // Try with lower similarity threshold
     $chunks = $this->vectorStore->search($queryEmbedding, limit: 20);
     error_log("Retrieved chunks: " . count($chunks));
@@ -2156,9 +2185,16 @@ $response = $pipeline->query($question, [
     'top_k' => 7,  // Retrieve more chunks
     'max_context_tokens' => 5000,  // Allow more context
     'temperature' => 0.1,  // Lower temperature for consistency
-    'model' => 'claude-sonnet-4-20250514'  // Use consistent model
+    'model' => 'claude-sonnet-4-5'  // Use consistent model
 ]);
 ```
+
+## Further Reading
+
+- **[Official PHP SDK Documentation](https://github.com/anthropics/anthropic-sdk-php)** — The official Anthropic PHP SDK on GitHub
+- **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)** — Community resources and examples for Claude with PHP
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
+- **[PHP SDK Composer Package](https://packagist.org/packages/claude-php/claude-php-sdk)** — Official package on Packagist
 
 ## Wrap-up
 
@@ -2238,6 +2274,7 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 31 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-31)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-31

@@ -80,13 +80,14 @@ By the end of this chapter, you will be able to:
 Get up and running with streaming immediately. This minimal example shows the core pattern:
 
 **Backend** (`stream.php`):
+
 ```php
 <?php
 declare(strict_types=1);
 
 require 'vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 header('Content-Type: text/event-stream');
 header('Cache-Control: no-cache');
@@ -96,17 +97,18 @@ if (ob_get_level()) {
     ob_end_clean();
 }
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: $_ENV['ANTHROPIC_API_KEY']);
 
-$stream = $client->messages()->createStreamed([
-    'model' => 'claude-sonnet-4-20250514',
+$stream = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
-    'messages' => [[
-        'role' => 'user',
-        'content' => 'Explain quantum computing in 3 sentences.'
-    ]]
+    'stream' => true,
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => 'Explain quantum computing in 3 sentences.'
+        ]
+    ]
 ]);
 
 foreach ($stream as $event) {
@@ -119,47 +121,48 @@ flush();
 ```
 
 **Frontend** (`index.html`):
+
 ```html
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Streaming Chat</title>
-</head>
-<body>
+  </head>
+  <body>
     <div id="output"></div>
 
     <script>
-        const output = document.getElementById('output');
-        let text = '';
+      const output = document.getElementById("output");
+      let text = "";
 
-        fetch('stream.php').then(response => {
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder();
+      fetch("stream.php").then((response) => {
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
 
-            const read = async () => {
-                const { done, value } = await reader.read();
-                if (done) return;
+        const read = async () => {
+          const { done, value } = await reader.read();
+          if (done) return;
 
-                const chunk = decoder.decode(value, { stream: true });
-                const lines = chunk.split('\n');
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split("\n");
 
-                lines.forEach(line => {
-                    if (line.startsWith('data: ')) {
-                        const data = JSON.parse(line.substring(6));
-                        if (data.type === 'content_block_delta') {
-                            text += data.delta.text;
-                            output.textContent = text;
-                        }
-                    }
-                });
+          lines.forEach((line) => {
+            if (line.startsWith("data: ")) {
+              const data = JSON.parse(line.substring(6));
+              if (data.type === "content_block_delta") {
+                text += data.delta.text;
+                output.textContent = text;
+              }
+            }
+          });
 
-                await read();
-            };
+          await read();
+        };
 
-            read();
-        });
+        read();
+      });
     </script>
-</body>
+  </body>
 </html>
 ```
 
@@ -176,22 +179,22 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: $_ENV['ANTHROPIC_API_KEY']);
 
 // Non-streaming: User waits 5-10 seconds with no feedback
 $startTime = microtime(true);
 
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 2048,
-    'messages' => [[
-        'role' => 'user',
-        'content' => 'Explain the SOLID principles with PHP examples for each principle.'
-    ]]
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => 'Explain the SOLID principles with PHP examples for each principle.'
+        ]
+    ]
 ]);
 
 $duration = microtime(true) - $startTime;
@@ -201,6 +204,7 @@ echo $response->content[0]->text;
 ```
 
 **Output:**
+
 ```
 Response received after 8.3 seconds:
 
@@ -225,13 +229,13 @@ Before diving into code, understand these three core concepts:
 Streaming means sending data incrementally as it becomes available, instead of waiting for complete results. Instead of:
 
 ```
-Client: "Send me a 10,000 word essay" → Wait 10 seconds → Server: "Here's the complete essay"
+ClaudePhp: "Send me a 10,000 word essay" → Wait 10 seconds → Server: "Here's the complete essay"
 ```
 
 You get:
 
 ```
-Client: "Send me a 10,000 word essay"
+ClaudePhp: "Send me a 10,000 word essay"
 Server: "The essay is about..." → "...the benefits of..." → "...streaming responses" → "...done."
 (User sees text appear word-by-word!)
 ```
@@ -255,7 +259,7 @@ echo " World"; flush(); // Sent immediately
 
 ### 3. **Events** — The Message Format
 
-SSE defines how to send messages: each message is JSON preceded by `data: ` and followed by a blank line:
+SSE defines how to send 'messages' => each message is JSON preceded by `data: ` and followed by a blank line:
 
 ```
 data: {"type": "text_delta", "delta": "Hello"}\n\n
@@ -271,13 +275,13 @@ SSE is a standard protocol for server-to-client streaming over HTTP.
 
 ### SSE vs WebSockets
 
-| Feature | SSE | WebSockets |
-|---------|-----|------------|
-| **Direction** | Server → Client only | Bidirectional |
-| **Protocol** | HTTP | Separate protocol |
-| **Reconnection** | Automatic | Manual |
-| **Complexity** | Simple | Complex |
-| **Use Case** | Real-time updates | Two-way communication |
+| Feature          | SSE                  | WebSockets            |
+| ---------------- | -------------------- | --------------------- |
+| **Direction**    | Server → ClaudePhp only | Bidirectional         |
+| **Protocol**     | HTTP                 | Separate protocol     |
+| **Reconnection** | Automatic            | Manual                |
+| **Complexity**   | Simple               | Complex               |
+| **Use Case**     | Real-time updates    | Two-way communication |
 
 For Claude streaming, **SSE is perfect** because we only need server-to-client data flow.
 
@@ -291,6 +295,7 @@ data: {"type": "message_stop"}\n\n
 ```
 
 Each message:
+
 - Starts with `data: `
 - Contains JSON payload
 - Ends with double newline `\n\n`
@@ -306,7 +311,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
 // Set SSE headers
 header('Content-Type: text/event-stream');
@@ -323,20 +328,21 @@ if (ob_get_level()) {
 $input = json_decode(file_get_contents('php://input'), true);
 $userMessage = $input['message'] ?? 'Hello, Claude!';
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: $_ENV['ANTHROPIC_API_KEY']);
 
 try {
     // Create streaming request
-    $stream = $client->messages()->createStreamed([
-        'model' => 'claude-sonnet-4-20250514',
+    $stream = $client->messages()->create([
+        'stream' => true,
+        'model' => 'claude-sonnet-4-5-20250929',
         'max_tokens' => 1024,
-        'messages' => [[
-            'role' => 'user',
-            'content' => $userMessage
-        ]]
-    ]);
+        'messages' => [
+            [
+                'role' => 'user',
+                'content' => $userMessage
+            ]
+        ]
+    );
 
     // Process each chunk as it arrives
     foreach ($stream as $event) {
@@ -366,122 +372,152 @@ try {
 }
 ```
 
-### Client-Side: EventSource Consumer
+### ClaudePhp-Side: EventSource Consumer
 
 ```html
 <!-- filename: examples/02-streaming-client.html -->
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Claude Streaming Chat</title>
     <style>
-        body { font-family: system-ui; max-width: 800px; margin: 40px auto; padding: 20px; }
-        #messages { height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 20px; margin-bottom: 20px; }
-        #input { width: 80%; padding: 10px; font-size: 16px; }
-        #send { padding: 10px 20px; font-size: 16px; }
-        .message { margin-bottom: 20px; }
-        .user { color: #0066cc; font-weight: bold; }
-        .assistant { color: #16a34a; font-weight: bold; }
-        .loading { color: #999; font-style: italic; }
+      body {
+        font-family: system-ui;
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+      }
+      #messages {
+        height: 400px;
+        overflow-y: auto;
+        border: 1px solid #ccc;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+      #input {
+        width: 80%;
+        padding: 10px;
+        font-size: 16px;
+      }
+      #send {
+        padding: 10px 20px;
+        font-size: 16px;
+      }
+      .message {
+        margin-bottom: 20px;
+      }
+      .user {
+        color: #0066cc;
+        font-weight: bold;
+      }
+      .assistant {
+        color: #16a34a;
+        font-weight: bold;
+      }
+      .loading {
+        color: #999;
+        font-style: italic;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Claude Streaming Chat</h1>
 
     <div id="messages"></div>
 
-    <input type="text" id="input" placeholder="Ask Claude anything...">
+    <input type="text" id="input" placeholder="Ask Claude anything..." />
     <button id="send">Send</button>
 
     <script>
-        const messagesDiv = document.getElementById('messages');
-        const input = document.getElementById('input');
-        const sendBtn = document.getElementById('send');
+      const messagesDiv = document.getElementById("messages");
+      const input = document.getElementById("input");
+      const sendBtn = document.getElementById("send");
 
-        let currentAssistantMessage = null;
+      let currentAssistantMessage = null;
 
-        function addUserMessage(text) {
-            const div = document.createElement('div');
-            div.className = 'message';
-            div.innerHTML = `<span class="user">You:</span> ${text}`;
-            messagesDiv.appendChild(div);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        }
+      function addUserMessage(text) {
+        const div = document.createElement("div");
+        div.className = "message";
+        div.innerHTML = `<span class="user">You:</span> ${text}`;
+        messagesDiv.appendChild(div);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      }
 
-        function addAssistantMessage() {
-            currentAssistantMessage = document.createElement('div');
-            currentAssistantMessage.className = 'message';
-            currentAssistantMessage.innerHTML = '<span class="assistant">Claude:</span> <span class="content"></span>';
-            messagesDiv.appendChild(currentAssistantMessage);
-            return currentAssistantMessage.querySelector('.content');
-        }
+      function addAssistantMessage() {
+        currentAssistantMessage = document.createElement("div");
+        currentAssistantMessage.className = "message";
+        currentAssistantMessage.innerHTML =
+          '<span class="assistant">Claude:</span> <span class="content"></span>';
+        messagesDiv.appendChild(currentAssistantMessage);
+        return currentAssistantMessage.querySelector(".content");
+      }
 
-        function sendMessage() {
-            const message = input.value.trim();
-            if (!message) return;
+      function sendMessage() {
+        const message = input.value.trim();
+        if (!message) return;
 
-            addUserMessage(message);
-            input.value = '';
-            sendBtn.disabled = true;
+        addUserMessage(message);
+        input.value = "";
+        sendBtn.disabled = true;
 
-            const contentSpan = addAssistantMessage();
-            let fullText = '';
+        const contentSpan = addAssistantMessage();
+        let fullText = "";
 
-            // Create EventSource for streaming
-            fetch('02-streaming-endpoint.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message })
-            }).then(response => {
-                const reader = response.body.getReader();
-                const decoder = new TextDecoder();
+        // Create EventSource for streaming
+        fetch("02-streaming-endpoint.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message }),
+        }).then((response) => {
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
 
-                function read() {
-                    reader.read().then(({ done, value }) => {
-                        if (done) {
-                            sendBtn.disabled = false;
-                            return;
-                        }
+          function read() {
+            reader.read().then(({ done, value }) => {
+              if (done) {
+                sendBtn.disabled = false;
+                return;
+              }
 
-                        const chunk = decoder.decode(value, { stream: true });
-                        const lines = chunk.split('\n');
+              const chunk = decoder.decode(value, { stream: true });
+              const lines = chunk.split("\n");
 
-                        lines.forEach(line => {
-                            if (line.startsWith('data: ')) {
-                                const data = JSON.parse(line.substring(6));
+              lines.forEach((line) => {
+                if (line.startsWith("data: ")) {
+                  const data = JSON.parse(line.substring(6));
 
-                                if (data.type === 'content_block_delta') {
-                                    fullText += data.delta.text;
-                                    contentSpan.textContent = fullText;
-                                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-                                }
+                  if (data.type === "content_block_delta") {
+                    fullText += data.delta.text;
+                    contentSpan.textContent = fullText;
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                  }
 
-                                if (data.type === 'done') {
-                                    sendBtn.disabled = false;
-                                }
+                  if (data.type === "done") {
+                    sendBtn.disabled = false;
+                  }
 
-                                if (data.type === 'error') {
-                                    contentSpan.textContent = 'Error: ' + data.message;
-                                    contentSpan.style.color = 'red';
-                                    sendBtn.disabled = false;
-                                }
-                            }
-                        });
-
-                        read();
-                    });
+                  if (data.type === "error") {
+                    contentSpan.textContent = "Error: " + data.message;
+                    contentSpan.style.color = "red";
+                    sendBtn.disabled = false;
+                  }
                 }
+              });
 
-                read();
+              read();
             });
-        }
+          }
 
-        sendBtn.addEventListener('click', sendMessage);
-        input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
+          read();
         });
+      }
+
+      sendBtn.addEventListener("click", sendMessage);
+      input.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") sendMessage();
+      });
     </script>
-</body>
+  </body>
 </html>
 ```
 
@@ -606,18 +642,15 @@ declare(strict_types=1);
 
 namespace CodeWithPHP\Claude;
 
-use Anthropic\Anthropic;
-use Anthropic\Contracts\ClientContract;
+use ClaudePhp\ClaudePhp;
 
 class StreamingService
 {
-    private ClientContract $client;
+    private ClaudePhp $client;
 
     public function __construct(?string $apiKey = null)
     {
-        $this->client = Anthropic::factory()
-            ->withApiKey($apiKey ?? getenv('ANTHROPIC_API_KEY'))
-            ->make();
+        $this->client = new ClaudePhp(apiKey: $apiKey ?? $_ENV['ANTHROPIC_API_KEY']);
     }
 
     public function stream(
@@ -626,18 +659,23 @@ class StreamingService
         array $options = []
     ): StreamEventHandler {
         $handler = new StreamEventHandler(
-            onText: $options['onText'] ?? null,
-            onComplete: $options['onComplete'] ?? null,
-            onError: $options['onError'] ?? null,
+            $options['onText'] ?? null,
+            $options['onComplete'] ?? null,
+            $options['onError'] ?? null
         );
 
-        $config = [
-            'model' => $options['model'] ?? 'claude-sonnet-4-20250514',
-            'max_tokens' => $options['max_tokens'] ?? 2048,
-            'messages' => [[
+        $messages = [
+            [
                 'role' => 'user',
                 'content' => $message
-            ]],
+            ]
+        ];
+
+        $config = [
+            'model' => $options['model'] ?? 'claude-sonnet-4-5',
+            'maxTokens' => $options['max_tokens'] ?? 2048,
+            'stream' => true,
+            'messages' => $messages,
         ];
 
         if ($systemPrompt) {
@@ -649,7 +687,7 @@ class StreamingService
         }
 
         try {
-            $stream = $this->client->messages()->createStreamed($config);
+            $stream = $this->client->messages()->create($config);
 
             foreach ($stream as $event) {
                 $handler->handleEvent($event);
@@ -697,7 +735,7 @@ class StreamingService
                         'message' => $error,
                     ]);
                 },
-            ])
+            ]
         );
     }
 
@@ -742,17 +780,19 @@ $message = $input['message'] ?? 'Hello!';
 $systemPrompt = $input['system'] ?? null;
 
 // Stream to SSE
-$service = new StreamingService();
+$service = new StreamingService(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $service->streamToSSE(
     message: $message,
     systemPrompt: $systemPrompt,
     options: [
-        'model' => 'claude-sonnet-4-20250514',
+        'model' => 'claude-sonnet-4-5-20250929',
         'max_tokens' => 4096,
         'temperature' => 1.0,
     ]
-);
+]);
 ```
 
 ## Advanced Streaming Patterns
@@ -782,8 +822,8 @@ class ConversationalStreamingService extends StreamingService
         ];
 
         $handler = new StreamEventHandler(
-            onText: $options['onText'] ?? null,
-            onComplete: function (string $text, array $metadata) use ($options) {
+            $options['onText'] ?? null,
+            function (string $text, array $metadata) use ($options) {
                 // Add assistant response to history
                 $this->conversationHistory[] = [
                     'role' => 'assistant',
@@ -794,12 +834,12 @@ class ConversationalStreamingService extends StreamingService
                     ($options['onComplete'])($text, $metadata);
                 }
             },
-            onError: $options['onError'] ?? null,
+            $options['onError'] ?? null,
         );
 
         $config = [
-            'model' => $options['model'] ?? 'claude-sonnet-4-20250514',
-            'max_tokens' => $options['max_tokens'] ?? 2048,
+            'model' => $options['model'] ?? 'claude-sonnet-4-5',
+            'maxTokens' => $options['max_tokens'] ?? 2048,
             'messages' => $this->conversationHistory,
         ];
 
@@ -807,7 +847,7 @@ class ConversationalStreamingService extends StreamingService
             $config['system'] = $systemPrompt;
         }
 
-        $stream = $this->client->messages()->createStreamed($config);
+        $stream = $this->client->messages()->create($config);
 
         foreach ($stream as $event) {
             $handler->handleEvent($event);
@@ -847,11 +887,11 @@ class BudgetedStreamingService extends StreamingService
     private float $budgetUSD;
     private float $spentUSD = 0.0;
     private array $pricing = [
-        'claude-sonnet-4-20250514' => [
+        'claude-sonnet-4-5' => [
             'input' => 3.00,   // per 1M tokens
             'output' => 15.00, // per 1M tokens
         ],
-        'claude-haiku-4-20250514' => [
+        'claude-haiku-4-5' => [
             'input' => 0.80,
             'output' => 4.00,
         ],
@@ -872,7 +912,7 @@ class BudgetedStreamingService extends StreamingService
             throw new \RuntimeException("Budget exceeded: \${$this->budgetUSD} limit reached");
         }
 
-        $model = $options['model'] ?? 'claude-sonnet-4-20250514';
+        $model = $options['model'] ?? 'claude-sonnet-4-5';
 
         $originalOnComplete = $options['onComplete'] ?? null;
         $options['onComplete'] = function (string $text, array $metadata) use ($originalOnComplete, $model) {
@@ -881,7 +921,7 @@ class BudgetedStreamingService extends StreamingService
             $inputTokens = $metadata['input_tokens'] ?? 0;
             $outputTokens = $usage['output_tokens'] ?? 0;
 
-            $pricing = $this->pricing[$model] ?? $this->pricing['claude-sonnet-4-20250514'];
+            $pricing = $this->pricing[$model] ?? $this->pricing['claude-sonnet-4-5'];
 
             $cost = (
                 ($inputTokens / 1_000_000) * $pricing['input'] +
@@ -954,11 +994,11 @@ $service->streamToSSE(
                 'charCount' => $charCount,
                 'elapsed' => round($elapsed, 2),
                 'speed' => round($charsPerSecond, 0),
-            ]) . "\n\n";
+            ] . "\n\n";
             flush();
         },
     ]
-);
+]);
 ```
 
 ## Handling Streaming Edge Cases
@@ -969,109 +1009,110 @@ $service->streamToSSE(
 // filename: examples/07-reconnection-client.js
 
 class RobustStreamingClient {
-    constructor(endpoint) {
-        this.endpoint = endpoint;
-        this.maxRetries = 3;
-        this.retryDelay = 1000; // Start with 1 second
-        this.currentRetry = 0;
-    }
+  constructor(endpoint) {
+    this.endpoint = endpoint;
+    this.maxRetries = 3;
+    this.retryDelay = 1000; // Start with 1 second
+    this.currentRetry = 0;
+  }
 
-    async sendMessage(message, callbacks) {
-        const { onText, onComplete, onError } = callbacks;
-        let fullText = '';
-        let lastEventId = null;
+  async sendMessage(message, callbacks) {
+    const { onText, onComplete, onError } = callbacks;
+    let fullText = "";
+    let lastEventId = null;
 
-        const attemptStream = async () => {
-            try {
-                const response = await fetch(this.endpoint, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        ...(lastEventId ? { 'Last-Event-ID': lastEventId } : {})
-                    },
-                    body: JSON.stringify({ message })
-                });
+    const attemptStream = async () => {
+      try {
+        const response = await fetch(this.endpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(lastEventId ? { "Last-Event-ID": lastEventId } : {}),
+          },
+          body: JSON.stringify({ message }),
+        });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
 
-                const reader = response.body.getReader();
-                const decoder = new TextDecoder();
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
 
-                const read = async () => {
-                    const { done, value } = await reader.read();
+        const read = async () => {
+          const { done, value } = await reader.read();
 
-                    if (done) {
-                        this.currentRetry = 0; // Reset on success
-                        return;
-                    }
+          if (done) {
+            this.currentRetry = 0; // Reset on success
+            return;
+          }
 
-                    const chunk = decoder.decode(value, { stream: true });
-                    const lines = chunk.split('\n');
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split("\n");
 
-                    for (const line of lines) {
-                        if (line.startsWith('data: ')) {
-                            const data = JSON.parse(line.substring(6));
+          for (const line of lines) {
+            if (line.startsWith("data: ")) {
+              const data = JSON.parse(line.substring(6));
 
-                            if (data.id) {
-                                lastEventId = data.id;
-                            }
+              if (data.id) {
+                lastEventId = data.id;
+              }
 
-                            if (data.type === 'delta') {
-                                fullText += data.text;
-                                onText?.(data.text, fullText);
-                            }
+              if (data.type === "delta") {
+                fullText += data.text;
+                onText?.(data.text, fullText);
+              }
 
-                            if (data.type === 'complete') {
-                                onComplete?.(data.text, data.metadata);
-                            }
+              if (data.type === "complete") {
+                onComplete?.(data.text, data.metadata);
+              }
 
-                            if (data.type === 'error') {
-                                throw new Error(data.message);
-                            }
-                        }
-                    }
-
-                    await read();
-                };
-
-                await read();
-
-            } catch (error) {
-                if (this.currentRetry < this.maxRetries) {
-                    this.currentRetry++;
-                    const delay = this.retryDelay * Math.pow(2, this.currentRetry - 1);
-
-                    console.warn(`Stream failed, retrying in ${delay}ms (attempt ${this.currentRetry}/${this.maxRetries})`);
-
-                    await new Promise(resolve => setTimeout(resolve, delay));
-                    await attemptStream();
-                } else {
-                    onError?.(error.message);
-                    throw error;
-                }
+              if (data.type === "error") {
+                throw new Error(data.message);
+              }
             }
+          }
+
+          await read();
         };
 
-        await attemptStream();
-    }
+        await read();
+      } catch (error) {
+        if (this.currentRetry < this.maxRetries) {
+          this.currentRetry++;
+          const delay = this.retryDelay * Math.pow(2, this.currentRetry - 1);
+
+          console.warn(
+            `Stream failed, retrying in ${delay}ms (attempt ${this.currentRetry}/${this.maxRetries})`
+          );
+
+          await new Promise((resolve) => setTimeout(resolve, delay));
+          await attemptStream();
+        } else {
+          onError?.(error.message);
+          throw error;
+        }
+      }
+    };
+
+    await attemptStream();
+  }
 }
 
 // Usage
-const client = new RobustStreamingClient('stream.php');
+const client = new RobustStreamingClient("stream.php");
 
-client.sendMessage('Explain async PHP', {
-    onText: (delta, fullText) => {
-        document.getElementById('output').textContent = fullText;
-    },
-    onComplete: (text, metadata) => {
-        console.log('Stream complete:', metadata);
-    },
-    onError: (error) => {
-        console.error('Stream failed:', error);
-        document.getElementById('output').textContent = 'Error: ' + error;
-    }
+client.sendMessage("Explain async PHP", {
+  onText: (delta, fullText) => {
+    document.getElementById("output").textContent = fullText;
+  },
+  onComplete: (text, metadata) => {
+    console.log("Stream complete:", metadata);
+  },
+  onError: (error) => {
+    console.error("Stream failed:", error);
+    document.getElementById("output").textContent = "Error: " + error;
+  },
 });
 ```
 
@@ -1155,7 +1196,7 @@ class RecoverableStreamingService extends StreamingService
                     $handler = new StreamEventHandler();
                     // Simulate complete response
                     if ($options['onComplete'] ?? null) {
-                        ($options['onComplete'])($recoveredText, $metadata);
+                        ($options['onComplete']($recoveredText, $metadata);
                     }
                     return $handler;
                 }
@@ -1247,7 +1288,7 @@ switch ($action) {
             message: $message,
             systemPrompt: $systemPrompt,
             options: [
-                'model' => 'claude-sonnet-4-20250514',
+                'model' => 'claude-sonnet-4-5-20250929',
                 'max_tokens' => 4096,
             ]
         );
@@ -1282,388 +1323,403 @@ switch ($action) {
 <!-- filename: examples/10-complete-chatbot.html -->
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Claude PHP Chat</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f5f5;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background: #f5f5f5;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header {
+        background: #2563eb;
+        color: white;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .header h1 {
+        font-size: 1.5rem;
+      }
+
+      .header button {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9rem;
+      }
+
+      .header button:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      .chat-container {
+        flex: 1;
+        overflow-y: auto;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .message {
+        display: flex;
+        gap: 1rem;
+        max-width: 80%;
+        animation: slideIn 0.3s ease-out;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
         }
-
-        .header {
-            background: #2563eb;
-            color: white;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
+      }
 
-        .header h1 {
-            font-size: 1.5rem;
+      .message.user {
+        align-self: flex-end;
+        flex-direction: row-reverse;
+      }
+
+      .message.assistant {
+        align-self: flex-start;
+      }
+
+      .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: white;
+        flex-shrink: 0;
+      }
+
+      .message.user .avatar {
+        background: #2563eb;
+      }
+
+      .message.assistant .avatar {
+        background: #16a34a;
+      }
+
+      .message-content {
+        background: white;
+        padding: 1rem;
+        border-radius: 12px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        line-height: 1.6;
+      }
+
+      .message.user .message-content {
+        background: #2563eb;
+        color: white;
+      }
+
+      .typing-indicator {
+        display: none;
+        gap: 4px;
+        padding: 1rem;
+      }
+
+      .typing-indicator.active {
+        display: flex;
+      }
+
+      .typing-indicator span {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #94a3b8;
+        animation: bounce 1.4s infinite ease-in-out;
+      }
+
+      .typing-indicator span:nth-child(1) {
+        animation-delay: -0.32s;
+      }
+      .typing-indicator span:nth-child(2) {
+        animation-delay: -0.16s;
+      }
+
+      @keyframes bounce {
+        0%,
+        80%,
+        100% {
+          transform: scale(0);
         }
-
-        .header button {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9rem;
+        40% {
+          transform: scale(1);
         }
+      }
 
-        .header button:hover {
-            background: rgba(255,255,255,0.3);
-        }
+      .input-container {
+        background: white;
+        padding: 1rem 2rem;
+        border-top: 1px solid #e5e7eb;
+        display: flex;
+        gap: 1rem;
+      }
 
-        .chat-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
+      .input-container textarea {
+        flex: 1;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 0.75rem;
+        font-size: 1rem;
+        font-family: inherit;
+        resize: none;
+        max-height: 120px;
+      }
 
-        .message {
-            display: flex;
-            gap: 1rem;
-            max-width: 80%;
-            animation: slideIn 0.3s ease-out;
-        }
+      .input-container textarea:focus {
+        outline: none;
+        border-color: #2563eb;
+      }
 
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+      .input-container button {
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 500;
+      }
 
-        .message.user {
-            align-self: flex-end;
-            flex-direction: row-reverse;
-        }
+      .input-container button:hover:not(:disabled) {
+        background: #1d4ed8;
+      }
 
-        .message.assistant {
-            align-self: flex-start;
-        }
+      .input-container button:disabled {
+        background: #94a3b8;
+        cursor: not-allowed;
+      }
 
-        .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: white;
-            flex-shrink: 0;
-        }
-
-        .message.user .avatar {
-            background: #2563eb;
-        }
-
-        .message.assistant .avatar {
-            background: #16a34a;
-        }
-
-        .message-content {
-            background: white;
-            padding: 1rem;
-            border-radius: 12px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-            line-height: 1.6;
-        }
-
-        .message.user .message-content {
-            background: #2563eb;
-            color: white;
-        }
-
-        .typing-indicator {
-            display: none;
-            gap: 4px;
-            padding: 1rem;
-        }
-
-        .typing-indicator.active {
-            display: flex;
-        }
-
-        .typing-indicator span {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #94a3b8;
-            animation: bounce 1.4s infinite ease-in-out;
-        }
-
-        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
-        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
-        }
-
-        .input-container {
-            background: white;
-            padding: 1rem 2rem;
-            border-top: 1px solid #e5e7eb;
-            display: flex;
-            gap: 1rem;
-        }
-
-        .input-container textarea {
-            flex: 1;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 0.75rem;
-            font-size: 1rem;
-            font-family: inherit;
-            resize: none;
-            max-height: 120px;
-        }
-
-        .input-container textarea:focus {
-            outline: none;
-            border-color: #2563eb;
-        }
-
-        .input-container button {
-            background: #2563eb;
-            color: white;
-            border: none;
-            padding: 0.75rem 2rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 500;
-        }
-
-        .input-container button:hover:not(:disabled) {
-            background: #1d4ed8;
-        }
-
-        .input-container button:disabled {
-            background: #94a3b8;
-            cursor: not-allowed;
-        }
-
-        .error-message {
-            background: #fee2e2;
-            color: #991b1b;
-            padding: 1rem;
-            border-radius: 8px;
-            margin: 1rem 2rem;
-        }
+      .error-message {
+        background: #fee2e2;
+        color: #991b1b;
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 1rem 2rem;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="header">
-        <h1>Claude PHP Chat</h1>
-        <button id="clearBtn">Clear Chat</button>
+      <h1>Claude PHP Chat</h1>
+      <button id="clearBtn">Clear Chat</button>
     </div>
 
     <div class="chat-container" id="chatContainer">
-        <div class="message assistant">
-            <div class="avatar">C</div>
-            <div class="message-content">
-                Hello! I'm Claude, your PHP programming assistant. How can I help you today?
-            </div>
+      <div class="message assistant">
+        <div class="avatar">C</div>
+        <div class="message-content">
+          Hello! I'm Claude, your PHP programming assistant. How can I help you
+          today?
         </div>
+      </div>
     </div>
 
     <div class="input-container">
-        <textarea
-            id="messageInput"
-            placeholder="Ask me anything about PHP..."
-            rows="1"
-        ></textarea>
-        <button id="sendBtn">Send</button>
+      <textarea
+        id="messageInput"
+        placeholder="Ask me anything about PHP..."
+        rows="1"
+      ></textarea>
+      <button id="sendBtn">Send</button>
     </div>
 
     <script>
-        const chatContainer = document.getElementById('chatContainer');
-        const messageInput = document.getElementById('messageInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const clearBtn = document.getElementById('clearBtn');
+      const chatContainer = document.getElementById("chatContainer");
+      const messageInput = document.getElementById("messageInput");
+      const sendBtn = document.getElementById("sendBtn");
+      const clearBtn = document.getElementById("clearBtn");
 
-        let isStreaming = false;
-        let currentAssistantMessage = null;
+      let isStreaming = false;
+      let currentAssistantMessage = null;
 
-        // Auto-resize textarea
-        messageInput.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-        });
+      // Auto-resize textarea
+      messageInput.addEventListener("input", function () {
+        this.style.height = "auto";
+        this.style.height = Math.min(this.scrollHeight, 120) + "px";
+      });
 
-        // Send on Enter, new line on Shift+Enter
-        messageInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
+      // Send on Enter, new line on Shift+Enter
+      messageInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
 
-        sendBtn.addEventListener('click', sendMessage);
-        clearBtn.addEventListener('click', clearChat);
+      sendBtn.addEventListener("click", sendMessage);
+      clearBtn.addEventListener("click", clearChat);
 
-        function addUserMessage(text) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message user';
-            messageDiv.innerHTML = `
+      function addUserMessage(text) {
+        const messageDiv = document.createElement("div");
+        messageDiv.className = "message user";
+        messageDiv.innerHTML = `
                 <div class="avatar">U</div>
                 <div class="message-content">${escapeHtml(text)}</div>
             `;
-            chatContainer.appendChild(messageDiv);
-            scrollToBottom();
-        }
+        chatContainer.appendChild(messageDiv);
+        scrollToBottom();
+      }
 
-        function createAssistantMessage() {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message assistant';
-            messageDiv.innerHTML = `
+      function createAssistantMessage() {
+        const messageDiv = document.createElement("div");
+        messageDiv.className = "message assistant";
+        messageDiv.innerHTML = `
                 <div class="avatar">C</div>
                 <div class="message-content"></div>
             `;
-            chatContainer.appendChild(messageDiv);
-            currentAssistantMessage = messageDiv.querySelector('.message-content');
-            scrollToBottom();
-            return currentAssistantMessage;
+        chatContainer.appendChild(messageDiv);
+        currentAssistantMessage = messageDiv.querySelector(".message-content");
+        scrollToBottom();
+        return currentAssistantMessage;
+      }
+
+      function addTypingIndicator() {
+        const indicator = document.createElement("div");
+        indicator.className = "typing-indicator active";
+        indicator.id = "typingIndicator";
+        indicator.innerHTML = "<span></span><span></span><span></span>";
+        chatContainer.appendChild(indicator);
+        scrollToBottom();
+      }
+
+      function removeTypingIndicator() {
+        const indicator = document.getElementById("typingIndicator");
+        if (indicator) {
+          indicator.remove();
         }
+      }
 
-        function addTypingIndicator() {
-            const indicator = document.createElement('div');
-            indicator.className = 'typing-indicator active';
-            indicator.id = 'typingIndicator';
-            indicator.innerHTML = '<span></span><span></span><span></span>';
-            chatContainer.appendChild(indicator);
-            scrollToBottom();
-        }
+      function showError(message) {
+        const errorDiv = document.createElement("div");
+        errorDiv.className = "error-message";
+        errorDiv.textContent = "Error: " + message;
+        chatContainer.insertBefore(errorDiv, chatContainer.firstChild);
+        setTimeout(() => errorDiv.remove(), 5000);
+      }
 
-        function removeTypingIndicator() {
-            const indicator = document.getElementById('typingIndicator');
-            if (indicator) {
-                indicator.remove();
-            }
-        }
+      function scrollToBottom() {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
 
-        function showError(message) {
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'error-message';
-            errorDiv.textContent = 'Error: ' + message;
-            chatContainer.insertBefore(errorDiv, chatContainer.firstChild);
-            setTimeout(() => errorDiv.remove(), 5000);
-        }
+      function escapeHtml(text) {
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+      }
 
-        function scrollToBottom() {
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
+      async function sendMessage() {
+        const message = messageInput.value.trim();
+        if (!message || isStreaming) return;
 
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
+        isStreaming = true;
+        sendBtn.disabled = true;
+        messageInput.value = "";
+        messageInput.style.height = "auto";
 
-        async function sendMessage() {
-            const message = messageInput.value.trim();
-            if (!message || isStreaming) return;
+        addUserMessage(message);
+        addTypingIndicator();
 
-            isStreaming = true;
-            sendBtn.disabled = true;
-            messageInput.value = '';
-            messageInput.style.height = 'auto';
+        try {
+          const response = await fetch("10-complete-chatbot-api.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              action: "message",
+              message: message,
+            }),
+          });
 
-            addUserMessage(message);
-            addTypingIndicator();
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
 
-            try {
-                const response = await fetch('10-complete-chatbot-api.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'message',
-                        message: message
-                    })
-                });
+          removeTypingIndicator();
+          const contentDiv = createAssistantMessage();
+          let fullText = "";
 
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            const chunk = decoder.decode(value, { stream: true });
+            const lines = chunk.split("\n");
+
+            for (const line of lines) {
+              if (line.startsWith("data: ")) {
+                const data = JSON.parse(line.substring(6));
+
+                if (data.type === "delta") {
+                  fullText += data.text;
+                  contentDiv.textContent = fullText;
+                  scrollToBottom();
                 }
 
-                removeTypingIndicator();
-                const contentDiv = createAssistantMessage();
-                let fullText = '';
-
-                const reader = response.body.getReader();
-                const decoder = new TextDecoder();
-
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
-
-                    const chunk = decoder.decode(value, { stream: true });
-                    const lines = chunk.split('\n');
-
-                    for (const line of lines) {
-                        if (line.startsWith('data: ')) {
-                            const data = JSON.parse(line.substring(6));
-
-                            if (data.type === 'delta') {
-                                fullText += data.text;
-                                contentDiv.textContent = fullText;
-                                scrollToBottom();
-                            }
-
-                            if (data.type === 'complete') {
-                                console.log('Stream complete:', data.metadata);
-                            }
-
-                            if (data.type === 'error') {
-                                throw new Error(data.message);
-                            }
-                        }
-                    }
+                if (data.type === "complete") {
+                  console.log("Stream complete:", data.metadata);
                 }
 
-            } catch (error) {
-                console.error('Stream error:', error);
-                removeTypingIndicator();
-                showError(error.message);
-            } finally {
-                isStreaming = false;
-                sendBtn.disabled = false;
-                messageInput.focus();
+                if (data.type === "error") {
+                  throw new Error(data.message);
+                }
+              }
             }
+          }
+        } catch (error) {
+          console.error("Stream error:", error);
+          removeTypingIndicator();
+          showError(error.message);
+        } finally {
+          isStreaming = false;
+          sendBtn.disabled = false;
+          messageInput.focus();
         }
+      }
 
-        async function clearChat() {
-            if (!confirm('Clear entire conversation history?')) return;
+      async function clearChat() {
+        if (!confirm("Clear entire conversation history?")) return;
 
-            try {
-                await fetch('10-complete-chatbot-api.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'clear' })
-                });
+        try {
+          await fetch("10-complete-chatbot-api.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ action: "clear" }),
+          });
 
-                // Clear UI
-                chatContainer.innerHTML = `
+          // Clear UI
+          chatContainer.innerHTML = `
                     <div class="message assistant">
                         <div class="avatar">C</div>
                         <div class="message-content">
@@ -1671,15 +1727,15 @@ switch ($action) {
                         </div>
                     </div>
                 `;
-            } catch (error) {
-                showError('Failed to clear chat: ' + error.message);
-            }
+        } catch (error) {
+          showError("Failed to clear chat: " + error.message);
         }
+      }
 
-        // Focus input on load
-        messageInput.focus();
+      // Focus input on load
+      messageInput.focus();
     </script>
-</body>
+  </body>
 </html>
 ```
 
@@ -1773,14 +1829,14 @@ If streaming fails, fall back to polling or regular requests:
 
 ```php
 try {
-    $stream = $client->messages()->createStreamed($config);
+    $stream = $client->messages()->create($config);
     // Stream events...
 } catch (Exception $e) {
     // Fallback: Send complete response
     echo "data: " . json_encode([
         'type' => 'fallback',
         'message' => 'Streaming unavailable, showing complete response...',
-    ]) . "\n\n";
+    ] . "\n\n";
     // Return full response instead
 }
 ```
@@ -1793,13 +1849,13 @@ $eventsProcessed = 0;
 
 foreach ($stream as $event) {
     $eventsProcessed++;
-    
+
     // Detect timeout
     if (time() - $startTime > 60) {
         error_log("Stream timeout after {$eventsProcessed} events");
         break;
     }
-    
+
     echo "data: " . json_encode($event) . "\n\n";
     flush();
 }
@@ -1813,7 +1869,7 @@ $userMessage = filter_var($_POST['message'] ?? '', FILTER_SANITIZE_STRING);
 
 if (strlen($userMessage) > 10000) {
     http_response_code(400);
-    echo "data: " . json_encode(['type' => 'error', 'message' => 'Message too long']) . "\n\n";
+    echo "data: " . json_encode(['type' => 'error', 'message' => 'Message too long'] . "\n\n";
     exit;
 }
 ```
@@ -1821,6 +1877,7 @@ if (strlen($userMessage) > 10000) {
 ### 5. Handle Web Server Specific Issues
 
 **For Nginx**:
+
 ```php
 // Prevent Nginx buffering
 header('X-Accel-Buffering: no');
@@ -1828,6 +1885,7 @@ header('X-Accel-Charset: utf-8');
 ```
 
 **For Apache with mod_deflate**:
+
 ```
 # Add to .htaccess
 <IfModule mod_deflate.c>
@@ -1853,7 +1911,7 @@ class StreamingServiceTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->service = new StreamingService(getenv('ANTHROPIC_API_KEY'));
+        $this->service = new StreamingService($_ENV['ANTHROPIC_API_KEY']);
     }
 
     public function testStreamInitializesWithoutError(): void
@@ -1967,6 +2025,7 @@ wait $PID
 **Problem:** Response arrives all at once, not streamed.
 
 **Solutions:**
+
 ```php
 // 1. Disable all output buffering
 while (ob_get_level()) {
@@ -1993,6 +2052,7 @@ flush();
 **Problem:** Stream stops unexpectedly.
 
 **Solutions:**
+
 ```php
 // 1. Increase PHP timeout
 set_time_limit(300); // 5 minutes
@@ -2013,6 +2073,7 @@ register_shutdown_function(function() {
 **Problem:** Memory increases during long streams.
 
 **Solutions:**
+
 ```php
 // 1. Process events immediately, don't accumulate
 foreach ($stream as $event) {
@@ -2043,6 +2104,7 @@ Create a file called `multi-user-chat.php` and implement:
 - Message history persistence
 
 **Hints:**
+
 - Use a temporary file or Redis as a message queue
 - Implement a client registry to track open connections
 - Send presence updates (user joined, user typing, user left)
@@ -2073,6 +2135,7 @@ Create a file called `code-generator.php` and implement:
 - Show progress: "Generating class methods... 45%"
 
 **Hints:**
+
 - Use regex to detect ````php markers in streaming text
 - Apply a PHP syntax highlighter (like `highlight_string()` or a library)
 - Send partial HTML snippets as code is generated
@@ -2101,6 +2164,7 @@ Create a file called `doc-processor.php` and implement:
 - Save partial results even if cancelled
 
 **Hints:**
+
 - Use session ID to track cancellation state
 - Split documents into sections/chunks
 - Process each chunk and stream results incrementally
@@ -2140,7 +2204,7 @@ In this chapter, you've built a complete streaming infrastructure for Claude API
 - **SSE protocol**: Implemented Server-Sent Events correctly in PHP
 - **Buffering management**: Mastered PHP output buffering for streaming contexts
 - **Event handling**: Built callback-based systems for processing streaming events
-- **Client-side streaming**: Created robust streaming consumers with fetch API
+- **ClaudePhp-side streaming**: Created robust streaming consumers with fetch API
 - **Production patterns**: Implemented conversational history, budget tracking, and timeouts
 - **Error handling**: Built recovery mechanisms for failed or partial responses
 - **Real-world application**: Created a complete chatbot with full streaming support
@@ -2158,6 +2222,7 @@ In this chapter, you've built a complete streaming infrastructure for Claude API
 ### ✓ Next Steps
 
 You're ready to explore:
+
 - **System Prompts and Roles** (Chapter 07): Shape Claude's behavior and personality
 - **Temperature and Sampling** (Chapter 08): Control response creativity and randomness
 - **Tool Use** (Chapter 11+): Give Claude the ability to call functions and APIs
@@ -2178,11 +2243,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: $_ENV['ANTHROPIC_API_KEY']);
 
 // Define a weather tool
 $tools = [[
@@ -2202,31 +2265,34 @@ $tools = [[
 header('Content-Type: text/event-stream');
 if (ob_get_level()) ob_end_clean();
 
-$stream = $client->messages()->createStreamed([
-    'model' => 'claude-sonnet-4-20250514',
+$stream = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
+    'stream' => true,
     'tools' => $tools,
-    'messages' => [[
-        'role' => 'user',
-        'content' => 'What\'s the weather in Paris?'
-    ]]
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => 'What\'s the weather in Paris?'
+        ]
+    ]
 ]);
 
 $toolCalls = [];
 
 foreach ($stream as $event) {
     echo "data: " . json_encode($event) . "\n\n";
-    
+
     // Collect tool calls as they arrive
-    if ($event->type === 'content_block_delta' && 
+    if (isset($event->delta->type) &&
         $event->delta->type === 'input_json_delta') {
-        $toolCalls[] = $event->delta->partial_json;
+        $toolCalls[] = $event->delta->partial_json ?? '';
     }
-    
+
     flush();
 }
 
-echo "data: {\"type\": \"done\", \"tool_calls\": " . 
+echo "data: {\"type\": \"done\", \"tool_calls\": " .
      json_encode($toolCalls) . "}\n\n";
 flush();
 ```
@@ -2244,11 +2310,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: $_ENV['ANTHROPIC_API_KEY']);
 
 header('Content-Type: text/event-stream');
 if (ob_get_level()) ob_end_clean();
@@ -2257,38 +2321,40 @@ $tokenCount = 0;
 $maxTokens = 1000;
 $outputTokens = 0;
 
-$stream = $client->messages()->createStreamed([
-    'model' => 'claude-sonnet-4-20250514',
+$stream = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => $maxTokens,
-    'messages' => [[
-        'role' => 'user',
-        'content' => 'List 5 Python tips'
-    ]]
+    'stream' => true,
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => 'List 5 Python tips'
+        )
+    ]
 ]);
 
 foreach ($stream as $event) {
     // Estimate tokens from response chunks
-    if ($event->type === 'content_block_delta' && 
-        isset($event->delta->text)) {
+    if (isset($event->delta->text)) {
         $text = $event->delta->text;
         // Rough estimate: 1 token ≈ 4 characters
         $outputTokens += strlen($text) / 4;
     }
-    
+
     // Stop if approaching limit
     if ($outputTokens > $maxTokens * 0.9) {
         echo "data: " . json_encode([
             'type' => 'warning',
             'message' => 'Approaching token limit'
-        ]) . "\n\n";
+        ] . "\n\n";
         break;
     }
-    
+
     echo "data: " . json_encode($event) . "\n\n";
     flush();
 }
 
-echo "data: {\"type\": \"done\", \"estimated_tokens\": " . 
+echo "data: {\"type\": \"done\", \"estimated_tokens\": " .
      round($outputTokens) . "}\n\n";
 flush();
 ```
@@ -2306,42 +2372,42 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(apiKey: $_ENV['ANTHROPIC_API_KEY']);
 
 header('Content-Type: text/event-stream');
 if (ob_get_level()) ob_end_clean();
 
 // Request structured JSON
-$stream = $client->messages()->createStreamed([
-    'model' => 'claude-sonnet-4-20250514',
+$stream = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
-    'messages' => [[
-        'role' => 'user',
-        'content' => 'Return a JSON with { "name": "...", "age": 0, "skills": ["..."] }'
-    ]]
+    'stream' => true,
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => 'Return a JSON with { "name": "...", "age": 0, "skills": ["..."] }'
+        )
+    ]
 ]);
 
 $jsonBuffer = '';
 
 foreach ($stream as $event) {
-    if ($event->type === 'content_block_delta' && 
-        isset($event->delta->text)) {
+    if (isset($event->delta->text)) {
         $jsonBuffer .= $event->delta->text;
-        
+
         // Try to parse complete JSON objects
         try {
             $decoded = json_decode($jsonBuffer, true, flags: JSON_THROW_ON_ERROR);
-            
+
             // Valid JSON found!
             echo "data: " . json_encode([
                 'type' => 'json_complete',
                 'data' => $decoded
-            ]) . "\n\n";
-            
+            ] . "\n\n";
+
             $jsonBuffer = ''; // Reset for next object
         } catch (JsonException $e) {
             // JSON not complete yet, keep buffering
@@ -2349,10 +2415,10 @@ foreach ($stream as $event) {
             echo "data: " . json_encode([
                 'type' => 'json_partial',
                 'buffer' => substr($jsonBuffer, 0, 50)
-            ]) . "\n\n";
+            ] . "\n\n";
         }
     }
-    
+
     flush();
 }
 
@@ -2377,49 +2443,55 @@ class StreamingCacheService
 {
     public function __construct(
         private CacheInterface $cache,
-        private \Anthropic\Anthropic $client
+        private ClaudePhp\ClaudePhp $client
     ) {}
 
     public function streamWithCache(string $message): void
     {
         $cacheKey = 'stream_' . md5($message);
-        
+
         // Check cache first
         if ($this->cache->has($cacheKey)) {
             $cached = $this->cache->get($cacheKey);
-            
+
             // Replay cached response
             echo "data: " . json_encode([
                 'type' => 'cached',
                 'text' => $cached
-            ]) . "\n\n";
-            
+            ] . "\n\n";
+
             flush();
             return;
         }
-        
+
         // Stream and cache
         $fullText = '';
-        
-        $stream = $this->client->messages()->createStreamed([
-            'model' => 'claude-sonnet-4-20250514',
+
+        $stream = $this->client->messages()->create([
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 1024,
-            'messages' => [['role' => 'user', 'content' => $message]]
+            'stream' => true,
+            'messages' => [
+                [
+                    'role' => 'user',
+                    'content' => $message
+                ]
+            ]
         ]);
-        
+
         foreach ($stream as $event) {
             echo "data: " . json_encode($event) . "\n\n";
-            
-            if ($event->type === 'content_block_delta') {
-                $fullText .= $event->delta->text ?? '';
+
+            if (isset($event->delta->text)) {
+                $fullText .= $event->delta->text;
             }
-            
+
             flush();
         }
-        
+
         // Cache the complete response for 1 hour
         $this->cache->set($cacheKey, $fullText, 3600);
-        
+
         echo "data: {\"type\": \"done\", \"cached\": true}\n\n";
         flush();
     }
@@ -2432,15 +2504,15 @@ class StreamingCacheService
 
 Streaming isn't always the right choice. Use regular (non-streaming) requests when:
 
-| Scenario | Why | Alternative |
-|----------|-----|-------------|
-| **Small responses** (~100 words) | Overhead of SSE > benefit of streaming | Regular blocking request |
-| **Multiple parallel requests** | Each needs its own connection | Batch API with `model: "batch"` |
-| **Simple backend-to-backend** | No UI to update in real-time | Standard async/queue processing |
-| **Unreliable networks** | Streams break easily on poor connections | Message queue + async processing |
-| **Structured data extraction** | JSON parsing harder with streaming | Chapter 15 (Structured Outputs) |
-| **Response caching critical** | Streaming defeats many cache strategies | Redis caching + regular requests |
-| **Load testing/benchmarking** | Streaming adds complexity to measurements | Use non-streaming for baseline |
+| Scenario                         | Why                                       | Alternative                         |
+| -------------------------------- | ----------------------------------------- | ----------------------------------- |
+| **Small responses** (~100 words) | Overhead of SSE > benefit of streaming    | Regular blocking request            |
+| **Multiple parallel requests**   | Each needs its own connection             | Batch API with `'model' => "batch"` |
+| **Simple backend-to-backend**    | No UI to update in real-time              | Standard async/queue processing     |
+| **Unreliable networks**          | Streams break easily on poor connections  | Message queue + async processing    |
+| **Structured data extraction**   | JSON parsing harder with streaming        | Chapter 15 (Structured Outputs)     |
+| **Response caching critical**    | Streaming defeats many cache strategies   | Redis caching + regular requests    |
+| **Load testing/benchmarking**    | Streaming adds complexity to measurements | Use non-streaming for baseline      |
 
 ### Cost Consideration
 
@@ -2468,11 +2540,11 @@ Streaming costs the same as regular requests—there's **no cost savings**. The 
 ## Further Reading
 
 - [Claude API Documentation](https://docs.claude.com) — Complete API reference and guides
+- [Claude-PHP-SDK Repository](https://github.com/claude-php/Claude-PHP-SDK) — Community PHP SDK source code
 - [Server-Sent Events (MDN)](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) — Standard SSE protocol reference
 - [PHP Output Buffering](https://www.php.net/manual/en/function.ob-start.php) — PHP output buffering documentation
 - [HTTP/1.1 Chunked Transfer Encoding](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Transfer-Encoding) — Transfer encoding specification
-- [Fetch API Stream Reading](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream) — Client-side streaming with fetch
-- [Anthropic PHP SDK](https://github.com/anthropics/anthropic-sdk-php) — Official PHP SDK repository
+- [Fetch API Stream Reading](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream) — ClaudePhp-side streaming with fetch
 
 ---
 
@@ -2485,11 +2557,12 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 06 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-06)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-06
 composer install
-export ANTHROPIC_API_KEY="sk-ant-your-key-here"
+export CLAUDE_API_KEY="sk-ant-your-key-here"
 php -S localhost:8000
 # Open http://localhost:8000/10-complete-chatbot.html
 ```

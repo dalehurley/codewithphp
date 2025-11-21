@@ -4,11 +4,13 @@ description: "Control Claude's creativity and determinism through temperature, t
 series: "claude-php-developers"
 chapter: 8
 order: 8
-difficulty: "Expert"
+difficulty: "Intermediate"
 prerequisites:
-  - "Chapter 00-07 completed"
-  - "Understanding of probability and randomness"
-  - "Familiarity with API request configuration"
+  - "/series/claude-php-developers/chapters/00-quick-start"
+  - "/series/claude-php-developers/chapters/01-introduction-to-claude-api"
+  - "/series/claude-php-developers/chapters/02-authentication-api-keys"
+  - "/series/claude-php-developers/chapters/03-your-first-claude-request"
+  - "Basic understanding of probability concepts"
 ---
 
 ![08: Temperature and Sampling Parameters](/images/claude-php/chapter-08-hero-full.webp)
@@ -29,7 +31,7 @@ prerequisites:
 
 Temperature, top_p, and top_k are the control knobs that determine how predictable or creative Claude's outputs will be. Understanding these parameters transforms your AI from a one-size-fits-all assistant into a precision tool that produces exactly the right balance of consistency and creativity for each use case.
 
-This chapter teaches you how sampling works under the hood, when to use high vs low temperature, how to combine temperature with top_p and top_k, and how to choose the right parameters for different applications.
+This chapter teaches you how sampling works under the hood, when to use high vs low temperature, how to combine temperature with top_p and top_k, and how to choose the right parameters for different applications using the **Claude-PHP-SDK**.
 
 By the end, you'll confidently configure Claude for deterministic tasks like data extraction, creative tasks like content generation, and everything in between.
 
@@ -73,15 +75,15 @@ By the end of this chapter, you will:
 - Measure and validate output consistency for production applications
 - Test sampling parameters systematically using A/B testing frameworks
 - Understand cost and performance implications of different sampling strategies
-- Apply model-specific optimal parameters for different Claude models
+- Apply model-specific optimal parameters for different Claude models (Sonnet 4.5, Opus 4.1)
 
 ## How Language Model Sampling Works
 
 ### Token Prediction Fundamentals
 
 ```php
-<?php
 # filename: examples/01-understanding-sampling.php
+<?php
 declare(strict_types=1);
 
 /**
@@ -170,7 +172,7 @@ echo "Temperature = 2.0 (creative): ";
 echo temperatureSampling($tokenProbabilities, 2.0) . "\n";
 ```
 
-**Key Insight:** Temperature doesn't change *what* Claude knows, it changes *which* tokens get selected from the probability distribution.
+**Key Insight:** Temperature doesn't change _what_ Claude knows, it changes _which_ tokens get selected from the probability distribution.
 
 ::: tip Best Practice
 Start with the default temperature (1.0) and adjust based on your needs. Lower temperature for consistency, higher for creativity. Most production applications use temperatures between 0.0 and 1.5.
@@ -181,17 +183,17 @@ Start with the default temperature (1.0) and adjust based on your needs. Lower t
 ### What Temperature Controls
 
 ```php
-<?php
 # filename: examples/02-temperature-comparison.php
+<?php
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $prompt = 'Complete this sentence: The future of PHP is';
 
@@ -203,23 +205,24 @@ foreach ($temperatures as $temp) {
 
     // Generate 3 completions to see variation
     for ($i = 1; $i <= 3; $i++) {
-        $response = $client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+        $response = $client->messages()->create(
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 50,
             'temperature' => $temp,
             'messages' => [[
                 'role' => 'user',
                 'content' => $prompt
             ]]
-        ]);
+        );
 
-        echo "  {$i}. {$response->content[0]->text}\n";
+        echo "  {$i}. " . ($response->content[0]->text ?? '') . "\n";
     }
     echo "\n";
 }
 ```
 
 **Expected pattern:**
+
 ```
 Temperature 0.0:
   1. bright, with continued evolution...
@@ -243,8 +246,8 @@ Temperature 2.0:
 ### Temperature Scale Guide
 
 ```php
-<?php
 # filename: examples/03-temperature-scale.php
+<?php
 declare(strict_types=1);
 
 class TemperatureGuide
@@ -327,7 +330,7 @@ foreach ($useCases as $useCase) {
     $desc = TemperatureGuide::describe($temp);
 
     echo "Use case: {$useCase}\n";
-    echo "Recommended temperature: {$temp} ({$desc})\n\n";
+    echo "Recommended 'temperature' => {$temp} ({$desc})\n\n";
 }
 ```
 
@@ -342,8 +345,8 @@ The default `top_p` value is typically 0.9, which works well for most use cases.
 :::
 
 ```php
-<?php
 # filename: examples/04-top-p-visualization.php
+<?php
 declare(strict_types=1);
 
 /**
@@ -398,6 +401,7 @@ foreach ($topPValues as $topP) {
 ```
 
 **Output:**
+
 ```
 top_p = 0.5:
   Tokens considered: 2
@@ -423,26 +427,25 @@ top_p = 1.0:
 ### Top-P in Practice
 
 ```php
-<?php
 # filename: examples/05-top-p-comparison.php
+<?php
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
-use Anthropic\Contracts\ClientContract;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
-function testTopP(ClientContract $client, float $topP): array
+function testTopP(ClaudePhp $client, float $topP): array
 {
     $responses = [];
 
     for ($i = 0; $i < 3; $i++) {
-        $response = $client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+        $response = $client->messages()->create(
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 100,
             'temperature' => 1.0,  // Keep temperature constant
             'top_p' => $topP,
@@ -450,9 +453,9 @@ function testTopP(ClientContract $client, float $topP): array
                 'role' => 'user',
                 'content' => 'Name 3 unique PHP frameworks:'
             ]]
-        ]);
+        );
 
-        $responses[] = $response->content[0]->text;
+        $responses[] = $response->content[0]->text ?? '';
     }
 
     return $responses;
@@ -487,8 +490,8 @@ foreach ($responses as $i => $resp) {
 Top-k limits consideration to only the k most probable tokens.
 
 ```php
-<?php
 # filename: examples/06-top-k-demonstration.php
+<?php
 declare(strict_types=1);
 
 /**
@@ -529,6 +532,7 @@ foreach ($topKValues as $k) {
 ```
 
 **Output:**
+
 ```
 top_k = 1:
   Options: Laravel
@@ -551,32 +555,32 @@ top_k = 10:
 ### Top-K Usage
 
 ```php
-<?php
 # filename: examples/07-top-k-usage.php
+<?php
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 // Note: Claude API doesn't expose top_k as directly as some models
 // But understanding it helps grasp sampling mechanics
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
-
-// Conceptual usage (if supported):
-$response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+// Conceptual usage (if supported by SDK/Model):
+$response = $client->messages()->create(
+    'model' => 'claude-sonnet-4-5',
     'max_tokens' => 200,
     'temperature' => 1.0,
-    'top_k' => 40,  // Consider only top 40 tokens at each step
+    topK: 40,  // Consider only top 40 tokens at each step
     'messages' => [[
         'role' => 'user',
         'content' => 'Generate a creative function name for user authentication'
     ]]
-]);
+);
 
 // Lower top_k = more focused/conventional
 // Higher top_k = more creative/unusual
@@ -587,17 +591,17 @@ $response = $client->messages()->create([
 ### Temperature + Top-P Interaction
 
 ```php
-<?php
 # filename: examples/08-parameter-combinations.php
+<?php
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 class SamplingStrategy
 {
@@ -653,7 +657,7 @@ class SamplingPresets
         $config = self::STRATEGIES[$name] ?? self::STRATEGIES['balanced'];
 
         return new SamplingStrategy(
-            temperature: $config['temperature'],
+            'temperature' => $config['temperature'],
             topP: $config['top_p'],
             description: $config['description'],
             bestFor: $config['best_for']
@@ -679,27 +683,27 @@ class SamplingPresets
 // Usage
 $strategy = SamplingPresets::get('creative');
 
-$response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+$response = $client->messages()->create(
+    'model' => 'claude-sonnet-4-5',
     'max_tokens' => 500,
     'temperature' => $strategy->temperature,
-    'top_p' => $strategy->topP,
+    topP: $strategy->topP,
     'messages' => [[
         'role' => 'user',
         'content' => 'Generate unique variable names for a payment processing system'
     ]]
-]);
+);
 
 echo "Using strategy: {$strategy->description}\n";
 echo "Temperature: {$strategy->temperature}, Top-p: {$strategy->topP}\n\n";
-echo $response->content[0]->text;
+echo $response->content[0]->text ?? '';
 ```
 
 ### Configuration Manager
 
 ```php
-<?php
 # filename: src/SamplingConfigManager.php
+<?php
 declare(strict_types=1);
 
 namespace CodeWithPHP\Claude;
@@ -779,11 +783,11 @@ class SamplingConfigManager
 // Usage
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $manager = new SamplingConfigManager();
 
@@ -795,55 +799,57 @@ $manager->registerConfig('code_generation', [
 
 // Use a config
 $manager->useConfig('code_generation');
-$config = $manager->getConfig();
+$configParams = $manager->getConfig();
 
-$response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+// Using named arguments with array unpacking (PHP 8.1+)
+$response = $client->messages()->create(
+    'model' => 'claude-sonnet-4-5',
     'max_tokens' => 1024,
-    ...$config,  // Spread operator to merge config
+    'temperature' => $configParams['temperature'],
+    topP: $configParams['top_p'],
     'messages' => [[
         'role' => 'user',
         'content' => 'Generate a PHP class for user authentication'
     ]]
-]);
+);
 ```
 
 ## Use Case Specific Configurations
 
 ### Data Extraction (Deterministic)
 
-```php
-<?php
+````php
 # filename: examples/09-deterministic-extraction.php
+<?php
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Contracts\ClientContract;
+use ClaudePhp\ClaudePhp;
 
 class DataExtractor
 {
     public function __construct(
-        private ClientContract $client
+        private Client $client
     ) {}
 
     public function extractJSON(string $text, array $schema): array
     {
         $schemaDescription = json_encode($schema, JSON_PRETTY_PRINT);
 
-        $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+        $response = $this->client->messages()->create(
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 2048,
             'temperature' => 0.0,  // Maximum determinism
-            'top_p' => 1.0,
+            topP: 1.0,
             'system' => 'Extract structured data as valid JSON. Return ONLY the JSON object, no other text.',
             'messages' => [[
                 'role' => 'user',
                 'content' => "Extract data matching this schema:\n\n{$schemaDescription}\n\nFrom this text:\n\n{$text}"
             ]]
-        ]);
+        );
 
-        $json = $response->content[0]->text;
+        $json = $response->content[0]->text ?? '';
 
         // Clean potential markdown wrapping
         if (preg_match('/```json\s*(.*?)\s*```/s', $json, $matches)) {
@@ -857,11 +863,11 @@ class DataExtractor
 // Usage
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $extractor = new DataExtractor($client);
 
@@ -888,23 +894,23 @@ print_r($data);
 
 // Run multiple times - should get IDENTICAL results
 // This is critical for reliable data processing
-```
+````
 
 ### Content Generation (Creative)
 
 ```php
-<?php
 # filename: examples/10-creative-generation.php
+<?php
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Contracts\ClientContract;
+use ClaudePhp\ClaudePhp;
 
 class CreativeWriter
 {
     public function __construct(
-        private ClientContract $client
+        private Client $client
     ) {}
 
     public function generateVariations(
@@ -915,18 +921,18 @@ class CreativeWriter
         $variations = [];
 
         for ($i = 0; $i < $count; $i++) {
-            $response = $this->client->messages()->create([
-                'model' => 'claude-sonnet-4-20250514',
+            $response = $this->client->messages()->create(
+                'model' => 'claude-sonnet-4-5',
                 'max_tokens' => 500,
                 'temperature' => $temperature,  // High for creativity
-                'top_p' => 0.95,               // Broad token consideration
+                topP: 0.95,               // Broad token consideration
                 'messages' => [[
                     'role' => 'user',
                     'content' => $prompt
                 ]]
-            ]);
+            );
 
-            $variations[] = $response->content[0]->text;
+            $variations[] = $response->content[0]->text ?? '';
         }
 
         return $variations;
@@ -938,18 +944,18 @@ class CreativeWriter
         $maxAttempts = 10;
 
         while ($attempt < $maxAttempts) {
-            $response = $this->client->messages()->create([
-                'model' => 'claude-sonnet-4-20250514',
+            $response = $this->client->messages()->create(
+                'model' => 'claude-sonnet-4-5',
                 'max_tokens' => 500,
                 'temperature' => 1.6,  // Higher for uniqueness
-                'top_p' => 0.98,
+                topP: 0.98,
                 'messages' => [[
                     'role' => 'user',
                     'content' => $prompt . "\n\nGenerate something completely unique and different from these:\n" . implode("\n", $previous)
                 ]]
-            ]);
+            );
 
-            $result = $response->content[0]->text;
+            $result = $response->content[0]->text ?? '';
 
             // Check similarity against previous
             $isSimilar = false;
@@ -975,11 +981,11 @@ class CreativeWriter
 // Usage
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $writer = new CreativeWriter($client);
 
@@ -988,7 +994,7 @@ echo "Generating 5 creative taglines:\n\n";
 $taglines = $writer->generateVariations(
     prompt: 'Create a catchy tagline for a modern PHP framework focused on developer experience',
     count: 5,
-    temperature: 1.5
+    'temperature' => 1.5
 );
 
 foreach ($taglines as $i => $tagline) {
@@ -998,19 +1004,19 @@ foreach ($taglines as $i => $tagline) {
 
 ### Code Generation (Focused)
 
-```php
-<?php
+````php
 # filename: examples/11-focused-code-generation.php
+<?php
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Contracts\ClientContract;
+use ClaudePhp\ClaudePhp;
 
 class CodeGenerator
 {
     public function __construct(
-        private ClientContract $client
+        private Client $client
     ) {}
 
     public function generateFunction(
@@ -1026,49 +1032,49 @@ class CodeGenerator
 
         $returnHint = $returnType ? ": {$returnType}" : '';
 
-        $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+        $response = $this->client->messages()->create(
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 1024,
             'temperature' => 0.3,  // Low for consistent, reliable code
-            'top_p' => 0.85,       // Focused on conventional patterns
+            topP: 0.85,       // Focused on conventional patterns
             'system' => 'Generate clean PHP 8.4+ code following PSR-12 standards. Include type hints, return types, and PHPDoc comments.',
             'messages' => [[
                 'role' => 'user',
                 'content' => "Generate a PHP function:\n\nDescription: {$description}\nParameters: {$paramsList}\nReturn type: {$returnHint}\n\nUse declare(strict_types=1) and modern PHP features."
             ]]
-        ]);
+        );
 
-        return $response->content[0]->text;
+        return $response->content[0]->text ?? '';
     }
 
     public function refactorCode(string $code, array $improvements = []): string
     {
         $improvementsList = implode("\n", array_map(fn($i) => "- {$i}", $improvements));
 
-        $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+        $response = $this->client->messages()->create(
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 2048,
             'temperature' => 0.2,  // Very focused - we want reliable refactoring
-            'top_p' => 0.8,
+            topP: 0.8,
             'system' => 'Refactor PHP code following best practices. Maintain functionality while improving code quality.',
             'messages' => [[
                 'role' => 'user',
                 'content' => "Refactor this code:\n\n```php\n{$code}\n```\n\nFocus on:\n{$improvementsList}"
             ]]
-        ]);
+        );
 
-        return $response->content[0]->text;
+        return $response->content[0]->text ?? '';
     }
 }
 
 // Usage
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $generator = new CodeGenerator($client);
 
@@ -1079,25 +1085,25 @@ $function = $generator->generateFunction(
 );
 
 echo $function;
-```
+````
 
 ## Adaptive Temperature Based on Context
 
 ### Dynamic Temperature Adjustment
 
 ```php
-<?php
 # filename: examples/12-adaptive-temperature.php
+<?php
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Contracts\ClientContract;
+use ClaudePhp\ClaudePhp;
 
 class AdaptiveAssistant
 {
     public function __construct(
-        private ClientContract $client
+        private Client $client
     ) {}
 
     public function respond(string $message): string
@@ -1105,8 +1111,8 @@ class AdaptiveAssistant
         $temperature = $this->determineTemperature($message);
         $topP = $this->determineTopP($message);
 
-        $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+        $response = $this->client->messages()->create(
+            'model' => 'claude-sonnet-4-5',
             'max_tokens' => 2048,
             'temperature' => $temperature,
             'top_p' => $topP,
@@ -1114,9 +1120,9 @@ class AdaptiveAssistant
                 'role' => 'user',
                 'content' => $message
             ]]
-        ]);
+        );
 
-        return $response->content[0]->text;
+        return $response->content[0]->text ?? '';
     }
 
     private function determineTemperature(string $message): float
@@ -1179,11 +1185,11 @@ class AdaptiveAssistant
 // Usage
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $assistant = new AdaptiveAssistant($client);
 
@@ -1204,32 +1210,32 @@ echo $assistant->respond('Review this PHP code for issues...') . "\n\n";
 Stop sequences interact with sampling parameters in important ways:
 
 ```php
-<?php
 # filename: examples/14-stop-sequences-sampling.php
+<?php
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 // Stop sequences can help control output length with high temperature
 // High temperature might generate longer outputs, but stop sequences provide a safety net
 
-$response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+$response = $client->messages()->create(
+    'model' => 'claude-sonnet-4-5',
     'max_tokens' => 1000,
     'temperature' => 1.5,  // High creativity
-    'top_p' => 0.95,
+    topP: 0.95,
     'stop_sequences' => ['</response>', '---END---'],  // Stop when these appear
     'messages' => [[
         'role' => 'user',
         'content' => 'Generate a creative product description. End with </response>'
     ]]
-]);
+);
 
 // Stop sequences work independently of sampling parameters
 // They provide deterministic stopping points regardless of temperature
@@ -1246,19 +1252,18 @@ Use stop sequences with high temperature to prevent runaway generation. Stop seq
 For production applications, systematically test different sampling parameters to find optimal settings:
 
 ```php
-<?php
 # filename: examples/15-ab-testing-sampling.php
+<?php
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
-use Anthropic\Contracts\ClientContract;
+use ClaudePhp\ClaudePhp;
 
 class SamplingABTester
 {
     public function __construct(
-        private ClientContract $client
+        private Client $client
     ) {}
 
     public function testConfigurations(
@@ -1276,20 +1281,20 @@ class SamplingABTester
             for ($i = 0; $i < $samplesPerConfig; $i++) {
                 $start = microtime(true);
 
-                $response = $this->client->messages()->create([
-                    'model' => 'claude-sonnet-4-20250514',
+                $response = $this->client->messages()->create(
+                    'model' => 'claude-sonnet-4-5',
                     'max_tokens' => 500,
                     'temperature' => $config['temperature'] ?? 1.0,
-                    'top_p' => $config['top_p'] ?? 0.9,
+                    topP: $config['top_p'] ?? 0.9,
                     'messages' => [[
                         'role' => 'user',
                         'content' => $prompt
                     ]]
-                ]);
+                );
 
                 $totalTime += microtime(true) - $start;
                 $totalTokens += $response->usage->outputTokens ?? 0;
-                $responses[] = $response->content[0]->text;
+                $responses[] = $response->content[0]->text ?? '';
             }
 
             $results[$name] = [
@@ -1347,6 +1352,14 @@ class SamplingABTester
 }
 
 // Usage
+require __DIR__ . '/../vendor/autoload.php';
+
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
+
 $tester = new SamplingABTester($client);
 
 $configurations = [
@@ -1376,32 +1389,26 @@ print_r($results[$best]);
 Different Claude models may have slightly different optimal temperature ranges:
 
 ```php
-<?php
 # filename: examples/16-model-specific-parameters.php
+<?php
 declare(strict_types=1);
 
 class ModelSpecificSampling
 {
     public const MODEL_GUIDELINES = [
-        'claude-3-haiku-20240307' => [
+        'claude-haiku-4-5-20251001' => [
             'deterministic' => ['temperature' => 0.0, 'top_p' => 1.0],
             'balanced' => ['temperature' => 1.0, 'top_p' => 0.9],
             'creative' => ['temperature' => 1.3, 'top_p' => 0.95],
             'note' => 'Haiku is faster and cheaper - good for high-volume tasks',
         ],
-        'claude-3-sonnet-20240229' => [
-            'deterministic' => ['temperature' => 0.0, 'top_p' => 1.0],
-            'balanced' => ['temperature' => 1.0, 'top_p' => 0.9],
-            'creative' => ['temperature' => 1.5, 'top_p' => 0.95],
-            'note' => 'Sonnet balances quality and cost - default for most tasks',
-        ],
-        'claude-sonnet-4-20250514' => [
+        'claude-sonnet-4-5' => [
             'deterministic' => ['temperature' => 0.0, 'top_p' => 1.0],
             'balanced' => ['temperature' => 1.0, 'top_p' => 0.9],
             'creative' => ['temperature' => 1.5, 'top_p' => 0.95],
             'note' => 'Latest Sonnet model - best quality, use for complex tasks',
         ],
-        'claude-3-opus-20240229' => [
+        'claude-opus-4-1' => [
             'deterministic' => ['temperature' => 0.0, 'top_p' => 1.0],
             'balanced' => ['temperature' => 1.0, 'top_p' => 0.9],
             'creative' => ['temperature' => 1.5, 'top_p' => 0.95],
@@ -1411,8 +1418,8 @@ class ModelSpecificSampling
 
     public static function getRecommendedConfig(string $model, string $useCase): array
     {
-        $guidelines = self::MODEL_GUIDELINES[$model] ?? self::MODEL_GUIDELINES['claude-sonnet-4-20250514'];
-        
+        $guidelines = self::MODEL_GUIDELINES[$model] ?? self::MODEL_GUIDELINES['claude-sonnet-4-5'];
+
         return match($useCase) {
             'extraction', 'parsing', 'classification' => $guidelines['deterministic'],
             'code', 'review', 'documentation' => ['temperature' => 0.3, 'top_p' => 0.8],
@@ -1425,7 +1432,7 @@ class ModelSpecificSampling
 
 // Usage
 $config = ModelSpecificSampling::getRecommendedConfig(
-    model: 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5',
     useCase: 'extraction'
 );
 
@@ -1434,7 +1441,7 @@ print_r($config);
 ```
 
 ::: info Model Differences
-While sampling parameters work similarly across Claude models, newer models (like Sonnet 4) may handle high temperatures more gracefully. Always test with your specific model and use case.
+While sampling parameters work similarly across Claude models, newer models (like Sonnet 4.5) may handle high temperatures more gracefully than previous generations. Always test with your specific model and use case.
 :::
 
 ## Performance and Cost Implications
@@ -1444,19 +1451,18 @@ While sampling parameters work similarly across Claude models, newer models (lik
 Higher temperature can lead to longer outputs, which increases token usage and costs:
 
 ```php
-<?php
 # filename: examples/17-cost-implications.php
+<?php
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
-use Anthropic\Contracts\ClientContract;
+use ClaudePhp\ClaudePhp;
 
 class SamplingCostAnalyzer
 {
     public function __construct(
-        private ClientContract $client
+        private Client $client
     ) {}
 
     public function analyzeCostImpact(
@@ -1471,18 +1477,18 @@ class SamplingCostAnalyzer
             $lengths = [];
 
             for ($i = 0; $i < $samples; $i++) {
-                $response = $this->client->messages()->create([
-                    'model' => 'claude-sonnet-4-20250514',
+                $response = $this->client->messages()->create(
+                    'model' => 'claude-sonnet-4-5',
                     'max_tokens' => 1000,
                     'temperature' => $temp,
                     'messages' => [[
                         'role' => 'user',
                         'content' => $prompt
                     ]]
-                ]);
+                );
 
                 $tokens[] = $response->usage->outputTokens ?? 0;
-                $lengths[] = strlen($response->content[0]->text);
+                $lengths[] = strlen($response->content[0]->text ?? '');
             }
 
             $results[] = [
@@ -1498,6 +1504,14 @@ class SamplingCostAnalyzer
 }
 
 // Usage
+require __DIR__ . '/../vendor/autoload.php';
+
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
+
 $analyzer = new SamplingCostAnalyzer($client);
 
 $results = $analyzer->analyzeCostImpact(
@@ -1521,18 +1535,18 @@ Higher temperature often produces longer, more varied outputs, which increases t
 ### Consistency Tester
 
 ```php
-<?php
 # filename: examples/13-consistency-tester.php
+<?php
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Contracts\ClientContract;
+use ClaudePhp\ClaudePhp;
 
 class ConsistencyTester
 {
     public function __construct(
-        private ClientContract $client
+        private Client $client
     ) {}
 
     public function measureConsistency(
@@ -1543,17 +1557,17 @@ class ConsistencyTester
         $responses = [];
 
         for ($i = 0; $i < $samples; $i++) {
-            $response = $this->client->messages()->create([
-                'model' => 'claude-sonnet-4-20250514',
+            $response = $this->client->messages()->create(
+                'model' => 'claude-sonnet-4-5',
                 'max_tokens' => 500,
                 'temperature' => $temperature,
                 'messages' => [[
                     'role' => 'user',
                     'content' => $prompt
                 ]]
-            ]);
+            );
 
-            $responses[] = $response->content[0]->text;
+            $responses[] = $response->content[0]->text ?? '';
         }
 
         return [
@@ -1607,11 +1621,11 @@ class ConsistencyTester
 // Usage
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $tester = new ConsistencyTester($client);
 
@@ -1622,7 +1636,7 @@ foreach ([0.0, 0.5, 1.0, 1.5] as $temp) {
 
     $result = $tester->measureConsistency(
         prompt: 'Name the top 3 PHP frameworks',
-        temperature: $temp,
+        'temperature' => $temp,
         samples: 5
     );
 
@@ -1636,20 +1650,21 @@ foreach ([0.0, 0.5, 1.0, 1.5] as $temp) {
 
 ### Error: "Call to undefined method messages()"
 
-**Symptom**: `Fatal error: Call to undefined method Anthropic\Anthropic::messages()`
+**Symptom**: `Fatal error: Call to undefined method Claude\Claude3Api\ClaudePhp::messages()`
 
-**Cause**: The client wasn't properly instantiated using the factory pattern.
+**Cause**: Typically occurs if using an incorrect SDK version or invalid client instantiation.
 
-**Solution**: Always use the factory to create the client:
+**Solution**: Ensure you are using the `Claude-PHP-SDK` correctly with named parameters and proper configuration:
 
 ```php
-// Wrong
-$client = new Anthropic();
-
 // Correct
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
+$response = $client->messages()->create(
+    'model' => 'claude-sonnet-4-5',
+    // ...
+);
 ```
 
 ### Problem: Inconsistent Outputs at Temperature 0.0
@@ -1657,17 +1672,18 @@ $client = Anthropic::factory()
 **Symptom**: Even with `temperature => 0.0`, outputs vary slightly between runs.
 
 **Cause**: While temperature 0.0 is highly deterministic, some variation can occur due to:
+
 - Model updates from Anthropic
 - Context window differences
 - Floating-point precision in calculations
 
-**Solution**: For absolute determinism, use `temperature => 0.0` with `top_p => 1.0` and consider caching results for identical inputs. For production data extraction, implement result validation and retry logic.
+**Solution**: For absolute determinism, use `'temperature' => 0.0` with `'top_p' => 1.0` and consider caching results for identical inputs. For production data extraction, implement result validation and retry logic.
 
 ### Error: "Temperature must be between 0 and 2"
 
 **Symptom**: `InvalidArgumentException: Temperature must be between 0 and 2`
 
-**Cause**: Temperature value outside the valid range (0.0 to 2.0).
+**Cause**: Temperature value outside the valid range (0.0 to 2.0) usually caught by SDK or validation logic.
 
 **Solution**: Validate temperature before API calls:
 
@@ -1683,7 +1699,7 @@ if ($temperature < 0 || $temperature > 2) {
 
 **Cause**: Very high temperature increases randomness, which can reduce coherence.
 
-**Solution**: For creative tasks, use moderate temperature (1.3-1.5) with appropriate `top_p` (0.95). Combine with clear system prompts and constraints to maintain quality.
+**Solution**: For creative tasks, use moderate temperature (1.3-1.5) with appropriate `topP` (0.95). Combine with clear system prompts and constraints to maintain quality.
 
 ## Exercises
 
@@ -1692,6 +1708,7 @@ if ($temperature < 0 || $temperature > 2) {
 Build a system that automatically finds the optimal temperature for a given task based on requirements.
 
 **Requirements:**
+
 - Accept task description and consistency requirements
 - Test multiple temperature values
 - Measure output quality and consistency
@@ -1702,6 +1719,7 @@ Build a system that automatically finds the optimal temperature for a given task
 Create a content generator that uses different sampling strategies for different sections.
 
 **Requirements:**
+
 - Use low temperature for factual sections
 - Use high temperature for creative sections
 - Combine outputs coherently
@@ -1712,6 +1730,7 @@ Create a content generator that uses different sampling strategies for different
 Build a tool that validates whether responses are deterministic enough for production use.
 
 **Requirements:**
+
 - Run same prompt multiple times
 - Compare outputs for consistency
 - Flag non-deterministic behavior
@@ -1723,6 +1742,12 @@ Build a tool that validates whether responses are deterministic enough for produ
 For Exercise 1, create a test suite that runs prompts at different temperatures and scores results. For Exercise 2, parse content into sections and apply different strategies based on section type. For Exercise 3, use similarity scoring and statistical analysis to measure variance.
 
 </details>
+
+## Further Reading
+
+- **[Claude-PHP-SDK on GitHub](https://github.com/claude-php/Claude-PHP-SDK)** — The official community PHP SDK
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
+- **[Claude-PHP-SDK Package](https://packagist.org/packages/claude-php/claude-3-api)** — SDK package on Packagist
 
 ## Wrap-up
 
@@ -1780,6 +1805,7 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 08 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-08)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-08

@@ -1,0 +1,17 @@
+{
+    "name": "claude-php/chapter-19-queue-processing",
+    "description": "Queue processing with Laravel - jobs, batches, progress tracking",
+    "type": "project",
+    "require": {
+        "php": "^8.2",
+        "claude-php/claude-3-api": "^1.0",
+        "guzzlehttp/guzzle": "^7.8",
+        "vlucas/phpdotenv": "^5.6",
+        "predis/predis": "^2.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "ClaudePHP\\Queue\\": "src/"
+        }
+    }
+}

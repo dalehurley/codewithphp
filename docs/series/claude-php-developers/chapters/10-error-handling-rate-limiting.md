@@ -112,7 +112,7 @@ declare(strict_types=1);
 class ClaudeErrorReference
 {
     public const ERROR_TYPES = [
-        // Client Errors (4xx)
+        // ClaudePhp Errors (4xx)
         400 => [
             'type' => 'invalid_request_error',
             'description' => 'Invalid request format or parameters',
@@ -232,11 +232,14 @@ declare(strict_types=1);
 
 namespace CodeWithPHP\Claude;
 
+use ClaudePhp\Exceptions\AnthropicException;
+use ClaudePhp\Exceptions\RateLimitError;
+use ClaudePhp\Exceptions\AuthenticationError;
+
 /**
  * ErrorParser - Parses Claude API errors and determines retry strategies
- * 
- * Requires ClaudeErrorReference class (defined in examples/01-error-types.php)
- * Both classes should be in the same namespace for this to work.
+ *
+ * Works with Claude-PHP-SDK exceptions and determines appropriate retry strategies
  */
 class ErrorParser
 {
@@ -253,32 +256,23 @@ class ErrorParser
             'retry_after' => null,
         ];
 
-        // Extract HTTP status code
-        if (method_exists($exception, 'getCode')) {
-            $statusCode = $exception->getCode();
-            $errorData['status_code'] = $statusCode;
-            
-            // Use ClaudeErrorReference if available
-            if (class_exists(ClaudeErrorReference::class)) {
-                $errorData['type'] = ClaudeErrorReference::getType($statusCode);
-                $errorData['retryable'] = ClaudeErrorReference::shouldRetry($statusCode);
-            } else {
-                // Fallback: determine retryable based on status code
-                $errorData['retryable'] = in_array($statusCode, [429, 500, 503, 529], true);
+        // Parse Claude-PHP-SDK specific exceptions
+        if ($exception instanceof RateLimitException) {
+            $errorData['type'] = 'rate_limit_error';
+            $errorData['status_code'] = 429;
+            $errorData['retryable'] = true;
+            // Extract retry-after if available in message
+            if (preg_match('/retry[- ]after[:\s]+(\d+)/i', $exception->getMessage(), $matches)) {
+                $errorData['retry_after'] = (int) $matches[1];
             }
-        }
-
-        // Parse error message for details
-        $message = $exception->getMessage();
-
-        // Extract retry-after header if present
-        if (preg_match('/retry[- ]after[:\s]+(\d+)/i', $message, $matches)) {
-            $errorData['retry_after'] = (int) $matches[1];
-        }
-
-        // Extract error type from message
-        if (preg_match('/error[_\s]?type[:\s]+([a-z_]+)/i', $message, $matches)) {
-            $errorData['type'] = $matches[1];
+        } elseif ($exception instanceof AuthenticationException) {
+            $errorData['type'] = 'authentication_error';
+            $errorData['status_code'] = 401;
+            $errorData['retryable'] = false;
+        } elseif ($exception instanceof ClaudeException) {
+            $errorData['type'] = 'api_error';
+            $errorData['status_code'] = $exception->getCode() ?: 500;
+            $errorData['retryable'] = self::isRetryableStatusCode($errorData['status_code']);
         }
 
         return $errorData;
@@ -289,19 +283,17 @@ class ErrorParser
      */
     public static function isTransient(\Throwable $exception): bool
     {
+        // Rate limit errors are always retryable
+        if ($exception instanceof RateLimitException) {
+            return true;
+        }
+
+        // Authentication errors are not retryable
+        if ($exception instanceof AuthenticationException) {
+            return false;
+        }
+
         $errorData = self::parse($exception);
-
-        // Network errors are transient
-        if ($exception instanceof \GuzzleHttp\Exception\ConnectException) {
-            return true;
-        }
-
-        // Timeout errors are transient
-        if ($exception instanceof \GuzzleHttp\Exception\RequestException) {
-            return true;
-        }
-
-        // Check HTTP status code
         return $errorData['retryable'];
     }
 
@@ -324,6 +316,14 @@ class ErrorParser
             500 => 5,       // Server error: wait 5 seconds
             default => 1,   // Other: wait 1 second
         };
+    }
+
+    /**
+     * Check if status code is retryable
+     */
+    private static function isRetryableStatusCode(int $statusCode): bool
+    {
+        return in_array($statusCode, [429, 500, 503, 529], true);
     }
 }
 ```
@@ -445,11 +445,11 @@ foreach ($delays as $attempt => $delay) {
     echo "Attempt " . ($attempt + 1) . ": " . number_format($delay) . "ms\n";
 }
 
-// Execute with retry
+// Execute with retry using Claude-PHP-SDK
 try {
     $result = $backoff->execute(function() use ($client) {
         return $client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 1024,
             'messages' => [[
                 'role' => 'user',
@@ -458,7 +458,7 @@ try {
         ]);
     });
 
-    echo "\nSuccess: " . $result->content[0]->text . "\n";
+    echo "\nSuccess: " . $result['content'][0]['text'] . "\n";
 
 } catch (\RuntimeException $e) {
     echo "\nFailed after all retries: " . $e->getMessage() . "\n";
@@ -732,7 +732,7 @@ $circuitBreaker = new CircuitBreaker(
 try {
     $result = $circuitBreaker->execute(function() use ($client) {
         return $client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 1024,
             'messages' => [[
                 'role' => 'user',
@@ -741,7 +741,7 @@ try {
         ]);
     });
 
-    echo "Success: " . $result->content[0]->text . "\n";
+    echo "Success: " . $result['content'][0]['text'] . "\n";
 
 } catch (\RuntimeException $e) {
     echo "Circuit breaker error: " . $e->getMessage() . "\n";
@@ -876,7 +876,7 @@ $rateLimiter = new RateLimiter(
 try {
     $result = $rateLimiter->execute(function() use ($client) {
         return $client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 1024,
             'messages' => [[
                 'role' => 'user',
@@ -1015,9 +1015,9 @@ $result = $bucket->execute(
 
 ## Request Timeout and Cancellation
 
-### Configuring HTTP Client Timeouts
+### Configuring HTTP ClaudePhp Timeouts
 
-Proper timeout configuration prevents hanging requests and improves application responsiveness.
+The Claude-PHP-SDK handles HTTP client configuration internally, but you can control timeouts through the client initialization:
 
 ```php
 <?php
@@ -1026,46 +1026,35 @@ declare(strict_types=1);
 
 namespace CodeWithPHP\Claude;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\RequestOptions;
+use ClaudePhp\ClaudePhp;
 
 class HttpClientConfig
 {
     /**
-     * Create HTTP client with appropriate timeouts for Claude API
+     * Create Claude client with appropriate configuration
      */
-    public static function createClient(string $apiKey): Client
+    public static function createClient(string $apiKey): ClaudePhp
     {
-        return new Client([
-            'base_uri' => 'https://api.anthropic.com',
-            'headers' => [
-                'x-api-key' => $apiKey,
-                'anthropic-version' => '2023-06-01',
-                'content-type' => 'application/json',
-            ],
-            RequestOptions::TIMEOUT => 60,           // Total request timeout (seconds)
-            RequestOptions::CONNECT_TIMEOUT => 10,    // Connection timeout (seconds)
-            RequestOptions::READ_TIMEOUT => 60,        // Read timeout (seconds)
-            RequestOptions::HTTP_ERRORS => true,      // Throw exceptions on HTTP errors
-        ]);
+        // Claude-PHP-SDK initializes with sensible defaults
+        $client = new ClaudePhp(apiKey: $apiKey);
+
+        // Configure timeouts if needed (framework-dependent)
+        // The SDK handles retries automatically for transient errors
+
+        return $client;
     }
 
     /**
      * Create client with extended timeout for long-running requests
      */
-    public static function createLongRunningClient(string $apiKey): Client
+    public static function createLongRunningClient(string $apiKey): ClaudePhp
     {
-        return new Client([
-            'base_uri' => 'https://api.anthropic.com',
-            'headers' => [
-                'x-api-key' => $apiKey,
-                'anthropic-version' => '2023-06-01',
-                'content-type' => 'application/json',
-            ],
-            RequestOptions::TIMEOUT => 300,          // 5 minutes for long requests
-            RequestOptions::CONNECT_TIMEOUT => 10,
-            RequestOptions::READ_TIMEOUT => 300,
-        ]);
+        // Claude-PHP-SDK manages timeouts internally
+        // For long-running operations, use exponential backoff with higher max retries
+        $client = new ClaudePhp(apiKey: $apiKey);
+
+        // Consider wrapping with AdaptiveBackoff for long operations
+        return $client;
     }
 }
 
@@ -1083,24 +1072,28 @@ $longClient = HttpClientConfig::createLongRunningClient($apiKey);
 # filename: examples/timeout-handling.php
 declare(strict_types=1);
 
-use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Exception\RequestException;
+use ClaudePhp\Exceptions\AnthropicException;
 
 try {
-    $response = $client->messages()->create([...]);
-} catch (ConnectException $e) {
-    // Connection timeout - network issue
-    error_log("Connection timeout: " . $e->getMessage());
-    // Retry with exponential backoff
-    
-} catch (RequestException $e) {
-    if ($e->hasResponse()) {
-        $statusCode = $e->getResponse()->getStatusCode();
-        // Handle HTTP errors
-    } else {
-        // Request timeout or other error
+    $response = $client->messages()->create([
+            'model' => 'claude-sonnet-4-5-20250929',
+        'max_tokens' => 1024,
+        'messages' => [['role' => 'user', 'content' => 'Hello']]
+    ]);
+} catch (ClaudeException $e) {
+    // Handle Claude-specific errors
+    if (str_contains($e->getMessage(), 'timeout')) {
         error_log("Request timeout: " . $e->getMessage());
+        // Retry with exponential backoff
+    } elseif (str_contains($e->getMessage(), 'connection')) {
+        error_log("Connection error: " . $e->getMessage());
+        // Retry with exponential backoff
+    } else {
+        error_log("Claude API error: " . $e->getMessage());
     }
+} catch (\Exception $e) {
+    // Handle other exceptions
+    error_log("Unexpected error: " . $e->getMessage());
 }
 ```
 
@@ -1184,7 +1177,7 @@ class IdempotentRequest
             'messages' => $request['messages'] ?? [],
             'max_tokens' => $request['max_tokens'] ?? 1024,
         ];
-        
+
         return hash('sha256', json_encode($keyData, JSON_SORT_KEYS));
     }
 
@@ -1242,9 +1235,9 @@ try {
 }
 ```
 
-## Resilient Client Implementation
+## Resilient ClaudePhp Implementation
 
-### Complete Resilient Client
+### Complete Resilient ClaudePhp
 
 ```php
 <?php
@@ -1253,7 +1246,7 @@ declare(strict_types=1);
 
 namespace CodeWithPHP\Claude;
 
-use Anthropic\Contracts\ClientContract;
+use ClaudePhp\ClaudePhp;
 
 class ResilientClaudeClient
 {
@@ -1263,7 +1256,7 @@ class ResilientClaudeClient
     private array $stats = [];
 
     public function __construct(
-        private ClientContract $client,
+        private ClaudePhp $client,
         array $options = []
     ) {
         $this->backoff = new ExponentialBackoff(
@@ -1288,7 +1281,7 @@ class ResilientClaudeClient
     /**
      * Create message with full resilience
      */
-    public function createMessage(array $request): object
+    public function createMessage(array $request): array
     {
         $startTime = microtime(true);
 
@@ -1318,7 +1311,7 @@ class ResilientClaudeClient
     public function createMessageWithFallback(
         array $request,
         callable $fallback
-    ): object {
+    ): array {
         try {
             return $this->createMessage($request);
 
@@ -1398,9 +1391,14 @@ class ResilientClaudeClient
     }
 }
 
-// Usage
+// Usage with Claude-PHP-SDK client
+use ClaudePhp\ClaudePhp;
+
+$apiKey = $_ENV['ANTHROPIC_API_KEY'];
+$claudeClient = new ClaudePhp(apiKey: $apiKey);
+
 $resilientClient = new ResilientClaudeClient(
-    client: $client,
+    client: $claudeClient,
     options: [
         'max_retries' => 5,
         'failure_threshold' => 5,
@@ -1412,7 +1410,7 @@ $resilientClient = new ResilientClaudeClient(
 // Make request with full resilience
 try {
     $response = $resilientClient->createMessage([
-        'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
         'max_tokens' => 1024,
         'messages' => [[
             'role' => 'user',
@@ -1427,7 +1425,7 @@ try {
 }
 
 // Check health and stats
-echo "Client healthy: " . ($resilientClient->isHealthy() ? 'Yes' : 'No') . "\n";
+echo "ClaudePhp healthy: " . ($resilientClient->isHealthy() ? 'Yes' : 'No') . "\n";
 print_r($resilientClient->getStats());
 ```
 
@@ -1468,26 +1466,26 @@ class FallbackStrategy
      * Fallback to simpler model
      */
     public static function useSimplerModel(
-        ClientContract $client,
+        \Claude\ClaudeClient $client,
         array $request,
         \Throwable $error
-    ): object {
+    ): array {
         error_log("Falling back to Haiku due to error: " . $error->getMessage());
 
-        $request['model'] = 'claude-haiku-4-20250514';
+        $request['model'] = 'claude-haiku-4-5-20251001';
         return $client->messages()->create($request);
     }
 
     /**
      * Fallback to default response
      */
-    public static function useDefault(string $defaultMessage, \Throwable $error): object
+    public static function useDefault(string $defaultMessage, \Throwable $error): array
     {
         error_log("Using default response due to error: " . $error->getMessage());
 
-        return (object) [
-            'content' => [(object) ['text' => $defaultMessage]],
-            'usage' => (object) ['inputTokens' => 0, 'outputTokens' => 0],
+        return [
+            'content' => [['type' => 'text', 'text' => $defaultMessage]],
+            'usage' => ['input_tokens' => 0, 'output_tokens' => 0],
             'fallback' => true,
         ];
     }
@@ -1532,19 +1530,25 @@ class FallbackStrategy
 }
 
 // Usage with multiple fallback layers
-$resilientClient = new ResilientClaudeClient($client);
+use ClaudePhp\ClaudePhp;
+
+$apiKey = $_ENV['ANTHROPIC_API_KEY'];
+$claudeClient = new ClaudePhp(apiKey: $apiKey);
+$resilientClient = new ResilientClaudeClient($claudeClient);
+
+$request = [
+            'model' => 'claude-sonnet-4-5-20250929',
+    'max_tokens' => 1024,
+    'messages' => [['role' => 'user', 'content' => 'Hello!']]
+];
 
 try {
     $response = $resilientClient->createMessageWithFallback(
-        request: [
-            'model' => 'claude-sonnet-4-20250514',
-            'max_tokens' => 1024,
-            'messages' => [['role' => 'user', 'content' => 'Hello!']]
-        ],
-        fallback: function(\Throwable $e) use ($client) {
+        request: $request,
+        fallback: function(\Throwable $e) use ($claudeClient, $request) {
             // Try simpler model first
             try {
-                return FallbackStrategy::useSimplerModel($client, [...], $e);
+                return FallbackStrategy::useSimplerModel($claudeClient, $request, $e);
             } catch (\Throwable $e2) {
                 // Then try cache
                 return FallbackStrategy::useCached('cache-key', $e2);
@@ -1590,7 +1594,7 @@ class ErrorHandlingTest
         try {
             $result = $backoff->execute(function() use (&$attempts) {
                 $attempts++;
-                
+
                 // Simulate transient error for first 2 attempts
                 if ($attempts < 3) {
                     throw new ServerException(
@@ -1599,7 +1603,7 @@ class ErrorHandlingTest
                         new Response(503)
                     );
                 }
-                
+
                 return ['success' => true];
             });
 
@@ -1638,7 +1642,7 @@ class ErrorHandlingTest
         // Next request should fail immediately
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage("Circuit breaker");
-        
+
         $circuitBreaker->execute(function() {
             return ['success' => true];
         });
@@ -1697,8 +1701,8 @@ class IntegrationTest
         );
 
         // First request should succeed
-        $response1 = $client->createMessage([
-            'model' => 'claude-haiku-4-20250514',
+        $response1 = $client->messages()->create([
+            'model' => 'claude-haiku-4-5-20251001',
             'max_tokens' => 10,
             'messages' => [['role' => 'user', 'content' => 'Hi']]
         ]);
@@ -1708,7 +1712,7 @@ class IntegrationTest
         // Second request should be rate limited
         // Should either wait or use fallback
         try {
-            $response2 = $client->createMessage([...]);
+            $response2 = $client->messages()->create([...]);
             // If it succeeds, rate limiter worked correctly
         } catch (\Exception $e) {
             // If it fails, should be handled gracefully
@@ -1790,7 +1794,7 @@ class StreamingErrorHandler
         } catch (\Throwable $e) {
             // If we have partial content, use it with fallback
             if (!empty($this->partialContent)) {
-                error_log("Stream failed with partial content: " . strlen($this->partialContent) . " chars");
+                error_log("Stream failed with partial 'content' => " . strlen($this->partialContent) . " chars");
                 return $fallback($this->partialContent, $e);
             }
             throw $e;
@@ -1803,7 +1807,7 @@ $handler = new StreamingErrorHandler();
 
 try {
     $stream = $client->messages()->stream([...]);
-    
+
     foreach ($stream as $event) {
         $handler->handleStreamEvent(
             event: $event->type,
@@ -1934,7 +1938,7 @@ class PayloadSizeHandler
         $old = array_slice($messages, 0, -10);
 
         $summary = $this->createSummary($old);
-        
+
         return array_merge(
             [['role' => 'system', 'content' => "Previous conversation summary: {$summary}"]],
             $recent
@@ -1985,7 +1989,7 @@ class HealthChecker
     /**
      * Check if Claude API is healthy
      */
-    public function isHealthy(ClientContract $client): bool
+    public function isHealthy(\Claude\ClaudeClient $client): bool
     {
         // Cache health check result
         if ($this->lastCheck && (time() - $this->lastCheck) < $this->checkInterval) {
@@ -1995,7 +1999,7 @@ class HealthChecker
         try {
             // Lightweight health check request
             $response = $client->messages()->create([
-                'model' => 'claude-haiku-4-20250514',
+                'model' => 'claude-haiku-4-5-20251001',
                 'max_tokens' => 10,
                 'messages' => [['role' => 'user', 'content' => 'ping']]
             ]);
@@ -2014,22 +2018,26 @@ class HealthChecker
     /**
      * Wait for API to become healthy
      */
-    public function waitForHealthy(ClientContract $client, int $timeout = 300): bool
+    public function waitForHealthy(\Claude\ClaudeClient $client, int $timeout = 300): bool
     {
         $start = time();
-        
+
         while ((time() - $start) < $timeout) {
             if ($this->isHealthy($client)) {
                 return true;
             }
             sleep(5); // Check every 5 seconds
         }
-        
+
         return false;
     }
 }
 
-// Usage
+// Usage with Claude-PHP-SDK
+use ClaudePhp\ClaudePhp;
+
+$apiKey = $_ENV['ANTHROPIC_API_KEY'];
+$client = new ClaudePhp(apiKey: $apiKey);
 $healthChecker = new HealthChecker();
 
 if (!$healthChecker->isHealthy($client)) {
@@ -2083,7 +2091,7 @@ class PriorityErrorHandler
     {
         // Critical: Aggressive retries, multiple fallbacks
         $backoff = new ExponentialBackoff(maxRetries: 10, baseDelayMs: 500);
-        
+
         return $backoff->execute(function() use ($error) {
             // Try primary, then fallback models, then cache
             return $this->tryWithAllFallbacks();
@@ -2151,7 +2159,7 @@ class ErrorBudgetTracker
     {
         $now = time();
         $windowStart = $now - self::BUDGET_WINDOW;
-        
+
         // Increment error count
         $errorKey = "error_budget:errors:{$windowStart}";
         $redis->incr($errorKey);
@@ -2182,11 +2190,11 @@ class ErrorBudgetTracker
     {
         $now = time();
         $windowStart = $now - self::BUDGET_WINDOW;
-        
+
         $errors = (int) ($redis->get("error_budget:errors:{$windowStart}") ?: 0);
         $total = (int) ($redis->get("error_budget:total:{$windowStart}") ?: 0);
         $errorRate = $total > 0 ? $errors / $total : 0;
-        
+
         return [
             'error_rate' => round($errorRate * 100, 2) . '%',
             'slo_target' => round(self::SLO_ERROR_RATE * 100, 2) . '%',
@@ -2212,12 +2220,12 @@ try {
 } catch (\Exception $e) {
     // Track error
     $withinBudget = $tracker->trackError($e, $redis);
-    
+
     if (!$withinBudget) {
         // Budget exhausted - use more aggressive fallbacks
         return $this->useAggressiveFallback();
     }
-    
+
     throw $e;
 }
 ```
@@ -2314,7 +2322,7 @@ try {
     $result = $client->messages()->create([...]);
 } catch (\Exception $e) {
     $errorLogger->logError($e, [
-        'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
         'user_id' => 123,
         'request_size' => strlen(json_encode($request)),
     ]);
@@ -2505,7 +2513,7 @@ try {
     $response = $resilientClient->createMessage([...]);
 } catch (\Throwable $e) {
     $monitor->recordError($e, [
-        'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
         'user_id' => 123,
     ]);
     throw $e;
@@ -2524,7 +2532,7 @@ print_r($stats);
 
 **Cause**: The circuit breaker has detected too many failures and opened to protect your application. It will remain open until the timeout period elapses.
 
-**Solution**: 
+**Solution**:
 
 ```php
 // Check circuit breaker state
@@ -2621,14 +2629,14 @@ if ($errorData['status_code'] === 503 && !$errorData['retryable']) {
 
 ```php
 // Configure appropriate timeouts
-$client = new Client([
+$client = new ClaudePhp([
     RequestOptions::TIMEOUT => 60,           // Total timeout
     RequestOptions::CONNECT_TIMEOUT => 10,    // Connection timeout
     RequestOptions::READ_TIMEOUT => 60,       // Read timeout
 ]);
 
 // For long-running requests, use separate client
-$longClient = new Client([
+$longClient = new ClaudePhp([
     RequestOptions::TIMEOUT => 300,  // 5 minutes
     RequestOptions::READ_TIMEOUT => 300,
 ]);
@@ -2669,6 +2677,7 @@ IdempotentRequest::markProcessed($idempotencyKey, $result, $redis);
 Build an intelligent retry system that learns optimal retry parameters from historical data.
 
 **Requirements:**
+
 - Track success/failure patterns over time
 - Adjust backoff parameters dynamically based on error rates
 - Optimize for different error types (429 vs 503 vs 500)
@@ -2691,7 +2700,7 @@ foreach ($scenarios as $name => $errors) {
         // Simulate error
         $system->recordAttempt($errorCode === 200, $errorCode);
     }
-    
+
     $recommendations = $system->getRecommendations();
     echo "Scenario: {$name}\n";
     print_r($recommendations);
@@ -2704,6 +2713,7 @@ foreach ($scenarios as $name => $errors) {
 Create a system that automatically fails over to different API regions when one is unavailable.
 
 **Requirements:**
+
 - Detect region-specific failures (timeout, 503, connection errors)
 - Automatically switch to healthy regions
 - Load balance across multiple regions when all are healthy
@@ -2736,6 +2746,7 @@ assert($regionManager->getCurrentRegion() !== 'us-east');
 Build a real-time dashboard showing error rates, circuit breaker states, and system health.
 
 **Requirements:**
+
 - Real-time error visualization (WebSocket or Server-Sent Events)
 - Circuit breaker status for all breakers
 - Rate limit utilization graphs
@@ -2774,6 +2785,13 @@ $dashboard->subscribe(function($update) {
 
 </details>
 
+## Further Reading
+
+- **[Claude-PHP-SDK on GitHub](https://github.com/claude-php/Claude-PHP-SDK)** — Community PHP SDK for Claude AI with comprehensive error handling patterns
+- **[Claude-PHP-SDK Composer Package](https://packagist.org/packages/claude-php/claude-php-sdk)** — Install via Composer: `composer require claude-php/claude-php-sdk`
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
+- **[Official Anthropic SDK](https://github.com/anthropics/anthropic-sdk-php)** — Official Python/JavaScript SDK reference (Python examples)
+
 ## Wrap-up
 
 Congratulations! You've built production-grade error handling and rate limiting systems for Claude API applications. Here's what you accomplished:
@@ -2782,7 +2800,7 @@ Congratulations! You've built production-grade error handling and rate limiting 
 - ✓ **Intelligent Retries**: Implemented exponential backoff with jitter to handle transient failures gracefully
 - ✓ **Circuit Breakers**: Built circuit breaker patterns to prevent cascading failures and protect your application from degraded services
 - ✓ **Rate Limiting**: Applied multiple rate limiting strategies (sliding window, token bucket) to respect API quotas
-- ✓ **Resilient Client**: Combined all protection mechanisms into a single `ResilientClaudeClient` wrapper
+- ✓ **Resilient ClaudePhp**: Combined all protection mechanisms into a single `ResilientClaudeClient` wrapper
 - ✓ **Graceful Degradation**: Created fallback strategies that keep your application functional even when Claude API is unavailable
 - ✓ **Monitoring & Alerting**: Implemented error monitoring systems that track patterns and trigger alerts for production issues
 
@@ -2799,7 +2817,7 @@ In the next chapter, you'll learn about **Tool Use Fundamentals** - extending Cl
 - [Resilience Patterns](https://www.oreilly.com/library/view/release-it/9781680500268/) — Release It! by Michael Nygard covers production resilience patterns
 - [PSR-3: Logger Interface](https://www.php-fig.org/psr/psr-3/) — PHP standard for logging, useful for error monitoring
 - [Chapter 38: Scaling Applications](/series/claude-php-developers/chapters/38-scaling-applications) — Distributed error handling patterns for multi-server deployments
-- [Guzzle HTTP Client Documentation](https://docs.guzzlephp.org/en/stable/) — HTTP client configuration and timeout options
+- [Guzzle HTTP ClaudePhp Documentation](https://docs.guzzlephp.org/en/stable/) — HTTP client configuration and timeout options
 - [Idempotency Keys Best Practices](https://stripe.com/docs/api/idempotent_requests) — Stripe's guide to idempotent API design
 
 <ChapterCheckbox
@@ -2819,6 +2837,7 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 10 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-10)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-10

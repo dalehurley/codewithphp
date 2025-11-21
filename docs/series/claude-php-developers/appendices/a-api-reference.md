@@ -69,23 +69,31 @@ $headers = [
 
 ```php
 # filename: optional-headers.php
+use ClaudePhp\ClaudePhp;
+
 // Beta features
-'anthropic-beta' => 'prompt-caching-2024-07-31'
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY'),
+    betaFeatures: ['prompt-caching-2024-07-31']
+);
 
 // Custom identifier for your integration
-'anthropic-client-id' => 'your-client-id'
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY'),
+    clientId: 'your-client-id'
+);
 ```
 
 ### PHP SDK Initialization
 
 ```php
 # filename: sdk-initialization.php
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->withHttpHeader('anthropic-version', '2023-06-01')
-    ->make();
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY'),
+    anthropicVersion: '2023-06-01'
+);
 ```
 
 ---
@@ -100,8 +108,14 @@ $client = Anthropic::factory()
 
 ```php
 # filename: minimal-request.php
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
     'messages' => [
         ['role' => 'user', 'content' => 'Hello, Claude!']
@@ -113,9 +127,15 @@ $response = $client->messages()->create([
 
 ```php
 # filename: complete-request.php
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 $response = $client->messages()->create([
     // Required parameters
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 4096,
     'messages' => [
         [
@@ -143,8 +163,14 @@ $response = $client->messages()->create([
 
 ```php
 # filename: multi-turn-conversation.php
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
     'messages' => [
         [
@@ -169,11 +195,11 @@ $response = $client->messages()->create([
 
 ### Required Parameters
 
-| Parameter    | Type    | Description                         | Example                      |
-| ------------ | ------- | ----------------------------------- | ---------------------------- |
-| `model`      | string  | Model identifier                    | `"claude-sonnet-4-20250514"` |
-| `max_tokens` | integer | Maximum tokens to generate (1-4096) | `1024`                       |
-| `messages`   | array   | Array of message objects            | See examples                 |
+| Parameter    | Type    | Description                         | Example                        |
+| ------------ | ------- | ----------------------------------- | ------------------------------ |
+| `model`      | string  | Model identifier                    | `"claude-sonnet-4-5-20250929"` |
+| `max_tokens` | integer | Maximum tokens to generate (1-4096) | `1024`                         |
+| `messages`   | array   | Array of message objects            | See examples                   |
 
 ### Optional Parameters
 
@@ -260,7 +286,7 @@ $response = [
             'text' => 'Hello! How can I help you today?'
         ]
     ],
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'stop_reason' => 'end_turn',
     'stop_sequence' => null,
     'usage' => [
@@ -325,8 +351,14 @@ $response = [
 
 ```php
 # filename: streaming-example.php
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 $stream = $client->messages()->createStreamed([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
     'messages' => [
         ['role' => 'user', 'content' => 'Write a haiku about PHP']
@@ -365,7 +397,7 @@ foreach ($stream as $event) {
         'type' => 'message',
         'role' => 'assistant',
         'content' => [],
-        'model' => 'claude-sonnet-4-20250514',
+        'model' => 'claude-sonnet-4-5-20250929',
         'usage' => ['input_tokens' => 12, 'output_tokens' => 0]
     ]
 ]
@@ -440,8 +472,14 @@ $tools = [
     ]
 ];
 
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
     'tools' => $tools,
     'messages' => [
@@ -483,7 +521,7 @@ foreach ($response->content as $block) {
 
         // Send result back to Claude
         $followUp = $client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 1024,
             'tools' => $tools,
             'messages' => [
@@ -513,11 +551,17 @@ foreach ($response->content as $block) {
 
 ```php
 # filename: send-image-base64.php
+use ClaudePhp\ClaudePhp;
+
 $imageData = file_get_contents('image.jpg');
 $base64Image = base64_encode($imageData);
 
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
     'messages' => [
         [
@@ -545,8 +589,14 @@ $response = $client->messages()->create([
 
 ```php
 # filename: send-image-url.php
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
     'messages' => [
         [
@@ -588,8 +638,14 @@ Structured outputs allow you to enforce JSON schema validation on Claude's respo
 
 ```php
 # filename: structured-outputs.php
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
     'messages' => [
         ['role' => 'user', 'content' => 'Extract user information from this text: "John Doe, age 30, email: john@example.com"']
@@ -658,7 +714,7 @@ $schema = [
 # filename: structured-outputs-error-handling.php
 try {
     $response = $client->messages()->create([
-        'model' => 'claude-sonnet-4-20250514',
+        'model' => 'claude-sonnet-4-5-20250929',
         'max_tokens' => 1024,
         'messages' => [
             ['role' => 'user', 'content' => 'Extract data...']
@@ -718,12 +774,12 @@ try {
 
 ```php
 # filename: error-handling.php
-use Anthropic\Exceptions\AnthropicException;
-use Anthropic\Exceptions\ErrorException;
+use ClaudePhp\Exceptions\ClaudeException;
+use ClaudePhp\Exceptions\ErrorException;
 
 try {
     $response = $client->messages()->create([
-        'model' => 'claude-sonnet-4-20250514',
+        'model' => 'claude-sonnet-4-5-20250929',
         'max_tokens' => 1024,
         'messages' => [
             ['role' => 'user', 'content' => 'Hello!']
@@ -802,11 +858,11 @@ function makeRequestWithRetry($client, $params, $maxRetries = 3) {
 
 ### Current Models (2024)
 
-| Model                | Identifier                 | Context     | Use Case                    |
-| -------------------- | -------------------------- | ----------- | --------------------------- |
-| **Claude Opus 4**    | `claude-opus-4-20250514`   | 200K tokens | Most capable, complex tasks |
-| **Claude Sonnet 4**  | `claude-sonnet-4-20250514` | 200K tokens | Balanced performance & cost |
-| **Claude Haiku 4.5** | `claude-haiku-4-20250514`  | 200K tokens | Fast, cost-effective        |
+| Model                 | Identifier                   | Context     | Use Case                    |
+| --------------------- | ---------------------------- | ----------- | --------------------------- |
+| **Claude Opus 4**     | `claude-opus-4-20250514`     | 200K tokens | Most capable, complex tasks |
+| **Claude Sonnet 4.5** | `claude-sonnet-4-5-20250929` | 200K tokens | Balanced performance & cost |
+| **Claude Haiku 4.5**  | `claude-haiku-4-5-20251001`  | 200K tokens | Fast, cost-effective        |
 
 ### Model Selection Guide
 
@@ -816,19 +872,19 @@ function makeRequestWithRetry($client, $params, $maxRetries = 3) {
 $model = 'claude-opus-4-20250514';
 
 // Balanced - most use cases
-$model = 'claude-sonnet-4-20250514';
+$model = 'claude-sonnet-4-5-20250929';
 
 // High volume, simple tasks
-$model = 'claude-haiku-4-20250514';
+$model = 'claude-haiku-4-5-20251001';
 ```
 
 ### Model Pricing (Approximate)
 
-| Model     | Input (per 1M tokens) | Output (per 1M tokens) |
-| --------- | --------------------- | ---------------------- |
-| Opus 4    | $15.00                | $75.00                 |
-| Sonnet 4  | $3.00                 | $15.00                 |
-| Haiku 3.5 | $0.80                 | $4.00                  |
+| Model      | Input (per 1M tokens) | Output (per 1M tokens) |
+| ---------- | --------------------- | ---------------------- |
+| Opus 4     | $15.00                | $75.00                 |
+| Sonnet 4.5 | $3.00                 | $15.00                 |
+| Haiku 4.5  | $1.00                 | $5.00                  |
 
 _Check official pricing at anthropic.com/pricing for current rates._
 
@@ -841,13 +897,13 @@ _Check official pricing at anthropic.com/pricing for current rates._
 <?php
 require 'vendor/autoload.php';
 
-use Anthropic\Anthropic;
-use Anthropic\Exceptions\ErrorException;
+use ClaudePhp\ClaudePhp;
+use ClaudePhp\Exceptions\ErrorException;
 
 // Initialize client
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
 
 // Define tools
 $tools = [
@@ -870,7 +926,7 @@ $tools = [
 try {
     // Make request
     $response = $client->messages()->create([
-        'model' => 'claude-sonnet-4-20250514',
+        'model' => 'claude-sonnet-4-5-20250929',
         'max_tokens' => 1024,
         'system' => 'You are a helpful assistant.',
         'temperature' => 0.7,

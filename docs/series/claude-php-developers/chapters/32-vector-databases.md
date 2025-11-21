@@ -135,6 +135,7 @@ foreach ($searchResults->results as $i => $result) {
 ```
 
 **Expected Output:**
+
 ```
 ✓ Inserted 3 vectors
 
@@ -154,6 +155,7 @@ Vector databases use different distance metrics to measure similarity between ve
 ### Distance Metrics Explained
 
 **Cosine Similarity** (Most Common)
+
 - Measures angle between vectors, ignoring magnitude
 - Range: -1 to 1 (or 0 to 1 for normalized vectors)
 - Best for: Text embeddings, semantic search
@@ -161,6 +163,7 @@ Vector databases use different distance metrics to measure similarity between ve
 - Performance: Fast to compute
 
 **Euclidean Distance** (L2)
+
 - Measures straight-line distance in n-dimensional space
 - Range: 0 to infinity
 - Best for: Spatial data, image embeddings, geographic coordinates
@@ -168,6 +171,7 @@ Vector databases use different distance metrics to measure similarity between ve
 - Performance: Slower than cosine, more accurate for spatial data
 
 **Dot Product (Inner Product)**
+
 - Simple multiplication and sum of vector components
 - Range: -∞ to +∞
 - Best for: Pre-normalized vectors, neural network embeddings
@@ -302,24 +306,28 @@ echo "Dot Product (norm):  " . number_format($results['dot_product'], 4) . "\n";
 Different vector databases excel in different scenarios:
 
 **Pinecone** — Best for:
+
 - Managed cloud deployments with minimal operations overhead
 - High-scale production applications (millions of vectors)
 - Simple REST API integration
 - Automatic scaling and maintenance
 
 **Weaviate** — Best for:
+
 - Self-hosted deployments with full control
 - GraphQL-based queries and complex filtering
 - Multi-modal data (text, images, etc.)
 - Built-in vectorization with various models
 
 **Milvus** — Best for:
+
 - Open-source self-hosted solutions
 - High-performance requirements
 - Custom deployment configurations
 - Cost-effective at scale
 
 **Qdrant** — Best for:
+
 - Fast local development and testing
 - Payload filtering and hybrid search
 - RESTful API simplicity
@@ -332,6 +340,7 @@ The abstraction layer in this chapter lets you switch between providers as your 
 Vector databases use different indexing algorithms to optimize search speed and accuracy:
 
 ### HNSW (Hierarchical Navigable Small World) — Most Popular
+
 - **Accuracy**: Very high (~95%+)
 - **Speed**: Fast (~1-10ms for millions of vectors)
 - **Memory**: Moderate overhead (~2-3x vector size)
@@ -339,12 +348,14 @@ Vector databases use different indexing algorithms to optimize search speed and 
 - **Providers**: Pinecone, Weaviate, Qdrant all support HNSW
 
 ### IVF (Inverted File Index)
+
 - **Accuracy**: Good (~90%+)
 - **Speed**: Very fast (~0.1-1ms)
 - **Memory**: Low overhead (~0.5x vector size)
 - **Use when**: You need speed over perfect accuracy or have very large datasets
 
 ### Flat (Exact Search)
+
 - **Accuracy**: Perfect (100%)
 - **Speed**: Slow (O(n) complexity)
 - **Memory**: No overhead
@@ -449,6 +460,7 @@ interface VectorStore
 Pinecone is a fully managed vector database service that simplifies deployment and scaling. It provides a REST API for vector operations and automatically handles indexing, replication, and scaling.
 
 **Key Features:**
+
 - Fully managed cloud service with automatic scaling
 - Simple REST API integration
 - Namespace support for data organization
@@ -468,11 +480,11 @@ use App\VectorDB\VectorStore;
 use App\VectorDB\InsertResult;
 use App\VectorDB\SearchResult;
 use App\VectorDB\DeleteResult;
-use GuzzleHttp\Client;
+use GuzzleHttp\ClaudePhp;
 
 class PineconeStore implements VectorStore
 {
-    private Client $client;
+    private ClaudePhp $client;
 
     public function __construct(
         private string $apiKey,
@@ -480,7 +492,7 @@ class PineconeStore implements VectorStore
         private string $indexName,
         private int $dimension = 1536
     ) {
-        $this->client = new Client([
+        $this->client = new \GuzzleHttp\ClaudePhp([
             'base_uri' => "https://{$indexName}-{$environment}.svc.pinecone.io",
             'headers' => [
                 'Api-Key' => $apiKey,
@@ -683,7 +695,7 @@ class PineconeStore implements VectorStore
     {
         // Note: Index creation typically done via Pinecone console or API
         // This is a placeholder for the interface
-        $client = new Client([
+        $client = new \GuzzleHttp\ClaudePhp([
             'base_uri' => 'https://api.pinecone.io',
             'headers' => [
                 'Api-Key' => $this->apiKey,
@@ -772,6 +784,7 @@ class PineconeStore implements VectorStore
 Weaviate is an open-source vector database that uses GraphQL for queries and supports self-hosted deployments. It's particularly powerful for complex filtering and multi-modal data.
 
 **Key Features:**
+
 - GraphQL-based query interface
 - Self-hosted or cloud deployment options
 - Built-in vectorization with various models
@@ -791,11 +804,11 @@ use App\VectorDB\VectorStore;
 use App\VectorDB\InsertResult;
 use App\VectorDB\SearchResult;
 use App\VectorDB\DeleteResult;
-use GuzzleHttp\Client;
+use GuzzleHttp\ClaudePhp;
 
 class WeaviateStore implements VectorStore
 {
-    private Client $client;
+    private ClaudePhp $client;
 
     public function __construct(
         private string $host,
@@ -808,7 +821,7 @@ class WeaviateStore implements VectorStore
             $headers['Authorization'] = "Bearer {$apiKey}";
         }
 
-        $this->client = new Client([
+        $this->client = new \GuzzleHttp\ClaudePhp([
             'base_uri' => rtrim($host, '/'),
             'headers' => $headers
         ]);
@@ -1149,6 +1162,7 @@ class WeaviateStore implements VectorStore
 Hybrid search combines vector similarity search with traditional keyword matching to improve relevance. This approach uses Reciprocal Rank Fusion (RRF) to merge results from both search methods.
 
 **Why Hybrid Search?**
+
 - Vector search excels at semantic similarity but may miss exact keyword matches
 - Keyword search finds exact matches but misses semantic relationships
 - Combining both provides better overall relevance
@@ -1163,13 +1177,12 @@ declare(strict_types=1);
 
 namespace App\VectorDB;
 
-use Anthropic\Anthropic;
 
 class HybridSearch
 {
     public function __construct(
         private VectorStore $vectorStore,
-        private Anthropic $claude,
+        private \ClaudePhp\ClaudePhp $claude,
         private float $vectorWeight = 0.7,
         private float $keywordWeight = 0.3
     ) {}
@@ -1485,7 +1498,6 @@ use App\VectorDB\VectorDBManager;
 use App\VectorDB\HybridSearch;
 use App\VectorDB\PerformanceMonitor;
 use App\RAG\EmbeddingService;
-use Anthropic\Anthropic;
 
 // Configuration
 $config = [
@@ -1512,9 +1524,11 @@ $embeddings = new EmbeddingService(
     provider: 'openai'
 );
 
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$claude = new \ClaudePhp\ClaudePhp(
+    apiKey: getenv('ANTHROPIC_API_KEY')
+);
+
+$monitor = new PerformanceMonitor();
 
 $monitor = new PerformanceMonitor();
 
@@ -2081,7 +2095,7 @@ class RateLimitedVectorStore implements VectorStore
     private function throttle(): void
     {
         $now = microtime(true);
-        
+
         if ($now - $this->windowStart >= 1.0) {
             $this->requestCount = 0;
             $this->windowStart = $now;
@@ -2150,7 +2164,7 @@ function insertLargeDataset(VectorStore $store, iterable $vectors): void
         if (count($batch) >= $batchSize) {
             $store->insert($batch);
             $batch = [];
-            
+
             // Free memory
             gc_collect_cycles();
         }
@@ -2225,6 +2239,13 @@ $vectorStore->createIndex('Document', [
 ]);
 ```
 
+## Further Reading
+
+- **[Official PHP SDK Documentation](https://github.com/anthropics/anthropic-sdk-php)** — The official Anthropic PHP SDK on GitHub
+- **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)** — Community resources and examples for Claude with PHP
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
+- **[PHP SDK Composer Package](https://packagist.org/packages/claude-php/claude-php-sdk)** — Official package on Packagist
+
 ## Wrap-up
 
 You've successfully mastered vector database integration in PHP! Here's what you accomplished:
@@ -2294,6 +2315,7 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 32 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-32)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-32

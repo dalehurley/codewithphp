@@ -73,30 +73,35 @@ Claude is a family of large language models developed by Anthropic. Unlike tradi
 Claude excels at:
 
 **1. Natural Language Understanding**
+
 - Complex text comprehension
 - Nuanced context interpretation
 - Multi-language support
 - Sentiment and intent analysis
 
 **2. Content Generation**
+
 - Technical documentation
 - Creative writing
 - Marketing copy
 - Email drafts and responses
 
 **3. Code Analysis and Generation**
+
 - Code review and debugging
 - Documentation generation
 - Refactoring suggestions
 - Multi-language code generation
 
 **4. Data Processing**
+
 - Information extraction
 - Structured data conversion
 - Summarization
 - Classification and categorization
 
 **5. Problem Solving**
+
 - Logical reasoning
 - Mathematical calculations
 - Strategic planning
@@ -106,6 +111,7 @@ Claude excels at:
 
 **Extended Context Window**
 Claude supports up to 200,000 tokens (approximately 150,000 words) in a single conversation, with Sonnet 4.5 offering a 1M-token beta tier when available. This enables:
+
 - Processing entire codebases
 - Analyzing long documents
 - Maintaining extensive conversation history
@@ -113,6 +119,7 @@ Claude supports up to 200,000 tokens (approximately 150,000 words) in a single c
 
 **Accurate Instruction Following**
 Claude reliably follows complex, multi-step instructions with high accuracy, making it ideal for:
+
 - Structured data extraction
 - Multi-stage workflows
 - Consistent formatting
@@ -123,6 +130,7 @@ Claude is trained to acknowledge uncertainty and avoid making up information whe
 
 **Constitutional AI Training**
 Claude is trained using Constitutional AI, making it:
+
 - More helpful and harmless
 - Better at refusing inappropriate requests
 - More aligned with user intentions
@@ -137,13 +145,15 @@ Anthropic's 2025 Claude lineup includes Opus 4.1, Sonnet 4.5, and Haiku 4.5. Eac
 **Overview**: The most intelligent and capable Claude model, built for maximum reasoning depth.
 
 **Specifications:**
-- Model ID: `claude-opus-4-20250514` (verify latest revision in the console)
+
+- Model ID: `claude-opus-4-1` (verify latest revision in the console)
 - Context Window: 200,000 tokens
 - Max Output: 16,384 tokens
 - Extended Thinking: Enabled for complex tasks
 - Availability: Anthropic API (check Bedrock/Vertex availability per account)
 
 **Best For:**
+
 - Complex reasoning tasks
 - Advanced code generation and refactoring
 - Research and strategic analysis
@@ -151,6 +161,7 @@ Anthropic's 2025 Claude lineup includes Opus 4.1, Sonnet 4.5, and Haiku 4.5. Eac
 - Scenarios where accuracy trumps latency and cost
 
 **Performance Characteristics:**
+
 - Highest quality outputs and instruction following
 - Handles ambiguity and multi-step reasoning exceptionally well
 - Slowest response times relative to other models
@@ -163,22 +174,26 @@ Anthropic's 2025 Claude lineup includes Opus 4.1, Sonnet 4.5, and Haiku 4.5. Eac
 # filename: examples/opus-use-cases.php
 // Complex architectural decisions
 $response = $client->messages()->create([
-    'model' => 'claude-opus-4-20250514',
+    'model' => 'claude-opus-4-1-20250805',
     'max_tokens' => 4096,
-    'messages' => [[
-        'role' => 'user',
-        'content' => 'Design a microservices architecture for a high-traffic e-commerce platform handling 1M+ daily users. Include service boundaries, data flow, caching strategy, and failure handling.'
-    ]]
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => 'Design a microservices architecture for a high-traffic e-commerce platform handling 1M+ daily users. Include service boundaries, data flow, caching strategy, and failure handling.'
+        ]
+    ]
 ]);
 
 // Advanced code refactoring
 $response = $client->messages()->create([
-    'model' => 'claude-opus-4-20250514',
+    'model' => 'claude-opus-4-1-20250805',
     'max_tokens' => 8192,
-    'messages' => [[
-        'role' => 'user',
-        'content' => "Refactor this legacy PHP codebase to modern Laravel with: dependency injection, service containers, event-driven architecture, and comprehensive tests.\n\n{$legacyCode}"
-    ]]
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => "Refactor this legacy PHP codebase to modern Laravel with: dependency injection, service containers, event-driven architecture, and comprehensive tests.\n\n{$legacyCode}"
+        ]
+    ]
 ]);
 ```
 
@@ -187,19 +202,22 @@ $response = $client->messages()->create([
 **Overview**: The balanced, go-to production model delivering excellent capability per dollar.
 
 **Specifications:**
-- Model ID: `claude-sonnet-4-20250514`
+
+- Model ID: `claude-sonnet-4-5`
 - Context Window: 200,000 tokens (1M-token Beta tier for Sonnet 4.5 where enabled)
 - Max Output: 16,384 tokens
 - Prompt Caching: Supports 5-minute and 1-hour caches
 - Availability: Anthropic API, Amazon Bedrock, and Vertex AI (region dependent)
 
 **Best For:**
+
 - General-purpose applications and most production workloads
 - Code review, documentation, and knowledge work
 - Balanced quality, speed, and cost scenarios
 - Teams scaling usage without compromising capability
 
 **Performance Characteristics:**
+
 - Outstanding quality-to-cost ratio
 - Fast response times for interactive applications
 - Highly reliable and consistent
@@ -212,22 +230,26 @@ $response = $client->messages()->create([
 # filename: examples/sonnet-use-cases.php
 // API documentation generation
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 2048,
-    'messages' => [[
-        'role' => 'user',
-        'content' => "Generate OpenAPI 3.0 documentation for this Laravel controller:\n\n{$controllerCode}"
-    ]]
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => "Generate OpenAPI 3.0 documentation for this Laravel controller:\n\n{$controllerCode}"
+        ]
+    ]
 ]);
 
 // Code review and suggestions
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 3000,
-    'messages' => [[
-        'role' => 'user',
-        'content' => "Review this pull request for: security issues, performance problems, code style, and best practices.\n\n{$pullRequestDiff}"
-    ]]
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => "Review this pull request for: security issues, performance problems, code style, and best practices.\n\n{$pullRequestDiff}"
+        ]
+    ]
 ]);
 ```
 
@@ -236,19 +258,22 @@ $response = $client->messages()->create([
 **Overview**: The lowest-latency, most cost-effective Claude option—perfect for high-volume workflows.
 
 **Specifications:**
-- Model ID: `claude-haiku-4-20250514`
+
+- Model ID: `claude-haiku-4-5`
 - Context Window: 200,000 tokens
 - Max Output: 16,384 tokens
 - Latency: Sub-second responses for most prompts
 - Availability: Anthropic API plus partner clouds where enabled
 
 **Best For:**
+
 - High-volume processing and classification
 - Lightweight summarization and extraction
 - Quick responses in user-facing products
 - Cost-sensitive applications and background jobs
 
 **Performance Characteristics:**
+
 - Fastest response times
 - Lowest cost per token
 - Ideal for straightforward or deterministic tasks
@@ -261,36 +286,40 @@ $response = $client->messages()->create([
 # filename: examples/haiku-use-cases.php
 // Email classification
 $response = $client->messages()->create([
-    'model' => 'claude-haiku-4-20250514',
+    'model' => 'claude-haiku-4-5-20251001',
     'max_tokens' => 100,
-    'messages' => [[
-        'role' => 'user',
-        'content' => "Classify this email as: spam, sales, support, or general. Return only the category.\n\nEmail: {$emailContent}"
-    ]]
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => "Classify this email as: spam, sales, support, or general. Return only the category.\n\nEmail: {$emailContent}"
+        ]
+    ]
 ]);
 
 // Simple data extraction
 $response = $client->messages()->create([
-    'model' => 'claude-haiku-4-20250514',
+    'model' => 'claude-haiku-4-5-20251001',
     'max_tokens' => 256,
-    'messages' => [[
-        'role' => 'user',
-        'content' => "Extract name, email, and phone from:\n\n{$text}\n\nReturn as JSON."
-    ]]
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => "Extract name, email, and phone from:\n\n{$text}\n\nReturn as JSON."
+        ]
+    ]
 ]);
 ```
 
 ### Model Comparison Table
 
-| Feature | Opus 4.1 | Sonnet 4.5 | Haiku 4.5 |
-|---------|----------|------------|-----------|
-| **Intelligence** | Highest | High | Good |
-| **Speed** | Slower | Fast | Fastest |
-| **Cost** | Highest | Medium | Lowest |
-| **Use Case** | Complex tasks | General purpose | High volume |
-| **Best For** | Quality | Balance | Speed |
-| **Context** | 200K tokens | 200K tokens (1M Beta) | 200K tokens |
-| **Max Output** | 16,384 tokens | 16,384 tokens | 16,384 tokens |
+| Feature          | Opus 4.1      | Sonnet 4.5            | Haiku 4.5     |
+| ---------------- | ------------- | --------------------- | ------------- |
+| **Intelligence** | Highest       | High                  | Good          |
+| **Speed**        | Slower        | Fast                  | Fastest       |
+| **Cost**         | Highest       | Medium                | Lowest        |
+| **Use Case**     | Complex tasks | General purpose       | High volume   |
+| **Best For**     | Quality       | Balance               | Speed         |
+| **Context**      | 200K tokens   | 200K tokens (1M Beta) | 200K tokens   |
+| **Max Output**   | 16,384 tokens | 16,384 tokens         | 16,384 tokens |
 
 ### Choosing the Right Model
 
@@ -311,44 +340,94 @@ class ClaudeModelSelector
     ): string {
         // High volume, simple tasks → Haiku 4.5
         if ($volumeHigh && $taskComplexity === 'simple') {
-            return 'claude-haiku-4-20250514';
+            return 'claude-haiku-4-5-20251001';
         }
 
         // Cost sensitive and task is not complex → Haiku 4.5
         if ($costSensitive && $taskComplexity !== 'complex') {
-            return 'claude-haiku-4-20250514';
+            return 'claude-haiku-4-5-20251001';
         }
 
         // Speed critical and task is not complex → Haiku 4.5 or Sonnet 4.5
         if ($speedCritical) {
             return $taskComplexity === 'simple'
-                ? 'claude-haiku-4-20250514'
-                : 'claude-sonnet-4-20250514';
+                ? 'claude-haiku-4-5-20251001'
+                : 'claude-sonnet-4-5';
         }
 
         // Complex reasoning required → Opus 4.1
         if ($taskComplexity === 'complex') {
-            return 'claude-opus-4-20250514';
+            return 'claude-opus-4-1';
         }
 
         // Default: Sonnet 4.5 (best balance)
-        return 'claude-sonnet-4-20250514';
+        return 'claude-sonnet-4-5';
     }
 }
 
 // Usage examples
 echo "Email classification: " .
     ClaudeModelSelector::selectModel('simple', true, true, true) . "\n";
-// Output: claude-haiku-4-20250514
+// Output: claude-haiku-4-5
 
 echo "Code review: " .
     ClaudeModelSelector::selectModel('moderate', false, false, false) . "\n";
-// Output: claude-sonnet-4-20250514
+// Output: claude-sonnet-4-5
 
 echo "Architecture design: " .
     ClaudeModelSelector::selectModel('complex', false, false, false) . "\n";
-// Output: claude-opus-4-20250514
+// Output: claude-opus-4-1
 ```
+
+## Getting Started with Claude-PHP-SDK
+
+Before diving into the Messages API architecture, let's set up the Claude-PHP-SDK for our examples.
+
+### Installation
+
+Install the SDK using Composer:
+
+```bash
+composer require claude-php/claude-php-sdk
+```
+
+### Basic Setup
+
+```php
+<?php
+# filename: examples/basic-setup.php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use ClaudePhp\ClaudePhp;
+
+// Initialize with your API key
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY'] ?: 'your-api-key-here'
+);
+
+// Send a simple message
+$response = $client->messages()->create([
+    'model' => 'claude-sonnet-4-5-20250929',
+    'max_tokens' => 1024,
+    'messages' => [
+        [
+            'role' => 'user',
+            'content' => 'Hello Claude!'
+        ]
+    ]
+]);
+
+echo $response->content[0]->text;
+```
+
+**Key Points:**
+
+- The `ClaudePhp` class provides the interface to Claude
+- API key is passed directly to the constructor
+- All API calls use the `messages()->create()` method
+- Response content is accessed as an object: `$response->content[0]->text`
 
 ## Messages API Architecture
 
@@ -359,20 +438,24 @@ The Messages API is the primary interface for interacting with Claude. Understan
 Before diving into the request structure, here are the fundamental API details:
 
 **API Endpoint:**
+
 - Base URL: `https://api.anthropic.com`
 - Endpoint: `/v1/messages`
 - Full URL: `https://api.anthropic.com/v1/messages`
 
 **HTTP Method:**
+
 - All requests use `POST`
 - Request body must be JSON
 
 **Required Headers:**
+
 - `x-api-key`: Your Anthropic API key (starts with `sk-ant-`)
 - `anthropic-version`: API version (currently `2023-06-01`)
 - `Content-Type`: `application/json`
 
 **Response Status Codes:**
+
 - `200 OK`: Successful request
 - `400 Bad Request`: Invalid parameters or malformed request
 - `401 Unauthorized`: Invalid or missing API key
@@ -381,6 +464,7 @@ Before diving into the request structure, here are the fundamental API details:
 - `529 Service Overloaded`: Service temporarily unavailable
 
 **Rate Limits:**
+
 - Default tier: 50 requests per minute
 - Higher tiers available based on usage (covered in Chapter 02)
 - Rate limit headers included in responses: `anthropic-ratelimit-requests-limit`, `anthropic-ratelimit-requests-remaining`
@@ -403,16 +487,10 @@ HTTP POST Request → Messages API → Claude Model → JSON Response
 <?php
 # filename: examples/request-anatomy.php
 # Complete request structure with all options
-$response = $client->messages()->create([
+$response = $client->messages()->create(
     // === REQUIRED PARAMETERS ===
-
-    // Model identifier
-    'model' => 'claude-sonnet-4-20250514',
-
-    // Maximum tokens to generate (must be specified)
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
-
-    // Conversation messages
     'messages' => [
         [
             'role' => 'user',
@@ -421,30 +499,13 @@ $response = $client->messages()->create([
     ],
 
     // === OPTIONAL PARAMETERS ===
-
-    // System prompt (instructions for Claude's behavior)
     'system' => 'You are a PHP expert specializing in Laravel.',
-
-    // Temperature: 0.0 (focused) to 1.0 (creative)
-    'temperature' => 1.0,
-
-    // Top-p sampling (nucleus sampling)
-    'top_p' => 0.9,
-
-    // Top-k sampling
-    'top_k' => 40,
-
-    // Stop sequences (halt generation when encountered)
-    'stop_sequences' => ['</answer>', 'END'],
-
-    // Metadata for tracking
-    'metadata' => [
-        'user_id' => 'user-123'
-    ],
-
-    // Streaming (receive response incrementally)
-    'stream' => false,
-]);
+    'temperature' => 1.0,  // 0.0 (focused) to 1.0 (creative)
+    topP: 0.9,         // nucleus sampling
+    topK: 40,          // top-k sampling
+    stopSequences: ['</answer>', 'END'],
+    metadata: ['user_id' => 'user-123'],
+);
 ```
 
 ### Response Anatomy
@@ -453,7 +514,14 @@ $response = $client->messages()->create([
 <?php
 # filename: examples/response-anatomy.php
 # Complete response structure
-$response = $client->messages()->create([...]);
+$response = $client->messages()->create(
+    'model' => 'claude-sonnet-4-5-20250929',
+    'max_tokens' => 1024,
+    'messages' => [[
+        'role' => 'user',
+        'content' => 'Your prompt here'
+    ]]
+);
 
 // Response object structure:
 // {
@@ -466,7 +534,7 @@ $response = $client->messages()->create([...]);
 //       "text": "The actual response text..."
 //     }
 //   ],
-//   "model": "claude-sonnet-4-20250514",
+//   "model": "claude-sonnet-4-5",
 //   "stop_reason": "end_turn",
 //   "stop_sequence": null,
 //   "usage": {
@@ -476,13 +544,13 @@ $response = $client->messages()->create([...]);
 // }
 
 // Accessing response data
-$messageId = $response->id;                    // Unique message ID
-$assistantRole = $response->role;              // Always "assistant"
-$responseText = $response->content[0]->text;   // The generated text
-$modelUsed = $response->model;                 // Model that generated response
-$stopReason = $response->stop_reason;          // Why generation stopped
-$inputTokens = $response->usage->inputTokens;  // Tokens in request
-$outputTokens = $response->usage->outputTokens; // Tokens in response
+$messageId = $response->id;                              // Unique message ID
+$assistantRole = $response->role;                        // Always "assistant"
+$responseText = $response->content[0]->text ?? '';     // The generated text
+$modelUsed = $response->model;                           // Model that generated response
+$stopReason = $response->stop_reason;                    // Why generation stopped
+$inputTokens = $response->usage->inputTokens ?? 0;       // Tokens in request
+$outputTokens = $response->usage->outputTokens ?? 0;     // Tokens in response
 ```
 
 ### Complete Example with Response Handling
@@ -494,70 +562,69 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY'] ?? 'your-api-key'
+);
 
 class ClaudeResponseHandler
 {
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     public function processRequest(
         string $prompt,
-        string $model = 'claude-sonnet-4-20250514',
+        string $model = 'claude-sonnet-4-5',
         ?string $systemPrompt = null,
         int $maxTokens = 2048
     ): array {
         $startTime = microtime(true);
 
-        $requestParams = [
-            'model' => $model,
-            'max_tokens' => $maxTokens,
-            'messages' => [
-                [
-                    'role' => 'user',
-                    'content' => $prompt
-                ]
+        $messages = [
+            [
+                'role' => 'user',
+                'content' => $prompt
             ]
         ];
 
-        if ($systemPrompt) {
-            $requestParams['system'] = $systemPrompt;
-        }
-
-        $response = $this->client->messages()->create($requestParams);
+        $response = $this->client->messages()->create(
+            'model' => $model,
+            'max_tokens' => $maxTokens,
+            'messages' => $messages,
+            'system' => $systemPrompt
+        );
 
         $duration = microtime(true) - $startTime;
+        $inputTokens = $response->usage->inputTokens ?? 0;
+        $outputTokens = $response->usage->outputTokens ?? 0;
 
         return [
             'success' => true,
             'message_id' => $response->id,
-            'text' => $response->content[0]->text,
+            'text' => $response->content[0]->text ?? '',
             'model' => $response->model,
             'stop_reason' => $response->stop_reason,
             'usage' => [
-                'input_tokens' => $response->usage->inputTokens,
-                'output_tokens' => $response->usage->outputTokens,
-                'total_tokens' => $response->usage->inputTokens + $response->usage->outputTokens,
+                'input_tokens' => $inputTokens,
+                'output_tokens' => $outputTokens,
+                'total_tokens' => $inputTokens + $outputTokens,
             ],
             'performance' => [
                 'duration_seconds' => round($duration, 3),
-                'tokens_per_second' => round($response->usage->outputTokens / $duration, 2),
+                'tokens_per_second' => round($outputTokens / $duration, 2),
             ],
-            'cost' => $this->calculateCost($response, $model),
+            'cost' => $this->calculateCost($inputTokens, $outputTokens, $model),
         ];
     }
 
-    private function calculateCost($response, string $model): array
+    private function calculateCost(int $inputTokens, int $outputTokens, string $model): array
     {
         $pricing = $this->getPricing($model);
 
-        $inputCost = ($response->usage->inputTokens / 1_000_000) * $pricing['input'];
-        $outputCost = ($response->usage->outputTokens / 1_000_000) * $pricing['output'];
+        $inputCost = ($inputTokens / 1_000_000) * $pricing['input'];
+        $outputCost = ($outputTokens / 1_000_000) * $pricing['output'];
 
         return [
             'input_cost' => $inputCost,
@@ -570,15 +637,15 @@ class ClaudeResponseHandler
     private function getPricing(string $model): array
     {
         return match($model) {
-            'claude-opus-4-20250514' => [
+            'claude-opus-4-1' => [
                 'input' => 15.00,
                 'output' => 75.00,
             ],
-            'claude-sonnet-4-20250514' => [
+            'claude-sonnet-4-5' => [
                 'input' => 3.00,
                 'output' => 15.00,
             ],
-            'claude-haiku-4-20250514' => [
+            'claude-haiku-4-5-20251001' => [
                 'input' => 0.25,
                 'output' => 1.25,
             ],
@@ -592,9 +659,9 @@ $handler = new ClaudeResponseHandler($client);
 
 $result = $handler->processRequest(
     prompt: 'Explain Laravel service containers in 2 paragraphs.',
-    model: 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     systemPrompt: 'You are a Laravel expert. Be concise and accurate.',
-    maxTokens: 1024
+    'max_tokens' => 1024
 );
 
 echo "Response:\n{$result['text']}\n\n";
@@ -615,14 +682,17 @@ Understanding Claude's pricing model is essential for building cost-effective ap
 ### Current Pricing (2025)
 
 **Claude Opus 4.1**
+
 - Input: $15.00 per million tokens
 - Output: $75.00 per million tokens
 
 **Claude Sonnet 4.5**
+
 - Input: $3.00 per million tokens
 - Output: $15.00 per million tokens
 
 **Claude Haiku 4.5**
+
 - Input: $0.25 per million tokens
 - Output: $1.25 per million tokens
 
@@ -633,6 +703,7 @@ Pricing is subject to change. Check [anthropic.com/pricing](https://www.anthropi
 ### Token Calculation
 
 Tokens are pieces of words. Approximately:
+
 - **1 token** ≈ 4 characters in English
 - **1 token** ≈ ¾ of a word
 - **100 tokens** ≈ 75 words
@@ -668,9 +739,9 @@ class TokenEstimator
         $inputTokens = self::estimate($inputText);
 
         $pricing = match($model) {
-            'claude-opus-4-20250514' => ['input' => 15.00, 'output' => 75.00],
-            'claude-sonnet-4-20250514' => ['input' => 3.00, 'output' => 15.00],
-            'claude-haiku-4-20250514' => ['input' => 0.25, 'output' => 1.25],
+            'claude-opus-4-1' => ['input' => 15.00, 'output' => 75.00],
+            'claude-sonnet-4-5' => ['input' => 3.00, 'output' => 15.00],
+            'claude-haiku-4-5-20251001' => ['input' => 0.25, 'output' => 1.25],
             default => ['input' => 0, 'output' => 0],
         };
 
@@ -689,10 +760,18 @@ class TokenEstimator
 
 // Usage
 $prompt = "Analyze this Laravel controller and suggest improvements: [large code block]";
-$estimate = TokenEstimator::estimateCost($prompt, 1000, 'claude-sonnet-4-20250514');
+$estimate = TokenEstimator::estimateCost($prompt, 1000, 'claude-sonnet-4-5');
 
 echo "Estimated cost: $" . number_format($estimate['total_cost'], 6) . "\n";
 ```
+
+// Usage
+$prompt = "Analyze this Laravel controller and suggest improvements: [large code block]";
+$estimate = TokenEstimator::estimateCost($prompt, 1000, 'claude-sonnet-4-5');
+
+echo "Estimated cost: $" . number_format($estimate['total_cost'], 6) . "\n";
+
+````
 
 ### Cost Optimization Strategies
 
@@ -710,32 +789,32 @@ class CostOptimizer
         return match($taskType) {
             'classification',
             'extraction',
-            'simple-generation' => 'claude-haiku-4-20250514',
+            'simple-generation' => 'claude-haiku-4-5-20251001',
 
             'code-review',
             'documentation',
-            'analysis' => 'claude-sonnet-4-20250514',
+            'analysis' => 'claude-sonnet-4-5',
 
             'architecture',
             'complex-reasoning',
-            'creative-work' => 'claude-opus-4-20250514',
+            'creative-work' => 'claude-opus-4-1',
 
-            default => 'claude-sonnet-4-20250514',
+            default => 'claude-sonnet-4-5',
         };
     }
 }
-```
+````
 
 **2. Minimize Token Usage**
 
 ```php
 <?php
 # filename: examples/token-minimization.php
-# Inefficient: Verbose prompt
-$prompt = "I would like you to please analyze the following PHP code that I'm going to provide below and tell me what you think about it and if there are any issues or problems that you can identify:";
+// Inefficient: Verbose prompt
+$promptInefficient = "I would like you to please analyze the following PHP code that I'm going to provide below and tell me what you think about it and if there are any issues or problems that you can identify:";
 
-# Efficient: Concise prompt
-$prompt = "Analyze this PHP code for issues:";
+// Efficient: Concise prompt
+$promptEfficient = "Analyze this PHP code for issues:";
 
 // Both produce similar results, but efficient version saves ~30 tokens
 ```
@@ -745,15 +824,15 @@ $prompt = "Analyze this PHP code for issues:";
 ```php
 <?php
 # filename: examples/limit-max-tokens.php
-# Set appropriate max_tokens based on expected response length
-$response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+// Set appropriate maxTokens based on expected response length
+$response = $client->messages()->create(
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 256,  // Short response expected
     'messages' => [[
         'role' => 'user',
         'content' => 'Classify this email as spam or not: ' . $email
     ]]
-]);
+);
 ```
 
 **4. Cache System Prompts** (Advanced)
@@ -761,12 +840,13 @@ $response = $client->messages()->create([
 ```php
 <?php
 # filename: examples/system-prompt-caching.php
-# Reuse system prompts across requests to save tokens
-# (Requires prompt caching feature - covered in Chapter 15)
+// Reuse system prompts across requests to save tokens
+// (Requires prompt caching feature - covered in Chapter 15)
 $systemPrompt = "You are a PHP expert...";  // Reused across requests
 ```
 
 **5. Batch Processing**
+
 ```php
 <?php
 # filename: examples/batch-processing.php
@@ -775,7 +855,7 @@ declare(strict_types=1);
 class BatchProcessor
 {
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     /**
@@ -790,16 +870,16 @@ class BatchProcessor
             $items
         ));
 
-        $response = $this->client->messages()->create([
-            'model' => 'claude-haiku-4-20250514',
+        $response = $this->client->messages()->create(
+            'model' => 'claude-haiku-4-5-20251001',
             'max_tokens' => count($items) * 50,
             'messages' => [[
                 'role' => 'user',
                 'content' => "Classify each item as positive or negative. Return format: number. classification\n\n{$itemsList}"
             ]]
-        ]);
+        );
 
-        return $this->parseResults($response->content[0]->text, count($items));
+        return $this->parseResults($response->content[0]->text ?? '', count($items));
     }
 
     private function parseResults(string $text, int $expectedCount): array
@@ -844,27 +924,27 @@ Each API call is independent. Claude doesn't "remember" previous conversations u
 declare(strict_types=1);
 
 // Request 1
-$response1 = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+$response1 = $client->messages()->create(
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
     'messages' => [[
         'role' => 'user',
         'content' => 'My name is John.'
     ]]
-]);
+);
 
 // Request 2 - Claude does NOT remember John
-$response2 = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+$response2 = $client->messages()->create(
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
     'messages' => [[
         'role' => 'user',
         'content' => 'What is my name?'
     ]]
-]);
+);
 
 // Claude will say it doesn't know your name
-echo $response2->content[0]->text;
+echo $response2->content[0]->text ?? '';
 ```
 
 ### Maintaining Conversation History
@@ -878,19 +958,19 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY'] ?? 'your-api-key'
+);
 
 class ConversationManager
 {
     private array $history = [];
 
     public function __construct(
-        private readonly Anthropic $client,
-        private readonly string $model = 'claude-sonnet-4-20250514'
+        private readonly ClaudePhp $client,
+        private readonly string $model = 'claude-sonnet-4-5'
     ) {}
 
     public function addUserMessage(string $content): void
@@ -915,13 +995,13 @@ class ConversationManager
         $this->addUserMessage($message);
 
         // Send entire conversation history
-        $response = $this->client->messages()->create([
+        $response = $this->client->messages()->create(
             'model' => $this->model,
             'max_tokens' => 2048,
             'messages' => $this->history
-        ]);
+        );
 
-        $assistantResponse = $response->content[0]->text;
+        $assistantResponse = $response->content[0]->text ?? '';
 
         // Add assistant response to history
         $this->addAssistantMessage($assistantResponse);
@@ -944,15 +1024,15 @@ class ConversationManager
 $conversation = new ConversationManager($client);
 
 echo "User: My name is Sarah.\n";
-$response1 = $conversation->sendMessage("My name is Sarah.");
+$response1 = $conversation->messages()->create("My name is Sarah.");
 echo "Claude: {$response1}\n\n";
 
 echo "User: I work as a PHP developer.\n";
-$response2 = $conversation->sendMessage("I work as a PHP developer.");
+$response2 = $conversation->messages()->create("I work as a PHP developer.");
 echo "Claude: {$response2}\n\n";
 
 echo "User: What do you know about me?\n";
-$response3 = $conversation->sendMessage("What do you know about me?");
+$response3 = $conversation->messages()->create("What do you know about me?");
 echo "Claude: {$response3}\n\n";
 
 // Claude now remembers: name is Sarah, works as PHP developer
@@ -993,8 +1073,8 @@ System prompts set the context for the entire conversation:
 declare(strict_types=1);
 
 // System prompt provides instructions that apply to all messages
-$response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+$response = $client->messages()->create(
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
     'system' => 'You are a senior PHP developer specializing in Laravel. Provide concise, practical answers with code examples. Always follow PSR-12 coding standards.',
     'messages' => [
@@ -1003,10 +1083,10 @@ $response = $client->messages()->create([
             'content' => 'How do I create a custom artisan command?'
         ]
     ]
-]);
+);
 
 // Claude responds as a Laravel expert with code examples
-echo $response->content[0]->text;
+echo $response->content[0]->text ?? '';
 ```
 
 ### Context Window Management
@@ -1024,7 +1104,7 @@ class ManagedConversation
     private int $maxHistoryTokens = 10000;  // Keep last ~10K tokens
 
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     public function sendMessage(string $message): string
@@ -1034,13 +1114,13 @@ class ManagedConversation
         // Trim history if too long
         $this->trimHistory();
 
-        $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+        $response = $this->client->messages()->create(
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 2048,
             'messages' => $this->history
-        ]);
+        );
 
-        $reply = $response->content[0]->text;
+        $reply = $response->content[0]->text ?? '';
         $this->history[] = ['role' => 'assistant', 'content' => $reply];
 
         return $reply;
@@ -1075,20 +1155,20 @@ declare(strict_types=1);
 class SimpleClaudeService
 {
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     public function ask(string $question): string
     {
-        $response = $this->client->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+        $response = $this->client->messages()->create(
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 1024,
             'messages' => [
                 ['role' => 'user', 'content' => $question]
             ]
-        ]);
+        );
 
-        return $response->content[0]->text;
+        return $response->content[0]->text ?? '';
     }
 }
 
@@ -1108,8 +1188,8 @@ declare(strict_types=1);
 class ConfiguredClaudeService
 {
     public function __construct(
-        private readonly Anthropic $client,
-        private readonly string $model = 'claude-sonnet-4-20250514',
+        private readonly ClaudePhp $client,
+        private readonly string $model = 'claude-sonnet-4-5',
         private readonly ?string $systemPrompt = null,
         private readonly int $maxTokens = 2048,
         private readonly float $temperature = 1.0
@@ -1117,32 +1197,27 @@ class ConfiguredClaudeService
 
     public function generate(string $prompt): string
     {
-        $params = [
+        $response = $this->client->messages()->create(
             'model' => $this->model,
             'max_tokens' => $this->maxTokens,
             'temperature' => $this->temperature,
             'messages' => [
                 ['role' => 'user', 'content' => $prompt]
-            ]
-        ];
+            ],
+            'system' => $this->systemPrompt
+        );
 
-        if ($this->systemPrompt) {
-            $params['system'] = $this->systemPrompt;
-        }
-
-        $response = $this->client->messages()->create($params);
-
-        return $response->content[0]->text;
+        return $response->content[0]->text ?? '';
     }
 }
 
 // Usage
 $codeReviewer = new ConfiguredClaudeService(
     client: $client,
-    model: 'claude-sonnet-4-20250514',
+    'model' => 'claude-sonnet-4-5-20250929',
     systemPrompt: 'You are a code reviewer. Be thorough but concise.',
-    maxTokens: 3000,
-    temperature: 0.3  // More focused for code review
+    'max_tokens' => 3000,
+    'temperature' => 0.3  // More focused for code review
 );
 
 $review = $codeReviewer->generate("Review this code:\n\n{$code}");
@@ -1160,7 +1235,7 @@ class ConversationalService
     private array $messages = [];
 
     public function __construct(
-        private readonly Anthropic $client,
+        private readonly ClaudePhp $client,
         private readonly string $systemPrompt = ''
     ) {}
 
@@ -1171,18 +1246,14 @@ class ConversationalService
             'content' => $userMessage
         ];
 
-        $params = [
-            'model' => 'claude-sonnet-4-20250514',
+        $response = $this->client->messages()->create(
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 2048,
-            'messages' => $this->messages
-        ];
+            'messages' => $this->messages,
+            'system' => $this->systemPrompt ?: null
+        );
 
-        if ($this->systemPrompt) {
-            $params['system'] = $this->systemPrompt;
-        }
-
-        $response = $this->client->messages()->create($params);
-        $reply = $response->content[0]->text;
+        $reply = $response->content[0]->text ?? '';
 
         $this->messages[] = [
             'role' => 'assistant',
@@ -1228,7 +1299,7 @@ declare(strict_types=1);
 class ModelComparison
 {
     public function __construct(
-        private readonly Anthropic $client
+        private readonly ClaudePhp $client
     ) {}
 
     public function compareModels(string $prompt): array
@@ -1313,26 +1384,57 @@ $chat->chat("Design a system", 'complex'); // → Uses Opus 4.1
 ## Troubleshooting
 
 **Model not found error?**
-- Check model ID spelling (e.g. `claude-sonnet-4-20250514` for Claude Sonnet 4.5, not `claude-4-sonnet`)
+
+- Check model ID spelling (e.g. `claude-sonnet-4-5` for Claude Sonnet 4.5, not `claude-4-sonnet`)
 - Ensure you're using the latest Claude 4.1/4.5 IDs exposed in the Anthropic console
 - Check Anthropic documentation for latest model names
 
 **Unexpected response format?**
+
 - Always access text via `$response->content[0]->text`
 - Check `stop_reason` to understand why generation stopped
 - Verify you're not hitting max_tokens limit
 
 **High costs?**
+
 - Review which model you're using (Opus 4.1 is roughly 60x more expensive per input token than Haiku 4.5)
 - Check token usage in responses
 - Implement request tracking and monitoring
 - Consider batching requests where possible
 
 **Rate limiting?**
+
 - Default limits: 50 requests/minute for most tiers
 - Implement exponential backoff
 - Consider request queuing for high-volume apps
 - Contact Anthropic for limit increases
+
+## About the Claude-PHP-SDK
+
+This tutorial uses the **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)** — a community-maintained PHP wrapper for Claude API interactions. It provides a clean, intuitive interface for working with Claude in PHP applications.
+
+**Installation:**
+
+```bash
+composer require claude-php/claude-3-api
+```
+
+**Key Advantages:**
+
+- ✅ Clean, modern PHP API with named parameters
+- ✅ Easy configuration and API key management
+- ✅ Built on the Anthropic Python SDK patterns
+- ✅ Active community support and examples
+- ✅ Simplified response handling
+
+For advanced features and lower-level control, the official Anthropic SDK is also available.
+
+## Further Reading
+
+- **[Claude-PHP-SDK on GitHub](https://github.com/claude-php/Claude-PHP-SDK)** — Community PHP SDK with comprehensive documentation
+- **[Official Anthropic PHP SDK](https://github.com/anthropics/anthropic-sdk-php)** — Official Anthropic SDK for PHP
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
+- **[Claude-PHP-SDK on Packagist](https://packagist.org/packages/claude-php/claude-3-api)** — Composer package registry
 
 ## Wrap-up
 
@@ -1383,15 +1485,22 @@ Continue to [Chapter 02: Authentication and API Keys](/series/claude-php-develop
 
 ## 💻 Code Samples
 
-All code examples from this chapter are available in the GitHub repository:
+All code examples from this chapter are available in the GitHub repository using the Claude-PHP-SDK:
 
-**[View Chapter 01 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-01)**
+**[View Chapter 01 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code-samples/claude-php/chapter-01)**
 
-Clone and run locally:
+**Clone and run locally:**
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
-cd codewithphp/code/claude-php/chapter-01
+cd codewithphp/code-samples/claude-php/chapter-01
 composer install
 export ANTHROPIC_API_KEY="sk-ant-your-key-here"
-php examples/complete-api-usage.php
+php examples/api-basics.php
+php examples/model-comparison.php
+php examples/pricing-calculator.php
 ```
+
+**Using Claude-PHP-SDK:**
+
+All examples use `claude-php/claude-php-sdk` which is specified in the `composer.json` file. This provides a clean, intuitive interface for Claude interactions with built-in request handling and response parsing.

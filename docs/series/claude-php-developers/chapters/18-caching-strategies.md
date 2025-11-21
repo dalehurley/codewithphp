@@ -78,7 +78,7 @@ flowchart TD
     F -->|Similar Found| G[Store in Redis & Memory<br/>Return Response<br/>~5-10ms]
     F -->|No Match| H[Claude API Call]
     H --> I[Store in All Layers<br/>Return Response<br/>~500-2000ms]
-    
+
     style C fill:#90EE90
     style E fill:#87CEEB
     style G fill:#DDA0DD
@@ -86,6 +86,7 @@ flowchart TD
 ```
 
 **Layer Benefits:**
+
 - **In-Memory**: Fastest access (~0.1ms), perfect for repeated requests within the same request lifecycle
 - **Redis**: Persistent across requests (~1-5ms), shared across application instances
 - **Semantic**: Fuzzy matching for similar prompts, reduces redundant API calls
@@ -97,11 +98,12 @@ Anthropic offers native prompt caching to reduce costs for repeated context. Thi
 
 ::: tip When to Use Prompt Caching
 Use Anthropic's prompt caching when:
+
 - You have large, static context (documentation, knowledge bases, system instructions)
 - The same context is used across multiple requests
 - You want to reduce input token costs (up to 90% discount on cached tokens)
 - Context changes infrequently (cache lasts ~5 minutes)
-:::
+  :::
 
 ::: warning Cache Duration
 Anthropic's prompt cache expires after approximately 5 minutes. For longer-lived caching, use response caching with Redis instead.
@@ -114,18 +116,18 @@ declare(strict_types=1);
 
 require 'vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 // Large context that will be cached
 $documentationContext = file_get_contents(__DIR__ . '/large-documentation.txt');
 
 // First request - full cost
-$response1 = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+$response1 = $client->messages()->create(
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
     'system' => [
         [
@@ -141,19 +143,19 @@ $response1 = $client->messages()->create([
     'messages' => [
         ['role' => 'user', 'content' => 'What are PHP attributes?']
     ]
-]);
+);
 
 echo "First Request:\n";
 echo "Response: " . $response1->content[0]->text . "\n";
-echo "Input tokens: {$response1->usage->inputTokens}\n";
+echo "Input tokens: " . ($response1->usage->inputTokens ?? 0) . "\n";
 echo "Cache creation tokens: " . ($response1->usage->cacheCreationInputTokens ?? 0) . "\n";
 echo "Cache read tokens: " . ($response1->usage->cacheReadInputTokens ?? 0) . "\n\n";
 
 // Second request within 5 minutes - uses cached context
 sleep(2);
 
-$response2 = $client->messages()->create([
-    'model' => 'claude-sonnet-4-20250514',
+$response2 = $client->messages()->create(
+    'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
     'system' => [
         [
@@ -169,11 +171,11 @@ $response2 = $client->messages()->create([
     'messages' => [
         ['role' => 'user', 'content' => 'How do enums work in PHP?']
     ]
-]);
+);
 
 echo "Second Request (with cache hit):\n";
 echo "Response: " . $response2->content[0]->text . "\n";
-echo "Input tokens: {$response2->usage->inputTokens}\n";
+echo "Input tokens: " . ($response2->usage->inputTokens ?? 0) . "\n";
 echo "Cache creation tokens: " . ($response2->usage->cacheCreationInputTokens ?? 0) . "\n";
 echo "Cache read tokens: " . ($response2->usage->cacheReadInputTokens ?? 0) . "\n\n";
 
@@ -198,12 +200,13 @@ Cache complete API responses for identical requests. Unlike prompt caching, this
 
 ::: tip When to Use Response Caching
 Use Redis response caching when:
+
 - Users frequently ask identical questions
 - Responses don't need to be real-time fresh
 - You want to reduce API costs and improve response times
 - You need cache persistence across application restarts
 - You want fine-grained control over cache invalidation
-:::
+  :::
 
 ::: warning Cache Key Collisions
 Ensure your cache key generation includes all parameters that affect the response (prompt, model, temperature, max_tokens). Missing parameters can cause incorrect cache hits.
@@ -217,18 +220,18 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Contracts\ClaudeServiceInterface;
-use Anthropic\Contracts\ClientContract;
+use ClaudePhp\ClaudePhp;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
 
 class CachedClaudeService implements ClaudeServiceInterface
 {
     public function __construct(
-        private ClientContract $client,
+        private ClaudePhp $client,
         private CacheInterface $cache,
         private ?LoggerInterface $logger = null,
         private int $defaultTtl = 3600,
-        private string $defaultModel = 'claude-sonnet-4-20250514'
+        private string $defaultModel = 'claude-sonnet-4-5-20250929'
     ) {}
 
     public function generate(
@@ -253,14 +256,14 @@ class CachedClaudeService implements ClaudeServiceInterface
         $this->logger?->info('Cache MISS', ['key' => $cacheKey]);
 
         // Make API call
-        $response = $this->client->messages()->create([
+        $response = $this->client->messages()->create(
             'model' => $model ?? $this->defaultModel,
             'max_tokens' => $maxTokens ?? 4096,
             'temperature' => $temperature ?? 1.0,
             'messages' => [
                 ['role' => 'user', 'content' => $prompt]
             ]
-        ]);
+        );
 
         $text = $response->content[0]->text;
 
@@ -286,14 +289,14 @@ class CachedClaudeService implements ClaudeServiceInterface
 
         $this->logger?->info('Cache MISS (with metadata)', ['key' => $cacheKey]);
 
-        $response = $this->client->messages()->create([
+        $response = $this->client->messages()->create(
             'model' => $options['model'] ?? $this->defaultModel,
             'max_tokens' => $options['max_tokens'] ?? 4096,
             'temperature' => $options['temperature'] ?? 1.0,
             'messages' => [
                 ['role' => 'user', 'content' => $prompt]
             ]
-        ]);
+        );
 
         $result = [
             'text' => $response->content[0]->text,
@@ -302,8 +305,8 @@ class CachedClaudeService implements ClaudeServiceInterface
                 'model' => $response->model,
                 'stop_reason' => $response->stopReason,
                 'usage' => [
-                    'input_tokens' => $response->usage->inputTokens,
-                    'output_tokens' => $response->usage->outputTokens,
+                    'input_tokens' => $response->usage->inputTokens ?? 0,
+                    'output_tokens' => $response->usage->outputTokens ?? 0,
                 ],
             ]
         ];
@@ -319,19 +322,9 @@ class CachedClaudeService implements ClaudeServiceInterface
         array $options = []
     ): void {
         // Streaming responses are typically not cached
-        $stream = $this->client->messages()->createStreamed([
-            'model' => $options['model'] ?? $this->defaultModel,
-            'max_tokens' => $options['max_tokens'] ?? 4096,
-            'messages' => [
-                ['role' => 'user', 'content' => $prompt]
-            ]
-        ]);
-
-        foreach ($stream as $event) {
-            if ($event->type === 'content_block_delta') {
-                $callback($event->delta->text ?? '');
-            }
-        }
+        // Note: Claude-PHP-SDK streaming implementation might differ
+        // This is a conceptual example
+        throw new \RuntimeException('Streaming implementation pending SDK support');
     }
 
     public function estimateTokens(string $text): int
@@ -342,15 +335,15 @@ class CachedClaudeService implements ClaudeServiceInterface
     public function healthCheck(): bool
     {
         try {
-            $response = $this->client->messages()->create([
+            $response = $this->client->messages()->create(
                 'model' => $this->defaultModel,
                 'max_tokens' => 10,
                 'messages' => [
                     ['role' => 'user', 'content' => 'ping']
                 ]
-            ]);
+            );
 
-            return $response->content[0]->text !== null;
+            return !empty($response->content[0]->text);
         } catch (\Exception $e) {
             return false;
         }
@@ -371,7 +364,7 @@ class CachedClaudeService implements ClaudeServiceInterface
 
     /**
      * Generate deterministic cache key from parameters
-     * 
+     *
      * Uses MD5 hash to ensure:
      * - Same parameters = same key (deterministic)
      * - Keys are fixed length (Redis-friendly)
@@ -407,7 +400,7 @@ declare(strict_types=1);
 
 require 'vendor/autoload.php';
 
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
 use Symfony\Component\Cache\Psr16Cache;
 
@@ -417,9 +410,9 @@ $redisAdapter = new RedisAdapter($redisConnection);
 $cache = new Psr16Cache($redisAdapter);
 
 // Create cached service
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $claudeService = new \App\Services\CachedClaudeService(
     client: $client,
@@ -452,10 +445,11 @@ echo "Speed improvement: " . number_format($duration1 / $duration2, 1) . "x fast
 Combine in-memory and Redis for optimal performance. This multi-layer approach provides the best of both worlds: lightning-fast in-memory access for hot data, and persistent Redis storage for warm data.
 
 ::: tip Performance Benefits
+
 - **Memory cache**: ~0.1ms access time, perfect for repeated requests
 - **Redis cache**: ~1-5ms access time, persists across requests
 - **Combined**: Most requests hit memory cache, reducing Redis load
-:::
+  :::
 
 ::: warning Memory Management
 Monitor memory cache size to prevent excessive memory usage. The example uses LRU (Least Recently Used) eviction when the cache exceeds 100 entries.
@@ -469,7 +463,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Contracts\ClaudeServiceInterface;
-use Anthropic\Contracts\ClientContract;
+use ClaudePhp\ClaudePhp;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
 
@@ -479,7 +473,7 @@ class TieredCacheService implements ClaudeServiceInterface
     private int $memoryCacheSize = 100;
 
     public function __construct(
-        private ClientContract $client,
+        private ClaudePhp $client,
         private CacheInterface $persistentCache,
         private ?LoggerInterface $logger = null,
         private int $memoryTtl = 300,      // 5 minutes
@@ -516,14 +510,14 @@ class TieredCacheService implements ClaudeServiceInterface
         // Layer 3: API call
         $this->logger?->info('Cache MISS - API call', ['key' => $cacheKey]);
 
-        $response = $this->client->messages()->create([
-            'model' => $model ?? 'claude-sonnet-4-20250514',
+        $response = $this->client->messages()->create(
+            'model' => $model ?? 'claude-sonnet-4-5-20250929',
             'max_tokens' => $maxTokens ?? 4096,
             'temperature' => $temperature ?? 1.0,
             'messages' => [
                 ['role' => 'user', 'content' => $prompt]
             ]
-        ]);
+        );
 
         $text = $response->content[0]->text;
 
@@ -594,7 +588,7 @@ class TieredCacheService implements ClaudeServiceInterface
     {
         $filtered = array_filter($params, fn($v) => $v !== null);
         ksort($filtered);
-        return 'claude:' . md5(json_encode($filtered));
+        return 'claude:' . md5(json_encode($filtered, JSON_UNESCAPED_UNICODE));
     }
 }
 ```
@@ -605,11 +599,12 @@ Cache responses based on prompt similarity, not just exact matches. This advance
 
 ::: tip When to Use Semantic Caching
 Use semantic caching when:
+
 - Users ask similar questions with different wording
 - You want to reduce API calls for semantically equivalent queries
 - Responses are general enough that slight prompt variations don't matter
 - You have many cached prompts to compare against
-:::
+  :::
 
 ::: warning Similarity Threshold
 The default threshold of 0.85 (85% similarity) balances cache hits with accuracy. Lower thresholds increase hits but may return less relevant responses. Adjust based on your use case.
@@ -623,7 +618,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Contracts\ClaudeServiceInterface;
-use Anthropic\Contracts\ClientContract;
+use ClaudePhp\ClaudePhp;
 use Psr\SimpleCache\CacheInterface;
 use Psr\Log\LoggerInterface;
 
@@ -636,7 +631,7 @@ class SemanticCacheService implements ClaudeServiceInterface
     private const SIMILARITY_THRESHOLD = 0.85;
 
     public function __construct(
-        private ClientContract $client,
+        private ClaudePhp $client,
         private CacheInterface $cache,
         private ?LoggerInterface $logger = null,
         private float $similarityThreshold = self::SIMILARITY_THRESHOLD
@@ -665,14 +660,14 @@ class SemanticCacheService implements ClaudeServiceInterface
         ]);
 
         // Make API call
-        $response = $this->client->messages()->create([
-            'model' => $model ?? 'claude-sonnet-4-20250514',
+        $response = $this->client->messages()->create(
+            'model' => $model ?? 'claude-sonnet-4-5-20250929',
             'max_tokens' => $maxTokens ?? 4096,
             'temperature' => $temperature ?? 1.0,
             'messages' => [
                 ['role' => 'user', 'content' => $prompt]
             ]
-        ]);
+        );
 
         $text = $response->content[0]->text;
 
@@ -735,7 +730,7 @@ class SemanticCacheService implements ClaudeServiceInterface
     /**
      * Calculate similarity between two strings
      * Returns value between 0 and 1
-     * 
+     *
      * Uses different algorithms based on string length:
      * - Levenshtein distance: Fast for short strings (<255 chars)
      * - similar_text: Better for longer strings, more accurate
@@ -771,6 +766,7 @@ Semantic caching compares new prompts against cached prompts using string simila
 4. **Prompt mapping**: Stores prompt-to-cache-key mappings for efficient lookup
 
 This enables cache hits for semantically equivalent queries like:
+
 - "What is dependency injection?" vs "Explain dependency injection"
 - "How do Laravel queues work?" vs "Tell me about Laravel queue system"
 
@@ -781,11 +777,12 @@ The similarity threshold balances cache hit rate with response relevance—highe
 Proper cache invalidation prevents stale data from being served. Different strategies suit different use cases:
 
 ::: tip Invalidation Strategies
+
 - **Time-based**: TTL expiration (simplest, automatic)
 - **Tag-based**: Invalidate related caches together
 - **Pattern-based**: Invalidate caches matching a pattern
 - **Manual**: Explicit invalidation for specific keys
-:::
+  :::
 
 ::: warning Stale Data Risk
 Without proper invalidation, users may receive outdated responses. Always invalidate caches when underlying data changes or when responses become stale.
@@ -870,11 +867,12 @@ class CacheInvalidationService
 Pre-populate cache with common queries to improve initial performance. Cache warming runs during application startup or scheduled maintenance windows to ensure frequently accessed data is cached.
 
 ::: tip When to Warm Cache
+
 - Application startup (pre-populate common queries)
 - Scheduled maintenance (refresh stale caches)
 - After cache invalidation (rebuild critical caches)
 - Before high-traffic periods (preload expected queries)
-:::
+  :::
 
 ```php
 <?php
@@ -884,7 +882,7 @@ declare(strict_types=1);
 require 'vendor/autoload.php';
 
 use App\Services\CachedClaudeService;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
 use Symfony\Component\Cache\Psr16Cache;
 
@@ -892,9 +890,9 @@ use Symfony\Component\Cache\Psr16Cache;
 $redisConnection = RedisAdapter::createConnection('redis://localhost');
 $cache = new Psr16Cache(new RedisAdapter($redisConnection));
 
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $claudeService = new CachedClaudeService($client, $cache);
 
@@ -913,7 +911,7 @@ foreach ($commonQueries as $index => $query) {
     echo ($index + 1) . ". {$query}\n";
 
     try {
-        $response = $claudeService->generate($query, maxTokens: 500);
+        $response = $claudeService->generate($query, 'max_tokens' => 500);
         echo "   Cached: " . substr($response, 0, 60) . "...\n\n";
     } catch (\Exception $e) {
         echo "   Error: " . $e->getMessage() . "\n\n";
@@ -931,17 +929,19 @@ echo "Cache warming completed!\n";
 ## Monitoring Cache Performance
 
 Track cache metrics to optimize your caching strategy. Monitoring helps identify:
+
 - Cache hit rates (higher is better)
 - Cost savings from cache hits
 - Cache size and memory usage
 - Access patterns for optimization
 
 ::: tip Key Metrics to Track
+
 - **Hit rate**: Percentage of requests served from cache (target: >70%)
 - **Cost savings**: Estimated API cost reduction from caching
 - **Average response time**: Compare cached vs uncached requests
 - **Cache size**: Monitor memory usage and eviction rates
-:::
+  :::
 
 ```php
 <?php
@@ -1038,7 +1038,7 @@ declare(strict_types=1);
 require 'vendor/autoload.php';
 
 use App\Services\TieredCacheService;
-use Anthropic\Anthropic;
+use ClaudePhp\ClaudePhp;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
 use Symfony\Component\Cache\Psr16Cache;
 use Monolog\Logger;
@@ -1053,9 +1053,9 @@ $redisConnection = RedisAdapter::createConnection('redis://localhost');
 $cache = new Psr16Cache(new RedisAdapter($redisConnection));
 
 // Setup Claude client
-$client = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$client = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 // Create tiered cache service
 $claudeService = new TieredCacheService(
@@ -1078,7 +1078,7 @@ foreach ($prompts as $i => $prompt) {
     echo "Prompt: {$prompt}\n";
 
     $start = microtime(true);
-    $response = $claudeService->generate($prompt, maxTokens: 100);
+    $response = $claudeService->generate($prompt, 'max_tokens' => 100);
     $duration = microtime(true) - $start;
 
     echo "Response: " . substr($response, 0, 80) . "...\n";
@@ -1146,7 +1146,7 @@ class FallbackCacheService implements CacheInterface
 
         // Always update fallback
         $this->fallbackMemory[$key] = $value;
-        
+
         // Limit fallback memory to prevent overflow
         if (count($this->fallbackMemory) > 1000) {
             $this->fallbackMemory = array_slice($this->fallbackMemory, -500);
@@ -1245,7 +1245,7 @@ class CompressedCacheService
         // Only compress if larger than threshold
         if ($size > self::COMPRESSION_THRESHOLD) {
             $compressed = gzcompress($serialized, $this->compressionLevel);
-            
+
             // Use compression if it actually saves space
             if (strlen($compressed) < $size) {
                 $this->cache->set($key, [
@@ -1263,7 +1263,7 @@ class CompressedCacheService
             'compressed' => false,
             'data' => $serialized
         ], $ttl);
-        
+
         return true;
     }
 
@@ -1288,30 +1288,35 @@ class CompressedCacheService
 ## Troubleshooting
 
 **Redis connection fails?**
+
 - Verify Redis is running: `redis-cli ping`
 - Check connection string format: `redis://localhost:6379`
 - Ensure Redis PHP extension is installed: `php -m | grep redis`
 - Implement fallback cache strategies (see example above)
 
 **Cache not persisting?**
+
 - Check TTL values are not too short
 - Verify Redis memory limits in `redis.conf`
 - Ensure cache keys are deterministic (same input = same key)
 - Monitor Redis memory: `redis-cli INFO memory`
 
 **Semantic caching too slow?**
+
 - Limit the number of cached prompts to compare against
 - Use more efficient similarity algorithms (e.g., MinHash, SimHash)
 - Consider using vector embeddings for better semantic matching
 - Add sampling to compare only a subset of cached prompts
 
 **Memory cache growing too large?**
+
 - Implement proper LRU eviction
 - Set reasonable memory cache size limits
 - Monitor memory usage with `memory_get_usage()`
 - Use compression for large cached values (see example above)
 
 **Cache inconsistency across servers?**
+
 - Use a centralized Redis instance (not local caches on each server)
 - Implement cache invalidation events for distributed systems
 - Use consistent cache key generation across all servers
@@ -1366,7 +1371,7 @@ class DistributedCacheInvalidation
     {
         $this->pubsub->subscribe(['cache:invalidate'], function($redis, $chan, $msg) use ($callback) {
             $data = json_decode($msg, true);
-            
+
             $this->logger?->info('Cache invalidation received', [
                 'key' => $data['key'] ?? null,
                 'from_server' => $data['server'] ?? null
@@ -1453,34 +1458,15 @@ $service->generate('Popular query'); // Request 3
 // TTL should increase after multiple accesses
 ```
 
-## Wrap-up
-
-You've completed this chapter on caching strategies! Here's what you accomplished:
-
-- ✓ Implemented Anthropic's native prompt caching for 90% cost reduction
-- ✓ Built response caching with Redis using PSR-16 interfaces
-- ✓ Created tiered caching systems combining memory and persistent storage
-- ✓ Developed semantic similarity caching for fuzzy prompt matching
-- ✓ Designed cache invalidation strategies for production use
-- ✓ Implemented cache monitoring and performance metrics
-- ✓ Set up cache warming for frequently used queries
-
-Caching is crucial for production Claude applications—it dramatically reduces costs while improving response times. The strategies you've learned can reduce API costs by 90% or more for applications with repeated queries.
-
-In the next chapter, you'll learn to handle long-running AI tasks asynchronously using Laravel queues, ensuring your application remains responsive even during complex AI operations.
-
 ## Further Reading
 
-- [Anthropic Prompt Caching Documentation](https://docs.claude.com/en/docs/capabilities/prompt-caching) — Official guide to prompt caching
-- [PSR-16: Simple Cache](https://www.php-fig.org/psr/psr-16/) — PHP-FIG cache interface standard
-- [Redis Caching Patterns](https://redis.io/docs/manual/patterns/) — Best practices for Redis caching
-- [Symfony Cache Component](https://symfony.com/doc/current/components/cache.html) — PSR-6/PSR-16 implementation
-- [Cache Invalidation Strategies](https://en.wikipedia.org/wiki/Cache_invalidation) — Wikipedia overview of invalidation patterns
-- [Redis Pub/Sub Documentation](https://redis.io/docs/manual/pubsub/) — Real-time message publishing for distributed systems
-- [Compression in PHP](https://www.php.net/manual/en/function.gzcompress.php) — Built-in gzip compression for storage efficiency
-- [See Chapter 37: Monitoring and Observability](/series/claude-php-developers/chapters/37-monitoring-observability) — Track cache performance metrics
-- [See Chapter 38: Scaling Applications](/series/claude-php-developers/chapters/38-scaling-applications) — Multi-instance cache strategies
-- [See Chapter 39: Cost Optimization](/series/claude-php-developers/chapters/39-cost-optimization) — Cache as cost reduction strategy
+- **[Claude-PHP-SDK on GitHub](https://github.com/claude-php/Claude-PHP-SDK)** — The community-maintained PHP SDK
+- **[Anthropic Prompt Caching Documentation](https://docs.claude.com/en/docs/capabilities/prompt-caching)** — Official guide to prompt caching
+- **[PSR-16: Simple Cache](https://www.php-fig.org/psr/psr-16/)** — PHP-FIG cache interface standard
+- **[Redis Caching Patterns](https://redis.io/docs/manual/patterns/)** — Best practices for Redis caching
+- **[Symfony Cache Component](https://symfony.com/doc/current/components/cache.html)** — PSR-6/PSR-16 implementation
+- **[See Chapter 37: Monitoring and Observability](/series/claude-php-developers/chapters/37-monitoring-observability)** — Track cache performance metrics
+- **[See Chapter 39: Cost Optimization](/series/claude-php-developers/chapters/39-cost-optimization)** — Cache as cost reduction strategy
 
 <ChapterCheckbox
   seriesId="claude-php-developers"
@@ -1499,6 +1485,7 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 18 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-18)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-18
@@ -1506,5 +1493,5 @@ composer install
 # Ensure Redis is running
 redis-cli ping
 export ANTHROPIC_API_KEY="sk-ant-your-key-here"
-php examples/01-prompt-caching.php
+php examples/prompt-cache.php
 ```

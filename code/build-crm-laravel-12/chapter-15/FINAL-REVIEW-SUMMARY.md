@@ -245,3 +245,5 @@ Deal::factory(2)->forTeam($team)->lost()->create();
 
 
 
+
+

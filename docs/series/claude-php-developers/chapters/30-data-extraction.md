@@ -77,15 +77,15 @@ Here's a quick example to get you started:
 # filename: quick-start.php
 require __DIR__ . '/vendor/autoload.php';
 
-use Anthropic\Anthropic;
 use App\DataExtraction\ExtractionPipeline;
+use ClaudePhp\ClaudePhp;
 // ... other imports
 
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$claude = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
-$pipeline = new ExtractionPipeline(/* ... */);
+$pipeline = new ExtractionPipeline($claude);
 
 $result = $pipeline->process(
     source: 'document.pdf',
@@ -99,19 +99,18 @@ echo "Quality Score: " . ($result->quality->overallScore * 100) . "%\n";
 
 ## Architecture Overview
 
-```php
+````php
 <?php
 # filename: src/DataExtraction/ExtractionPipeline.php
 declare(strict_types=1);
 
 namespace App\DataExtraction;
 
-use Anthropic\Anthropic;
 
 class ExtractionPipeline
 {
     public function __construct(
-        private Anthropic $claude,
+        private ClaudePhp $claude,
         private DocumentParser $parser,
         private DataValidator $validator,
         private DataTransformer $transformer,
@@ -167,7 +166,7 @@ class ExtractionPipeline
         $prompt = $this->buildExtractionPrompt($document, $schema);
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 8192,
             'temperature' => 0.2,
             'system' => $this->getExtractionSystemPrompt(),
@@ -277,7 +276,7 @@ SYSTEM;
         ];
     }
 }
-```
+````
 
 ## Document Parser
 
@@ -311,7 +310,7 @@ class DocumentParser
     {
         return new ParsedDocument(
             type: 'text',
-            content: $content,
+            'content' => $content,
             metadata: [
                 'length' => strlen($content),
                 'lines' => substr_count($content, "\n") + 1
@@ -332,7 +331,7 @@ class DocumentParser
 
         return new ParsedDocument(
             type: 'html',
-            content: trim($text),
+            'content' => trim($text),
             metadata: [
                 'original_length' => strlen($html),
                 'cleaned_length' => strlen($text)
@@ -349,7 +348,7 @@ class DocumentParser
 
         return new ParsedDocument(
             type: 'pdf',
-            content: $text,
+            'content' => $text,
             metadata: [
                 'pages' => count($pdf->getPages()),
                 'title' => $pdf->getDetails()['Title'] ?? null
@@ -382,7 +381,7 @@ class DocumentParser
 
         return new ParsedDocument(
             type: 'email',
-            content: trim($body),
+            'content' => trim($body),
             metadata: $headers
         );
     }
@@ -390,12 +389,12 @@ class DocumentParser
     private function parseCSV(string $filepath): ParsedDocument
     {
         $rows = [];
-        
+
         if (($handle = fopen($filepath, 'r')) !== false) {
             // Detect delimiter
             $firstLine = fgets($handle);
             rewind($handle);
-            
+
             $delimiter = ',';
             if (str_contains($firstLine, ';')) {
                 $delimiter = ';';
@@ -411,7 +410,7 @@ class DocumentParser
 
         return new ParsedDocument(
             type: 'csv',
-            content: json_encode($rows),
+            'content' => json_encode($rows),
             metadata: [
                 'rows' => count($rows),
                 'columns' => !empty($rows) ? count($rows[0]) : 0
@@ -426,7 +425,7 @@ class DocumentParser
 
         return new ParsedDocument(
             type: 'xml',
-            content: $json,
+            'content' => $json,
             metadata: [
                 'root' => $doc->getName()
             ]
@@ -443,7 +442,7 @@ class DocumentParser
 
         return new ParsedDocument(
             type: 'json',
-            content: json_encode($data),
+            'content' => json_encode($data),
             metadata: [
                 'keys' => array_keys($data)
             ]
@@ -461,13 +460,12 @@ declare(strict_types=1);
 
 namespace App\DataExtraction\Extractors;
 
-use Anthropic\Anthropic;
 use App\DataExtraction\ParsedDocument;
 
 class InvoiceExtractor
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -528,7 +526,7 @@ Return ONLY valid JSON with all available fields. Use null for missing values.
 PROMPT;
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 4096,
             'temperature' => 0.1,
             'messages' => [[
@@ -616,13 +614,12 @@ declare(strict_types=1);
 
 namespace App\DataExtraction\Extractors;
 
-use Anthropic\Anthropic;
 use App\DataExtraction\ParsedDocument;
 
 class ResumeExtractor
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -708,7 +705,7 @@ Return ONLY valid JSON with all available information.
 PROMPT;
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 6144,
             'temperature' => 0.1,
             'messages' => [[
@@ -753,7 +750,7 @@ Return ONLY valid JSON.
 PROMPT;
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 2048,
             'temperature' => 0.3,
             'messages' => [[
@@ -955,12 +952,11 @@ declare(strict_types=1);
 
 namespace App\DataExtraction;
 
-use Anthropic\Anthropic;
 
 class QualityAnalyzer
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -1051,7 +1047,7 @@ Return ONLY valid JSON array.
 PROMPT;
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 2048,
             'temperature' => 0.2,
             'messages' => [[
@@ -1169,11 +1165,11 @@ PROMPT;
 
         $step = max(1, (int)floor(count($data) / $size));
         $sample = [];
-        
+
         for ($i = 0; $i < count($data) && count($sample) < $size; $i += $step) {
             $sample[] = $data[$i];
         }
-        
+
         return $sample;
     }
 }
@@ -1188,12 +1184,11 @@ declare(strict_types=1);
 
 namespace App\DataExtraction;
 
-use Anthropic\Anthropic;
 
 class AnalyticsGenerator
 {
     public function __construct(
-        private Anthropic $claude
+        private ClaudePhp $claude
     ) {}
 
     /**
@@ -1260,7 +1255,7 @@ Return ONLY valid JSON.
 PROMPT;
 
         $response = $this->claude->messages()->create([
-            'model' => 'claude-sonnet-4-20250514',
+            'model' => 'claude-sonnet-4-5-20250929',
             'max_tokens' => 6144,
             'temperature' => 0.4,
             'messages' => [[
@@ -1303,7 +1298,6 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
 use App\DataExtraction\ExtractionPipeline;
 use App\DataExtraction\DocumentParser;
 use App\DataExtraction\DataValidator;
@@ -1354,9 +1348,9 @@ if (!isset($options['type']) || !isset($options['schema'])) {
 }
 
 // Initialize
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$claude = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 $parser = new DocumentParser();
 $validator = new DataValidator();
@@ -1480,7 +1474,7 @@ class DataTransformer
         }
 
         $output = fopen('php://temp', 'r+');
-        
+
         // Write headers
         if (!empty($data)) {
             fputcsv($output, array_keys($data[0]));
@@ -1505,7 +1499,7 @@ class DataTransformer
     {
         $xml = new \SimpleXMLElement("<{$rootElement}></{$rootElement}>");
         $this->arrayToXML($data, $xml);
-        
+
         return $xml->asXML();
     }
 
@@ -1514,7 +1508,7 @@ class DataTransformer
         foreach ($data as $key => $value) {
             // Handle numeric keys
             $key = is_numeric($key) ? "item_{$key}" : $key;
-            
+
             if (is_array($value)) {
                 $subnode = $xml->addChild($key);
                 $this->arrayToXML($value, $subnode);
@@ -1599,7 +1593,7 @@ class StorageManager
     public function retrieve(string $id): ?array
     {
         $filepath = $this->storagePath . "extraction_{$id}.json";
-        
+
         if (!file_exists($filepath)) {
             return null;
         }
@@ -1621,7 +1615,6 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Anthropic\Anthropic;
 use App\DataExtraction\ExtractionPipeline;
 use App\DataExtraction\DocumentParser;
 use App\DataExtraction\DataValidator;
@@ -1630,9 +1623,9 @@ use App\DataExtraction\QualityAnalyzer;
 use App\DataExtraction\StorageManager;
 
 // Initialize Claude client
-$claude = Anthropic::factory()
-    ->withApiKey(getenv('ANTHROPIC_API_KEY'))
-    ->make();
+$claude = new ClaudePhp(
+    apiKey: $_ENV['ANTHROPIC_API_KEY']
+);
 
 // Initialize components
 $parser = new DocumentParser();
@@ -1759,23 +1752,23 @@ Here's an example JSON schema file for invoice extraction:
       "type": "object",
       "required": ["name"],
       "properties": {
-        "name": {"type": "string"},
-        "address": {"type": "string"},
-        "city": {"type": "string"},
-        "state": {"type": "string"},
-        "zip": {"type": "string", "format": "zip"},
-        "phone": {"type": "string", "format": "phone"},
-        "email": {"type": "string", "format": "email"},
-        "tax_id": {"type": "string"}
+        "name": { "type": "string" },
+        "address": { "type": "string" },
+        "city": { "type": "string" },
+        "state": { "type": "string" },
+        "zip": { "type": "string", "format": "zip" },
+        "phone": { "type": "string", "format": "phone" },
+        "email": { "type": "string", "format": "email" },
+        "tax_id": { "type": "string" }
       }
     },
     "customer": {
       "type": "object",
       "required": ["name"],
       "properties": {
-        "name": {"type": "string"},
-        "address": {"type": "string"},
-        "email": {"type": "string", "format": "email"}
+        "name": { "type": "string" },
+        "address": { "type": "string" },
+        "email": { "type": "string", "format": "email" }
       }
     },
     "line_items": {
@@ -1784,12 +1777,12 @@ Here's an example JSON schema file for invoice extraction:
         "type": "object",
         "required": ["description", "quantity", "unit_price"],
         "properties": {
-          "description": {"type": "string"},
-          "quantity": {"type": "number", "minimum": 0},
-          "unit_price": {"type": "number", "minimum": 0},
-          "total": {"type": "number", "minimum": 0},
-          "tax_rate": {"type": "number", "minimum": 0, "maximum": 1},
-          "tax_amount": {"type": "number", "minimum": 0}
+          "description": { "type": "string" },
+          "quantity": { "type": "number", "minimum": 0 },
+          "unit_price": { "type": "number", "minimum": 0 },
+          "total": { "type": "number", "minimum": 0 },
+          "tax_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+          "tax_amount": { "type": "number", "minimum": 0 }
         }
       }
     },
@@ -1813,8 +1806,8 @@ Here's an example JSON schema file for invoice extraction:
       "type": "string",
       "pattern": "^[A-Z]{3}$"
     },
-    "payment_terms": {"type": "string"},
-    "notes": {"type": "string"}
+    "payment_terms": { "type": "string" },
+    "notes": { "type": "string" }
   }
 }
 ```
@@ -1879,7 +1872,7 @@ readonly class QualityReport
 
 **Solution**: Improve JSON extraction with better regex patterns:
 
-```php
+````php
 private function parseExtractedData(string $jsonText, array $schema): array
 {
     // Try multiple extraction patterns
@@ -1906,7 +1899,7 @@ private function parseExtractedData(string $jsonText, array $schema): array
 
     return $data;
 }
-```
+````
 
 ### Issue: PDF Parsing Fails or Returns Empty Text
 
@@ -1931,7 +1924,7 @@ private function parsePDF(string $filepath): ParsedDocument
 
         return new ParsedDocument(
             type: 'pdf',
-            content: $text,
+            'content' => $text,
             metadata: [
                 'pages' => count($pdf->getPages()),
                 'title' => $pdf->getDetails()['Title'] ?? null
@@ -2008,11 +2001,11 @@ private function intelligentSample(array $data, int $size): array
     // Sample evenly across the dataset
     $step = max(1, (int)floor(count($data) / $size));
     $sample = [];
-    
+
     for ($i = 0; $i < count($data) && count($sample) < $size; $i += $step) {
         $sample[] = $data[$i];
     }
-    
+
     return $sample;
 }
 ```
@@ -2054,14 +2047,14 @@ $completed = 0;
 foreach ($documents as $document) {
     $result = $this->pipeline->process(...);
     $completed++;
-    
+
     echo "data: " . json_encode([
         'type' => 'progress',
         'completed' => $completed,
         'total' => count($documents),
         'percentage' => ($completed / count($documents)) * 100
     ]) . "\n\n";
-    
+
     flush();
 }
 ```
@@ -2128,7 +2121,7 @@ return $result;
 Implement robust retry logic for extraction failures:
 
 ```php
-use Anthropic\Exception\ApiException;
+use ClaudePhp\Exceptions\ApiException;
 
 $maxRetries = 3;
 $attempt = 0;
@@ -2141,7 +2134,7 @@ while ($attempt < $maxRetries) {
         if ($attempt >= $maxRetries) {
             throw $e;
         }
-        
+
         // Exponential backoff
         $wait = 2 ** $attempt; // 2, 4, 8 seconds
         sleep($wait);
@@ -2176,7 +2169,7 @@ Implement circuit breakers to handle API rate limits:
 class CircuitBreakerExtractor
 {
     private $circuitBreaker;
-    
+
     public function __construct()
     {
         $this->circuitBreaker = new CircuitBreaker(
@@ -2185,7 +2178,7 @@ class CircuitBreakerExtractor
             successThreshold: 2
         );
     }
-    
+
     public function extract($source, $type, $schema)
     {
         return $this->circuitBreaker->call(
@@ -2194,6 +2187,13 @@ class CircuitBreakerExtractor
     }
 }
 ```
+
+## Further Reading
+
+- **[Official PHP SDK Documentation](https://github.com/anthropics/anthropic-sdk-php)** — The official Anthropic PHP SDK on GitHub
+- **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)** — Community resources and examples for Claude with PHP
+- **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
+- **[PHP SDK Composer Package](https://packagist.org/packages/claude-php/claude-php-sdk)** — Official package on Packagist
 
 ## Wrap-up
 
@@ -2277,6 +2277,7 @@ All code examples from this chapter are available in the GitHub repository:
 **[View Chapter 30 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-30)**
 
 Clone and run locally:
+
 ```bash
 git clone https://github.com/dalehurley/codewithphp.git
 cd codewithphp/code/claude-php/chapter-30
