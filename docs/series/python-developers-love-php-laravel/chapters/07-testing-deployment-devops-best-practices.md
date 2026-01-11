@@ -7,8 +7,14 @@ order: 7
 difficulty: "Intermediate"
 prerequisites:
   - "/series/python-developers-love-php-laravel/chapters/06-building-rest-apis-integrations-python-to-laravel"
+estimatedTime: "PT135M"
+teaches:
+  - 'Map pytest test structure and assertions to PHPUnit, understanding Laravel''s testing conventions'
+  - 'Understand Laravel''s testing helpers (HTTP testing, database transactions, factories) vs pytest fixtures and Django factories'
+  - 'Master mocking and faking in Laravel (comparing to pytest mocks and Python''s unittest.mock)'
+  - 'Create GitHub Actions workflows for Laravel (comparing to Python CI/CD pipelines)'
+  - 'Containerize Laravel applications with Docker (comparing to Python Dockerfile patterns)'
 ---
-
 ![Testing, Deployment, DevOps](/images/python-developers-love-php-laravel/chapter-07-testing-deployment-devops-best-practices-hero-full.webp)
 
 # Chapter 07: Testing, Deployment, DevOps: Best Practices You Know + Laravel Workflow

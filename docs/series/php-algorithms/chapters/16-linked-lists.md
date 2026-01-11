@@ -9,6 +9,7 @@ prerequisites:
   - "/series/php-algorithms/chapters/15-arrays-dynamic-arrays"
   - "Understanding of PHP classes and objects"
   - "Familiarity with references"
+estimatedTime: "PT50M"
 ---
 ![16: Linked Lists](/images/php-algorithms/chapter-16-linked-lists-hero-full.webp)
 

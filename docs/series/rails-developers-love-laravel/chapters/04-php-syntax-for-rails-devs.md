@@ -8,8 +8,13 @@ difficulty: "Intermediate"
 prerequisites:
   - "/series/rails-developers-love-laravel/chapters/03-laravel-developer-experience"
 tags: ["php", "ruby", "syntax", "comparison", "language"]
+teaches:
+  - 'Understand PHP''s syntax differences from Ruby (variables, functions, classes)'
+  - 'Learn PHP''s type system and how it compares to Ruby''s dynamic typing'
+  - 'Master PHP arrays and Laravel Collections for Ruby-like enumerable operations'
+  - 'Recognize modern PHP 8.4 features that feel familiar to Ruby developers'
+  - 'Understand advanced PHP features: variadic functions, references, magic methods, and autoloading'
 ---
-
 <div class="breadcrumbs">
   <a href="/">Home</a>
   <span class="breadcrumbs-separator">›</span>

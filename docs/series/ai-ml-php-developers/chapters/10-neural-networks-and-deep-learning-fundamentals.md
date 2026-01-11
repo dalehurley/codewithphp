@@ -8,8 +8,13 @@ difficulty: "Intermediate"
 prerequisites:
   - "03"
   - "09"
+teaches:
+  - 'Understand perceptron architecture including weights, biases, weighted sums, and the perceptron learning rule'
+  - 'Implement single-layer perceptrons from scratch in PHP to deeply understand how artificial neurons work'
+  - 'Train perceptrons on linearly separable problems like logic gates (AND, OR) using the perceptron learning algorithm'
+  - 'Master activation functions (step, sigmoid, tanh, ReLU) and understand their mathematical properties and use cases'
+  - 'Recognize perceptron limitations by attempting and failing to solve the XOR problem with a single layer'
 ---
-
 ![Neural Networks and Deep Learning Fundamentals](/images/ai-ml-php-developers/chapter-10-neural-networks-hero-full.webp)
 
 # Chapter 10: Neural Networks and Deep Learning Fundamentals

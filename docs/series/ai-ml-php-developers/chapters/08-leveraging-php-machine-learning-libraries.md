@@ -8,8 +8,13 @@ difficulty: "Intermediate"
 prerequisites:
   - "06"
   - "07"
+teaches:
+  - 'Install and configure PHP-ML and Rubix ML in any PHP project with proper dependency management'
+  - 'Choose the right library for specific tasks based on algorithm availability, performance, and ecosystem maturity'
+  - 'Reimplement custom algorithms using library classes with 10x less code while improving robustness'
+  - 'Use classification algorithms from both libraries including k-NN, Naive Bayes, SVM, Decision Trees, and ensemble methods'
+  - 'Perform clustering with k-means, DBSCAN, and hierarchical clustering for customer segmentation'
 ---
-
 ![Leveraging PHP Machine Learning Libraries](/images/ai-ml-php-developers/chapter-08-ml-libraries-hero-full.webp)
 
 # Chapter 08: Leveraging PHP Machine Learning Libraries

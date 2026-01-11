@@ -7,8 +7,14 @@ order: 10
 difficulty: "Intermediate"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/09-authorization-access-control"
+estimatedTime: "PT90M"
+teaches:
+  - 'Customize the React starter kit''s default layout'
+  - 'Create a sidebar navigation component'
+  - 'Add navigation links with active state highlighting'
+  - 'Implement responsive mobile navigation'
+  - 'Design a header with team switcher and user menu'
 ---
-
 ![Layout and UI Design Customization](/images/build-crm-laravel-12/chapter-10-layout-ui-design-customization-hero-full.webp)
 
 # Chapter 10: Layout and UI Design Customization

@@ -9,8 +9,14 @@ prerequisites:
   - "Laravel 11+ with Filament 3"
   - "Understanding of Filament resources"
   - "Completion of Chapter 21"
+estimatedTime: "PT5M"
+teaches:
+  - 'Integrate Claude with Filament PHP admin panels'
+  - 'Create custom actions for AI-powered operations'
+  - 'Build bulk content generation workflows'
+  - 'Implement intelligent semantic search capabilities'
+  - 'Automate content summarization and SEO metadata generation'
 ---
-
 ![25: Admin Panel with AI Features](/images/claude-php/chapter-25-hero-full.webp)
 
 <div class="breadcrumbs">

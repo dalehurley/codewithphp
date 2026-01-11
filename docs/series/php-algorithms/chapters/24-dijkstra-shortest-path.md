@@ -8,6 +8,13 @@ difficulty: "Advanced"
 prerequisites:
   - "/series/php-algorithms/chapters/21-graph-representations"
   - "/series/php-algorithms/chapters/23-breadth-first-search"
+estimatedTime: "PT65M"
+teaches:
+  - 'Master Dijkstra''s algorithm for shortest path finding in weighted graphs'
+  - 'Implement efficient priority queue-based solutions'
+  - 'Understand greedy algorithm design and optimality proofs'
+  - 'Build practical applications: GPS routing, network optimization'
+  - 'Analyze time complexity with different data structure choices'
 ---
 ![Dijkstra's Shortest Path Algorithm](/images/php-algorithms/chapter-24-dijkstra-hero-full.webp)
 

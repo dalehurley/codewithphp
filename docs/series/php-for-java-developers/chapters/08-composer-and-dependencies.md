@@ -110,7 +110,7 @@ Composer is two things:
 </project>
 ```
 
-```gradle [build.gradle (Gradle)]
+```groovy [build.gradle (Gradle)]
 plugins {
     id 'java'
 }
@@ -572,7 +572,7 @@ Example: `3.5.2`
 </dependency>
 ```
 
-```gradle [Gradle Dynamic Versions]
+```groovy [Gradle Dynamic Versions]
 dependencies {
     implementation 'org.apache.logging.log4j:log4j-core:2.+'
 }

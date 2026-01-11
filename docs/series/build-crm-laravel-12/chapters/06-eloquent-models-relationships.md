@@ -7,8 +7,14 @@ order: 6
 difficulty: "Intermediate"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/05-database-migrations-schema-design"
+estimatedTime: "PT75M"
+teaches:
+  - 'Generate Eloquent models using Artisan'
+  - 'Define one-to-many relationships (hasMany/belongsTo)'
+  - 'Define inverse relationships (BelongsTo)'
+  - 'Configure fillable and guarded properties'
+  - 'Add casts for proper type handling'
 ---
-
 ![Eloquent Models & Relationships](/images/build-crm-laravel-12/chapter-06-eloquent-models-relationships-hero-full.webp)
 
 # Chapter 06: Eloquent Models & Relationships

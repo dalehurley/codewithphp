@@ -7,8 +7,8 @@ order: 31
 difficulty: "Advanced"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/30-*"
+estimatedTime: "PT60M"
 ---
-
 ![Automated Browser Testing with Laravel Dusk](/images/build-crm-laravel-12/chapter-31-browser-testing-dusk-hero-full.webp)
 
 # Chapter 31: Automated Browser Testing with Laravel Dusk

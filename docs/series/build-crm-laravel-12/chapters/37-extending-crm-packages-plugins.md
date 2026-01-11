@@ -7,8 +7,8 @@ order: 37
 difficulty: "Advanced"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/36-*"
+estimatedTime: "PT60M"
 ---
-
 ![Extending the CRM via Packages & Plugins](/images/build-crm-laravel-12/chapter-37-extending-crm-packages-plugins-hero-full.webp)
 
 # Chapter 37: Extending the CRM via Packages & Plugins

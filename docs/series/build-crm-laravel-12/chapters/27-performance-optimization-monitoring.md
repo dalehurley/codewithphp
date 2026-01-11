@@ -7,8 +7,8 @@ order: 27
 difficulty: "Intermediate"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/26-*"
+estimatedTime: "PT60M"
 ---
-
 ![Performance Optimization & Monitoring](/images/build-crm-laravel-12/chapter-27-performance-optimization-monitoring-hero-full.webp)
 
 # Chapter 27: Performance Optimization & Monitoring

@@ -8,6 +8,7 @@ difficulty: "Intermediate"
 prerequisites:
   - "/series/php-algorithms/chapters/15-arrays-dynamic-arrays"
   - "/series/php-algorithms/chapters/16-linked-lists"
+estimatedTime: "PT45M"
 ---
 ![17: Stacks & Queues](/images/php-algorithms/chapter-17-stacks-queues-hero-full.webp)
 

@@ -7,8 +7,13 @@ order: 21
 difficulty: "Intermediate"
 prerequisites:
   - "20"
+teaches:
+  - 'Understand what recommender systems are and why they''re critical for modern web applications'
+  - 'Distinguish between content-based filtering and collaborative filtering approaches'
+  - 'Learn user-based and item-based collaborative filtering strategies'
+  - 'Implement similarity measures (cosine, Pearson correlation, Euclidean distance) in PHP'
+  - 'Calculate predicted ratings using weighted averages from similar users'
 ---
-
 ![Recommender Systems: Theory and Use Cases](/images/ai-ml-php-developers/chapter-21-recommender-systems-hero-full.webp)
 
 # Chapter 21: Recommender Systems: Theory and Use Cases

@@ -9,8 +9,13 @@ prerequisites:
   - "PHP 8.4+ installed"
   - "Completion of Chapters 01-04"
   - "Understanding of Claude's message structure"
+teaches:
+  - 'Write clear, specific, and context-rich prompts that produce high-quality results'
+  - 'Implement few-shot learning techniques including positive and negative examples'
+  - 'Apply chain-of-thought reasoning for complex problem-solving tasks'
+  - 'Create dynamic personas and role-based prompts for specialized use cases'
+  - 'Generate structured outputs in JSON, XML, CSV, and Markdown formats'
 ---
-
 ![05: Prompt Engineering Basics](/images/claude-php/chapter-05-hero-full.webp)
 
 <div class="breadcrumbs">

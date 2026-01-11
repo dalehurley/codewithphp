@@ -9,8 +9,13 @@ prerequisites:
   - "Chapter 00-09 completed"
   - "Understanding of HTTP status codes"
   - "Familiarity with exception handling in PHP"
+teaches:
+  - 'Understand all Claude API error types and their HTTP status codes'
+  - 'Distinguish between retryable and non-retryable errors'
+  - 'Implement exponential backoff with jitter for intelligent retry logic'
+  - 'Build circuit breakers to prevent cascading failures in distributed systems'
+  - 'Apply rate limiting strategies to respect API quotas and prevent throttling'
 ---
-
 ![10: Error Handling and Rate Limiting](/images/claude-php/chapter-10-hero-full.webp)
 
 <div class="breadcrumbs">

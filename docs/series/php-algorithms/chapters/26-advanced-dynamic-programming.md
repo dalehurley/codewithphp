@@ -7,8 +7,14 @@ order: 26
 difficulty: "Advanced"
 prerequisites:
   - "/series/php-algorithms/chapters/25-dynamic-programming-fundamentals"
+estimatedTime: "PT50M"
+teaches:
+  - 'Master interval DP for processing ranges and subarrays efficiently'
+  - 'Apply bitmask DP to handle exponential state spaces with bit manipulation'
+  - 'Implement multi-dimensional DP for problems with multiple constraints'
+  - 'Use advanced state compression to optimize memory usage dramatically'
+  - 'Recognize complex DP patterns like matrix chain multiplication and palindrome partitioning'
 ---
-
 ![Advanced Dynamic Programming](/images/php-algorithms/chapter-26-advanced-dp-hero-full.webp)
 
 <div class="breadcrumbs">

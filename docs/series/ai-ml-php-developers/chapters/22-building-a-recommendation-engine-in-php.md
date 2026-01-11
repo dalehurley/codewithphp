@@ -10,8 +10,13 @@ prerequisites:
   - "08"
   - "03"
   - "06"
+teaches:
+  - 'Implement user-based collaborative filtering from scratch using cosine similarity and weighted averages'
+  - 'Build a complete rating prediction system that estimates user preferences for unrated items'
+  - 'Create recommendation generators that rank items by predicted relevance'
+  - 'Master evaluation metrics specific to recommender systems (RMSE, MAE, Precision@K, Recall@K, coverage, diversity)'
+  - 'Compare user-based and item-based collaborative filtering approaches'
 ---
-
 ![Building a Recommendation Engine in PHP](/images/ai-ml-php-developers/chapter-22-recommendation-engine-hero-full.webp)
 
 # Chapter 22: Building a Recommendation Engine in PHP

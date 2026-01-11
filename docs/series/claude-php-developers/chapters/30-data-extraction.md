@@ -10,8 +10,13 @@ prerequisites:
   - "Understanding of ETL processes"
   - "Experience with data formats (JSON, CSV, XML)"
   - "Knowledge of data validation and quality"
+teaches:
+  - 'Understand how to build intelligent ETL pipelines that extract structured data from unstructured sources'
+  - 'Implement document parsing for multiple formats (PDF, HTML, email, CSV, XML, JSON)'
+  - 'Create schema-driven extraction using Claude to transform unstructured data into structured formats'
+  - 'Build comprehensive data validation systems with error detection and quality scoring'
+  - 'Design quality analysis tools that detect anomalies and provide improvement recommendations'
 ---
-
 ![30: Data Extraction and Analysis](/images/claude-php/chapter-30-hero-full.webp)
 
 <div class="breadcrumbs">

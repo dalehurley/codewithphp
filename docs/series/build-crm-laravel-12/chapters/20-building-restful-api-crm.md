@@ -7,8 +7,8 @@ order: 20
 difficulty: "Intermediate"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/19-*"
+estimatedTime: "PT60M"
 ---
-
 ![Building a RESTful API for the CRM](/images/build-crm-laravel-12/chapter-20-building-restful-api-hero-full.webp)
 
 # Chapter 20: Building a RESTful API for the CRM

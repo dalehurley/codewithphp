@@ -7,8 +7,13 @@ order: 4
 difficulty: Beginner
 prerequisites:
   - "03"
+teaches:
+  - 'Understand why data quality is the foundation of successful machine learning'
+  - 'Load data from multiple sources (CSV, JSON, databases, APIs) using PHP'
+  - 'Identify and handle missing values, outliers, and inconsistencies'
+  - 'Normalize numeric features to standard scales (0-1 or z-score)'
+  - 'Encode categorical variables into numeric representations'
 ---
-
 ![Data Collection and Preprocessing in PHP](/images/ai-ml-php-developers/chapter-04-data-preprocessing-hero-full.webp)
 
 # Chapter 04: Data Collection and Preprocessing in PHP

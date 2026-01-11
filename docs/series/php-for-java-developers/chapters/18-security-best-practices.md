@@ -2312,7 +2312,7 @@ API_KEY=sk_live_abc123xyz789
 
 ### .gitignore Configuration
 
-```gitignore
+```text
 # Environment files
 .env
 .env.local

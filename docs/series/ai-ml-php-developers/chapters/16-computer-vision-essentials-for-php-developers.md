@@ -7,8 +7,13 @@ order: 16
 difficulty: "Intermediate"
 prerequisites:
   - "15"
+teaches:
+  - 'Understand how images are represented as 2D arrays of pixels with RGB color channels'
+  - 'Implement classes for loading, saving, and manipulating images in multiple formats'
+  - 'Master common image operations: resizing, cropping, rotating, and color conversions'
+  - 'Extract numeric features from images suitable for machine learning algorithms'
+  - 'Apply filters and effects for preprocessing and enhancement'
 ---
-
 ![Computer Vision Essentials for PHP Developers](/images/ai-ml-php-developers/chapter-16-computer-vision-hero-full.webp)
 
 # Chapter 16: Computer Vision Essentials for PHP Developers

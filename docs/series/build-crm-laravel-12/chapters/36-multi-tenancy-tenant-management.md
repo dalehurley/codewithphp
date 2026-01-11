@@ -7,8 +7,8 @@ order: 36
 difficulty: "Advanced"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/35-*"
+estimatedTime: "PT60M"
 ---
-
 ![Multi-Tenancy & Tenant Management](/images/build-crm-laravel-12/chapter-36-multi-tenancy-tenant-management-hero-full.webp)
 
 # Chapter 36: Multi-Tenancy & Tenant Management

@@ -7,8 +7,14 @@ order: 1
 difficulty: "Intermediate"
 prerequisites:
   - "/series/python-developers-love-php-laravel/chapters/00-introduction-why-look-at-php-laravel"
+estimatedTime: "PT60M"
+teaches:
+  - 'Map Django/Flask routing patterns to Laravel routes'
+  - 'Understand URL generation and Request/Response object comparisons'
+  - 'Compare Django templates with Laravel Blade templates'
+  - 'Understand MVC (Laravel) vs MVT (Django) pattern differences'
+  - 'Compare Django ORM with Eloquent ORM syntax and features'
 ---
-
 ![Mapping Concepts: Python Web Frameworks vs Laravel](/images/python-developers-love-php-laravel/chapter-01-mapping-concepts-python-web-frameworks-vs-laravel-hero-full.webp)
 
 # Chapter 01: Mapping Concepts: Python Web Frameworks vs Laravel

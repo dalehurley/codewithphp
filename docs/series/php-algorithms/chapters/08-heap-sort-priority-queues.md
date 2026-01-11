@@ -9,6 +9,7 @@ prerequisites:
   - "Understanding of trees and binary tree structures"
   - "Understanding of Big O notation from Chapter 01"
   - "Completion of Chapters 05-07 on sorting algorithms"
+estimatedTime: "PT90M"
 ---
 ![08: Heap Sort & Priority Queues](/images/php-algorithms/chapter-08-heap-sort-hero-full.webp)
 

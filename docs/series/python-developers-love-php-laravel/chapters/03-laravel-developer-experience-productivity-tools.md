@@ -7,8 +7,14 @@ order: 3
 difficulty: "Intermediate"
 prerequisites:
   - "/series/python-developers-love-php-laravel/chapters/02-modern-php-whats-changed"
+estimatedTime: "PT75M"
+teaches:
+  - 'Master Artisan CLI commands and compare to Python equivalents (Django''s `manage.py`, Flask CLI)'
+  - 'Understand Laravel migrations vs Django migrations workflow'
+  - 'Learn PHPUnit testing vs pytest workflows'
+  - 'Understand Laravel conventions vs Django/Flask conventions'
+  - 'Use seeders and factories for test data management'
 ---
-
 ![Laravel's Developer Experience](/images/python-developers-love-php-laravel/chapter-03-laravel-developer-experience-productivity-tools-hero-full.webp)
 
 # Chapter 03: Laravel's Developer Experience: Productivity, Conventions and Tools

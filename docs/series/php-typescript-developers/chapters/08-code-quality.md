@@ -298,7 +298,7 @@ composer require --dev phpstan/phpstan
 ```
 
 **phpstan.neon:**
-```neon
+```yaml
 parameters:
     level: 8  # 0 (loose) to 9 (max strict)
     paths:
@@ -694,7 +694,7 @@ composer quality
 ```
 
 **PHPStan:**
-```neon
+```yaml
 parameters:
     level: 5  # Start with level 5, increase gradually
 ```

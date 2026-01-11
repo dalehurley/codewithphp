@@ -10,8 +10,13 @@ prerequisites:
   - "Understanding of vector embeddings"
   - "Knowledge of semantic search concepts"
   - "Experience with document processing"
+teaches:
+  - 'Understand the RAG architecture and how it extends Claude''s capabilities'
+  - 'Implement intelligent document chunking strategies (semantic and hierarchical)'
+  - 'Build an embedding service that supports multiple providers'
+  - 'Create a retrieval engine with re-ranking capabilities'
+  - 'Optimize context for Claude''s token limits while preserving information'
 ---
-
 ![31: Retrieval Augmented Generation (RAG)](/images/claude-php/chapter-31-hero-full.webp)
 
 <div class="breadcrumbs">

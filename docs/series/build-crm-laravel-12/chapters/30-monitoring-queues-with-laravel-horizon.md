@@ -7,8 +7,13 @@ order: 30
 difficulty: "Advanced"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/29-monitoring-queues-with-laravel-horizon"
+estimatedTime: "PT60M"
+teaches:
+  - 'Understand the core concepts of this feature'
+  - 'Learn implementation patterns used in production applications'
+  - 'Apply these patterns to your CRM'
+  - 'Understand integration points with existing modules'
 ---
-
 ![monitoring-queues-with-laravel-horizon](/images/build-crm-laravel-12/chapter-30-monitoring-queues-horizon-hero-full.webp)
 
 # Chapter 30: Monitoring Queues with Laravel Horizon

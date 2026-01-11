@@ -9,8 +9,13 @@ prerequisites:
   - "Understanding of image formats and encoding"
   - "Completed Chapters 00-05"
   - "Familiarity with base64 encoding"
+teaches:
+  - 'Understand how to encode and send images to Claude''s vision API'
+  - 'Learn to extract text from images using OCR capabilities'
+  - 'Analyze charts and graphs to extract data and insights'
+  - 'Implement content moderation for user-generated images'
+  - 'Build product image analysis systems for e-commerce applications'
 ---
-
 ![13: Vision - Working with Images](/images/claude-php/chapter-13-hero-full.webp)
 
 <div class="breadcrumbs">

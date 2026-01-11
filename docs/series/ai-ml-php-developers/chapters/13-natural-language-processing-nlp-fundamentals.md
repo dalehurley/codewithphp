@@ -7,8 +7,13 @@ order: 13
 difficulty: Intermediate
 prerequisites:
   - "12"
+teaches:
+  - 'Understand how computers represent and process human language'
+  - 'Tokenize text into words, handling punctuation and case sensitivity'
+  - 'Remove stop words to focus on meaningful content words'
+  - 'Stem words to their root forms for consistent analysis'
+  - 'Convert text into bag-of-words numeric representations'
 ---
-
 ![Natural Language Processing (NLP) Fundamentals](/images/ai-ml-php-developers/chapter-13-nlp-fundamentals-hero-full.webp)
 
 # Chapter 13: Natural Language Processing (NLP) Fundamentals

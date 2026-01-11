@@ -9,8 +9,13 @@ prerequisites:
   - "PHP 8.4+ installed"
   - "Completion of Chapters 01-03"
   - "Understanding of arrays and objects in PHP"
+teaches:
+  - 'Understand message structure, content types, and role alternation rules'
+  - 'Validate messages and conversations before sending to catch errors early'
+  - 'Sanitize message content for consistency and safety'
+  - 'Build conversation managers for multi-turn interactions'
+  - 'Implement context window management strategies'
 ---
-
 ![04: Understanding Messages and Conversations](/images/claude-php/chapter-04-hero-full.webp)
 
 <div class="breadcrumbs">

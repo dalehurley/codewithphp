@@ -7,8 +7,14 @@ order: 3
 difficulty: "Intermediate"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/02-setting-up-laravel-12-project-dev-environment"
+estimatedTime: "PT45M"
+teaches:
+  - 'Navigate Laravel''s project structure confidently'
+  - 'Understand the purpose of each major directory (`app`, `routes`, `resources`, `config`, `database`)'
+  - 'Create routes using Laravel''s routing syntax'
+  - 'Generate controllers with Artisan'
+  - 'Return views from controllers using the `view()` helper'
 ---
-
 ![Laravel 12 Fundamentals & Project Structure](/images/build-crm-laravel-12/chapter-03-laravel-12-fundamentals-hero-full.webp)
 
 # Chapter 03: Laravel 12 Fundamentals & Project Structure

@@ -36,7 +36,7 @@ Forge automatically:
 
 In site settings, go to "Environment" and add:
 
-```env
+```sh
 APP_NAME="Task Manager"
 APP_ENV=production
 APP_KEY=base64:... (generate with: php artisan key:generate)

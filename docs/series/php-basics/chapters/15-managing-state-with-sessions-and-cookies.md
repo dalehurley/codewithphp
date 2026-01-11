@@ -7,8 +7,13 @@ order: 15
 difficulty: "Intermediate"
 prerequisites:
   - "/series/php-basics/chapters/14-interacting-with-databases-using-pdo"
+teaches:
+  - 'Understand what "stateless" means and why we need to manage state'
+  - 'Set and retrieve cookies to store small pieces of data on the user''s browser'
+  - 'Start a session to store larger, more sensitive data on the server'
+  - 'Use the `$_SESSION` superglobal array to read and write session data'
+  - 'Understand the basic security implications of sessions and cookies'
 ---
-
 ![Managing State with Sessions and Cookies](/images/php-basics/chapter-15-sessions-cookies-hero-full.webp)
 
 # Chapter 15: Managing State with Sessions and Cookies

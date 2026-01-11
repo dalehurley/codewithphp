@@ -7,8 +7,14 @@ order: 7
 difficulty: "Beginner"
 prerequisites:
   - "/series/php-basics/chapters/06-deep-dive-into-arrays"
+estimatedTime: "PT25M"
+teaches:
+  - 'Find the length of a string and access individual characters'
+  - 'Use modern PHP 8.0+ string search functions (`str_contains`, `str_starts_with`, `str_ends_with`)'
+  - 'Search for and replace substrings using multiple methods'
+  - 'Change the case of a string (uppercase/lowercase)'
+  - 'Split a string into an array and join an array into a string'
 ---
-
 ![Mastering String Manipulation](/images/php-basics/chapter-07-mastering-string-manipulation-hero-full.webp)
 
 # Chapter 07: Mastering String Manipulation

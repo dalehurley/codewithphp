@@ -9,8 +9,13 @@ prerequisites:
   - "Understanding of PHP functions and callbacks"
   - "Completed Chapters 00-05"
   - "Familiarity with JSON schemas"
+teaches:
+  - 'Understand how tool use transforms Claude from a text generator into an actionable AI agent'
+  - 'Define tools using JSON schemas with proper descriptions and parameter validation'
+  - 'Handle tool calls by processing `tool_use` content blocks and executing PHP functions'
+  - 'Implement multi-step tool workflows with proper conversation history management'
+  - 'Process parallel tool calls for efficient multi-tool execution'
 ---
-
 ![11: Tool Use (Function Calling) Fundamentals](/images/claude-php/chapter-11-hero-full.webp)
 
 <div class="breadcrumbs">

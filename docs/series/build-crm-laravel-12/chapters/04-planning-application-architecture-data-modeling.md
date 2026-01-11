@@ -7,8 +7,14 @@ order: 4
 difficulty: "Intermediate"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/03-laravel-12-fundamentals-project-structure"
+estimatedTime: "PT45M"
+teaches:
+  - 'Identify core entities and their attributes'
+  - 'Define relationships between entities clearly'
+  - 'Design for multi-tenancy from the start'
+  - 'Create an ERD that guides implementation'
+  - 'Understand cardinality (one-to-many, many-to-many)'
 ---
-
 ![Planning Application Architecture & Data Modeling](/images/build-crm-laravel-12/chapter-04-planning-architecture-data-modeling-hero-full.webp)
 
 # Chapter 04: Planning Application Architecture & Data Modeling

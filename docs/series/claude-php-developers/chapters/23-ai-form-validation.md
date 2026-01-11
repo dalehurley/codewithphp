@@ -9,8 +9,13 @@ prerequisites:
   - "Laravel 11+ with validation knowledge"
   - "Understanding of Laravel custom rules"
   - "Completion of Chapter 21"
+teaches:
+  - 'Understand how to create custom Laravel validation rules with Claude'
+  - 'Implement content quality assessment using AI'
+  - 'Build spam detection and offensive language filtering systems'
+  - 'Create contextual validation rules based on business logic'
+  - 'Optimize validation performance with caching and async processing'
 ---
-
 ![23: Claude-Powered Form Validation](/images/claude-php/chapter-23-hero-full.webp)
 
 <div class="breadcrumbs">

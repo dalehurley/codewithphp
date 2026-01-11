@@ -6,6 +6,13 @@ chapter: 35
 order: 35
 difficulty: "Advanced"
 prerequisites: []
+estimatedTime: "PT55M"
+teaches:
+  - 'Master cryptographic hash functions and their applications (SHA-256, HMAC)'
+  - 'Implement secure password hashing with modern algorithms (Argon2, bcrypt)'
+  - 'Understand encryption fundamentals and when to use symmetric vs asymmetric encryption'
+  - 'Apply digital signatures and message authentication for data integrity'
+  - 'Generate cryptographically secure random numbers and tokens'
 ---
 ![Cryptographic Algorithms](/images/php-algorithms/chapter-35-cryptographic-algorithms-hero-full.webp)
 

@@ -7,8 +7,8 @@ order: 35
 difficulty: "Advanced"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/34-*"
+estimatedTime: "PT60M"
 ---
-
 ![Mobile & PWA Support](/images/build-crm-laravel-12/chapter-35-mobile-pwa-support-hero-full.webp)
 
 # Chapter 35: Mobile & PWA Support

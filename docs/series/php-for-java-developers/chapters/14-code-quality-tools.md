@@ -187,7 +187,7 @@ class Calculator
 
 ### PHPStan Configuration
 
-```neon
+```yaml
 # phpstan.neon
 parameters:
     level: 8
@@ -229,7 +229,7 @@ composer require --dev \
     phpstan/phpstan-deprecation-rules
 ```
 
-```neon
+```yaml
 # phpstan.neon with extensions
 includes:
     - vendor/phpstan/phpstan-phpunit/extension.neon
@@ -519,7 +519,7 @@ vendor/bin/psalm --plugin=vendor/psalm/plugin-security-checker/psalm-plugin.php
 composer require --dev phpstan/phpstan-security-rules
 ```
 
-```neon
+```yaml
 # phpstan.neon
 includes:
     - vendor/phpstan/phpstan-security-rules/rules.neon
@@ -1953,7 +1953,7 @@ Manage existing technical debt with baselines.
 vendor/bin/phpstan analyse src --level=8 --generate-baseline phpstan-baseline.neon
 ```
 
-```neon
+```yaml
 # phpstan-baseline.neon
 parameters:
     ignoreErrors:
@@ -2020,7 +2020,7 @@ cd quality-config
 
 Speed up analysis for large codebases.
 
-```neon
+```yaml
 # phpstan.neon - Optimized for performance
 parameters:
     level: 8
@@ -2592,7 +2592,7 @@ vendor/bin/phpstan analyse src tests --level=8
 
 **❌ Ignoring All Warnings**
 
-```neon
+```yaml
 # Bad - Hiding all issues
 parameters:
     ignoreErrors:

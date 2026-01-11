@@ -9,6 +9,7 @@ prerequisites:
   - "/series/php-algorithms/chapters/18-trees-binary-search-trees"
   - "/series/php-algorithms/chapters/03-recursion-fundamentals"
   - "/series/php-algorithms/chapters/17-stacks-queues"
+estimatedTime: "PT50M"
 ---
 ![Tree Traversal Algorithms](/images/php-algorithms/chapter-19-tree-traversal-hero-full.webp)
 

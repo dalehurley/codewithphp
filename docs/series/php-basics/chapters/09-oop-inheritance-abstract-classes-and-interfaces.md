@@ -7,8 +7,13 @@ order: 9
 difficulty: "Intermediate"
 prerequisites:
   - "/series/php-basics/chapters/08-introduction-to-object-oriented-programming"
+teaches:
+  - 'Use inheritance to create a specialized class based on an existing one'
+  - 'Understand the `protected` visibility keyword'
+  - 'Override methods from a parent class and use `parent::` to call parent implementations'
+  - 'Use the `final` keyword to prevent inheritance or method overriding'
+  - 'Create abstract classes and methods to define a base template for other classes'
 ---
-
 ![OOP: Inheritance, Abstract Classes, and Interfaces](/images/php-basics/chapter-09-oop-inheritance-abstract-interfaces-hero-full.webp)
 
 # Chapter 09: OOP: Inheritance, Abstract Classes, and Interfaces

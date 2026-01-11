@@ -7,8 +7,13 @@ order: 4
 difficulty: "Beginner"
 prerequisites:
   - "/series/php-basics/chapters/03-control-structures"
+teaches:
+  - 'Define and call your own custom functions'
+  - 'Pass information to functions using parameters (arguments)'
+  - 'Get information back from functions using `return` values'
+  - 'Understand variable scope and how it affects functions'
+  - 'Use modern PHP features like type declarations and strict mode for more robust code'
 ---
-
 ![Understanding and Using Functions](/images/php-basics/chapter-04-understanding-using-functions-hero-full.webp)
 
 # Chapter 04: Understanding and Using Functions

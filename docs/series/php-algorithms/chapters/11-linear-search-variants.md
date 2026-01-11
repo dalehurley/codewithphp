@@ -9,8 +9,8 @@ prerequisites:
   - "Understanding of arrays and loops"
   - "Familiarity with Big O notation"
   - "Completion of foundation chapters"
+estimatedTime: "PT45M"
 ---
-
 ![11: Linear Search & Variants](/images/php-algorithms/chapter-11-linear-search-hero-full.webp)
 
 <div class="breadcrumbs">

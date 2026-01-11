@@ -9,6 +9,7 @@ prerequisites:
   - "Understanding of strings and arrays"
   - "Completion of Chapters 11-13"
   - "Familiarity with pattern matching"
+estimatedTime: "PT55M"
 ---
 ![14: String Search Algorithms](/images/php-algorithms/chapter-14-string-search-hero-full.webp)
 

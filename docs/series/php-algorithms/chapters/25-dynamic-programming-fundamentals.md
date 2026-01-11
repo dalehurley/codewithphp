@@ -8,8 +8,14 @@ difficulty: "Advanced"
 prerequisites:
   - "/series/php-algorithms/chapters/03-recursion-fundamentals"
   - "/series/php-algorithms/chapters/15-arrays-dynamic-arrays"
+estimatedTime: "PT45M"
+teaches:
+  - 'Understand when and why dynamic programming is the right tool for the job'
+  - 'Master both fundamental approaches: top-down memoization and bottom-up tabulation'
+  - 'Recognize and solve classic DP problems like Fibonacci, coin change, and knapsack'
+  - 'Apply DP to eliminate redundant calculations and optimize recursive solutions'
+  - 'Build real-world applications for inventory optimization and resource allocation'
 ---
-
 ![Dynamic Programming Fundamentals](/images/php-algorithms/chapter-25-dynamic-programming-hero-full.webp)
 
 <div class="breadcrumbs">

@@ -9,8 +9,13 @@ prerequisites:
   - "Chapter 00-08 completed"
   - "Understanding of API pricing models"
   - "Basic cost-benefit analysis skills"
+teaches:
+  - 'Understand what tokens are and how Claude tokenizes text'
+  - 'Learn Claude''s token limits and pricing across different models'
+  - 'Implement accurate token counting before making API calls'
+  - 'Build systems to track token usage and costs in real-time'
+  - 'Manage context windows effectively within Claude''s 200K token limit'
 ---
-
 ![09: Token Management and Counting](/images/claude-php/chapter-09-hero-full.webp)
 
 <div class="breadcrumbs">

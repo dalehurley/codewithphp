@@ -7,8 +7,13 @@ order: 8
 difficulty: "Intermediate"
 prerequisites:
   - "/series/php-basics/chapters/07-mastering-string-manipulation"
+teaches:
+  - 'Understand the core concept of OOP: bundling data and behavior together'
+  - 'Know the difference between a class (a blueprint) and an object (an instance)'
+  - 'Define a class with properties (data) and methods (behavior)'
+  - 'Instantiate objects from a class using the `new` keyword'
+  - 'Use the special `__construct` method to initialize an object''s state'
 ---
-
 ![Introduction to Object-Oriented Programming](/images/php-basics/chapter-08-oop-intro-hero-full.webp)
 
 # Chapter 08: Introduction to Object-Oriented Programming

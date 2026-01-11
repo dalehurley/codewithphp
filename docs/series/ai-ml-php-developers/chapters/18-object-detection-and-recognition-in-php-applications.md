@@ -7,8 +7,13 @@ order: 18
 difficulty: "Intermediate"
 prerequisites:
   - "17"
+teaches:
+  - 'Understand the fundamental difference between image classification and object detection, including how bounding box coordinates work and why detection is computationally more expensive'
+  - 'Implement YOLO (You Only Look Once) detection in PHP applications using Python subprocess integration with proper error handling and timeout management'
+  - 'Integrate cloud vision APIs (Google Vision and AWS Rekognition) to perform object detection without managing ML infrastructure'
+  - 'Process detection results to draw annotated bounding boxes with color-coded labels, confidence scores, and visual overlays using PHP''s GD library'
+  - 'Build a production-ready detection service with multiple backend support, caching, rate limiting, batch processing, and RESTful API endpoints'
 ---
-
 ![Object Detection and Recognition in PHP Applications](/images/ai-ml-php-developers/chapter-18-object-detection-hero-full.webp)
 
 # Chapter 18: Object Detection and Recognition in PHP Applications

@@ -7,8 +7,13 @@ order: 16
 difficulty: "Beginner"
 prerequisites:
   - "/series/php-basics/chapters/15-managing-state-with-sessions-and-cookies"
+teaches:
+  - 'Understand the purpose of the PHP-FIG and PSRs'
+  - 'Learn the key rules of the PSR-1 and PSR-12 standards'
+  - 'Install and configure PHP-CS-Fixer to automatically format your code'
+  - 'Write professional code documentation using PHPDoc'
+  - 'Set up EditorConfig for cross-editor consistency'
 ---
-
 ![Writing Better Code with PSR-1 and PSR-12](/images/php-basics/chapter-16-psr-standards-hero-full.webp)
 
 # Chapter 16: Writing Better Code with PSR-1 and PSR-12

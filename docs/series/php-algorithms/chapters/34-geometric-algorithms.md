@@ -6,6 +6,13 @@ chapter: 34
 order: 34
 difficulty: "Advanced"
 prerequisites: []
+estimatedTime: "PT50M"
+teaches:
+  - 'Master fundamental geometric primitives: points, vectors, lines, and polygons'
+  - 'Implement collision detection algorithms for game development and physics engines'
+  - 'Build convex hull algorithms for shape analysis and pattern recognition'
+  - 'Apply spatial query techniques for efficient geometric operations'
+  - 'Solve real-world problems in mapping, computer graphics, and robotics'
 ---
 ![Geometric Algorithms](/images/php-algorithms/chapter-34-geometric-algorithms-hero-full.webp)
 

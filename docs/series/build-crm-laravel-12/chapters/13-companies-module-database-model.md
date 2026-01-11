@@ -7,8 +7,14 @@ order: 13
 difficulty: "Intermediate"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/12-contacts-module-crud-operations"
+estimatedTime: "PT45M"
+teaches:
+  - 'Verify the companies table schema has all required business fields'
+  - 'Define all relationships correctly (Team, Contacts, Deals)'
+  - 'Understand multi-tenancy scoping patterns from Chapter 11'
+  - 'Configure mass assignment protection'
+  - 'Understand Companies'' role as organizational hub'
 ---
-
 ![Companies Module - Database & Model](/images/build-crm-laravel-12/chapter-13-companies-module-database-model-hero-full.webp)
 
 # Chapter 13: Companies Module - Database & Model

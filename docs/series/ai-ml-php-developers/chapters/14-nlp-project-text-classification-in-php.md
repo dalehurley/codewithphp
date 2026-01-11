@@ -8,8 +8,13 @@ difficulty: "Intermediate"
 prerequisites:
   - "13"
   - "08"
+teaches:
+  - 'Understand the unique challenges of text classification and how they differ from numerical data classification'
+  - 'Implement a complete text preprocessing pipeline including tokenization, normalization, stopword removal, and stemming'
+  - 'Build both bag-of-words and TF-IDF feature extractors from scratch to convert text into numeric representations'
+  - 'Train and compare three different classification algorithms (Naive Bayes, SVM, Logistic Regression) on the same text dataset'
+  - 'Master evaluation metrics specific to text classification including precision, recall, F1-score, and confusion matrix analysis'
 ---
-
 ![NLP Project: Text Classification in PHP](/images/ai-ml-php-developers/chapter-14-text-classification-hero-full.webp)
 
 # Chapter 14: NLP Project: Text Classification in PHP

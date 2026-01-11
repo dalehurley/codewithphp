@@ -10,8 +10,13 @@ prerequisites:
   - "Understanding of customer support workflows"
   - "Experience with databases and queues"
   - "Knowledge of webhooks and real-time systems"
+teaches:
+  - 'Understand how to build an intelligent support bot with Claude that maintains conversation context'
+  - 'Implement knowledge base integration with semantic search and re-ranking'
+  - 'Create a ticket classification system that automatically routes issues to appropriate teams'
+  - 'Build sentiment analysis capabilities to detect customer frustration and urgency'
+  - 'Design an escalation engine that seamlessly hands off complex issues to human agents'
 ---
-
 ![28: Customer Support Bot](/images/claude-php/chapter-28-hero-full.webp)
 
 <div class="breadcrumbs">

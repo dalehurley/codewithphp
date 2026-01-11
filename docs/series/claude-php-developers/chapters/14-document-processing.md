@@ -9,8 +9,13 @@ prerequisites:
   - "/series/claude-php-developers/chapters/13-vision-images"
   - "Understanding of PDF structure"
   - "Experience with document processing"
+teaches:
+  - 'Convert PDF documents to images for Claude vision processing'
+  - 'Extract structured data from invoices with automatic validation'
+  - 'Analyze legal contracts and identify risks and key clauses'
+  - 'Process resumes and match them against job descriptions'
+  - 'Build an automated document processing pipeline'
 ---
-
 ![14: Document Processing and PDF Analysis](/images/claude-php/chapter-14-hero-full.webp)
 
 <div class="breadcrumbs">

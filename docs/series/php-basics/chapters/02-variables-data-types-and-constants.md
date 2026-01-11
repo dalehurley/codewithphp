@@ -7,8 +7,13 @@ order: 2
 difficulty: "Beginner"
 prerequisites:
   - "/series/php-basics/chapters/01-your-first-php-script"
+teaches:
+  - 'Declare, assign, and use variables with proper naming conventions'
+  - 'Understand PHP''s primary data types: string, integer, float, and boolean'
+  - 'Use `var_dump()` to inspect the type and value of a variable'
+  - 'Combine and embed variables within strings using concatenation and interpolation'
+  - 'Work with multiline strings using Heredoc and Nowdoc syntax'
 ---
-
 ![Variables, Data Types, and Constants](/images/php-basics/chapter-02-variables-data-types-hero-full.webp)
 
 # Chapter 02: Variables, Data Types, and Constants

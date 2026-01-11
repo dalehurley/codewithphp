@@ -7,8 +7,8 @@ order: 32
 difficulty: "Advanced"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/31-*"
+estimatedTime: "PT60M"
 ---
-
 ![Debugging & Monitoring with Laravel Telescope](/images/build-crm-laravel-12/chapter-32-debugging-monitoring-telescope-hero-full.webp)
 
 # Chapter 32: Debugging & Monitoring with Laravel Telescope

@@ -8,8 +8,13 @@ difficulty: "Intermediate"
 prerequisites:
   - "/series/ai-ml-php-developers/chapters/03-core-machine-learning-concepts-and-terminology"
   - "/series/ai-ml-php-developers/chapters/06-classification-basics-and-building-a-spam-filter"
+teaches:
+  - 'Calculate and interpret 10+ evaluation metrics including accuracy, precision, recall, F1-score, specificity, and ROC-AUC'
+  - 'Build and analyze confusion matrices to understand exactly which classes your model confuses'
+  - 'Use stratified cross-validation to get reliable estimates on imbalanced datasets'
+  - 'Generate and interpret ROC curves to visualize the precision-recall tradeoff and choose optimal thresholds'
+  - 'Create learning curves to diagnose whether your model needs more data, better features, or different algorithms'
 ---
-
 ![Model Evaluation and Improvement](/images/ai-ml-php-developers/chapter-07-model-evaluation-hero-full.webp)
 
 # Chapter 07: Model Evaluation and Improvement

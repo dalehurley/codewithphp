@@ -7,8 +7,13 @@ order: 20
 difficulty: "Beginner"
 prerequisites:
   - "/series/php-basics/chapters/19-project-building-a-simple-blog"
+teaches:
+  - 'Understand the benefits of using a framework like Laravel'
+  - 'Install a new Laravel project using Composer'
+  - 'Learn about Artisan, Laravel''s command-line tool'
+  - 'Define a route and a controller'
+  - 'Use the Eloquent ORM to interact with the database'
 ---
-
 ![A Gentle Introduction to Laravel](/images/php-basics/chapter-20-laravel-intro-hero-full.webp)
 
 # Chapter 20: A Gentle Introduction to Laravel

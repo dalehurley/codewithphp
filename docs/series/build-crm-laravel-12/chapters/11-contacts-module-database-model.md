@@ -7,8 +7,14 @@ order: 11
 difficulty: "Intermediate"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/10-layout-ui-design-customization"
+estimatedTime: "PT50M"
+teaches:
+  - 'Verify the contacts table schema has all required professional fields'
+  - 'Define all relationships correctly (Team, Company, User, Deals, Tasks)'
+  - 'Create an accessor for computing the full name property'
+  - 'Understand multi-tenancy scoping patterns'
+  - 'Implement a reusable `HasTeamScope` trait for automatic team scoping'
 ---
-
 ![Contacts Module - Database & Model](/images/build-crm-laravel-12/chapter-11-contacts-module-database-model-hero-full.webp)
 
 # Chapter 11: Contacts Module - Database & Model

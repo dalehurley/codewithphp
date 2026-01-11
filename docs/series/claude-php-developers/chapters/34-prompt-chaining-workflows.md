@@ -10,8 +10,13 @@ prerequisites:
   - "Understanding of workflow patterns"
   - "Knowledge of state machines"
   - "Experience with pipeline architecture"
+teaches:
+  - 'Understand prompt chaining patterns and when to use sequential vs parallel processing'
+  - 'Build a reusable workflow orchestration framework with step definitions and state management'
+  - 'Implement conditional execution and branching logic in workflows'
+  - 'Create specialized workflow steps for prompts, transformations, validation, loops, and parallel tasks'
+  - 'Design error handling and retry strategies with exponential backoff'
 ---
-
 ![34: Prompt Chaining and Workflows](/images/claude-php/chapter-34-hero-full.webp)
 
 <div class="breadcrumbs">

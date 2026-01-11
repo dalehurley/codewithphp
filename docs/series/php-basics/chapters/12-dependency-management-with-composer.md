@@ -7,8 +7,14 @@ order: 12
 difficulty: "Intermediate"
 prerequisites:
   - "/series/php-basics/chapters/11-error-and-exception-handling"
+estimatedTime: "PT32M"
+teaches:
+  - 'Understand the role of a dependency manager'
+  - 'Install Composer on your system'
+  - 'Initialize a new Composer project and understand the `composer.json` file'
+  - 'Install a third-party package from [Packagist](https://packagist.org/)'
+  - 'Configure and use Composer''s PSR-4 autoloader for your own application''s classes'
 ---
-
 ![Dependency Management with Composer](/images/php-basics/chapter-12-dependency-management-composer-hero-full.webp)
 
 # Chapter 12: Dependency Management with Composer

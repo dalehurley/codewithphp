@@ -7,8 +7,14 @@ order: 7
 difficulty: "Intermediate"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/06-eloquent-models-relationships"
+estimatedTime: "PT90M"
+teaches:
+  - 'Install Laravel''s React starter kit using Laravel Breeze'
+  - 'Understand Inertia.js architecture and how it bridges Laravel and React'
+  - 'Understand the complete authentication flow (register → verify → login → logout)'
+  - 'Test the complete authentication flow end-to-end'
+  - 'Customize React authentication components for your CRM''s branding'
 ---
-
 ![User Authentication with React Starter Kit](/images/build-crm-laravel-12/chapter-07-authentication-react-starter-kit-hero-full.webp)
 
 # Chapter 07: User Authentication with React Starter Kit

@@ -10,6 +10,13 @@ prerequisites:
   - "/series/php-basics/chapters/03-control-structures"
   - "/series/php-basics/chapters/04-understanding-and-using-functions"
   - "/series/php-basics/chapters/06-deep-dive-into-arrays"
+estimatedTime: "PT55M"
+teaches:
+  - 'Understand what algorithms are and why they''re crucial for PHP developers'
+  - 'Learn to think algorithmically using a systematic problem-solving framework'
+  - 'Explore common algorithm categories including searching, sorting, and data structures'
+  - 'Develop skills to analyze algorithm efficiency and make informed design choices'
+  - 'Set up your development environment for algorithm practice and testing'
 ---
 ![00: Introduction to Algorithms](/images/php-algorithms/chapter-00-introduction-hero-full.webp)
 

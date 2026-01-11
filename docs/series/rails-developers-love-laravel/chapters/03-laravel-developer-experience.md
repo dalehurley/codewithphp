@@ -8,8 +8,13 @@ difficulty: "Intermediate"
 prerequisites:
   - "/series/rails-developers-love-laravel/chapters/02-modern-php-whats-changed"
 tags: ["laravel", "artisan", "cli", "tools", "developer-experience", "productivity"]
+teaches:
+  - 'Understand Artisan CLI and how it compares to Rails commands'
+  - 'Master code generation patterns for models, controllers, and migrations'
+  - 'Use Tinker (Laravel''s REPL) effectively for interactive development'
+  - 'Configure development servers and local environments (Valet, Sail)'
+  - 'Manage databases with migration and seeding commands'
 ---
-
 <div class="breadcrumbs">
   <a href="/">Home</a>
   <span class="breadcrumbs-separator">›</span>

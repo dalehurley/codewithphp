@@ -9,8 +9,13 @@ prerequisites:
   - "03"
   - "04"
   - "05"
+teaches:
+  - 'Understand binary classification and how it differs from regression for predicting categorical outcomes'
+  - 'Extract meaningful features from text using bag-of-words, TF-IDF, and custom text analysis techniques'
+  - 'Implement a Naive Bayes classifier understanding its probabilistic foundations and why it excels at text classification'
+  - 'Build a k-NN text classifier and compare its performance with Naive Bayes on the same dataset'
+  - 'Evaluate classifiers properly using accuracy, precision, recall, F1-score, and confusion matrices'
 ---
-
 ![Classification Basics and Building a Spam Filter](/images/ai-ml-php-developers/chapter-06-classification-spam-filter-hero-full.webp)
 
 # Chapter 06: Classification Basics and Building a Spam Filter

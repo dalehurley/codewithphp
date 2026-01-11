@@ -7,8 +7,8 @@ order: 25
 difficulty: "Advanced"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/24-*"
+estimatedTime: "PT60M"
 ---
-
 ![Advanced Search with Laravel Scout](/images/build-crm-laravel-12/chapter-25-advanced-search-scout-hero-full.webp)
 
 # Chapter 25: Advanced Search with Laravel Scout

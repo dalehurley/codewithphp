@@ -10,8 +10,13 @@ prerequisites:
   - "Understanding of vector embeddings"
   - "Knowledge of database optimization"
   - "Experience with cloud services"
+teaches:
+  - 'Understand vector database architecture and when to use different providers'
+  - 'Implement abstraction layers for vendor-agnostic vector operations'
+  - 'Integrate Pinecone, Weaviate, and other vector databases in PHP'
+  - 'Build hybrid search combining semantic and keyword matching'
+  - 'Optimize indexing strategies for production workloads'
 ---
-
 ![32: Vector Databases in PHP](/images/claude-php/chapter-32-hero-full.webp)
 
 <div class="breadcrumbs">

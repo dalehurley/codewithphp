@@ -9,8 +9,13 @@ prerequisites:
   - "PHP 8.4+ installed"
   - "Understanding of logging and metrics"
   - "Completion of Chapter 36"
+teaches:
+  - 'Understand how to implement structured logging with Monolog for Claude applications'
+  - 'Learn to collect and analyze key metrics: latency, tokens, costs, errors, and quality'
+  - 'Master distributed tracing to understand request flow across multiple services'
+  - 'Build real-time dashboards that provide actionable insights'
+  - 'Configure intelligent alerting systems with proper thresholds and cooldowns'
 ---
-
 ![37: Monitoring and Observability](/images/claude-php/chapter-37-hero-full.webp)
 
 <div class="breadcrumbs">

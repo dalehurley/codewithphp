@@ -1736,7 +1736,7 @@ composer install
 </dependencies>
 ```
 
-```gradle [Gradle Multi-Project]
+```groovy [Gradle Multi-Project]
 // settings.gradle
 rootProject.name = 'my-project'
 include 'core', 'api', 'web'

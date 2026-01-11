@@ -9,6 +9,7 @@ prerequisites:
   - "Understanding of basic PHP arrays"
   - "Familiarity with Big O notation"
   - "Completion of foundation chapters"
+estimatedTime: "PT45M"
 ---
 ![15: Arrays & Dynamic Arrays](/images/php-algorithms/chapter-15-arrays-hero-full.webp)
 

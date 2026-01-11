@@ -10,8 +10,13 @@ prerequisites:
   - "/series/claude-php-developers/chapters/05-prompt-engineering-basics"
   - "Understanding of JSON and schemas"
   - "Experience with data validation"
+teaches:
+  - 'Understand how to define JSON schemas for structured output extraction'
+  - 'Create reusable extraction classes with retry logic and validation'
+  - 'Implement schema validation using JSON Schema and custom validators'
+  - 'Build pre-built schemas for common data extraction use cases'
+  - 'Master batch processing and streaming for large-scale extraction'
 ---
-
 ![15: Structured Outputs with JSON](/images/claude-php/chapter-15-hero-full.webp)
 
 <div class="breadcrumbs">

@@ -7,8 +7,8 @@ order: 29
 difficulty: "Intermediate"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/28-*"
+estimatedTime: "PT60M"
 ---
-
 ![Queues & Background Jobs](/images/build-crm-laravel-12/chapter-29-queues-background-jobs-hero-full.webp)
 
 # Chapter 29: Queues & Background Jobs

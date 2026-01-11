@@ -9,8 +9,13 @@ prerequisites:
   - "/series/claude-php-developers/chapters/00-quick-start-guide"
   - "PHP 8.4+ installed"
   - "Basic understanding of REST APIs"
+teaches:
+  - 'Understand Claude''s core capabilities and how they differ from traditional software'
+  - 'Compare and contrast the three model variants (Opus 4.1, Sonnet 4.5, Haiku 4.5) and their use cases'
+  - 'Master the Messages API architecture and request/response structure'
+  - 'Learn Claude''s pricing model and implement cost optimization strategies'
+  - 'Implement conversation management patterns for stateless API interactions'
 ---
-
 ![01: Introduction to Claude API](/images/claude-php/chapter-01-hero-full.webp)
 
 <div class="breadcrumbs">

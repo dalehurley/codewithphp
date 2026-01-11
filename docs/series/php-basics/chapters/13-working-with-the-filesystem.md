@@ -7,8 +7,13 @@ order: 13
 difficulty: "Beginner"
 prerequisites:
   - "/series/php-basics/chapters/12-dependency-management-with-composer"
+teaches:
+  - 'Check for the existence of files and directories before operations'
+  - 'Read the entire contents of a file into a string'
+  - 'Write and append content to files safely'
+  - 'Understand file permissions and common permission issues'
+  - 'Handle filesystem errors gracefully'
 ---
-
 ![Working with the Filesystem](/images/php-basics/chapter-13-working-filesystem-hero-full.webp)
 
 # Chapter 13: Working with the Filesystem

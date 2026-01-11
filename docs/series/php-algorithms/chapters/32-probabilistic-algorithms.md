@@ -6,6 +6,7 @@ chapter: 32
 order: 32
 difficulty: "Advanced"
 prerequisites: []
+estimatedTime: "PT50M"
 ---
 ![Probabilistic Algorithms](/images/php-algorithms/chapter-32-probabilistic-algorithms-hero-full.webp)
 

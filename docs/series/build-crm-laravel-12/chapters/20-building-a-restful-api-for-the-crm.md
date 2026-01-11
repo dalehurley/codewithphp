@@ -7,8 +7,13 @@ order: 20
 difficulty: "Advanced"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/19-building-a-restful-api-for-the-crm"
+estimatedTime: "PT60M"
+teaches:
+  - 'Understand the core concepts of this feature'
+  - 'Learn implementation patterns used in production applications'
+  - 'Apply these patterns to your CRM'
+  - 'Understand integration points with existing modules'
 ---
-
 ![building-a-restful-api-for-the-crm](/images/build-crm-laravel-12/chapter-20-building-restful-api-hero-full.webp)
 
 # Chapter 20: Building a RESTful API for the CRM

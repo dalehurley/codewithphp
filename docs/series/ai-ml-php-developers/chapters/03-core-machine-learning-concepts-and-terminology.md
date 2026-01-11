@@ -8,8 +8,13 @@ difficulty: "Beginner"
 prerequisites:
   - "01"
   - "02"
+teaches:
+  - 'Distinguish between supervised and unsupervised learning with PHP implementations of both paradigms'
+  - 'Identify features and labels in datasets and extract meaningful numeric features from raw data'
+  - 'Explain the difference between training and inference and understand when each phase occurs'
+  - 'Recognize overfitting by comparing training vs. test accuracy and apply techniques to prevent it'
+  - 'Implement proper train/test splits following best practices to avoid data leakage and get reliable performance estimates'
 ---
-
 ![Core Machine Learning Concepts and Terminology](/images/ai-ml-php-developers/chapter-03-ml-concepts-hero-full.webp)
 
 # Chapter 03: Core Machine Learning Concepts and Terminology

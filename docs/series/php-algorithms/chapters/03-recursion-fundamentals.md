@@ -9,6 +9,7 @@ prerequisites:
   - "Understanding of functions"
   - "Familiarity with the call stack"
   - "Completion of Chapters 0-2"
+estimatedTime: "PT70M"
 ---
 ![03: Recursion Fundamentals](/images/php-algorithms/chapter-03-recursion-hero-full.webp)
 

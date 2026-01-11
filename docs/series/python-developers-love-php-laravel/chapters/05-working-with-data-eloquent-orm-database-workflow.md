@@ -7,8 +7,14 @@ order: 5
 difficulty: "Intermediate"
 prerequisites:
   - "/series/python-developers-love-php-laravel/chapters/04-php-syntax-language-differences-for-python-devs"
+estimatedTime: "PT175M"
+teaches:
+  - 'Understand Eloquent model definitions and compare to Django models and SQLAlchemy classes'
+  - 'Master Laravel migrations vs Django migrations workflow and schema management'
+  - 'Map Django ORM relationships (ForeignKey, ManyToMany) to Eloquent relationships (belongsTo, hasMany, belongsToMany)'
+  - 'Translate Django ORM queries (`filter()`, `exclude()`, `__gte`) to Eloquent query builder methods'
+  - 'Understand eager loading (`with()`) vs Django''s `select_related()` and `prefetch_related()`'
 ---
-
 ![Working with Data: Eloquent ORM](/images/python-developers-love-php-laravel/chapter-05-working-with-data-eloquent-orm-database-workflow-hero-full.webp)
 
 # Chapter 05: Working with Data: Eloquent ORM & Database Workflow

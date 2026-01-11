@@ -9,6 +9,7 @@ prerequisites:
   - "Understanding of recursion"
   - "Familiarity with linked structures"
   - "Completion of Chapters 15-17"
+estimatedTime: "PT60M"
 ---
 ![18: Trees & Binary Search Trees](/images/php-algorithms/chapter-18-binary-search-trees-hero-full.webp)
 

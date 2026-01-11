@@ -10,8 +10,13 @@ prerequisites:
   - "Composer installed"
   - "Completion of Chapters 01-02"
   - "Anthropic API key configured"
+teaches:
+  - 'Understand the complete structure of Claude API requests and responses'
+  - 'Create working examples using both the official SDK and direct HTTP calls'
+  - 'Implement robust error handling with specific exception types'
+  - 'Build reusable service classes for common API patterns'
+  - 'Master response parsing including JSON extraction from markdown'
 ---
-
 ![03: Your First Claude Request in PHP](/images/claude-php/chapter-03-hero-full.webp)
 
 <div class="breadcrumbs">

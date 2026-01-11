@@ -268,7 +268,7 @@ composer require --dev phpstan/phpstan
 ```
 
 **Configuration:**
-```neon
+```yaml
 # phpstan.neon
 parameters:
     level: 8  # Maximum strictness

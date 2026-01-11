@@ -9,8 +9,13 @@ prerequisites:
   - "19"
   - "11"
   - "08"
+teaches:
+  - 'Implement multiple forecasting methods (moving average, linear regression, Prophet) in PHP and understand their trade-offs'
+  - 'Load and preprocess time series data with proper date parsing and temporal ordering'
+  - 'Create a robust train/test split that respects time series chronological structure without data leakage'
+  - 'Evaluate forecast accuracy using standard metrics (MAE, RMSE, MAPE) and interpret results'
+  - 'Visualize predictions alongside historical data to communicate forecast insights effectively'
 ---
-
 ![Time Series Forecasting Project](/images/ai-ml-php-developers/chapter-20-time-series-forecasting-hero-full.webp)
 
 # Chapter 20: Time Series Forecasting Project

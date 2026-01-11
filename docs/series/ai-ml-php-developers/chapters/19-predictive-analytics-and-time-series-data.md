@@ -8,8 +8,13 @@ difficulty: "Intermediate"
 prerequisites:
   - "18"
   - "08"
+teaches:
+  - 'Understand time series characteristics including trends, seasonality, stationarity, and autocorrelation, and identify these patterns in real data'
+  - 'Implement multiple forecasting approaches from simple moving averages to linear regression, seasonal decomposition, and ARIMA-style models in PHP'
+  - 'Integrate Python ML libraries (Prophet, statsmodels) with PHP applications using REST APIs and CLI bridges, understanding trade-offs'
+  - 'Evaluate forecast accuracy using MAE, RMSE, and MAPE metrics, interpreting results to select the best model for your data'
+  - 'Handle time series data properly with chronological train-test splits, missing value imputation, and stationarity transformations'
 ---
-
 ![Predictive Analytics and Time Series Data](/images/ai-ml-php-developers/chapter-19-predictive-analytics-hero-full.webp)
 
 # Chapter 19: Predictive Analytics and Time Series Data

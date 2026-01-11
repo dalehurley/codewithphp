@@ -11,8 +11,14 @@ prerequisites:
   - "Composer installed"
   - "Docker Desktop installed and running"
   - "Node.js 18+ and npm installed"
+estimatedTime: "PT30M"
+teaches:
+  - 'Install Laravel 12 using the official installer or `laravel new` command'
+  - 'Configure Laravel Sail with MySQL, Redis, and Mailhog services'
+  - 'Start Sail containers and verify all services are running'
+  - 'Access the Laravel welcome page in your browser'
+  - 'Use Artisan commands via Sail to interact with the application'
 ---
-
 ![Setting Up Laravel 12 Project & Dev Environment](/images/build-crm-laravel-12/chapter-02-setting-up-laravel-12-project-hero-full.webp)
 
 # Chapter 02: Setting Up Laravel 12 Project & Dev Environment

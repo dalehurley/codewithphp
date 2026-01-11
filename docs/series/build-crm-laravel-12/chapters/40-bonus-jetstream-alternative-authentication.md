@@ -7,8 +7,8 @@ order: 40
 difficulty: "Advanced"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/39-*"
+estimatedTime: "PT60M"
 ---
-
 ![Jetstream Alternative - Team Management & Authentication](/images/build-crm-laravel-12/chapter-40-jetstream-alternative-hero-full.webp)
 
 # Chapter 40: Jetstream Alternative - Team Management & Authentication

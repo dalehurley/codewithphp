@@ -10,8 +10,13 @@ prerequisites:
   - "Laravel 11+ experience"
   - "Laravel queues understanding"
   - "Redis or database queue driver"
+teaches:
+  - 'Understand how Laravel queues solve the problem of blocking API requests'
+  - 'Create queue jobs that integrate with Claude API calls'
+  - 'Implement database tracking for asynchronous request status'
+  - 'Build batch processing systems for multiple concurrent requests'
+  - 'Set up real-time progress updates using WebSockets'
 ---
-
 ![19: Queue-Based Processing with Laravel](/images/claude-php/chapter-19-hero-full.webp)
 
 # Chapter 19: Queue-Based Processing with Laravel

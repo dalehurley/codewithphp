@@ -9,8 +9,13 @@ prerequisites:
   - "/series/claude-php-developers/chapters/21-laravel-integration"
   - "Laravel 11+ with Livewire 3 installed"
   - "Database configured (MySQL or PostgreSQL)"
+teaches:
+  - 'Design and implement a scalable database schema for chat applications'
+  - 'Build Eloquent models with relationships, accessors, and business logic methods'
+  - 'Create Livewire components for reactive, real-time chat interfaces'
+  - 'Implement streaming responses using Server-Sent Events'
+  - 'Handle conversation context and message history management'
 ---
-
 ![22: Building a Chatbot with Laravel](/images/claude-php/chapter-22-hero-full.webp)
 
 <div class="breadcrumbs">
@@ -1893,7 +1898,7 @@ Set up monitoring for:
 
 Add these to your `.env` file:
 
-```env
+```sh
 # Anthropic Claude API
 ANTHROPIC_API_KEY=your_anthropic_api_key_here
 

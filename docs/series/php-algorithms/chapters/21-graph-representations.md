@@ -8,6 +8,7 @@ difficulty: "Intermediate"
 prerequisites:
   - "/series/php-algorithms/chapters/15-arrays-dynamic-arrays"
   - "/series/php-algorithms/chapters/13-hash-tables-hash-functions"
+estimatedTime: "PT45M"
 ---
 ![Graph Representations](/images/php-algorithms/chapter-21-graph-representations-hero-full.webp)
 

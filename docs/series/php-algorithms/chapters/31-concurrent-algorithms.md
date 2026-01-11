@@ -6,6 +6,13 @@ chapter: 31
 order: 31
 difficulty: "Advanced"
 prerequisites: []
+estimatedTime: "PT70M"
+teaches:
+  - 'Master async/await patterns with ReactPHP for non-blocking I/O operations'
+  - 'Implement parallel processing with ext-parallel for CPU-intensive tasks'
+  - 'Build high-performance concurrent applications with Swoole coroutines'
+  - 'Design thread-safe concurrent data structures and avoid race conditions'
+  - 'Detect, prevent, and resolve deadlocks in concurrent systems'
 ---
 ![Concurrent Algorithms](/images/php-algorithms/chapter-31-concurrent-algorithms-hero-full.webp)
 

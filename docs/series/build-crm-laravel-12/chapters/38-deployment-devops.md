@@ -7,8 +7,8 @@ order: 38
 difficulty: "Intermediate"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/37-*"
+estimatedTime: "PT60M"
 ---
-
 ![Deployment & DevOps](/images/build-crm-laravel-12/chapter-38-deployment-devops-hero-full.webp)
 
 # Chapter 38: Deployment & DevOps
