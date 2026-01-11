@@ -144,38 +144,34 @@ Every chapter gets a canonical URL:
 
 ### 4. Structured Data (Schema.org JSON-LD)
 
-**For Chapter Pages**: Two schemas auto-generated
+**For Chapter Pages**: Multiple schemas auto-generated
 
 1. **LearningResource** schema:
 
-```json
-{
-  "@type": "LearningResource",
-  "@id": "https://codewithphp.com/...",
-  "name": "Chapter Title",
-  "learningResourceType": "Tutorial",
-  "educationalLevel": "Beginner|Intermediate|Advanced",
-  "timeRequired": "PT30M",
-  "teaches": ["..."],
-  "isPartOf": {
-    "@type": "Course",
-    "name": "Series Name"
-  }
-}
-```
+   - Identifies the page as educational content
+   - Connects to the parent **Course** (Series)
 
-2. **BreadcrumbList** schema:
+2. **TechArticle** schema:
 
-```json
-{
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    { "position": 1, "name": "Home", "item": "https://codewithphp.com" },
-    { "position": 2, "name": "Series", "item": "..." },
-    { "position": 3, "name": "Chapter", "item": "..." }
-  ]
-}
-```
+   - Provides article metadata (author, dates, image)
+   - Optimizes for Google Search and AI crawlers
+
+3. **HowTo** schema:
+
+   - Breaks down the chapter into actionable steps
+   - Uses `teaches` or `steps` frontmatter fields
+   - Provides default steps if fields are missing
+
+4. **BreadcrumbList** schema:
+   - Provides logical site navigation structure
+
+**For Series Pages**:
+
+- **Course** schema: High-level overview of the curriculum
+
+**For Homepage**:
+
+- **WebSite** and **Organization** schemas
 
 ## SEO Utilities Reference
 

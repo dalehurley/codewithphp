@@ -8,6 +8,7 @@ interface PageData {
   title: string
   description: string
   relativePath: string
+  lastUpdated?: number
   frontmatter: {
     series?: string
     chapter?: number
@@ -17,6 +18,123 @@ interface PageData {
     teaches?: string[]
     datePublished?: string
     dateModified?: string
+    author?: string
+    steps?: Array<{ name: string; text: string; image?: string }>
+  }
+}
+
+/**
+ * Generate Article schema for chapter pages
+ */
+export function generateArticleSchema(pageData: PageData): object | null {
+  const { frontmatter, title, description, relativePath, lastUpdated } = pageData
+  
+  if (!frontmatter.series || frontmatter.chapter === undefined) return null
+  
+  const chapterUrl = `https://codewithphp.com/${relativePath.replace(/\.md$/, '').replace(/\/index$/, '/')}`
+  const socialImage = `https://codewithphp.com/social/${frontmatter.series}-chapter-${String(frontmatter.chapter).padStart(2, '0')}.jpg`
+  
+  const modifiedDate = frontmatter.dateModified || (lastUpdated ? new Date(lastUpdated).toISOString() : new Date().toISOString())
+  
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'TechArticle',
+    '@id': `${chapterUrl}#article`,
+    headline: title,
+    description: description,
+    image: [socialImage],
+    datePublished: frontmatter.datePublished || modifiedDate,
+    dateModified: modifiedDate,
+    author: {
+      '@type': 'Organization',
+      name: frontmatter.author || 'Code with PHP',
+      url: 'https://codewithphp.com'
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Code with PHP',
+      url: 'https://codewithphp.com',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://codewithphp.com/images/php-basics/chapter-00-landing-hero-full.webp'
+      }
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': chapterUrl
+    },
+    proficiencyLevel: frontmatter.difficulty || 'Beginner'
+  }
+}
+
+/**
+ * Generate HowTo schema for chapter pages
+ */
+export function generateHowToSchema(pageData: PageData): object | null {
+  const { frontmatter, title, description, relativePath } = pageData
+  
+  if (!frontmatter.series || frontmatter.chapter === undefined) return null
+  
+  const chapterUrl = `https://codewithphp.com/${relativePath.replace(/\.md$/, '').replace(/\/index$/, '/')}`
+  
+  // Use explicit steps if provided, fallback to teaches array, then fallback to a default step from description
+  let steps = frontmatter.steps || (frontmatter.teaches ? frontmatter.teaches.map(item => ({
+    name: item,
+    text: item
+  })) : [])
+  
+  // Fallback: Use description as the first step if no steps are provided
+  if (steps.length === 0 && description) {
+    steps = [
+      {
+        name: 'Introduction',
+        text: description
+      },
+      {
+        name: 'Implementation',
+        text: 'Follow the step-by-step instructions in the chapter to implement the solution'
+      },
+      {
+        name: 'Verification',
+        text: 'Verify your implementation by running the provided code samples'
+      }
+    ]
+  }
+  
+  if (steps.length === 0) return null
+  
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    '@id': `${chapterUrl}#howto`,
+    name: title,
+    description: description,
+    totalTime: frontmatter.estimatedTime || 'PT30M',
+    supply: [
+      {
+        '@type': 'HowToSupply',
+        name: 'PHP 8.4'
+      }
+    ],
+    tool: [
+      {
+        '@type': 'HowToTool',
+        name: 'Terminal'
+      },
+      {
+        '@type': 'HowToTool',
+        name: 'Code Editor'
+      }
+    ],
+    step: steps.map((s, index) => ({
+      '@type': 'HowToStep',
+      url: `${chapterUrl}#step-${index + 1}`,
+      name: s.name,
+      itemListElement: [{
+        '@type': 'HowToDirection',
+        text: s.text
+      }]
+    }))
   }
 }
 
@@ -237,5 +355,3 @@ function getSeriesDisplayName(seriesSlug: string): string {
   }
   return names[seriesSlug] || seriesSlug
 }
-
-

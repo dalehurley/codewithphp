@@ -7,8 +7,9 @@
   "scripts": {
     "dev": "vitepress dev docs",
     "docs:dev": "vitepress dev docs",
-    "docs:build": "NODE_OPTIONS='--max-old-space-size=8192' vitepress build docs",
-    "build": "NODE_OPTIONS='--max-old-space-size=8192' vitepress build docs",
+    "docs:build": "NODE_OPTIONS='--max-old-space-size=7168' vitepress build docs",
+    "build": "NODE_OPTIONS='--max-old-space-size=7168' vitepress build docs",
+    "measure-build": "node scripts/measure-build.js",
     "preview": "vitepress preview docs"
   },
   "devDependencies": {
