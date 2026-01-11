@@ -83,6 +83,12 @@ const SERIES_COLORS = {
     secondary: '#991B1B',
     text: '#FFFFFF',
     overlay: 'rgba(153, 27, 27, 0.7)'
+  },
+  'php-for-java-developers': {
+    primary: '#E65100',
+    secondary: '#BF360C',
+    text: '#FFFFFF',
+    overlay: 'rgba(191, 54, 12, 0.7)'
   }
 }
 
