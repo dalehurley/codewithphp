@@ -1,7 +1,14 @@
 import { defineConfig, type HeadConfig } from 'vitepress'
 import { withMermaid } from 'vitepress-plugin-mermaid'
 import { generateSocialImagePath, getCanonicalUrl } from './theme/utils/seo'
-import { generateCourseSchema, generateLearningResourceSchema, generateWebSiteSchema, generateOrganizationSchema } from './theme/composables/useStructuredData'
+import { 
+  generateCourseSchema, 
+  generateLearningResourceSchema, 
+  generateWebSiteSchema, 
+  generateOrganizationSchema,
+  generateArticleSchema,
+  generateHowToSchema
+} from './theme/composables/useStructuredData'
 import { generateBreadcrumbSchema } from './theme/composables/useBreadcrumb'
 import mathjax3 from 'markdown-it-mathjax3'
 import path from 'path'
@@ -120,10 +127,16 @@ export default withMermaid(
           if (courseSchema) structuredData.push(courseSchema)
         }
         
-        // Chapter pages: LearningResource schema
+        // Chapter pages: LearningResource, Article, and HowTo schema
         if (pageData.frontmatter.series && pageData.frontmatter.chapter !== undefined) {
           const learningResourceSchema = generateLearningResourceSchema(pageData)
           if (learningResourceSchema) structuredData.push(learningResourceSchema)
+          
+          const articleSchema = generateArticleSchema(pageData)
+          if (articleSchema) structuredData.push(articleSchema)
+          
+          const howToSchema = generateHowToSchema(pageData)
+          if (howToSchema) structuredData.push(howToSchema)
         }
         
         // Breadcrumb schema (for all non-homepage pages)
@@ -1163,5 +1176,3 @@ export default withMermaid(
     }
   })
 )
-
-
