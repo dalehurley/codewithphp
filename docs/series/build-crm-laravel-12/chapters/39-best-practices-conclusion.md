@@ -7,8 +7,8 @@ order: 39
 difficulty: "Intermediate"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/38-*"
+estimatedTime: "PT60M"
 ---
-
 ![Best Practices & Conclusion](/images/build-crm-laravel-12/chapter-39-best-practices-conclusion-hero-full.webp)
 
 # Chapter 39: Best Practices & Conclusion

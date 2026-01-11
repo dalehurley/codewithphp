@@ -8,8 +8,13 @@ difficulty: "Intermediate"
 prerequisites:
   - "/series/rails-developers-love-laravel/chapters/08-ecosystem-community-packages"
 tags: ["laravel", "rails", "decision-making", "comparison", "framework-choice"]
+teaches:
+  - 'Evaluate project requirements against a seven-factor decision framework'
+  - 'Identify when Laravel is the optimal choice for your project'
+  - 'Recognize when Rails remains the better option'
+  - 'Compare performance, cost, and deployment complexity between frameworks'
+  - 'Plan migration strategies from Rails to Laravel when appropriate'
 ---
-
 <div class="breadcrumbs">
   <a href="/">Home</a>
   <span class="breadcrumbs-separator">›</span>

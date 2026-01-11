@@ -8,8 +8,13 @@ difficulty: "Intermediate"
 prerequisites:
   - "10"
   - "11"
+teaches:
+  - 'Understand TensorFlow architecture and the different options for PHP integration'
+  - 'Deploy TensorFlow Serving with Docker to serve deep learning models via REST API'
+  - 'Create a PHP client that communicates with TensorFlow Serving using cURL and JSON'
+  - 'Preprocess images in PHP to meet deep learning model input requirements'
+  - 'Implement image classification by combining preprocessing, prediction, and label decoding'
 ---
-
 ![Deep Learning with TensorFlow and PHP](/images/ai-ml-php-developers/chapter-12-tensorflow-php-hero-full.webp)
 
 # Chapter 12: Deep Learning with TensorFlow and PHP

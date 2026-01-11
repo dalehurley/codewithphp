@@ -395,7 +395,7 @@ php artisan list
 
 ### Nest.js (.env)
 
-```env
+```sh
 DATABASE_URL=postgresql://localhost/mydb
 JWT_SECRET=secret
 ```
@@ -414,7 +414,7 @@ const dbUrl = this.configService.get('DATABASE_URL');
 
 ### Laravel (.env)
 
-```env
+```sh
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_DATABASE=mydb

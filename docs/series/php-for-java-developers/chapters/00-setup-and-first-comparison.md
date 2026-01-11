@@ -6,8 +6,13 @@ chapter: 0
 order: 0
 difficulty: "Beginner"
 prerequisites: []
+teaches:
+  - 'Install and configure PHP on your development machine'
+  - 'Run PHP scripts from the command line and browser'
+  - 'Compare Java and PHP execution models'
+  - 'Understand key differences in syntax and structure'
+  - 'Set up your IDE for productive PHP development'
 ---
-
 ![PHP Setup Hero](/images/php-for-java-developers/chapter-00-setup-hero-full.webp)
 
 # Chapter 0: Setup & First Comparison

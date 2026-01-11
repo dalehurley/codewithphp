@@ -9,8 +9,13 @@ prerequisites:
   - "22"
   - "15"
   - "14"
+teaches:
+  - 'Understand the architectural patterns for integrating ML models into web applications, including synchronous vs asynchronous processing, caching strategies, and performance optimization techniques'
+  - 'Implement a service layer architecture that cleanly separates ML logic from application code using Laravel''s service container and dependency injection'
+  - 'Build a sentiment analysis API endpoint that processes product reviews in real-time with input validation, caching, and error handling'
+  - 'Create background job queues for processing long-running ML predictions without blocking HTTP requests or degrading user experience'
+  - 'Deploy Redis caching to store prediction results and avoid redundant inference, implementing TTL strategies and cache invalidation patterns'
 ---
-
 ![Integrating AI Models into Web Applications](/images/ai-ml-php-developers/chapter-23-ai-web-integration-hero-full.webp)
 
 # Chapter 23: Integrating AI Models into Web Applications

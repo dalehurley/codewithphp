@@ -6,8 +6,14 @@ chapter: 36
 order: 36
 difficulty: "Advanced"
 prerequisites: []
+estimatedTime: "PT50M"
+teaches:
+  - 'Implement sliding window algorithms for tracking recent data efficiently'
+  - 'Build rate limiting and throttling mechanisms for API protection'
+  - 'Apply stream aggregation techniques for real-time metrics and dashboards'
+  - 'Use Lossy Counting to find frequent items in streams with bounded memory'
+  - 'Design time-series algorithms for monitoring and anomaly detection'
 ---
-
 ![Stream Processing Algorithms](/images/php-algorithms/chapter-36-stream-processing-hero-full.webp)
 
 <div class="breadcrumbs">

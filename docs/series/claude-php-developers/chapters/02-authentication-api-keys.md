@@ -9,8 +9,13 @@ prerequisites:
   - "PHP 8.4+ installed"
   - "Composer installed"
   - "Completion of Chapter 01"
+teaches:
+  - 'Set up your Anthropic account with proper billing and budget limits'
+  - 'Generate and manage API keys with descriptive naming conventions'
+  - 'Implement secure authentication patterns using environment variables'
+  - 'Integrate API keys into CI/CD pipelines (GitHub Actions, GitLab CI, CircleCI)'
+  - 'Use secrets management services for enterprise applications'
 ---
-
 ![02: Authentication and API Keys](/images/claude-php/chapter-02-hero-full.webp)
 
 <div class="breadcrumbs">

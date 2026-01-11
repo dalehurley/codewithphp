@@ -7,8 +7,14 @@ order: 2
 difficulty: "Intermediate"
 prerequisites:
   - "/series/python-developers-love-php-laravel/chapters/01-mapping-concepts-python-web-frameworks-vs-laravel"
+estimatedTime: "PT60M"
+teaches:
+  - 'Understand PHP 7.x improvements and how they compare to Python features'
+  - 'Learn PHP 8.0+ modern features (JIT, union types, match expressions, attributes, enums, property hooks)'
+  - 'Compare PHP''s type system with Python''s type hints'
+  - 'Understand PHP community evolution (PSR standards, Composer ecosystem)'
+  - 'Address common misconceptions about PHP from a Python developer''s perspective'
 ---
-
 ![Modern PHP: What's Changed](/images/python-developers-love-php-laravel/chapter-02-modern-php-whats-changed-hero-full.webp)
 
 # Chapter 02: Modern PHP: What's Changed

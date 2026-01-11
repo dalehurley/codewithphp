@@ -8,8 +8,13 @@ difficulty: "Intermediate"
 prerequisites:
   - "10"
   - "08"
+teaches:
+  - 'Execute Python scripts from PHP using shell commands with proper error handling'
+  - 'Exchange structured data between PHP and Python using JSON'
+  - 'Secure integration points by validating inputs and escaping shell arguments'
+  - 'Train ML models in Python from PHP-initiated processes'
+  - 'Load and use trained models for real-time predictions in web applications'
 ---
-
 ![Integrating PHP with Python for Advanced ML](/images/ai-ml-php-developers/chapter-11-php-python-integration-hero-full.webp)
 
 # Chapter 11: Integrating PHP with Python for Advanced ML

@@ -10,8 +10,13 @@ prerequisites:
   - "Laravel 11+ with Reverb"
   - "WebSockets understanding"
   - "Laravel Broadcasting knowledge"
+teaches:
+  - 'Understand Laravel Reverb and WebSocket architecture for real-time applications'
+  - 'Implement streaming Claude responses over WebSockets using Laravel Broadcasting'
+  - 'Create broadcasting events for message chunks, completion, and typing indicators'
+  - 'Build a production-ready chat service with proper error handling'
+  - 'Develop a Vue.js frontend that connects to WebSocket channels'
 ---
-
 ![20: Real-time Chat with WebSockets](/images/claude-php/chapter-20-hero-full.webp)
 
 <div class="breadcrumbs">

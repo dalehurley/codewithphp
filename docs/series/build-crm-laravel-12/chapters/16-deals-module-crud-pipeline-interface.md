@@ -7,8 +7,14 @@ order: 16
 difficulty: "Intermediate"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/15-deals-module-database-pipeline-design"
+estimatedTime: "PT140M"
+teaches:
+  - 'Build a DealController with full CRUD operations and stage update endpoint'
+  - 'Create a Deal policy enforcing team-based authorization on all actions'
+  - 'Implement FormRequest validation with custom rules for deal data'
+  - 'Design a Kanban pipeline board in React displaying deals grouped by stage'
+  - 'Add drag-and-drop functionality using @dnd-kit/core for smooth interactions'
 ---
-
 ![Deals Module - CRUD & Pipeline Interface](/images/build-crm-laravel-12/chapter-16-deals-module-crud-pipeline-interface-hero-full.webp)
 
 # Chapter 16: Deals Module - CRUD & Pipeline Interface

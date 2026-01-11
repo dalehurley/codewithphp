@@ -10,8 +10,13 @@ prerequisites:
   - "/series/php-basics/chapters/14-interacting-with-databases-using-pdo"
 estimatedTime: "25 minutes"
 tags: ["json", "api", "rest", "curl", "http"]
+teaches:
+  - 'Understand JSON format and its relationship to PHP arrays'
+  - 'Encode PHP data to JSON strings'
+  - 'Decode JSON strings to PHP data structures'
+  - 'Handle JSON encoding and decoding errors'
+  - 'Make HTTP requests using cURL'
 ---
-
 ![Working with JSON & APIs](/images/php-basics/chapter-23-json-apis-hero-full.webp)
 
 # Chapter 23: Working with JSON & APIs

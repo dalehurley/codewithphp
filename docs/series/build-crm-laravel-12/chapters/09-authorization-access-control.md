@@ -7,8 +7,14 @@ order: 9
 difficulty: "Intermediate"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/08-team-management-user-roles"
+estimatedTime: "PT75M"
+teaches:
+  - 'Generate policy classes using Artisan'
+  - 'Implement policy methods for CRUD operations'
+  - 'Apply team-scoping logic in policies'
+  - 'Use role-based checks (e.g., only owners can delete)'
+  - 'Register policies in `AuthServiceProvider`'
 ---
-
 ![Authorization & Access Control](/images/build-crm-laravel-12/chapter-09-authorization-access-control-hero-full.webp)
 
 # Chapter 09: Authorization & Access Control

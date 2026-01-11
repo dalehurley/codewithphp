@@ -7,8 +7,13 @@ order: 19
 difficulty: "Intermediate"
 prerequisites:
   - "/series/php-basics/chapters/18-project-structuring-a-simple-application"
+teaches:
+  - 'Solidify your understanding of the MVC application flow'
+  - 'Implement full CRUD (Create, Read, Update, Delete) functionality'
+  - 'Build a `Post` model that connects to the database'
+  - 'Create a `PostController` with methods for `index`, `show`, `create`, and `store`'
+  - 'Build the corresponding views to display posts and a creation form'
 ---
-
 ![Project: Building a Simple Blog](/images/php-basics/chapter-19-blog-project-hero-full.webp)
 
 # Chapter 19: Project: Building a Simple Blog
@@ -881,7 +886,7 @@ $dbPath = $_ENV['DATABASE_PATH'] ?? __DIR__ . '/../../data/database.sqlite';
 
 With a `.env` file:
 
-```env
+```sh
 DATABASE_PATH=/var/www/production/data/database.sqlite
 APP_ENV=production
 APP_DEBUG=false

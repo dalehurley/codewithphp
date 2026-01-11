@@ -8,8 +8,13 @@ difficulty: "Beginner"
 prerequisites:
   - "03"
   - "04"
+teaches:
+  - 'Understand linear regression theory including the least squares method, cost functions, and optimization through gradient descent'
+  - 'Implement simple linear regression from scratch in PHP without using ML libraries to deeply understand the algorithm'
+  - 'Explain the math behind regression including how slope and intercept are calculated and what they represent'
+  - 'Extend to multiple linear regression using multiple features to make more accurate predictions'
+  - 'Evaluate regression models using RMSE, MAE, and R² metrics with proper interpretation'
 ---
-
 ![Your First Machine Learning Model: Linear Regression in PHP](/images/ai-ml-php-developers/chapter-05-linear-regression-hero-full.webp)
 
 # Chapter 05: Your First Machine Learning Model: Linear Regression in PHP

@@ -7,8 +7,14 @@ order: 18
 difficulty: "Intermediate"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/17-tasks-module-database-model"
+estimatedTime: "PT110M"
+teaches:
+  - 'Build a TaskController with full CRUD operations and quick-complete endpoint'
+  - 'Create a Task policy enforcing team-based authorization on all actions'
+  - 'Implement FormRequest validation with polymorphic relationship rules'
+  - 'Design task management views in React with filters and quick actions'
+  - 'Build quick-add task components for inline task creation'
 ---
-
 ![Tasks Module - CRUD & Task Scheduling](/images/build-crm-laravel-12/chapter-18-tasks-module-crud-task-scheduling-hero-full.webp)
 
 # Chapter 18: Tasks Module - CRUD & Task Scheduling

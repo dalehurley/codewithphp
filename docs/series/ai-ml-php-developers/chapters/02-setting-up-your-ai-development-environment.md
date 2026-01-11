@@ -7,8 +7,13 @@ order: 2
 difficulty: "Beginner"
 prerequisites:
   - "01"
+teaches:
+  - 'Install and verify PHP 8.4 with required extensions for AI/ML work'
+  - 'Set up Composer and use it to manage PHP dependencies'
+  - 'Install PHP-ML and Rubix ML libraries and understand when to use each'
+  - 'Create and run verification scripts to confirm your environment is correctly configured'
+  - 'Structure a PHP project for machine learning experiments'
 ---
-
 ![Setting Up Your AI Development Environment](/images/ai-ml-php-developers/chapter-02-ai-environment-setup-hero-full.webp)
 
 # Chapter 02: Setting Up Your AI Development Environment

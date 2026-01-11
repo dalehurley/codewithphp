@@ -7,8 +7,13 @@ order: 22
 difficulty: "Beginner"
 prerequisites:
   - "/series/php-basics/chapters/21-a-gentle-introduction-to-symfony"
+teaches:
+  - 'Understand the key areas of growth for modern PHP developers'
+  - 'Have a concrete 30-day action plan to continue your learning journey'
+  - 'Know which framework to choose based on your goals and preferences'
+  - 'Identify essential skills beyond PHP that professional developers need'
+  - 'Have a curated list of high-quality learning resources and community connections'
 ---
-
 ![What to Learn Next](/images/php-basics/chapter-22-what-to-learn-next-hero-full.webp)
 
 # Chapter 22: What to Learn Next

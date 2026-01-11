@@ -7,8 +7,13 @@ order: 31
 difficulty: "Advanced"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/30-automated-browser-testing-with-laravel-dusk"
+estimatedTime: "PT60M"
+teaches:
+  - 'Understand the core concepts of this feature'
+  - 'Learn implementation patterns used in production applications'
+  - 'Apply these patterns to your CRM'
+  - 'Understand integration points with existing modules'
 ---
-
 ![automated-browser-testing-with-laravel-dusk](/images/build-crm-laravel-12/chapter-31-browser-testing-dusk-hero-full.webp)
 
 # Chapter 31: Automated Browser Testing with Laravel Dusk

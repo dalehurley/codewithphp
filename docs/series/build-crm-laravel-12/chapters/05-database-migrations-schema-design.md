@@ -7,8 +7,14 @@ order: 5
 difficulty: "Intermediate"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/04-planning-application-architecture-data-modeling"
+estimatedTime: "PT60M"
+teaches:
+  - 'Generate migration files using Artisan commands'
+  - 'Use Laravel''s schema builder to define tables'
+  - 'Implement foreign key constraints with cascading behavior'
+  - 'Add indexes for performance optimization'
+  - 'Create pivot tables for many-to-many relationships'
 ---
-
 ![Database Migrations & Schema Design](/images/build-crm-laravel-12/chapter-05-database-migrations-schema-design-hero-full.webp)
 
 # Chapter 05: Database Migrations & Schema Design

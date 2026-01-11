@@ -7,8 +7,13 @@ order: 23
 difficulty: "Advanced"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/22-social-logins-with-laravel-socialite"
+estimatedTime: "PT60M"
+teaches:
+  - 'Understand the core concepts of this feature'
+  - 'Learn implementation patterns used in production applications'
+  - 'Apply these patterns to your CRM'
+  - 'Understand integration points with existing modules'
 ---
-
 ![social-logins-with-laravel-socialite](/images/build-crm-laravel-12/chapter-23-social-logins-socialite-hero-full.webp)
 
 # Chapter 23: Social Logins with Laravel Socialite

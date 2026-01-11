@@ -7,8 +7,14 @@ order: 9
 difficulty: "Intermediate"
 prerequisites:
   - "/series/python-developers-love-php-laravel/chapters/08-ecosystem-community-packages-where-laravel-excels"
+estimatedTime: "PT130M"
+teaches:
+  - 'Understand when Laravel makes sense: rapid web development, traditional CRUD applications, content management, e-commerce, full-stack apps'
+  - 'Recognize when Python is still better: data science, machine learning, scientific computing, Python-specific library requirements'
+  - 'Compare costs comprehensively: hosting, development time, talent pool, maintenance, and scaling'
+  - 'Evaluate performance considerations: web app performance, concurrency, memory usage, startup time, when performance matters'
+  - 'Apply decision-making framework to real scenarios: project type, team expertise, budget, scalability, integrations'
 ---
-
 ![When to Use Laravel](/images/python-developers-love-php-laravel/chapter-09-when-to-use-laravel-when-python-still-makes-sense-hero-full.webp)
 
 # Chapter 09: When to Use Laravel (and When Python Still Makes Sense)

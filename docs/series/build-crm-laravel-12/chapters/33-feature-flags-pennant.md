@@ -7,8 +7,8 @@ order: 33
 difficulty: "Advanced"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/32-*"
+estimatedTime: "PT60M"
 ---
-
 ![Feature Flags with Laravel Pennant](/images/build-crm-laravel-12/chapter-33-feature-flags-pennant-hero-full.webp)
 
 # Chapter 33: Feature Flags with Laravel Pennant

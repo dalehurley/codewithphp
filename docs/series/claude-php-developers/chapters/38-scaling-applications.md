@@ -9,8 +9,13 @@ prerequisites:
   - "PHP 8.4+ installed"
   - "Understanding of distributed systems"
   - "Completion of Chapters 36-37"
+teaches:
+  - 'Understand horizontal scaling patterns and stateless application design'
+  - 'Configure load balancers for AI workloads with appropriate timeouts and health checks'
+  - 'Implement queue-based processing to handle spiky traffic and long-running tasks'
+  - 'Build circuit breakers to prevent cascading failures in distributed systems'
+  - 'Implement retry logic with exponential backoff and jitter for transient failures'
 ---
-
 ![38: Scaling Claude Applications](/images/claude-php/chapter-38-hero-full.webp)
 
 <div class="breadcrumbs">

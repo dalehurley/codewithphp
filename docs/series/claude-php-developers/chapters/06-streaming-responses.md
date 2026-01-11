@@ -10,8 +10,13 @@ prerequisites:
   - "HTTP request/response lifecycle understanding"
   - "JavaScript Fetch API and EventSource basics"
   - "PHP output buffering concepts"
+teaches:
+  - 'Understand the difference between blocking and streaming API responses'
+  - 'Implement Server-Sent Events (SSE) in PHP for real-time communication'
+  - 'Disable PHP output buffering correctly for streaming contexts'
+  - 'Build streaming endpoints that work across Apache, Nginx, and PHP development server'
+  - 'Handle streaming events with callbacks for text, completion, and errors'
 ---
-
 ![06: Streaming Responses in PHP](/images/claude-php/chapter-06-hero-full.webp)
 
 <div class="breadcrumbs">

@@ -10,8 +10,13 @@ prerequisites:
   - "Understanding of REST APIs"
   - "Laravel Sanctum for authentication"
   - "Completion of Chapter 21"
+teaches:
+  - 'Design and implement a RESTful API for content generation'
+  - 'Create a flexible template system with variable substitution'
+  - 'Build brand voice management with style guide enforcement'
+  - 'Implement batch generation with async job processing'
+  - 'Set up API authentication and authorization'
 ---
-
 ![24: Content Generation API](/images/claude-php/chapter-24-hero-full.webp)
 
 <div class="breadcrumbs">

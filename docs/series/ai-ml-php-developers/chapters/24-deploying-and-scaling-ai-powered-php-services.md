@@ -7,8 +7,13 @@ order: 24
 difficulty: "Advanced"
 prerequisites:
   - "23"
+teaches:
+  - 'Containerize PHP ML applications using Docker with multi-stage builds for optimized production images'
+  - 'Implement async job queues with Redis to offload ML inference from web request cycles'
+  - 'Deploy to cloud infrastructure with proper environment configuration, SSL/TLS, and public accessibility'
+  - 'Configure load balancing with Nginx to distribute traffic across multiple application instances'
+  - 'Monitor ML services tracking both traditional web metrics and ML-specific performance indicators'
 ---
-
 ![Deploying and Scaling AI-Powered PHP Services](/images/ai-ml-php-developers/chapter-24-deploying-ai-services-hero-full.webp)
 
 # Chapter 24: Deploying and Scaling AI-Powered PHP Services

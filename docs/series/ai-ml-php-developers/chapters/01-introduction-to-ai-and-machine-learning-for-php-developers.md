@@ -6,8 +6,14 @@ chapter: "01"
 order: 1
 difficulty: Beginner
 prerequisites: []
+estimatedTime: "PT20M"
+teaches:
+  - 'Define Artificial Intelligence and Machine Learning with concrete examples — So you can recognize when ML is actually being used vs. hype'
+  - 'Understand the relationship between AI and ML — To avoid confusion and communicate clearly with others'
+  - 'Recognize five real-world use cases for AI/ML in web applications — To identify opportunities in your own work'
+  - 'Distinguish between supervised and unsupervised learning — To understand what types of problems each solves'
+  - 'Explain the ML lifecycle — To have realistic expectations about the iterative, non-linear process'
 ---
-
 ![Introduction to AI and Machine Learning for PHP Developers](/images/ai-ml-php-developers/chapter-01-ai-ml-intro-hero-full.webp)
 
 # Chapter 01: Introduction to AI and Machine Learning for PHP Developers

@@ -9,8 +9,13 @@ prerequisites:
   - "PHP 8.4+ installed"
   - "Understanding of security principles"
   - "Completion of Chapters 1-35"
+teaches:
+  - 'Understand API key security best practices and implement rotation strategies'
+  - 'Recognize prompt injection attack vectors and implement multi-layered defenses'
+  - 'Detect and handle PII in Claude interactions according to compliance requirements'
+  - 'Implement GDPR and HIPAA compliance patterns for AI applications'
+  - 'Build comprehensive security monitoring and audit logging systems'
 ---
-
 ![36: Security Best Practices](/images/claude-php/chapter-36-hero-full.webp)
 
 <div class="breadcrumbs">

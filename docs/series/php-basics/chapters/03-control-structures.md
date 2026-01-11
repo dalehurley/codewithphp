@@ -7,8 +7,13 @@ order: 3
 difficulty: "Beginner"
 prerequisites:
   - "/series/php-basics/chapters/02-variables-data-types-and-constants"
+teaches:
+  - 'Use `if`, `elseif`, and `else` to execute code based on conditions'
+  - 'Understand comparison operators (`==`, `===`, `!=`, `!==`, `>`, `>=`, `<`, `<=`)'
+  - 'Combine conditions with logical operators (`&&`, `||`, `!`)'
+  - 'Use `switch` statements and modern `match` expressions for multiple conditions'
+  - 'Apply ternary operator (`? :`) and null coalescing operator (`??`) for concise conditionals'
 ---
-
 ![Control Structures](/images/php-basics/chapter-03-control-structures-hero-full.webp)
 
 # Chapter 03: Control Structures

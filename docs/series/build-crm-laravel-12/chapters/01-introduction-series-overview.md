@@ -9,8 +9,14 @@ prerequisites:
   - "PHP 8.4+ experience"
   - "Basic understanding of web development concepts"
   - "Composer familiarity"
+estimatedTime: "PT20M"
+teaches:
+  - 'Understand the CRM project''s scope, features, and target users'
+  - 'Explore the technology stack: Laravel 12, React, Inertia, Tailwind, and supporting tools'
+  - 'Learn how Laravel''s official packages (Sanctum, Cashier, Horizon, etc.) integrate into the project'
+  - 'Distinguish between core chapters (required) and bonus chapters (optional)'
+  - 'Understand the seven-part learning path structure'
 ---
-
 ![Introduction & Series Overview](/images/build-crm-laravel-12/chapter-01-introduction-series-overview-hero-full.webp)
 
 # Chapter 01: Introduction & Series Overview

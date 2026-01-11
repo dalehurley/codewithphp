@@ -7,8 +7,14 @@ order: 17
 difficulty: "Intermediate"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/16-deals-module-crud-pipeline-interface"
+estimatedTime: "PT75M"
+teaches:
+  - 'Design a polymorphic task system allowing tasks to belong to multiple entity types'
+  - 'Create a tasks migration with all necessary columns, indexes, and foreign keys'
+  - 'Build a Task model with polymorphic relationships and query scopes'
+  - 'Add inverse relationships to Contact, Company, and Deal models'
+  - 'Implement task enums for type, priority, and status with proper validation'
 ---
-
 ![Tasks Module - Database & Model](/images/build-crm-laravel-12/chapter-17-tasks-module-database-model-hero-full.webp)
 
 # Chapter 17: Tasks Module - Database & Model

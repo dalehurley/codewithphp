@@ -7,8 +7,13 @@ order: 11
 difficulty: "Intermediate"
 prerequisites:
   - "/series/php-basics/chapters/10-oop-traits-and-namespaces"
+teaches:
+  - 'Understand the difference between traditional errors and modern exceptions'
+  - 'Use a `try...catch` block to handle exceptions and prevent application crashes'
+  - '"Throw" your own exceptions when something goes wrong in your code'
+  - 'Use the `finally` block to run cleanup code, regardless of whether an exception occurred'
+  - 'Create custom exception classes for more specific error handling'
 ---
-
 ![Error and Exception Handling](/images/php-basics/chapter-11-error-exception-handling-hero-full.webp)
 
 # Chapter 11: Error and Exception Handling

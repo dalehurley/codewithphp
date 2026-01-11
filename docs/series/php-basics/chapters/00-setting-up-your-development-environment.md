@@ -6,8 +6,13 @@ chapter: 0
 order: 0
 difficulty: "Beginner"
 prerequisites: []
+teaches:
+  - 'Install the latest stable version of PHP (8.4 or higher)'
+  - 'Verify the installation using the command line'
+  - 'Learn to use PHP''s built-in development web server'
+  - 'Install and configure Visual Studio Code with essential extensions for PHP development'
+  - 'Set up Git for version control and make your first commit'
 ---
-
 ![Setting Up Your Development Environment](/images/php-basics/chapter-00-setting-up-development-environment-hero-full.webp)
 
 # Chapter 00: Setting Up Your Development Environment

@@ -1838,7 +1838,7 @@ class UserController extends Controller
 
 4. **Configure Queue Driver** in `.env`:
 
-```env
+```sh
 QUEUE_CONNECTION=database  # or redis, sqs, beanstalkd
 ```
 

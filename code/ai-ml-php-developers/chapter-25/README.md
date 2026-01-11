@@ -207,7 +207,7 @@ chapter-25/
 
 Key variables in `.env`:
 
-```env
+```sh
 # AI Services
 OPENAI_API_KEY=sk-...
 OPENAI_MODEL=gpt-4-turbo-preview

@@ -7,8 +7,13 @@ order: 1
 difficulty: "Intermediate"
 prerequisites:
   - "/series/rails-developers-love-laravel/chapters/00-introduction-why-look-at-laravel"
+teaches:
+  - 'Map Rails routing patterns to Laravel routing syntax'
+  - 'Compare ActiveRecord with Eloquent ORM'
+  - 'Understand controller differences between Rails and Laravel'
+  - 'Translate ERB templates to Blade syntax'
+  - 'Learn migration command and syntax differences'
 ---
-
 ![Mapping Concepts: Rails vs Laravel](/images/rails-developers-love-laravel/chapter-01-mapping-concepts-rails-vs-laravel-hero-full.webp)
 
 # 01: Mapping Concepts: Rails vs Laravel

@@ -7,8 +7,13 @@ order: 34
 difficulty: "Advanced"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/33-ai-assisted-development-with-laravel-boost"
+estimatedTime: "PT60M"
+teaches:
+  - 'Understand the core concepts of this feature'
+  - 'Learn implementation patterns used in production applications'
+  - 'Apply these patterns to your CRM'
+  - 'Understand integration points with existing modules'
 ---
-
 ![ai-assisted-development-with-laravel-boost](/images/build-crm-laravel-12/chapter-34-ai-assisted-development-boost-hero-full.webp)
 
 # Chapter 34: AI-Assisted Development with Laravel Boost

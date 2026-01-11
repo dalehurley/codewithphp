@@ -7,8 +7,8 @@ order: 22
 difficulty: "Advanced"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/21-*"
+estimatedTime: "PT60M"
 ---
-
 ![OAuth2 with Laravel Passport](/images/build-crm-laravel-12/chapter-22-oauth2-laravel-passport-hero-full.webp)
 
 # Chapter 22: OAuth2 with Laravel Passport

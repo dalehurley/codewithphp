@@ -7,8 +7,8 @@ order: 23
 difficulty: "Intermediate"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/22-*"
+estimatedTime: "PT60M"
 ---
-
 ![Social Logins with Laravel Socialite](/images/build-crm-laravel-12/chapter-23-social-logins-socialite-hero-full.webp)
 
 # Chapter 23: Social Logins with Laravel Socialite

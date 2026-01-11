@@ -7,8 +7,14 @@ order: 8
 difficulty: "Intermediate"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/07-user-authentication-react-starter-kit"
+estimatedTime: "PT90M"
+teaches:
+  - 'Create teams via React interface'
+  - 'Implement user-team many-to-many relationship with roles'
+  - 'Send invitation emails to new team members'
+  - 'Handle invitation acceptance flow'
+  - 'Allow users to switch between their teams'
 ---
-
 ![Team Management & User Roles](/images/build-crm-laravel-12/chapter-08-team-management-user-roles-hero-full.webp)
 
 # Chapter 08: Team Management & User Roles

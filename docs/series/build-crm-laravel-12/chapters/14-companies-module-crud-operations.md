@@ -7,8 +7,14 @@ order: 14
 difficulty: "Intermediate"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/13-companies-module-database-model"
+estimatedTime: "PT125M"
+teaches:
+  - 'Create a resourceful controller with authorization checks for team data isolation'
+  - 'Build FormRequest validation with team-specific uniqueness rules'
+  - 'Build authorization policies ensuring users only access their team''s companies'
+  - 'Implement eager loading to optimize database queries and prevent N+1 problems'
+  - 'Create React views for company listing with search and filtering'
 ---
-
 ![Companies Module - CRUD Operations](/images/build-crm-laravel-12/chapter-14-companies-module-crud-operations-hero-full.webp)
 
 # Chapter 14: Companies Module - CRUD Operations

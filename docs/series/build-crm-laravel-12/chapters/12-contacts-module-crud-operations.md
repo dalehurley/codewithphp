@@ -7,8 +7,14 @@ order: 12
 difficulty: "Intermediate"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/11-contacts-module-database-model"
+estimatedTime: "PT90M"
+teaches:
+  - 'Create a RESTful controller with proper action names and routing'
+  - 'Implement form request validation with Laravel''s FormRequest class'
+  - 'Write authorization policies and use them in controllers with `authorize()` method'
+  - 'Handle validation errors and return them to the frontend'
+  - 'Implement soft delete and restore functionality where appropriate'
 ---
-
 ![Contacts Module - CRUD Operations](/images/build-crm-laravel-12/chapter-12-contacts-module-crud-operations-hero-full.webp)
 
 # Chapter 12: Contacts Module - CRUD Operations

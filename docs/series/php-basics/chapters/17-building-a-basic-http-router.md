@@ -7,8 +7,13 @@ order: 17
 difficulty: "Intermediate"
 prerequisites:
   - "/series/php-basics/chapters/16-writing-better-code-with-psr-1-and-psr-12"
+teaches:
+  - 'Understand the Front Controller pattern'
+  - 'Get the request URI and method from the `$_SERVER` superglobal'
+  - 'Create a `Router` class that can register routes'
+  - 'Dispatch a request to the correct route''s handler'
+  - 'Handle 404 Not Found errors for undefined routes'
 ---
-
 ![Building a Basic HTTP Router](/images/php-basics/chapter-17-http-router-hero-full.webp)
 
 # Chapter 17: Building a Basic HTTP Router

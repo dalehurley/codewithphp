@@ -8,6 +8,13 @@ difficulty: "Intermediate"
 prerequisites:
   - "/series/php-algorithms/chapters/25-dynamic-programming-fundamentals"
   - "/series/php-algorithms/chapters/13-hash-tables-hash-functions"
+estimatedTime: "PT50M"
+teaches:
+  - 'Understand when and why caching is the right optimization strategy'
+  - 'Implement various caching strategies from simple arrays to distributed systems'
+  - 'Master Redis and Memcached integration for production environments'
+  - 'Apply memoization patterns to eliminate redundant computations'
+  - 'Design multi-level caching architectures for maximum performance'
 ---
 ![Caching & Memoization Strategies](/images/php-algorithms/chapter-27-caching-hero-full.webp)
 

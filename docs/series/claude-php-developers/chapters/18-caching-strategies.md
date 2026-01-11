@@ -10,8 +10,13 @@ prerequisites:
   - "Redis familiarity"
   - "Cache invalidation concepts"
   - "Understanding of cache TTL patterns"
+teaches:
+  - 'Understand Anthropic''s native prompt caching and how to use it effectively'
+  - 'Implement response caching with Redis using PSR-16 interfaces'
+  - 'Build tiered caching systems combining memory and persistent storage'
+  - 'Create semantic similarity caching for fuzzy prompt matching'
+  - 'Design cache invalidation strategies for production applications'
 ---
-
 ![18: Caching Strategies for API Calls](/images/claude-php/chapter-18-hero-full.webp)
 
 <div class="breadcrumbs">

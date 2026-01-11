@@ -7,8 +7,8 @@ order: 26
 difficulty: "Advanced"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/25-*"
+estimatedTime: "PT60M"
 ---
-
 ![Real-Time Events with Laravel Reverb & Echo](/images/build-crm-laravel-12/chapter-26-realtime-events-reverb-echo-hero-full.webp)
 
 # Chapter 26: Real-Time Events with Laravel Reverb & Echo

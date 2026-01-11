@@ -10,6 +10,13 @@ prerequisites:
   - "/series/php-algorithms/chapters/06-insertion-sort-merge-sort"
   - "/series/php-algorithms/chapters/07-quick-sort-pivot-strategies"
   - "/series/php-algorithms/chapters/08-heap-sort-priority-queues"
+estimatedTime: "PT50M"
+teaches:
+  - 'Benchmark all six sorting algorithms across various dataset types and sizes'
+  - 'Understand time/space complexity trade-offs for each sorting algorithm'
+  - 'Learn which algorithm to choose based on data characteristics (size, order, duplicates)'
+  - 'Master the concept of stable vs unstable sorting and when stability matters'
+  - 'Create decision charts and selection guidelines for real-world sorting scenarios'
 ---
 ![09: Comparing Sorting Algorithms](/images/php-algorithms/chapter-09-comparing-sorts-hero-full.webp)
 

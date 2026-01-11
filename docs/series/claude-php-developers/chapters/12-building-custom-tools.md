@@ -10,8 +10,13 @@ prerequisites:
   - "Understanding of PDO and databases"
   - "Experience with REST APIs"
   - "PHP 8.4+ with type declarations"
+teaches:
+  - 'Understand the Tool Registry pattern for organizing custom tools'
+  - 'Build database integration tools that enable Claude to query your data'
+  - 'Create API integration tools for external service communication'
+  - 'Implement secure file operation tools with proper access controls'
+  - 'Learn security best practices for tool execution and validation'
 ---
-
 ![12: Building Custom Tools in PHP](/images/claude-php/chapter-12-hero-full.webp)
 
 <div class="breadcrumbs">

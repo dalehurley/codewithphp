@@ -9,8 +9,13 @@ prerequisites:
   - "Laravel 12+ installed"
   - "Understanding of service containers"
   - "Completion of Chapters 00-20"
+teaches:
+  - 'Understand Laravel''s service container and dependency injection patterns'
+  - 'Create custom service providers to bootstrap Claude integration'
+  - 'Implement contracts and interfaces for flexible, testable code'
+  - 'Build facades for convenient static access to services'
+  - 'Configure Laravel applications using environment variables and config files'
 ---
-
 ![21: Laravel Integration Patterns](/images/claude-php/chapter-21-hero-full.webp)
 
 <div class="breadcrumbs">

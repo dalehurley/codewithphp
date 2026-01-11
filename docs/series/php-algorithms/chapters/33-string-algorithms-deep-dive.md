@@ -6,8 +6,14 @@ chapter: 33
 order: 33
 difficulty: "Advanced"
 prerequisites: []
+estimatedTime: "PT55M"
+teaches:
+  - 'Implement Aho-Corasick for searching multiple patterns simultaneously in linear time'
+  - 'Build trie data structures for efficient autocomplete and prefix matching'
+  - 'Construct suffix trees and arrays for advanced pattern matching and text analysis'
+  - 'Apply string algorithms to real-world problems like content filtering and plagiarism detection'
+  - 'Optimize text processing operations that traditionally take quadratic time down to linear'
 ---
-
 ![String Algorithms Deep Dive](/images/php-algorithms/chapter-33-string-algorithms-hero-full.webp)
 
 <div class="breadcrumbs">

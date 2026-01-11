@@ -10,8 +10,13 @@ prerequisites:
   - "Understanding of async/parallel processing"
   - "Knowledge of design patterns"
   - "Experience with complex system architecture"
+teaches:
+  - 'Understand multi-agent system architecture and design patterns'
+  - 'Build a flexible agent framework with specialization and delegation'
+  - 'Implement reliable message passing between agents'
+  - 'Create supervisor-worker coordination patterns'
+  - 'Master task decomposition and result synthesis'
 ---
-
 ![33: Multi-Agent Systems](/images/claude-php/chapter-33-hero-full.webp)
 
 <div class="breadcrumbs">

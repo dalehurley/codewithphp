@@ -8,8 +8,13 @@ difficulty: "Intermediate"
 prerequisites:
   - "16"
   - "12"
+teaches:
+  - 'Understand pre-trained models, transfer learning, and why they work for image classification'
+  - 'Implement Google Cloud Vision API integration with authentication and error handling'
+  - 'Deploy and run ONNX models locally using MobileNetV2 for on-device inference'
+  - 'Compare cloud vs local approaches across cost, latency, accuracy, and scalability dimensions'
+  - 'Build a unified classification service using strategy pattern for flexible deployment'
 ---
-
 ![Image Classification Project with Pre-trained Models](/images/ai-ml-php-developers/chapter-17-image-classification-hero-full.webp)
 
 # Chapter 17: Image Classification Project with Pre-trained Models

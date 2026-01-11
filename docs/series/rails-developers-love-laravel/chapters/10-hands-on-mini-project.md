@@ -8,8 +8,13 @@ difficulty: "Intermediate"
 prerequisites:
   - "/series/rails-developers-love-laravel/chapters/09-when-to-use-laravel-vs-rails"
 tags: ["laravel", "project", "tutorial", "hands-on", "practice"]
+teaches:
+  - 'Build a complete, production-ready task management application'
+  - 'Implement user authentication with Laravel Sanctum'
+  - 'Create RESTful API endpoints with proper validation and authorization'
+  - 'Design and implement database relationships (one-to-many, many-to-many)'
+  - 'Write comprehensive tests using Pest or PHPUnit'
 ---
-
 <div class="breadcrumbs">
   <a href="/">Home</a>
   <span class="breadcrumbs-separator">›</span>

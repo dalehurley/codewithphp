@@ -7,8 +7,14 @@ order: 19
 difficulty: "Intermediate"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/18-tasks-module-crud-task-scheduling"
+estimatedTime: "PT95M"
+teaches:
+  - 'Create notification classes for deals, tasks, teams, and companies'
+  - 'Implement email channel with formatted HTML emails and links'
+  - 'Add database channel storing notifications for in-app display'
+  - 'Build notification center UI with unread counts and mark-as-read'
+  - 'Create preferences system allowing users to control notifications'
 ---
-
 ![Notifications & Email Integration](/images/build-crm-laravel-12/chapter-19-notifications-email-integration-hero-full.webp)
 
 # Chapter 19: Notifications & Email Integration

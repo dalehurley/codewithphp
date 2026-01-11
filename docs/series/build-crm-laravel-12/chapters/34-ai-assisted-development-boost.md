@@ -7,8 +7,8 @@ order: 34
 difficulty: "Advanced"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/33-*"
+estimatedTime: "PT60M"
 ---
-
 ![AI-Assisted Development with Laravel Boost](/images/build-crm-laravel-12/chapter-34-ai-assisted-development-boost-hero-full.webp)
 
 # Chapter 34: AI-Assisted Development with Laravel Boost

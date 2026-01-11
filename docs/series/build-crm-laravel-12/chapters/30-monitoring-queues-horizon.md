@@ -7,8 +7,8 @@ order: 30
 difficulty: "Advanced"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/29-*"
+estimatedTime: "PT60M"
 ---
-
 ![Monitoring Queues with Laravel Horizon](/images/build-crm-laravel-12/chapter-30-monitoring-queues-horizon-hero-full.webp)
 
 # Chapter 30: Monitoring Queues with Laravel Horizon

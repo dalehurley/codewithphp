@@ -6,6 +6,13 @@ chapter: 30
 order: 30
 difficulty: "Advanced"
 prerequisites: []
+estimatedTime: "PT60M"
+teaches:
+  - 'Analyze how algorithmic choices impact real business metrics (cost, speed, user satisfaction)'
+  - 'Apply multiple algorithms together to solve complex multi-faceted problems'
+  - 'Measure actual performance improvements with before/after benchmarks'
+  - 'Learn from production optimization case studies with millions in cost savings'
+  - 'Build complete solutions from problem analysis through deployment'
 ---
 ![Real-World Case Studies](/images/php-algorithms/chapter-30-case-studies-hero-full.webp)
 

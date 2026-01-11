@@ -10,8 +10,13 @@ prerequisites:
   - "SOLID principles understanding"
   - "Dependency injection concepts"
   - "PSR standards familiarity"
+teaches:
+  - 'Design and implement a service interface that abstracts Claude API complexity'
+  - 'Build a framework-agnostic service layer following SOLID principles'
+  - 'Create type-safe configuration classes with validation'
+  - 'Implement the factory pattern for complex object creation'
+  - 'Integrate services into Laravel applications using service providers'
 ---
-
 ![17: Building a Claude Service Class](/images/claude-php/chapter-17-hero-full.webp)
 
 <div class="breadcrumbs">

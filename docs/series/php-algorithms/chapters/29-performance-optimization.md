@@ -7,8 +7,14 @@ order: 29
 difficulty: "Advanced"
 prerequisites:
   - "/series/php-algorithms/chapters/28-algorithm-selection-guide"
+estimatedTime: "PT55M"
+teaches:
+  - 'Master profiling tools to identify bottlenecks scientifically, not by guessing'
+  - 'Apply benchmarking methodologies to measure improvements objectively'
+  - 'Leverage PHP-specific optimizations including OPcache, JIT, and memory management'
+  - 'Optimize algorithms for both speed and memory efficiency simultaneously'
+  - 'Implement application-level caching strategies with Redis/Memcached'
 ---
-
 ![Performance Optimization](/images/php-algorithms/chapter-29-performance-optimization-hero-full.webp)
 
 <div class="breadcrumbs">

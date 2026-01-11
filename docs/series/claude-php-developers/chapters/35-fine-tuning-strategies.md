@@ -10,8 +10,13 @@ prerequisites:
   - "Understanding of ML concepts"
   - "Experience with production AI systems"
   - "Knowledge of evaluation metrics"
+teaches:
+  - 'Understand when fine-tuning is appropriate versus prompt engineering or RAG'
+  - 'Prepare high-quality training datasets with proper validation and quality checks'
+  - 'Evaluate fine-tuned models using systematic metrics and comparison tools'
+  - 'Calculate ROI and make data-driven decisions about fine-tuning investments'
+  - 'Implement production-ready fine-tuning workflows and deployment strategies'
 ---
-
 ![35: Fine-tuning Strategies](/images/claude-php/chapter-35-hero-full.webp)
 
 <div class="breadcrumbs">

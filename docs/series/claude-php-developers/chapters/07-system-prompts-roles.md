@@ -10,8 +10,13 @@ prerequisites:
   - "Completion of Chapters 00-06"
   - "Understanding of prompt engineering basics"
   - "Familiarity with PHP classes and namespaces"
+teaches:
+  - 'Write effective system prompts using structured components (role, expertise, task, constraints, style)'
+  - 'Build specialized AI assistants tailored to specific domains and use cases'
+  - 'Implement dynamic role switching with multi-persona assistants'
+  - 'Prevent prompt injection attacks through input sanitization and encapsulation'
+  - 'Create defensive system prompts that resist manipulation attempts'
 ---
-
 ![07: System Prompts and Role Definition](/images/claude-php/chapter-07-hero-full.webp)
 
 <div class="breadcrumbs">

@@ -10,8 +10,13 @@ prerequisites:
   - "/series/php-basics/chapters/05-handling-html-forms-and-user-input"
 estimatedTime: "30 minutes"
 tags: ["security", "csrf", "forms", "sessions", "xss"]
+teaches:
+  - 'Understand what CSRF attacks are and how they work'
+  - 'Generate cryptographically secure CSRF tokens'
+  - 'Validate tokens using timing-attack-safe comparison'
+  - 'Implement token-per-session and token-per-request strategies'
+  - 'Protect against XSS when rendering form data'
 ---
-
 ![CSRF Protection & Form Security](/images/php-basics/chapter-15b-csrf-protection-form-security-hero-full.webp)
 
 # Chapter 15b: CSRF Protection & Form Security

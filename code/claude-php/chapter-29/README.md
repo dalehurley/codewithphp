@@ -92,7 +92,7 @@ $stats = $queue->getStats();
 
 ## Configuration
 
-```env
+```sh
 MODERATION_THRESHOLD_TOXIC=0.8
 MODERATION_THRESHOLD_SPAM=0.7
 MODERATION_AUTO_APPROVE_THRESHOLD=0.2

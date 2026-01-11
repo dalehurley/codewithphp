@@ -7,8 +7,8 @@ order: 28
 difficulty: "Advanced"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/27-*"
+estimatedTime: "PT60M"
 ---
-
 ![High-Performance Tuning with Laravel Octane](/images/build-crm-laravel-12/chapter-28-high-performance-octane-hero-full.webp)
 
 # Chapter 28: High-Performance Tuning with Laravel Octane

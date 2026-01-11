@@ -7,8 +7,13 @@ order: 24
 difficulty: "Advanced"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/23-subscription-billing-with-laravel-cashier"
+estimatedTime: "PT60M"
+teaches:
+  - 'Understand the core concepts of this feature'
+  - 'Learn implementation patterns used in production applications'
+  - 'Apply these patterns to your CRM'
+  - 'Understand integration points with existing modules'
 ---
-
 ![subscription-billing-with-laravel-cashier](/images/build-crm-laravel-12/chapter-24-subscription-billing-cashier-hero-full.webp)
 
 # Chapter 24: Subscription Billing with Laravel Cashier

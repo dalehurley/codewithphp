@@ -7,8 +7,13 @@ order: 15
 difficulty: "Intermediate"
 prerequisites:
   - "14"
+teaches:
+  - 'Understand how large language models work, including tokens, context windows, temperature parameters, and the chat completion API structure'
+  - 'Implement both raw HTTP/cURL requests and library-based approaches for calling OpenAI''s API from PHP'
+  - 'Build text generation systems that create creative content with configurable parameters and prompt engineering techniques'
+  - 'Create article summarization tools that condense long documents while preserving key information'
+  - 'Develop conversational chatbots that maintain context across multiple turns and handle complex dialogues'
 ---
-
 ![Language Models and Text Generation with OpenAI APIs](/images/ai-ml-php-developers/chapter-15-language-models-hero-full.webp)
 
 # Chapter 15: Language Models and Text Generation with OpenAI APIs

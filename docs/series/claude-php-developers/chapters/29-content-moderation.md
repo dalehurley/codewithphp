@@ -10,8 +10,13 @@ prerequisites:
   - "Understanding of content policies and safety"
   - "Experience with moderation workflows"
   - "Knowledge of queue systems and async processing"
+teaches:
+  - 'Understand how to build a comprehensive content moderation system using Claude''s context-aware analysis'
+  - 'Implement multi-layered content analysis that detects toxic language, spam, PII, and policy violations'
+  - 'Create a policy engine that enforces customizable community guidelines with severity scoring'
+  - 'Build PII detection and redaction capabilities to protect user privacy and ensure legal compliance'
+  - 'Design a moderation queue system with priority-based processing and human review workflows'
 ---
-
 ![29: Content Moderation System](/images/claude-php/chapter-29-hero-full.webp)
 
 <div class="breadcrumbs">

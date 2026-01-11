@@ -7,8 +7,14 @@ order: 8
 difficulty: "Intermediate"
 prerequisites:
   - "/series/python-developers-love-php-laravel/chapters/07-testing-deployment-devops-best-practices"
+estimatedTime: "PT140M"
+teaches:
+  - 'Understand Composer vs pip package management, including dependency resolution, lock files, and version constraints'
+  - 'Master Laravel''s first-party packages (Horizon, Nova, Vapor, Forge) and compare to Django''s first-party packages'
+  - 'Discover popular Laravel packages: Spatie packages, Livewire, Inertia.js, Laravel Sanctum, and their Python equivalents'
+  - 'Compare Python ecosystem (Django packages, Flask extensions, Python libraries) vs PHP/Laravel ecosystem (Packagist, Laravel packages)'
+  - 'Understand community dynamics: size, activity, support channels (Stack Overflow, Discord, forums), conferences (Laracon vs PyCon), documentation quality'
 ---
-
 ![Ecosystem, Community, Packages](/images/python-developers-love-php-laravel/chapter-08-ecosystem-community-packages-where-laravel-excels-hero-full.webp)
 
 # Chapter 08: Ecosystem, Community, Packages & Where Laravel Excels

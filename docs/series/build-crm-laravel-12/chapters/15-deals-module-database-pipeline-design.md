@@ -7,8 +7,14 @@ order: 15
 difficulty: "Intermediate"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/14-companies-module-crud-operations"
+estimatedTime: "PT90M"
+teaches:
+  - 'Understand sales pipeline architecture and how CRM systems structure opportunity data'
+  - 'Design normalized database schemas using reference tables and junction tables for complex relationships'
+  - 'Implement weighted revenue forecasting by tying closure probability to pipeline stages'
+  - 'Create temporal data models that capture historical state changes for velocity analysis'
+  - 'Optimize query performance with strategic indexing for real-time aggregation'
 ---
-
 ![Deals Module - Database & Pipeline Design](/images/build-crm-laravel-12/chapter-15-deals-module-database-pipeline-design-hero-full.webp)
 
 # Chapter 15: Deals Module - Database & Pipeline Design

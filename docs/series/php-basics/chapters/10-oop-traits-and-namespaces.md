@@ -7,8 +7,13 @@ order: 10
 difficulty: "Intermediate"
 prerequisites:
   - "/series/php-basics/chapters/09-oop-inheritance-abstract-classes-and-interfaces"
+teaches:
+  - 'Use a trait to share methods between different classes'
+  - 'Understand how to resolve method conflicts when using multiple traits'
+  - 'Organize your code with namespaces'
+  - 'Import and alias classes from other namespaces using the `use` keyword'
+  - 'Correctly reference PHP''s built-in classes when working inside custom namespaces'
 ---
-
 ![OOP: Traits and Namespaces](/images/php-basics/chapter-10-oop-traits-namespaces-hero-full.webp)
 
 # Chapter 10: OOP: Traits and Namespaces

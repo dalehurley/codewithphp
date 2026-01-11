@@ -7,8 +7,14 @@ order: 6
 difficulty: "Intermediate"
 prerequisites:
   - "/series/python-developers-love-php-laravel/chapters/05-working-with-data-eloquent-orm-database-workflow"
+estimatedTime: "PT120M"
+teaches:
+  - 'Map Flask-RESTful Resource classes and Django REST viewsets to Laravel API controllers'
+  - 'Understand Laravel API Resources vs Django REST serializers and Flask response formatting'
+  - 'Master Laravel Form Requests vs Django form validation and Flask request validation'
+  - 'Implement query parameter filtering and sorting in Laravel APIs (comparing to Flask `request.args` and Django REST `query_params`)'
+  - 'Handle file uploads in API endpoints using Laravel''s Storage facade (comparing to Flask and Django REST file handling)'
 ---
-
 ![Building REST APIs](/images/python-developers-love-php-laravel/chapter-06-building-rest-apis-integrations-python-to-laravel-hero-full.webp)
 
 # Chapter 06: Building REST APIs & Integrations: From Python Flask/Django to Laravel

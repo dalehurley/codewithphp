@@ -7,8 +7,13 @@ order: 33
 difficulty: "Advanced"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/32-feature-flags-with-laravel-pennant"
+estimatedTime: "PT60M"
+teaches:
+  - 'Understand the core concepts of this feature'
+  - 'Learn implementation patterns used in production applications'
+  - 'Apply these patterns to your CRM'
+  - 'Understand integration points with existing modules'
 ---
-
 ![feature-flags-with-laravel-pennant](/images/build-crm-laravel-12/chapter-33-feature-flags-pennant-hero-full.webp)
 
 # Chapter 33: Feature Flags with Laravel Pennant

@@ -8,8 +8,13 @@ difficulty: "Intermediate"
 prerequisites:
   - "03"
   - "08"
+teaches:
+  - 'Build decision tree classifiers and understand how they split data to make interpretable predictions'
+  - 'Visualize decision trees to see the exact rules learned from data'
+  - 'Create Random Forest ensembles by training multiple trees on random subsets of data and features'
+  - 'Implement Gradient Boosting to sequentially correct errors from previous models'
+  - 'Analyze feature importance to identify which variables drive predictions'
 ---
-
 ![Advanced Machine Learning Techniques (Trees, Ensembles, and Clustering)](/images/ai-ml-php-developers/chapter-09-advanced-ml-techniques-hero-full.webp)
 
 # Chapter 09: Advanced Machine Learning Techniques (Trees, Ensembles, and Clustering)

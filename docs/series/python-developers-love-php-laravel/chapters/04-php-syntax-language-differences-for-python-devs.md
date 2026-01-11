@@ -7,8 +7,14 @@ order: 4
 difficulty: "Intermediate"
 prerequisites:
   - "/series/python-developers-love-php-laravel/chapters/03-laravel-developer-experience-productivity-tools"
+estimatedTime: "PT95M"
+teaches:
+  - 'Understand PHP''s variable prefix (`$`) and assignment syntax'
+  - 'Compare PHP type declarations with Python type hints'
+  - 'Learn PHP string interpolation and concatenation differences'
+  - 'Understand PHP array syntax vs Python lists and dictionaries'
+  - 'Compare PHP function definitions with Python functions'
 ---
-
 ![PHP Syntax & Language Differences](/images/python-developers-love-php-laravel/chapter-04-php-syntax-language-differences-for-python-devs-hero-full.webp)
 
 # Chapter 04: The PHP Syntax & Language Differences for Python Devs

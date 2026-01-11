@@ -8,8 +8,13 @@ difficulty: "Intermediate"
 prerequisites:
   - "/series/rails-developers-love-laravel/chapters/06-building-rest-apis"
 tags: ["laravel", "testing", "deployment", "devops", "ci-cd", "phpunit"]
+teaches:
+  - 'Understand the differences between PHPUnit and RSpec testing approaches'
+  - 'Write unit and feature tests for Laravel applications'
+  - 'Set up test factories and database testing strategies'
+  - 'Configure CI/CD pipelines with GitHub Actions'
+  - 'Deploy Laravel applications using multiple strategies'
 ---
-
 <div class="breadcrumbs">
   <a href="/">Home</a>
   <span class="breadcrumbs-separator">›</span>

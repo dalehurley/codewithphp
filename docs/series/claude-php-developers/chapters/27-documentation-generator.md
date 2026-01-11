@@ -10,8 +10,13 @@ prerequisites:
   - "Understanding of PHPDoc and documentation standards"
   - "Knowledge of Markdown and static site generators"
   - "Experience with code parsing and AST"
+teaches:
+  - 'Understand how to parse PHP code using Abstract Syntax Trees (AST) with PHP-Parser'
+  - 'Implement code structure extraction from PHP files (classes, methods, properties, functions)'
+  - 'Create API documentation generators that produce comprehensive technical documentation'
+  - 'Build user guide generators for different documentation types (getting started, cookbooks, advanced topics)'
+  - 'Develop automated README generation with project metadata extraction'
 ---
-
 ![27: Documentation Generator](/images/claude-php/chapter-27-hero-full.webp)
 
 <div class="breadcrumbs">

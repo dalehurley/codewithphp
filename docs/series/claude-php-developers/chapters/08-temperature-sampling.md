@@ -11,8 +11,13 @@ prerequisites:
   - "/series/claude-php-developers/chapters/02-authentication-api-keys"
   - "/series/claude-php-developers/chapters/03-your-first-claude-request"
   - "Basic understanding of probability concepts"
+teaches:
+  - 'Understand how language model sampling works at the token level'
+  - 'Master temperature parameter control (0.0 = deterministic, 2.0 = creative)'
+  - 'Learn top-p (nucleus sampling) and how it filters token choices'
+  - 'Understand top-k sampling and when to use it'
+  - 'Combine temperature, top_p, and top_k for fine-grained control'
 ---
-
 ![08: Temperature and Sampling Parameters](/images/claude-php/chapter-08-hero-full.webp)
 
 <div class="breadcrumbs">

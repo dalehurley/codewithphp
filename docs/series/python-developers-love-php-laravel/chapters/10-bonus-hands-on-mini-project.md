@@ -7,8 +7,13 @@ order: 10
 difficulty: "Intermediate"
 prerequisites:
   - "/series/python-developers-love-php-laravel/chapters/09-when-to-use-laravel-when-python-still-makes-sense"
+teaches:
+  - 'Build a complete Laravel application from scratch using all concepts from the series'
+  - 'Implement both full-stack (Blade) and API-only approaches in the same application'
+  - 'Master Sanctum authentication for API token management'
+  - 'Create and test Eloquent relationships (users and tasks)'
+  - 'Write comprehensive feature tests for web routes and API endpoints'
 ---
-
 ![Bonus: Hands-On Mini Project](/images/python-developers-love-php-laravel/chapter-10-bonus-hands-on-mini-project-hero-full.webp)
 
 # Chapter 10: Bonus: Hands-On Mini Project
@@ -192,14 +197,14 @@ touch database/database.sqlite
 
 Update `.env` file:
 
-```env
+```sh
 DB_CONNECTION=sqlite
 DB_DATABASE=/absolute/path/to/task-manager/database/database.sqlite
 ```
 
 Or use relative path:
 
-```env
+```sh
 DB_CONNECTION=sqlite
 DB_DATABASE=database/database.sqlite
 ```
@@ -2266,7 +2271,7 @@ Laravel VPS eliminates the need to manually provision servers from providers lik
 
 In Forge site settings, go to "Environment" and add:
 
-```env
+```sh
 APP_NAME="Task Manager"
 APP_ENV=production
 APP_KEY=base64:... (generate with: php artisan key:generate)
@@ -2393,7 +2398,7 @@ Understand production deployment considerations: environment variables, queue wo
 
 Production `.env` should have:
 
-```env
+```sh
 APP_ENV=production
 APP_DEBUG=false
 APP_URL=https://your-domain.com

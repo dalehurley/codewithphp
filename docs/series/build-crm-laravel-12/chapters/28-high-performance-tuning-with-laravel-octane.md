@@ -7,8 +7,13 @@ order: 28
 difficulty: "Advanced"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/27-high-performance-tuning-with-laravel-octane"
+estimatedTime: "PT60M"
+teaches:
+  - 'Understand the core concepts of this feature'
+  - 'Learn implementation patterns used in production applications'
+  - 'Apply these patterns to your CRM'
+  - 'Understand integration points with existing modules'
 ---
-
 ![high-performance-tuning-with-laravel-octane](/images/build-crm-laravel-12/chapter-28-high-performance-octane-hero-full.webp)
 
 # Chapter 28: High-Performance Tuning with Laravel Octane

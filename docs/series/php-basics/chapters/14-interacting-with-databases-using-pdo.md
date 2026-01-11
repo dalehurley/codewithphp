@@ -7,8 +7,13 @@ order: 14
 difficulty: "Intermediate"
 prerequisites:
   - "/series/php-basics/chapters/13-working-with-the-filesystem"
+teaches:
+  - 'Understand the role of PDO and why it''s the modern standard for database access in PHP'
+  - 'Connect to a SQLite database using PDO'
+  - 'Handle connection errors gracefully with try/catch blocks'
+  - 'Run `SELECT`, `INSERT`, `UPDATE`, and `DELETE` queries securely'
+  - 'Use prepared statements to prevent SQL injection attacks'
 ---
-
 ![Interacting with Databases using PDO](/images/php-basics/chapter-14-databases-pdo-hero-full.webp)
 
 # Chapter 14: Interacting with Databases using PDO

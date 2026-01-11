@@ -60,7 +60,7 @@ if ($escalation->shouldEscalate($ticket)) {
 
 ## Configuration
 
-```env
+```sh
 ESCALATION_THRESHOLD=0.8  # 0.0-1.0
 SUPPORT_EMAIL=support@example.com
 ```

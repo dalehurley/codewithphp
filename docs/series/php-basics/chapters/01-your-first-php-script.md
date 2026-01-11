@@ -7,8 +7,14 @@ order: 1
 difficulty: "Beginner"
 prerequisites:
   - "/series/php-basics/chapters/00-setting-up-your-development-environment"
+estimatedTime: "PT15M"
+teaches:
+  - 'Understand the purpose of PHP tags (`<?php ... ?>`) and when to use closing tags'
+  - 'Use the `echo` statement and short echo syntax (`<?=`) to output strings'
+  - 'Run a PHP script from both the command line and a web browser'
+  - 'Learn how to add comments to your code'
+  - 'Master string concatenation with the `.` operator'
 ---
-
 ![Your First PHP Script](/images/php-basics/chapter-01-first-php-script-hero-full.webp)
 
 # Chapter 01: Your First PHP Script

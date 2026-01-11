@@ -10,8 +10,13 @@ prerequisites:
   - "Understanding of Git and version control"
   - "Experience with GitHub/GitLab APIs"
   - "Knowledge of code quality principles"
+teaches:
+  - 'Understand how to parse and analyze Git diffs programmatically'
+  - 'Build a security scanner that combines pattern matching with AI-powered deep analysis'
+  - 'Create a bug detection system that identifies logic errors and code quality issues'
+  - 'Integrate with GitHub/GitLab APIs for automated code reviews'
+  - 'Generate intelligent, actionable review comments with severity levels'
 ---
-
 ![26: Building a Code Review Assistant](/images/claude-php/chapter-26-hero-full.webp)
 
 <div class="breadcrumbs">

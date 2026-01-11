@@ -7,8 +7,14 @@ order: 18
 difficulty: "Intermediate"
 prerequisites:
   - "/series/php-basics/chapters/17-building-a-basic-http-router"
+estimatedTime: "PT25M"
+teaches:
+  - 'Understand the roles of Model, View, and Controller'
+  - 'Create a directory structure that reflects the MVC pattern'
+  - 'Refactor our router to call controller methods instead of closures'
+  - 'Create a simple templating system for rendering views and passing data to them'
+  - 'Implement a layout system to eliminate duplicate HTML across views'
 ---
-
 ![Project: Structuring a Simple Application](/images/php-basics/chapter-18-project-structuring-hero-full.webp)
 
 # Chapter 18: Project: Structuring a Simple Application

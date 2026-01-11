@@ -9,6 +9,13 @@ prerequisites:
   - "/series/php-algorithms/chapters/21-graph-representations"
   - "/series/php-algorithms/chapters/03-recursion-fundamentals"
   - "/series/php-algorithms/chapters/17-stacks-queues"
+estimatedTime: "PT55M"
+teaches:
+  - 'Master the depth-first search algorithm for graph traversal'
+  - 'Implement both recursive and iterative DFS versions'
+  - 'Apply DFS to solve cycle detection, path finding, and connected components'
+  - 'Understand topological sorting with DFS'
+  - 'Build a maze solver using depth-first exploration'
 ---
 ![Depth-First Search (DFS)](/images/php-algorithms/chapter-22-depth-first-search-hero-full.webp)
 

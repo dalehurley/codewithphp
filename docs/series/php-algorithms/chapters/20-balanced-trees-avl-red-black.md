@@ -8,6 +8,7 @@ difficulty: "Advanced"
 prerequisites:
   - "/series/php-algorithms/chapters/18-trees-binary-search-trees"
   - "/series/php-algorithms/chapters/19-tree-traversal-algorithms"
+estimatedTime: "PT70M"
 ---
 ![Balanced Trees: AVL & Red-Black Trees](/images/php-algorithms/chapter-20-balanced-trees-hero-full.webp)
 

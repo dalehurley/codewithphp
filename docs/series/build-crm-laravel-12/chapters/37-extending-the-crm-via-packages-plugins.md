@@ -7,8 +7,13 @@ order: 37
 difficulty: "Advanced"
 prerequisites:
   - "/series/build-crm-laravel-12/chapters/36-extending-the-crm-via-packages-plugins"
+estimatedTime: "PT60M"
+teaches:
+  - 'Understand the core concepts of this feature'
+  - 'Learn implementation patterns used in production applications'
+  - 'Apply these patterns to your CRM'
+  - 'Understand integration points with existing modules'
 ---
-
 ![extending-the-crm-via-packages-plugins](/images/build-crm-laravel-12/chapter-37-extending-crm-packages-plugins-hero-full.webp)
 
 # Chapter 37: Extending the CRM via Packages & Plugins

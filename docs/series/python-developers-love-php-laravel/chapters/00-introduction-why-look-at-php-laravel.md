@@ -9,8 +9,14 @@ prerequisites:
   - "Python web development experience (Django/Flask)"
   - "Basic understanding of MVC patterns"
   - "Familiarity with ORMs and databases"
+estimatedTime: "PT20M"
+teaches:
+  - 'Understand the shift in PHP: from legacy codebase language to modern, typed, performant language'
+  - 'Recognize what Python developers bring to PHP/Laravel (clean code mindset, framework familiarity, ORM experience)'
+  - 'Learn about modern PHP versions (7/8+) and their key improvements'
+  - 'See the value proposition: when PHP/Laravel might be a good fit'
+  - 'Get oriented with the series roadmap and learning path'
 ---
-
 ![Introduction: Why Look at PHP & Laravel](/images/python-developers-love-php-laravel/chapter-00-introduction-why-look-at-php-laravel-hero-full.webp)
 
 # Chapter 00: Introduction: Why Look at PHP & Laravel

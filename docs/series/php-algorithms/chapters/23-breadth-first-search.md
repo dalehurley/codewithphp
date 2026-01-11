@@ -9,8 +9,14 @@ prerequisites:
   - "/series/php-algorithms/chapters/21-graph-representations"
   - "/series/php-algorithms/chapters/17-stacks-queues"
   - "/series/php-algorithms/chapters/22-depth-first-search"
+estimatedTime: "PT50M"
+teaches:
+  - 'Master breadth-first search for level-order graph traversal'
+  - 'Find shortest paths in unweighted graphs with BFS'
+  - 'Detect connected components and bipartite graphs'
+  - 'Implement BFS using queues for efficient exploration'
+  - 'Apply BFS to solve real-world problems like social network analysis'
 ---
-
 ![Breadth-First Search (BFS)](/images/php-algorithms/chapter-23-breadth-first-search-hero-full.webp)
 
 <div class="breadcrumbs">

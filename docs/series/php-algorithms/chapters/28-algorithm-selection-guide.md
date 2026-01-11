@@ -6,8 +6,14 @@ chapter: 28
 order: 28
 difficulty: "Intermediate"
 prerequisites: ["All previous chapters"]
+estimatedTime: "PT75M"
+teaches:
+  - 'Apply systematic decision trees to select optimal algorithms for your use cases'
+  - 'Match algorithms to data characteristics (size, distribution, constraints)'
+  - 'Balance trade-offs between time complexity, space complexity, and code simplicity'
+  - 'Recognize problem patterns and instantly know which algorithm family applies'
+  - 'Make informed choices that dramatically improve application performance'
 ---
-
 ![Algorithm Selection Guide](/images/php-algorithms/chapter-28-algorithm-selection-hero-full.webp)
 
 <div class="breadcrumbs">
