@@ -1140,16 +1140,6 @@ export default withMermaid(
         // Disable source maps in production
         sourcemap: false,
         
-        // Optimize chunk splitting
-        rollupOptions: {
-          external: id => id === 'd3-sankey',
-          output: {
-            manualChunks: {
-              'vitepress-core': ['vitepress/theme']
-            }
-          }
-        },
-        
         // Minification with esbuild (default, no additional deps)
         minify: 'esbuild',
         
@@ -1164,7 +1154,7 @@ export default withMermaid(
       },
       
       optimizeDeps: {
-        include: ['vue', 'vitepress'],
+        include: ['vue'],
         exclude: []
       },
       
