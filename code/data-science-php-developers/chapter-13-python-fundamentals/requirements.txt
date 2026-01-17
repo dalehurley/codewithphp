@@ -1,0 +1,12 @@
+# Chapter 13: Python Fundamentals for Data Science
+# Python 3.10, 3.11, or 3.12 required
+
+# Core data science libraries
+numpy==1.26.4
+pandas==2.2.0
+matplotlib==3.8.2
+jupyter==1.0.0
+jupyterlab==4.0.10
+
+# Additional utilities
+ipykernel==6.29.0

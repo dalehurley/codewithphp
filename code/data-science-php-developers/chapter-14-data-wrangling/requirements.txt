@@ -1,0 +1,21 @@
+# Chapter 14: Data Wrangling with pandas and NumPy
+# Python 3.10+ required
+
+# Core libraries
+numpy==1.26.4
+pandas==2.2.0
+
+# Visualization (for later chapters)
+matplotlib==3.8.2
+seaborn==0.13.1
+
+# Performance profiling
+memory_profiler==0.61.0
+pandas-profiling==3.6.6  # Automated data analysis
+
+# Data quality
+great-expectations==0.18.8
+
+# Additional utilities
+openpyxl==3.1.2  # Excel support
+pyarrow==15.0.0  # Parquet support (fast!)

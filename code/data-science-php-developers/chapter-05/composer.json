@@ -1,0 +1,23 @@
+{
+    "name": "codewithphp/data-science-chapter-05",
+    "description": "Chapter 5: Exploratory Data Analysis (EDA) for PHP Developers",
+    "type": "project",
+    "require": {
+        "php": "^8.4",
+        "markrogoyski/math-php": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "DataScience\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Code with PHP",
+            "homepage": "https://codewithphp.com"
+        }
+    ],
+    "minimum-stability": "stable"
+}
+
+

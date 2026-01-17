@@ -1,0 +1,36 @@
+{
+    "name": "codewithphp/data-visualization-examples",
+    "description": "Chapter 10: Data Visualization and Reporting - Complete Examples",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.4",
+        "dompdf/dompdf": "^2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "DataScience\\Visualization\\": "src/Visualization/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "examples": [
+            "@php examples/chart-examples.php",
+            "@php examples/dashboard-example.php",
+            "@php examples/pdf-report-example.php",
+            "@php examples/export-example.php"
+        ]
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    }
+}

@@ -42,15 +42,48 @@ features:
 
 <div class="landing-page">
 
+<div class="mission-hero">
+  <div class="mission-content">
+    <div class="mission-badge">💙 Our Mission</div>
+    <h2 class="mission-title">Built with Love for PHP.<br/>Made for Developers Like You.</h2>
+    <p class="mission-description">
+      We believe PHP deserves the most comprehensive, most accessible learning platform on the web—for any programming language or framework. That's why every tutorial is <strong>completely free</strong>, <strong>open source</strong>, and built from the ground up with one goal: to make you an exceptional PHP developer.
+    </p>
+    <div class="mission-features">
+      <div class="mission-feature">
+        <div class="mission-icon">📚</div>
+        <div>
+          <strong>Most Comprehensive</strong>
+          <p>240+ chapters across 10 series—from absolute basics to advanced AI/ML integration</p>
+        </div>
+      </div>
+      <div class="mission-feature">
+        <div class="mission-icon">🎓</div>
+        <div>
+          <strong>Always Free</strong>
+          <p>No paywalls, no upsells, no premium tiers. Everything is MIT-licensed and yours forever</p>
+        </div>
+      </div>
+      <div class="mission-feature">
+        <div class="mission-icon">❤️</div>
+        <div>
+          <strong>Made with PHP Love</strong>
+          <p>Created by developers who genuinely love PHP and want to share that passion with the world</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 ## Trusted by Developers Worldwide
 
 <div class="landing-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); text-align: center;">
   <div class="landing-card">
-    <div style="font-size: 2.5rem; font-weight: 800; color: var(--vp-c-brand); margin-bottom: 0.5rem;">220+</div>
+    <div style="font-size: 2.5rem; font-weight: 800; color: var(--vp-c-brand); margin-bottom: 0.5rem;">240+</div>
     <div style="font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; opacity: 0.8;">Chapters</div>
   </div>
   <div class="landing-card">
-    <div style="font-size: 2.5rem; font-weight: 800; color: var(--vp-c-brand); margin-bottom: 0.5rem;">9</div>
+    <div style="font-size: 2.5rem; font-weight: 800; color: var(--vp-c-brand); margin-bottom: 0.5rem;">10</div>
     <div style="font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; opacity: 0.8;">Series</div>
   </div>
   <div class="landing-card">
@@ -74,7 +107,8 @@ We believe in understanding the fundamentals before using abstractions. By build
 :::
 
 ### Core Foundations
-*Start here to build a rock-solid understanding of PHP.*
+
+_Start here to build a rock-solid understanding of PHP._
 
 <div class="landing-grid">
   <div class="landing-card">
@@ -115,7 +149,8 @@ We believe in understanding the fundamentals before using abstractions. By build
 </div>
 
 ### AI & Machine Learning
-*Modern PHP isn't just for templates—it's for intelligence.*
+
+_Modern PHP isn't just for templates—it's for intelligence._
 
 <div class="landing-grid">
   <div class="landing-card">
@@ -135,10 +170,20 @@ We believe in understanding the fundamentals before using abstractions. By build
       <a href="/series/claude-php-developers/" class="vp-button brand">Explore Claude →</a>
     </div>
   </div>
+
+  <div class="landing-card">
+    <div class="series-badge series-badge-new">📊 Data Science</div>
+    <h3>Data Science for PHP Developers</h3>
+    <p>Master data collection, analysis, and visualization. Build production data pipelines and ML-powered dashboards.</p>
+    <div style="margin-top: 1.5rem;">
+      <a href="/series/data-science-php-developers/" class="vp-button brand">Start Data Science →</a>
+    </div>
+  </div>
 </div>
 
 ### Modern Frameworks & Transitions
-*Apply your knowledge to the world's most popular PHP framework.*
+
+_Apply your knowledge to the world's most popular PHP framework._
 
 <div class="landing-grid">
   <div class="landing-card">

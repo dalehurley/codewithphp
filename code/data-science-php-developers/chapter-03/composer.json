@@ -1,0 +1,25 @@
+{
+    "name": "data-science/chapter-03-collectors",
+    "description": "Data collection examples for Chapter 3: Databases, APIs, and Web Scraping",
+    "type": "project",
+    "require": {
+        "php": ">=8.4",
+        "guzzlehttp/guzzle": "^7.0",
+        "symfony/dom-crawler": "^7.0",
+        "symfony/css-selector": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "DataScience\\": "src/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
+
+

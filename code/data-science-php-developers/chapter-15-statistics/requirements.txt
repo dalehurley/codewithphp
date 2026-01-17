@@ -1,0 +1,19 @@
+# Chapter 15: Advanced Statistical Analysis with SciPy and statsmodels
+# Python 3.10+ required
+
+# Core statistical libraries
+scipy==1.12.0
+statsmodels==0.14.1
+numpy==1.26.4
+pandas==2.2.0
+
+# Visualization
+matplotlib==3.8.2
+seaborn==0.13.1
+
+# For statistical plots
+pingouin==0.5.4  # Additional stats tests
+scikit-posthocs==0.9.0  # Post-hoc tests
+
+# Data generation
+faker==24.0.0  # Generate sample data

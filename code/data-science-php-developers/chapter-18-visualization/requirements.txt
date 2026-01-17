@@ -1,0 +1,25 @@
+# Chapter 18: Data Visualization Mastery
+# Python 3.10+ required
+
+# Core visualization libraries
+matplotlib==3.8.2
+seaborn==0.13.1
+plotly==5.19.0
+
+# Data handling
+numpy==1.26.4
+pandas==2.2.0
+
+# Interactive features
+ipywidgets==8.1.2  # For Jupyter interactivity
+
+# Export capabilities
+kaleido==0.2.1  # For static image export from Plotly
+pillow==10.2.0  # Image manipulation
+
+# Advanced plotting
+bokeh==3.3.4  # Alternative interactive library
+altair==5.2.0  # Declarative visualization
+
+# Utilities
+colorcet==3.0.1  # Perceptually accurate color maps

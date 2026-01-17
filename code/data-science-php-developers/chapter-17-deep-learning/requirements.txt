@@ -1,0 +1,27 @@
+# Chapter 17: Deep Learning with TensorFlow and Keras
+# Python 3.10+ required
+
+# Core deep learning
+tensorflow==2.15.0
+keras==2.15.0
+
+# Data handling
+numpy==1.26.4
+pandas==2.2.0
+pillow==10.2.0  # Image processing
+
+# Visualization
+matplotlib==3.8.2
+
+# Model optimization
+tensorflow-model-optimization==0.7.5
+
+# Transfer learning datasets
+tensorflow-datasets==4.9.4
+
+# Production serving
+flask==3.0.2
+gunicorn==21.2.0
+
+# Utilities
+tqdm==4.66.2

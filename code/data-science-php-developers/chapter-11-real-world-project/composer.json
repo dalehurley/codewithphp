@@ -1,0 +1,25 @@
+{
+    "name": "company/smart-recommender",
+    "description": "Production-ready product recommendation system using collaborative filtering",
+    "type": "project",
+    "require": {
+        "php": "^8.4",
+        "vlucas/phpdotenv": "^5.5",
+        "php-ai/php-ml": "^0.10"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "SmartRecommender\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
