@@ -32,7 +32,7 @@ teaches:
 datePublished: "2026-01-12"
 ---
 
-![Data Wrangling with pandas and NumPy](/images/data-science-php-developers/chapter-14-data-wrangling-hero-full.webp)
+![Data Wrangling with pandas and NumPy](/images/data-science-php-developers/chapter-14-data-wrangling-pandas-hero-full.webp)
 
 # Chapter 14: Data Wrangling with pandas and NumPy
 
