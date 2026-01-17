@@ -1,0 +1,28 @@
+# Chapter 19: Big Data with Dask, Polars, and Distributed Computing
+# Python 3.10+ required
+
+# Modern DataFrame libraries
+polars==0.20.7  # Fast, multi-threaded DataFrames
+dask[complete]==2024.1.1  # Distributed computing
+distributed==2024.1.1  # Dask distributed
+
+# Data formats
+pyarrow==15.0.0  # Fast columnar data
+fastparquet==2024.2.0  # Parquet support
+
+# Traditional libraries (for comparison)
+pandas==2.2.0
+numpy==1.26.4
+
+# Visualization
+matplotlib==3.8.2
+
+# Monitoring
+bokeh==3.3.4  # For Dask dashboard
+
+# Cloud integration
+s3fs==2024.2.0  # S3 filesystem
+gcsfs==2024.2.0  # Google Cloud Storage
+
+# Utilities
+tqdm==4.66.2

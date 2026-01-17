@@ -1,0 +1,22 @@
+{
+    "name": "code-with-php/chapter-08-machine-learning",
+    "description": "Chapter 08: Machine Learning Explained - Code Examples",
+    "type": "library",
+    "require": {
+        "php": "^8.4",
+        "markrogoyski/math-php": "^2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "DataScience\\ML\\": "src/ML/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\Chapter08\\": "tests/"
+        }
+    }
+}

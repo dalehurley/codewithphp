@@ -1,0 +1,26 @@
+{
+    "name": "codewithphp/data-science-chapter-06",
+    "description": "Chapter 6: Handling Large Datasets in PHP Without Running Out of Memory",
+    "type": "project",
+    "require": {
+        "php": "^8.4",
+        "league/csv": "^9.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "DataScience\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Code with PHP",
+            "homepage": "https://codewithphp.com"
+        }
+    ],
+    "minimum-stability": "stable"
+}
+
+

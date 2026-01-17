@@ -1,0 +1,27 @@
+# Chapter 16: Machine Learning with scikit-learn
+# Python 3.10+ required
+
+# Core ML library
+scikit-learn==1.4.0
+numpy==1.26.4
+pandas==2.2.0
+
+# Model serialization
+joblib==1.3.2
+
+# Model interpretation
+shap==0.44.1  # SHAP values for model explainability
+lime==0.2.0.1  # Local interpretable model-agnostic explanations
+
+# Hyperparameter tuning
+optuna==3.5.0  # Advanced hyperparameter optimization
+
+# Visualization
+matplotlib==3.8.2
+seaborn==0.13.1
+
+# Model persistence
+dill==0.3.8  # Better than pickle for complex objects
+
+# Utilities
+tqdm==4.66.2  # Progress bars

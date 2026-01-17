@@ -1,10 +1,10 @@
 import { defineConfig, type HeadConfig } from 'vitepress'
 import { withMermaid } from 'vitepress-plugin-mermaid'
 import { generateSocialImagePath, getCanonicalUrl } from './theme/utils/seo'
-import { 
-  generateCourseSchema, 
-  generateLearningResourceSchema, 
-  generateWebSiteSchema, 
+import {
+  generateCourseSchema,
+  generateLearningResourceSchema,
+  generateWebSiteSchema,
   generateOrganizationSchema,
   generateArticleSchema,
   generateHowToSchema
@@ -33,25 +33,25 @@ export default withMermaid(
       ['meta', { property: 'og:type', content: 'website' }],
       ['meta', { property: 'og:locale', content: 'en' }],
       ['meta', { property: 'og:site_name', content: 'Code with PHP' }],
-      
+
       // MathJax for LaTeX math rendering
       ['link', { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css' }],
-      
+
       // GenAI optimization
       ['meta', { name: 'author', content: 'Code with PHP' }],
       ['meta', { name: 'publisher', content: 'Code with PHP' }],
       ['meta', { name: 'robots', content: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' }],
-      
+
       // SearchGPT and AI crawler hints
       ['meta', { property: 'article:publisher', content: 'https://codewithphp.com' }],
       ['meta', { property: 'article:section', content: 'Programming Tutorials' }],
-      
+
       // Keywords for AI understanding
       ['meta', { name: 'keywords', content: 'PHP tutorial, PHP 8.4, learn PHP, PHP course, web development, programming tutorial' }],
-      
+
       // Language
       ['meta', { httpEquiv: 'content-language', content: 'en' }],
-      
+
       // Enforce HTTPS redirect
       ['script', {}, `
         if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
@@ -59,43 +59,43 @@ export default withMermaid(
         }
       `]
     ],
-    
+
     // Sitemap configuration
     sitemap: {
       hostname: 'https://codewithphp.com'
     },
-    
+
     // Per-page metadata injection
     transformHead: ({ pageData }) => {
       const head: HeadConfig[] = []
-      
+
       // Canonical URL
       const canonicalUrl = getCanonicalUrl(pageData.relativePath)
       head.push(['link', { rel: 'canonical', href: canonicalUrl }])
-      
+
       // Page title and description
       const title = pageData.title || 'Code with PHP'
       const description = pageData.description || 'Learn PHP and its ecosystem from first principles to advanced topics.'
-      
+
       // Open Graph tags
       head.push(['meta', { property: 'og:title', content: title }])
       head.push(['meta', { property: 'og:description', content: description }])
       head.push(['meta', { property: 'og:url', content: canonicalUrl }])
-      
+
       // Social share image
       const socialImage = generateSocialImagePath(pageData)
       head.push(['meta', { property: 'og:image', content: socialImage }])
       head.push(['meta', { property: 'og:image:width', content: '1200' }])
       head.push(['meta', { property: 'og:image:height', content: '630' }])
       head.push(['meta', { property: 'og:image:alt', content: title }])
-      
+
       // Twitter Card tags
       head.push(['meta', { name: 'twitter:card', content: 'summary_large_image' }])
       head.push(['meta', { name: 'twitter:title', content: title }])
       head.push(['meta', { name: 'twitter:description', content: description }])
       head.push(['meta', { name: 'twitter:image', content: socialImage }])
       head.push(['meta', { name: 'twitter:image:alt', content: title }])
-      
+
       // Article metadata for GenAI
       if (pageData.frontmatter.datePublished) {
         head.push(['meta', { property: 'article:published_time', content: pageData.frontmatter.datePublished }])
@@ -107,48 +107,48 @@ export default withMermaid(
       if (pageData.frontmatter.author) {
         head.push(['meta', { name: 'article:author', content: pageData.frontmatter.author }])
       }
-      
+
       // Structured data (JSON-LD) - with caching
       const cacheKey = pageData.relativePath
       let structuredData = structuredDataCache.get(cacheKey)
-      
+
       if (!structuredData) {
         structuredData = []
-        
+
         // Homepage: WebSite + Organization
         if (pageData.relativePath === 'index.md') {
           structuredData.push(generateWebSiteSchema())
           structuredData.push(generateOrganizationSchema())
         }
-        
+
         // Series index: Course schema
         if (pageData.relativePath.match(/series\/[^/]+\/index\.md$/)) {
           const courseSchema = generateCourseSchema(pageData)
           if (courseSchema) structuredData.push(courseSchema)
         }
-        
+
         // Chapter pages: LearningResource, Article, and HowTo schema
         if (pageData.frontmatter.series && pageData.frontmatter.chapter !== undefined) {
           const learningResourceSchema = generateLearningResourceSchema(pageData)
           if (learningResourceSchema) structuredData.push(learningResourceSchema)
-          
+
           const articleSchema = generateArticleSchema(pageData)
           if (articleSchema) structuredData.push(articleSchema)
-          
+
           const howToSchema = generateHowToSchema(pageData)
           if (howToSchema) structuredData.push(howToSchema)
         }
-        
+
         // Breadcrumb schema (for all non-homepage pages)
         if (pageData.relativePath !== 'index.md') {
           const breadcrumbSchema = generateBreadcrumbSchema(pageData)
           if (breadcrumbSchema) structuredData.push(breadcrumbSchema)
         }
-        
+
         // Cache it for future builds
         structuredDataCache.set(cacheKey, structuredData)
       }
-      
+
       // Inject structured data
       if (structuredData.length > 0) {
         head.push([
@@ -157,7 +157,7 @@ export default withMermaid(
           JSON.stringify(structuredData.length === 1 ? structuredData[0] : structuredData)
         ])
       }
-      
+
       return head
     },
     themeConfig: {
@@ -170,6 +170,7 @@ export default withMermaid(
             { text: 'Algorithms for PHP Developers', link: '/series/php-algorithms/' },
             { text: 'PHP for Java Developers', link: '/series/php-for-java-developers/' },
             { text: 'AI/ML for PHP Developers', link: '/series/ai-ml-php-developers/' },
+            { text: 'Data Science for PHP Developers', link: '/series/data-science-php-developers/' },
             { text: 'Claude for PHP Developers', link: '/series/claude-php-developers/' },
             { text: 'PHP for TypeScript Developers', link: '/series/php-typescript-developers/' },
             { text: 'Why Python Developers Will Love PHP and Laravel', link: '/series/python-developers-love-php-laravel/' },
@@ -185,7 +186,7 @@ export default withMermaid(
           {
             text: 'Chapters',
             items: [
-              
+
               {
                 text: '00 — Setting Up Your Development Environment',
                 link: '/series/php-basics/chapters/00-setting-up-your-development-environment'
@@ -317,6 +318,72 @@ export default withMermaid(
               { text: '23 — Integrating AI Models into Web Applications', link: '/series/ai-ml-php-developers/chapters/23-integrating-ai-models-into-web-applications' },
               { text: '24 — Deploying and Scaling AI-Powered PHP Services', link: '/series/ai-ml-php-developers/chapters/24-deploying-and-scaling-ai-powered-php-services' },
               { text: '25 — Capstone Project and Future Trends', link: '/series/ai-ml-php-developers/chapters/25-capstone-project-and-future-trends' }
+            ]
+          }
+        ],
+
+        '/series/data-science-php-developers/': [
+          { text: 'Overview', link: '/series/data-science-php-developers/' },
+          {
+            text: 'Module 1: Foundations',
+            collapsed: false,
+            items: [
+              { text: '01 — What Data Science Is and Why It Matters', link: '/series/data-science-php-developers/chapters/01-what-data-science-is-and-why-it-matters' },
+              { text: '02 — Setting Up Data Science Environment', link: '/series/data-science-php-developers/chapters/02-setting-up-data-science-environment' }
+            ]
+          },
+          {
+            text: 'Module 2: Data Engineering',
+            collapsed: false,
+            items: [
+              { text: '03 — Collecting Data: Databases, APIs, Scraping', link: '/series/data-science-php-developers/chapters/03-collecting-data-databases-apis-scraping' },
+              { text: '04 — Data Cleaning and Preprocessing', link: '/series/data-science-php-developers/chapters/04-data-cleaning-and-preprocessing-in-php' }
+            ]
+          },
+          {
+            text: 'Module 3: Data Analysis',
+            collapsed: false,
+            items: [
+              { text: '05 — Exploratory Data Analysis (EDA)', link: '/series/data-science-php-developers/chapters/05-exploratory-data-analysis-for-php-developers' },
+              { text: '06 — Handling Large Datasets', link: '/series/data-science-php-developers/chapters/06-handling-large-datasets-in-php-without-running-out-of-memory' },
+              { text: '07 — Statistics for Developers', link: '/series/data-science-php-developers/chapters/07-statistics-every-php-developer-needs-for-data-science' }
+            ]
+          },
+          {
+            text: 'Module 4: ML Integration',
+            collapsed: true,
+            items: [
+              { text: '08 — Machine Learning Explained', link: '/series/data-science-php-developers/chapters/08-machine-learning-explained-for-php-developers' },
+              { text: '09 — Using ML Models in PHP Applications', link: '/series/data-science-php-developers/chapters/09-using-machine-learning-models-in-php-applications' }
+            ]
+          },
+          {
+            text: 'Module 5: Visualization',
+            collapsed: true,
+            items: [
+              { text: '10 — Data Visualization and Reporting', link: '/series/data-science-php-developers/chapters/10-data-visualization-and-reporting-with-php' }
+            ]
+          },
+          {
+            text: 'Module 6: Production',
+            collapsed: true,
+            items: [
+              { text: '11 — Building a Real-World Project', link: '/series/data-science-php-developers/chapters/11-building-a-real-world-data-science-project-with-php' },
+              { text: '12 — Deploying Production Systems', link: '/series/data-science-php-developers/chapters/12-deploying-data-science-systems-in-production-with-php' }
+            ]
+          },
+          {
+            text: 'Module 7: Python Mastery (BONUS)',
+            collapsed: true,
+            items: [
+              { text: '13 — Python Fundamentals for Data Science', link: '/series/data-science-php-developers/chapters/13-python-fundamentals-for-data-science' },
+              { text: '14 — Data Wrangling with pandas and NumPy', link: '/series/data-science-php-developers/chapters/14-data-wrangling-pandas-numpy' },
+              { text: '15 — Advanced Statistical Analysis with SciPy', link: '/series/data-science-php-developers/chapters/15-advanced-statistical-analysis-scipy-statsmodels' },
+              { text: '16 — Machine Learning Deep Dive with scikit-learn', link: '/series/data-science-php-developers/chapters/16-machine-learning-scikit-learn' },
+              { text: '17 — Deep Learning with TensorFlow and Keras', link: '/series/data-science-php-developers/chapters/17-deep-learning-tensorflow-keras' },
+              { text: '18 — Data Visualization Mastery', link: '/series/data-science-php-developers/chapters/18-data-visualization-mastery-matplotlib-seaborn-plotly' },
+              { text: '19 — Working with Big Data: Dask and Polars', link: '/series/data-science-php-developers/chapters/19-big-data-dask-polars-distributed' },
+              { text: '20 — Production ML Systems: MLOps', link: '/series/data-science-php-developers/chapters/20-production-mlops-php-developers' }
             ]
           }
         ],
@@ -1136,31 +1203,31 @@ export default withMermaid(
       build: {
         // Reduce chunk size warnings threshold
         chunkSizeWarningLimit: 1000,
-        
+
         // Disable source maps in production
         sourcemap: false,
-        
+
         // Minification with esbuild (default, no additional deps)
         minify: 'esbuild',
-        
+
         // Optimize assets - don't inline images as base64
         assetsInlineLimit: 0
       },
-      
+
       server: {
         hmr: {
           overlay: false // Disable error overlay for HMR type cache issues
         }
       },
-      
+
       optimizeDeps: {
         include: ['vue'],
         exclude: []
       },
-      
+
       // Enable caching
       cacheDir: 'docs/.vitepress/cache',
-      
+
       // Include WebP images in asset processing
       assetsInclude: ['**/*.webp']
     }

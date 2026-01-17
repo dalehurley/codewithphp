@@ -1,0 +1,233 @@
+openapi: 3.0.0
+info:
+  title: Smart Recommender API
+  version: 1.0.0
+  description: Product recommendation system API using collaborative filtering
+  contact:
+    name: API Support
+    email: support@example.com
+
+servers:
+  - url: http://localhost:8000/api.php
+    description: Development server
+  - url: https://api.example.com
+    description: Production server
+
+paths:
+  /recommendations/{userId}:
+    get:
+      summary: Get product recommendations for user
+      description: Returns personalized product recommendations based on collaborative filtering
+      operationId: getRecommendations
+      tags:
+        - Recommendations
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: User ID to get recommendations for
+          schema:
+            type: integer
+            minimum: 1
+          example: 1
+        - name: count
+          in: query
+          description: Number of recommendations to return (1-50)
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+          example: 5
+        - name: category
+          in: query
+          description: Filter recommendations by product category
+          schema:
+            type: string
+            enum:
+              - Electronics
+              - Books
+              - Clothing
+              - Home
+              - Sports
+          example: Electronics
+        - name: min_price
+          in: query
+          description: Minimum product price filter
+          schema:
+            type: number
+            format: float
+            minimum: 0
+          example: 10.00
+        - name: max_price
+          in: query
+          description: Maximum product price filter
+          schema:
+            type: number
+            format: float
+            minimum: 0
+          example: 500.00
+      responses:
+        '200':
+          description: Recommendations retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user_id:
+                    type: integer
+                    description: User ID for recommendations
+                    example: 1
+                  recommendations:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Recommendation'
+                  count:
+                    type: integer
+                    description: Number of recommendations returned
+                    example: 5
+                  timestamp:
+                    type: string
+                    format: date-time
+                    description: Timestamp of recommendation generation
+                    example: "2026-01-17T10:30:00+00:00"
+        '400':
+          description: Invalid user ID or parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error generating recommendations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /feedback:
+    post:
+      summary: Record user feedback on recommendations
+      description: Track user interactions with recommended products
+      operationId: recordFeedback
+      tags:
+        - Feedback
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user_id
+                - product_id
+                - action
+              properties:
+                user_id:
+                  type: integer
+                  description: User ID who performed the action
+                  minimum: 1
+                  example: 1
+                product_id:
+                  type: integer
+                  description: Product ID that was interacted with
+                  minimum: 1
+                  example: 42
+                action:
+                  type: string
+                  description: Type of interaction
+                  enum:
+                    - view
+                    - click
+                    - add_to_cart
+                    - purchase
+                  example: click
+                from_recommendation:
+                  type: boolean
+                  description: Whether this action was from a recommendation
+                  default: false
+                  example: true
+      responses:
+        '200':
+          description: Feedback recorded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Feedback recorded"
+        '400':
+          description: Invalid input parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error recording feedback
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Recommendation:
+      type: object
+      properties:
+        product_id:
+          type: integer
+          description: Product ID
+          example: 42
+        score:
+          type: number
+          format: float
+          description: Recommendation confidence score
+          minimum: 0
+          example: 8.4521
+        product:
+          type: object
+          description: Product details
+          properties:
+            id:
+              type: integer
+              example: 42
+            sku:
+              type: string
+              example: "PROD-42"
+            name:
+              type: string
+              example: "Wireless Headphones"
+            category:
+              type: string
+              example: "Electronics"
+            price:
+              type: number
+              format: float
+              example: 99.99
+        reason:
+          type: string
+          description: Reason for recommendation (e.g., "collaborative filtering", "popular")
+          example: "collaborative filtering"
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+          example: "Invalid user ID"
+        message:
+          type: string
+          description: Detailed error message (optional)
+          example: "User ID must be a positive integer"
+
+tags:
+  - name: Recommendations
+    description: Product recommendation endpoints
+  - name: Feedback
+    description: User feedback tracking endpoints
