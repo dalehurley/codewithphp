@@ -105,23 +105,29 @@ const getFeedback = computed(() => {
 </script>
 
 <template>
-  <div class="quiz-container">
-    <h3 v-if="title" class="quiz-title">{{ title }}</h3>
+  <div class="my-8 p-6 border border-[var(--vp-c-divider)] rounded-lg bg-[var(--vp-c-bg-soft)]">
+    <h3 v-if="title" class="m-0 mb-5 text-[var(--vp-c-text-1)]">{{ title }}</h3>
 
-    <div v-if="!quizComplete" class="quiz-content">
-      <div class="quiz-header">
-        <span class="quiz-counter"
+    <div v-if="!quizComplete">
+      <div class="flex justify-between items-center mb-4">
+        <span class="text-[0.9em] text-[var(--vp-c-text-2)] font-semibold"
           >Question {{ currentQuestion + 1 }} of {{ questions.length }}</span
         >
       </div>
 
-      <div class="quiz-question">{{ currentQuestionData.question }}</div>
+      <div class="text-[1.1em] font-semibold mb-4 text-[var(--vp-c-text-1)]">{{ currentQuestionData.question }}</div>
 
-      <ul class="quiz-options">
+      <ul class="list-none p-0">
         <li
           v-for="(option, index) in currentQuestionData.options"
           :key="index"
-          :class="['quiz-option', getOptionClass(index)]"
+          :class="[
+            'my-2 py-3 px-4 border border-[var(--vp-c-divider)] rounded-md cursor-pointer transition-all duration-200 bg-[var(--vp-c-bg)]',
+            getOptionClass(index) === 'selected' ? 'border-[var(--vp-c-brand)] bg-[var(--vp-c-brand-soft)]' : '',
+            getOptionClass(index) === 'correct' ? 'border-[var(--vp-c-green)] bg-[var(--vp-c-green-soft)]' : '',
+            getOptionClass(index) === 'incorrect' ? 'border-[var(--vp-c-red)] bg-[var(--vp-c-red-soft)]' : '',
+            getOptionClass(index) === '' ? 'hover:border-[var(--vp-c-brand)] hover:bg-[var(--vp-c-bg-soft)]' : ''
+          ]"
           @click="selectOption(index)"
         >
           {{ option.text }}
@@ -131,24 +137,26 @@ const getFeedback = computed(() => {
       <div
         v-if="getFeedback"
         :class="[
-          'quiz-feedback',
-          getFeedback.correct ? 'correct' : 'incorrect',
+          'mt-4 py-3 px-4 rounded-md text-[0.95em]',
+          getFeedback.correct 
+            ? 'bg-[var(--vp-c-green-soft)] text-[var(--vp-c-green-darker)] border border-[var(--vp-c-green)]' 
+            : 'bg-[var(--vp-c-red-soft)] text-[var(--vp-c-red-darker)] border border-[var(--vp-c-red)]'
         ]"
       >
         {{ getFeedback.text }}
       </div>
 
-      <div class="quiz-actions">
+      <div class="mt-4">
         <button
           v-if="!showResults[currentQuestion]"
-          class="quiz-submit"
+          class="mt-4 py-2 px-6 bg-[var(--vp-c-brand)] text-white border-none rounded-md cursor-pointer text-base transition-[background-color] duration-200 hover:bg-[var(--vp-c-brand-dark)] disabled:bg-[var(--vp-c-divider)] disabled:cursor-not-allowed"
           :disabled="!canSubmit"
           @click="submitAnswer"
         >
           Submit Answer
         </button>
 
-        <button v-else class="quiz-submit" @click="nextQuestion">
+        <button v-else class="mt-4 py-2 px-6 bg-[var(--vp-c-brand)] text-white border-none rounded-md cursor-pointer text-base transition-[background-color] duration-200 hover:bg-[var(--vp-c-brand-dark)] disabled:bg-[var(--vp-c-divider)] disabled:cursor-not-allowed" @click="nextQuestion">
           {{
             currentQuestion < questions.length - 1
               ? "Next Question"
@@ -158,15 +166,15 @@ const getFeedback = computed(() => {
       </div>
     </div>
 
-    <div v-else class="quiz-results">
-      <h4 class="results-title">Quiz Complete!</h4>
-      <div class="results-score">
+    <div v-else class="text-center p-5">
+      <h4 class="text-[1.5em] m-0 mb-4 text-[var(--vp-c-brand)]">Quiz Complete!</h4>
+      <div class="text-[1.2em] font-semibold my-4 text-[var(--vp-c-text-1)]">
         You scored {{ score }} out of {{ questions.length }} ({{
           Math.round((score / questions.length) * 100)
         }}%)
       </div>
 
-      <div class="results-message">
+      <div class="text-[1.1em] my-6 p-4 bg-[var(--vp-c-bg)] rounded-lg text-[var(--vp-c-text-2)]">
         <template v-if="score === questions.length">
           🎉 Perfect score! You've mastered this chapter.
         </template>
@@ -178,58 +186,8 @@ const getFeedback = computed(() => {
         </template>
       </div>
 
-      <button class="quiz-submit" @click="resetQuiz">Retake Quiz</button>
+      <button class="mt-4 py-2 px-6 bg-[var(--vp-c-brand)] text-white border-none rounded-md cursor-pointer text-base transition-[background-color] duration-200 hover:bg-[var(--vp-c-brand-dark)]" @click="resetQuiz">Retake Quiz</button>
     </div>
   </div>
 </template>
 
-<style scoped>
-.quiz-title {
-  margin: 0 0 20px;
-  color: var(--vp-c-text-1);
-}
-
-.quiz-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-.quiz-counter {
-  font-size: 0.9em;
-  color: var(--vp-c-text-2);
-  font-weight: 600;
-}
-
-.quiz-actions {
-  margin-top: 16px;
-}
-
-.quiz-results {
-  text-align: center;
-  padding: 20px;
-}
-
-.results-title {
-  font-size: 1.5em;
-  margin: 0 0 16px;
-  color: var(--vp-c-brand);
-}
-
-.results-score {
-  font-size: 1.2em;
-  font-weight: 600;
-  margin: 16px 0;
-  color: var(--vp-c-text-1);
-}
-
-.results-message {
-  font-size: 1.1em;
-  margin: 24px 0;
-  padding: 16px;
-  background-color: var(--vp-c-bg);
-  border-radius: 8px;
-  color: var(--vp-c-text-2);
-}
-</style>

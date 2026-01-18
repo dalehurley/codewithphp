@@ -57,6 +57,8 @@ const BG_HEIGHT = 1200
 
 // Command line args
 const FORCE_REGENERATE = process.argv.includes('--force-regenerate')
+const MISSING_ONLY = process.argv.includes('--missing-only')
+const SERIES_FILTER = process.argv.find(arg => arg.startsWith('--series='))?.split('=')[1]
 
 // Series-specific color schemes (for overlays and text)
 const SERIES_COLORS = {
@@ -161,7 +163,25 @@ const ILLUSTRATION_THEMES = {
   'symfony': 'Musical instruments or orchestra elements representing the Symfony framework\'s harmony',
   'json': 'Curly braces { } containing nested key-value pairs in a structured tree format',
   
-  // AI/ML topics
+  // AI/ML & Data Science topics
+  'statistics': 'A complex scatter plot and bell curve distribution with glowing data points',
+  'visualization': 'A futuristic dashboard with floating 3D bar charts, heatmaps, and trend lines',
+  'exploratory': 'A digital explorer or magnifying glass examining a landscape of glowing data clusters',
+  'cleaning': 'A futuristic data refinery or filter mechanism turning messy static into clean, organized data streams',
+  'preprocessing': 'A factory assembly line transforming raw rock-like data chunks into polished geometric shapes',
+  'scraping': 'A digital spider weaving a web or a net catching floating data packets from a cloud',
+  'pandas': 'A friendly panda character (or stylized bamboo structure) organizing data tables and frames',
+  'numpy': 'A grid of glowing numbers, matrices, and mathematical symbols forming a structured cube',
+  'scikit': 'A Swiss Army knife of data tools or a toolbox with machine learning icons (gears, brains, graphs)',
+  'tensorflow': 'A flowing river of tensor blocks or a complex computational graph with data flowing through nodes',
+  'keras': 'Building blocks or LEGO-like neural network layers being stacked into a model',
+  'matplotlib': 'An artist\'s palette but with charts and graphs instead of paint, drawing a visualization',
+  'seaborn': 'A stylized ocean wave made of data points and regression lines',
+  'plotly': 'Interactive, hovering 3D charts that look touchable and dynamic',
+  'dask': 'Many small worker robots working together on a giant data structure (parallel processing)',
+  'production': 'A sleek server rack or futuristic factory line shipping boxed models',
+  'deployment': 'A rocket launch or a drone delivering a package (model) to a cloud city',
+  'mlops': 'Moving gears and pipelines connecting a research lab to a factory',
   'neural': 'A brain with glowing interconnected neural pathways, synapses firing, showing network connections',
   'machine learning': 'A robot or AI studying from data books, with pattern recognition symbols and learning graphs',
   'ai': 'An artificial intelligence robot with thinking indicators, light bulb above head, processing information',
@@ -183,13 +203,16 @@ const ILLUSTRATION_THEMES = {
  * Select a visual style based on chapter and add variety
  */
 function selectVisualStyle(title, chapter) {
-  // Create deterministic but varied style selection based on chapter
-  const chapterNum = typeof chapter === 'string' ? parseInt(chapter) || 0 : chapter
-  const styles = Object.keys(VISUAL_STYLES)
+  // Create deterministic but varied style selection based on title and chapter
+  const input = `${title}-${chapter}`
+  let hash = 0
+  for (let i = 0; i < input.length; i++) {
+    hash = ((hash << 5) - hash) + input.charCodeAt(i)
+    hash |= 0 // Convert to 32bit integer
+  }
   
-  // Use chapter number to select style deterministically
-  // This ensures same chapter always gets same style, but variety across chapters
-  const styleIndex = chapterNum % styles.length
+  const styles = Object.keys(VISUAL_STYLES)
+  const styleIndex = Math.abs(hash) % styles.length
   return styles[styleIndex]
 }
 
@@ -400,7 +423,17 @@ function extractThemeKeywords(title) {
  * Generate illustrative character/object prompt for AI with varied styles
  */
 function generateIllustrationPrompt(title, series, chapter) {
-  const illustration = extractThemeKeywords(title)
+  let illustration = extractThemeKeywords(title)
+  
+  // If we fell back to default, or even if we didn't, adding the title helps specificity
+  // But we want to avoid "A code editor..." if we can help it.
+  if (illustration === ILLUSTRATION_THEMES.default) {
+    illustration = `A conceptual and artistic representation of "${title}" in a coding context`
+  } else {
+    // Mix the specific object with the title for uniqueness
+    illustration = `${illustration}, representing "${title}"`
+  }
+
   const styleName = selectVisualStyle(title, chapter)
   const style = VISUAL_STYLES[styleName]
   
@@ -408,7 +441,14 @@ function generateIllustrationPrompt(title, series, chapter) {
     ? 'with purple and blue accent colors' 
     : 'with blue and cyan accent colors'
   
-  return `${illustration} ${style.suffix}. ${style.description}. ${colorHint}. The illustration should be positioned in the bottom-right area of the image, taking up about 40-50% of the space. The background should be a clean gradient (top-left to bottom-right) that complements the illustration colors but keeps the upper-left area VERY LIGHT and clear for prominent text overlay. Composition: 3:2 landscape orientation with the main subject in bottom-right, leaving the entire upper-left quadrant open and light for title text.`
+  // Add some random-seeded variety to lighting/composition
+  const moods = ['cinematic lighting', 'soft volumetrics', 'vibrant studio lighting', 'ethereal glow']
+  const input = `${title}-${chapter}`
+  let hash = 0
+  for (let i = 0; i < input.length; i++) hash = ((hash << 5) - hash) + input.charCodeAt(i)
+  const mood = moods[Math.abs(hash) % moods.length]
+  
+  return `${illustration} ${style.suffix}. ${style.description}. ${colorHint}. ${mood}. The illustration should be positioned in the bottom-right area of the image, taking up about 40-50% of the space. The background should be a clean gradient (top-left to bottom-right) that complements the illustration colors but keeps the upper-left area VERY LIGHT and clear for prominent text overlay. Composition: 3:2 landscape orientation with the main subject in bottom-right, leaving the entire upper-left quadrant open and light for title text.`
 }
 
 /**
@@ -712,6 +752,11 @@ async function generateChapterImage(filePath) {
   }
   
   const series = frontmatter.series
+  
+  if (SERIES_FILTER && series !== SERIES_FILTER) {
+    return null
+  }
+
   const chapter = String(frontmatter.chapter).padStart(2, '0')
   const title = frontmatter.title || `Chapter ${chapter}`
   
@@ -724,6 +769,10 @@ async function generateChapterImage(filePath) {
   const outputFilename = `${series}-chapter-${chapter}.jpg`
   const outputPath = path.join(OUTPUT_DIR, outputFilename)
   
+  if (MISSING_ONLY && fs.existsSync(outputPath)) {
+    return null
+  }
+
   try {
     console.log(`\n📄 ${outputFilename}`)
     
@@ -749,6 +798,10 @@ async function generateChapterImage(filePath) {
  * Generate social image for series overview
  */
 async function generateSeriesImage(seriesSlug) {
+  if (SERIES_FILTER && seriesSlug !== SERIES_FILTER) {
+    return null
+  }
+
   const indexPath = path.join(SERIES_DIR, seriesSlug, 'index.md')
   
   if (!fs.existsSync(indexPath)) {
@@ -762,6 +815,10 @@ async function generateSeriesImage(seriesSlug) {
   const outputFilename = `${seriesSlug}-overview.jpg`
   const outputPath = path.join(OUTPUT_DIR, outputFilename)
   
+  if (MISSING_ONLY && fs.existsSync(outputPath)) {
+    return null
+  }
+
   try {
     console.log(`\n📚 ${outputFilename}`)
     
@@ -787,6 +844,10 @@ async function generateHomepageImage() {
   const title = 'Learn PHP from First Principles'
   const outputPath = path.join(OUTPUT_DIR, 'homepage.jpg')
   
+  if (MISSING_ONLY && fs.existsSync(outputPath)) {
+    return
+  }
+
   try {
     console.log(`\n🏠 homepage.jpg`)
     

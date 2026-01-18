@@ -1,6 +1,12 @@
 import { defineConfig, type HeadConfig } from 'vitepress'
 import { withMermaid } from 'vitepress-plugin-mermaid'
-import { generateSocialImagePath, getCanonicalUrl } from './theme/utils/seo'
+import tailwindcss from '@tailwindcss/vite'
+import {
+  generateSocialImagePath,
+  getCanonicalUrl,
+  generateMetaDescription,
+  generateKeywords
+} from './theme/utils/seo'
 import {
   generateCourseSchema,
   generateLearningResourceSchema,
@@ -24,9 +30,11 @@ export default withMermaid(
     title: 'Code with PHP',
     description: 'Learn PHP and its ecosystem from first principles to advanced.',
     base: '/',
+    lang: 'en-US',
     cleanUrls: true,
     lastUpdated: true,
     ignoreDeadLinks: true, // Dead links will be validated in a separate CI check
+    buildConcurrency: 2,
     head: [
       ['link', { rel: 'icon', href: '/favicon.ico' }],
       ['meta', { name: 'theme-color', content: '#3c8772' }],
@@ -45,9 +53,6 @@ export default withMermaid(
       // SearchGPT and AI crawler hints
       ['meta', { property: 'article:publisher', content: 'https://codewithphp.com' }],
       ['meta', { property: 'article:section', content: 'Programming Tutorials' }],
-
-      // Keywords for AI understanding
-      ['meta', { name: 'keywords', content: 'PHP tutorial, PHP 8.4, learn PHP, PHP course, web development, programming tutorial' }],
 
       // Language
       ['meta', { httpEquiv: 'content-language', content: 'en' }],
@@ -75,7 +80,12 @@ export default withMermaid(
 
       // Page title and description
       const title = pageData.title || 'Code with PHP'
-      const description = pageData.description || 'Learn PHP and its ecosystem from first principles to advanced topics.'
+      const description = generateMetaDescription(pageData)
+      const keywords = generateKeywords(pageData).join(', ')
+
+      // Meta description + keywords
+      head.push(['meta', { name: 'description', content: description }])
+      head.push(['meta', { name: 'keywords', content: keywords }])
 
       // Open Graph tags
       head.push(['meta', { property: 'og:title', content: title }])
@@ -105,7 +115,7 @@ export default withMermaid(
         head.push(['meta', { property: 'article:modified_time', content: modifiedDate }])
       }
       if (pageData.frontmatter.author) {
-        head.push(['meta', { name: 'article:author', content: pageData.frontmatter.author }])
+        head.push(['meta', { property: 'article:author', content: pageData.frontmatter.author }])
       }
 
       // Structured data (JSON-LD) - with caching
@@ -291,7 +301,7 @@ export default withMermaid(
           { text: 'Overview', link: '/series/ai-ml-php-developers/' },
           {
             text: 'Chapters',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: '01 — Introduction to AI and Machine Learning for PHP Developers', link: '/series/ai-ml-php-developers/chapters/01-introduction-to-ai-and-machine-learning-for-php-developers' },
               { text: '02 — Setting Up Your AI Development Environment', link: '/series/ai-ml-php-developers/chapters/02-setting-up-your-ai-development-environment' },
@@ -351,7 +361,7 @@ export default withMermaid(
           },
           {
             text: 'Module 4: ML Integration',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: '08 — Machine Learning Explained', link: '/series/data-science-php-developers/chapters/08-machine-learning-explained-for-php-developers' },
               { text: '09 — Using ML Models in PHP Applications', link: '/series/data-science-php-developers/chapters/09-using-machine-learning-models-in-php-applications' }
@@ -359,14 +369,14 @@ export default withMermaid(
           },
           {
             text: 'Module 5: Visualization',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: '10 — Data Visualization and Reporting', link: '/series/data-science-php-developers/chapters/10-data-visualization-and-reporting-with-php' }
             ]
           },
           {
             text: 'Module 6: Production',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: '11 — Building a Real-World Project', link: '/series/data-science-php-developers/chapters/11-building-a-real-world-data-science-project-with-php' },
               { text: '12 — Deploying Production Systems', link: '/series/data-science-php-developers/chapters/12-deploying-data-science-systems-in-production-with-php' }
@@ -374,7 +384,7 @@ export default withMermaid(
           },
           {
             text: 'Module 7: Python Mastery (BONUS)',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: '13 — Python Fundamentals for Data Science', link: '/series/data-science-php-developers/chapters/13-python-fundamentals-for-data-science' },
               { text: '14 — Data Wrangling with pandas and NumPy', link: '/series/data-science-php-developers/chapters/14-data-wrangling-pandas-numpy' },
@@ -392,7 +402,7 @@ export default withMermaid(
           { text: 'Overview', link: '/series/python-developers-love-php-laravel/' },
           {
             text: 'Chapters',
-            collapsed: true,
+            collapsed: false,
             items: [
               {
                 text: '00 — Introduction: Why Look at PHP & Laravel',
@@ -446,7 +456,7 @@ export default withMermaid(
           { text: 'Overview', link: '/series/php-typescript-developers/' },
           {
             text: 'Chapters',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: '01 — TypeScript to PHP: Type Systems Compared', link: '/series/php-typescript-developers/chapters/01-type-systems-compared' },
               { text: '02 — Modern PHP Syntax for TS Developers', link: '/series/php-typescript-developers/chapters/02-modern-php-syntax' },
@@ -471,7 +481,7 @@ export default withMermaid(
           { text: 'Overview', link: '/series/php-algorithms/' },
           {
             text: 'Part 1: Foundation',
-            collapsed: true,
+            collapsed: false,
             items: [
               {
                 text: '00 — Quick Start Guide',
@@ -497,7 +507,7 @@ export default withMermaid(
           },
           {
             text: 'Part 2: Sorting Algorithms',
-            collapsed: true,
+            collapsed: false,
             items: [
               {
                 text: '05 — Bubble Sort & Selection Sort',
@@ -527,7 +537,7 @@ export default withMermaid(
           },
           {
             text: 'Part 3: Searching Algorithms',
-            collapsed: true,
+            collapsed: false,
             items: [
               {
                 text: '11 — Linear Search & Variants',
@@ -549,7 +559,7 @@ export default withMermaid(
           },
           {
             text: 'Part 4: Data Structures',
-            collapsed: true,
+            collapsed: false,
             items: [
               {
                 text: '15 — Arrays & Dynamic Arrays',
@@ -579,7 +589,7 @@ export default withMermaid(
           },
           {
             text: 'Part 5: Graph Algorithms',
-            collapsed: true,
+            collapsed: false,
             items: [
               {
                 text: '21 — Graph Representations',
@@ -601,7 +611,7 @@ export default withMermaid(
           },
           {
             text: 'Part 6: Dynamic Programming',
-            collapsed: true,
+            collapsed: false,
             items: [
               {
                 text: '25 — Dynamic Programming Fundamentals',
@@ -615,7 +625,7 @@ export default withMermaid(
           },
           {
             text: 'Part 7: Practical Applications',
-            collapsed: true,
+            collapsed: false,
             items: [
               {
                 text: '27 — Caching & Memoization Strategies',
@@ -637,7 +647,7 @@ export default withMermaid(
           },
           {
             text: 'Part 8: Advanced Topics',
-            collapsed: true,
+            collapsed: false,
             items: [
               {
                 text: '31 — Concurrent Algorithms',
@@ -667,7 +677,7 @@ export default withMermaid(
           },
           {
             text: 'Appendices',
-            collapsed: true,
+            collapsed: false,
             items: [
               {
                 text: 'Appendix A — Complexity Cheat Sheet',
@@ -693,7 +703,7 @@ export default withMermaid(
           { text: 'Overview', link: '/series/build-crm-laravel-12/' },
           {
             text: 'Part 1: Core Setup',
-            collapsed: true,
+            collapsed: false,
             items: [
               {
                 text: '01 — Introduction & Series Overview',
@@ -711,7 +721,7 @@ export default withMermaid(
           },
           {
             text: 'Part 2: Database & Foundation',
-            collapsed: true,
+            collapsed: false,
             items: [
               {
                 text: '04 — Planning Application Architecture & Data Modeling',
@@ -745,7 +755,7 @@ export default withMermaid(
           },
           {
             text: 'Part 3: Core CRM Modules',
-            collapsed: true,
+            collapsed: false,
             items: [
               {
                 text: '11 — Contacts Module – Database & Model',
@@ -783,7 +793,7 @@ export default withMermaid(
           },
           {
             text: 'Part 4: Communication & API',
-            collapsed: true,
+            collapsed: false,
             items: [
               {
                 text: '19 — Notifications & Email Integration',
@@ -809,7 +819,7 @@ export default withMermaid(
           },
           {
             text: 'Part 5: Business Features',
-            collapsed: true,
+            collapsed: false,
             items: [
               {
                 text: '24 — Subscription Billing with Laravel Cashier',
@@ -835,7 +845,7 @@ export default withMermaid(
           },
           {
             text: 'Part 6: Background Processing',
-            collapsed: true,
+            collapsed: false,
             items: [
               {
                 text: '29 — Queues & Background Jobs',
@@ -849,7 +859,7 @@ export default withMermaid(
           },
           {
             text: 'Part 7: Testing & Production',
-            collapsed: true,
+            collapsed: false,
             items: [
               {
                 text: '31 — Automated Browser Testing with Laravel Dusk (Bonus)',
@@ -891,7 +901,7 @@ export default withMermaid(
           },
           {
             text: 'Bonus Chapter',
-            collapsed: true,
+            collapsed: false,
             items: [
               {
                 text: '40 — Jetstream Alternative — Team Management & Authentication (Bonus)',
@@ -905,7 +915,7 @@ export default withMermaid(
           { text: 'Overview', link: '/series/rails-developers-love-laravel/' },
           {
             text: 'Chapters',
-            collapsed: true,
+            collapsed: false,
             items: [
               {
                 text: '00 — Introduction: Why Look at Laravel',
@@ -959,14 +969,14 @@ export default withMermaid(
           { text: 'Overview', link: '/series/claude-php-developers/' },
           {
             text: 'Part 0: Getting Started',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: '00 — Quick Start Guide', link: '/series/claude-php-developers/chapters/00-quick-start-guide' }
             ]
           },
           {
             text: 'Part 1: Foundation',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: '01 — Introduction to Claude API', link: '/series/claude-php-developers/chapters/01-introduction-to-claude-api' },
               { text: '02 — Authentication and API Keys', link: '/series/claude-php-developers/chapters/02-authentication-api-keys' },
@@ -977,7 +987,7 @@ export default withMermaid(
           },
           {
             text: 'Part 2: Core Concepts',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: '06 — Streaming Responses in PHP', link: '/series/claude-php-developers/chapters/06-streaming-responses' },
               { text: '07 — System Prompts and Role Definition', link: '/series/claude-php-developers/chapters/07-system-prompts-roles' },
@@ -988,7 +998,7 @@ export default withMermaid(
           },
           {
             text: 'Part 3: Advanced Features',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: '11 — Tool Use (Function Calling) Fundamentals', link: '/series/claude-php-developers/chapters/11-tool-use-fundamentals' },
               { text: '12 — Building Custom Tools in PHP', link: '/series/claude-php-developers/chapters/12-building-custom-tools' },
@@ -999,7 +1009,7 @@ export default withMermaid(
           },
           {
             text: 'Part 4: PHP Integration Patterns',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: '16 — The Official PHP SDK', link: '/series/claude-php-developers/chapters/16-official-php-sdk' },
               { text: '17 — Building a Claude Service Class', link: '/series/claude-php-developers/chapters/17-claude-service-class' },
@@ -1010,7 +1020,7 @@ export default withMermaid(
           },
           {
             text: 'Part 5: Laravel Deep Dive',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: '21 — Laravel Integration Patterns', link: '/series/claude-php-developers/chapters/21-laravel-integration' },
               { text: '22 — Building a Chatbot with Laravel', link: '/series/claude-php-developers/chapters/22-chatbot-laravel' },
@@ -1021,7 +1031,7 @@ export default withMermaid(
           },
           {
             text: 'Part 6: Real-World Applications',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: '26 — Building a Code Review Assistant', link: '/series/claude-php-developers/chapters/26-code-review-assistant' },
               { text: '27 — Documentation Generator', link: '/series/claude-php-developers/chapters/27-documentation-generator' },
@@ -1032,7 +1042,7 @@ export default withMermaid(
           },
           {
             text: 'Part 7: Advanced Techniques',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: '31 — Retrieval Augmented Generation (RAG)', link: '/series/claude-php-developers/chapters/31-retrieval-augmented-generation' },
               { text: '32 — Vector Databases in PHP', link: '/series/claude-php-developers/chapters/32-vector-databases' },
@@ -1043,7 +1053,7 @@ export default withMermaid(
           },
           {
             text: 'Part 8: Production & Deployment',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: '36 — Security Best Practices', link: '/series/claude-php-developers/chapters/36-security-best-practices' },
               { text: '37 — Monitoring and Observability', link: '/series/claude-php-developers/chapters/37-monitoring-observability' },
@@ -1053,7 +1063,7 @@ export default withMermaid(
           },
           {
             text: 'Appendices',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: 'Appendix A — API Reference Quick Guide', link: '/series/claude-php-developers/appendices/a-api-reference' },
               { text: 'Appendix B — Common Prompting Patterns', link: '/series/claude-php-developers/appendices/b-prompting-patterns' },
@@ -1087,7 +1097,7 @@ export default withMermaid(
           },
           {
             text: 'Part 3: Modern PHP Development',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: '08 — Composer & Dependencies', link: '/series/php-for-java-developers/chapters/08-composer-and-dependencies' },
               { text: '09 — Working with Databases', link: '/series/php-for-java-developers/chapters/09-working-with-databases' },
@@ -1097,7 +1107,7 @@ export default withMermaid(
           },
           {
             text: 'Part 4: Testing & Quality',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: '12 — Unit Testing with PHPUnit', link: '/series/php-for-java-developers/chapters/12-unit-testing-with-phpunit' },
               { text: '13 — Integration Testing', link: '/series/php-for-java-developers/chapters/13-integration-testing' },
@@ -1106,7 +1116,7 @@ export default withMermaid(
           },
           {
             text: 'Part 5: Web Development',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: '15 — HTTP & Request/Response', link: '/series/php-for-java-developers/chapters/15-http-and-request-response' },
               { text: '16 — Sessions & Authentication', link: '/series/php-for-java-developers/chapters/16-sessions-and-authentication' },
@@ -1116,7 +1126,7 @@ export default withMermaid(
           },
           {
             text: 'Part 6: Frameworks & Beyond',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: '19 — Framework Comparison', link: '/series/php-for-java-developers/chapters/19-framework-comparison' },
               { text: '20 — Laravel Fundamentals', link: '/series/php-for-java-developers/chapters/20-laravel-fundamentals' },
@@ -1200,6 +1210,9 @@ export default withMermaid(
       }
     },
     vite: {
+      plugins: [
+        tailwindcss()
+      ],
       build: {
         // Reduce chunk size warnings threshold
         chunkSizeWarningLimit: 1000,
