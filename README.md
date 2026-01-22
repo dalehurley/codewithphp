@@ -14,8 +14,14 @@ Code with PHP is a tutorial-based learning resource featuring hands-on, reproduc
 
 1. **[PHP Basics](https://codewithphp.com/series/php-basics/)** — Master PHP fundamentals from zero to hero
 2. **[AI/ML for PHP Developers](https://codewithphp.com/series/ai-ml-php-developers/)** — Build machine learning applications with PHP
-3. **[Python Developers ♥ PHP & Laravel](https://codewithphp.com/series/python-developers-love-php-laravel/)** — Transition from Python to PHP/Laravel
-4. **[Ruby on Rails Developers ♥ Laravel](https://codewithphp.com/series/rails-developers-love-laravel/)** — Transition from Rails to Laravel
+3. **[Build a CRM with Laravel 12](https://codewithphp.com/series/build-crm-laravel-12/)** — Build a complete CRM system with Laravel 12
+4. **[Claude for PHP Developers](https://codewithphp.com/series/claude-php-developers/)** — Integrate Claude AI into PHP applications
+5. **[Data Science for PHP Developers](https://codewithphp.com/series/data-science-php-developers/)** — Data analysis and visualization with PHP
+6. **[PHP Algorithms](https://codewithphp.com/series/php-algorithms/)** — Master algorithms and data structures in PHP
+7. **[PHP for Java Developers](https://codewithphp.com/series/php-for-java-developers/)** — Transition from Java to PHP
+8. **[PHP for TypeScript Developers](https://codewithphp.com/series/php-typescript-developers/)** — Transition from TypeScript to PHP
+9. **[Python Developers ♥ PHP & Laravel](https://codewithphp.com/series/python-developers-love-php-laravel/)** — Transition from Python to PHP/Laravel
+10. **[Ruby on Rails Developers ♥ Laravel](https://codewithphp.com/series/rails-developers-love-laravel/)** — Transition from Rails to Laravel
 
 ## 🚀 Quick Start
 
@@ -25,7 +31,7 @@ Code with PHP is a tutorial-based learning resource featuring hands-on, reproduc
 # Install dependencies
 npm install
 
-# Start development server (http://localhost:5173)
+# Start development server (http://localhost:4321)
 npm run dev
 
 # Build for production
@@ -55,22 +61,29 @@ cat TEST-SUMMARY-REPORT.md
 
 ```
 PHP-From-Scratch/
-├── docs/                    # VitePress documentation site
-│   ├── .vitepress/
-│   │   ├── config.ts       # Site configuration & navigation
-│   │   └── theme/          # Custom Vue components & styling
-│   ├── index.md            # Landing page
-│   └── series/             # Tutorial series content
-│       ├── php-basics/
-│       ├── ai-ml-php-developers/
-│       ├── python-developers-love-php-laravel/
-│       └── rails-developers-love-laravel/
+├── src/                     # Astro Starlight documentation site
+│   ├── content/
+│   │   ├── docs/           # Tutorial content
+│   │   │   ├── index.mdx   # Landing page
+│   │   │   └── series/     # Tutorial series content
+│   │   │       ├── php-basics/
+│   │   │       ├── ai-ml-php-developers/
+│   │   │       ├── build-crm-laravel-12/
+│   │   │       ├── claude-php-developers/
+│   │   │       ├── data-science-php-developers/
+│   │   │       ├── php-algorithms/
+│   │   │       ├── php-for-java-developers/
+│   │   │       ├── php-typescript-developers/
+│   │   │       ├── python-developers-love-php-laravel/
+│   │   │       └── rails-developers-love-laravel/
+│   │   └── config.ts       # Content collections configuration
+│   ├── styles/             # Custom CSS
+│   └── Head.astro          # Custom head component
 │
 ├── code/                    # Executable code samples (organized by series)
 │   ├── php-basics/
 │   ├── ai-ml-php-developers/
-│   ├── python-developers-love-php-laravel/
-│   └── rails-developers-love-laravel/
+│   └── [other series]/
 │
 ├── testing/                 # Test infrastructure for code validation
 │   ├── test-all-samples.php
@@ -80,21 +93,26 @@ PHP-From-Scratch/
 │   ├── src/               # Gemini 2.5 Flash integration
 │   └── output/            # Generated hero images
 │
-└── scripts/                # Utility scripts
-    ├── generate-social-images.js
-    └── update-code-references.js
+├── public/                  # Static assets
+│   ├── images/            # Hero images and graphics
+│   └── social/            # Social media preview images
+│
+├── scripts/                # Utility scripts
+│   ├── generate-social-images.js
+│   └── update-code-references.js
+│
+└── astro.config.mjs        # Astro & Starlight configuration
 ```
 
 ## 🛠️ Tech Stack
 
 ### Documentation Site
 
-- **VitePress 1.6.4** — Modern static site generator
-- **Vue 3** — Custom components (progress tracking, search, etc.)
+- **Astro 5** — Modern static site generator with component islands
+- **Starlight** — Astro's documentation theme with built-in features
 - **TypeScript** — Type-safe configuration
+- **MDX** — Enhanced markdown with component support
 - **GitHub Pages** — Hosting & deployment
-
-> **Note:** Yes, I realize the irony of using VitePress (Vue.js) for a PHP site. However, it provides the best developer experience for technical documentation and works seamlessly with GitHub Pages.
 
 ### Image Generation
 
@@ -130,7 +148,7 @@ Key rules documents:
 
 - [tutorials-global.mdc](.cursor/rules/tutorials-global.mdc) — Global writing standards
 - [authoring-guidelines.mdc](.cursor/rules/authoring-guidelines.mdc) — Tutorial structure & patterns
-- [vitepress-usage.mdc](.cursor/rules/vitepress-usage.mdc) — VitePress configuration
+- [astro.config.mjs](astro.config.mjs) — Astro & Starlight configuration
 
 ## 🎨 Features
 
@@ -153,15 +171,22 @@ Key rules documents:
 - **Website:** [codewithphp.com](https://codewithphp.com)
 - **Repository:** [github.com/dalehurley/codewithphp](https://github.com/dalehurley/codewithphp)
 - **Author:** [dalehurley.com](https://dalehurley.com)
-- **VitePress:** [vitepress.dev](https://vitepress.dev)
+- **Astro:** [astro.build](https://astro.build)
+- **Starlight:** [starlight.astro.build](https://starlight.astro.build)
 - **PHP Documentation:** [php.net](https://www.php.net)
 
 ## 📊 Project Status
 
-- **PHP Basics Series:** ✅ Complete (25 chapters)
-- **AI/ML Series:** ✅ Complete (25 chapters)
-- **Python → PHP Series:** 🚧 In Progress (11 chapters)
-- **Rails → Laravel Series:** 🆕 Just Started (11 chapters planned)
+- **PHP Basics:** ✅ Complete (25 chapters)
+- **AI/ML for PHP Developers:** ✅ Complete (25 chapters)
+- **Build a CRM with Laravel 12:** 🚧 In Progress (40 chapters planned)
+- **Claude for PHP Developers:** 🚧 In Progress (40 chapters planned)
+- **Data Science for PHP Developers:** 🆕 Starting
+- **PHP Algorithms:** 🚧 In Progress (38 chapters planned)
+- **PHP for Java Developers:** 🚧 In Progress (23 chapters planned)
+- **PHP for TypeScript Developers:** 🆕 Starting (16 chapters planned)
+- **Python → PHP/Laravel:** 🚧 In Progress (11 chapters)
+- **Rails → Laravel:** 🚧 In Progress (11 chapters)
 - **Code Test Coverage:** 80.7% passing (96/119 samples)
 - **Active Development:** ✅ Ongoing
 
