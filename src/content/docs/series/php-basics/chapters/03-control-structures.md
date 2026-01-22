@@ -1,12 +1,18 @@
 ---
 title: "03: Control Structures"
 description: "Learn how to make decisions and repeat actions in your code using conditionals (if/else) and loops (for, while, foreach)."
-sidebar:
-  label: "03: Control Structures"
-  order: 3
-  badge:
-    text: Beginner
-    variant: success
+series: "php-basics"
+chapter: 3
+order: 3
+difficulty: "Beginner"
+prerequisites:
+  - "/series/php-basics/chapters/02-variables-data-types-and-constants"
+teaches:
+  - 'Use `if`, `elseif`, and `else` to execute code based on conditions'
+  - 'Understand comparison operators (`==`, `===`, `!=`, `!==`, `>`, `>=`, `<`, `<=`)'
+  - 'Combine conditions with logical operators (`&&`, `||`, `!`)'
+  - 'Use `switch` statements and modern `match` expressions for multiple conditions'
+  - 'Apply ternary operator (`? :`) and null coalescing operator (`??`) for concise conditionals'
 ---
 ![Control Structures](/images/php-basics/chapter-03-control-structures-hero-full.webp)
 
@@ -627,6 +633,7 @@ switch ($color) {
     - Below 60: F
     - Hint: You can use `match` with conditions like `$score >= 90 => 'A'`
 
+<ChapterCheckbox seriesId="php-basics" chapterId="03-control-structures" />
 
 ## Further Reading
 
@@ -669,4 +676,53 @@ Complete, runnable examples from this chapter are available in:
 
 Test your understanding of control structures:
 
-
+<Quiz
+title="Chapter 03 Quiz: Control Structures"
+:questions="[
+{
+question: 'What is the difference between == and === in PHP?',
+options: [
+{ text: '=== checks both value and type, while == only checks value', correct: true, explanation: 'The === operator (identical) checks that both the value and data type are the same, preventing type coercion bugs.' },
+{ text: 'They are exactly the same', correct: false, explanation: '== performs type coercion while === does not.' },
+{ text: '=== is faster than ==', correct: false, explanation: 'While === can be slightly faster, the main difference is type checking behavior.' },
+{ text: '== is stricter than ===', correct: false, explanation: 'It\'s the opposite: === is stricter because it checks both value and type.' }
+]
+},
+{
+question: 'What does the match expression return if no condition matches and there is no default case?',
+options: [
+{ text: 'It throws an UnhandledMatchError', correct: true, explanation: 'Unlike switch, match requires all cases to be handled or a default case, otherwise it throws an error.' },
+{ text: 'It returns null', correct: false, explanation: 'Match throws an error rather than returning a value.' },
+{ text: 'It returns false', correct: false, explanation: 'Match throws an UnhandledMatchError, not false.' },
+{ text: 'It continues execution normally', correct: false, explanation: 'An unhandled match is considered an error in PHP.' }
+]
+},
+{
+question: 'Which loop should you use when you want to iterate over all elements in an array?',
+options: [
+{ text: 'foreach', correct: true, explanation: 'The foreach loop is specifically designed for iterating over arrays and is the cleanest choice.' },
+{ text: 'for', correct: false, explanation: 'While you can use for with arrays, foreach is more idiomatic and cleaner.' },
+{ text: 'while', correct: false, explanation: 'While can work but requires manual index management; foreach is better.' },
+{ text: 'do-while', correct: false, explanation: 'Do-while can work but foreach is the standard choice for arrays.' }
+]
+},
+{
+question: 'What does the break statement do inside a loop?',
+options: [
+{ text: 'Exits the loop immediately', correct: true, explanation: 'Break terminates the loop entirely and continues execution after the loop.' },
+{ text: 'Skips the current iteration and moves to the next', correct: false, explanation: 'That\'s what continue does. Break exits the entire loop.' },
+{ text: 'Pauses the loop temporarily', correct: false, explanation: 'There is no pause mechanism; break exits the loop completely.' },
+{ text: 'Restarts the loop from the beginning', correct: false, explanation: 'Break exits; it doesn\'t restart the loop.' }
+]
+},
+{
+question: 'What is the null coalescing operator (??) used for?',
+options: [
+{ text: 'To provide a default value when a variable is null or undefined', correct: true, explanation: 'The ?? operator returns the left operand if it exists and is not null, otherwise returns the right operand.' },
+{ text: 'To check if two values are equal', correct: false, explanation: 'That\'s what comparison operators (== or ===) do.' },
+{ text: 'To combine multiple conditions', correct: false, explanation: 'That\'s what logical operators (&&, ||) do.' },
+{ text: 'To cast a value to boolean', correct: false, explanation: 'Type casting uses (bool) syntax, not ??.' }
+]
+}
+]"
+/>

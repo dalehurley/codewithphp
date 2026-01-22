@@ -1,12 +1,18 @@
 ---
 title: "04: Understanding and Using Functions"
 description: "Learn how to write clean, reusable, and organized code by bundling logic into functions."
-sidebar:
-  label: "04: Understanding and Using Functions"
-  order: 4
-  badge:
-    text: Beginner
-    variant: success
+series: "php-basics"
+chapter: 4
+order: 4
+difficulty: "Beginner"
+prerequisites:
+  - "/series/php-basics/chapters/03-control-structures"
+teaches:
+  - 'Define and call your own custom functions'
+  - 'Pass information to functions using parameters (arguments)'
+  - 'Get information back from functions using `return` values'
+  - 'Understand variable scope and how it affects functions'
+  - 'Use modern PHP features like type declarations and strict mode for more robust code'
 ---
 ![Understanding and Using Functions](/images/php-basics/chapter-04-understanding-using-functions-hero-full.webp)
 
@@ -641,6 +647,7 @@ Complete, runnable examples from this chapter are available in:
 - `solutions/` - Solutions to chapter exercises
   :::
 
+<ChapterCheckbox seriesId="php-basics" chapterId="04-understanding-and-using-functions" />
 
 ## Further Reading
 
@@ -653,4 +660,53 @@ Complete, runnable examples from this chapter are available in:
 
 Test your understanding of PHP functions:
 
-
+<Quiz
+title="Chapter 04 Quiz: Functions"
+:questions="[
+{
+question: 'What does the return statement do in a function?',
+options: [
+{ text: 'Sends a value back to the caller and exits the function immediately', correct: true, explanation: 'Return both provides a value to the caller and stops execution of the function—any code after return is not executed.' },
+{ text: 'Only exits the function without returning a value', correct: false, explanation: 'Return does exit, but it also sends back a value (or null if no value specified).' },
+{ text: 'Prints the value to the screen', correct: false, explanation: 'That\'s what echo does. Return gives the value back to the calling code.' },
+{ text: 'Assigns a value to a variable', correct: false, explanation: 'Return sends a value back; assignment uses the = operator.' }
+]
+},
+{
+question: 'What is the purpose of declare(strict_types=1)?',
+options: [
+{ text: 'Enforces type checking for function arguments and return values', correct: true, explanation: 'Strict types mode prevents automatic type coercion in function calls, catching type errors early.' },
+{ text: 'Makes all variables require type declarations', correct: false, explanation: 'Strict types only affects function parameters and return types, not regular variables.' },
+{ text: 'Improves code performance', correct: false, explanation: 'Strict types is about type safety, not performance.' },
+{ text: 'Prevents all type juggling in PHP', correct: false, explanation: 'It only affects function signatures, not general operations.' }
+]
+},
+{
+question: 'What is the benefit of using named arguments when calling a function?',
+options: [
+{ text: 'Makes code self-documenting and allows skipping default parameters', correct: true, explanation: 'Named arguments let you specify which parameter you\'re setting, improving readability and allowing you to skip optional parameters in any order.' },
+{ text: 'Makes the function run faster', correct: false, explanation: 'Named arguments don\'t affect performance; they improve code clarity.' },
+{ text: 'Required for all functions in PHP 8.4', correct: false, explanation: 'Named arguments are optional; positional arguments still work.' },
+{ text: 'Prevents type errors', correct: false, explanation: 'Named arguments are about clarity, not type safety.' }
+]
+},
+{
+question: 'When should you use an arrow function (fn) instead of a regular function?',
+options: [
+{ text: 'For simple, single-expression operations', correct: true, explanation: 'Arrow functions are perfect for short, one-line operations and automatically return the expression result.' },
+{ text: 'For complex functions with multiple statements', correct: false, explanation: 'Arrow functions can only contain a single expression; use regular functions for multi-statement logic.' },
+{ text: 'When you need to modify global variables', correct: false, explanation: 'Arrow functions automatically capture variables but aren\'t specifically for modification.' },
+{ text: 'Always, as they\'re faster than regular functions', correct: false, explanation: 'Arrow functions are syntactic sugar; performance is equivalent to regular functions.' }
+]
+},
+{
+question: 'What happens when you try to access a variable defined inside a function from outside that function?',
+options: [
+{ text: 'You get an undefined variable error', correct: true, explanation: 'Variables defined inside functions have local scope and aren\'t accessible outside the function.' },
+{ text: 'The variable value is returned automatically', correct: false, explanation: 'You must explicitly use return to get values from a function.' },
+{ text: 'The variable becomes global', correct: false, explanation: 'Variables are local by default; you\'d need the global keyword to access global variables.' },
+{ text: 'PHP creates a new variable with the same name', correct: false, explanation: 'PHP throws an error because the variable doesn\'t exist in that scope.' }
+]
+}
+]"
+/>

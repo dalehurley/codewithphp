@@ -1,12 +1,19 @@
 ---
 title: "12: Dependency Management with Composer"
 description: "Step into the world of modern PHP by learning to manage third-party packages and autoload your own classes with Composer, the essential dependency manager."
-sidebar:
-  label: "12: Dependency Management with Composer"
-  order: 12
-  badge:
-    text: Intermediate
-    variant: caution
+series: "php-basics"
+chapter: 12
+order: 12
+difficulty: "Intermediate"
+prerequisites:
+  - "/series/php-basics/chapters/11-error-and-exception-handling"
+estimatedTime: "PT32M"
+teaches:
+  - 'Understand the role of a dependency manager'
+  - 'Install Composer on your system'
+  - 'Initialize a new Composer project and understand the `composer.json` file'
+  - 'Install a third-party package from [Packagist](https://packagist.org/)'
+  - 'Configure and use Composer''s PSR-4 autoloader for your own application''s classes'
 ---
 ![Dependency Management with Composer](/images/php-basics/chapter-12-dependency-management-composer-hero-full.webp)
 
@@ -723,6 +730,7 @@ Complete, runnable examples from this chapter are available in:
 The example project includes a working `composer.json`, autoloading setup, and demonstrates using third-party packages.
 :::
 
+<ChapterCheckbox seriesId="php-basics" chapterId="12-dependency-management-with-composer" />
 
 ## Further Reading
 

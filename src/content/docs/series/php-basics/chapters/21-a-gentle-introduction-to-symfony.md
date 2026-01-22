@@ -1,12 +1,18 @@
 ---
 title: "21: A Gentle Introduction to Symfony"
 description: "Discover Symfony, a powerful set of reusable PHP components and a flexible framework that provides a different, highly-structured approach to web development."
-sidebar:
-  label: "21: A Gentle Introduction to Symfony"
-  order: 21
-  badge:
-    text: Beginner
-    variant: success
+series: "php-basics"
+chapter: 21
+order: 21
+difficulty: "Beginner"
+prerequisites:
+  - "/series/php-basics/chapters/20-a-gentle-introduction-to-laravel"
+teaches:
+  - 'Understand Symfony''s component-based philosophy'
+  - 'Install a new Symfony project using the Symfony CLI'
+  - 'Use the MakerBundle to generate entities, migrations, and controllers'
+  - 'Define routes using PHP 8 attributes'
+  - 'Use the Doctrine ORM to interact with the database'
 ---
 ![A Gentle Introduction to Symfony](/images/php-basics/chapter-21-symfony-intro-hero-full.webp)
 
@@ -648,6 +654,7 @@ To deepen your understanding of Symfony, try these challenges:
 
    This will teach you about Symfony's Service Container and dependency injection.
 
+<ChapterCheckbox seriesId="php-basics" chapterId="21-a-gentle-introduction-to-symfony" />
 
 ## Further Reading
 

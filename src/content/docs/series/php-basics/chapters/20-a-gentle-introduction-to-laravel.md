@@ -1,12 +1,18 @@
 ---
 title: "20: A Gentle Introduction to Laravel"
 description: "Get a first look at Laravel, the most popular PHP framework, and see how it builds upon all the concepts you've learned to make web development rapid and enjoyable."
-sidebar:
-  label: "20: A Gentle Introduction to Laravel"
-  order: 20
-  badge:
-    text: Beginner
-    variant: success
+series: "php-basics"
+chapter: 20
+order: 20
+difficulty: "Beginner"
+prerequisites:
+  - "/series/php-basics/chapters/19-project-building-a-simple-blog"
+teaches:
+  - 'Understand the benefits of using a framework like Laravel'
+  - 'Install a new Laravel project using Composer'
+  - 'Learn about Artisan, Laravel''s command-line tool'
+  - 'Define a route and a controller'
+  - 'Use the Eloquent ORM to interact with the database'
 ---
 ![A Gentle Introduction to Laravel](/images/php-basics/chapter-20-laravel-intro-hero-full.webp)
 
@@ -963,6 +969,7 @@ Exercise solutions from this chapter are available in:
 **Note**: These are Laravel-specific Blade template examples. The main code for this chapter is your Laravel application created with `composer create-project laravel/laravel blog`.
 :::
 
+<ChapterCheckbox seriesId="php-basics" chapterId="20-a-gentle-introduction-to-laravel" />
 
 ## Further Reading
 

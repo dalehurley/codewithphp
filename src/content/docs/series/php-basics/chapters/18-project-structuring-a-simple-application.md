@@ -1,12 +1,19 @@
 ---
 title: "18: Project: Structuring a Simple Application"
 description: "Learn how to structure a modern PHP application using the MVC pattern, separating your concerns into Models, Views, and Controllers."
-sidebar:
-  label: "18: Project: Structuring a Simple Application"
-  order: 18
-  badge:
-    text: Intermediate
-    variant: caution
+series: "php-basics"
+chapter: 18
+order: 18
+difficulty: "Intermediate"
+prerequisites:
+  - "/series/php-basics/chapters/17-building-a-basic-http-router"
+estimatedTime: "PT25M"
+teaches:
+  - 'Understand the roles of Model, View, and Controller'
+  - 'Create a directory structure that reflects the MVC pattern'
+  - 'Refactor our router to call controller methods instead of closures'
+  - 'Create a simple templating system for rendering views and passing data to them'
+  - 'Implement a layout system to eliminate duplicate HTML across views'
 ---
 ![Project: Structuring a Simple Application](/images/php-basics/chapter-18-project-structuring-hero-full.webp)
 
@@ -821,6 +828,58 @@ This directory contains the complete MVC structure with router integration and t
 
 Test your understanding of MVC architecture:
 
+<Quiz
+title="Chapter 18 Quiz: MVC Architecture"
+:questions="[
+{
+question: 'What does MVC stand for?',
+options: [
+{ text: 'Model-View-Controller', correct: true, explanation: 'MVC separates an application into Models (data), Views (presentation), and Controllers (logic).' },
+{ text: 'Main-Variable-Class', correct: false, explanation: 'MVC stands for Model-View-Controller, a design pattern for organizing code.' },
+{ text: 'Multiple-View-Configuration', correct: false, explanation: 'MVC is Model-View-Controller, not Multiple-View-Configuration.' },
+{ text: 'Method-Value-Control', correct: false, explanation: 'MVC stands for Model-View-Controller.' }
+]
+},
+{
+question: 'What is the role of a Controller in MVC?',
+options: [
+{ text: 'Receives requests, uses Models, passes data to Views', correct: true, explanation: 'Controllers are the intermediary: they handle requests, interact with Models for data, and pass results to Views for display.' },
+{ text: 'Stores data in the database', correct: false, explanation: 'That\'s the Model\'s job; Controllers coordinate between Models and Views.' },
+{ text: 'Generates HTML output', correct: false, explanation: 'That\'s the View\'s job; Controllers prepare data and choose which View to render.' },
+{ text: 'Manages database connections', correct: false, explanation: 'Database connections are typically managed separately; Controllers use Models which handle data.' }
+]
+},
+{
+question: 'What is the responsibility of a View in MVC?',
+options: [
+{ text: 'To display data in HTML format', correct: true, explanation: 'Views are presentation layer—they take data and render it as HTML (or other formats).' },
+{ text: 'To validate user input', correct: false, explanation: 'Validation typically happens in Controllers or Models; Views just display data.' },
+{ text: 'To query the database', correct: false, explanation: 'Database queries are the Model\'s responsibility; Views receive prepared data.' },
+{ text: 'To handle routing', correct: false, explanation: 'Routing is handled by the Router; Views just render the presentation.' }
+]
+},
+{
+question: 'Why is separating concerns with MVC beneficial?',
+options: [
+{ text: 'Code is more organized, testable, and maintainable', correct: true, explanation: 'MVC separation means each component has one responsibility, making code easier to understand, test, and modify.' },
+{ text: 'It makes the code run faster', correct: false, explanation: 'MVC is about organization, not performance (though it can indirectly help with optimization).' },
+{ text: 'It\'s required by PHP', correct: false, explanation: 'MVC is a design pattern, not a PHP requirement—you can organize code however you want.' },
+{ text: 'It prevents all bugs', correct: false, explanation: 'MVC helps organize code but doesn\'t prevent bugs—good practices and testing do that.' }
+]
+},
+{
+question: 'What is a layout/template system in views?',
+options: [
+{ text: 'Reusable HTML structure that wraps content views', correct: true, explanation: 'Layouts provide common HTML (header, footer, nav) that wraps individual page content, eliminating duplication.' },
+{ text: 'A database schema', correct: false, explanation: 'Layouts are for HTML structure; database schemas are separate.' },
+{ text: 'A routing configuration', correct: false, explanation: 'Layouts handle HTML structure; routing is handled by the router.' },
+{ text: 'A type of controller', correct: false, explanation: 'Layouts are view templates; controllers handle request logic.' }
+]
+}
+]"
+/>
+
+<ChapterCheckbox seriesId="php-basics" chapterId="18-project-structuring-a-simple-application" />
 
 ## Further Reading
 

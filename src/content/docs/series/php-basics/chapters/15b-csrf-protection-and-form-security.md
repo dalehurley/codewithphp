@@ -1,12 +1,21 @@
 ---
 title: "15b: CSRF Protection & Form Security"
 description: "Learn how to protect your web applications from Cross-Site Request Forgery attacks and implement secure form handling with tokens and validation."
-sidebar:
-  label: "15b: CSRF Protection & Form Security"
-  order: 15
-  badge:
-    text: Intermediate
-    variant: caution
+series: "php-basics"
+chapter: 15.5
+order: 15.5
+difficulty: "Intermediate"
+prerequisites:
+  - "/series/php-basics/chapters/15-managing-state-with-sessions-and-cookies"
+  - "/series/php-basics/chapters/05-handling-html-forms-and-user-input"
+estimatedTime: "30 minutes"
+tags: ["security", "csrf", "forms", "sessions", "xss"]
+teaches:
+  - 'Understand what CSRF attacks are and how they work'
+  - 'Generate cryptographically secure CSRF tokens'
+  - 'Validate tokens using timing-attack-safe comparison'
+  - 'Implement token-per-session and token-per-request strategies'
+  - 'Protect against XSS when rendering form data'
 ---
 ![CSRF Protection & Form Security](/images/php-basics/chapter-15b-csrf-protection-form-security-hero-full.webp)
 
@@ -865,6 +874,58 @@ You've learned how to protect your applications from CSRF attacks and implement 
 
 Test your understanding of CSRF protection and form security:
 
+<Quiz 
+  title="Chapter 15b Quiz: CSRF Protection"
+  :questions="[
+    {
+      question: 'What does CSRF stand for?',
+      options: [
+        { text: 'Cross-Site Request Forgery', correct: true, explanation: 'CSRF is an attack that tricks users into executing unwanted actions.' },
+        { text: 'Cross-Site Resource Fraud', correct: false, explanation: 'This is not the correct acronym.' },
+        { text: 'Client-Side Request Filtering', correct: false, explanation: 'CSRF protection happens server-side, not client-side.' },
+        { text: 'Cryptographic Security Request Framework', correct: false, explanation: 'This is not what CSRF stands for.' }
+      ]
+    },
+    {
+      question: 'Why should you use hash_equals() instead of === for token comparison?',
+      options: [
+        { text: 'To prevent timing attacks', correct: true, explanation: 'hash_equals() takes constant time, preventing attackers from guessing tokens by measuring response time.' },
+        { text: 'It\'s faster than ===', correct: false, explanation: 'hash_equals() is actually slightly slower, but more secure.' },
+        { text: 'It works with any data type', correct: false, explanation: 'Both work with strings; security is the key difference.' },
+        { text: 'It automatically hashes the values', correct: false, explanation: 'hash_equals() compares values, it doesn\'t hash them.' }
+      ]
+    },
+    {
+      question: 'Where should CSRF tokens be stored?',
+      options: [
+        { text: 'In the server-side session', correct: true, explanation: 'Tokens must be stored server-side where attackers cannot access them.' },
+        { text: 'In JavaScript variables', correct: false, explanation: 'JavaScript storage is vulnerable to XSS attacks.' },
+        { text: 'In regular cookies only', correct: false, explanation: 'Attackers can read cookies; tokens need server-side verification.' },
+        { text: 'In the URL query string', correct: false, explanation: 'URLs are logged and visible in browser history - very insecure!' }
+      ]
+    },
+    {
+      question: 'When should you regenerate CSRF tokens?',
+      options: [
+        { text: 'After successful form submission', correct: true, explanation: 'Regenerating tokens prevents replay attacks.' },
+        { text: 'After login or privilege change', correct: true, explanation: 'Sensitive actions should always get fresh tokens.' },
+        { text: 'On every page load', correct: false, explanation: 'This would break multi-tab usage and isn\'t necessary.' },
+        { text: 'Never, once per session is enough', correct: false, explanation: 'Token rotation adds an extra security layer.' }
+      ]
+    },
+    {
+      question: 'What is the minimum recommended entropy for CSRF tokens?',
+      options: [
+        { text: '256 bits (32 bytes)', correct: true, explanation: 'This provides enough entropy to be computationally infeasible to guess.' },
+        { text: '64 bits (8 bytes)', correct: false, explanation: 'This is too small and could be brute-forced.' },
+        { text: '1024 bits (128 bytes)', correct: false, explanation: 'While more secure, this is unnecessarily large.' },
+        { text: '128 bits (16 bytes)', correct: false, explanation: 'While better than 64, 256 bits is the recommended minimum.' }
+      ]
+    }
+  ]"
+/>
+
+<ChapterCheckbox seriesId="php-basics" chapterId="15b-csrf-protection-and-form-security" />
 
 ## Further Reading
 

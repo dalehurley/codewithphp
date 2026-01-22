@@ -1,12 +1,18 @@
 ---
 title: "16: Writing Better Code with PSR-1 and PSR-12"
 description: "Learn how professional PHP developers write clean, consistent, and interoperable code by following the PSR-1 and PSR-12 coding style standards."
-sidebar:
-  label: "16: Writing Better Code with PSR-1 and PSR-12"
-  order: 16
-  badge:
-    text: Beginner
-    variant: success
+series: "php-basics"
+chapter: 16
+order: 16
+difficulty: "Beginner"
+prerequisites:
+  - "/series/php-basics/chapters/15-managing-state-with-sessions-and-cookies"
+teaches:
+  - 'Understand the purpose of the PHP-FIG and PSRs'
+  - 'Learn the key rules of the PSR-1 and PSR-12 standards'
+  - 'Install and configure PHP-CS-Fixer to automatically format your code'
+  - 'Write professional code documentation using PHPDoc'
+  - 'Set up EditorConfig for cross-editor consistency'
 ---
 ![Writing Better Code with PSR-1 and PSR-12](/images/php-basics/chapter-16-psr-standards-hero-full.webp)
 
@@ -931,6 +937,7 @@ More importantly, you've learned that you don't need to memorize hundreds of for
 
 In the next chapter, we'll start putting all these pieces together by designing and building a basic HTTP router, the entry point for modern web applications.
 
+<ChapterCheckbox seriesId="php-basics" chapterId="16-writing-better-code-with-psr-1-and-psr-12" />
 
 ## Further Reading
 

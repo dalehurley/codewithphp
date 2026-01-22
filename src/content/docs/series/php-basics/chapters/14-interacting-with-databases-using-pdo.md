@@ -1,12 +1,18 @@
 ---
 title: "14: Interacting with Databases using PDO"
 description: "Learn the modern, secure way to connect to a database and run queries using PDO, a consistent interface for working with databases like MySQL and SQLite."
-sidebar:
-  label: "14: Interacting with Databases using PDO"
-  order: 14
-  badge:
-    text: Intermediate
-    variant: caution
+series: "php-basics"
+chapter: 14
+order: 14
+difficulty: "Intermediate"
+prerequisites:
+  - "/series/php-basics/chapters/13-working-with-the-filesystem"
+teaches:
+  - 'Understand the role of PDO and why it''s the modern standard for database access in PHP'
+  - 'Connect to a SQLite database using PDO'
+  - 'Handle connection errors gracefully with try/catch blocks'
+  - 'Run `SELECT`, `INSERT`, `UPDATE`, and `DELETE` queries securely'
+  - 'Use prepared statements to prevent SQL injection attacks'
 ---
 ![Interacting with Databases using PDO](/images/php-basics/chapter-14-databases-pdo-hero-full.webp)
 
@@ -1536,6 +1542,7 @@ options: [
 ]"
 />
 
+<ChapterCheckbox seriesId="php-basics" chapterId="14-interacting-with-databases-using-pdo" />
 
 ### Additional Resources
 

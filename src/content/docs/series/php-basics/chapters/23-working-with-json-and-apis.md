@@ -1,12 +1,21 @@
 ---
 title: "23: Working with JSON & APIs"
 description: "Master JSON data handling and API integration to connect your PHP applications with external services and build your own RESTful endpoints."
-sidebar:
-  label: "23: Working with JSON & APIs"
-  order: 23
-  badge:
-    text: Intermediate
-    variant: caution
+series: "php-basics"
+chapter: 23
+order: 23
+difficulty: "Intermediate"
+prerequisites:
+  - "/series/php-basics/chapters/11-error-and-exception-handling"
+  - "/series/php-basics/chapters/14-interacting-with-databases-using-pdo"
+estimatedTime: "25 minutes"
+tags: ["json", "api", "rest", "curl", "http"]
+teaches:
+  - 'Understand JSON format and its relationship to PHP arrays'
+  - 'Encode PHP data to JSON strings'
+  - 'Decode JSON strings to PHP data structures'
+  - 'Handle JSON encoding and decoding errors'
+  - 'Make HTTP requests using cURL'
 ---
 ![Working with JSON & APIs](/images/php-basics/chapter-23-json-apis-hero-full.webp)
 
@@ -582,6 +591,58 @@ These skills unlock third-party integrations, microservices, and modern front-en
 
 Test your understanding of JSON and APIs:
 
+<Quiz 
+  title="Chapter 23 Quiz: JSON & APIs"
+  :questions="[
+    {
+      question: 'What does JSON stand for?',
+      options: [
+        { text: 'JavaScript Object Notation', correct: true, explanation: 'JSON is a text format based on JavaScript object syntax.' },
+        { text: 'Java Serialized Object Network', correct: false, explanation: 'JSON is not related to Java or serialization specifically.' },
+        { text: 'JavaScript Online Network', correct: false, explanation: 'This is not what JSON stands for.' },
+        { text: 'Just Simple Object Notation', correct: false, explanation: 'While simple, this isn\'t the correct meaning.' }
+      ]
+    },
+    {
+      question: 'What does json_decode($json, true) return?',
+      options: [
+        { text: 'An associative array', correct: true, explanation: 'The second parameter `true` converts JSON to arrays instead of objects.' },
+        { text: 'A stdClass object', correct: false, explanation: 'Without the `true` parameter, it returns an object.' },
+        { text: 'A boolean value', correct: false, explanation: 'The second parameter determines the return type, not a boolean.' },
+        { text: 'A JSON string', correct: false, explanation: 'json_decode() converts JSON strings to PHP data, not the reverse.' }
+      ]
+    },
+    {
+      question: 'Which function should you use to make HTTP requests in PHP?',
+      options: [
+        { text: 'curl_init() and curl_exec()', correct: true, explanation: 'cURL is the standard PHP extension for HTTP requests.' },
+        { text: 'file_get_contents() only', correct: false, explanation: 'While possible for simple GET requests, cURL is more flexible.' },
+        { text: 'http_request()', correct: false, explanation: 'This is not a built-in PHP function.' },
+        { text: 'fetch()', correct: false, explanation: 'fetch() is a JavaScript API, not PHP.' }
+      ]
+    },
+    {
+      question: 'What HTTP status code indicates a successful resource creation?',
+      options: [
+        { text: '201 Created', correct: true, explanation: '201 means the request succeeded and created a new resource.' },
+        { text: '200 OK', correct: false, explanation: '200 means success but is more generic; 201 specifically means created.' },
+        { text: '204 No Content', correct: false, explanation: '204 means success but no content to return (used for DELETE).' },
+        { text: '301 Moved Permanently', correct: false, explanation: '301 is a redirect, not a success status.' }
+      ]
+    },
+    {
+      question: 'Why should you always check json_last_error() after json_decode()?',
+      options: [
+        { text: 'To detect malformed JSON', correct: true, explanation: 'json_decode() returns null on error, but null is also valid JSON, so check errors explicitly.' },
+        { text: 'To improve performance', correct: false, explanation: 'Error checking doesn\'t improve performance.' },
+        { text: 'It\'s required for the function to work', correct: false, explanation: 'json_decode() works without it, but you should check for errors.' },
+        { text: 'To enable pretty printing', correct: false, explanation: 'Pretty printing is controlled by JSON_PRETTY_PRINT in json_encode().' }
+      ]
+    }
+  ]"
+/>
+
+<ChapterCheckbox seriesId="php-basics" chapterId="23-working-with-json-and-apis" />
 
 ## Further Reading
 

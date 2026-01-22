@@ -1,12 +1,18 @@
 ---
 title: "08: Introduction to Object-Oriented Programming"
 description: "Step into a new paradigm by learning how to model real-world concepts into reusable blueprints (classes) and create individual instances (objects)."
-sidebar:
-  label: "08: Introduction to Object-Oriented Programming"
-  order: 8
-  badge:
-    text: Intermediate
-    variant: caution
+series: "php-basics"
+chapter: 8
+order: 8
+difficulty: "Intermediate"
+prerequisites:
+  - "/series/php-basics/chapters/07-mastering-string-manipulation"
+teaches:
+  - 'Understand the core concept of OOP: bundling data and behavior together'
+  - 'Know the difference between a class (a blueprint) and an object (an instance)'
+  - 'Define a class with properties (data) and methods (behavior)'
+  - 'Instantiate objects from a class using the `new` keyword'
+  - 'Use the special `__construct` method to initialize an object''s state'
 ---
 ![Introduction to Object-Oriented Programming](/images/php-basics/chapter-08-oop-intro-hero-full.webp)
 
@@ -1357,6 +1363,58 @@ These advanced OOP concepts will enable you to build flexible, maintainable appl
 
 Test your understanding of Object-Oriented Programming concepts:
 
+<Quiz 
+  title="Chapter 08 Quiz: OOP Fundamentals"
+  :questions="[
+    {
+      question: 'What is the difference between a class and an object?',
+      options: [
+        { text: 'A class is a blueprint, an object is an instance', correct: true, explanation: 'Classes define structure and behavior; objects are specific instances with actual data.' },
+        { text: 'Classes are faster than objects', correct: false, explanation: 'Classes and objects serve different purposes; speed isn\'t the distinction.' },
+        { text: 'Objects can\'t have methods', correct: false, explanation: 'Objects inherit all methods from their class.' },
+        { text: 'There is no difference', correct: false, explanation: 'Classes and objects are fundamentally different concepts.' }
+      ]
+    },
+    {
+      question: 'What does the `private` visibility modifier do?',
+      options: [
+        { text: 'Makes properties/methods accessible only within the class', correct: true, explanation: 'Private members cannot be accessed from outside the class or by child classes.' },
+        { text: 'Makes properties invisible in var_dump()', correct: false, explanation: 'var_dump() shows all properties regardless of visibility.' },
+        { text: 'Improves performance', correct: false, explanation: 'Visibility is about encapsulation, not performance.' },
+        { text: 'Prevents the property from being serialized', correct: false, explanation: 'Private properties are still serialized by default.' }
+      ]
+    },
+    {
+      question: 'What is the purpose of the `__construct()` method?',
+      options: [
+        { text: 'To initialize object state when created', correct: true, explanation: 'Constructors run automatically when you use `new ClassName()`.' },
+        { text: 'To destroy objects when done', correct: false, explanation: 'That\'s __destruct(), not __construct().' },
+        { text: 'To create static methods', correct: false, explanation: 'Constructors are instance methods, not static methods.' },
+        { text: 'To define class constants', correct: false, explanation: 'Constants are defined separately, not in constructors.' }
+      ]
+    },
+    {
+      question: 'What is property hooks in PHP 8.4?',
+      options: [
+        { text: 'A way to add behavior to property access and modification', correct: true, explanation: 'Property hooks let you add get/set logic directly on properties.' },
+        { text: 'A debugging feature', correct: false, explanation: 'Property hooks are for adding business logic, not debugging.' },
+        { text: 'A way to make properties faster', correct: false, explanation: 'They add logic, which makes them slightly slower, but more maintainable.' },
+        { text: 'Required for all properties in PHP 8.4', correct: false, explanation: 'Property hooks are optional and used when you need custom behavior.' }
+      ]
+    },
+    {
+      question: 'What does `$this` refer to inside a class method?',
+      options: [
+        { text: 'The current object instance', correct: true, explanation: '$this is a reference to the object the method was called on.' },
+        { text: 'The class itself', correct: false, explanation: 'Use self:: or ClassName:: to reference the class.' },
+        { text: 'The parent class', correct: false, explanation: 'Use parent:: to reference the parent class.' },
+        { text: 'All instances of the class', correct: false, explanation: '$this only refers to the specific object instance.' }
+      ]
+    }
+  ]"
+/>
+
+<ChapterCheckbox seriesId="php-basics" chapterId="08-introduction-to-object-oriented-programming" />
 
 ## Further Reading
 

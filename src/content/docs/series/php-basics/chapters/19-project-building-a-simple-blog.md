@@ -1,12 +1,18 @@
 ---
 title: "19: Project: Building a Simple Blog"
 description: "Bring together everything you have learned by building a complete, database-driven blog application with list, show, and create functionality."
-sidebar:
-  label: "19: Project: Building a Simple Blog"
-  order: 19
-  badge:
-    text: Intermediate
-    variant: caution
+series: "php-basics"
+chapter: 19
+order: 19
+difficulty: "Intermediate"
+prerequisites:
+  - "/series/php-basics/chapters/18-project-structuring-a-simple-application"
+teaches:
+  - 'Solidify your understanding of the MVC application flow'
+  - 'Implement full CRUD (Create, Read, Update, Delete) functionality'
+  - 'Build a `Post` model that connects to the database'
+  - 'Create a `PostController` with methods for `index`, `show`, `create`, and `store`'
+  - 'Build the corresponding views to display posts and a creation form'
 ---
 ![Project: Building a Simple Blog](/images/php-basics/chapter-19-blog-project-hero-full.webp)
 
@@ -1351,6 +1357,58 @@ sqlite3 data/database.sqlite
 
 Test your understanding of building a complete application:
 
+<Quiz
+title="Chapter 19 Quiz: Building a Blog Application"
+:questions="[
+{
+question: 'What is the purpose of a Model class like Post?',
+options: [
+{ text: 'To encapsulate database operations for a specific entity', correct: true, explanation: 'Models represent entities and handle all database interactions for that entity, keeping data logic organized.' },
+{ text: 'To display HTML to users', correct: false, explanation: 'That\'s what Views do; Models handle data and business logic.' },
+{ text: 'To route URLs to handlers', correct: false, explanation: 'That\'s the Router\'s job; Models handle data operations.' },
+{ text: 'To validate HTML forms', correct: false, explanation: 'Form validation can be in Controllers or Models; the Model\'s main job is data management.' }
+]
+},
+{
+question: 'What does CRUD stand for?',
+options: [
+{ text: 'Create, Read, Update, Delete', correct: true, explanation: 'CRUD represents the four basic operations for persistent storage: creating, reading, updating, and deleting records.' },
+{ text: 'Connect, Retrieve, Upload, Download', correct: false, explanation: 'CRUD is Create, Read, Update, Delete—the fundamental data operations.' },
+{ text: 'Class, Route, URL, Database', correct: false, explanation: 'CRUD stands for Create, Read, Update, Delete.' },
+{ text: 'Controller, Request, URL, Data', correct: false, explanation: 'CRUD is Create, Read, Update, Delete.' }
+]
+},
+{
+question: 'Why use prepared statements in database operations?',
+options: [
+{ text: 'To prevent SQL injection attacks', correct: true, explanation: 'Prepared statements separate SQL structure from data, preventing malicious SQL from being executed.' },
+{ text: 'To make queries run faster', correct: false, explanation: 'While they can help performance, the primary reason is security against SQL injection.' },
+{ text: 'To store queries in the database', correct: false, explanation: 'Prepared statements are about safe query execution, not storage.' },
+{ text: 'To avoid writing SQL', correct: false, explanation: 'You still write SQL; prepared statements make it safer by separating logic from data.' }
+]
+},
+{
+question: 'What is the benefit of using a singleton pattern for database connections?',
+options: [
+{ text: 'Reuses one connection instead of creating many', correct: true, explanation: 'Singleton ensures only one database connection exists, avoiding the overhead of multiple connections.' },
+{ text: 'Allows multiple simultaneous connections', correct: false, explanation: 'Singleton specifically limits to one instance; that\'s its purpose.' },
+{ text: 'Encrypts database queries', correct: false, explanation: 'Singleton is about instance management; encryption is separate.' },
+{ text: 'Automatically creates database tables', correct: false, explanation: 'Singleton manages connection instances; table creation is separate.' }
+]
+},
+{
+question: 'What is validation and why is it important?',
+options: [
+{ text: 'Checking user input meets requirements before processing', correct: true, explanation: 'Validation ensures data is correct, complete, and safe before saving or processing it.' },
+{ text: 'Converting data to HTML', correct: false, explanation: 'That\'s output escaping or templating; validation checks input correctness.' },
+{ text: 'Creating database connections', correct: false, explanation: 'Validation checks data quality; connections are separate infrastructure.' },
+{ text: 'Routing URLs to handlers', correct: false, explanation: 'Routing maps URLs; validation checks data correctness.' }
+]
+}
+]"
+/>
+
+<ChapterCheckbox seriesId="php-basics" chapterId="19-project-building-a-simple-blog" />
 
 ## Further Reading
 

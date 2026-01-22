@@ -1,12 +1,17 @@
 ---
 title: "06: Deep Dive into Arrays"
 description: "Master PHP's most fundamental data structure for storing and managing lists of information, from simple lists to complex, structured data."
-sidebar:
-  label: "06: Deep Dive into Arrays"
-  order: 6
-  badge:
-    text: Beginner
-    variant: success
+series: "php-basics"
+chapter: 6
+order: 6
+difficulty: "Beginner"
+prerequisites:
+  - "/series/php-basics/chapters/05-handling-html-forms-and-user-input"
+teaches:
+  - 'Understand the difference between indexed and associative arrays'
+  - 'Create and access elements in multi-dimensional arrays'
+  - 'Add, update, and remove elements from an array'
+  - 'Use common and powerful array functions to manipulate data'
 ---
 ![Deep Dive into Arrays](/images/php-basics/chapter-06-deep-dive-arrays-hero-full.webp)
 
@@ -820,6 +825,7 @@ options: [
 ]"
 />
 
+<ChapterCheckbox seriesId="php-basics" chapterId="06-deep-dive-into-arrays" />
 
 ## Further Reading
 

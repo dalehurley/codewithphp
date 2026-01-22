@@ -1,12 +1,18 @@
 ---
 title: "15: Managing State with Sessions and Cookies"
 description: "Learn how to remember user data across multiple page loads using sessions and cookies, a key ingredient for features like user logins and shopping carts."
-sidebar:
-  label: "15: Managing State with Sessions and Cookies"
-  order: 15
-  badge:
-    text: Intermediate
-    variant: caution
+series: "php-basics"
+chapter: 15
+order: 15
+difficulty: "Intermediate"
+prerequisites:
+  - "/series/php-basics/chapters/14-interacting-with-databases-using-pdo"
+teaches:
+  - 'Understand what "stateless" means and why we need to manage state'
+  - 'Set and retrieve cookies to store small pieces of data on the user''s browser'
+  - 'Start a session to store larger, more sensitive data on the server'
+  - 'Use the `$_SESSION` superglobal array to read and write session data'
+  - 'Understand the basic security implications of sessions and cookies'
 ---
 ![Managing State with Sessions and Cookies](/images/php-basics/chapter-15-sessions-cookies-hero-full.webp)
 
@@ -914,6 +920,7 @@ Complete, runnable examples from this chapter are available in:
 - [`README.md`](/series/php-basics/code/15-sessions/README.md) - Complete guide and exercise solutions
   :::
 
+<ChapterCheckbox seriesId="php-basics" chapterId="15-managing-state-with-sessions-and-cookies" />
 
 ## Further Reading
 
@@ -928,6 +935,56 @@ Complete, runnable examples from this chapter are available in:
 
 Test your understanding of sessions and cookies:
 
+<Quiz
+title="Chapter 15 Quiz: Sessions and Cookies"
+:questions="[
+{
+question: 'What is the difference between cookies and sessions?',
+options: [
+{ text: 'Cookies store data on the client, sessions store data on the server', correct: true, explanation: 'Cookies are stored in the browser and sent with requests; sessions store data server-side with only a session ID in the cookie.' },
+{ text: 'Cookies are more secure than sessions', correct: false, explanation: 'Sessions are generally more secure since data stays on the server, not in the browser.' },
+{ text: 'Sessions expire when the browser closes, cookies never expire', correct: false, explanation: 'Both can have expiration times; session cookies expire on browser close by default, but persistent cookies can last longer.' },
+{ text: 'They are the same thing', correct: false, explanation: 'They work differently: cookies store data client-side, sessions server-side.' }
+]
+},
+{
+question: 'What must you call before using the $\_SESSION superglobal?',
+options: [
+{ text: 'session_start()', correct: true, explanation: 'session_start() must be called before any output to initialize the session system and load session data.' },
+{ text: 'session_begin()', correct: false, explanation: 'The function is called session_start(), not session_begin().' },
+{ text: 'session_init()', correct: false, explanation: 'The function is called session_start(), not session_init().' },
+{ text: 'Nothing, sessions work automatically', correct: false, explanation: 'You must explicitly call session_start() to use sessions.' }
+]
+},
+{
+question: 'What is a CSRF token used for?',
+options: [
+{ text: 'To prevent unauthorized form submissions from other sites', correct: true, explanation: 'CSRF tokens verify that form submissions come from your site, not from a malicious third-party site.' },
+{ text: 'To encrypt form data', correct: false, explanation: 'CSRF tokens verify request origin; encryption uses different mechanisms like HTTPS.' },
+{ text: 'To validate user input', correct: false, explanation: 'Input validation is separate; CSRF tokens verify the request came from your application.' },
+{ text: 'To store session data', correct: false, explanation: 'Sessions store data; CSRF tokens verify request authenticity.' }
+]
+},
+{
+question: 'When should you regenerate a session ID?',
+options: [
+{ text: 'After login or privilege changes', correct: true, explanation: 'Regenerating prevents session fixation attacks where an attacker might know the old session ID.' },
+{ text: 'On every page load', correct: false, explanation: 'That would be excessive and could cause issues; regenerate on significant auth changes.' },
+{ text: 'Never, session IDs should remain constant', correct: false, explanation: 'Not regenerating leaves you vulnerable to session fixation attacks.' },
+{ text: 'Only when the session expires', correct: false, explanation: 'Regenerate on privilege changes like login, not just expiration.' }
+]
+},
+{
+question: 'What does the HttpOnly flag on a cookie do?',
+options: [
+{ text: 'Prevents JavaScript from accessing the cookie', correct: true, explanation: 'HttpOnly cookies can only be accessed by the server, protecting against XSS attacks that try to steal cookies.' },
+{ text: 'Makes the cookie work only over HTTP, not HTTPS', correct: false, explanation: 'That would be counterproductive; HttpOnly prevents JavaScript access for security.' },
+{ text: 'Encrypts the cookie data', correct: false, explanation: 'HttpOnly controls access; encryption is separate. Use Secure flag for HTTPS-only cookies.' },
+{ text: 'Makes cookies visible to all domains', correct: false, explanation: 'That would be a security risk; HttpOnly actually enhances security by limiting access.' }
+]
+}
+]"
+/>
 
 ## Next Steps
 
