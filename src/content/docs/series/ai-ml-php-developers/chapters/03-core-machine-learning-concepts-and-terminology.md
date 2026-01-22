@@ -190,17 +190,7 @@ Machine learning algorithms fall into two broad categories based on whether they
 
 **Supervised learning** is like learning with a teacher. You provide the algorithm with examples where you already know the correct answer (the label), and it learns to predict that answer for new, unseen data.
 
-```mermaid
-flowchart LR
-    A[Training Data<br/>Features + Labels] --> B[Learning Algorithm]
-    B --> C[Trained Model]
-    D[New Data<br/>Features Only] --> C
-    C --> E[Predictions]
-
-    style A fill:#e1f5ff
-    style C fill:#c3f0c3
-    style E fill:#ffe1f5
-```
+**The Flow:** Training Data (Features + Labels) → Learning Algorithm → Trained Model → (receives New Data with Features Only) → Predictions
 
 **Example: Email Spam Classification**
 
@@ -249,16 +239,7 @@ Supervised learning can be understood probabilistically. The classifier estimate
 
 **Unsupervised learning** is like exploring without a map. You provide data without labels, and the algorithm discovers hidden structure or patterns on its own.
 
-```mermaid
-flowchart LR
-    A[Unlabeled Data<br/>Features Only] --> B[Clustering Algorithm]
-    B --> C[Discovered Groups]
-    C --> D[Interpret Patterns]
-
-    style A fill:#e1f5ff
-    style C fill:#fff4e1
-    style D fill:#f0e1ff
-```
+**The Flow:** Unlabeled Data (Features Only) → Clustering Algorithm → Discovered Groups → Interpret Patterns
 
 **Example: Customer Segmentation**
 
@@ -578,20 +559,8 @@ Labels are the answers you want to predict. They exist only in supervised learni
 2. **Multi-class Classification**: Species (setosa, versicolor, virginica), Topic (sports, politics, tech)
 3. **Regression** (continuous): Price ($124.99), Temperature (72.5°F), Age (34.2 years)
 
-```mermaid
-flowchart TB
-    A[Raw Data] --> B[Feature Extraction]
-    B --> C[Features: Numeric Array]
-    D[Known Outcomes] --> E[Labels]
-    C --> F[Machine Learning Algorithm]
-    E --> F
-    F --> G[Trained Model]
-
-    style A fill:#e1f5ff
-    style C fill:#c3f0c3
-    style E fill:#ffe1f5
-    style G fill:#fff4e1
-```
+**Feature and Label Processing Flow:**
+Raw Data → Feature Extraction → Features (Numeric Array) → Machine Learning Algorithm ← Labels (from Known Outcomes) → Trained Model
 
 ### Expected Result
 
@@ -656,22 +625,13 @@ Machine learning has two phases that occur at different times with different per
 1. **Training** (offline, slow, done once): Learn patterns from labeled data
 2. **Inference** (online, fast, done many times): Apply learned patterns to new data
 
-```mermaid
-sequenceDiagram
-    participant Dev as Developer
-    participant Train as Training Phase
-    participant Model as Trained Model
-    participant Prod as Production
-    participant User as End User
+**The Two-Phase Flow:**
 
-    Dev->>Train: Provide labeled training data
-    Note over Train: Learn patterns<br/>(slow, offline)
-    Train->>Model: Save trained model
-    Model->>Prod: Deploy model
-    User->>Prod: Request prediction
-    Note over Prod: Apply patterns<br/>(fast, online)
-    Prod->>User: Return prediction
-```
+**Training Phase (Offline):**
+Developer → Provides labeled training data → Training Phase (learns patterns, slow) → Saves Trained Model → Deploy to Production
+
+**Inference Phase (Online):**  
+End User → Requests prediction → Production (applies patterns, fast) → Returns prediction → End User
 
 Run the training vs. inference demonstration:
 
@@ -843,19 +803,12 @@ Recognize the most common mistake in machine learning—overfitting—and learn 
 
 **Overfitting** is when a model memorizes training data instead of learning generalizable patterns. It's like a student who memorizes answers to practice problems but can't solve new problems because they didn't understand the underlying concepts.
 
-```mermaid
-graph LR
-    A[Training Data] --> B{Model Complexity}
-    B -->|Too Simple| C[Underfitting<br/>Poor on both train & test]
-    B -->|Just Right| D[Good Fit<br/>Good on both train & test]
-    B -->|Too Complex| E[Overfitting<br/>Great on train, poor on test]
+**Model Complexity Trade-offs:**
 
-    style A fill:#e1f5ff
-    style B fill:#fff4e1
-    style C fill:#ffcccc
-    style D fill:#c3f0c3
-    style E fill:#ffcccc
-```
+Training Data → Model Complexity Decision:
+- **Too Simple** → Underfitting (Poor performance on both training & test data)
+- **Just Right** → Good Fit (Good performance on both training & test data)
+- **Too Complex** → Overfitting (Great on training, poor on test data)
 
 Run the overfitting demonstration:
 
