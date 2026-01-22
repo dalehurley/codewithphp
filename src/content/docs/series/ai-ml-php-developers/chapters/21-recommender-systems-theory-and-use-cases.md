@@ -880,26 +880,33 @@ Collaborative filtering depends on quantifying "similarity" between users or ite
 ```mermaid
 graph LR
     subgraph "Euclidean Distance (Magnitude)"
-        A[User A (5, 4)]
-        B[User B (4, 3)]
+        A["User A (5, 4)"]
+        B["User B (4, 3)"]
         A -- "Short Distance" --> B
-        C[User C (1, 5)]
+        C["User C (1, 5)"]
         A -- "Long Distance" --> C
+        NoteB["A and B are close = High Similarity"]
+        NoteC["A and C are far = Low Similarity"]
+        B -.-> NoteB
+        C -.-> NoteC
     end
 
     subgraph "Cosine Similarity (Angle)"
-        O(Origin) --> D[User A Vector]
-        O --> E[User B Vector]
-        O --> F[User C Vector]
+        O((Origin))
+        D["User A Vector"]
+        E["User B Vector"]
+        F["User C Vector"]
+        O --> D
+        O --> E
+        O --> F
         style D stroke-width:2px,stroke:green
         style E stroke-width:2px,stroke:green
         style F stroke-width:2px,stroke:red
     end
-
-    note right of B A and B are close = High Similarity
-    note right of C A and C are far = Low Similarity
-    note right of E Small Angle = High Similarity
-    note right of F Large Angle = Low Similarity
+    AngleSmall["Small Angle = High Similarity"]
+    AngleLarge["Large Angle = Low Similarity"]
+    E -.-> AngleSmall
+    F -.-> AngleLarge
 ```
 
 ### 1. Cosine Similarity

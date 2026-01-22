@@ -206,7 +206,7 @@ flowchart TB
     InnerInit --> InnerCheck{j < n - i - 1?}
     InnerCheck -->|No| CheckSwapped{Any swaps?}
     InnerCheck -->|Yes| Compare{"arr[j] > arr[j+1]?"}
-    Compare -->|Yes| Swap[Swap arr[j] ↔ arr[j+1]]
+    Compare -->|Yes| Swap["Swap arr[j] <-> arr[j+1]"]
     Compare -->|No| NoSwap[No swap needed]
     Swap --> SetFlag[swapped = true]
     SetFlag --> IncrementJ[j++]

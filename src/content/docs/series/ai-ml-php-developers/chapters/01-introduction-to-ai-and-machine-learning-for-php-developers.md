@@ -924,25 +924,22 @@ Show how a PHP web application orchestrates an entire machine learning workflow 
 ```mermaid
 sequenceDiagram
     participant User
-    participant PHP App
+    participant PHPApp as "PHP App"
     participant Database
-    participant ML Model
+    participant MLModel as "ML Model"
 
-    User->>PHP App: Browse movies
-    PHP App->>Database: Collect viewing patterns
-    Database-->>PHP App: User behavior data
-    PHP App->>PHP App: Prepare features
-    PHP App->>ML Model: Train classifier
-    ML Model-->>PHP App: Trained model
-    User->>PHP App: Request recommendations
-    PHP App->>ML Model: Predict user type
-    ML Model-->>PHP App: "action_lover"
-    PHP App->>Database: Query action movies
-    Database-->>PHP App: Movie list
-    PHP App-->>User: Show recommendations
-
-    style PHP App fill:#e1f5ff
-    style ML Model fill:#c3f0c3
+    User->>PHPApp: Browse movies
+    PHPApp->>Database: Collect viewing patterns
+    Database-->>PHPApp: User behavior data
+    PHPApp->>PHPApp: Prepare features
+    PHPApp->>MLModel: Train classifier
+    MLModel-->>PHPApp: Trained model
+    User->>PHPApp: Request recommendations
+    PHPApp->>MLModel: Predict user type
+    MLModel-->>PHPApp: "action_lover"
+    PHPApp->>Database: Query action movies
+    Database-->>PHPApp: Movie list
+    PHPApp-->>User: Show recommendations
 ```
 
 ### The Code

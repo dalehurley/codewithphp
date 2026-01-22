@@ -671,10 +671,6 @@ sequenceDiagram
     User->>Prod: Request prediction
     Note over Prod: Apply patterns<br/>(fast, online)
     Prod->>User: Return prediction
-
-    style Train fill:#e1f5ff
-    style Model fill:#fff4e1
-    style Prod fill:#c3f0c3
 ```
 
 Run the training vs. inference demonstration:

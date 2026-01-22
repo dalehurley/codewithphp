@@ -194,7 +194,8 @@ erDiagram
         integer sort_order UK
         integer wip_limit "nullable"
         string color
-        timestamps
+        timestamp created_at
+        timestamp updated_at
     }
 
     DEALS {
@@ -212,8 +213,9 @@ erDiagram
         string lead_source "nullable"
         text description "nullable"
         boolean is_won
-        soft_deletes
-        timestamps
+        timestamp deleted_at "nullable"
+        timestamp created_at
+        timestamp updated_at
     }
 
     DEAL_CONTACT_ROLE {
@@ -222,7 +224,8 @@ erDiagram
         bigint contact_id FK
         string role "Decision Maker, Evaluator, etc"
         boolean is_primary
-        timestamps
+        timestamp created_at
+        timestamp updated_at
         unique deal_id_contact_id_role
     }
 
@@ -235,7 +238,8 @@ erDiagram
         decimal unit_price
         decimal discount_rate
         decimal line_total "computed: qty × price × (1 - discount)"
-        timestamps
+        timestamp created_at
+        timestamp updated_at
     }
 
     DEAL_STAGE_HISTORY {
