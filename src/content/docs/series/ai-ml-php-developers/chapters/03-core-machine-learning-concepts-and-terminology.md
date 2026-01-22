@@ -1237,25 +1237,16 @@ A single train/test split has a problem: your accuracy estimate depends on which
 
 **Cross-validation** solves this by using multiple train/test splits and averaging the results.
 
-```mermaid
-flowchart TB
-    A[Full Dataset] --> B[Shuffle Data]
-    B --> C[Split into k Folds]
-    C --> D1[Fold 1: Test<br/>Folds 2-5: Train]
-    C --> D2[Fold 2: Test<br/>Folds 1,3-5: Train]
-    C --> D3[Fold 3: Test<br/>Folds 1-2,4-5: Train]
-    C --> D4[Fold 4: Test<br/>Folds 1-3,5: Train]
-    C --> D5[Fold 5: Test<br/>Folds 1-4: Train]
-    D1 --> E[Accuracy 1]
-    D2 --> E2[Accuracy 2]
-    D3 --> E3[Accuracy 3]
-    D4 --> E4[Accuracy 4]
-    D5 --> E5[Accuracy 5]
-    E --> F[Average & Std Dev]
-    E2 --> F
-    E3 --> F
-    E4 --> F
-    E5 --> F
+**K-Fold Cross-Validation Process:**
+
+1. Full Dataset → Shuffle Data → Split into k Folds (e.g., 5 folds)
+2. Run k iterations, each time using a different fold as test set:
+   - Iteration 1: Fold 1 = Test, Folds 2-5 = Train → Accuracy 1
+   - Iteration 2: Fold 2 = Test, Folds 1,3-5 = Train → Accuracy 2
+   - Iteration 3: Fold 3 = Test, Folds 1-2,4-5 = Train → Accuracy 3
+   - Iteration 4: Fold 4 = Test, Folds 1-3,5 = Train → Accuracy 4
+   - Iteration 5: Fold 5 = Test, Folds 1-4 = Train → Accuracy 5
+3. Calculate Average & Standard Deviation of all accuracies
 
     style A fill:#e1f5ff
     style C fill:#fff4e1
@@ -1446,26 +1437,15 @@ Here's a critical problem: If you tune your model by testing different hyperpara
 
 The solution: **Three-way split**.
 
-```mermaid
-flowchart LR
-    A[Full Dataset] --> B[Split 60/20/20]
-    B --> C[Training Set<br/>60%]
-    B --> D[Validation Set<br/>20%]
-    B --> E[Test Set<br/>20%]
+**Three-Way Data Split Workflow:**
 
-    C --> F[Train Models]
-    D --> F
-    F --> G[Choose Best Model]
-    G --> H[Final Evaluation]
-    E --> H
+1. **Full Dataset** → Split 60/20/20 into:
+   - **Training Set** (60%) — Use many times to train models
+   - **Validation Set** (20%) — Use many times to tune hyperparameters and choose best model
+   - **Test Set** (20%) — Use ONCE for final evaluation
 
-    style C fill:#e1f5ff
-    style D fill:#fff4e1
-    style E fill:#ffe1f5
-    style G fill:#c3f0c3
-
-    note1[Use many times]
-    note2[Use many times]
+2. Training Set + Validation Set → Train Models → Choose Best Model
+3. Best Model + Test Set → Final Evaluation (unbiased performance estimate)
     note3[Use ONCE!]
 
     C -.-> note1
@@ -1665,25 +1645,19 @@ php 07-iris-workflow.php
 
 #### The 8-Step ML Workflow
 
-```mermaid
-flowchart TD
-    A[1. Define Problem] --> B[2. Load & Explore Data]
-    B --> C[3. Preprocess Features]
-    C --> D[4. Split Train/Test]
-    D --> E[5. Train Model]
-    E --> F[6. Evaluate Performance]
-    F --> G{Good Enough?}
-    G -->|No| H[Adjust & Iterate]
-    H --> C
-    G -->|Yes| I[7. Save Model]
-    I --> J[8. Deploy & Monitor]
+**Complete Machine Learning Workflow:**
 
-    style A fill:#e1f5ff
-    style E fill:#c3f0c3
-    style F fill:#ffe1f5
-    style I fill:#fff4e1
-    style J fill:#f0e1ff
-```
+1. **Define Problem** → What are you predicting?
+2. **Load & Explore Data** → Understand your dataset
+3. **Preprocess Features** → Clean and transform data
+4. **Split Train/Test** → Separate data for validation
+5. **Train Model** → Fit algorithm to training data
+6. **Evaluate Performance** → Test on held-out data
+7. **Good Enough?**
+   - **No** → Adjust & Iterate (return to step 3)
+   - **Yes** → Continue to step 8
+8. **Save Model** → Persist for production use
+9. **Deploy & Monitor** → Put into production and track performance
 
 Let's walk through each step with the actual code:
 
@@ -2201,20 +2175,13 @@ Understand the fundamental difference between predicting continuous values (regr
 
 So far, we've focused exclusively on **classification**—predicting which category something belongs to (spam/ham, setosa/versicolor/virginica). But supervised learning also includes **regression**—predicting numeric values.
 
-```mermaid
-flowchart TB
-    A[Supervised Learning] --> B[Classification]
-    A --> C[Regression]
-    B --> D[Discrete Output<br/>Categories/Labels]
-    C --> E[Continuous Output<br/>Numeric Values]
+**Supervised Learning: Two Types**
 
-    D --> F["Examples:<br/>spam/ham<br/>setosa/versicolor<br/>fraud/legitimate"]
-    E --> G["Examples:<br/>$285,000 house price<br/>72.5°F temperature<br/>4.8 rating score"]
+**1. Classification** (Discrete Output - Categories/Labels)
+- Examples: spam/ham, setosa/versicolor, fraud/legitimate
 
-    style A fill:#e1f5ff
-    style B fill:#c3f0c3
-    style C fill:#fff4e1
-```
+**2. Regression** (Continuous Output - Numeric Values)
+- Examples: $285,000 house price, 72.5°F temperature, 4.8 rating score
 
 Run the regression example:
 

@@ -105,47 +105,33 @@ This compact example uses PHP 8.4's constructor property promotion, which we'll 
 - Use modern PHP 8.4 features like constructor property promotion and type declarations.
 - Understand **static** properties, methods, and class constants.
 
-## OOP Concepts: Visual Overview
+## OOP Concepts: Core Principles
 
-Here's how classes, objects, and visibility work together:
+Understanding how classes, objects, and visibility work together is essential to mastering OOP. Here's how these concepts relate:
 
-```mermaid
-classDiagram
-    class User {
-        -string name
-        -string email
-        -int age
-        +__construct(name, email, age)
-        +getName() string
-        +getEmail() string
-        +greet() string
-        +isAdult() bool
-    }
+**Class as Blueprint:**
+A class defines the structure (properties) and behavior (methods) that all objects of that type will have. Think of it like an architectural blueprint—it specifies what will be built, but isn't the building itself.
 
-    class UserInstance1 {
-        name: "Alice"
-        email: "alice@example.com"
-        age: 30
-    }
+**Objects as Instances:**
+When you create an object from a class using the `new` keyword, you're instantiating that blueprint into an actual entity in memory with its own data. Each object maintains its own independent state.
 
-    class UserInstance2 {
-        name: "Bob"
-        email: "bob@example.com"
-        age: 25
-    }
+**Example: User Class and Instances**
 
-    User <|.. UserInstance1 : instantiates
-    User <|.. UserInstance2 : instantiates
+The `User` class blueprint defines:
+- **Private properties**: `name` (string), `email` (string), `age` (int)
+- **Public methods**: `__construct()`, `getName()`, `getEmail()`, `greet()`, `isAdult()`
 
-    note for User "Blueprint (Class)\nDefines structure and behavior"
-    note for UserInstance1 "Object (Instance)\nActual data in memory"
-```
+From this single blueprint, you can create multiple independent objects:
+- **User Instance 1**: `name = "Alice"`, `email = "alice@example.com"`, `age = 30`
+- **User Instance 2**: `name = "Bob"`, `email = "bob@example.com"`, `age = 25`
 
-**Key Concepts:**
+**Visibility Controls Access:**
 
-- `-` (minus) = `private` properties (only accessible within the class)
-- `+` (plus) = `public` methods (accessible from anywhere)
-- The class is a template; objects are specific instances with actual data
+- **`private`** properties are only accessible within the class itself—external code cannot read or modify them directly
+- **`public`** methods are accessible from anywhere—they provide the controlled interface to interact with the object
+- **`protected`** (covered in the next chapter) allows access from the class and its subclasses
+
+This separation between the class (blueprint) and objects (instances) allows you to create as many independent objects as you need, each maintaining its own data while sharing the same behavior defined in the class.
 
 ## Step 1: From Associative Array to Object (~5 min)
 

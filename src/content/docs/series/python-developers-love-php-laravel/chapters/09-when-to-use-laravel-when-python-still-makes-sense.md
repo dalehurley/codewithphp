@@ -1199,30 +1199,7 @@ Use this checklist to evaluate your project:
 
 **Decision Tree:**
 
-```mermaid
-flowchart TD
-    A[Start: Choose Technology] --> B{Data science/ML/<br/>scientific computing?}
-    B -->|Yes| C[Python]
-    B -->|No| D{Traditional web app/<br/>CRUD?}
-    D -->|Yes| E{Team has Laravel<br/>expertise?}
-    E -->|Yes| F[Laravel<br/>Lower risk]
-    E -->|No| G{Team has Python<br/>expertise?}
-    G -->|Yes| H[Python<br/>Lower risk]
-    G -->|No| I{Tight timeline/<br/>budget?}
-    I -->|Yes| J[Laravel<br/>Faster for web apps]
-    I -->|No| K[Choose based on<br/>ecosystem fit]
-    D -->|No| L{API-only backend?}
-    L -->|Yes| M[Both work well<br/>Choose by team/expertise]
-    L -->|No| N[Evaluate specific<br/>requirements]
-
-    style C fill:#e1f5ff
-    style F fill:#d4edda
-    style H fill:#fff3cd
-    style J fill:#d4edda
-    style M fill:#f8d7da
-```
-
-**Text Version:**
+Use this decision tree to guide your technology choice. Start at the top and follow the path based on your project's requirements and constraints.
 
 ```
 Start

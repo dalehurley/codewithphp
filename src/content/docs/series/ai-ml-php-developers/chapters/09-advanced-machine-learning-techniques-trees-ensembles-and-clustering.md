@@ -221,18 +221,13 @@ Understand how decision trees work by building a customer churn classifier with 
 
 Decision trees are one of the most intuitive ML algorithms. They create a flowchart of yes/no questions about features, leading to predictions. Unlike k-NN (which is a "black box"), you can see exactly why a tree made each prediction.
 
-```mermaid
-flowchart TD
-    A[Customer Data] --> B{Contract Length > 12 months?}
-    B -->|Yes| C{Monthly Charges > $70?}
-    B -->|No| D[HIGH RISK<br/>Predict: Churn]
-    C -->|Yes| E[MEDIUM RISK<br/>Predict: Churn]
-    C -->|No| F[LOW RISK<br/>Predict: Stay]
+**Decision Tree Example: Customer Churn Prediction**
 
-    style D fill:#ffcccc
-    style E fill:#ffe1cc
-    style F fill:#c3f0c3
-```
+Customer Data → Is Contract Length > 12 months?
+- **No** → HIGH RISK (Predict: Churn)
+- **Yes** → Is Monthly Charges > $70?
+  - **Yes** → MEDIUM RISK (Predict: Churn)
+  - **No** → LOW RISK (Predict: Stay)
 
 #### How Decision Trees Learn
 
@@ -441,34 +436,14 @@ Build a Random Forest classifier that combines multiple decision trees to achiev
 
 A single decision tree is unstable—change a few training samples and you get a completely different tree. **Random Forests** solve this by training many trees on random subsets of data and features, then averaging their predictions.
 
-```mermaid
-flowchart TB
-    A[Training Data] --> B[Bootstrap Sample 1]
-    A --> C[Bootstrap Sample 2]
-    A --> D[Bootstrap Sample 3]
-    A --> E[... Sample N]
+**Random Forest Process:**
 
-    B --> F[Tree 1<br/>Random features]
-    C --> G[Tree 2<br/>Random features]
-    D --> H[Tree 3<br/>Random features]
-    E --> I[Tree N<br/>Random features]
+1. **Training**: Training Data → Create multiple bootstrap samples (1, 2, 3, ..., N)
+2. **Build Trees**: Each sample → Train a decision tree with random feature subsets
+3. **Prediction**: New Data → Send to all trees (Tree 1, 2, 3, ..., N)
+4. **Voting**: All tree predictions → Vote → Final Prediction (Majority Vote)
 
-    J[New Data] --> F
-    J --> G
-    J --> H
-    J --> I
-
-    F --> K[Vote]
-    G --> K
-    H --> K
-    I --> K
-
-    K --> L[Final Prediction<br/>Majority Vote]
-
-    style A fill:#e1f5ff
-    style K fill:#fff4e1
-    style L fill:#c3f0c3
-```
+This ensemble approach reduces overfitting and increases stability through the wisdom of crowds.
 
 #### How Random Forests Work
 
@@ -1000,27 +975,13 @@ Understand Gradient Boosting, a powerful ensemble method that builds trees seque
 
 While Random Forests train trees **in parallel** on different data samples, **Gradient Boosting** trains trees **sequentially**, with each tree learning from the errors of previous trees.
 
-```mermaid
-flowchart LR
-    A[Training Data] --> B[Tree 1]
-    B --> C[Calculate Errors]
-    C --> D[Tree 2<br/>Focus on errors]
-    D --> E[Calculate Errors]
-    E --> F[Tree 3<br/>Focus on errors]
-    F --> G[...]
-    G --> H[Tree N]
+**Gradient Boosting Sequential Process:**
 
-    B --> I[Weighted Sum]
-    D --> I
-    F --> I
-    H --> I
-    I --> J[Final Prediction]
+Training Data → Tree 1 → Calculate Errors → Tree 2 (Focus on errors) → Calculate Errors → Tree 3 (Focus on errors) → ... → Tree N
 
-    style A fill:#e1f5ff
-    style C fill:#ffe1cc
-    style E fill:#ffe1cc
-    style J fill:#c3f0c3
-```
+All trees (1, 2, 3, ..., N) → Weighted Sum → Final Prediction
+
+Each subsequent tree corrects the errors of its predecessors, leading to progressively better predictions.
 
 #### How Gradient Boosting Works
 
@@ -1267,23 +1228,7 @@ Learn unsupervised learning by segmenting customers into groups based on behavio
 
 All previous algorithms were supervised—they learned from labeled examples. **Clustering** is unsupervised: it discovers hidden patterns and groups in data without being told what to look for.
 
-```mermaid
-flowchart TB
-    A[Unlabeled Data<br/>Customer behaviors] --> B[K-Means Algorithm]
-    B --> C{Choose k clusters}
-    C --> D[Initialize k centroids]
-    D --> E[Assign points to<br/>nearest centroid]
-    E --> F[Update centroids<br/>to cluster means]
-    F --> G{Converged?}
-    G -->|No| E
-    G -->|Yes| H[Final Clusters]
-    H --> I[Interpret segments]
-
-    style A fill:#e1f5ff
-    style B fill:#fff4e1
-    style H fill:#c3f0c3
-    style I fill:#f0e1ff
-```
+The K-Means algorithm takes unlabeled data (like customer behaviors) and iteratively assigns points to clusters based on proximity to cluster centers (centroids). The process repeats until the assignments stabilize, producing final clusters that can be interpreted as meaningful segments.
 
 #### How K-Means Works
 
@@ -1529,25 +1474,7 @@ Learn hierarchical clustering to discover nested structures and visualize relati
 
 K-means requires choosing k upfront. **Hierarchical clustering** doesn't—it builds a tree of clusters at all levels, letting you choose the cut point afterward.
 
-```mermaid
-flowchart TB
-    A[Individual Points] --> B[Merge closest pairs]
-    B --> C[Small clusters]
-    C --> D[Merge closest clusters]
-    D --> E[Larger clusters]
-    E --> F[Continue merging]
-    F --> G[Single cluster<br/>all points]
-
-    H[Cut at desired level] --> I[Final clusters]
-
-    C -.-> H
-    D -.-> H
-    E -.-> H
-
-    style A fill:#e1f5ff
-    style G fill:#fff4e1
-    style I fill:#c3f0c3
-```
+The algorithm starts with individual points and progressively merges the closest pairs into small clusters, then merges those clusters into larger ones, continuing until all points belong to a single cluster. You can then cut the hierarchy at any desired level to obtain your final clusters. This flexibility allows you to explore different granularities of clustering after the algorithm has run.
 
 #### Two Approaches
 
@@ -2254,25 +2181,7 @@ Learn DBSCAN (Density-Based Spatial Clustering of Applications with Noise) for f
 
 K-means has limitations: it assumes spherical clusters, requires specifying k upfront, and doesn't handle outliers well. **DBSCAN** solves all three problems by clustering based on density rather than distance to centroids.
 
-```mermaid
-flowchart TB
-    A[All Points] --> B{For each point}
-    B --> C{Has ≥ minSamples<br/>neighbors within ε?}
-    C -->|Yes| D[CORE POINT]
-    C -->|No| E{Within ε of<br/>core point?}
-    E -->|Yes| F[BORDER POINT]
-    E -->|No| G[NOISE POINT]
-
-    D --> H[Forms cluster]
-    F --> H
-    G --> I[Outlier detected]
-
-    style D fill:#c3f0c3
-    style F fill:#fff4e1
-    style G fill:#ffcccc
-    style H fill:#e1f5ff
-    style I fill:#ffe1cc
-```
+The algorithm examines each point to classify it based on its local neighborhood density. Points with many nearby neighbors become **core points** that form clusters. Points near core points but without enough neighbors themselves become **border points** belonging to the cluster. Points that are neither core nor border are classified as **noise points** (outliers). This density-based approach naturally forms clusters and detects outliers without requiring you to specify the number of clusters in advance.
 
 #### How DBSCAN Works
 
@@ -2571,33 +2480,7 @@ Use Isolation Forest, a tree-based ensemble method, to detect outliers and anoma
 
 Anomaly detection is critical for fraud detection, network security, and quality control. **Isolation Forest** takes a unique approach: instead of modeling normal behavior, it exploits the fact that **anomalies are easier to isolate** than normal points.
 
-```mermaid
-flowchart TB
-    A[Training Data] --> B[Build Random Trees<br/>Random feature + split]
-    B --> C[Tree 1]
-    B --> D[Tree 2]
-    B --> E[Tree N]
-
-    F[New Point] --> C
-    F --> D
-    F --> E
-
-    C --> G[Path Length: 3]
-    D --> H[Path Length: 2]
-    E --> I[Path Length: 4]
-
-    G --> J[Average Path Length]
-    H --> J
-    I --> J
-
-    J --> K{Short path?}
-    K -->|Yes| L[ANOMALY<br/>Isolated quickly]
-    K -->|No| M[NORMAL<br/>Many splits needed]
-
-    style L fill:#ffcccc
-    style M fill:#c3f0c3
-    style B fill:#e1f5ff
-```
+The algorithm builds an ensemble of random decision trees using random feature splits. When evaluating a new point, it passes through each tree and measures how many splits are needed to isolate it (the path length). Normal points typically require many splits because they're in dense regions, resulting in longer paths. Anomalies are quickly isolated with short paths because they're in sparse regions far from other points. The algorithm averages path lengths across all trees—short average paths indicate anomalies, while long paths indicate normal behavior.
 
 #### How Isolation Forest Works
 
@@ -2966,22 +2849,12 @@ Learn Gaussian Mixture Models (GMM) for soft clustering with probability distrib
 
 K-means assigns each point to exactly one cluster (hard assignment). **Gaussian Mixture Models** treat each cluster as a Gaussian (normal) distribution and give each point probabilities of belonging to each cluster (soft assignment).
 
-```mermaid
-flowchart LR
-    A[Customer Data] --> B[K-means]
-    A --> C[GMM]
+**Key difference in assignment style:**
 
-    B --> D[Customer 1: VIP 100%]
-    B --> E[Customer 2: Regular 100%]
+- **K-means hard assignment**: Customer 1 is VIP (100%), Customer 2 is Regular (100%)
+- **GMM soft assignment**: Customer 1 is VIP (85%) and Regular (15%), Customer 2 is Regular (52%) and At-Risk (48%)
 
-    C --> F[Customer 1: VIP 85% Regular 15%]
-    C --> G[Customer 2: Regular 52% At-Risk 48% Uncertain]
-
-    style D fill:#c3f0c3
-    style E fill:#c3f0c3
-    style F fill:#fff4e1
-    style G fill:#ffcccc
-```
+This probabilistic approach is valuable when points lie between clusters or when you need uncertainty estimates. Instead of forcing each data point into a single category, GMM acknowledges the ambiguity and provides probability distributions across all clusters.
 
 #### How GMM Works
 

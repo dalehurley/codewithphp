@@ -3,7 +3,6 @@ import sitemap from '@astrojs/sitemap';
 import starlight from '@astrojs/starlight';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
-import rehypeMermaid from 'rehype-mermaidjs';
 
 // https://astro.build/config
 export default defineConfig({
@@ -163,6 +162,6 @@ export default defineConfig({
   ],
   markdown: {
     remarkPlugins: [remarkMath],
-    rehypePlugins: [rehypeKatex, rehypeMermaid],
+    rehypePlugins: [rehypeKatex],
   },
 });

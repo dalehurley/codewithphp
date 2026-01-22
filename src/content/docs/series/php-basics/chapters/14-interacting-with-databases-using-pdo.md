@@ -56,37 +56,23 @@ By the end of this chapter, you'll have created:
 - Transaction examples showing commit and rollback behavior
 - NULL value handling and queries
 
-## PDO Architecture: Visual Overview
+## How PDO Works: The Request Flow
 
-Here's how PDO connects your PHP application to databases:
+Understanding how PDO processes database queries will help you write better code. Here's the typical flow of a PDO operation:
 
-```mermaid
-flowchart TB
-    A[PHP Application] -->|1. Create Connection| B[PDO Instance]
-    B -->|2. Prepare Statement| C[PDOStatement]
-    C -->|3. Bind Parameters| C
-    C -->|4. Execute Query| D[Database<br/>MySQL/PostgreSQL/SQLite]
-    D -->|5. Return Results| C
-    C -->|6. Fetch Data| A
+**1. Create Connection:** Your PHP application creates a PDO instance that connects to the database (MySQL, PostgreSQL, SQLite, etc.).
 
-    B -.->|Error Mode| E[Exception Handling]
-    C -.->|SQL Injection Protection| F[Prepared Statements]
+**2. Prepare Statement:** You prepare an SQL statement with placeholders (`?` or `:name`) instead of actual values. This creates a `PDOStatement` object.
 
-    style B fill:#e1f5ff
-    style C fill:#e1f5ff
-    style D fill:#d4edda
-    style E fill:#f8d7da
-    style F fill:#fff3cd
-```
+**3. Bind Parameters:** When you call `execute()`, PDO safely binds your data values to the placeholders, preventing SQL injection attacks.
 
-**Key Flow:**
+**4. Execute Query:** PDO sends the complete query to the database for execution.
 
-1. **Connect** to database using PDO constructor
-2. **Prepare** SQL statement (with placeholders for safety)
-3. **Bind** parameters to prevent SQL injection
-4. **Execute** the query against the database
-5. **Fetch** results in various formats
-6. Handle errors via exceptions
+**5. Fetch Results:** For SELECT queries, you retrieve results using methods like `fetch()`, `fetchAll()`, or `fetchColumn()`.
+
+**6. Handle Errors:** Throughout this process, PDO can throw exceptions if anything goes wrong, allowing you to catch and handle errors gracefully.
+
+This separation between SQL structure (step 2) and data (step 3) is what makes prepared statements secure—your data can never be interpreted as SQL commands.
 
 - Batch insert operations with performance comparisons
 - A complete, production-ready blog system class with all best practices

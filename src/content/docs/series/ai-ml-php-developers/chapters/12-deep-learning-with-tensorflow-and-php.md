@@ -263,27 +263,22 @@ As a PHP developer, you have three main options for using TensorFlow models:
 
 ### Architecture Overview
 
-Here's how the system works:
+The system works through a three-component architecture:
 
-```mermaid
-flowchart LR
-    A[PHP Application] -->|HTTP POST| B[TensorFlow Serving<br/>REST API]
-    B -->|Load Model| C[MobileNetV2<br/>SavedModel]
-    B -->|Return JSON| A
-    C -->|Predictions| B
+**Components:**
 
-    style A fill:#e1f5ff
-    style B fill:#fff3cd
-    style C fill:#d4edda
-```
+1. **PHP Application** — Your web application handles user requests, file uploads, and presentation layer
+2. **TensorFlow Serving (REST API)** — Microservice that receives HTTP requests and serves predictions
+3. **MobileNetV2 Model** — Pre-trained deep learning model stored in SavedModel format
 
-**Flow:**
+**Request Flow:**
 
-1. PHP application sends image data as JSON via HTTP POST
-2. TensorFlow Serving receives request, loads the model
-3. Model processes input through neural network layers
-4. TensorFlow Serving returns predictions as JSON
-5. PHP decodes JSON and presents results to user
+1. **PHP → TensorFlow Serving**: PHP application sends image data as JSON via HTTP POST request to the REST API endpoint
+2. **TensorFlow Serving → Model**: The serving layer receives the request and loads the MobileNetV2 model
+3. **Model Processing**: The model processes input through its neural network layers to generate predictions
+4. **Model → TensorFlow Serving**: Predictions (probability scores for 1,000 classes) are returned to the serving layer
+5. **TensorFlow Serving → PHP**: The serving layer formats predictions as JSON and returns the HTTP response
+6. **PHP → User**: PHP decodes the JSON, processes the results, and presents them to the user
 
 ### Why It Works
 

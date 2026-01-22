@@ -128,18 +128,17 @@ Computers see: `['T', 'h', 'e', ' ', 'c', 'a', 't', 's', ...]`—just characters
 
 ### The NLP Preprocessing Pipeline
 
-```mermaid
-flowchart LR
-    A[Raw Text] --> B[Tokenization]
-    B --> C[Lowercasing]
-    C --> D[Stop Word Removal]
-    D --> E[Stemming]
-    E --> F[Feature Extraction]
-    F --> G[Numeric Vectors]
+A typical NLP preprocessing pipeline follows these sequential steps to transform raw text into numeric vectors that machine learning algorithms can process:
 
-    style A fill:#f9f9f9
-    style G fill:#e1f5ff
-```
+1. **Raw Text** — The original, unprocessed text string
+2. **Tokenization** — Split text into individual words or tokens
+3. **Lowercasing** — Normalize all text to lowercase for consistency
+4. **Stop Word Removal** — Filter out common words that add little meaning
+5. **Stemming** — Reduce words to their root forms
+6. **Feature Extraction** — Convert processed tokens to numeric features
+7. **Numeric Vectors** — Final numeric representation ready for ML algorithms
+
+Each step reduces noise and captures meaning, preparing text for machine learning models. The following example demonstrates how text transforms through each stage.
 
 ### Example: Text Transformation
 

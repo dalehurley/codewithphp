@@ -224,49 +224,9 @@ $correct->approach();
 **Solution**: How to fix it with code example
 ````
 
-## Mermaid Diagram Patterns
+## Diagram Patterns
 
-### Architecture Diagram
-
-```mermaid
-flowchart TB
-    A[User Request] -->|HTTP| B[Front Controller]
-    B --> C[Router]
-    C -->|Match Route| D[Controller]
-    D -->|Query| E[(Database)]
-    E -->|Results| D
-    D -->|Data| F[View]
-    F -->|HTML| A
-
-    style D fill:#e1f5ff
-    style E fill:#e8daef
-    style F fill:#fff3cd
-```
-
-**Pattern:** Always use colors to distinguish layers/types
-
-### Class Hierarchy
-
-```mermaid
-classDiagram
-    class Parent {
-        -string property
-        +method() void
-    }
-    class Child1 {
-        +specificMethod() string
-    }
-    class Child2 {
-        +differentMethod() int
-    }
-
-    Parent <|-- Child1
-    Parent <|-- Child2
-
-    note for Parent "Blueprint defining shared behavior"
-```
-
-**Pattern:** Include notes explaining concepts
+Use text-based diagrams or tables to illustrate architecture, class hierarchies, and relationships between components.
 
 ## Quick Start Pattern
 

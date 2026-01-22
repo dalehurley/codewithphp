@@ -87,7 +87,7 @@ Reference chapters **intentionally deviate** from standard tutorial structure:
 - **Brief Introduction** (1-2 sentences + value proposition)
 - **Info Callout** explaining this is a reference guide
 - **"I Need To..."** or **"Common Tasks"** sections
-- **Decision Trees** (text or Mermaid diagrams)
+- **Decision Trees** (text-based diagrams)
 - **Quick Wins** or **Common Patterns**
 - **Copy-Paste Snippets** section
 - **FAQs** (specific to reference material)
@@ -169,7 +169,7 @@ When to use, implementation...
 
 ### Decision Trees
 
-Use text-based or Mermaid diagrams:
+Use text-based diagrams:
 
 ````markdown
 ```

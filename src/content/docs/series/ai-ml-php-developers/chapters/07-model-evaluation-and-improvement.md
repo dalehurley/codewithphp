@@ -1102,28 +1102,25 @@ A **learning curve** shows how model performance changes as training set size in
 
 #### The Three Learning Curve Patterns
 
-```mermaid
-flowchart TB
-    A[Learning Curve Shape] --> B[High Bias - Underfitting]
-    A --> C[High Variance - Overfitting]
-    A --> D[Good Fit]
+Learning curves reveal three distinct patterns that indicate different model issues:
 
-    B --> B1[Train & Test scores converge at LOW value]
-    B --> B2[More data won't help]
-    B --> B3[Need: Better features or more complex model]
+**Pattern 1: High Bias (Underfitting)**
+- Training and test scores both converge at a **low value**
+- The model is too simple to capture the patterns in your data
+- Adding more data won't help much
+- **Solution**: Need better features or a more complex model
 
-    C --> C1[Large gap between train & test scores]
-    C --> C2[More data WILL help]
-    C --> C3[Need: More training data or regularization]
+**Pattern 2: High Variance (Overfitting)**
+- Large gap between training and test scores
+- Training score is high, but test score is low
+- More data **will help** close this gap
+- **Solution**: Need more training data or regularization
 
-    D --> D1[Train & Test scores converge at HIGH value]
-    D --> D2[Model is working well]
-    D --> D3[Small improvement possible]
-
-    style B fill:#ffcccc
-    style C fill:#fff4e1
-    style D fill:#c3f0c3
-```
+**Pattern 3: Good Fit**
+- Training and test scores converge at a **high value**
+- Small gap between the two scores
+- Model is working well
+- Only small improvements possible
 
 #### Implementing Learning Curves
 
@@ -2114,28 +2111,15 @@ A single model, no matter how well-tuned, represents one "perspective" on the da
 
 The intuition: if three classifiers each achieve 90% accuracy but make **different** mistakes, combining them through voting can push accuracy to 95%+ by correcting each other's errors.
 
-```mermaid
-flowchart LR
-    A[Training Data] --> B[Model 1: k-NN]
-    A --> C[Model 2: Naive Bayes]
-    A --> D[Model 3: Decision Tree]
+Here's how ensemble voting works in practice:
 
-    E[New Sample] --> B
-    E --> C
-    E --> D
+1. **Train multiple models** on the same training data (e.g., k-NN, Naive Bayes, Decision Tree)
+2. **Feed new samples** to all models simultaneously
+3. **Collect predictions** from each model (e.g., Model 1: "spam", Model 2: "spam", Model 3: "ham")
+4. **Apply majority voting** to determine the final prediction
+5. **Return the winner** (in this example: "spam" wins 2-1)
 
-    B --> F[Vote: spam]
-    C --> F
-    D --> G[Vote: ham]
-
-    F --> H{Majority Vote}
-    G --> H
-
-    H --> I[Final Prediction: spam]
-
-    style A fill:#e1f5ff
-    style I fill:#c3f0c3
-```
+This approach reduces the impact of individual model weaknesses by leveraging their collective strengths.
 
 #### Technique 1: Voting Classifier
 

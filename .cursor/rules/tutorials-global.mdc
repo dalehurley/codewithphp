@@ -178,21 +178,9 @@ Additional context, version-specific notes, code file references
 :::
 ```
 
-**Diagrams (Mermaid):**
+**Diagrams:**
 
-````markdown
-```mermaid
-flowchart TB
-    A[Start] --> B[Process]
-    B --> C[End]
-
-    style B fill:#e1f5ff
-```
-````
-
-````
-
-Use colors to distinguish layers/types
+Use text-based diagrams or tables to illustrate concepts
 
 ### Formatting Rules
 

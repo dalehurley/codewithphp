@@ -65,7 +65,7 @@ The series index must include:
 4. What You'll Build (deliverables)
 5. Learning Objectives
 6. How This Series Works (methodology)
-7. Learning Path Overview (mermaid diagram)
+7. Learning Path Overview (visual diagram)
 8. Quick Start (5-minute example)
 9. Chapters (organized by parts with descriptions)
 10. FAQ
@@ -201,16 +201,9 @@ echo "Alternative way";
 
 ````
 
-### Mermaid Diagrams
+### Diagrams
 
-```markdown
-```mermaid
-flowchart TB
-    A[Start] --> B[Process]
-    B --> C[End]
-
-    style B fill:#e1f5ff
-````
+Use text-based diagrams or tables to illustrate concepts.
 
 ````
 
@@ -381,7 +374,6 @@ VitePress supports:
 - GitHub Flavored Markdown
 - Frontmatter (YAML)
 - Code syntax highlighting
-- Mermaid diagrams
 - Custom containers (callouts)
 - Line highlighting in code blocks
 - Emoji :tada:
@@ -427,7 +419,7 @@ Check for:
 
 - Check for unclosed code fences
 - Verify frontmatter YAML syntax
-- Ensure mermaid diagrams are valid
+- Verify diagram syntax is valid
 
 ### Preview Issues
 
@@ -493,4 +485,3 @@ export default defineConfig({
 - [VitePress Documentation](https://vitepress.dev/)
 - [VitePress Default Theme Config](https://vitepress.dev/reference/default-theme-config)
 - [Markdown Extensions](https://vitepress.dev/guide/markdown)
-- [Mermaid Diagram Syntax](https://mermaid.js.org/)

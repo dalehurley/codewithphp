@@ -16,11 +16,11 @@ sidebar:
 
 Before writing code, successful applications require careful planning. This chapter focuses on designing the CRM's database schema, defining entities (User, Team, Contact, Company, Deal, Task), and mapping their relationships. Good data modeling now prevents costly refactoring later.
 
-We'll create an entity-relationship diagram (ERD) that serves as a blueprint for the entire application. You'll learn to think about data relationships (one-to-many, many-to-many), foreign keys, and indexes. We'll also discuss multi-tenancy-ensuring each team's data remains isolated from other teams.
+We'll document the entity-relationship structure that serves as a blueprint for the entire application. You'll learn to think about data relationships (one-to-many, many-to-many), foreign keys, and indexes. We'll also discuss multi-tenancy-ensuring each team's data remains isolated from other teams.
 
 By the end of this chapter, you'll have a complete plan for the CRM's database structure. This plan will guide the migrations you'll write in Chapter 05 and the Eloquent models you'll create in Chapter 06. Taking time to design properly ensures a solid foundation for all future features.
 
-This chapter is primarily planning and diagramming-no database implementation yet.
+This chapter is primarily planning and documentation-no database implementation yet.
 
 ## Prerequisites
 
@@ -29,7 +29,7 @@ Before starting this chapter, you should have:
 - Completed [Chapter 03](/series/build-crm-laravel-12/chapters/03-laravel-12-fundamentals-project-structure)
 - Understanding of database concepts (tables, columns, primary keys, foreign keys)
 - Familiarity with one-to-many and many-to-many relationships
-- Paper or digital tool for creating diagrams (draw.io, Lucidchart, or pen and paper)
+- (Optional) A diagramming tool if you want to create visual diagrams (draw.io, Lucidchart, dbdiagram.io, or pen and paper)
 
 **Estimated Time**: ~45 minutes
 
@@ -40,7 +40,7 @@ By the end of this chapter, you will have:
 - Identified all entities needed for the CRM (User, Team, Contact, Company, Deal, Task)
 - Defined fields/columns for each entity
 - Mapped relationships between entities (one-to-many, belongs-to, many-to-many)
-- Created an entity-relationship diagram (ERD)
+- Documented the entity-relationship structure
 - Planned for multi-tenancy (team-scoped data)
 - Understanding of foreign key constraints and indexes
 - A blueprint ready for migration implementation in Chapter 05
@@ -50,7 +50,7 @@ By the end of this chapter, you will have:
 - Identify core entities and their attributes
 - Define relationships between entities clearly
 - Design for multi-tenancy from the start
-- Create an ERD that guides implementation
+- Document entity relationships that guide implementation
 - Understand cardinality (one-to-many, many-to-many)
 - Plan foreign keys, indexes, and constraints
 - Consider data integrity and cascading deletes
@@ -513,147 +513,36 @@ Contact::where('status', 'active')->get();
 - Forget to index `team_id`
 - Use client-side filtering instead of database WHERE clauses
 
-## Step 5: Creating the Entity-Relationship Diagram (~12 min)
+## Step 5: Understanding the Entity-Relationship Structure (~12 min)
 
 ### Goal
 
-Visualize the complete data model with all relationships and cardinalities.
+Understand the complete data model with all relationships and cardinalities.
 
-### The CRM Entity-Relationship Diagram
+### The CRM Entity-Relationship Structure
 
-Here's the complete ERD for the CRM in Mermaid syntax:
+The complete ERD for the CRM includes all eight core entities with their fields and relationships. You can visualize this structure using any diagramming tool (draw.io, Lucidchart, dbdiagram.io) or simply refer to the detailed entity specifications provided in Step 2 above.
 
-```mermaid
-erDiagram
-    USERS ||--o{ TEAMS : "current_team"
-    USERS ||--o{ TEAM_MEMBERS : "members"
-    USERS ||--o{ CONTACTS : "assigned"
-    USERS ||--o{ DEALS : "assigned"
-    USERS ||--o{ TASKS : "assigned"
-    TEAMS ||--o{ TEAM_MEMBERS : "has"
-    TEAMS ||--o{ CONTACTS : "owns"
-    TEAMS ||--o{ COMPANIES : "owns"
-    TEAMS ||--o{ DEALS : "owns"
-    TEAMS ||--o{ TASKS : "owns"
-    TEAMS ||--o{ ROLES : "defines"
-    COMPANIES ||--o{ CONTACTS : "has"
-    COMPANIES ||--o{ DEALS : "has"
-    CONTACTS ||--o{ DEALS : "relates"
-    DEALS ||--o{ TASKS : "generates"
-    CONTACTS ||--o{ TASKS : "generates"
+The entity specifications in Step 2 show each table's complete structure including:
+- All fields with their data types
+- Primary keys (PK) marked as `id`
+- Foreign keys (FK) like `team_id`, `company_id`, `user_id`
+- Unique keys (UK) like `email` and `slug`
+- Indexes for query performance
 
-    USERS {
-        bigint id PK
-        string name
-        string email UK
-        string password
-        timestamp email_verified_at
-        bigint current_team_id FK
-        string remember_token
-        timestamp created_at
-        timestamp updated_at
-    }
+### Understanding the Relationships
 
-    TEAMS {
-        bigint id PK
-        string name
-        string slug UK
-        bigint owner_id FK
-        string subscription_plan
-        timestamp created_at
-        timestamp updated_at
-    }
+Key database concepts used throughout the CRM:
 
-    TEAM_MEMBERS {
-        bigint id PK
-        bigint user_id FK
-        bigint team_id FK
-        string role
-        timestamp joined_at
-    }
-
-    ROLES {
-        bigint id PK
-        string name UK
-        text description
-        json permissions
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    CONTACTS {
-        bigint id PK
-        bigint team_id FK
-        bigint company_id FK
-        bigint user_id FK
-        string first_name
-        string last_name
-        string email
-        string phone
-        string title
-        string status
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    COMPANIES {
-        bigint id PK
-        bigint team_id FK
-        string name
-        string website
-        string industry
-        integer employee_count
-        decimal annual_revenue
-        string status
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    DEALS {
-        bigint id PK
-        bigint team_id FK
-        bigint company_id FK
-        bigint contact_id FK
-        bigint user_id FK
-        string name
-        decimal amount
-        string currency
-        string stage
-        integer probability
-        date expected_close_date
-        date closed_date
-        string closed_reason
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    TASKS {
-        bigint id PK
-        bigint team_id FK
-        bigint taskable_id FK
-        string taskable_type
-        bigint assigned_to FK
-        string title
-        text description
-        date due_date
-        boolean completed
-        timestamp completed_at
-        string priority
-        timestamp created_at
-        timestamp updated_at
-    }
-```
-
-### Understanding the Diagram
-
-- **Primary Keys (PK)**: Unique identifier for each row (id)
+- **Primary Keys (PK)**: Unique identifier for each row, always the `id` column
 - **Foreign Keys (FK)**: Links to another table (team_id, company_id, etc.)
 - **Unique Keys (UK)**: Ensures no duplicates (email must be unique)
-- **Cardinality** (lines between tables):
-  - `||--o{` means "one to many" (1:N) — One team has many contacts
-  - `||--||` means "one to one" (1:1) — One user has one current team
+- **Cardinality**: The type of relationship between tables
+  - **One-to-Many (1:N)**: One team has many contacts, one company has many deals
+  - **Many-to-Many (M:N)**: Users can belong to multiple teams via the `team_members` pivot table
+  - **One-to-One (1:1)**: One user has one current team reference
 
-### Interpreting Key Relationships
+### Key Relationships Explained
 
 **User → Team** (current_team_id):
 - A user logs in and sees their "current" team
@@ -891,13 +780,13 @@ $contact->restore(); // Restore deleted contact
 
 ## Exercises
 
-### Exercise 1: Draft Your Own ERD
+### Exercise 1: Create Your Own Database Diagram
 
-**Goal**: Practice database design
+**Goal**: Practice database design visualization
 
-On paper or in a diagramming tool, draw the entities and relationships described in this chapter.
+Using a diagramming tool (draw.io, Lucidchart, dbdiagram.io) or paper, create a visual representation of the entities and relationships described in this chapter.
 
-**Validation**: Your diagram shows all entities, their fields, and arrows indicating relationships.
+**Validation**: Your diagram shows all eight entities, their key fields, and relationships between them.
 
 ### Exercise 2: Identify Additional Entities
 
@@ -934,7 +823,7 @@ Congratulations! You've designed a production-ready database architecture for a 
 
 ✅ **Mastered Multi-Tenancy Design**: You understand how `team_id` isolation keeps data secure and performant
 
-✅ **Created an Entity-Relationship Diagram (ERD)**: A visual blueprint showing all relationships and cardinality
+✅ **Documented Entity Relationships**: A complete specification showing all relationships and cardinality
 
 ✅ **Planned for Performance**: Indexes on team_id, foreign keys, status fields, and frequently-queried columns
 
@@ -986,11 +875,11 @@ The architecture you've planned:
 
 ### Next Steps
 
-You're ready for [Chapter 05: Database Migrations](/series/build-crm-laravel-12/chapters/05-database-migrations-create-tables-schemas), where you'll implement this design in actual MySQL migrations. Bring this ERD with you—you'll reference it constantly as you create each table.
+You're ready for [Chapter 05: Database Migrations](/series/build-crm-laravel-12/chapters/05-database-migrations-create-tables-schemas), where you'll implement this design in actual MySQL migrations. Reference the entity specifications from this chapter—you'll use them constantly as you create each table.
 
-**For Visual Learners**: Print out or save the ERD from this chapter. Many developers keep it nearby while coding to stay oriented in the data model.
+**For Visual Learners**: Consider creating your own diagram using draw.io, Lucidchart, or dbdiagram.io based on the entity specifications. Many developers keep a visual reference nearby while coding to stay oriented in the data model.
 
-**For Implementation**: Download or bookmark the field specifications and index requirements. You'll copy them directly into your migration files.
+**For Implementation**: Bookmark the field specifications and index requirements from Step 2. You'll copy them directly into your migration files.
 
 
 ## Further Reading

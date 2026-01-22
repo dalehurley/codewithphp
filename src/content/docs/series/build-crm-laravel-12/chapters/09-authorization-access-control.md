@@ -97,26 +97,9 @@ curl -X DELETE http://localhost/companies/1 \
 # Returns: 403 Forbidden (if not authorized)
 ```
 
-## Authorization Flow Diagram
+## How Authorization Works in Your CRM
 
-Here's how authorization works in your CRM:
-
-```mermaid
-sequenceDiagram
-    User->>Route: Request to /contacts/123
-    Route->>Controller: Route matches ContactController@show
-    Controller->>Policy: $this->authorize('view', $contact)
-    Policy->>Database: Query user role in team
-    Policy-->>Controller: true/false
-    alt Authorized
-        Controller->>View: Load and render contact
-        View-->>User: Display contact data
-    else Unauthorized
-        Controller-->>User: 403 Forbidden response
-    end
-```
-
-**Three layers of authorization in your CRM:**
+When a user makes a request, Laravel checks their authorization through three layers:
 
 1. **Route Level** (optional): Can use middleware `can:action,model`
 2. **Controller Level** (primary): `$this->authorize()` before action

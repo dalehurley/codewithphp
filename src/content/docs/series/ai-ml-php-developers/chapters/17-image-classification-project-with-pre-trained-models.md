@@ -238,23 +238,17 @@ The most common pre-training dataset is **ImageNet**, which contains 14 million 
 
 **Cloud vs Local Trade-offs:**
 
-```mermaid
-graph TB
-    A[Image Classification Need] --> B{Evaluate Requirements}
-    B -->|Quick setup, variable load| C[Cloud API]
-    B -->|Cost control, high volume| D[Local Model]
-    B -->|Privacy-sensitive data| D
-    B -->|Internet-dependent| C
+When evaluating your image classification needs, consider these key factors:
 
-    C --> C1[Pros: Zero setup, automatic updates, unlimited categories]
-    C --> C2[Cons: Per-image cost, latency, internet required]
+**Cloud API Approach:**
 
-    D --> D1[Pros: No per-image cost, faster inference, works offline]
-    D --> D2[Cons: Setup complexity, model updates manual]
+- **Pros**: Zero infrastructure setup, automatic model updates, access to unlimited categories and proprietary models, pay-as-you-go pricing
+- **Cons**: Per-image costs add up at scale, network latency (200-500ms), requires internet connectivity, data leaves your servers
 
-    style C fill:#e1f5ff
-    style D fill:#fff4e1
-```
+**Local Model Approach:**
+
+- **Pros**: No per-image costs after setup, faster inference (40-100ms), works offline, complete data privacy, predictable resource usage
+- **Cons**: Initial setup complexity, manual model updates, limited to specific model categories (e.g., 1,000 ImageNet classes)
 
 **When to choose Cloud APIs:**
 
@@ -1404,27 +1398,20 @@ The `ONNXClassifier` class provides a clean PHP interface that hides the complex
 
 ### Architecture Overview
 
-```mermaid
-flowchart LR
-    A[PHP Application] --> B{Classifier Choice}
-    B -->|Cloud| C[CloudVisionClient]
-    B -->|Local| D[ONNXClassifier]
+Your PHP application now supports two distinct classification paths:
 
-    C --> E[Google Cloud<br/>Vision API]
-    E --> F[1000+ Categories<br/>200-500ms<br/>$0.0015/image]
+**Cloud Classification Path:**
+1. PHP Application → CloudVisionClient
+2. CloudVisionClient → Google Cloud Vision API (via HTTPS)
+3. Returns 1,000+ categories with 200-500ms latency at $0.0015 per image
 
-    D --> G[onnx_inference.py]
-    G --> H[MobileNetV2<br/>ONNX Model]
-    H --> I[1000 ImageNet<br/>40-100ms<br/>$0/image]
+**Local Classification Path:**
+1. PHP Application → ONNXClassifier
+2. ONNXClassifier → onnx_inference.py (Python bridge)
+3. Python script → MobileNetV2 ONNX Model
+4. Returns 1,000 ImageNet categories with 40-100ms latency at $0 per image
 
-    F --> J[Results]
-    I --> J
-
-    style C fill:#e1f5ff
-    style D fill:#fff4e1
-    style E fill:#ffe1e1
-    style H fill:#e1ffe1
-```
+Both paths return results in the same standardized format, making it easy to switch between them or use both in a hybrid strategy.
 
 ## Step 7: Comparing Cloud vs Local Performance (~10 min)
 

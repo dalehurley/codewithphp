@@ -192,41 +192,14 @@ bubbleSortOptimized($sorted); // Only one pass needed!
 This optimization improves best-case complexity to **O(n)** when the array is already sorted. This makes bubble sort surprisingly efficient for nearly-sorted data!
 :::
 
-### Algorithm Flow Diagram
+### How Bubble Sort Works
 
-Here's a visual representation of how bubble sort works:
+Understanding the mechanics of bubble sort:
 
-```mermaid
-flowchart TB
-    Start[Start: Unsorted Array] --> Init[i = 0, swapped = true]
-    Init --> OuterCheck{i < n - 1?}
-    OuterCheck -->|No| Done[Done: Array Sorted!]
-    OuterCheck -->|Yes| ResetFlag[swapped = false]
-    ResetFlag --> InnerInit[j = 0]
-    InnerInit --> InnerCheck{j < n - i - 1?}
-    InnerCheck -->|No| CheckSwapped{Any swaps?}
-    InnerCheck -->|Yes| Compare{"arr[j] > arr[j+1]?"}
-    Compare -->|Yes| Swap["Swap arr[j] <-> arr[j+1]"]
-    Compare -->|No| NoSwap[No swap needed]
-    Swap --> SetFlag[swapped = true]
-    SetFlag --> IncrementJ[j++]
-    NoSwap --> IncrementJ
-    IncrementJ --> InnerCheck
-    CheckSwapped -->|No swaps| Done
-    CheckSwapped -->|Had swaps| IncrementI[i++]
-    IncrementI --> OuterCheck
-    
-    style Start fill:#e1f5ff
-    style Done fill:#d4edda
-    style Swap fill:#fff3cd
-    style Compare fill:#f8d7da
-```
-
-**Key points:**
-- **Outer loop** controls the number of passes (i)
-- **Inner loop** compares adjacent elements (j)
-- **Optimization**: Exit early if no swaps occur
-- Each pass guarantees one more element is in final position
+- **Outer loop** controls the number of passes through the array
+- **Inner loop** compares adjacent elements and swaps them if needed
+- **Optimization**: The algorithm can exit early if no swaps occur in a pass, indicating the array is sorted
+- Each pass guarantees that one more element is in its final position (largest values "bubble up" to the end)
 
 ### Visualizing Bubble Sort
 
@@ -358,43 +331,14 @@ Unlike bubble sort, selection sort always performs O(n²) comparisons regardless
 However, it minimizes the number of **swaps** to O(n), making it useful when write operations are expensive.
 :::
 
-### Algorithm Flow Diagram
+### How Selection Sort Works
 
-Here's a visual representation of how selection sort works:
+Understanding the mechanics of selection sort:
 
-```mermaid
-flowchart TB
-    Start[Start: Unsorted Array] --> Init[i = 0]
-    Init --> OuterCheck{i < n - 1?}
-    OuterCheck -->|No| Done[Done: Array Sorted!]
-    OuterCheck -->|Yes| SetMin[minIndex = i]
-    SetMin --> InnerInit[j = i + 1]
-    InnerInit --> InnerCheck{j < n?}
-    InnerCheck -->|No| CheckSwap{minIndex ≠ i?}
-    InnerCheck -->|Yes| Compare{"arr[j] < arr[minIndex]?"}
-    Compare -->|Yes| UpdateMin[minIndex = j]
-    Compare -->|No| Continue[Continue]
-    UpdateMin --> IncrementJ[j++]
-    Continue --> IncrementJ
-    IncrementJ --> InnerCheck
-    CheckSwap -->|Yes| Swap[Swap arr[i] ↔ arr[minIndex]]
-    CheckSwap -->|No| NoSwap[No swap needed]
-    Swap --> IncrementI[i++]
-    NoSwap --> IncrementI
-    IncrementI --> OuterCheck
-    
-    style Start fill:#e1f5ff
-    style Done fill:#d4edda
-    style Swap fill:#fff3cd
-    style Compare fill:#f8d7da
-    style UpdateMin fill:#fff3cd
-```
-
-**Key points:**
-- **Outer loop** moves the boundary between sorted/unsorted portions
-- **Inner loop** finds the minimum element in unsorted portion
-- Only **one swap per pass** (at most)
-- No early termination possible (always does all comparisons)
+- **Outer loop** moves the boundary between the sorted and unsorted portions of the array
+- **Inner loop** scans through the unsorted portion to find the minimum element
+- Only **one swap per pass** (at most), making it efficient when write operations are expensive
+- No early termination is possible—the algorithm always performs all comparisons regardless of the initial order
 
 ### Selection Sort with Visualization
 
@@ -715,33 +659,15 @@ foreach ($sorted as $user) {
 
 ## Quick Decision Guide
 
-Use this flowchart to choose the right sorting approach:
+Choosing the right sorting approach depends on your specific needs and constraints. Here's a practical guide to help you decide:
 
-```mermaid
-flowchart TD
-    Start{What's your array size?}
-    Start -->|> 100 elements| UseBuiltIn[✅ Use PHP's sort/usort]
-    Start -->|< 100 elements| CheckPattern{What's your priority?}
-    
-    CheckPattern -->|Production code| UseBuiltIn2[✅ Use PHP's sort anyway!]
-    CheckPattern -->|Learning/Educational| Continue{Data characteristics?}
-    CheckPattern -->|Interview/Demo| Continue
-    
-    Continue -->|Nearly sorted| BubbleOpt[✅ Bubble Sort Optimized - O n best case]
-    Continue -->|Need stability?| BubbleStable[✅ Bubble Sort - Stable algorithm]
-    Continue -->|Minimize writes?| Selection[✅ Selection Sort - O n swaps only]
-    Continue -->|Random data| Either[Either works - Both O n² anyway]
-    
-    UseBuiltIn --> WhyBuiltIn[Why? 10-100x faster - Written in C - Battle-tested]
-    UseBuiltIn2 --> WhyBuiltIn
-    
-    style BubbleOpt fill:#d4edda
-    style BubbleStable fill:#d4edda
-    style Selection fill:#d4edda
-    style Either fill:#fff3cd
-    style UseBuiltIn fill:#cce5ff
-    style UseBuiltIn2 fill:#cce5ff
-```
+**For arrays larger than 100 elements or production code:** Always use PHP's built-in `sort()` or `usort()` functions. They're 10-100x faster, written in optimized C code, and battle-tested across millions of applications.
+
+**For smaller arrays in learning or interview contexts:**
+- **Nearly sorted data?** → Use Bubble Sort (optimized) for O(n) best-case performance
+- **Need stability?** → Use Bubble Sort to maintain relative order of equal elements
+- **Minimize write operations?** → Use Selection Sort for only O(n) swaps
+- **Random data?** → Either algorithm works; both are O(n²) anyway
 
 ### Decision Table Summary
 

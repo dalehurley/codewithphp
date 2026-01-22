@@ -243,18 +243,7 @@ The perceptron, invented by Frank Rosenblatt in 1958, is the simplest form of ar
 3. **Weighted sum**: Computes \( z = w_1x_1 + w_2x_2 + ... + w_nx_n + b \), where \( b \) is the bias term
 4. **Activation**: Applies an activation function \( f(z) \) to produce output \( y = f(z) \)
 
-```mermaid
-graph LR
-    X1[x₁] -->|w₁| SUM[Σ]
-    X2[x₂] -->|w₂| SUM
-    X3[x₃] -->|w₃| SUM
-    B[+b<br/>bias] --> SUM
-    SUM --> ACT[f]
-    ACT --> Y[y]
-
-    style SUM fill:#e1f5ff
-    style ACT fill:#fff4e6
-```
+In this process, the inputs flow through the network: each input \( x_i \) is multiplied by its weight \( w_i \), all weighted inputs plus the bias are summed together, and finally the activation function \( f \) transforms this sum into the output \( y \).
 
 The simplest activation function is the **step function**:
 

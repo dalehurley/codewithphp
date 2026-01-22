@@ -704,25 +704,29 @@ Create an invitation system that sends emails to new team members, allows them t
 
 ### Invitation Flow
 
-Understanding the invitation lifecycle helps clarify the implementation:
+Understanding the invitation lifecycle helps clarify the implementation. The invitation process follows these steps:
 
-```mermaid
-flowchart TD
-    A["Team Owner Click Invite Button"] -->|Email Validation| B["Create Invitation Record"]
-    B -->|Token Generated| C["Send Email with Link"]
-    C -->|Check Mailhog| D["Recipient Clicks Link"]
-    D -->|Verify Token| E{"User Logged In?"}
-    E -->|No| F["Redirect to Login"]
-    E -->|Yes| G["Display Acceptance Page"]
-    G -->|User Confirms| H["Attach User to Team<br/>Mark accepted_at"]
-    H -->|Pivot Record Created| I["Redirect to Dashboard<br/>User Now Has Team Access"]
-```
+1. **Team Owner Click Invite Button** — Enters email and selects role
+2. **Email Validation** — System validates email format
+3. **Create Invitation Record** — Database stores invitation with unique token
+4. **Token Generated** — 32-character random string for security
+5. **Send Email with Link** — Email sent with invitation URL containing token
+6. **Check Mailhog** — Email appears in Mailhog at localhost:8025 (development)
+7. **Recipient Clicks Link** — Opens invitation acceptance page
+8. **Verify Token** — System validates token exists and is pending
+9. **User Logged In?** — System checks authentication status
+   - **If No** — Redirect to login page
+   - **If Yes** — Display acceptance page
+10. **User Confirms** — Clicks "Accept Invitation" button
+11. **Attach User to Team** — Creates team_user pivot record with specified role
+12. **Mark accepted_at** — Invitation record marked as accepted with timestamp
+13. **Redirect to Dashboard** — User now has access to team's data
 
-This ensures:
-1. Invalid emails are rejected immediately
-2. Tokens are secure (32-char random strings)
-3. Invitations can be tracked (pending/accepted/rejected)
-4. Users are protected (must be logged in to accept)
+**Security Guarantees**:
+- Invalid emails are rejected immediately
+- Tokens are secure (32-char random strings)
+- Invitations can be tracked (pending/accepted/rejected)
+- Users are protected (must be logged in to accept)
 
 ### Actions
 
@@ -1988,34 +1992,25 @@ The team system you've built follows these enterprise patterns:
 
 **Team Lifecycle & Data Flow**:
 
-```mermaid
-flowchart LR
-    A["User<br/>Authenticates<br/>Ch.07"]
-    B["Creates<br/>Team"]
-    C["User = Owner<br/>user_id"]
-    D["Belongs to<br/>team_user"]
-    E["Role =<br/>owner"]
-    F["Invites<br/>Members"]
-    G["Token<br/>Email"]
-    H["Member<br/>Accepts"]
-    I["Belongs to<br/>team_user"]
-    J["Role =<br/>member"]
-    K["Sets<br/>current_team"]
-    L["Scopes All<br/>Queries<br/>Ch.09"]
+The complete team management flow consists of these interconnected steps:
 
-    A --> B --> C
-    B --> D --> E
-    F --> G --> H --> I --> J
-    C -.-> F
-    K --> L
-    H --> K
-    
-    style A fill:#e1f5ff
-    style B fill:#c8e6c9
-    style F fill:#fff3e0
-    style H fill:#f3e5f5
-    style L fill:#ffe0b2
-```
+**Owner Creation Flow**:
+1. **User Authenticates** (Chapter 07) — User logs in with credentials
+2. **Creates Team** — Owner submits team creation form
+3. **User = Owner** — Team record created with `user_id` pointing to owner
+4. **Belongs to team_user** — Owner also added to pivot table
+5. **Role = owner** — Pivot record has `role='owner'`
+
+**Member Invitation Flow**:
+6. **Invites Members** — Owner sends invitation from team settings
+7. **Token Email** — System generates secure token and sends email
+8. **Member Accepts** — Invited user clicks link and confirms
+9. **Belongs to team_user** — Member added to pivot table
+10. **Role = member** — Pivot record has `role='member'` or `role='admin'`
+
+**Team Context Flow**:
+11. **Sets current_team** — User's `current_team_id` updated on login/switch
+12. **Scopes All Queries** (Chapter 09) — All database queries automatically filtered by team
 
 **Pattern Summary**:
 ```

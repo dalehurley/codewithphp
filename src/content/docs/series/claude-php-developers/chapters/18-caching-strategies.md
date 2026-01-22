@@ -53,24 +53,29 @@ By the end of this chapter, you will have created:
 
 ## Cache Layer Architecture
 
-A comprehensive caching strategy uses multiple layers:
+A comprehensive caching strategy uses multiple layers, each checked in sequence from fastest to slowest:
 
-```mermaid
-flowchart TD
-    A[API Request] --> B{In-Memory Cache}
-    B -->|Hit| C[Return Response<br/>~0.1ms]
-    B -->|Miss| D{Redis Cache}
-    D -->|Hit| E[Store in Memory<br/>Return Response<br/>~1-5ms]
-    D -->|Miss| F{Semantic Cache}
-    F -->|Similar Found| G[Store in Redis & Memory<br/>Return Response<br/>~5-10ms]
-    F -->|No Match| H[Claude API Call]
-    H --> I[Store in All Layers<br/>Return Response<br/>~500-2000ms]
+**Cache Request Flow:**
 
-    style C fill:#90EE90
-    style E fill:#87CEEB
-    style G fill:#DDA0DD
-    style I fill:#FFB6C1
-```
+1. **In-Memory Cache Check** (~0.1ms)
+   - First line of defense for hot data
+   - If hit: Return response immediately
+   - If miss: Continue to next layer
+
+2. **Redis Cache Check** (~1-5ms)
+   - Persistent storage shared across instances
+   - If hit: Store in memory cache and return response
+   - If miss: Continue to next layer
+
+3. **Semantic Cache Check** (~5-10ms)
+   - Fuzzy matching for similar prompts
+   - If similar match found: Store in Redis and memory, return response
+   - If no match: Continue to API call
+
+4. **Claude API Call** (~500-2000ms)
+   - Most expensive operation
+   - Store response in all cache layers
+   - Return response to user
 
 **Layer Benefits:**
 

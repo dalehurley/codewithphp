@@ -147,27 +147,9 @@ Linear search is simple but slow for large datasets. Binary search solves this.
 5. If target is larger, search right half
 6. Repeat until found or no elements left
 
-### Visual Flow
+### Step-by-Step Example
 
-```mermaid
-flowchart TD
-    A[Start: sorted array and target] --> B{left <= right?}
-    B -->|No| C[Return false - not found]
-    B -->|Yes| D[Calculate mid = left + right / 2]
-    D --> E{"arr[mid] == target?"}
-    E -->|Yes| F[Return mid - found!]
-    E -->|No| G{"arr[mid] < target?"}
-    G -->|Yes| H[Set left = mid + 1 - Search right half]
-    G -->|No| I[Set right = mid - 1 - Search left half]
-    H --> B
-    I --> B
-    
-    style F fill:#90EE90
-    style C fill:#FFB6C6
-    style D fill:#87CEEB
-```
-
-**Example:** Find `37` in `[1, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]`
+Find `37` in `[1, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]`
 
 ```
 Step 1: Search entire array

@@ -45,23 +45,16 @@ Before starting this chapter, ensure you have:
 
 ## The Problem-Solving Framework
 
-When faced with an algorithm challenge, follow this systematic approach:
+When faced with an algorithm challenge, follow this systematic four-step approach. Each step builds on the previous one, and you may need to iterate—if your solution isn't "good enough" after optimization, return to the planning phase and try a different approach.
 
-```mermaid
-flowchart TD
-    A[1. Understand the Problem] --> B[2. Devise a Plan]
-    B --> C[3. Implement and Test]
-    C --> D[4. Optimize and Refine]
-    D --> E{Good Enough?}
-    E -->|No| B
-    E -->|Yes| F[Complete]
-    
-    style A fill:#e1f5ff
-    style B fill:#fff4e1
-    style C fill:#e8f5e9
-    style D fill:#f3e5f5
-    style F fill:#c8e6c9
-```
+**The Four Steps:**
+
+1. **Understand the Problem** — Clarify inputs, outputs, constraints, and edge cases
+2. **Devise a Plan** — Choose an appropriate strategy or pattern
+3. **Implement and Test** — Write working code and verify with test cases
+4. **Optimize and Refine** — Analyze complexity and improve if needed
+
+If the optimized solution still doesn't meet requirements, loop back to step 2 and try a different approach. Once satisfied, you're done!
 
 ### 1. Understand the Problem
 

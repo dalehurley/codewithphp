@@ -109,25 +109,15 @@ Visit `http://localhost:8000` and submit the form. Try tampering with the token 
 
 ## Understanding CSRF Attacks
 
-```mermaid
-sequenceDiagram
-    participant User
-    participant YourApp
-    participant MaliciousSite
+A CSRF attack follows this sequence:
 
-    User->>YourApp: 1. Login (gets session cookie)
-    YourApp-->>User: Session established
-
-    User->>MaliciousSite: 2. Visits malicious site
-    MaliciousSite->>User: 3. Hidden form/JS submits to YourApp
-    User->>YourApp: 4. Request sent (cookie included!)
-
-    alt Without CSRF Protection
-        YourApp-->>User: ❌ Action performed!
-    else With CSRF Protection
-        YourApp-->>User: ✓ Token missing/invalid - request rejected
-    end
-```
+1. **User logs in to your application** - The server creates a session and sends a session cookie to the user's browser
+2. **Session established** - The browser stores the cookie and will automatically send it with every request to your domain
+3. **User visits a malicious site** (while still logged in to your app) - This could be in another tab or window
+4. **Malicious site submits a hidden form or executes JavaScript** - This triggers a request to your application
+5. **Browser automatically includes the session cookie** - Since it's a request to your domain, the browser sends your session cookie
+6. **Without CSRF protection** - Your server sees a valid session and performs the action (❌ money transferred, account deleted, etc.)
+7. **With CSRF protection** - Your server checks for a valid token, doesn't find one (or finds an invalid one), and rejects the request (✓ attack prevented!)
 
 **Key Points:**
 

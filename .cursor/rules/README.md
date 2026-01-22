@@ -46,7 +46,6 @@ Defines:
 - "What You'll Build" pattern
 - Exercise patterns (basic vs challenge)
 - Troubleshooting section patterns
-- Mermaid diagram patterns
 - Quick Start pattern
 - VitePress component usage
 - Modern vs traditional code comparison pattern
@@ -167,7 +166,7 @@ Defines:
 - Project structure
 - Adding new series (step-by-step)
 - Adding chapters
-- VitePress components (callouts, code groups, mermaid)
+- VitePress components (callouts, code groups)
 - Frontmatter configuration
 - Sidebar configuration patterns
 - Link conventions

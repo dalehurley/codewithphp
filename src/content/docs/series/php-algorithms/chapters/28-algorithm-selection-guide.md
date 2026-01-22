@@ -244,26 +244,19 @@ echo $selector->recommendSorting([
 
 The `sortingComparison()` method provides a comprehensive reference table showing time complexity, space complexity, and stability for each algorithm. Use this table to understand trade-offs when the decision tree suggests multiple viable options.
 
-### Sorting Decision Tree
+### Sorting Decision Flow
 
-```mermaid
-flowchart TD
-    A[Need to Sort?] --> B{Size < 10?}
-    B -->|Yes| C[Insertion Sort]
-    B -->|No| D{Nearly Sorted?}
-    D -->|Yes| C
-    D -->|No| E{Integers with Limited Range?}
-    E -->|Yes| F[Counting Sort]
-    E -->|No| G{Memory Constrained?}
-    G -->|Yes| H[Heap Sort]
-    G -->|No| I{Need Stability?}
-    I -->|Yes| J{Size < 1000?}
-    J -->|Yes| C
-    J -->|No| K[Merge Sort]
-    I -->|No| L{Size > 1M?}
-    L -->|Yes| M[Quick Sort]
-    L -->|No| N[PHP sort]
-```
+Follow this decision flow to select the optimal sorting algorithm:
+
+1. **Is size < 10?** → Use **Insertion Sort** (simple and efficient for tiny arrays)
+2. **Is data nearly sorted?** → Use **Insertion Sort** (O(n) for nearly sorted data)
+3. **Is data integers with limited range?** → Use **Counting Sort** (O(n + k) when range is small)
+4. **Is memory constrained?** → Use **Heap Sort** (O(n log n) with O(1) extra space)
+5. **Need stability?**
+   - Size < 1000 → Use **Insertion Sort**
+   - Size ≥ 1000 → Use **Merge Sort**
+6. **Is size > 1 million?** → Use **Quick Sort** (best average case for large data)
+7. **Default** → Use **PHP sort()** (optimized hybrid algorithm)
 
 ## Search Algorithm Selection
 
@@ -378,26 +371,25 @@ echo $selector->recommendSearch([
 
 The `searchComparison()` method shows that different search algorithms excel in different scenarios. Hash tables provide O(1) lookups but require O(n) space and preprocessing. Binary search requires sorted data but provides O(log n) performance with O(1) space. Choose based on your search frequency and data characteristics.
 
-### Search Decision Tree
+### Search Decision Flow
 
-```mermaid
-flowchart TD
-    A[Need to Search?] --> B{Data Structure?}
-    B -->|Graph/Tree| C{Weighted?}
-    C -->|Yes| D{Negative Weights?}
-    D -->|Yes| E[Bellman-Ford]
-    D -->|No| F[Dijkstra]
-    C -->|No| G[BFS]
-    B -->|Array| H{Many Searches?}
-    H -->|Yes| I[Hash Table]
-    H -->|No| J{Sorted?}
-    J -->|Yes| K{Size > 100?}
-    K -->|Yes| L[Binary Search]
-    K -->|No| M[Linear Search]
-    J -->|No| N{Size < 50?}
-    N -->|Yes| M
-    N -->|No| O[Sort then Binary Search]
-```
+Follow this decision flow to select the optimal search algorithm:
+
+**For Graph/Tree structures:**
+1. **Is weighted?**
+   - Yes → **Has negative weights?**
+     - Yes → Use **Bellman-Ford** (handles negative weights)
+     - No → Use **Dijkstra** (faster for non-negative weights)
+   - No → Use **BFS** (unweighted shortest path)
+
+**For Array structures:**
+1. **Many searches expected?** → Build **Hash Table** (O(1) lookups after O(n) preprocessing)
+2. **Is data sorted?**
+   - Yes, size > 100 → Use **Binary Search** (O(log n))
+   - Yes, size ≤ 100 → Use **Linear Search** (simple for small data)
+3. **Is data unsorted?**
+   - Size < 50 → Use **Linear Search** (efficient for small data)
+   - Size ≥ 50 → Consider **Sort then Binary Search** (for k searches: O(n log n + k log n))
 
 ## Data Structure Selection
 
@@ -530,27 +522,26 @@ echo $selector->recommendStructure([
 
 The comparison table shows that no single data structure is optimal for all operations. Arrays provide O(1) random access but O(n) search. Hash tables provide O(1) average operations but don't maintain order. Balanced BSTs provide O(log n) operations with ordering guarantees. Understanding these trade-offs helps you select the right structure.
 
-### Data Structure Decision Tree
+### Data Structure Decision Flow
 
-```mermaid
-flowchart TD
-    A[Choose Data Structure] --> B{Primary Operation?}
-    B -->|LIFO| C[Stack]
-    B -->|FIFO| D[Queue]
-    B -->|Priority| E[Priority Queue]
-    B -->|Key-Value| F{Need Order/Range?}
-    F -->|Yes| G[Balanced BST]
-    F -->|No| H{Read Heavy?}
-    H -->|Yes| I[Hash Table]
-    H -->|No| I
-    B -->|Sequential| J{Need Order?}
-    J -->|Yes| K{Unique Keys?}
-    K -->|Yes| G
-    K -->|No| L[Dynamic Array]
-    J -->|No| M{Unique Keys?}
-    M -->|Yes| N[Hash Set]
-    M -->|No| L
-```
+Follow this decision flow to select the optimal data structure:
+
+**By Primary Operation:**
+- **LIFO operations (last-in, first-out)?** → Use **Stack** (array or SplStack)
+- **FIFO operations (first-in, first-out)?** → Use **Queue** (array or SplQueue)
+- **Priority-based operations?** → Use **Priority Queue** (heap-based)
+
+**For Key-Value Storage:**
+- **Need order or range queries?** → Use **Balanced BST** (AVL or Red-Black tree)
+- **No ordering needed?** → Use **Hash Table** (PHP array) for O(1) operations
+
+**For Sequential Data:**
+- **Need to maintain order?**
+  - Unique keys required → Use **Balanced BST**
+  - Duplicates allowed → Use **Dynamic Array**
+- **No ordering needed?**
+  - Unique keys required → Use **Hash Set** (array with keys)
+  - Duplicates allowed → Use **Dynamic Array**
 
 ## Algorithm Pattern Recognition
 
@@ -796,18 +787,17 @@ echo $matrix->selectByConstraints([
 
 The `complexityGuide()` method provides a reference showing maximum input sizes for each complexity class. This helps you understand scalability limits. For example, O(n²) algorithms work well for n < 10,000, but become impractical for larger inputs. Use this guide to estimate feasibility before implementing an algorithm.
 
-### Complexity Guide Visualization
+### Complexity Scalability Guide
 
-```mermaid
-graph LR
-    A[O 1] -->|Constant| B[Any size]
-    C[O log n] -->|Logarithmic| D[> 1 billion]
-    E[O n] -->|Linear| F[~ 100 million]
-    G[O n log n] -->|Linearithmic| H[~ 10 million]
-    I[O n²] -->|Quadratic| J[~ 10,000]
-    K[O 2^n] -->|Exponential| L[~ 20]
-    M[O n!] -->|Factorial| N[~ 10]
-```
+Understanding how different complexity classes scale with input size:
+
+- **O(1) - Constant**: Works for any size (hash table lookup, array access)
+- **O(log n) - Logarithmic**: Scales to > 1 billion items (binary search, balanced tree operations)
+- **O(n) - Linear**: Practical up to ~100 million items (array traversal, single pass algorithms)
+- **O(n log n) - Linearithmic**: Practical up to ~10 million items (efficient sorting algorithms)
+- **O(n²) - Quadratic**: Limited to ~10,000 items (nested loops, naive algorithms)
+- **O(2^n) - Exponential**: Only feasible for ~20 items (subset generation, some backtracking)
+- **O(n!) - Factorial**: Only feasible for ~10 items (permutations, traveling salesman brute force)
 
 ## Decision Tree for Common Problems
 

@@ -178,24 +178,20 @@ Think of it this way:
 
 Not all AI uses ML, but all ML is a form of AI.
 
-```mermaid
-flowchart TB
-    A[Artificial Intelligence<br/>Machines simulating human intelligence] --> B[Rule-Based Systems<br/>Programmed logic]
-    A --> C[Machine Learning<br/>Learning from data]
-    C --> D[Supervised Learning<br/>Labeled data]
-    C --> E[Unsupervised Learning<br/>Unlabeled data]
-    C --> F[Reinforcement Learning<br/>Trial and error]
+**The AI Hierarchy:**
 
-    B --> G[Examples: Chatbots with<br/>predefined responses,<br/>expert systems]
-    D --> H[Examples: Spam filters,<br/>image recognition,<br/>price prediction]
-    E --> I[Examples: Customer<br/>segmentation, anomaly<br/>detection]
+At the top level, **Artificial Intelligence** encompasses all approaches to making machines simulate human intelligence. This branches into two main paths:
 
-    style A fill:#e1f5ff
-    style C fill:#c3f0c3
-    style D fill:#fff4e1
-    style E fill:#fff4e1
-    style F fill:#fff4e1
-```
+1. **Rule-Based Systems** use programmed logic — explicit if/then rules written by developers
+   - Examples: Chatbots with predefined responses, expert systems
+
+2. **Machine Learning** enables learning from data instead of explicit programming
+   - **Supervised Learning**: Uses labeled data (input + correct answer)
+     - Examples: Spam filters, image recognition, price prediction
+   - **Unsupervised Learning**: Finds patterns in unlabeled data
+     - Examples: Customer segmentation, anomaly detection
+   - **Reinforcement Learning**: Learns through trial and error with rewards
+     - Examples: Game-playing AI, robotics, recommendation optimization
 
 ## Why Should PHP Developers Care About AI/ML?
 
@@ -226,29 +222,26 @@ You don't need to become a data scientist. You need to know enough to make smart
 
 ## The Machine Learning Lifecycle: How It Actually Works
 
-Building an ML feature isn't a straight line. It's an iterative cycle. Understanding this process is crucial for realistic expectations:
+Building an ML feature isn't a straight line. It's an iterative cycle with multiple feedback loops. Understanding this process is crucial for realistic expectations.
 
-```mermaid
-flowchart TD
-    A[1. Define Problem<br/>What to predict/discover?] --> B[2. Collect & Prepare Data<br/>Gather and clean examples]
-    B --> C[3. Choose & Train Model<br/>Pick algorithm, learn patterns]
-    C --> D[4. Evaluate Performance<br/>Does it work well enough?]
-    D --> E{Good<br/>Enough?}
-    E -->|No - Need more data| B
-    E -->|No - Try different model| C
-    E -->|Yes| F[5. Deploy to Production<br/>Integrate with application]
-    F --> G[6. Monitor & Maintain<br/>Track performance over time]
-    G --> H{Performance<br/>Degraded?}
-    H -->|Yes - Data drift| B
-    H -->|No| G
+**The 6-Step ML Lifecycle:**
 
-    style A fill:#e1f5ff
-    style B fill:#fff4e1
-    style C fill:#c3f0c3
-    style D fill:#ffe1f5
-    style F fill:#e1ffe1
-    style G fill:#f0e1ff
-```
+1. **Define Problem** — What exactly do you want to predict or discover? Be specific about success criteria.
+
+2. **Collect & Prepare Data** — Gather and clean your training examples. This step often takes 60-80% of the total project time.
+
+3. **Choose & Train Model** — Pick an algorithm and let it learn patterns from your data.
+
+4. **Evaluate Performance** — Test whether the model works well enough for your use case.
+   - If **not good enough due to data quality**: Loop back to Step 2 (collect more or better data)
+   - If **not good enough due to algorithm**: Loop back to Step 3 (try a different model)
+   - If **good enough**: Continue to Step 5
+
+5. **Deploy to Production** — Integrate the trained model into your application where users can benefit from it.
+
+6. **Monitor & Maintain** — Track performance over time. Real-world data changes, so models degrade.
+   - If **performance has degraded**: Loop back to Step 2 (retrain with fresh data)
+   - If **still performing well**: Continue monitoring
 
 ### Key Insights About This Process
 
@@ -311,29 +304,15 @@ You now have the conceptual foundation to understand the ML landscape. You know 
 
 Before diving deeper, it's important to understand that ML comes in different flavors. This concept will be explored in detail in Chapter 3, but here's the essential idea:
 
-```mermaid
-flowchart LR
-    A[Machine Learning] --> B[Supervised Learning<br/>With Labels]
-    A --> C[Unsupervised Learning<br/>Without Labels]
-
-    B --> D[Training Data:<br/>Features + Labels]
-    D --> E[Learn Mapping]
-    E --> F[Predict Labels<br/>for New Data]
-
-    C --> G[Training Data:<br/>Features Only]
-    G --> H[Find Patterns]
-    H --> I[Discover Groups<br/>or Structure]
-
-    style A fill:#e1f5ff
-    style B fill:#c3f0c3
-    style C fill:#fff4e1
-    style F fill:#ffe1f5
-    style I fill:#ffe1f5
-```
-
 ### Supervised Learning
 
 You provide **labeled examples** (input + correct answer), and the model learns to predict answers for new inputs.
+
+**How it works:**
+
+1. Provide training data with both features and labels (the correct answers)
+2. The model learns the mapping between features and labels
+3. Apply the trained model to predict labels for new, unseen data
 
 **Examples:**
 
@@ -346,6 +325,12 @@ You provide **labeled examples** (input + correct answer), and the model learns 
 ### Unsupervised Learning
 
 You provide **unlabeled data**, and the model finds patterns, structure, or groupings on its own.
+
+**How it works:**
+
+1. Provide training data with features only (no labels or correct answers)
+2. The model finds patterns, clusters, or hidden structure in the data
+3. Discover natural groupings or relationships you didn't know existed
 
 **Examples:**
 
@@ -381,47 +366,25 @@ While Python is the dominant language in AI/ML, PHP developers are not left out.
 - **Integrate with External Services:** Use PHP to interact with Python scripts, REST APIs, or cloud AI services (AWS, Google Cloud, Azure) for advanced models.
 - **Process and Prepare Data:** PHP can handle data collection, cleaning, and feature extraction before feeding it into ML models.
 
-```mermaid
-flowchart TB
-    subgraph php[PHP Application Layer]
-        A[Web Interface<br/>User Interactions]
-        B[Data Collection<br/>& Preparation]
-        C[Feature Engineering]
-        D[Model Integration]
-    end
+**The PHP ML Architecture:**
 
-    subgraph ml[ML Layer - Choose Your Path]
-        E[PHP-ML<br/>Simple models in pure PHP]
-        F[Rubix ML<br/>Advanced PHP algorithms]
-        G[Python Services<br/>TensorFlow, PyTorch]
-        H[Cloud APIs<br/>AWS, Google, Azure]
-    end
+Your PHP application serves as the orchestration layer, managing the entire ML pipeline:
 
-    subgraph storage[Data & Model Storage]
-        I[Database<br/>Training data]
-        J[File System<br/>Saved models]
-    end
+**PHP Application Layer:**
+- **Web Interface** — Handle user interactions and display results
+- **Data Collection & Preparation** — Gather and clean training data from user activity
+- **Feature Engineering** — Transform raw data into numerical features
+- **Model Integration** — Connect to ML capabilities and serve predictions back to users
 
-    A --> B
-    B --> C
-    C --> E
-    C --> F
-    C --> G
-    C --> H
-    E --> D
-    F --> D
-    G --> D
-    H --> D
-    D --> A
+**ML Layer (Choose Your Path):**
+- **PHP-ML** — Simple models in pure PHP (k-nearest neighbors, decision trees, clustering)
+- **Rubix ML** — Advanced PHP algorithms (gradient boosting, neural networks, cross-validation)
+- **Python Services** — Complex models with TensorFlow or PyTorch via REST APIs
+- **Cloud APIs** — Enterprise solutions from AWS SageMaker, Google AI Platform, or Azure ML
 
-    B -.-> I
-    E -.-> J
-    F -.-> J
-
-    style php fill:#e1f5ff
-    style ml fill:#c3f0c3
-    style storage fill:#fff4e1
-```
+**Data & Model Storage:**
+- **Database** — Store training data, user activity logs, and prediction results
+- **File System** — Save trained models for reuse without retraining
 
 **PHP's Strengths in ML:**
 
@@ -921,26 +884,20 @@ Show how a PHP web application orchestrates an entire machine learning workflow 
 
 ### The Complete Flow
 
-```mermaid
-sequenceDiagram
-    participant User
-    participant PHPApp as "PHP App"
-    participant Database
-    participant MLModel as "ML Model"
+Here's how the different components interact to deliver movie recommendations:
 
-    User->>PHPApp: Browse movies
-    PHPApp->>Database: Collect viewing patterns
-    Database-->>PHPApp: User behavior data
-    PHPApp->>PHPApp: Prepare features
-    PHPApp->>MLModel: Train classifier
-    MLModel-->>PHPApp: Trained model
-    User->>PHPApp: Request recommendations
-    PHPApp->>MLModel: Predict user type
-    MLModel-->>PHPApp: "action_lover"
-    PHPApp->>Database: Query action movies
-    Database-->>PHPApp: Movie list
-    PHPApp-->>User: Show recommendations
-```
+1. **User browses movies** → PHP app tracks which genres they watch
+2. **PHP app queries database** → Collects viewing patterns from all users
+3. **Database returns user behavior data** → Watch history organized by genre preferences
+4. **PHP prepares features** → Transforms viewing history into numeric vectors (e.g., [action, comedy, drama, romance])
+5. **PHP trains ML classifier** → Uses PHP-ML to learn patterns from user segments
+6. **Classifier returns trained model** → Ready to make predictions
+7. **User requests recommendations** → Triggers prediction flow
+8. **PHP asks model to predict user type** → Passes current user's viewing pattern
+9. **Model returns prediction** → "action_lover", "romance_fan", etc.
+10. **PHP queries database for matching movies** → Gets movies in predicted genres
+11. **Database returns movie list** → Top-rated movies for that user type
+12. **PHP shows recommendations to user** → Displays personalized results
 
 ### The Code
 

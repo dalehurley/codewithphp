@@ -294,26 +294,13 @@ This matrix-based approach works because user preferences exhibit patterns—peo
 
 ### The Two Main Approaches
 
-```mermaid
-flowchart TB
-    A[Recommender Systems] --> B[Content-Based Filtering]
-    A --> C[Collaborative Filtering]
+Recommender systems use two fundamental approaches:
 
-    B --> B1[Analyze item features]
-    B --> B2[Match to user preferences]
-    B1 --> B3[Recommend similar items]
+**Content-Based Filtering**: Analyzes item features and matches them to user preferences to recommend similar items. For example, if you liked an action movie, it recommends other action movies.
 
-    C --> C1[User-Based CF]
-    C --> C2[Item-Based CF]
-    C1 --> C3[Find similar users]
-    C1 --> C4[Recommend their items]
-    C2 --> C5[Find similar items]
-    C2 --> C6[Recommend those items]
-
-    style A fill:#e1f5ff
-    style B fill:#fff4e1
-    style C fill:#f0ffe1
-```
+**Collaborative Filtering**: Uses behavior patterns from similar users or items:
+- **User-Based CF**: Finds similar users and recommends items they liked
+- **Item-Based CF**: Finds similar items and recommends those items
 
 ### Key Takeaway
 
@@ -834,27 +821,11 @@ Step 3: Prediction - Since Diana and Bob (similar to Alice) both rate Avatar hig
 
 Collaborative filtering identifies that Alice and Diana have nearly identical tastes (both rate Inception=5, The Matrix=4-5, Interstellar=5). Since Diana's preferences predict Alice's preferences well, we can use Diana's Avatar rating to predict Alice would also enjoy it. This works without knowing anything about the movies themselves—pure pattern matching on user behavior.
 
-```mermaid
-flowchart LR
-    A[Alice\nUnrated: Avatar] --> B[Find Similar Users]
-    B --> C[Diana\nSimilar taste]
-    B --> D[Bob\nFairly similar]
-    B --> E[Eve\nDifferent taste]
-
-    C --> F[Diana rated Avatar: ✗]
-    D --> G[Bob rated Avatar: 5★]
-    E --> H[Eve rated Avatar: 3★]
-
-    G --> I[Weighted Average]
-    H --> I
-    I --> J[Predict Alice\nwill rate Avatar: ~4.5★]
-
-    style A fill:#e1f5ff
-    style C fill:#c8ffc8
-    style D fill:#c8ffc8
-    style E fill:#ffc8c8
-    style J fill:#fff4c8
-```
+The process works as follows:
+1. **Find Similar Users**: Identify users with similar rating patterns to Alice (Diana is highly similar, Bob is fairly similar, Eve has different taste)
+2. **Gather Their Ratings**: Collect how these users rated Avatar (Diana: unrated, Bob: 5★, Eve: 3★)
+3. **Weight by Similarity**: Users more similar to Alice have more influence on the prediction
+4. **Calculate Prediction**: The weighted average predicts Alice will rate Avatar around 4.5★
 
 ### Troubleshooting
 
@@ -877,37 +848,11 @@ Quantifying similarity between users (or items) is the mathematical foundation o
 
 Collaborative filtering depends on quantifying "similarity" between users or items. Different metrics capture different aspects of similarity, and choosing the right one impacts recommendation quality.
 
-```mermaid
-graph LR
-    subgraph "Euclidean Distance (Magnitude)"
-        A["User A (5, 4)"]
-        B["User B (4, 3)"]
-        A -- "Short Distance" --> B
-        C["User C (1, 5)"]
-        A -- "Long Distance" --> C
-        NoteB["A and B are close = High Similarity"]
-        NoteC["A and C are far = Low Similarity"]
-        B -.-> NoteB
-        C -.-> NoteC
-    end
+**Understanding the Metrics**:
 
-    subgraph "Cosine Similarity (Angle)"
-        O((Origin))
-        D["User A Vector"]
-        E["User B Vector"]
-        F["User C Vector"]
-        O --> D
-        O --> E
-        O --> F
-        style D stroke-width:2px,stroke:green
-        style E stroke-width:2px,stroke:green
-        style F stroke-width:2px,stroke:red
-    end
-    AngleSmall["Small Angle = High Similarity"]
-    AngleLarge["Large Angle = Low Similarity"]
-    E -.-> AngleSmall
-    F -.-> AngleLarge
-```
+- **Euclidean Distance** measures magnitude—how close two users are in rating space. If User A rates movies (5, 4) and User B rates them (4, 3), they have a short distance and high similarity. User C at (1, 5) has a long distance from User A, indicating low similarity.
+
+- **Cosine Similarity** measures the angle between rating vectors. It focuses on the direction (pattern) of ratings rather than their absolute values. Two users with the same rating pattern but different scales (one rates 4-5, another rates 2-3) will still show high cosine similarity.
 
 ### 1. Cosine Similarity
 
@@ -1576,31 +1521,13 @@ Instead of directly comparing users or items, matrix factorization decomposes th
 - Bob also prefers `action` and `mind-bending` content
 - Therefore, both would enjoy other items with these latent factors
 
-```mermaid
-graph TD
-    subgraph "Original Rating Matrix (R)"
-        direction LR
-        R(m users x n items)
-    end
+**The Mathematical Process**:
 
-    subgraph "Learned Latent Factors"
-        P(m users x k features)
-        Q(n items x k features)
-    end
+Matrix factorization decomposes the original rating matrix **R** (m users × n items) into two smaller matrices:
+- **P** (m users × k features): User preferences for k latent features (e.g., action, comedy)
+- **Q** (n items × k features): Item composition of k latent features
 
-    subgraph "Predicted Ratings (R')"
-        R_hat(m users x n items)
-    end
-
-    R -- "Decompose" --> P
-    R -- "Decompose" --> Q
-
-    P -- "Multiply" --> R_hat
-    Q -- "Multiply" --> R_hat
-
-    note right of P "User preferences for k latent features (e.g., action, comedy)"
-    note right of Q "Item composition of k latent features"
-```
+When multiplied together (P × Q), these matrices produce predicted ratings **R'** (m users × n items) that fill in the gaps in the original sparse matrix.
 
 ### Conceptual Example
 

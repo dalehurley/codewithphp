@@ -320,20 +320,18 @@ This asynchronous pattern prevents the user's HTTP request from blocking while w
 
 This chapter guides you through 8 progressive steps to deploy your AI service. Each step builds on the previous one, and all code is production-tested.
 
-```mermaid
-flowchart TB
-    A[Step 1: Containerize with Docker] --> B[Step 2: Implement Job Queues]
-    B --> C[Step 3: Build Worker Processes]
-    C --> D[Step 4: Add Result Caching]
-    D --> E[Step 5: Deploy to Cloud]
-    E --> F[Step 6: Configure Load Balancing]
-    F --> G[Step 7: Set Up Monitoring]
-    G --> H[Step 8: Create CI/CD Pipeline]
+The implementation follows this sequence:
 
-    style A fill:#e1f5ff
-    style E fill:#fff3cd
-    style H fill:#d4edda
-```
+1. **Step 1: Containerize with Docker** — Package your application into portable containers
+2. **Step 2: Implement Job Queues** — Set up Redis-based async job processing
+3. **Step 3: Build Worker Processes** — Create daemons to process ML predictions
+4. **Step 4: Add Result Caching** — Implement intelligent caching to reduce redundant computations
+5. **Step 5: Deploy to Cloud** — Move your service to production infrastructure
+6. **Step 6: Configure Load Balancing** — Distribute traffic across multiple instances
+7. **Step 7: Set Up Monitoring** — Track system health and ML-specific metrics
+8. **Step 8: Create CI/CD Pipeline** — Automate testing and deployment
+
+Each step is essential and depends on the previous ones. By the end, you'll have a complete production deployment pipeline.
 
 ## Step 1: Containerizing Your AI Application (~15 min)
 

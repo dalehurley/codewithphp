@@ -186,19 +186,7 @@ Where:
 - Each additional square foot adds $100 to the price (slope = 0.1 thousand)
 - A hypothetical 0 sqft house would cost $50k (intercept)
 
-```mermaid
-graph LR
-    A[Input: Square Feet] --> B[Linear Function y=mx+b]
-    B --> C[Output: Price]
-
-    D[Training Data] --> E[Learning Algorithm]
-    E --> B
-
-    style A fill:#e1f5ff
-    style B fill:#c3f0c3
-    style C fill:#ffe1f5
-    style E fill:#fff4e1
-```
+The training process works by feeding training data into a learning algorithm, which determines the optimal parameters (\( m \) and \( b \)) for the linear function. Once trained, the model takes input features (like square feet) and produces predictions (like price) through the linear equation.
 
 #### What Does "Best Fit" Mean?
 
@@ -220,18 +208,7 @@ Where:
 2. Penalizes large errors more heavily (quadratic)
 3. Makes the math differentiable (smooth for optimization)
 
-```mermaid
-graph TB
-    A[Training Data Points] --> B[Try Different Lines]
-    B --> C[Calculate MSE for Each Line]
-    C --> D{MSE Minimized?}
-    D -->|No| E[Adjust m and b]
-    E --> B
-    D -->|Yes| F[Best Fit Line Found!]
-
-    style A fill:#e1f5ff
-    style F fill:#c3f0c3
-```
+The training process iteratively searches for the best line by trying different values of \( m \) and \( b \), calculating the MSE for each combination, and adjusting the parameters to minimize error. This continues until the MSE reaches a minimum, at which point we've found the best fit line.
 
 #### Two Ways to Find the Best Line
 
@@ -270,19 +247,7 @@ Start with random \( m \) and \( b \), then iteratively adjust them to reduce er
 **Pros**: Works for any model (neural networks, etc.), handles large datasets  
 **Cons**: Requires tuning learning rate, may converge slowly
 
-```mermaid
-graph LR
-    A[Start: Random m, b] --> B[Calculate Predictions]
-    B --> C[Calculate Error MSE]
-    C --> D[Calculate Gradients]
-    D --> E[Update m and b]
-    E --> F{Converged?}
-    F -->|No, error still decreasing| B
-    F -->|Yes, minimal error| G[Final Model]
-
-    style A fill:#e1f5ff
-    style G fill:#c3f0c3
-```
+The gradient descent process follows these steps in a loop: (1) Start with random values for \( m \) and \( b \), (2) Calculate predictions using the current parameters, (3) Calculate the error (MSE), (4) Calculate gradients showing which direction reduces error, (5) Update the parameters by moving in the gradient direction, (6) Repeat until the error stops decreasing significantly, indicating convergence to the optimal model.
 
 #### Multiple Linear Regression
 
@@ -633,27 +598,13 @@ function checkNormality(array $residuals): void
 - Severe violations (clearly non-linear, extreme heteroscedasticity)
 - When you need precise confidence intervals or p-values
 
-```mermaid
-graph TD
-    A[Check Assumptions] --> B{Linearity?}
-    B -->|No| C[Transform features or use non-linear model]
-    B -->|Yes| D{Independence?}
-    D -->|No| E[Time series model or clustered errors]
-    D -->|Yes| F{Homoscedasticity?}
-    F -->|No| G[Transform target or weighted regression]
-    F -->|Yes| H{Normality?}
-    H -->|No| I[Large n? If yes proceed anyway]
-    H -->|Yes| J[✓ All Assumptions Met - Safe to use]
-    I --> K{n > 100?}
-    K -->|Yes| J
-    K -->|No| L[Transform or use robust methods]
+**Decision process for handling assumption violations**:
 
-    style J fill:#c3f0c3
-    style C fill:#ffcccc
-    style E fill:#ffcccc
-    style G fill:#ffcccc
-    style L fill:#ffcccc
-```
+1. **Check linearity first**: If the relationship isn't linear, transform features or use a non-linear model
+2. **Check independence**: If observations aren't independent, consider time series models or clustered error adjustments
+3. **Check homoscedasticity**: If variance isn't constant, transform the target variable or use weighted regression
+4. **Check normality**: If residuals aren't normal but you have a large dataset (n > 100), proceed anyway as the Central Limit Theorem applies. For smaller datasets with non-normal residuals, transform data or use robust methods
+5. **All assumptions met**: Your linear regression model is valid and reliable
 
 ### Expected Result
 
@@ -1173,23 +1124,9 @@ echo "\n✓ Gradient descent successfully converged!\n";
 echo "  The model learned optimal parameters through iterative updates.\n\n";
 ```
 
-#### How Gradient Descent Works Visually
+#### How Gradient Descent Works
 
-```mermaid
-graph TD
-    A[Start: Random m, b] --> B[Calculate predictions]
-    B --> C[Calculate error MSE]
-    C --> D[Calculate gradients]
-    D --> E[Update parameters]
-    E --> F{MSE still decreasing?}
-    F -->|Yes, continue| B
-    F -->|No, converged| G[Final Model]
-
-    style A fill:#e1f5ff
-    style D fill:#fff4e1
-    style E fill:#c3f0c3
-    style G fill:#ffe1f5
-```
+The iterative optimization process follows a cycle: starting with random values for \( m \) and \( b \), we calculate predictions, measure error using MSE, compute gradients indicating the direction of steepest descent, update parameters by moving in that direction, and check if MSE is still decreasing. If error continues to decrease, we repeat the cycle. Once error stabilizes (converges), we've found the optimal model parameters.
 
 **Key insight**: Gradients tell us which direction to move parameters to reduce error. By taking small steps (controlled by learning rate) in the direction that reduces error, we eventually reach the minimum.
 

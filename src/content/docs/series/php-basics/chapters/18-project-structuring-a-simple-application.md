@@ -62,29 +62,9 @@ By the end of this chapter, you'll have:
 - Implement a layout system to eliminate duplicate HTML across views.
 - Use output buffering to compose views within layouts.
 
-## MVC Architecture: Visual Overview
+## MVC Architecture Overview
 
-Here's how the Model-View-Controller pattern organizes your application:
-
-```mermaid
-flowchart TB
-    A[Browser Request<br/>/posts] -->|HTTP Request| B[Router]
-    B -->|Route Match| C[Controller<br/>PostController]
-    C -->|1. Query Data| D[Model<br/>Post.php]
-    D -->|2. Database Query| E[(Database<br/>SQLite/MySQL)]
-    E -->|3. Return Data| D
-    D -->|4. Return Objects| C
-    C -->|5. Pass Data| F[View<br/>Template]
-    F -->|6. Render HTML| G[Browser]
-
-    C -.->|Business Logic| C
-    F -.->|No Logic| F
-
-    style C fill:#e1f5ff
-    style D fill:#d4edda
-    style F fill:#fff3cd
-    style E fill:#e8daef
-```
+The Model-View-Controller pattern organizes your application into three distinct layers, each with specific responsibilities:
 
 **Key Layers:**
 

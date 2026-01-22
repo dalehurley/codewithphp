@@ -761,20 +761,6 @@ Additional context, version notes, or supplementary information
 :::
 ```
 
-### Diagrams
-
-Use Mermaid for architecture, flow, or relationship diagrams:
-
-````markdown
-```mermaid
-flowchart TB
-    A[Start] --> B[Process]
-    B --> C[End]
-```
-````
-
-````
-
 ### Quiz Components
 
 ```markdown
@@ -917,7 +903,7 @@ Each series `index.md` must include:
 4. **What You'll Build** (deliverables)
 5. **Learning Objectives** (outcomes)
 6. **How This Series Works** (methodology)
-7. **Learning Path Overview** (mermaid diagram showing progression)
+7. **Learning Path Overview** (showing progression through the series)
 8. **Quick Start** (5-minute example)
 9. **Chapters** (organized by parts/sections with descriptions)
 10. **FAQ** section
@@ -3985,50 +3971,6 @@ $correct->approach();
 **Solution**: How to fix it with code example
 ````
 
-## Mermaid Diagram Patterns
-
-### Architecture Diagram
-
-```mermaid
-flowchart TB
-    A[User Request] -->|HTTP| B[Front Controller]
-    B --> C[Router]
-    C -->|Match Route| D[Controller]
-    D -->|Query| E[(Database)]
-    E -->|Results| D
-    D -->|Data| F[View]
-    F -->|HTML| A
-
-    style D fill:#e1f5ff
-    style E fill:#e8daef
-    style F fill:#fff3cd
-```
-
-**Pattern:** Always use colors to distinguish layers/types
-
-### Class Hierarchy
-
-```mermaid
-classDiagram
-    class Parent {
-        -string property
-        +method() void
-    }
-    class Child1 {
-        +specificMethod() string
-    }
-    class Child2 {
-        +differentMethod() int
-    }
-
-    Parent <|-- Child1
-    Parent <|-- Child2
-
-    note for Parent "Blueprint defining shared behavior"
-```
-
-**Pattern:** Include notes explaining concepts
-
 ## Quick Start Pattern
 
 Quick starts appear in complex chapters and must:
@@ -4509,7 +4451,7 @@ Reference chapters **intentionally deviate** from standard tutorial structure:
 - **Brief Introduction** (1-2 sentences + value proposition)
 - **Info Callout** explaining this is a reference guide
 - **"I Need To..."** or **"Common Tasks"** sections
-- **Decision Trees** (text or Mermaid diagrams)
+- **Decision Trees** (text-based)
 - **Quick Wins** or **Common Patterns**
 - **Copy-Paste Snippets** section
 - **FAQs** (specific to reference material)
@@ -4591,7 +4533,7 @@ When to use, implementation...
 
 ### Decision Trees
 
-Use text-based or Mermaid diagrams:
+Use text-based diagrams:
 
 ````markdown
 ```
@@ -5079,22 +5021,6 @@ Destructive operations, security concerns, common pitfalls
 Additional context, version-specific notes, code file references
 :::
 ```
-
-**Diagrams (Mermaid):**
-
-````markdown
-```mermaid
-flowchart TB
-    A[Start] --> B[Process]
-    B --> C[End]
-
-    style B fill:#e1f5ff
-```
-````
-
-````
-
-Use colors to distinguish layers/types
 
 ### Formatting Rules
 
@@ -5832,7 +5758,7 @@ The series index must include:
 4. What You'll Build (deliverables)
 5. Learning Objectives
 6. How This Series Works (methodology)
-7. Learning Path Overview (mermaid diagram)
+7. Learning Path Overview (showing progression)
 8. Quick Start (5-minute example)
 9. Chapters (organized by parts with descriptions)
 10. FAQ
@@ -5965,19 +5891,6 @@ echo "Alternative way";
 ```
 
 :::
-
-````
-
-### Mermaid Diagrams
-
-```markdown
-```mermaid
-flowchart TB
-    A[Start] --> B[Process]
-    B --> C[End]
-
-    style B fill:#e1f5ff
-````
 
 ````
 
@@ -6148,7 +6061,6 @@ VitePress supports:
 - GitHub Flavored Markdown
 - Frontmatter (YAML)
 - Code syntax highlighting
-- Mermaid diagrams
 - Custom containers (callouts)
 - Line highlighting in code blocks
 - Emoji :tada:
@@ -6194,7 +6106,6 @@ Check for:
 
 - Check for unclosed code fences
 - Verify frontmatter YAML syntax
-- Ensure mermaid diagrams are valid
 
 ### Preview Issues
 
@@ -6260,4 +6171,3 @@ export default defineConfig({
 - [VitePress Documentation](https://vitepress.dev/)
 - [VitePress Default Theme Config](https://vitepress.dev/reference/default-theme-config)
 - [Markdown Extensions](https://vitepress.dev/guide/markdown)
-- [Mermaid Diagram Syntax](https://mermaid.js.org/)

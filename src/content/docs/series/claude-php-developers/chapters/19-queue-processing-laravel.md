@@ -69,25 +69,23 @@ By completing this chapter, you will:
 
 ## Queue Architecture for Claude
 
-```mermaid
-flowchart TB
-    A[HTTP Request] --> B[Create Request Record]
-    B --> C[Dispatch Job to Queue]
-    C --> D[Queue Worker Picks Up Job]
-    D --> E[Execute Claude API Call]
-    E --> F{Success?}
-    F -->|Yes| G[Store Result]
-    F -->|No| H[Retry Logic]
-    H -->|Retries Exhausted| I[Mark as Failed]
-    G --> J[Trigger Notification]
-    J --> K[WebSocket/Webhook/Polling]
-    I --> L[Notify User of Failure]
+The queue-based architecture for Claude follows a clear flow:
 
-    style A fill:#e1f5ff
-    style G fill:#d4edda
-    style I fill:#f8d7da
-    style K fill:#fff3cd
-```
+1. **HTTP Request** → User submits a request via API
+2. **Create Request Record** → Save initial request details to database with "pending" status
+3. **Dispatch Job to Queue** → Push job to Redis/database queue for background processing
+4. **Queue Worker Picks Up Job** → Background worker retrieves and executes job
+5. **Execute Claude API Call** → Worker calls Claude API with request parameters
+6. **Success Path**:
+   - Store API response in database
+   - Update status to "completed"
+   - Trigger notifications (WebSocket/webhook)
+7. **Failure Path**:
+   - Retry logic (up to 3 times with exponential backoff)
+   - After retries exhausted, mark as "failed"
+   - Notify user of failure
+
+This architecture ensures non-blocking operations, automatic retries, and comprehensive status tracking throughout the request lifecycle.
 
 ## Step 1: Create the Queue Job (~15 min)
 

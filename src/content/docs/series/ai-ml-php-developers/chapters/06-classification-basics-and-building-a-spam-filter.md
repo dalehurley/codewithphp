@@ -194,24 +194,21 @@ In Chapter 5, you built a regression model that predicted **continuous numeric v
 
 **Classification** is different. Instead of predicting numbers on a continuum, you predict which **discrete category** (class) something belongs to. The output is always one of a fixed set of labels, not a number.
 
-```mermaid
-flowchart TB
-    A[Supervised Learning] --> B[Regression]
-    A --> C[Classification]
+**Supervised Learning breaks down into two main approaches:**
 
-    B --> D["Continuous Output<br/>Examples:<br/>• House price: $285,500<br/>• Temperature: 72.3°F<br/>• Stock price: $142.67"]
+**Regression** produces continuous numeric outputs:
+- House price: $285,500
+- Temperature: 72.3°F
+- Stock price: $142.67
 
-    C --> E["Discrete Output<br/>Examples:<br/>• Email: spam or ham<br/>• Diagnosis: healthy/sick<br/>• Sentiment: positive/negative/neutral"]
+**Classification** produces discrete categorical outputs:
+- Email: spam or ham
+- Diagnosis: healthy or sick
+- Sentiment: positive, negative, or neutral
 
-    E --> F[Binary Classification<br/>2 classes]
-    E --> G[Multi-class Classification<br/>3+ classes]
-
-    style A fill:#e1f5ff
-    style B fill:#fff4e1
-    style C fill:#c3f0c3
-    style F fill:#ffe1f5
-    style G fill:#f0e1ff
-```
+Classification problems further divide into:
+- **Binary Classification**: Exactly 2 possible classes (spam/ham, yes/no, true/false)
+- **Multi-class Classification**: 3 or more possible classes (low/medium/high, red/green/blue)
 
 #### Binary Classification
 

@@ -383,21 +383,16 @@ The example above uses `view()`, but you'll use all these patterns throughout th
 
 **How they work together** — Here's the request lifecycle from browser to response:
 
-```mermaid
-flowchart LR
-    A["Browser Request<br/>(HTTP GET /contacts)"] -->|Passes through| B["Middleware<br/>(CSRF, Auth, etc.)"]
-    B -->|Routes to| C["Route<br/>(web.php)"]
-    C -->|Calls| D["Controller<br/>(ContactController@index)"]
-    D -->|Queries| E["Model<br/>(Contact)"]
-    E -->|Returns Data| D
-    D -->|Passes Data| F["View<br/>(contacts/index.blade.php)"]
-    F -->|Renders HTML| G["Response<br/>(Browser displays page)"]
+1. **Browser Request** — User visits a URL (e.g., `GET /contacts`)
+2. **Middleware** — Request passes through security layers (CSRF protection, authentication, etc.)
+3. **Route** — Laravel router in `web.php` matches the URL and determines which controller to call
+4. **Controller** — The controller method (e.g., `ContactController@index`) receives the request
+5. **Model** — Controller queries the database using Eloquent models (e.g., `Contact::all()`)
+6. **Model Returns Data** — Database results are returned to the controller
+7. **View** — Controller passes data to a Blade template (e.g., `contacts/index.blade.php`)
+8. **Response** — Rendered HTML is sent back to the browser and displayed to the user
 
-    style A fill:#e3f2fd
-    style G fill:#c8e6c9
-    style D fill:#fff3e0
-    style B fill:#fce4ec
-```
+This linear flow ensures a clean separation of concerns at every step.
 
 **Laravel extends traditional MVC** with several supporting components:
 

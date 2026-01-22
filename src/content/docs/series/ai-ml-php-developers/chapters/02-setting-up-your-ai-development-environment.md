@@ -59,48 +59,26 @@ If you're new to command-line tools, don't worry! This chapter provides specific
 
 ### Environment Architecture
 
-Here's what you'll be setting up:
+Your complete AI/ML development environment consists of four main components:
 
-```mermaid
-flowchart TB
-    subgraph dev[Your Development Environment]
-        A[PHP 8.4+<br/>Core Language]
-        B[Composer<br/>Package Manager]
-        C[Required Extensions<br/>json, mbstring, curl]
-    end
+**Core Development Environment:**
+- **PHP 8.4+** - The core language with modern features
+- **Composer** - Package manager for dependency management
+- **Required Extensions** - json, mbstring, curl for data processing
 
-    subgraph ml[ML Libraries]
-        D[PHP-ML<br/>Simple algorithms]
-        E[Rubix ML<br/>Advanced algorithms]
-        F[Rubix Tensor<br/>Performance boost]
-    end
+**ML Libraries:**
+- **PHP-ML** - Simple algorithms perfect for learning
+- **Rubix ML** - Advanced algorithms with 40+ options
+- **Rubix Tensor** - Performance optimization library
 
-    subgraph optional[Optional Components]
-        G[Python 3.10+<br/>Advanced ML]
-        H[IDE Extensions<br/>VS Code, PhpStorm]
-    end
+**Optional Components:**
+- **Python 3.10+** - For advanced ML in later chapters
+- **IDE Extensions** - Enhanced development experience (VS Code, PhpStorm)
 
-    subgraph tools[Development Tools]
-        I[Text Editor/IDE]
-        J[Terminal/CLI]
-        K[Git Version Control]
-    end
-
-    A --> B
-    B --> D
-    B --> E
-    B --> F
-    C --> A
-
-    dev --> ml
-    dev -.-> optional
-    dev --> tools
-
-    style dev fill:#e1f5ff
-    style ml fill:#c3f0c3
-    style optional fill:#fff4e1
-    style tools fill:#ffe1f5
-```
+**Development Tools:**
+- **Text Editor/IDE** - For writing and editing code
+- **Terminal/CLI** - For running commands and scripts
+- **Git** - Version control for tracking changes
 
 ## Prerequisites
 
@@ -232,32 +210,17 @@ By the end of this chapter, you will be able to:
 
 Follow this sequence for a smooth setup:
 
-```mermaid
-flowchart LR
-    A[1. Install PHP 8.4] --> B[2. Install Composer]
-    B --> C[3. Create Project]
-    C --> D[4. Install PHP-ML]
-    D --> E[5. Install Rubix ML]
-    E --> F[6. Verify Everything]
-    F --> G{All Checks<br/>Pass?}
-    G -->|Yes| H[7. Optional: Python]
-    G -->|No| I[Troubleshoot]
-    I --> J{Fixed?}
-    J -->|Yes| F
-    J -->|No| K[Check Chapter 2<br/>Troubleshooting]
-    H --> L[8. IDE Setup]
-    L --> M[✅ Ready for<br/>Chapter 3!]
-
-    style A fill:#e1f5ff
-    style B fill:#e1f5ff
-    style C fill:#c3f0c3
-    style D fill:#c3f0c3
-    style E fill:#c3f0c3
-    style F fill:#ffe1f5
-    style H fill:#fff4e1
-    style L fill:#fff4e1
-    style M fill:#c3f0c3
-```
+1. **Install PHP 8.4** - Get the latest PHP version with required extensions
+2. **Install Composer** - Set up PHP's dependency manager
+3. **Create Project** - Structure your workspace directory
+4. **Install PHP-ML** - Add the simple ML library
+5. **Install Rubix ML** - Add the advanced ML library
+6. **Verify Everything** - Run comprehensive checks
+   - If all checks pass → Continue to step 7
+   - If checks fail → Troubleshoot using the Troubleshooting section
+7. **Optional: Python** - Install Python 3.10+ for advanced chapters
+8. **IDE Setup** - Configure your editor with helpful extensions
+9. **Ready for Chapter 3!** - Begin learning ML concepts
 
 ## Step 1: Verify or Install PHP 8.4 (~10 min)
 

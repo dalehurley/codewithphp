@@ -463,19 +463,6 @@ function getSeriesData(seriesSlug: string): {
       audienceType: 'TypeScript developers learning PHP',
       keywords: ['PHP', 'TypeScript', 'types', 'backend', 'Laravel']
     },
-    'python-developers-love-php-laravel': {
-      level: 'Intermediate',
-      workload: 'PT12H',
-      teaches: [
-        'PHP vs Python concepts',
-        'Laravel productivity',
-        'Eloquent vs Django ORM',
-        'REST API development',
-        'Deployment best practices'
-      ],
-      audienceType: 'Python developers exploring PHP and Laravel',
-      keywords: ['PHP', 'Laravel', 'Python', 'Django', 'Flask', 'web development']
-    },
     'rails-developers-love-laravel': {
       level: 'Intermediate',
       workload: 'PT12H',

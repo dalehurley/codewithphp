@@ -60,36 +60,29 @@ By the end of this chapter, you'll have:
 - Dispatch a request to the correct route's handler
 - Handle 404 Not Found errors for undefined routes
 
-## Router Architecture: Visual Overview
+## Router Architecture: How It Works
 
-Here's how the Front Controller pattern and routing work:
+The Front Controller pattern and routing work through a series of steps that handle every incoming request:
 
-```mermaid
-flowchart TB
-    A[Browser Request<br/>/posts/123] -->|All requests| B[index.php<br/>Front Controller]
-    B -->|Parse URI & Method| C[Router]
-    C -->|Match against registered routes| D{Route Found?}
-    D -->|Yes| E[Extract Parameters<br/>id = 123]
-    D -->|No| F[404 Handler]
-    E --> G[Execute Handler<br/>Controller/Closure]
-    G --> H[Generate Response]
-    F --> I[Show 404 Page]
-    H --> J[Send to Browser]
-    I --> J
+**The Request Flow:**
 
-    style B fill:#e1f5ff
-    style C fill:#e1f5ff
-    style G fill:#d4edda
-    style F fill:#f8d7da
-```
+1. **Browser Request** - A user visits a URL like `/posts/123`
+2. **Single Entry Point** - All requests are directed to `index.php` (the front controller)
+3. **Parse Request** - The front controller extracts the URI path and HTTP method from the request
+4. **Router Matching** - The router compares the request URI against all registered route patterns
+5. **Route Decision** - If a matching route is found, continue to parameter extraction; if not, jump to 404 handling
+6. **Extract Parameters** - For dynamic routes like `/posts/{id}`, extract the parameter values (e.g., `id = 123`)
+7. **Execute Handler** - Call the route's handler function or controller method with the extracted parameters
+8. **Generate Response** - The handler produces HTML, JSON, or other output
+9. **Send to Browser** - The response is sent back to the user
 
 **Key Concepts:**
 
-- **Single Entry Point**: All requests go through `index.php`
-- **URL Matching**: Router compares request URI to registered patterns
-- **Dynamic Parameters**: Extract values like `{id}` from URLs
-- **Handler Execution**: Call the appropriate function/method
-- **404 Fallback**: Handle unmatched routes gracefully
+- **Single Entry Point**: All requests go through `index.php`, giving you centralized control
+- **URL Matching**: The router compares the request URI to registered patterns using string comparison or regex
+- **Dynamic Parameters**: Routes can extract values like `{id}` from URLs and pass them to handlers
+- **Handler Execution**: The matched route's function or method is called with extracted parameters
+- **404 Fallback**: Unmatched routes are handled gracefully with a "Not Found" response
 
 ## Step 1: Setting Up the Project Structure (~5 min)
 

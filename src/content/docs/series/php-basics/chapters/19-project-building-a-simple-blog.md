@@ -65,41 +65,25 @@ By the end of this chapter, you'll have created:
 
 ## Blog Application Architecture
 
-Here's the complete architecture of your blog application:
+Your blog application follows the Model-View-Controller (MVC) pattern with the following request flow:
 
-```mermaid
-flowchart TB
-    A[User Browser] -->|Request: /posts| B[index.php]
-    B --> C[Router]
-    C -->|Match Route| D[PostController]
+**Request Flow:**
 
-    D -->|index| E[Model::all]
-    D -->|show/:slug| F[Model::findBySlug]
-    D -->|create| G[Model::create]
+1. **User makes request** → Browser sends request (e.g., `/posts`) to `index.php`
+2. **Router matches route** → Router finds the appropriate controller and method
+3. **Controller executes** → `PostController` method is called (e.g., `index()`, `show()`, `create()`)
+4. **Model fetches data** → Post model interacts with the database using PDO
+5. **View renders** → Appropriate view file is loaded with data (e.g., `posts/index.php`)
+6. **Layout wraps view** → `layout.php` provides consistent HTML structure
+7. **Response sent** → HTML is returned to the browser
 
-    E --> H[(Database<br/>posts table)]
-    F --> H
-    G --> H
+**Key Components:**
 
-    H --> E
-    H --> F
-    H --> G
-
-    E --> I[View: index.php<br/>List all posts]
-    F --> J[View: show.php<br/>Single post]
-    G --> K[View: create.php<br/>New post form]
-
-    I --> L[Layout: layout.php]
-    J --> L
-    K --> L
-
-    L --> M[HTML Response]
-    M --> A
-
-    style D fill:#e1f5ff
-    style H fill:#e8daef
-    style L fill:#fff3cd
-```
+- **Router**: Maps URLs to controller actions, handles dynamic parameters like `/posts/{id}`
+- **PostController**: Contains business logic for listing, showing, and creating posts
+- **Post Model**: Handles all database operations (queries, inserts, updates)
+- **Views**: Template files that display data as HTML
+- **Database**: SQLite database with prepared statements for security
 
 **Directory Structure:**
 

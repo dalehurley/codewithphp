@@ -171,88 +171,30 @@ By completing this chapter, you will:
 
 ## Database Schema Overview
 
-Before diving into implementation, let's visualize the complete database architecture you'll build:
+The complete database architecture consists of five interconnected tables that work together to create a comprehensive deals management system:
 
-```mermaid
-erDiagram
-    PIPELINE_STAGES ||--o{ DEALS : "defines stage for"
-    PIPELINE_STAGES ||--o{ DEAL_STAGE_HISTORY : "tracks transitions"
-    TEAMS ||--o{ DEALS : "owns"
-    COMPANIES ||--o{ DEALS : "has"
-    USERS ||--o{ DEALS : "owns (sales rep)"
-    DEALS ||--o{ DEAL_CONTACT_ROLE : "has"
-    CONTACTS ||--o{ DEAL_CONTACT_ROLE : "participates in"
-    DEALS ||--o{ DEAL_LINE_ITEMS : "contains"
-    DEALS ||--o{ DEAL_STAGE_HISTORY : "has history"
+**Core Tables**:
 
-    PIPELINE_STAGES {
-        bigint id PK
-        string pipeline_name
-        string stage_name
-        decimal probability
-        string stage_type "open, closed_won, closed_lost"
-        integer sort_order UK
-        integer wip_limit "nullable"
-        string color
-        timestamp created_at
-        timestamp updated_at
-    }
+**1. `pipeline_stages`** - Defines the sales pipeline configuration
+- Fields: `id`, `pipeline_name`, `stage_name`, `probability`, `stage_type` (open/closed_won/closed_lost), `sort_order` (unique), `wip_limit` (nullable), `color`
+- Purpose: Centralized stage definitions with fixed probabilities for forecasting
 
-    DEALS {
-        bigint id PK
-        bigint team_id FK
-        bigint company_id FK
-        bigint pipeline_stage_id FK
-        bigint owner_id FK "users.id"
-        string name
-        decimal amount
-        decimal probability "denormalized"
-        decimal weighted_amount "computed: amount × probability"
-        date closing_date
-        date closed_at "nullable"
-        string lead_source "nullable"
-        text description "nullable"
-        boolean is_won
-        timestamp deleted_at "nullable"
-        timestamp created_at
-        timestamp updated_at
-    }
+**2. `deals`** - The central transaction table
+- Fields: `id`, `team_id` (FK), `company_id` (FK), `pipeline_stage_id` (FK), `owner_id` (FK to users), `name`, `amount`, `probability` (denormalized), `weighted_amount` (computed: amount × probability), `closing_date`, `closed_at` (nullable), `lead_source` (nullable), `description` (nullable), `is_won`, `deleted_at` (nullable for soft deletes)
+- Purpose: Tracks sales opportunities with financial data and stage progression
 
-    DEAL_CONTACT_ROLE {
-        bigint id PK
-        bigint deal_id FK
-        bigint contact_id FK
-        string role "Decision Maker, Evaluator, etc"
-        boolean is_primary
-        timestamp created_at
-        timestamp updated_at
-        unique deal_id_contact_id_role
-    }
+**3. `deal_contact_role`** - Junction table for deal-contact relationships
+- Fields: `id`, `deal_id` (FK), `contact_id` (FK), `role` (e.g., "Decision Maker"), `is_primary`
+- Constraint: Unique combination of `deal_id`, `contact_id`, and `role`
+- Purpose: Many-to-many relationships between deals and contacts with role definitions
 
-    DEAL_LINE_ITEMS {
-        bigint id PK
-        bigint deal_id FK
-        string product_name "future: product_id FK"
-        text description "nullable"
-        decimal quantity
-        decimal unit_price
-        decimal discount_rate
-        decimal line_total "computed: qty × price × (1 - discount)"
-        timestamp created_at
-        timestamp updated_at
-    }
+**4. `deal_line_items`** - Product/service breakdown for deals
+- Fields: `id`, `deal_id` (FK), `product_name`, `description` (nullable), `quantity`, `unit_price`, `discount_rate`, `line_total` (computed: qty × price × (1 - discount))
+- Purpose: Itemized deal components ensuring amount accuracy
 
-    DEAL_STAGE_HISTORY {
-        bigint id PK
-        bigint deal_id FK
-        bigint old_stage_id FK "nullable: NULL on creation"
-        bigint new_stage_id FK
-        bigint modified_by_user_id FK
-        timestamp transition_date
-        string comment "nullable, max 500 chars"
-        timestamp created_at "no updated_at: immutable"
-    }
-```
+**5. `deal_stage_history`** - Immutable audit trail
+- Fields: `id`, `deal_id` (FK), `old_stage_id` (FK, nullable for creation), `new_stage_id` (FK), `modified_by_user_id` (FK), `transition_date`, `comment` (nullable, max 500 chars), `created_at` (no `updated_at` - records are immutable)
+- Purpose: Temporal tracking of every stage transition for analytics
 
 **Key Relationships**:
 
@@ -293,20 +235,13 @@ Your CRM uses four foundational stages that align with enterprise patterns:
 
 **Key insight**: The transition from "New" to "In Progress" represents deal qualification—confirming the prospect has a genuine need, budget, and decision-making authority.
 
-**Visual Pipeline Flow**:
+**Pipeline Flow Process**:
 
-```mermaid
-graph LR
-    A[Lead Generated] -->|Qualify| B[New<br/>10% prob]
-    B -->|Budget + Need| C[In Progress<br/>50% prob]
-    C -->|Decision| D[Won<br/>100% prob]
-    C -->|Decision| E[Lost<br/>0% prob]
+The sales pipeline follows a linear progression with a decision point at the end:
 
-    style B fill:#3B82F6,stroke:#2563EB,color:#fff
-    style C fill:#F59E0B,stroke:#D97706,color:#fff
-    style D fill:#10B981,stroke:#059669,color:#fff
-    style E fill:#EF4444,stroke:#DC2626,color:#fff
-```
+1. **Lead Generated** → *Qualify* → **New** (10% probability, blue stage)
+2. **New** → *Budget + Need Confirmed* → **In Progress** (50% probability, amber stage)
+3. **In Progress** → *Decision Made* → **Won** (100% probability, green stage) OR **Lost** (0% probability, red stage)
 
 Each transition requires validation and updates the deal's probability, triggering a recalculation of the weighted forecast.
 
@@ -2310,29 +2245,30 @@ $deal->forceDelete();  // Actually removes from database, triggers cascades
 - **Audit trail**: Historical revenue tracking
 - **Compliance**: Regulatory requirements for data retention
 
-### Cascade Delete Flow Visualization
+### Cascade Delete Flow
 
-```
-Company (hard delete)
-    ├─> Deals (cascade delete)
-    │   ├─> DealContactRole (cascade delete)
-    │   ├─> DealLineItems (cascade delete)
-    │   └─> DealStageHistory (cascade delete)
-    └─> Contacts (cascade delete)
+**Company (hard delete)**:
+- Cascades to all associated Deals (which then cascade to their child records)
+  - DealContactRole records are deleted
+  - DealLineItems records are deleted
+  - DealStageHistory records are deleted
+- Cascades to all associated Contacts
 
-Deal (soft delete)
-    ├─> DealContactRole (preserved, not cascaded)
-    ├─> DealLineItems (preserved, not cascaded)
-    └─> DealStageHistory (preserved, not cascaded)
+**Deal (soft delete)**:
+- Sets `deleted_at` timestamp, hides from default queries
+- Preserves all child records (DealContactRole, DealLineItems, DealStageHistory)
+- Allows restoration with `restore()` method
 
-Deal (force delete)
-    ├─> DealContactRole (cascade delete)
-    ├─> DealLineItems (cascade delete)
-    └─> DealStageHistory (cascade delete)
+**Deal (force delete)**:
+- Permanently removes the deal from database
+- Cascades to all child records:
+  - DealContactRole records are deleted
+  - DealLineItems records are deleted
+  - DealStageHistory records are deleted (irreversible!)
 
-PipelineStage (delete attempt)
-    └─> Deals exist? BLOCK DELETE (restrict)
-```
+**PipelineStage (delete attempt)**:
+- If any deals exist using this stage: **DELETE IS BLOCKED** (restrict constraint)
+- Must first migrate all deals to another stage before deletion is allowed
 
 ### Chapter 16 Implications
 

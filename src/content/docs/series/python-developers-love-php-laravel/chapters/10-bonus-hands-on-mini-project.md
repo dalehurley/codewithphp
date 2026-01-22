@@ -67,38 +67,14 @@ By the end of this chapter, you will have created:
 
 ## Task Manager Application Architecture
 
-Here's the complete architecture of your Task Manager application:
+The Task Manager application features a dual-interface architecture where the same Laravel codebase serves both traditional web requests and modern API requests. 
 
-```mermaid
-flowchart TB
-    A[User Browser] -->|Web Request| B[Laravel App]
-    C[Mobile/SPA App] -->|API Request| B
+**Dual Interface Architecture:**
 
-    B --> D{Route Type}
-    D -->|Web| E[Web Routes<br/>routes/web.php]
-    D -->|API| F[API Routes<br/>routes/api.php]
-
-    E --> G[TaskController<br/>Blade Views]
-    F --> H[ApiTaskController<br/>JSON Responses]
-
-    G --> I[Auth Middleware<br/>Session]
-    H --> J[Sanctum Middleware<br/>API Tokens]
-
-    I --> K[Task Model]
-    J --> K
-
-    K --> L[(Database<br/>users, tasks)]
-
-    G --> M[Blade Templates<br/>HTML/CSS]
-    H --> N[API Resources<br/>JSON]
-
-    M --> O[User Browser]
-    N --> C
-
-    style B fill:#e1f5ff
-    style K fill:#e8daef
-    style L fill:#fff3cd
-```
+- **Web Interface**: Traditional server-rendered pages using Blade templates, session-based authentication, and standard web forms
+- **API Interface**: RESTful JSON API using Sanctum token authentication, perfect for mobile apps or SPAs
+- **Shared Backend**: Both interfaces use the same controllers, models, and business logic, reducing duplication
+- **Route Separation**: Web routes in `routes/web.php` and API routes in `routes/api.php` keep concerns separated
 
 **Key Features:**
 

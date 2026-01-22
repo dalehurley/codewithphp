@@ -58,21 +58,17 @@ By the end of this chapter, you will have created:
 
 ## Real-Time Chat Architecture
 
-```mermaid
-flowchart TB
-    A[User Browser] -->|WebSocket Connection| B[Laravel Reverb Server]
-    B -->|HTTP Request| C[Laravel Application]
-    C -->|Streaming API Call| D[Claude API]
-    D -->|Stream Chunks| C
-    C -->|Broadcast Events| B
-    B -->|WebSocket Push| E[All Connected Clients]
+The real-time chat system follows a multi-layer architecture where components communicate through WebSocket connections and HTTP requests:
 
-    style A fill:#e1f5ff
-    style B fill:#fff4e1
-    style C fill:#e8f5e9
-    style D fill:#fce4ec
-    style E fill:#e1f5ff
-```
+**Connection Flow**:
+1. User browsers establish WebSocket connections to the Laravel Reverb server
+2. When a user sends a message, the browser makes an HTTP request to the Laravel application
+3. Laravel initiates a streaming API call to the Claude API
+4. As Claude generates response chunks, they stream back to the Laravel application
+5. Laravel broadcasts these chunks as events through the Reverb server
+6. The Reverb server pushes updates via WebSocket to all connected clients subscribed to that conversation
+
+This architecture separates concerns effectively: the Laravel application handles business logic and API communication, Reverb manages WebSocket connections and message distribution, and the browser maintains a persistent connection for instant updates. The streaming nature ensures users see responses appear word-by-word, creating an engaging chat experience similar to ChatGPT.
 
 ## Step 1: Setup Laravel Reverb (~10 min)
 

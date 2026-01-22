@@ -252,15 +252,7 @@ Additional context, version notes, or supplementary information
 
 ### Diagrams
 
-Use Mermaid for architecture, flow, or relationship diagrams:
-
-````markdown
-```mermaid
-flowchart TB
-    A[Start] --> B[Process]
-    B --> C[End]
-```
-````
+Use text-based diagrams or tables to illustrate architecture, flow, or relationships.
 
 ````
 
@@ -406,7 +398,7 @@ Each series `index.md` must include:
 4. **What You'll Build** (deliverables)
 5. **Learning Objectives** (outcomes)
 6. **How This Series Works** (methodology)
-7. **Learning Path Overview** (mermaid diagram showing progression)
+7. **Learning Path Overview** (visual diagram showing progression)
 8. **Quick Start** (5-minute example)
 9. **Chapters** (organized by parts/sections with descriptions)
 10. **FAQ** section
