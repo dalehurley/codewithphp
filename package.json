@@ -5,27 +5,33 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "dev": "vitepress dev docs",
-    "docs:dev": "vitepress dev docs",
-    "docs:build": "NODE_OPTIONS='--max-old-space-size=7168' vitepress build docs",
-    "build": "NODE_OPTIONS='--max-old-space-size=7168' vitepress build docs",
+    "dev": "astro dev",
+    "docs:dev": "astro dev",
+    "docs:build": "astro check && astro build",
+    "build": "astro check && astro build",
     "measure-build": "node scripts/measure-build.js",
-    "preview": "vitepress preview docs"
+    "preview": "astro preview",
+    "generate-social-images": "node scripts/generate-social-images.js"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.1.18",
+    "@astrojs/check": "^0.9.6",
+    "@playwright/test": "^1.57.0",
     "autoprefixer": "^10.4.23",
     "dotenv": "^17.2.3",
-    "markdown-it-mathjax3": "^4.3.2",
     "mermaid": "^11.12.0",
     "postcss": "^8.5.6",
     "sharp": "^0.34.4",
     "sitemap": "^8.0.1",
-    "tailwindcss": "^4.1.18",
-    "vitepress": "1.6.4",
-    "vitepress-plugin-mermaid": "^2.0.17"
+    "typescript": "^5.9.3"
   },
   "dependencies": {
-    "d3-sankey": "^0.12.3"
+    "@astrojs/mdx": "^4.3.13",
+    "@astrojs/starlight": "^0.37.3",
+    "astro": "^5.16.11",
+    "d3-sankey": "^0.12.3",
+    "js-yaml": "^4.1.1",
+    "rehype-katex": "^7.0.1",
+    "rehype-mermaidjs": "^2.0.0",
+    "remark-math": "^6.0.0"
   }
 }
