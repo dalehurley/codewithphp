@@ -52,6 +52,10 @@ export function generateSocialImagePath(slug: string, frontmatter: any): string 
  * Get canonical URL for a page
  */
 export function getCanonicalUrl(slug: string): string {
+  if (!slug) {
+    return 'https://codewithphp.com/'
+  }
+
   return `https://codewithphp.com/${slug}/`
 }
 

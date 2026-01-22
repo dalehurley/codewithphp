@@ -24,10 +24,6 @@ Allow: /
 User-agent: Bytespider
 Allow: /
 
-# Disallow build artifacts
-Disallow: /.vitepress/
-Disallow: /node_modules/
-
 # Sitemap
 Sitemap: https://codewithphp.com/sitemap.xml
 

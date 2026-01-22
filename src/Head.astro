@@ -1,0 +1,87 @@
+---
+import DefaultHead from '@astrojs/starlight/components/Head.astro';
+import { getCollection } from 'astro:content';
+import {
+  extractSeriesFromPath,
+  generateKeywords,
+  generateMetaDescription,
+  generateSocialImagePath,
+  getCanonicalUrl,
+} from './lib/seo';
+import {
+  generateArticleSchema,
+  generateBreadcrumbSchema,
+  generateCourseSchema,
+  generateHowToSchema,
+  generateLearningResourceSchema,
+  generateOrganizationSchema,
+  generateWebSiteSchema,
+} from './lib/structured-data';
+
+const { title: fallbackTitle, description: fallbackDescription } = Astro.props ?? {};
+const normalizedPath = Astro.url.pathname.replace(/^\/|\/$/g, '');
+const slug = normalizedPath;
+
+const entries = await getCollection('docs');
+const entry =
+  entries.find((item) => item.slug === slug) ??
+  entries.find((item) => item.slug === (slug === '' ? 'index' : `${slug}/index`)) ??
+  entries.find((item) => item.id === slug || (slug === '' && item.id === 'index'));
+
+const frontmatter = entry?.data ?? {};
+const seriesSlug = frontmatter.series ?? extractSeriesFromPath(slug);
+const frontmatterWithSeries = { ...frontmatter, series: seriesSlug };
+
+const pageTitle = frontmatter.title ?? fallbackTitle ?? 'Code with PHP';
+const metaDescription = generateMetaDescription(
+  frontmatter.description ?? fallbackDescription,
+  entry?.body
+);
+const canonicalUrl = getCanonicalUrl(slug);
+const socialImage = generateSocialImagePath(slug, frontmatterWithSeries);
+const keywords = generateKeywords(slug, frontmatterWithSeries);
+
+const ogType = frontmatterWithSeries.chapter !== undefined ? 'article' : 'website';
+const publishedTime = frontmatterWithSeries.datePublished;
+const modifiedTime = frontmatterWithSeries.dateModified;
+
+const schemas = [
+  slug === '' || slug === 'index' ? generateWebSiteSchema() : null,
+  slug === '' || slug === 'index' ? generateOrganizationSchema() : null,
+  generateBreadcrumbSchema(slug, pageTitle),
+  generateCourseSchema(slug, pageTitle, metaDescription, frontmatterWithSeries),
+  generateArticleSchema(slug, pageTitle, metaDescription, frontmatterWithSeries),
+  generateHowToSchema(slug, pageTitle, metaDescription, frontmatterWithSeries),
+  generateLearningResourceSchema(slug, pageTitle, metaDescription, frontmatterWithSeries),
+].filter(Boolean);
+---
+
+<DefaultHead {...Astro.props} />
+
+<link rel="canonical" href={canonicalUrl} />
+<meta name="description" content={metaDescription} />
+<meta name="keywords" content={keywords.join(', ')} />
+<meta name="robots" content="index, follow, max-image-preview:large" />
+
+<meta property="og:type" content={ogType} />
+<meta property="og:title" content={pageTitle} />
+<meta property="og:description" content={metaDescription} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:image" content={socialImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={pageTitle} />
+<meta name="twitter:description" content={metaDescription} />
+<meta name="twitter:image" content={socialImage} />
+
+{publishedTime && <meta property="article:published_time" content={publishedTime} />}
+{modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
+{frontmatterWithSeries.author && (
+  <meta property="article:author" content={frontmatterWithSeries.author} />
+)}
+
+{schemas.map((schema) => (
+  <script type="application/ld+json">{JSON.stringify(schema)}</script>
+))}

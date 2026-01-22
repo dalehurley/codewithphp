@@ -25,3 +25,4 @@ GITHUB-PAGES-SETUP.md
 
 .env
 .astro/data-store.json
+.npm-cache/

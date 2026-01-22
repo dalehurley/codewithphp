@@ -395,6 +395,99 @@ function getSeriesData(seriesSlug: string): {
       ],
       audienceType: 'Intermediate PHP developers',
       keywords: ['PHP', 'algorithms', 'data structures', 'Big O', 'performance', 'optimization']
+    },
+    'build-crm-laravel-12': {
+      level: 'Intermediate',
+      workload: 'PT60H',
+      teaches: [
+        'Laravel 12 project setup',
+        'Authentication and authorization',
+        'CRM data modeling',
+        'REST API design',
+        'Queues and background jobs',
+        'Deployment and monitoring'
+      ],
+      audienceType: 'Intermediate PHP developers building real applications',
+      keywords: ['Laravel', 'CRM', 'PHP', 'SaaS', 'REST API', 'authentication', 'Eloquent']
+    },
+    'claude-php-developers': {
+      level: 'Intermediate',
+      workload: 'PT35H',
+      teaches: [
+        'Claude API fundamentals',
+        'Prompt engineering',
+        'Tool use and agents',
+        'Content generation',
+        'AI integrations in Laravel',
+        'Safety and cost controls'
+      ],
+      audienceType: 'PHP developers integrating AI features',
+      keywords: ['Claude', 'AI', 'PHP', 'LLM', 'prompting', 'automation']
+    },
+    'data-science-php-developers': {
+      level: 'Intermediate',
+      workload: 'PT35H',
+      teaches: [
+        'Data collection and cleaning',
+        'Exploratory data analysis',
+        'Machine learning in PHP',
+        'Visualization and reporting',
+        'Model deployment'
+      ],
+      audienceType: 'PHP developers learning data science',
+      keywords: ['data science', 'PHP', 'machine learning', 'data analysis', 'visualization']
+    },
+    'php-for-java-developers': {
+      level: 'Intermediate',
+      workload: 'PT20H',
+      teaches: [
+        'PHP syntax and type system',
+        'OOP in PHP vs Java',
+        'Composer and dependencies',
+        'Framework fundamentals',
+        'Security best practices'
+      ],
+      audienceType: 'Java developers transitioning to PHP',
+      keywords: ['PHP', 'Java', 'OOP', 'Laravel', 'Symfony', 'backend']
+    },
+    'php-typescript-developers': {
+      level: 'Intermediate',
+      workload: 'PT18H',
+      teaches: [
+        'Modern PHP syntax',
+        'Type system comparisons',
+        'Async patterns in PHP',
+        'Testing and code quality',
+        'Laravel foundations'
+      ],
+      audienceType: 'TypeScript developers learning PHP',
+      keywords: ['PHP', 'TypeScript', 'types', 'backend', 'Laravel']
+    },
+    'python-developers-love-php-laravel': {
+      level: 'Intermediate',
+      workload: 'PT12H',
+      teaches: [
+        'PHP vs Python concepts',
+        'Laravel productivity',
+        'Eloquent vs Django ORM',
+        'REST API development',
+        'Deployment best practices'
+      ],
+      audienceType: 'Python developers exploring PHP and Laravel',
+      keywords: ['PHP', 'Laravel', 'Python', 'Django', 'Flask', 'web development']
+    },
+    'rails-developers-love-laravel': {
+      level: 'Intermediate',
+      workload: 'PT12H',
+      teaches: [
+        'Laravel fundamentals',
+        'Ruby on Rails comparisons',
+        'Eloquent ORM',
+        'Testing and deployment',
+        'Laravel ecosystem'
+      ],
+      audienceType: 'Rails developers transitioning to Laravel',
+      keywords: ['Laravel', 'Rails', 'PHP', 'Ruby', 'MVC', 'web development']
     }
   }
   
