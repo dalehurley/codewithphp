@@ -79,29 +79,17 @@ A **distribution** describes how values are spread across a dataset. Understandi
 
 ### Common Distributions
 
-```mermaid
-flowchart TB
-    Dist[Statistical Distributions]
-    
-    Dist --> Continuous[Continuous]
-    Dist --> Discrete[Discrete]
-    
-    Continuous --> Normal[Normal/Gaussian]
-    Continuous --> Uniform[Uniform]
-    Continuous --> Exponential[Exponential]
-    
-    Discrete --> Binomial[Binomial]
-    Discrete --> Poisson[Poisson]
-    Discrete --> Bernoulli[Bernoulli]
-    
-    Normal --> |Most common| Examples1[Heights, Weights, Errors]
-    Binomial --> |Success/Failure| Examples2[Coin Flips, Yes/No]
-    Poisson --> |Events over time| Examples3[Website Visits, Defects]
-    
-    style Normal fill:#e1f5ff
-    style Binomial fill:#d4edda
-    style Poisson fill:#fff3cd
-```
+Statistical distributions fall into two main categories:
+
+**Continuous Distributions** (values can be any number):
+- **Normal/Gaussian** (most common) — Heights, weights, measurement errors
+- **Uniform** — All values equally likely
+- **Exponential** — Time between events
+
+**Discrete Distributions** (values are countable):
+- **Binomial** (success/failure outcomes) — Coin flips, yes/no responses
+- **Poisson** (events over time) — Website visits per hour, defects per batch
+- **Bernoulli** — Single trial with two outcomes
 
 ### Actions
 
@@ -925,57 +913,36 @@ Perform hypothesis tests to determine if observed differences are statistically 
 
 ### Hypothesis Testing Workflow
 
-```mermaid
-flowchart TB
-    Start[Start: Research Question]
-    
-    Start --> Formulate[Formulate Hypotheses]
-    Formulate --> |H₀: No effect<br/>H₁: Effect exists| ChooseTest
-    
-    ChooseTest{Choose Statistical Test}
-    ChooseTest --> |Comparing means<br/>2 groups| TTest[Two-Sample T-Test]
-    ChooseTest --> |Comparing means<br/>3+ groups| ANOVA[ANOVA]
-    ChooseTest --> |Comparing proportions| ZTest[Z-Test]
-    ChooseTest --> |Categorical data| ChiSquare[Chi-Square Test]
-    
-    TTest --> CheckAssumptions1[Check Assumptions:<br/>- Normality<br/>- Equal variance]
-    ANOVA --> CheckAssumptions2[Check Assumptions:<br/>- Normality<br/>- Equal variance]
-    ZTest --> CheckAssumptions3[Check Assumptions:<br/>- Large sample np≥5]
-    ChiSquare --> CheckAssumptions4[Check Assumptions:<br/>- Expected freq≥5]
-    
-    CheckAssumptions1 --> Calculate1[Calculate Test Statistic]
-    CheckAssumptions2 --> Calculate2[Calculate F-Statistic]
-    CheckAssumptions3 --> Calculate3[Calculate Z-Statistic]
-    CheckAssumptions4 --> Calculate4[Calculate χ² Statistic]
-    
-    Calculate1 --> PValue1[Calculate P-Value]
-    Calculate2 --> PValue2[Calculate P-Value]
-    Calculate3 --> PValue3[Calculate P-Value]
-    Calculate4 --> PValue4[Calculate P-Value]
-    
-    PValue1 --> Decision
-    PValue2 --> Decision
-    PValue3 --> Decision
-    PValue4 --> Decision
-    
-    Decision{P < α?}
-    Decision --> |Yes| Reject[Reject H₀<br/>Result is Significant]
-    Decision --> |No| Fail[Fail to Reject H₀<br/>No Significant Difference]
-    
-    Reject --> EffectSize[Calculate Effect Size<br/>Cohen's d or Eta²]
-    Fail --> ReportNS[Report Non-Significant<br/>with Confidence Intervals]
-    
-    EffectSize --> Interpret[Interpret Results:<br/>Statistical + Practical Significance]
-    ReportNS --> Interpret
-    
-    Interpret --> End[Conclusion & Report]
-    
-    style Start fill:#e1f5ff
-    style Decision fill:#fff3cd
-    style Reject fill:#d4edda
-    style Fail fill:#f8d7da
-    style End fill:#e1f5ff
-```
+**Step 1: Start with Research Question**
+- Formulate Hypotheses (H₀: No effect, H₁: Effect exists)
+
+**Step 2: Choose Statistical Test**
+- Comparing means (2 groups) → **Two-Sample T-Test**
+  - Check: Normality, Equal variance
+- Comparing means (3+ groups) → **ANOVA**
+  - Check: Normality, Equal variance
+- Comparing proportions → **Z-Test**
+  - Check: Large sample (np ≥ 5)
+- Categorical data → **Chi-Square Test**
+  - Check: Expected frequency ≥ 5
+
+**Step 3: Calculate Test Statistic**
+- T-Test: Calculate t-statistic
+- ANOVA: Calculate F-statistic
+- Z-Test: Calculate z-statistic
+- Chi-Square: Calculate χ² statistic
+
+**Step 4: Calculate P-Value**
+
+**Step 5: Make Decision (P < α?)**
+- **Yes (P < 0.05)** → Reject H₀ (Result is Significant)
+  - Calculate Effect Size (Cohen's d or Eta²)
+  - Interpret: Statistical + Practical Significance
+- **No (P ≥ 0.05)** → Fail to Reject H₀ (No Significant Difference)
+  - Report Non-Significant with Confidence Intervals
+  - Interpret: What this means for your research
+
+**Step 6: Conclusion & Report**
 
 ### Actions
 

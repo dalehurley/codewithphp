@@ -110,17 +110,9 @@ for ($i = 0; $i < 1000000; $i++) {
 
 ### Memory-Safe Approach
 
-```mermaid
-flowchart LR
-    A[Large Dataset] --> B[Stream/Generator]
-    B --> C[Process One Item]
-    C --> D[Output/Transform]
-    D --> E[Next Item]
-    E --> C
-    
-    style B fill:#e1f5ff
-    style C fill:#d4edda
-```
+**The Flow**: Large Dataset → Stream/Generator → Process One Item → Output/Transform → Next Item (repeat)
+
+This creates a continuous loop where each item is processed individually, then discarded before moving to the next one.
 
 **Key Principle**: Process one item at a time, never loading the entire dataset.
 
@@ -2234,27 +2226,19 @@ echo "Processed large input, produced small output\n";
 
 **When to use each approach:**
 
-```mermaid
-flowchart TD
-    A[Need to process data] --> B{Size?}
-    B -->|Small <10K rows| C[Load into array]
-    B -->|Medium 10K-1M| D{Need multiple passes?}
-    B -->|Large >1M| E[Stream/Chunk]
-    
-    D -->|Yes| F{Fits in memory?}
-    D -->|No| G[Stream once]
-    
-    F -->|Yes| C
-    F -->|No| H[Use temp files]
-    
-    E --> I{Sequential or Random?}
-    I -->|Sequential| J[Stream with generators]
-    I -->|Random/Sort| K[External sort with temp files]
-    
-    G --> L{Database?}
-    L -->|Yes| M[Keyset pagination]
-    L -->|No| J
-```
+**Small datasets (<10K rows):**
+- Load into array directly (simple and fast)
+
+**Medium datasets (10K-1M rows):**
+- Need multiple passes? 
+  - Yes, fits in memory? → Load into array
+  - Yes, doesn't fit? → Use temp files
+  - No (single pass)? → Database: keyset pagination, File: stream with generators
+
+**Large datasets (>1M rows):**
+- Stream/Chunk approach required
+- Sequential access? → Stream with generators
+- Random access or sorting? → External sort with temp files
 
 ### Performance Checklist
 

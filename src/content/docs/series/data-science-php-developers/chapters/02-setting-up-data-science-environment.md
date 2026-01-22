@@ -83,23 +83,7 @@ This approach means:
 - Your team can maintain the codebase
 - Deployment stays familiar
 
-```mermaid
-flowchart TB
-    subgraph phpLayer [PHP Layer - Control Plane]
-        Orchestration[Orchestration]
-        Ingestion[Data Ingestion]
-        Validation[Validation]
-        Delivery[Result Delivery]
-    end
-
-    subgraph pythonLayer [Python Layer - Computation]
-        Analysis[Numerical Analysis]
-        ML[Machine Learning]
-        Stats[Statistics]
-    end
-
-    phpLayer <-->|API/Files/CLI| pythonLayer
-```
+**The Architecture**: In this hybrid approach, PHP serves as the **control plane** handling orchestration, data ingestion, validation, and result delivery. Python serves as the **computation layer** for numerical analysis, machine learning, and statistical operations. The two layers communicate via APIs, files, or CLI commands.
 
 **Key takeaway**: PHP controls the workflow, Python provides specialized computation when needed.
 
@@ -435,13 +419,7 @@ PHP and Python don't naturally talk to each other. You need a bridge. There are 
 3. Python writes results to output file
 4. PHP reads and uses the results
 
-```mermaid
-flowchart LR
-    PHP[PHP Application] -->|Exports CSV| FileSystem[File System]
-    FileSystem -->|Reads Data| Python[Python Script]
-    Python -->|Writes Results| FileSystem
-    FileSystem -->|Imports Results| PHP
-```
+The workflow is straightforward: PHP Application → Exports CSV → File System → Python Script → Writes Results → File System → PHP Application reads results.
 
 **Example - PHP exports data:**
 

@@ -108,24 +108,16 @@ Understand what EDA is, why it matters, and how to approach it systematically.
 
 ### The EDA Process
 
-```mermaid
-flowchart TB
-    Start[Clean Dataset] --> Overview[1. Dataset Overview]
-    Overview --> Univariate[2. Univariate Analysis]
-    Univariate --> Bivariate[3. Bivariate Analysis]
-    Bivariate --> Multivariate[4. Multivariate Analysis]
-    Multivariate --> Insights[5. Extract Insights]
-    Insights --> Report[6. Generate Report]
-    
-    Univariate --> |Each variable| Stats[Summary Statistics]
-    Univariate --> Dist[Distributions]
-    
-    Bivariate --> |Pairs of variables| Corr[Correlations]
-    Bivariate --> Scatter[Relationships]
-    
-    Multivariate --> |All variables| Patterns[Complex Patterns]
-    Multivariate --> Segments[Segments/Clusters]
-```
+The EDA workflow follows six progressive steps:
+
+1. **Dataset Overview** → Understand size, structure, and basic characteristics
+2. **Univariate Analysis** → Examine each variable individually (summary statistics, distributions)
+3. **Bivariate Analysis** → Explore pairs of variables (correlations, relationships, scatter patterns)
+4. **Multivariate Analysis** → Analyze all variables together (complex patterns, segments/clusters)
+5. **Extract Insights** → Identify key findings and patterns
+6. **Generate Report** → Document discoveries for stakeholders
+
+Each analysis layer builds on the previous one, revealing progressively deeper patterns in your data.
 
 ### Why It Works
 

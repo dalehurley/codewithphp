@@ -77,45 +77,27 @@ By the end of this chapter, you will have created:
 
 ## Production Deployment Architecture
 
-```mermaid
-graph TB
-    A[Git Repository] --> B[CI/CD Pipeline]
-    B --> C[Build Docker Images]
-    C --> D[Run Tests]
-    D --> E{Tests Pass?}
-    E -->|Yes| F[Push to Registry]
-    E -->|No| G[Alert Developer]
-    F --> H[Deploy to Staging]
-    H --> I{Staging OK?}
-    I -->|Yes| J[Deploy to Production]
-    I -->|No| G
-    
-    J --> K[Load Balancer]
-    K --> L[PHP App Container 1]
-    K --> M[PHP App Container 2]
-    K --> N[PHP App Container N]
-    
-    L --> O[Database]
-    M --> O
-    N --> O
-    
-    L --> P[Redis Cache]
-    M --> P
-    N --> P
-    
-    Q[Monitoring] --> L
-    Q --> M
-    Q --> N
-    Q --> R[Alert System]
-    
-    S[Log Aggregation] --> L
-    S --> M
-    S --> N
-    
-    style J fill:#c8e6c9
-    style Q fill:#fff9c4
-    style O fill:#e1f5fe
-```
+**CI/CD Pipeline:**
+
+1. Git Repository → CI/CD Pipeline → Build Docker Images → Run Tests
+2. Tests Pass?
+   - **Yes** → Push to Registry → Deploy to Staging
+   - **No** → Alert Developer
+3. Staging OK?
+   - **Yes** → Deploy to Production
+   - **No** → Alert Developer
+
+**Production Infrastructure:**
+
+- **Load Balancer** distributes traffic to:
+  - PHP App Container 1, 2, ..., N (horizontally scalable)
+- All containers connect to:
+  - **Database** (shared data store)
+  - **Redis Cache** (shared caching layer)
+- **Monitoring** tracks all containers → Alert System
+- **Log Aggregation** collects logs from all containers
+
+This architecture ensures high availability (multiple containers), scalability (add more containers), and observability (monitoring + logging).
 
 ## Step 1: Containerization with Docker (~20 min)
 

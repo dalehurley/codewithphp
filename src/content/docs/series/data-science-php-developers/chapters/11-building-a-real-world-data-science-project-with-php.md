@@ -99,26 +99,14 @@ Build an intelligent recommendation system that:
 
 ### Architecture Overview
 
-```mermaid
-graph TB
-    A[User Actions] --> B[Event Tracking]
-    B --> C[Raw Data Storage]
-    C --> D[Data Pipeline]
-    D --> E[Feature Engineering]
-    E --> F[ML Model Training]
-    F --> G[Model Storage]
-    G --> H[Recommendation API]
-    H --> I[User Interface]
-    
-    D --> J[Analytics]
-    J --> K[Dashboard]
-    F --> L[Model Monitor]
-    L --> M[Alerts]
-    
-    style F fill:#e1f5fe
-    style H fill:#c8e6c9
-    style K fill:#fff9c4
-```
+**Main Data Flow:**
+User Actions → Event Tracking → Raw Data Storage → Data Pipeline → Feature Engineering → ML Model Training → Model Storage → Recommendation API → User Interface
+
+**Supporting Components:**
+- Data Pipeline → Analytics → Dashboard (for business metrics)
+- ML Model Training → Model Monitor → Alerts (for model health)
+
+This architecture separates concerns: data collection, processing, model training, and serving are independent components that can scale and fail independently.
 
 ## Step 1: Project Setup and Architecture (~15 min)
 

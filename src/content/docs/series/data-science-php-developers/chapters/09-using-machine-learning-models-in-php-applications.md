@@ -4143,77 +4143,50 @@ $predictions = $mlClient->predictBatch($messages);
 
 #### Production ML Architecture
 
-```mermaid
-graph TB
-    User[User Requests] --> Nginx[Nginx Load Balancer]
-    Nginx --> API1[ML API Instance 1]
-    Nginx --> API2[ML API Instance 2]
-    
-    API1 --> Models[(Model Files)]
-    API2 --> Models
-    
-    PHP[PHP Application] --> Nginx
-    PHP --> Redis[(Redis Cache)]
-    
-    Monitor[Model Monitor] --> Registry[(Model Registry)]
-    Monitor --> Logs[(Performance Logs)]
-    
-    Registry --> Retrain[Retraining Pipeline]
-    Retrain --> Models
-    
-    style Nginx fill:#f9f,stroke:#333,stroke-width:2px
-    style Redis fill:#ff9,stroke:#333,stroke-width:2px
-    style Models fill:#9f9,stroke:#333,stroke-width:2px
-```
+**Component Flow:**
+
+- **User Requests** → Nginx Load Balancer → ML API Instances (1, 2, etc.)
+- ML API Instances access **Model Files** (shared storage)
+- **PHP Application** → Nginx (for predictions) and Redis Cache (for caching results)
+- **Model Monitor** tracks performance → Model Registry and Performance Logs
+- **Retraining Pipeline** reads from Registry → updates Model Files
+
+**Key Components:**
+- Load balancer distributes traffic across multiple ML API instances
+- Redis caches frequent predictions for performance
+- Model monitor tracks accuracy and triggers retraining when needed
+- Model registry maintains versioned model metadata
 
 #### Model Versioning Workflow
 
-```mermaid
-graph LR
-    Train[Train Model v2] --> Evaluate[Evaluate Metrics]
-    Evaluate --> Register[Register in Registry]
-    Register --> Compare[Compare with v1]
-    Compare -->|Better| Deploy[Deploy v2]
-    Compare -->|Worse| Keep[Keep v1]
-    Deploy --> Monitor[Monitor Performance]
-    Monitor -->|Degraded| Rollback[Rollback to v1]
-    Monitor -->|Good| Production[Production v2]
-    
-    style Deploy fill:#9f9,stroke:#333,stroke-width:2px
-    style Rollback fill:#f99,stroke:#333,stroke-width:2px
-    style Production fill:#9f9,stroke:#333,stroke-width:2px
-```
+**Workflow Steps:**
+
+1. **Train Model v2** → Evaluate Metrics → Register in Registry
+2. **Compare with v1:**
+   - Better performance? → **Deploy v2**
+   - Worse performance? → **Keep v1**
+3. **Deploy v2** → Monitor Performance:
+   - Performance degraded? → **Rollback to v1**
+   - Performance good? → **Production v2** (live)
+
+This workflow ensures safe model upgrades with automatic rollback capabilities if new versions underperform.
 
 #### Request Flow with Security
 
-```mermaid
-sequenceDiagram
-    participant Client as PHP Client
-    participant LB as Load Balancer
-    participant API as ML API
-    participant Auth as API Key Check
-    participant Val as Input Validator
-    participant Model as ML Model
-    participant Cache as Redis Cache
-    
-    Client->>LB: POST /predict/spam + API Key
-    LB->>API: Forward Request
-    API->>Auth: Verify API Key
-    Auth-->>API: Valid
-    API->>Val: Validate Input
-    Val-->>API: Valid (length, type)
-    API->>Cache: Check Cache
-    alt Cache Hit
-        Cache-->>API: Return Cached Result
-        API-->>Client: Return Prediction (fast)
-    else Cache Miss
-        Cache-->>API: Not Found
-        API->>Model: Get Prediction
-        Model-->>API: Return Result
-        API->>Cache: Store in Cache (TTL=1h)
-        API-->>Client: Return Prediction
-    end
-```
+**Secured Prediction Request Flow:**
+
+1. **PHP Client** → POST /predict/spam + API Key → Load Balancer
+2. **Load Balancer** → Forward Request → ML API
+3. **ML API** → Verify API Key → API Key Check → ✓ Valid
+4. **ML API** → Validate Input → Input Validator → ✓ Valid (length, type checks)
+5. **ML API** → Check Cache → Redis Cache
+   - **Cache Hit:** Return Cached Result → Client (fast response)
+   - **Cache Miss:**
+     - Get Prediction from ML Model
+     - Store in Cache (TTL=1 hour)
+     - Return Prediction → Client
+
+This flow ensures security (API key validation), reliability (input validation), and performance (Redis caching).
 
 ### Connection to Data Science Workflow
 

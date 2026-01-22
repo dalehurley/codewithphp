@@ -81,16 +81,13 @@ Here's what data science is **NOT**:
 - ❌ It's not always about big data or complex algorithms
 - ❌ It's not magic—it's systematic problem-solving with data
 
-### The Data Science Venn Diagram
+### The Three Pillars of Data Science
 
-Think of data science as sitting at the intersection of three skills:
+Data science combines three essential skill sets:
 
-```mermaid
-graph TD
-    A[Programming Skills<br/>PHP, SQL, APIs] --> D[Data Science]
-    B[Statistical Knowledge<br/>Analysis, Patterns] --> D
-    C[Domain Expertise<br/>Business Understanding] --> D
-```
+1. **Programming Skills**: Building systems to collect, process, and analyze data (PHP, SQL, APIs)
+2. **Statistical Knowledge**: Understanding patterns, distributions, correlations, and analysis techniques
+3. **Domain Expertise**: Knowing your business context, what questions matter, and how to interpret results
 
 As a PHP developer, you already have strong programming skills. This series will help you build statistical knowledge while applying it to domains you understand (web applications, e-commerce, content management, etc.).
 
@@ -181,17 +178,16 @@ Understand the complete workflow from problem definition to production deploymen
 
 ### The Six Phases
 
-Data science projects follow a predictable lifecycle:
+Data science projects follow a predictable lifecycle with six phases:
 
-```mermaid
-flowchart LR
-    A[1. Problem<br/>Definition] --> B[2. Data<br/>Collection]
-    B --> C[3. Data<br/>Preparation]
-    C --> D[4. Exploration &<br/>Analysis]
-    D --> E[5. Modeling &<br/>Insights]
-    E --> F[6. Deployment &<br/>Monitoring]
-    F -.-> A
-```
+1. **Problem Definition** → Define goals and success criteria
+2. **Data Collection** → Gather data from databases, APIs, files, and other sources
+3. **Data Preparation** → Clean, transform, and structure the data
+4. **Exploration & Analysis** → Understand patterns, correlations, and distributions
+5. **Modeling & Insights** → Apply statistical or ML techniques to extract insights
+6. **Deployment & Monitoring** → Put solutions into production and track performance
+
+This is an iterative process—insights from monitoring often lead back to refining the problem definition.
 
 ::: info Learning Path
 We'll explore each phase in detail throughout chapters 3-12, with hands-on PHP implementations and real-world examples.
@@ -293,34 +289,7 @@ Distinguish data science from similar but distinct disciplines.
 
 ### The Landscape
 
-```mermaid
-mindmap
-  root((Data Work))
-    Data Engineering
-      ETL Pipelines
-      Data Warehouses
-      Real-time Streams
-    Data Analysis
-      Business Metrics
-      Reporting
-      Dashboards
-    Business Intelligence
-      Historical Analysis
-      KPIs
-      Executive Reports
-    Data Science
-      Predictive Models
-      Statistical Analysis
-      Experimental Design
-    Machine Learning
-      Model Training
-      Feature Engineering
-      Deep Learning
-    AI Engineering
-      LLM Integration
-      Computer Vision
-      NLP Systems
-```
+The data science ecosystem includes several related but distinct disciplines. Understanding how they differ helps you choose the right approach and communicate effectively with specialists in each field.
 
 #### Data Engineering
 
@@ -468,16 +437,11 @@ Most data science research and courses use Python/R, so finding PHP-specific res
 
 ### The Practical Solution: Hybrid Approach
 
-**Use PHP where it's strong, integrate Python where needed:**
+**Use PHP where it's strong, integrate Python where needed.** A typical hybrid workflow might look like this:
 
-```mermaid
-flowchart LR
-    A[PHP Application] -->|Collects Data| B[Database]
-    B -->|Query| C[PHP ETL]
-    C -->|Cleaned Data| D[Python ML Service]
-    D -->|Predictions| E[PHP API]
-    E -->|Results| F[Laravel App]
-```
+PHP Application → Database → PHP ETL → Python ML Service → PHP API → Laravel App
+
+In this architecture, data flows from your PHP application into a database, gets cleaned and transformed by PHP ETL processes, passes through a Python service for complex ML tasks, and returns to PHP APIs that serve results to your Laravel application.
 
 **PHP handles**:
 

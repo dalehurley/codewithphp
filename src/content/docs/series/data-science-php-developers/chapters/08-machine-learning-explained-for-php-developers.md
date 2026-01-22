@@ -73,22 +73,11 @@ Understand what machine learning really is and how it differs from traditional p
 
 ### Traditional Programming vs Machine Learning
 
-```mermaid
-flowchart LR
-    subgraph Traditional["Traditional Programming"]
-        Rules1[Rules/Logic] --> Program1[Program]
-        Data1[Input Data] --> Program1
-        Program1 --> Output1[Output]
-    end
+**Traditional Programming Flow:**
+Rules/Logic + Input Data → Program → Output
 
-    subgraph ML["Machine Learning"]
-        Data2[Training Data] --> Learning[Learning Algorithm]
-        Output2[Desired Output] --> Learning
-        Learning --> Model[Trained Model]
-        NewData[New Data] --> Model
-        Model --> Prediction[Predictions]
-    end
-```
+**Machine Learning Flow:**
+Training Data + Desired Output → Learning Algorithm → Trained Model → (receives New Data) → Predictions
 
 ### Key Differences
 
@@ -218,29 +207,29 @@ foreach ($taxCalculation['reasons'] as $reason) {
 
 ### Types of Machine Learning
 
-```mermaid
-mindmap
-  root((Machine Learning))
-    Supervised Learning
-      Classification
-        Binary
-        Multi-class
-      Regression
-        Linear
-        Non-linear
-    Unsupervised Learning
-      Clustering
-        K-Means
-        Hierarchical
-      Dimensionality Reduction
-        PCA
-        t-SNE
-    Reinforcement Learning
-      Q-Learning
-      Policy Gradient
-    Semi-Supervised
-      Combines both
-```
+Machine Learning has four main categories:
+
+**1. Supervised Learning** (learning from labeled data)
+- **Classification**: Predicting categories
+  - Binary (two classes)
+  - Multi-class (three or more classes)
+- **Regression**: Predicting continuous values
+  - Linear
+  - Non-linear
+
+**2. Unsupervised Learning** (finding patterns in unlabeled data)
+- **Clustering**: Grouping similar items
+  - K-Means
+  - Hierarchical
+- **Dimensionality Reduction**: Simplifying complex data
+  - PCA (Principal Component Analysis)
+  - t-SNE
+
+**3. Reinforcement Learning** (learning through trial and error)
+- Q-Learning
+- Policy Gradient
+
+**4. Semi-Supervised Learning** (combines labeled and unlabeled data)
 
 ### Why It Works
 
@@ -1172,24 +1161,24 @@ Understand the complete ML workflow from problem to deployment.
 
 ### ML Workflow
 
-```mermaid
-flowchart TB
-    Problem[1. Define Problem] --> Data[2. Collect Data]
-    Data --> Explore[3. Explore Data]
-    Explore --> Prepare[4. Prepare Data]
-    Prepare --> Split[5. Split Train/Test]
-    Split --> Select[6. Select Algorithm]
-    Select --> Train[7. Train Model]
-    Train --> Evaluate[8. Evaluate]
-    Evaluate --> Good{Good Enough?}
-    Good -->|No| Tune[9. Tune/Improve]
-    Tune --> Train
-    Good -->|Yes| Deploy[10. Deploy]
-    Deploy --> Monitor[11. Monitor]
-    Monitor --> Retrain{Need Retrain?}
-    Retrain -->|Yes| Data
-    Retrain -->|No| Monitor
-```
+The complete machine learning workflow follows 11 iterative steps:
+
+1. **Define Problem** → What are you trying to predict?
+2. **Collect Data** → Gather relevant training examples
+3. **Explore Data** → Understand patterns and distributions
+4. **Prepare Data** → Clean, transform, and engineer features
+5. **Split Train/Test** → Separate data for training and evaluation
+6. **Select Algorithm** → Choose appropriate ML technique
+7. **Train Model** → Fit model to training data
+8. **Evaluate** → Test performance on held-out data
+9. **Good Enough?**
+   - **No** → Tune/Improve (adjust hyperparameters, add features) → Return to Training
+   - **Yes** → Continue to Deployment
+10. **Deploy** → Put model into production
+11. **Monitor** → Track performance over time
+    - **Need Retrain?** → Yes: Return to Collect Data | No: Continue Monitoring
+
+This is an iterative, cyclical process—models require continuous improvement and retraining as data patterns change.
 
 ### Common Pitfalls
 
@@ -1237,29 +1226,11 @@ $testNormalized = normalizeUsing($test, $trainStats);
 
 ### Where PHP Fits
 
-```mermaid
-flowchart LR
-    subgraph PHP["PHP's Role"]
-        Web[Web Application]
-        API[REST API]
-        Data[Data Collection]
-        Prep[Data Preparation]
-        Integration[Model Integration]
-    end
+**The Hybrid Workflow:**
 
-    subgraph Python["Python's Role"]
-        Training[Model Training]
-        Complex[Complex Algorithms]
-        Research[Research/Experimentation]
-    end
-
-    Web --> API
-    API --> Integration
-    Data --> Prep
-    Prep --> Training
-    Training --> Integration
-    Integration --> Web
-```
+PHP handles: Web Application → REST API → Data Collection → Data Preparation
+Python handles: Model Training with Complex Algorithms and Research/Experimentation
+Then back to PHP: Model Integration → REST API → Web Application
 
 **PHP Strengths**:
 

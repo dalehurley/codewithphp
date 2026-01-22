@@ -204,25 +204,20 @@ If you got an error, don't worry—[Chapter 02](/series/data-science-php-develop
 
 ## Learning Path Overview
 
-This diagram shows the complete series progression from foundations to production, including the bonus Python deep-dive track:
+The series follows a structured progression from foundations to production:
 
-```mermaid
-flowchart TB
-    A[Part 1: Foundations<br/>Chapters 1-2] --> B[Part 2: Data Engineering<br/>Chapters 3-4]
-    B --> C[Part 3: Analysis<br/>Chapters 5-7]
-    C --> D[Part 4: ML Integration<br/>Chapters 8-9]
-    D --> E[Part 5: Visualization<br/>Chapter 10]
-    E --> F[Part 6: Production<br/>Chapters 11-12]
-    F --> G[Part 7: Python Mastery<br/>Chapters 13-20<br/>BONUS]
+**Core PHP Track (Chapters 1-12):**
 
-    style A fill:#e1f5ff
-    style B fill:#fff4e6
-    style C fill:#f0fdf4
-    style D fill:#fce7f3
-    style E fill:#ede9fe
-    style F fill:#fef3c7
-    style G fill:#e0e7ff
-```
+1. **Part 1: Foundations** (Chapters 1-2) → Understanding data science and environment setup
+2. **Part 2: Data Engineering** (Chapters 3-4) → Data collection and preparation
+3. **Part 3: Analysis** (Chapters 5-7) → Exploratory analysis, memory management, and statistics
+4. **Part 4: ML Integration** (Chapters 8-9) → Machine learning concepts and PHP integration
+5. **Part 5: Visualization** (Chapter 10) → Data visualization techniques
+6. **Part 6: Production** (Chapters 11-12) → Real-world projects and deployment
+
+**Bonus Python Mastery Track (Chapters 13-20):**
+
+7. **Part 7: Python Mastery** (BONUS) → Advanced Python integration for specialized use cases
 
 The core PHP track (Chapters 1-12) provides complete data science skills. The bonus Python track (Chapters 13-20) offers advanced capabilities for specialized use cases.
 
