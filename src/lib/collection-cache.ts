@@ -1,8 +1,10 @@
 import { getCollection } from 'astro:content';
 
 // Cache the collection entries and lookup maps to avoid reloading on every page
-let cachedEntries: Awaited<ReturnType<typeof getCollection<'docs'>>> | null = null;
-let slugLookup: Map<string, (typeof cachedEntries)[number]> | null = null;
+type DocsEntry = Awaited<ReturnType<typeof getCollection<'docs'>>>[number];
+
+let cachedEntries: DocsEntry[] | null = null;
+let slugLookup: Map<string, DocsEntry> | null = null;
 
 /**
  * Get cached collection entries. Only loads once during build.

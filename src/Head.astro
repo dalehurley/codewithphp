@@ -16,6 +16,7 @@ import {
   generateLearningResourceSchema,
   generateOrganizationSchema,
   generateWebSiteSchema,
+  type PageFrontmatter,
 } from './lib/structured-data';
 
 const { title: fallbackTitle, description: fallbackDescription } = Astro.props ?? {};
@@ -25,9 +26,14 @@ const slug = normalizedPath;
 // Use cached collection lookup to avoid loading all entries on every page
 const entry = await findEntryBySlug(slug);
 
-const frontmatter = entry?.data ?? {};
-const seriesSlug = frontmatter.series ?? extractSeriesFromPath(slug);
-const frontmatterWithSeries = { ...frontmatter, series: seriesSlug };
+type Frontmatter = PageFrontmatter & {
+  title?: string;
+  description?: string;
+};
+
+const frontmatter = (entry?.data ?? {}) as Frontmatter;
+const seriesSlug = frontmatter.series ?? extractSeriesFromPath(slug) ?? undefined;
+const frontmatterWithSeries: Frontmatter = { ...frontmatter, series: seriesSlug };
 
 const pageTitle = frontmatter.title ?? fallbackTitle ?? 'Code with PHP';
 const metaDescription = generateMetaDescription(
