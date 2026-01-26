@@ -67,6 +67,11 @@ Choose the series that matches your learning goals and experience level.
     
     [Start Learning →](/series/claude-php-developers/)
   </Card>
+  <Card title="Agentic AI for PHP Developers" icon="star">
+    Build production-grade AI agents with planning, memory, tool orchestration, and multi-agent workflows.
+
+    [Start Learning →](/series/agentic-ai-php-developers/)
+  </Card>
 </CardGrid>
 
 ## 🏗️ Build Real Projects
