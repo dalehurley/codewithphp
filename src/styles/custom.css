@@ -1,2 +1,35 @@
 /* Custom CSS for Code with PHP - Astro + Starlight */
-/* File cleared - using Starlight defaults */
+
+:root[data-sidebar-hidden] {
+  --sl-content-inline-start: 0rem;
+}
+
+@media (min-width: 50rem) {
+  :root[data-sidebar-hidden] .sidebar {
+    border-inline-end: none;
+  }
+
+  :root[data-sidebar-hidden] .sidebar-pane {
+    width: 0;
+    visibility: hidden;
+  }
+}
+
+.sl-sidebar-toggle {
+  border: 1px solid var(--sl-color-hairline-shade);
+  background: var(--sl-color-bg);
+  color: var(--sl-color-text);
+  font: inherit;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  line-height: 1.1;
+}
+
+.sl-sidebar-toggle:hover {
+  background: var(--sl-color-bg-nav);
+}
+
+.sl-sidebar-toggle:focus-visible {
+  outline: 2px solid var(--sl-color-accent);
+  outline-offset: 2px;
+}
