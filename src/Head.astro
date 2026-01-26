@@ -1,6 +1,6 @@
 ---
 import DefaultHead from '@astrojs/starlight/components/Head.astro';
-import { getCollection } from 'astro:content';
+import { findEntryBySlug } from './lib/collection-cache';
 import {
   extractSeriesFromPath,
   generateKeywords,
@@ -22,11 +22,8 @@ const { title: fallbackTitle, description: fallbackDescription } = Astro.props ?
 const normalizedPath = Astro.url.pathname.replace(/^\/|\/$/g, '');
 const slug = normalizedPath;
 
-const entries = await getCollection('docs');
-const entry =
-  entries.find((item) => item.slug === slug) ??
-  entries.find((item) => item.slug === (slug === '' ? 'index' : `${slug}/index`)) ??
-  entries.find((item) => item.id === slug || (slug === '' && item.id === 'index'));
+// Use cached collection lookup to avoid loading all entries on every page
+const entry = await findEntryBySlug(slug);
 
 const frontmatter = entry?.data ?? {};
 const seriesSlug = frontmatter.series ?? extractSeriesFromPath(slug);
@@ -83,5 +80,5 @@ const schemas = [
 )}
 
 {schemas.map((schema) => (
-  <script type="application/ld+json">{JSON.stringify(schema)}</script>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
 ))}
