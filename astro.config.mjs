@@ -47,6 +47,7 @@ export default defineConfig({
       ],
       components: {
         Head: './src/Head.astro',
+        Header: './src/components/Header.astro',
       },
       sidebar: [
         { label: 'Home', link: '/' },

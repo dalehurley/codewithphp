@@ -82,3 +82,16 @@ const schemas = [
 {schemas.map((schema) => (
   <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
 ))}
+
+<script is:inline>
+  (() => {
+    const storageKey = 'sl-sidebar-hidden';
+    try {
+      if (localStorage.getItem(storageKey) === 'true') {
+        document.documentElement.setAttribute('data-sidebar-hidden', '');
+      }
+    } catch {
+      // Ignore storage errors (e.g., private mode).
+    }
+  })();
+</script>
