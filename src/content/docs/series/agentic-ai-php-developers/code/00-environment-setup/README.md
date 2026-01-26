@@ -1,3 +1,7 @@
+---
+title: "Chapter 00: Environment Setup and Preparation - Code Examples"
+---
+
 # Chapter 00: Environment Setup and Preparation - Code Examples
 
 This directory contains the runnable examples referenced in Chapter 00.
