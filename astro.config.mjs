@@ -7,6 +7,10 @@ import rehypeKatex from 'rehype-katex';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://codewithphp.com',
+  build: {
+    // Limit concurrent page builds to reduce memory pressure
+    concurrency: 1,
+  },
   integrations: [
     starlight({
       title: 'Code with PHP',
