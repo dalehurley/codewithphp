@@ -73,6 +73,7 @@ export function extractSeriesFromPath(slug: string): string | null {
 export function getSeriesDisplayName(seriesSlug: string): string {
   const seriesNames: Record<string, string> = {
     'php-basics': 'PHP Basics',
+    'agentic-ai-php-developers': 'Agentic AI for PHP Developers',
     'ai-ml-php-developers': 'AI/ML for PHP Developers',
     'python-developers-love-php-laravel': 'Why Python Developers Will Love PHP and Laravel',
     'php-algorithms': 'Algorithms for PHP Developers',

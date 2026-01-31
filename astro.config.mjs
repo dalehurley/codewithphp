@@ -63,6 +63,17 @@ export default defineConfig({
           ],
         },
         {
+          label: 'Agentic AI for PHP Developers',
+          collapsed: true,
+          items: [
+            { label: 'Series Overview', link: '/series/agentic-ai-php-developers/' },
+            {
+              label: 'Chapters',
+              autogenerate: { directory: 'series/agentic-ai-php-developers/chapters' },
+            },
+          ],
+        },
+        {
           label: 'AI/ML for PHP Developers',
           collapsed: true,
           items: [
@@ -158,6 +169,17 @@ export default defineConfig({
             {
               label: 'Chapters',
               autogenerate: { directory: 'series/rails-developers-love-laravel/chapters' },
+            },
+          ],
+        },
+        {
+          label: 'Agentic AI for PHP Developers',
+          collapsed: true,
+          items: [
+            { label: 'Series Overview', link: '/series/agentic-ai-php-developers/' },
+            {
+              label: 'Chapters',
+              autogenerate: { directory: 'series/agentic-ai-php-developers/chapters' },
             },
           ],
         },

@@ -45,10 +45,10 @@ try {
 // Constants
 const IMAGE_WIDTH = 1200
 const IMAGE_HEIGHT = 630
-const DOCS_DIR = path.join(__dirname, '../docs')
-const OUTPUT_DIR = path.join(__dirname, '../docs/public/social')
+const DOCS_DIR = path.join(__dirname, '../src/content/docs')
+const OUTPUT_DIR = path.join(__dirname, '../public/social')
 const SERIES_DIR = path.join(DOCS_DIR, 'series')
-const CACHE_DIR = path.join(__dirname, '../docs/public/social/.cache')
+const CACHE_DIR = path.join(__dirname, '../public/social/.cache')
 const CACHE_MANIFEST = path.join(CACHE_DIR, 'manifest.json')
 
 // Background generation dimensions (3:2 ratio, then cropped)
@@ -71,6 +71,12 @@ const SERIES_COLORS = {
     secondary: '#2E5C8A',
     text: '#FFFFFF',
     overlay: 'rgba(46, 92, 138, 0.7)'
+  },
+  'agentic-ai-php-developers': {
+    primary: '#0f766e',
+    secondary: '#0b5f56',
+    text: '#FFFFFF',
+    overlay: 'rgba(15, 118, 110, 0.7)'
   },
   'python-developers-love-php-laravel': {
     primary: '#FF6B35',
@@ -575,6 +581,8 @@ function createTextLayer(title, series, chapterNum, codeSnippet = null) {
     ? 'PHP Basics' 
     : series === 'ai-ml-php-developers'
     ? 'AI/ML for PHP Developers'
+    : series === 'agentic-ai-php-developers'
+    ? 'Agentic AI for PHP Developers'
     : 'Python → Laravel'
   const chapterLabel = chapterNum !== null ? `Chapter ${chapterNum}` : ''
   

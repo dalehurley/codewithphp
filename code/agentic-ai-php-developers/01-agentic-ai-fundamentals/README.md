@@ -37,4 +37,4 @@ Trace:
 - Action: compose final response
 ```
 
-> Note: These are deterministic examples to make the agentic loop obvious. In Chapter 02, you’ll connect this loop to `claude-php-agent` for real LLM-driven planning.
+> Note: These are deterministic examples to make the agentic loop obvious. In Chapter 02, you’ll connect this loop to `claude-php/agent` for real LLM-driven planning.

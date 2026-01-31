@@ -1,17 +1,62 @@
 ---
 title: "Agentic AI for PHP Developers"
-description: "A comprehensive, hands-on series that expands the claude-php-agent tutorials into a full path from intermediate PHP developer to advanced agentic AI builder."
+description: "Build production-grade AI agents with PHP 8.4—master planning, memory, tool orchestration, and multi-agent systems."
+series: "agentic-ai-php-developers"
+difficulty: "Advanced"
+keywords: ["Agentic AI PHP", "AI Agents PHP", "Claude PHP Agent", "PHP AI Framework"]
+teaches: ["Agent architecture design", "Tool execution pipelines", "Short and long-term memory systems", "Retrieval-Augmented Generation (RAG)", "Multi-agent orchestration"]
 ---
 
 # Agentic AI for PHP Developers <span class="difficulty-badge difficulty-advanced">Advanced</span>
 
 ## Overview
 
-Welcome to **Agentic AI for PHP Developers** — a deep, project-driven series that expands the `claude-php-agent` tutorials into a complete learning path for building production-grade AI agents with PHP. You’ll move beyond basic tool calls and into real agent architectures: planning, memory, tool orchestration, guardrails, evaluation, and multi-agent systems.
+Welcome to **Agentic AI for PHP Developers** — a comprehensive, hands-on series that teaches you to build production-grade AI agents using the [`claude-php/agent`](https://github.com/claude-php/claude-php-agent) framework. This powerful PHP library provides everything you need to create intelligent agents with ReAct loops, tool orchestration, memory management, and advanced agentic patterns.
 
-This series is designed for **intermediate PHP developers** who already understand API integrations and want to become **top-tier agentic AI developers**. We’ll start with the core capabilities from the existing tutorials (agent setup, tool use, multi-step tasks), then go much further: stateful agents, retrieval pipelines, reflection loops, workflow graphs, and production deployment.
+The [`claude-php/agent`](https://github.com/claude-php/claude-php-agent) framework includes:
 
-By the end, you will have built a full agent platform: a reusable runtime, an extensible tool registry, memory and RAG layers, evaluation harnesses, and a multi-agent orchestration system that can power real products.
+- **🔄 Loop Strategies** — ReactLoop, PlanExecuteLoop, ReflectionLoop, and StreamingLoop for different task types
+- **🛠️ Tool System** — Easy tool definition, registration, and execution with JSON schema validation
+- **🧠 Memory Management** — Persistent state across agent iterations with file-based and in-memory storage
+- **🏗️ Agent Patterns** — 20+ pre-built patterns including ReAct, Hierarchical, MAKER, and Adaptive agents
+- **⚡ Production Ready** — Retry logic, error handling, logging, monitoring, and AMPHP-powered async execution
+
+This series is designed for **intermediate PHP developers** who want to master agentic AI development. You'll start with the framework fundamentals (agent setup, tool use, loop strategies), then progress to advanced patterns: stateful agents, retrieval pipelines, reflection loops, multi-agent orchestration, and production deployment.
+
+By the end, you will have built a complete agent platform using `claude-php/agent`'s powerful primitives, including custom tool registries, memory systems, RAG pipelines, evaluation harnesses, and multi-agent coordination—all production-ready and ready to power real products.
+
+## Quick Start
+
+Want to see an agentic loop in action right now? Here is a simple example using the `claude-php/agent` framework to perform a calculation with tool use:
+
+```php
+<?php
+
+use ClaudeAgents\Agent;
+use ClaudeAgents\Tools\Tool;
+use ClaudePhp\ClaudePhp;
+
+$client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
+
+// Create a simple calculator tool
+$calculator = Tool::create('calculate')
+    ->description('Perform mathematical calculations')
+    ->parameter('expression', 'string', 'Math expression to evaluate')
+    ->required('expression')
+    ->handler(fn (array $input) => eval("return {$input['expression']};"));
+
+// Create an agent with the tool
+$agent = Agent::create($client)
+    ->withTool($calculator)
+    ->withSystemPrompt('You are a helpful assistant that can perform calculations.');
+
+// Run the agent
+$result = $agent->run('What is 25 * 17 + 100?');
+
+echo $result->getAnswer(); // 525
+```
+
+Head to [Chapter 00](/series/agentic-ai-php-developers/chapters/00-environment-setup-and-preparation) to set up your full environment.
 
 ## Who This Is For
 
@@ -41,11 +86,11 @@ You should be comfortable with PHP 8.4+, REST APIs, Composer, and basic async/ba
 - **Per chapter**: 60–120 minutes
 - **Capstone**: 4–6 hours
 
-## What You’ll Build
+## What You'll Build
 
-Throughout the series, you’ll build:
+Throughout the series, you'll build:
 
-1. A **production-ready agent runtime** in PHP
+1. A **production-ready agent runtime** using `claude-php/agent`
 2. A **tool registry** with schema validation and permissioning
 3. A **conversation memory system** (short-term + long-term)
 4. A **RAG pipeline** with embeddings + retrieval
@@ -57,6 +102,7 @@ Throughout the series, you’ll build:
 
 By the end of this series, you will be able to:
 
+- Master the `claude-php-agent` framework and its agent patterns
 - Design agent architectures that go beyond single LLM calls
 - Build reliable tool execution with validation, retries, and guardrails
 - Implement memory systems and retrieval augmentation in PHP
@@ -66,7 +112,7 @@ By the end of this series, you will be able to:
 
 ## How This Series Works
 
-Each chapter takes an existing concept from the `claude-php-agent` tutorials and expands it into a production-grade approach. You’ll start with foundations, build core primitives (tools, memory, plans), then assemble those into full agent workflows. Every part includes implementation guidance, architecture diagrams, and practical exercises.
+Each chapter explores a core concept of the [`claude-php-agent`](https://github.com/claude-php/claude-php-agent) framework and shows you how to apply it in production. You'll start with foundations (agent setup, tool use, loop strategies), build core primitives (tools, memory, plans), then assemble those into full agent workflows. Every part includes implementation guidance, architecture diagrams, and practical exercises.
 
 ---
 
@@ -74,22 +120,30 @@ Each chapter takes an existing concept from the `claude-php-agent` tutorials and
 
 ### Part 0: Setup (Chapter 00)
 
-**00 — Environment Setup and Preparation**
-Install PHP, Composer, and `claude-php-agent`. Configure API keys, verify dependencies, and run a minimal agent to confirm your environment.
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/agentic-ai-php-developers/chapters/00-environment-setup-and-preparation">00 — Environment Setup and Preparation</a></h4>
+    <p style="margin-bottom: 0;">Install PHP, Composer, and <code>claude-php-agent</code>. Configure API keys, verify dependencies, and run a minimal agent to confirm your environment.</p>
+  </div>
+</div>
 
 ### Part 1: Foundations (Chapters 01–04)
 
-**01 — Agentic AI Fundamentals**
-Introduce agentic AI vs. plain LLM calls. Define agents, tools, memory, and control loops. Establish the mental model you’ll use throughout the series.
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/agentic-ai-php-developers/chapters/01-agentic-ai-fundamentals">01 — Agentic AI Fundamentals</a></h4>
+    <p style="margin-bottom: 0;">Introduce agentic AI vs. plain LLM calls. Define agents, tools, memory, and control loops. Establish the mental model you'll use throughout the series.</p>
+  </div>
+</div>
 
-**02 — Setting Up `claude-php-agent`**
-Install and configure the package, environment variables, and credentials. Build a minimal “hello agent” and understand the runtime lifecycle.
+**02 — Understanding Loop Strategies**
+Learn ReactLoop, PlanExecuteLoop, ReflectionLoop, and StreamingLoop. Understand when to use each pattern and how to customize loop behavior.
 
-**03 — Prompts, Roles, and Instruction Hierarchy**
-Go beyond simple prompts: define system vs. developer instructions, constraint layering, and how to keep agents aligned under long tasks.
+**03 — Tool System Deep Dive**
+Master the `claude-php-agent` tool system: schema validation, parameter definitions, error handling, and building production-grade tool implementations.
 
-**04 — Tool Use 101: Functions, Schemas, and Safety**
-Expand the tutorial tool examples into production: JSON schema validation, argument sanitation, timeouts, and permissioned tool access.
+**04 — Agent Configuration and Best Practices**
+Configure agents with retry logic, logging, monitoring, and error handling. Set up production-ready patterns from the start.
 
 ### Part 2: Building Core Agent Primitives (Chapters 05–08)
 
@@ -108,10 +162,10 @@ Add a retrieval layer for grounded responses. Cover chunking, indexing, and cita
 ### Part 3: Planning and Reasoning Systems (Chapters 09–12)
 
 **09 — Planning: From Tasks to Steps**
-Implement task decomposition. Generate plans, track progress, and replan when tools fail or data changes.
+Implement task decomposition using PlanExecuteLoop. Generate plans, track progress, and replan when tools fail or data changes.
 
 **10 — Reflection and Self-Review Loops**
-Introduce critique stages: check answers, validate tool outputs, and reduce mistakes with self-review prompts.
+Use ReflectionLoop for self-improvement. Check answers, validate tool outputs, and reduce mistakes with critique stages.
 
 **11 — Multi-Stage Workflows and Agent Graphs**
 Build DAG-style workflows where agents execute steps in sequence or parallel. Add orchestration with state transitions.
@@ -121,14 +175,14 @@ Add filtering, redaction, and policy enforcement. Build refusal logic and safe o
 
 ### Part 4: Multi-Agent Systems (Chapters 13–15)
 
-**13 — Role-Based Multi-Agent Architectures**
-Build a team of agents (researcher, planner, executor, reviewer). Define responsibilities and handoff rules.
+**13 — Hierarchical Agent Architectures**
+Build master-worker patterns using `claude-php-agent`'s HierarchicalAgent. Define responsibilities and handoff rules.
 
 **14 — Communication Protocols and Handoff Patterns**
 Standardize inter-agent messaging, structured outputs, and contract-driven collaboration.
 
-**15 — Conflict Resolution and Consensus**
-Handle disagreements between agents, compare outputs, and converge on final responses with voting and arbitration.
+**15 — Adaptive Agent Selection**
+Use AdaptiveAgentService for intelligent agent selection, validation, and auto-adaptation based on task analysis.
 
 ### Part 5: Production Engineering (Chapters 16–19)
 
@@ -141,8 +195,8 @@ Build offline evals, golden tests, and regression suites. Measure accuracy, cost
 **18 — Performance and Cost Optimization**
 Implement caching, batching, and model routing. Use smaller models for sub-tasks and optimize token spend.
 
-**19 — Deployment Patterns and Ops**
-Ship your agent runtime in production. Use queues, workers, concurrency limits, and graceful degradation.
+**19 — Async & Concurrent Execution**
+Leverage AMPHP for parallel tool execution, batch processing, and promise-based workflows with `claude-php-agent`.
 
 ### Part 6: Capstone (Chapter 20)
 
@@ -153,7 +207,7 @@ Combine everything into a full system: tool registry, memory, RAG, planning, and
 
 ## Next Steps
 
-This outline is the foundation. Next, we’ll convert each chapter into full, hands-on tutorials that expand the existing `claude-php-agent` guides into a complete learning path.
+Ready to start building production-grade AI agents? Head to [Chapter 00: Environment Setup and Preparation](/series/agentic-ai-php-developers/chapters/00-environment-setup-and-preparation) to install `claude-php-agent` and configure your development environment.
 
 ## Related Series
 
