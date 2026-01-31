@@ -143,8 +143,12 @@ Each chapter explores a core concept of the [`claude-php-agent`](https://github.
   </div>
 </div>
 
-**03 — Tool System Deep Dive**
-Master the `claude-php-agent` tool system: schema validation, parameter definitions, error handling, and building production-grade tool implementations.
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/agentic-ai-php-developers/chapters/03-tool-system-deep-dive">03 — Tool System Deep Dive</a></h4>
+    <p style="margin-bottom: 0;">Master schema validation, parameter definitions, error handling, and building production-grade tool implementations.</p>
+  </div>
+</div>
 
 **04 — Agent Configuration and Best Practices**
 Configure agents with retry logic, logging, monitoring, and error handling. Set up production-ready patterns from the start.
