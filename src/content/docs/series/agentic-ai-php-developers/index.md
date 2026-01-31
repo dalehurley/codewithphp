@@ -136,8 +136,12 @@ Each chapter explores a core concept of the [`claude-php-agent`](https://github.
   </div>
 </div>
 
-**02 — Understanding Loop Strategies**
-Learn ReactLoop, PlanExecuteLoop, ReflectionLoop, and StreamingLoop. Understand when to use each pattern and how to customize loop behavior.
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/agentic-ai-php-developers/chapters/02-understanding-loop-strategies">02 — Understanding Loop Strategies</a></h4>
+    <p style="margin-bottom: 0;">Learn ReactLoop, PlanExecuteLoop, ReflectionLoop, and StreamingLoop. Understand when to use each pattern and how to customize loop behavior.</p>
+  </div>
+</div>
 
 **03 — Tool System Deep Dive**
 Master the `claude-php-agent` tool system: schema validation, parameter definitions, error handling, and building production-grade tool implementations.
