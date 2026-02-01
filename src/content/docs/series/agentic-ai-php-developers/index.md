@@ -150,8 +150,12 @@ Each chapter explores a core concept of the [`claude-php-agent`](https://github.
   </div>
 </div>
 
-**04 — Agent Configuration and Best Practices**
-Configure agents with retry logic, logging, monitoring, and error handling. Set up production-ready patterns from the start.
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/agentic-ai-php-developers/chapters/04-agent-configuration-and-best-practices">04 — Agent Configuration and Best Practices</a></h4>
+    <p style="margin-bottom: 0;">Configure agents with retry logic, logging, monitoring, and error handling. Set up production-ready patterns from the start.</p>
+  </div>
+</div>
 
 ### Part 2: Building Core Agent Primitives (Chapters 05–08)
 
