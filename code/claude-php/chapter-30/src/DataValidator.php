@@ -25,7 +25,7 @@ class DataValidator
         private float $minConfidence = 0.85
     ) {
         $this->messages = $this->client->messages();
-        $this->model = 'claude-3-5-sonnet-20241022';
+        $this->model = 'claude-sonnet-4-5';
     }
 
     /**
@@ -95,7 +95,7 @@ class DataValidator
     {
         $actualType = gettype($value);
 
-        $valid = match($expectedType) {
+        $valid = match ($expectedType) {
             'string' => is_string($value),
             'int', 'integer' => is_int($value),
             'float', 'double' => is_float($value),

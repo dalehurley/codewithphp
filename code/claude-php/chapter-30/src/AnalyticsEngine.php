@@ -24,7 +24,7 @@ class AnalyticsEngine
         private LoggerInterface $logger = new NullLogger()
     ) {
         $this->messages = $this->client->messages();
-        $this->model = 'claude-3-5-sonnet-20241022';
+        $this->model = 'claude-sonnet-4-5';
     }
 
     /**
@@ -255,8 +255,8 @@ PROMPT;
         // Overall quality score
         $metrics['overall_score'] = round(
             ($metrics['completeness'] * 0.4) +
-            ($metrics['consistency'] * 0.3) +
-            ($metrics['accuracy_confidence'] * 0.3),
+                ($metrics['consistency'] * 0.3) +
+                ($metrics['accuracy_confidence'] * 0.3),
             2
         );
 
@@ -284,7 +284,8 @@ PROMPT;
             // Check for empty required-looking fields
             if (($value === null || $value === '') &&
                 (str_contains(strtolower($field), 'id') ||
-                 str_contains(strtolower($field), 'name'))) {
+                    str_contains(strtolower($field), 'name'))
+            ) {
                 $anomalies[] = [
                     'field' => $field,
                     'type' => 'missing_critical',

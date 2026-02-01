@@ -27,7 +27,7 @@ class RAGPipeline
         private LoggerInterface $logger = new NullLogger()
     ) {
         $this->messages = $this->client->messages();
-        $this->model = 'claude-3-5-sonnet-20241022';
+        $this->model = 'claude-sonnet-4-5';
     }
 
     /**
@@ -155,7 +155,6 @@ PROMPT;
             ]);
 
             return $response->content[0]->text;
-
         } catch (\Throwable $e) {
             $this->logger->error('Response generation failed', [
                 'error' => $e->getMessage()

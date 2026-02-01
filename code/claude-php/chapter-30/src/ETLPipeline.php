@@ -30,7 +30,7 @@ class ETLPipeline
         array $config = []
     ) {
         $this->messages = $this->client->messages();
-        $this->model = $config['model'] ?? 'claude-3-5-sonnet-20241022';
+        $this->model = $config['model'] ?? 'claude-sonnet-4-5';
         $this->maxTokens = $config['max_tokens'] ?? 4096;
     }
 
@@ -95,7 +95,6 @@ class ETLPipeline
                     'model' => $this->model
                 ]
             );
-
         } catch (\Throwable $e) {
             $this->logger->error('ETL pipeline failed', [
                 'error' => $e->getMessage(),
@@ -174,7 +173,7 @@ PROMPT;
      */
     private function transformData(array $data, string $format): mixed
     {
-        return match($format) {
+        return match ($format) {
             'json' => $data,
             'array' => $data,
             'csv' => $this->convertToCsv($data),
