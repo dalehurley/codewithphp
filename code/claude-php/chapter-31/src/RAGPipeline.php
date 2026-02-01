@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App;
 
 use ClaudePhp\ClaudePhp;
-use Anthropic\Resources\Messages;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -16,17 +15,17 @@ use Psr\Log\NullLogger;
  */
 class RAGPipeline
 {
-    private Messages $messages;
+    private ClaudePhp $client;
     private string $model;
 
     public function __construct(
-        private Anthropic $client,
+        ClaudePhp $client,
         private ChunkingService $chunker,
         private EmbeddingService $embedder,
         private RetrievalEngine $retriever,
         private LoggerInterface $logger = new NullLogger()
     ) {
-        $this->messages = $this->client->messages();
+        $this->client = $client;
         $this->model = 'claude-sonnet-4-5';
     }
 
@@ -141,7 +140,7 @@ Please provide a detailed answer based on the context above.
 PROMPT;
 
         try {
-            $response = $this->messages->create([
+            $response = $this->client->messages()->create([
                 'model' => $this->model,
                 'max_tokens' => $options['max_tokens'] ?? 2048,
                 'temperature' => $options['temperature'] ?? 0.7,

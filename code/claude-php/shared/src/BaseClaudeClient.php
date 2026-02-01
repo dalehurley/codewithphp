@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace CodeWithPHP\ClaudeShared;
 
 use ClaudePhp\ClaudePhp;
-use Anthropic\Contracts\MessageContract;
 
 /**
  * Base Claude client with common functionality used across all chapters
  */
 class BaseClaudeClient
 {
-    private Anthropic $client;
+    private ClaudePhp $client;
     private string $defaultModel;
     private int $defaultMaxTokens;
 
@@ -36,7 +35,7 @@ class BaseClaudeClient
         string $prompt,
         ?string $system = null,
         array $options = []
-    ): MessageContract {
+    ): object {
         return $this->client->messages()->create([
             'model' => $options['model'] ?? $this->defaultModel,
             'max_tokens' => $options['max_tokens'] ?? $this->defaultMaxTokens,

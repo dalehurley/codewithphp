@@ -31,7 +31,7 @@ try {
         echo "Question " . ($i + 1) . ": {$question}\n";
         echo "Response: ";
 
-        $stream = $client->messages()->createStreamed([
+        $stream = $client->messages()->stream([
             'model' => 'claude-sonnet-4-5',
             'max_tokens' => 300,
             'messages' => [['role' => 'user', 'content' => $question]]

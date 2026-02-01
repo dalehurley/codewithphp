@@ -23,7 +23,7 @@ try {
 
     echo "Streaming with event handling:\n\n";
 
-    $stream = $client->messages()->createStreamed([
+    $stream = $client->messages()->stream([
         'model' => 'claude-sonnet-4-5',
         'max_tokens' => 300,
         'messages' => [

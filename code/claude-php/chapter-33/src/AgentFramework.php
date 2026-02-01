@@ -11,7 +11,7 @@ class AgentFramework
     private array $agents = [];
     
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
     
     public function registerAgent(string $name, Agent $agent): void
@@ -40,7 +40,7 @@ class AgentFramework
 abstract class Agent
 {
     public function __construct(
-        protected Anthropic $client,
+        protected ClaudePhp $client,
         protected string $role
     ) {}
     

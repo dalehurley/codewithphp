@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace ClaudePhp\LaravelIntegration;
 
 use ClaudePhp\ClaudePhp;
-use Anthropic\Resources\Messages;
 use Illuminate\Contracts\Cache\Repository as CacheContract;
 use Psr\Log\LoggerInterface;
 
@@ -16,14 +15,11 @@ use Psr\Log\LoggerInterface;
  */
 class ClaudeService
 {
-    private Messages $messages;
-
     public function __construct(
-        private readonly Anthropic $client,
+        private readonly ClaudePhp $client,
         private readonly CacheContract $cache,
         private readonly LoggerInterface $logger
     ) {
-        $this->messages = $client->messages();
     }
 
     /**
@@ -50,7 +46,7 @@ class ClaudeService
             'messages_count' => is_array($messages) ? count($messages) : 1,
         ]);
 
-        $response = $this->messages->create($params);
+        $response = $this->client->messages()->create($params);
 
         $responseData = [
             'id' => $response->id,
@@ -90,7 +86,7 @@ class ClaudeService
 
         $this->logger->info('Starting Claude stream', ['model' => $params['model']]);
 
-        $stream = $this->messages->createStreamed($params);
+        $stream = $this->client->messages()->stream($params);
 
         foreach ($stream as $event) {
             if ($event->type === 'content_block_delta' &&
@@ -150,9 +146,9 @@ class ClaudeService
     }
 
     /**
-     * Get the underlying Anthropic client
+     * Get the underlying Claude PHP client
      */
-    public function client(): Anthropic
+    public function client(): ClaudePhp
     {
         return $this->client;
     }

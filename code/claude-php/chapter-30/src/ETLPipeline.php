@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App;
 
 use ClaudePhp\ClaudePhp;
-use Anthropic\Resources\Messages;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -17,19 +16,19 @@ use Psr\Log\NullLogger;
  */
 class ETLPipeline
 {
-    private Messages $messages;
+    private ClaudePhp $client;
     private string $model;
     private int $maxTokens;
 
     public function __construct(
-        private Anthropic $client,
+        ClaudePhp $client,
         private DocumentParser $parser,
         private DataValidator $validator,
         private AnalyticsEngine $analytics,
         private LoggerInterface $logger = new NullLogger(),
         array $config = []
     ) {
-        $this->messages = $this->client->messages();
+        $this->client = $client;
         $this->model = $config['model'] ?? 'claude-sonnet-4-5';
         $this->maxTokens = $config['max_tokens'] ?? 4096;
     }
@@ -123,7 +122,7 @@ Return a JSON object with all the requested fields. Ensure accuracy and complete
 If a field cannot be determined from the content, use null.
 PROMPT;
 
-        $response = $this->messages->create([
+        $response = $this->client->messages()->create([
             'model' => $this->model,
             'max_tokens' => $this->maxTokens,
             'messages' => [

@@ -4,7 +4,7 @@
     "type": "project",
     "require": {
         "php": "^8.2",
-        "claude-php/claude-3-api": "^1.0",
+        "claude-php/claude-php-sdk": "^0.5",
         "guzzlehttp/guzzle": "^7.8"
     },
     "autoload": {

@@ -1404,7 +1404,7 @@ This tutorial uses the **[Claude-PHP-SDK](https://github.com/claude-php/Claude-P
 **Installation:**
 
 ```bash
-composer require claude-php/claude-3-api
+composer require claude-php/claude-php-sdk
 ```
 
 **Key Advantages:**
@@ -1422,7 +1422,7 @@ For advanced features and lower-level control, the official Anthropic SDK is als
 - **[Claude-PHP-SDK on GitHub](https://github.com/claude-php/Claude-PHP-SDK)** — Community PHP SDK with comprehensive documentation
 - **[Official Anthropic PHP SDK](https://github.com/anthropics/anthropic-sdk-php)** — Official Anthropic SDK for PHP
 - **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
-- **[Claude-PHP-SDK on Packagist](https://packagist.org/packages/claude-php/claude-3-api)** — Composer package registry
+- **[Claude-PHP-SDK on Packagist](https://packagist.org/packages/claude-php/claude-php-sdk)** — Composer package registry
 
 ## Wrap-up
 

@@ -1733,7 +1733,7 @@ For Exercise 1, create a test suite that runs prompts at different temperatures 
 
 - **[Claude-PHP-SDK on GitHub](https://github.com/claude-php/Claude-PHP-SDK)** — The official community PHP SDK
 - **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
-- **[Claude-PHP-SDK Package](https://packagist.org/packages/claude-php/claude-3-api)** — SDK package on Packagist
+- **[Claude-PHP-SDK Package](https://packagist.org/packages/claude-php/claude-php-sdk)** — SDK package on Packagist
 
 ## Wrap-up
 

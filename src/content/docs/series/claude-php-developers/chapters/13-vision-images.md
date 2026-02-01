@@ -1606,7 +1606,7 @@ Create a `VisualSearch` class that:
 
 - **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)** — The Community PHP SDK for Claude
 - **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
-- **[PHP SDK Composer Package](https://packagist.org/packages/claude-php/claude-3-api)** — SDK package on Packagist
+- **[PHP SDK Composer Package](https://packagist.org/packages/claude-php/claude-php-sdk)** — SDK package on Packagist
 
 ## Wrap-up
 

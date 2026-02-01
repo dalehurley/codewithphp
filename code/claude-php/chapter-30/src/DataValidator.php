@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App;
 
 use ClaudePhp\ClaudePhp;
-use Anthropic\Resources\Messages;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -16,15 +15,15 @@ use Psr\Log\NullLogger;
  */
 class DataValidator
 {
-    private Messages $messages;
+    private ClaudePhp $client;
     private string $model;
 
     public function __construct(
-        private Anthropic $client,
+        ClaudePhp $client,
         private LoggerInterface $logger = new NullLogger(),
         private float $minConfidence = 0.85
     ) {
-        $this->messages = $this->client->messages();
+        $this->client = $client;
         $this->model = 'claude-sonnet-4-5';
     }
 
@@ -188,7 +187,7 @@ Return a JSON object with:
 PROMPT;
 
         try {
-            $response = $this->messages->create([
+            $response = $this->client->messages()->create([
                 'model' => $this->model,
                 'max_tokens' => 2048,
                 'messages' => [

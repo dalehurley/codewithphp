@@ -11,7 +11,7 @@ class WorkflowEngine
     private array $steps = [];
     
     public function __construct(
-        private Anthropic $client
+        private ClaudePhp $client
     ) {}
     
     public function addStep(string $name, callable $action): void

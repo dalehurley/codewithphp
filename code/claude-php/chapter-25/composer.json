@@ -6,7 +6,7 @@
         "php": "^8.2",
         "laravel/framework": "^11.0",
         "filament/filament": "^3.0",
-        "claude-php/claude-3-api": "^1.0"
+        "claude-php/claude-php-sdk": "^0.5"
     },
     "autoload": {
         "psr-4": {

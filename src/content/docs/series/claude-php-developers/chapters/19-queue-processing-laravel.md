@@ -1726,7 +1726,7 @@ $percentage = $batch->total_items > 0
 
 - **[Claude-PHP-SDK Documentation](https://github.com/claude-php/Claude-PHP-SDK)** — The official PHP SDK for Claude
 - **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
-- **[PHP SDK Composer Package](https://packagist.org/packages/claude-php/claude-3-api)** — Official package on Packagist
+- **[PHP SDK Composer Package](https://packagist.org/packages/claude-php/claude-php-sdk)** — Official package on Packagist
 
 ## Wrap-up
 

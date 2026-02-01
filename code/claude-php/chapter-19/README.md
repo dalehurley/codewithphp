@@ -42,5 +42,5 @@ php artisan queue:work
 
 - **[Claude-PHP-SDK Documentation](https://github.com/claude-php/Claude-PHP-SDK)** — Official PHP SDK for Claude
 - **[Anthropic API Documentation](https://docs.anthropic.com/)** — Complete API reference
-- **[PHP SDK on Packagist](https://packagist.org/packages/claude-php/claude-3-api)** — Composer package
+- **[PHP SDK on Packagist](https://packagist.org/packages/claude-php/claude-php-sdk)** — Composer package
 - **[Community Discord](https://discord.gg/anthropic)** — Get help and discuss

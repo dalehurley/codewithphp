@@ -1180,7 +1180,7 @@ class FactualAccuracy implements ValidationRule
 ## Further Reading
 
 - **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)** — Community SDK on GitHub
-- **[Claude-PHP-SDK Packagist](https://packagist.org/packages/claude-php/claude-3-api)** — Package details and versions
+- **[Claude-PHP-SDK Packagist](https://packagist.org/packages/claude-php/claude-php-sdk)** — Package details and versions
 - **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
 
 ## Wrap-up

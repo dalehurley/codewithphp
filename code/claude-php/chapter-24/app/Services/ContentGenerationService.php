@@ -5,19 +5,16 @@ declare(strict_types=1);
 namespace App\Services;
 
 use ClaudePhp\ClaudePhp;
-use Anthropic\Resources\Messages;
 
 class ContentGenerationService
 {
-    private Messages $messages;
+    private ClaudePhp $client;
 
     public function __construct()
     {
-        $client = new ClaudePhp(
+        $this->client = new ClaudePhp(
                 apiKey: config('services.anthropic.api_key')
             );
-
-        $this->messages = $client->messages();
     }
 
     public function generateBlogPost(
@@ -34,7 +31,7 @@ class ContentGenerationService
 
         $keywordsText = !empty($keywords) ? "\nInclude these keywords: " . implode(', ', $keywords) : '';
 
-        $response = $this->messages->create([
+        $response = $this->client->messages()->create([
             'model' => config('services.anthropic.model'),
             'max_tokens' => 4096,
             'messages' => [[
@@ -70,7 +67,7 @@ class ContentGenerationService
     ): string {
         $featuresText = "- " . implode("\n- ", $features);
 
-        $response = $this->messages->create([
+        $response = $this->client->messages()->create([
             'model' => config('services.anthropic.model'),
             'max_tokens' => 1024,
             'messages' => [[
@@ -97,7 +94,7 @@ class ContentGenerationService
                 'instagram' => 'Visual description with hashtags.',
             };
 
-            $response = $this->messages->create([
+            $response = $this->client->messages()->create([
                 'model' => config('services.anthropic.model'),
                 'max_tokens' => 500,
                 'messages' => [[
@@ -121,7 +118,7 @@ class ContentGenerationService
     ): array {
         $pointsText = "- " . implode("\n- ", $keyPoints);
 
-        $response = $this->messages->create([
+        $response = $this->client->messages()->create([
             'model' => config('services.anthropic.model'),
             'max_tokens' => 2048,
             'messages' => [[
@@ -178,7 +175,7 @@ class ContentGenerationService
     {
         $improvementsText = implode(', ', $improvements);
 
-        $response = $this->messages->create([
+        $response = $this->client->messages()->create([
             'model' => config('services.anthropic.model'),
             'max_tokens' => 4096,
             'messages' => [[
@@ -199,7 +196,7 @@ class ContentGenerationService
     {
         $keywordsText = !empty($keywords) ? "\nFocus keywords: " . implode(', ', $keywords) : '';
 
-        $response = $this->messages->create([
+        $response = $this->client->messages()->create([
             'model' => config('services.anthropic.model'),
             'max_tokens' => 500,
             'messages' => [[

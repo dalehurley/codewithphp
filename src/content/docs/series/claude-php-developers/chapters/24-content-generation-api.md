@@ -1977,7 +1977,7 @@ Laravel automatically discovers policies when they follow naming conventions (`M
 ## Further Reading
 
 - **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)** — Community resources and examples for Claude with PHP
-- **[Claude-PHP-SDK Composer Package](https://packagist.org/packages/claude-php/claude-3-api)** — Official package on Packagist
+- **[Claude-PHP-SDK Composer Package](https://packagist.org/packages/claude-php/claude-php-sdk)** — Official package on Packagist
 - **[Anthropic API Documentation](https://docs.anthropic.com)** — Complete API reference and guides
 
 ## Wrap-up

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace ClaudePhp\RealtimeChat;
 
 use ClaudePhp\ClaudePhp;
-use Anthropic\Resources\Messages;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -16,7 +15,7 @@ use Psr\Log\NullLogger;
  */
 class ChatService
 {
-    private Messages $messages;
+    private ClaudePhp $client;
     private array $conversationHistory = [];
     private int $maxHistoryLength;
 
@@ -27,11 +26,10 @@ class ChatService
         private readonly LoggerInterface $logger = new NullLogger(),
         int $maxHistoryLength = 50
     ) {
-        $client = new ClaudePhp(
+        $this->client = new ClaudePhp(
                 apiKey: $this->apiKey
             );
 
-        $this->messages = $client->messages();
         $this->maxHistoryLength = $maxHistoryLength;
     }
 
@@ -71,7 +69,7 @@ class ChatService
         if ($onChunk) {
             // Streaming mode
             $params['stream'] = true;
-            $stream = $this->messages->createStreamed($params);
+            $stream = $this->client->messages()->stream($params);
 
             foreach ($stream as $event) {
                 if ($event->type === 'content_block_delta' &&
@@ -83,7 +81,7 @@ class ChatService
             }
         } else {
             // Non-streaming mode
-            $response = $this->messages->create($params);
+            $response = $this->client->messages()->create($params);
             $fullResponse = $response->content[0]->text;
         }
 
@@ -114,7 +112,7 @@ class ChatService
             $params['system'] = $systemPrompt;
         }
 
-        $response = $this->messages->create($params);
+        $response = $this->client->messages()->create($params);
         $assistantMessage = $response->content[0]->text;
 
         $this->addToHistory($userId, 'assistant', $assistantMessage);
