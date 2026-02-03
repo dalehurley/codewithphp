@@ -17,7 +17,7 @@ In previous chapters, you've built agents that **react** to situations—they ob
 
 This is where **planning agents** come in. Unlike reactive agents that figure things out step-by-step, planning agents create a **complete plan upfront**, then execute it systematically. This pattern is ideal for multi-step workflows, complex operations, and tasks where dependencies between steps matter.
 
-The [`claude-php/agent`](https://github.com/claude-php/claude-php-agent) framework provides `PlanExecuteLoop` and `PlanExecuteAgent` for this exact purpose—agents that separate planning from execution, monitor progress, and adapt when needed.
+The [`claude-php/claude-php-agent`](https://github.com/claude-php/claude-php-agent) framework provides `PlanExecuteLoop` and `PlanExecuteAgent` for this exact purpose—agents that separate planning from execution, monitor progress, and adapt when needed.
 
 In this chapter you'll:
 
@@ -32,21 +32,21 @@ In this chapter you'll:
 **Estimated time:** ~120 minutes
 
 ::: info Framework Version
-This chapter is based on [`claude-php/agent`](https://github.com/claude-php/claude-php-agent) **v0.5+**. We'll use the framework's PlanExecuteLoop and PlanExecuteAgent extensively.
+This chapter is based on [`claude-php/claude-php-agent`](https://github.com/claude-php/claude-php-agent) **v0.5+**. We'll use the framework's PlanExecuteLoop and PlanExecuteAgent extensively.
 :::
 
 ::: info Code examples
 Complete, runnable examples for this chapter:
 
-- [`basic-plan-execute.php`](../../code/09-planning-from-tasks-to-steps/basic-plan-execute.php) — Simple plan-execute workflow
-- [`task-decomposition.php`](../../code/09-planning-from-tasks-to-steps/task-decomposition.php) — Breaking tasks into steps
-- [`step-execution-tracking.php`](../../code/09-planning-from-tasks-to-steps/step-execution-tracking.php) — Tracking execution progress
-- [`dynamic-replanning.php`](../../code/09-planning-from-tasks-to-steps/dynamic-replanning.php) — Adapting plans when steps fail
-- [`plan-with-tools.php`](../../code/09-planning-from-tasks-to-steps/plan-with-tools.php) — Planning with tool execution
-- [`ml-optimized-planning.php`](../../code/09-planning-from-tasks-to-steps/ml-optimized-planning.php) — ML-enhanced plan optimization
-- [`production-planning-system.php`](../../code/09-planning-from-tasks-to-steps/production-planning-system.php) — Complete production system
+- [`basic-plan-execute.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/09-planning-from-tasks-to-steps/basic-plan-execute.php) — Simple plan-execute workflow
+- [`task-decomposition.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/09-planning-from-tasks-to-steps/task-decomposition.php) — Breaking tasks into steps
+- [`step-execution-tracking.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/09-planning-from-tasks-to-steps/step-execution-tracking.php) — Tracking execution progress
+- [`dynamic-replanning.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/09-planning-from-tasks-to-steps/dynamic-replanning.php) — Adapting plans when steps fail
+- [`plan-with-tools.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/09-planning-from-tasks-to-steps/plan-with-tools.php) — Planning with tool execution
+- [`ml-optimized-planning.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/09-planning-from-tasks-to-steps/ml-optimized-planning.php) — ML-enhanced plan optimization
+- [`production-planning-system.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/09-planning-from-tasks-to-steps/production-planning-system.php) — Complete production system
 
-All files are in [`code/09-planning-from-tasks-to-steps/`](../../code/09-planning-from-tasks-to-steps/README.md).
+All files are in [`code/09-planning-from-tasks-to-steps/`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/09-planning-from-tasks-to-steps/README.md).
 :::
 
 ---
@@ -1229,8 +1229,8 @@ Continue to [Chapter 10](/series/agentic-ai-php-developers/chapters/10-reflectio
 
 ## Further Reading
 
-- [`claude-php/agent` PlanExecuteLoop](https://github.com/claude-php/claude-php-agent/blob/master/src/Loops/PlanExecuteLoop.php)
-- [`claude-php/agent` PlanExecuteAgent](https://github.com/claude-php/claude-php-agent/blob/master/src/Agents/PlanExecuteAgent.php)
+- [`claude-php/claude-php-agent` PlanExecuteLoop](https://github.com/claude-php/claude-php-agent/blob/master/src/Loops/PlanExecuteLoop.php)
+- [`claude-php/claude-php-agent` PlanExecuteAgent](https://github.com/claude-php/claude-php-agent/blob/master/src/Agents/PlanExecuteAgent.php)
 - [Loop Strategies Documentation](https://github.com/claude-php/claude-php-agent/blob/master/docs/loop-strategies.md)
 - [ReAct vs Plan-Execute Patterns](https://www.promptingguide.ai/techniques/react)
 - [Task Decomposition in AI Agents](https://lilianweng.github.io/posts/2023-06-23-agent/)

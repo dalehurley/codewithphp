@@ -17,7 +17,7 @@ You've built agents that **react** (Chapter 02) and agents that **plan** (Chapte
 
 This is the power of **reflection loops**. Instead of generating output once and hoping for the best, reflection agents operate in a **Generate-Reflect-Refine cycle**: they create an initial answer, evaluate its quality, and then improve it based on that evaluation. This pattern is essential for tasks where quality matters more than speed—writing, code generation, analysis, and decision-making.
 
-The [`claude-php/agent`](https://github.com/claude-php/claude-php-agent) framework provides `ReflectionLoop` for exactly this purpose: a self-improving agent that iteratively refines outputs until they meet quality thresholds.
+The [`claude-php/claude-php-agent`](https://github.com/claude-php/claude-php-agent) framework provides `ReflectionLoop` for exactly this purpose: a self-improving agent that iteratively refines outputs until they meet quality thresholds.
 
 In this chapter you'll:
 
@@ -32,22 +32,22 @@ In this chapter you'll:
 **Estimated time:** ~120 minutes
 
 ::: info Framework Version
-This chapter is based on [`claude-php/agent`](https://github.com/claude-php/claude-php-agent) **v0.5+**. We'll use ReflectionLoop extensively throughout.
+This chapter is based on [`claude-php/claude-php-agent`](https://github.com/claude-php/claude-php-agent) **v0.5+**. We'll use ReflectionLoop extensively throughout.
 :::
 
 ::: info Code examples
 Complete, runnable examples for this chapter:
 
-- [`basic-reflection.php`](../../code/10-reflection-and-self-review/basic-reflection.php) — Simple reflection loop
-- [`custom-criteria.php`](../../code/10-reflection-and-self-review/custom-criteria.php) — Custom evaluation criteria
-- [`quality-thresholds.php`](../../code/10-reflection-and-self-review/quality-thresholds.php) — Quality scoring and stopping conditions
-- [`tool-validation.php`](../../code/10-reflection-and-self-review/tool-validation.php) — Validating tool outputs
-- [`reflection-monitoring.php`](../../code/10-reflection-and-self-review/reflection-monitoring.php) — Tracking reflection metrics
-- [`code-review-agent.php`](../../code/10-reflection-and-self-review/code-review-agent.php) — Practical code review example
-- [`content-refinement.php`](../../code/10-reflection-and-self-review/content-refinement.php) — Content writing with reflection
-- [`production-reflection-system.php`](../../code/10-reflection-and-self-review/production-reflection-system.php) — Complete production system
+- [`basic-reflection.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/10-reflection-and-self-review/basic-reflection.php) — Simple reflection loop
+- [`custom-criteria.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/10-reflection-and-self-review/custom-criteria.php) — Custom evaluation criteria
+- [`quality-thresholds.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/10-reflection-and-self-review/quality-thresholds.php) — Quality scoring and stopping conditions
+- [`tool-validation.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/10-reflection-and-self-review/tool-validation.php) — Validating tool outputs
+- [`reflection-monitoring.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/10-reflection-and-self-review/reflection-monitoring.php) — Tracking reflection metrics
+- [`code-review-agent.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/10-reflection-and-self-review/code-review-agent.php) — Practical code review example
+- [`content-refinement.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/10-reflection-and-self-review/content-refinement.php) — Content writing with reflection
+- [`production-reflection-system.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/10-reflection-and-self-review/production-reflection-system.php) — Complete production system
 
-All files are in [`code/10-reflection-and-self-review/`](../../code/10-reflection-and-self-review/README.md).
+All files are in [`code/10-reflection-and-self-review/`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/10-reflection-and-self-review/README.md).
 :::
 
 ---
@@ -582,7 +582,7 @@ Let's build a complete production-grade reflection system with monitoring, loggi
 ### Implementation
 
 See the complete implementation in:
-- [`production-reflection-system.php`](../../code/10-reflection-and-self-review/production-reflection-system.php)
+- [`production-reflection-system.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/10-reflection-and-self-review/production-reflection-system.php)
 
 Key components:
 
@@ -1067,7 +1067,7 @@ After mastering individual agent patterns (React, Plan, Reflect), you'll be read
 
 ## Additional Resources
 
-- [`claude-php/agent` ReflectionLoop Documentation](https://github.com/claude-php/claude-php-agent/blob/master/docs/loop-strategies.md#3-reflectionloop)
+- [`claude-php/claude-php-agent` ReflectionLoop Documentation](https://github.com/claude-php/claude-php-agent/blob/master/docs/loop-strategies.md#3-reflectionloop)
 - [Reflection Loop Source Code](https://github.com/claude-php/claude-php-agent/blob/master/src/Loops/ReflectionLoop.php)
 - [Loop Strategies Demo](https://github.com/claude-php/claude-php-agent/blob/master/examples/loop_strategies_demo.php)
 

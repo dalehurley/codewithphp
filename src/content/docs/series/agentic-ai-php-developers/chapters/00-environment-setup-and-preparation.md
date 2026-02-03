@@ -7,21 +7,21 @@ difficulty: "Advanced"
 estimatedTime: "PT60M"
 datePublished: "2026-01-31"
 teaches: ["PHP 8.4 environment setup", "Claude Agent framework installation", "Dependency validation", "Basic agent execution"]
-keywords: ["PHP 8.4 setup", "claude-php/agent framework", "Agentic AI", "API configuration", "Redis for PHP"]
+keywords: ["PHP 8.4 setup", "claude-php/claude-php-agent framework", "Agentic AI", "API configuration", "Redis for PHP"]
 ---
 
 # Chapter 00: Environment Setup and Preparation
 
 ## Overview
 
-Before we build production-grade agentic AI systems, we need a clean, repeatable development environment. In this chapter, you’ll install the core tooling, configure your API credentials, and verify that `claude-php/agent` can run a minimal task.
+Before we build production-grade agentic AI systems, we need a clean, repeatable development environment. In this chapter, you’ll install the core tooling, configure your API credentials, and verify that `claude-php/claude-php-agent` can run a minimal task.
 
 The goal isn’t just “it works on my machine.” We’ll set up a baseline that’s safe, reproducible, and ready for queues, caching, and tool execution later in the series.
 
 ## Chapter Outline
 
 1. **Install and verify PHP + Composer**
-2. **Create a new project and install `claude-php/agent`**
+2. **Create a new project and install `claude-php/claude-php-agent`**
 3. **Configure environment variables securely**
 4. **Validate dependencies (Redis, database)**
 5. **Run a minimal agent to verify end-to-end functionality**
@@ -40,7 +40,7 @@ The goal isn’t just “it works on my machine.” We’ll set up a baseline th
 By the end of this chapter, you will have:
 
 - A working PHP 8.4+ environment
-- A fresh project with `claude-php/agent` installed
+- A fresh project with `claude-php/claude-php-agent` installed
 - Secure API key configuration
 - Verified Redis and database connectivity
 - A runnable “hello agent” script
@@ -78,7 +78,7 @@ You should see PHP 8.4+ and Composer 2.x installed.
 - **PHP version too old** — Update PHP via your package manager or use a tool like `phpbrew`.
 - **Composer missing** — Install from [getcomposer.org](https://getcomposer.org/).
 
-## Step 2: Create a Project and Install `claude-php/agent` (~10 min)
+## Step 2: Create a Project and Install `claude-php/claude-php-agent` (~10 min)
 
 ### Goal
 
@@ -89,13 +89,13 @@ Create a clean project and install the agent package.
 ```bash
 mkdir agentic-ai && cd agentic-ai
 composer init --no-interaction --name="yourname/agentic-ai"
-composer require claude-php/agent
+composer require claude-php/claude-php-agent
 composer require claude-php/claude-php-sdk
 ```
 
 ### Expected Result
 
-A new `composer.json` with both `claude-php/agent` (the agents framework) and `claude-php/claude-php-sdk` (the Claude API client) installed.
+A new `composer.json` with both `claude-php/claude-php-agent` (the agents framework) and `claude-php/claude-php-sdk` (the Claude API client) installed.
 
 ## Step 3: Configure Environment Variables (~10 min)
 
@@ -217,7 +217,7 @@ If you prefer consistent environments, create a basic Docker setup later in the 
 You now have a complete environment for the rest of the series:
 
 - PHP + Composer verified
-- `claude-php/agent` installed
+- `claude-php/claude-php-agent` installed
 - Credentials configured safely
 - Redis + database connectivity confirmed
 - A working agent script

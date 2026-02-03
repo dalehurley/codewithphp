@@ -17,7 +17,7 @@ In Chapter 05, you built production-ready tool execution pipelines. But tools al
 
 This is where **short-term memory** comes in: the ability to maintain conversation state, manage context windows, summarize long histories, and prune transcripts intelligently. Without these capabilities, your agent starts every interaction from scratch—frustrating users and wasting resources.
 
-The [`claude-php/agent`](https://github.com/claude-php/claude-php-agent) framework provides comprehensive conversation management with the `Conversation` namespace: `Session`, `Turn`, `ConversationManager`, storage adapters, and AI-powered summarizers. In this chapter, you'll learn to use these tools to build agents that maintain coherent, context-aware conversations.
+The [`claude-php/claude-php-agent`](https://github.com/claude-php/claude-php-agent) framework provides comprehensive conversation management with the `Conversation` namespace: `Session`, `Turn`, `ConversationManager`, storage adapters, and AI-powered summarizers. In this chapter, you'll learn to use these tools to build agents that maintain coherent, context-aware conversations.
 
 In this chapter you'll:
 
@@ -32,21 +32,21 @@ In this chapter you'll:
 **Estimated time:** ~120 minutes
 
 ::: info Framework Version
-This chapter is based on [`claude-php/agent`](https://github.com/claude-php/claude-php-agent) **v0.5+**. We'll use the framework's `Conversation` components extensively.
+This chapter is based on [`claude-php/claude-php-agent`](https://github.com/claude-php/claude-php-agent) **v0.5+**. We'll use the framework's `Conversation` components extensively.
 :::
 
 ::: info Code examples
 Complete, runnable examples for this chapter:
 
-- [`basic-session-management.php`](../../code/agentic-ai-php-developers/06-stateful-conversations/basic-session-management.php) — Creating and managing sessions
-- [`context-window-management.php`](../../code/agentic-ai-php-developers/06-stateful-conversations/context-window-management.php) — Context window strategies
-- [`ai-summarization.php`](../../code/agentic-ai-php-developers/06-stateful-conversations/ai-summarization.php) — AI-powered conversation summarization
-- [`transcript-pruning.php`](../../code/agentic-ai-php-developers/06-stateful-conversations/transcript-pruning.php) — Intelligent transcript pruning
-- [`persistent-storage.php`](../../code/agentic-ai-php-developers/06-stateful-conversations/persistent-storage.php) — File-based session persistence
-- [`stateful-agent-complete.php`](../../code/agentic-ai-php-developers/06-stateful-conversations/stateful-agent-complete.php) — Complete stateful agent implementation
-- [`multi-user-conversations.php`](../../code/agentic-ai-php-developers/06-stateful-conversations/multi-user-conversations.php) — Multi-user conversation handling
+- [`basic-session-management.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/06-stateful-conversations/basic-session-management.php) — Creating and managing sessions
+- [`context-window-management.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/06-stateful-conversations/context-window-management.php) — Context window strategies
+- [`ai-summarization.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/06-stateful-conversations/ai-summarization.php) — AI-powered conversation summarization
+- [`transcript-pruning.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/06-stateful-conversations/transcript-pruning.php) — Intelligent transcript pruning
+- [`persistent-storage.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/06-stateful-conversations/persistent-storage.php) — File-based session persistence
+- [`stateful-agent-complete.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/06-stateful-conversations/stateful-agent-complete.php) — Complete stateful agent implementation
+- [`multi-user-conversations.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/06-stateful-conversations/multi-user-conversations.php) — Multi-user conversation handling
 
-All files are in [`code/agentic-ai-php-developers/06-stateful-conversations/`](../../code/agentic-ai-php-developers/06-stateful-conversations/README.md).
+All files are in [`code/agentic-ai-php-developers/06-stateful-conversations/`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/06-stateful-conversations/README.md).
 :::
 
 ---
@@ -1305,7 +1305,7 @@ Continue to [Chapter 07](/series/agentic-ai-php-developers/chapters/07-long-term
 
 ## Further Reading
 
-- [`claude-php/agent` Conversation Components](https://github.com/claude-php/claude-php-agent/tree/master/src/Conversation)
+- [`claude-php/claude-php-agent` Conversation Components](https://github.com/claude-php/claude-php-agent/tree/master/src/Conversation)
 - [Claude API Context Window Management](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/long-context-tips)
 - [Conversation Memory in AI Systems](https://arxiv.org/abs/2304.03442)
 - [Session Management Best Practices](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html)

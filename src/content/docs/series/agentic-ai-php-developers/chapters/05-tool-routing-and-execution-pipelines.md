@@ -30,21 +30,21 @@ In this chapter you'll:
 **Estimated time:** ~120 minutes
 
 ::: info Framework Version
-This chapter is based on [`claude-php/agent`](https://github.com/claude-php/claude-php-agent) **v0.5+**. We'll build on top of the framework's existing patterns and show you how to extend them.
+This chapter is based on [`claude-php/claude-php-agent`](https://github.com/claude-php/claude-php-agent) **v0.5+**. We'll build on top of the framework's existing patterns and show you how to extend them.
 :::
 
 ::: info Code examples
 Complete, runnable examples for this chapter:
 
-- [`tool-router.php`](../../code/agentic-ai-php-developers/05-tool-routing/tool-router.php) — Tool routing and dispatching
-- [`execution-pipeline.php`](../../code/agentic-ai-php-developers/05-tool-routing/execution-pipeline.php) — Complete execution pipeline
-- [`error-standardization.php`](../../code/agentic-ai-php-developers/05-tool-routing/error-standardization.php) — Standardized error responses
-- [`retry-with-idempotency.php`](../../code/agentic-ai-php-developers/05-tool-routing/retry-with-idempotency.php) — Retry logic with idempotency keys
-- [`execution-logging.php`](../../code/agentic-ai-php-developers/05-tool-routing/execution-logging.php) — Comprehensive logging patterns
-- [`parallel-execution.php`](../../code/agentic-ai-php-developers/05-tool-routing/parallel-execution.php) — Concurrent tool execution
-- [`production-pipeline.php`](../../code/agentic-ai-php-developers/05-tool-routing/production-pipeline.php) — Complete production setup
+- [`tool-router.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/05-tool-routing/tool-router.php) — Tool routing and dispatching
+- [`execution-pipeline.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/05-tool-routing/execution-pipeline.php) — Complete execution pipeline
+- [`error-standardization.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/05-tool-routing/error-standardization.php) — Standardized error responses
+- [`retry-with-idempotency.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/05-tool-routing/retry-with-idempotency.php) — Retry logic with idempotency keys
+- [`execution-logging.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/05-tool-routing/execution-logging.php) — Comprehensive logging patterns
+- [`parallel-execution.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/05-tool-routing/parallel-execution.php) — Concurrent tool execution
+- [`production-pipeline.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/05-tool-routing/production-pipeline.php) — Complete production setup
 
-All files are in [`code/agentic-ai-php-developers/05-tool-routing/`](../../code/agentic-ai-php-developers/05-tool-routing/README.md).
+All files are in [`code/agentic-ai-php-developers/05-tool-routing/`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/05-tool-routing/README.md).
 :::
 
 ---
@@ -1203,8 +1203,8 @@ Continue to [Chapter 06](/series/agentic-ai-php-developers/chapters/06-stateful-
 
 ## Further Reading
 
-- [`claude-php/agent` ParallelToolExecutor](https://github.com/claude-php/claude-php-agent/blob/master/src/Async/ParallelToolExecutor.php)
-- [`claude-php/agent` ErrorHandler](https://github.com/claude-php/claude-php-agent/blob/master/src/Helpers/ErrorHandler.php)
+- [`claude-php/claude-php-agent` ParallelToolExecutor](https://github.com/claude-php/claude-php-agent/blob/master/src/Async/ParallelToolExecutor.php)
+- [`claude-php/claude-php-agent` ErrorHandler](https://github.com/claude-php/claude-php-agent/blob/master/src/Helpers/ErrorHandler.php)
 - [Idempotency in Distributed Systems](https://www.ietf.org/rfc/rfc7231.html#section-4.2.2)
 - [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
 - [AMPHP: Asynchronous PHP](https://amphp.org/)

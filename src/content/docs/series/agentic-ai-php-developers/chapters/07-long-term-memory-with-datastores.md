@@ -17,7 +17,7 @@ In Chapter 06, you built agents with short-term memory that could maintain coher
 
 This is where **long-term memory** comes in: the ability to store and retrieve information persistently, semantically, and efficiently. Unlike short-term memory (which keeps recent conversation context), long-term memory is about **knowledge retention**, **semantic recall**, and **cross-session persistence**.
 
-The [`claude-php/agent`](https://github.com/claude-php/claude-php-agent) framework provides comprehensive long-term memory capabilities through `EntityMemory`, `ConversationKGMemory`, `VectorStore`, and `MemoryManagerAgent`. In this chapter, you'll learn to design memory systems that scale, retrieve the right information at the right time, and build agents that truly remember.
+The [`claude-php/claude-php-agent`](https://github.com/claude-php/claude-php-agent) framework provides comprehensive long-term memory capabilities through `EntityMemory`, `ConversationKGMemory`, `VectorStore`, and `MemoryManagerAgent`. In this chapter, you'll learn to design memory systems that scale, retrieve the right information at the right time, and build agents that truly remember.
 
 In this chapter you'll:
 
@@ -32,22 +32,22 @@ In this chapter you'll:
 **Estimated time:** ~120 minutes
 
 ::: info Framework Version
-This chapter is based on [`claude-php/agent`](https://github.com/claude-php/claude-php-agent) **v0.5+**. We'll use the framework's memory components and RAG systems extensively.
+This chapter is based on [`claude-php/claude-php-agent`](https://github.com/claude-php/claude-php-agent) **v0.5+**. We'll use the framework's memory components and RAG systems extensively.
 :::
 
 ::: info Code examples
 Complete, runnable examples for this chapter:
 
-- [`memory-schema-design.php`](../../code/agentic-ai-php-developers/07-long-term-memory/memory-schema-design.php) — Database schema for long-term memory
-- [`basic-memory-storage.php`](../../code/agentic-ai-php-developers/07-long-term-memory/basic-memory-storage.php) — Storing and retrieving memories
-- [`embedding-semantic-search.php`](../../code/agentic-ai-php-developers/07-long-term-memory/embedding-semantic-search.php) — Semantic search with embeddings
-- [`relevance-scoring.php`](../../code/agentic-ai-php-developers/07-long-term-memory/relevance-scoring.php) — Relevance scoring algorithms
-- [`entity-memory-tracking.php`](../../code/agentic-ai-php-developers/07-long-term-memory/entity-memory-tracking.php) — Entity extraction and tracking
-- [`knowledge-graph-memory.php`](../../code/agentic-ai-php-developers/07-long-term-memory/knowledge-graph-memory.php) — Knowledge graph for relationships
-- [`memory-lifecycle-management.php`](../../code/agentic-ai-php-developers/07-long-term-memory/memory-lifecycle-management.php) — Memory pruning and maintenance
-- [`production-memory-system.php`](../../code/agentic-ai-php-developers/07-long-term-memory/production-memory-system.php) — Complete production memory system
+- [`memory-schema-design.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/07-long-term-memory/memory-schema-design.php) — Database schema for long-term memory
+- [`basic-memory-storage.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/07-long-term-memory/basic-memory-storage.php) — Storing and retrieving memories
+- [`embedding-semantic-search.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/07-long-term-memory/embedding-semantic-search.php) — Semantic search with embeddings
+- [`relevance-scoring.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/07-long-term-memory/relevance-scoring.php) — Relevance scoring algorithms
+- [`entity-memory-tracking.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/07-long-term-memory/entity-memory-tracking.php) — Entity extraction and tracking
+- [`knowledge-graph-memory.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/07-long-term-memory/knowledge-graph-memory.php) — Knowledge graph for relationships
+- [`memory-lifecycle-management.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/07-long-term-memory/memory-lifecycle-management.php) — Memory pruning and maintenance
+- [`production-memory-system.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/07-long-term-memory/production-memory-system.php) — Complete production memory system
 
-All files are in [`code/agentic-ai-php-developers/07-long-term-memory/`](../../code/agentic-ai-php-developers/07-long-term-memory/README.md).
+All files are in [`code/agentic-ai-php-developers/07-long-term-memory/`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/07-long-term-memory/README.md).
 :::
 
 ---
@@ -1658,8 +1658,8 @@ Continue to [Chapter 08](/series/agentic-ai-php-developers/chapters/08-retrieval
 
 ## Further Reading
 
-- [`claude-php/agent` Memory Components](https://github.com/claude-php/claude-php-agent/tree/master/src/Memory)
-- [`claude-php/agent` RAG System](https://github.com/claude-php/claude-php-agent/tree/master/src/RAG)
+- [`claude-php/claude-php-agent` Memory Components](https://github.com/claude-php/claude-php-agent/tree/master/src/Memory)
+- [`claude-php/claude-php-agent` RAG System](https://github.com/claude-php/claude-php-agent/tree/master/src/RAG)
 - [Vector Databases for AI](https://www.pinecone.io/learn/vector-database/)
 - [Embeddings for Semantic Search](https://www.voyageai.com/blog/embeddings-for-semantic-search)
 - [Knowledge Graphs in AI Systems](https://neo4j.com/developer/graph-data-science/)

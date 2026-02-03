@@ -13,7 +13,7 @@ estimatedTime: "PT90M"
 
 ## Overview
 
-Tools are the hands and eyes of your agent—they let it interact with the real world: read files, query databases, call APIs, perform calculations. In [`claude-php/agent`](https://github.com/claude-php/claude-php-agent), tools are first-class citizens with a powerful fluent API, JSON schema validation, structured error handling, and production-ready patterns.
+Tools are the hands and eyes of your agent—they let it interact with the real world: read files, query databases, call APIs, perform calculations. In [`claude-php/claude-php-agent`](https://github.com/claude-php/claude-php-agent), tools are first-class citizens with a powerful fluent API, JSON schema validation, structured error handling, and production-ready patterns.
 
 In Chapter 01, you learned that tools extend agent capabilities beyond text generation. In Chapter 02, you saw how loops orchestrate tool calls. Now we'll master the tool system itself: how to define robust schemas, validate inputs, handle errors gracefully, and build tools that are reliable enough for production.
 
@@ -29,28 +29,28 @@ In this chapter you'll:
 **Estimated time:** ~90 minutes
 
 ::: info Framework Version
-This chapter is based on [`claude-php/agent`](https://github.com/claude-php/claude-php-agent) **v0.5+**. All code examples are tested against the actual framework source.
+This chapter is based on [`claude-php/claude-php-agent`](https://github.com/claude-php/claude-php-agent) **v0.5+**. All code examples are tested against the actual framework source.
 :::
 
 ::: info Code examples
 Complete, runnable examples for this chapter:
 
-- [`basic-tool.php`](../../code/agentic-ai-php-developers/03-tool-system/basic-tool.php) — Simple tool definition and execution
-- [`parameter-types.php`](../../code/agentic-ai-php-developers/03-tool-system/parameter-types.php) — String, number, boolean, array parameters
-- [`validation-patterns.php`](../../code/agentic-ai-php-developers/03-tool-system/validation-patterns.php) — Input validation and schema errors
-- [`error-handling.php`](../../code/agentic-ai-php-developers/03-tool-system/error-handling.php) — ToolResult patterns and exception handling
-- [`production-tool.php`](../../code/agentic-ai-php-developers/03-tool-system/production-tool.php) — Complete production-ready tool
-- [`tool-registry.php`](../../code/agentic-ai-php-developers/03-tool-system/tool-registry.php) — Managing multiple tools
-- [`builtin-tools.php`](../../code/agentic-ai-php-developers/03-tool-system/builtin-tools.php) — Using framework built-in tools
+- [`basic-tool.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/03-tool-system/basic-tool.php) — Simple tool definition and execution
+- [`parameter-types.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/03-tool-system/parameter-types.php) — String, number, boolean, array parameters
+- [`validation-patterns.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/03-tool-system/validation-patterns.php) — Input validation and schema errors
+- [`error-handling.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/03-tool-system/error-handling.php) — ToolResult patterns and exception handling
+- [`production-tool.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/03-tool-system/production-tool.php) — Complete production-ready tool
+- [`tool-registry.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/03-tool-system/tool-registry.php) — Managing multiple tools
+- [`builtin-tools.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/03-tool-system/builtin-tools.php) — Using framework built-in tools
 
-All files are in [`code/agentic-ai-php-developers/03-tool-system/`](../../code/agentic-ai-php-developers/03-tool-system/README.md).
+All files are in [`code/agentic-ai-php-developers/03-tool-system/`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/03-tool-system/README.md).
 :::
 
 ---
 
 ## The Tool Lifecycle
 
-Every tool in `claude-php/agent` follows a predictable lifecycle:
+Every tool in `claude-php/claude-php-agent` follows a predictable lifecycle:
 
 ```text
 1. DEFINITION → Tool::create('name')
@@ -117,7 +117,7 @@ The fluent pattern makes tool definitions:
 
 ## Parameter Types and Schema
 
-`claude-php/agent` supports the full JSON Schema type system. Each parameter type has validation rules and helper methods.
+`claude-php/claude-php-agent` supports the full JSON Schema type system. Each parameter type has validation rules and helper methods.
 
 ### String Parameters
 
@@ -1390,7 +1390,7 @@ $logger->debug('Tool schema', ['schema' => $schema]);
 
 ## Wrap-up
 
-Congratulations! You've mastered the tool system in `claude-php/agent`. You now understand:
+Congratulations! You've mastered the tool system in `claude-php/claude-php-agent`. You now understand:
 
 - ✓ How to define tools with the fluent builder API
 - ✓ All parameter types and schema validation rules
@@ -1429,7 +1429,7 @@ You'll take the tools you've built and wrap them in a production-ready agent run
 
 To deepen your understanding of tools and validation:
 
-- [claude-php/agent Tool Documentation](https://github.com/claude-php/claude-php-agent#tools) — Official framework docs
+- [claude-php/claude-php-agent Tool Documentation](https://github.com/claude-php/claude-php-agent#tools) — Official framework docs
 - [JSON Schema Specification](https://json-schema.org/) — Schema validation rules
 - [JSON Schema Validation Guide](https://json-schema.org/understanding-json-schema/) — Understanding schema design
 - [PSR-3: Logger Interface](https://www.php-fig.org/psr/psr-3/) — Standard logging interface

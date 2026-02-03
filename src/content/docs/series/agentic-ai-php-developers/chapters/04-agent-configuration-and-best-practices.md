@@ -13,7 +13,7 @@ estimatedTime: "PT90M"
 
 ## Overview
 
-A well-configured agent is the difference between a prototype and a production system. In [`claude-php/agent`](https://github.com/claude-php/claude-php-agent), configuration controls everything from retry behavior and timeout limits to logging verbosity and model selection. Getting these settings right from the start saves debugging time and ensures your agents behave predictably under load.
+A well-configured agent is the difference between a prototype and a production system. In [`claude-php/claude-php-agent`](https://github.com/claude-php/claude-php-agent), configuration controls everything from retry behavior and timeout limits to logging verbosity and model selection. Getting these settings right from the start saves debugging time and ensures your agents behave predictably under load.
 
 In Chapters 01–03, you learned the fundamentals: agentic patterns, loop strategies, and tool design. Now we'll focus on making your agents production-ready. You'll master configuration APIs, implement robust retry logic, add structured logging, handle errors gracefully, and build agents that are observable, maintainable, and reliable.
 
@@ -29,28 +29,28 @@ In this chapter you'll:
 **Estimated time:** ~90 minutes
 
 ::: info Framework Version
-This chapter is based on [`claude-php/agent`](https://github.com/claude-php/claude-php-agent) **v0.5+**. Configuration patterns are tested against the actual framework.
+This chapter is based on [`claude-php/claude-php-agent`](https://github.com/claude-php/claude-php-agent) **v0.5+**. Configuration patterns are tested against the actual framework.
 :::
 
 ::: info Code examples
 Complete, runnable examples for this chapter:
 
-- [`basic-configuration.php`](../../code/agentic-ai-php-developers/04-agent-configuration/basic-configuration.php) — Essential agent settings
-- [`retry-strategies.php`](../../code/agentic-ai-php-developers/04-agent-configuration/retry-strategies.php) — Exponential backoff and jitter
-- [`structured-logging.php`](../../code/agentic-ai-php-developers/04-agent-configuration/structured-logging.php) — PSR-3 logging integration
-- [`error-handling.php`](../../code/agentic-ai-php-developers/04-agent-configuration/error-handling.php) — Exception handling patterns
-- [`circuit-breaker.php`](../../code/agentic-ai-php-developers/04-agent-configuration/circuit-breaker.php) — Fault tolerance patterns
-- [`production-agent.php`](../../code/agentic-ai-php-developers/04-agent-configuration/production-agent.php) — Full production-ready setup
-- [`monitoring-integration.php`](../../code/agentic-ai-php-developers/04-agent-configuration/monitoring-integration.php) — Metrics and observability
+- [`basic-configuration.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/04-agent-configuration/basic-configuration.php) — Essential agent settings
+- [`retry-strategies.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/04-agent-configuration/retry-strategies.php) — Exponential backoff and jitter
+- [`structured-logging.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/04-agent-configuration/structured-logging.php) — PSR-3 logging integration
+- [`error-handling.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/04-agent-configuration/error-handling.php) — Exception handling patterns
+- [`circuit-breaker.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/04-agent-configuration/circuit-breaker.php) — Fault tolerance patterns
+- [`production-agent.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/04-agent-configuration/production-agent.php) — Full production-ready setup
+- [`monitoring-integration.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/04-agent-configuration/monitoring-integration.php) — Metrics and observability
 
-All files are in [`code/agentic-ai-php-developers/04-agent-configuration/`](../../code/agentic-ai-php-developers/04-agent-configuration/README.md).
+All files are in [`code/agentic-ai-php-developers/04-agent-configuration/`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/04-agent-configuration/README.md).
 :::
 
 ---
 
 ## Agent Configuration Fundamentals
 
-Every agent in `claude-php/agent` is built using a fluent configuration API. Understanding the available options and their defaults helps you make informed choices.
+Every agent in `claude-php/claude-php-agent` is built using a fluent configuration API. Understanding the available options and their defaults helps you make informed choices.
 
 ### Core Configuration Options
 
@@ -101,7 +101,7 @@ Choosing the right model and parameters affects performance, cost, and output qu
 
 ### Model Options
 
-The `claude-php/agent` framework supports all Claude models:
+The `claude-php/claude-php-agent` framework supports all Claude models:
 
 ```php
 // Sonnet 4.5 (default) — Best balance of performance and cost
@@ -336,7 +336,7 @@ Logs are your window into agent behavior. Structured logging makes debugging, mo
 
 ### PSR-3 Logger Integration
 
-`claude-php/agent` supports [PSR-3](https://www.php-fig.org/psr/psr-3/) loggers (Monolog, etc.):
+`claude-php/claude-php-agent` supports [PSR-3](https://www.php-fig.org/psr/psr-3/) loggers (Monolog, etc.):
 
 ```php
 use ClaudeAgents\Agent;

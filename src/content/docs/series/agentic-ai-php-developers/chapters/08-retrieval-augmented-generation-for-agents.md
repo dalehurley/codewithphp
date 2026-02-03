@@ -17,7 +17,7 @@ In Chapter 07, you built long-term memory systems that let agents store and reca
 
 This is where **Retrieval-Augmented Generation (RAG)** comes in: the ability to retrieve relevant information from external sources and use it to generate accurate, grounded, cited responses. RAG is the cornerstone of modern AI applications—from customer support bots to research assistants to documentation Q&A systems.
 
-The [`claude-php/agent`](https://github.com/claude-php/claude-php-agent) framework provides a complete RAG system with `RAGPipeline`, `RAGAgent`, document loaders, chunking strategies, vector stores, and retrieval algorithms. In this chapter, you'll learn to build production-grade RAG systems that reduce hallucinations, cite sources, and scale to massive knowledge bases.
+The [`claude-php/claude-php-agent`](https://github.com/claude-php/claude-php-agent) framework provides a complete RAG system with `RAGPipeline`, `RAGAgent`, document loaders, chunking strategies, vector stores, and retrieval algorithms. In this chapter, you'll learn to build production-grade RAG systems that reduce hallucinations, cite sources, and scale to massive knowledge bases.
 
 In this chapter you'll:
 
@@ -32,22 +32,22 @@ In this chapter you'll:
 **Estimated time:** ~120 minutes
 
 ::: info Framework Version
-This chapter is based on [`claude-php/agent`](https://github.com/claude-php/claude-php-agent) **v0.5+**. We'll use the framework's RAG namespace and components extensively.
+This chapter is based on [`claude-php/claude-php-agent`](https://github.com/claude-php/claude-php-agent) **v0.5+**. We'll use the framework's RAG namespace and components extensively.
 :::
 
 ::: info Code examples
 Complete, runnable examples for this chapter:
 
-- [`basic-rag-pipeline.php`](../../code/agentic-ai-php-developers/08-retrieval-augmented-generation/basic-rag-pipeline.php) — Simple RAG pipeline with keyword retrieval
-- [`document-chunking-strategies.php`](../../code/agentic-ai-php-developers/08-retrieval-augmented-generation/document-chunking-strategies.php) — Different chunking approaches
-- [`semantic-vector-search.php`](../../code/agentic-ai-php-developers/08-retrieval-augmented-generation/semantic-vector-search.php) — Embedding-based semantic retrieval
-- [`citation-generation.php`](../../code/agentic-ai-php-developers/08-retrieval-augmented-generation/citation-generation.php) — Citation-style response generation
-- [`query-transformation.php`](../../code/agentic-ai-php-developers/08-retrieval-augmented-generation/query-transformation.php) — Query transformation techniques
-- [`reranking-results.php`](../../code/agentic-ai-php-developers/08-retrieval-augmented-generation/reranking-results.php) — Reranking for better relevance
-- [`document-loaders.php`](../../code/agentic-ai-php-developers/08-retrieval-augmented-generation/document-loaders.php) — Loading documents from various sources
-- [`production-rag-system.php`](../../code/agentic-ai-php-developers/08-retrieval-augmented-generation/production-rag-system.php) — Complete production RAG system
+- [`basic-rag-pipeline.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/08-retrieval-augmented-generation/basic-rag-pipeline.php) — Simple RAG pipeline with keyword retrieval
+- [`document-chunking-strategies.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/08-retrieval-augmented-generation/document-chunking-strategies.php) — Different chunking approaches
+- [`semantic-vector-search.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/08-retrieval-augmented-generation/semantic-vector-search.php) — Embedding-based semantic retrieval
+- [`citation-generation.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/08-retrieval-augmented-generation/citation-generation.php) — Citation-style response generation
+- [`query-transformation.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/08-retrieval-augmented-generation/query-transformation.php) — Query transformation techniques
+- [`reranking-results.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/08-retrieval-augmented-generation/reranking-results.php) — Reranking for better relevance
+- [`document-loaders.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/08-retrieval-augmented-generation/document-loaders.php) — Loading documents from various sources
+- [`production-rag-system.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/08-retrieval-augmented-generation/production-rag-system.php) — Complete production RAG system
 
-All files are in [`code/agentic-ai-php-developers/08-retrieval-augmented-generation/`](../../code/agentic-ai-php-developers/08-retrieval-augmented-generation/README.md).
+All files are in [`code/agentic-ai-php-developers/08-retrieval-augmented-generation/`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/08-retrieval-augmented-generation/README.md).
 :::
 
 ---
@@ -1208,7 +1208,7 @@ Continue to [Chapter 09](/series/agentic-ai-php-developers/chapters/09-planning-
 
 ## Further Reading
 
-- [`claude-php/agent` RAG System](https://github.com/claude-php/claude-php-agent/tree/master/src/RAG)
+- [`claude-php/claude-php-agent` RAG System](https://github.com/claude-php/claude-php-agent/tree/master/src/RAG)
 - [RAG Paper (Lewis et al., 2020)](https://arxiv.org/abs/2005.11401)
 - [Voyage AI Embeddings](https://www.voyageai.com/)
 - [Advanced RAG Techniques](https://www.pinecone.io/learn/advanced-rag-techniques/)

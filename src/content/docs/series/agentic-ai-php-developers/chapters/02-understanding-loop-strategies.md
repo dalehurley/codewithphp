@@ -13,7 +13,7 @@ estimatedTime: "PT90M"
 
 ## Overview
 
-The control loop is the heartbeat of an agentic system. It decides *how* the agent thinks—whether it reasons step-by-step, plans upfront, reflects on outputs, or streams progress in real-time. The [`claude-php/agent`](https://github.com/claude-php/claude-php-agent) framework provides four powerful loop strategies, each optimized for different task patterns.
+The control loop is the heartbeat of an agentic system. It decides *how* the agent thinks—whether it reasons step-by-step, plans upfront, reflects on outputs, or streams progress in real-time. The [`claude-php/claude-php-agent`](https://github.com/claude-php/claude-php-agent) framework provides four powerful loop strategies, each optimized for different task patterns.
 
 In Chapter 01, you learned the conceptual model: **agent = loop + tools + memory**. Now we'll make loops concrete. You'll understand when each loop strategy shines, how to configure and customize them, and how to choose the right pattern for your use case.
 
@@ -29,27 +29,27 @@ In this chapter you'll:
 **Estimated time:** ~90 minutes
 
 ::: info Framework Version
-This chapter is based on [`claude-php/agent`](https://github.com/claude-php/claude-php-agent) **v0.5+**. API signatures and methods are verified against the actual framework source code. For the most current API documentation, visit the [GitHub repository](https://github.com/claude-php/claude-php-agent).
+This chapter is based on [`claude-php/claude-php-agent`](https://github.com/claude-php/claude-php-agent) **v0.5+**. API signatures and methods are verified against the actual framework source code. For the most current API documentation, visit the [GitHub repository](https://github.com/claude-php/claude-php-agent).
 :::
 
 ::: info Code examples
 Complete, runnable examples for this chapter:
 
-- [`react-loop.php`](../../code/agentic-ai-php-developers/02-loop-strategies/react-loop.php) — ReAct pattern with tool use
-- [`plan-execute-loop.php`](../../code/agentic-ai-php-developers/02-loop-strategies/plan-execute-loop.php) — Upfront planning workflow
-- [`reflection-loop.php`](../../code/agentic-ai-php-developers/02-loop-strategies/reflection-loop.php) — Self-critique and refinement
-- [`streaming-loop.php`](../../code/agentic-ai-php-developers/02-loop-strategies/streaming-loop.php) — Real-time progress updates
-- [`loop-comparison.php`](../../code/agentic-ai-php-developers/02-loop-strategies/loop-comparison.php) — Side-by-side comparison
-- [`custom-loop-config.php`](../../code/agentic-ai-php-developers/02-loop-strategies/custom-loop-config.php) — Advanced customization
+- [`react-loop.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/02-loop-strategies/react-loop.php) — ReAct pattern with tool use
+- [`plan-execute-loop.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/02-loop-strategies/plan-execute-loop.php) — Upfront planning workflow
+- [`reflection-loop.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/02-loop-strategies/reflection-loop.php) — Self-critique and refinement
+- [`streaming-loop.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/02-loop-strategies/streaming-loop.php) — Real-time progress updates
+- [`loop-comparison.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/02-loop-strategies/loop-comparison.php) — Side-by-side comparison
+- [`custom-loop-config.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/02-loop-strategies/custom-loop-config.php) — Advanced customization
 
-All files are in [`code/agentic-ai-php-developers/02-loop-strategies/`](../../code/agentic-ai-php-developers/02-loop-strategies/README.md).
+All files are in [`code/agentic-ai-php-developers/02-loop-strategies/`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/02-loop-strategies/README.md).
 :::
 
 ---
 
 ## The Four Loop Strategies
 
-Every loop strategy in `claude-php/agent` implements the same `LoopStrategy` interface but with different execution patterns. Understanding the trade-offs helps you choose the right tool for each job.
+Every loop strategy in `claude-php/claude-php-agent` implements the same `LoopStrategy` interface but with different execution patterns. Understanding the trade-offs helps you choose the right tool for each job.
 
 | Loop Strategy | Best For | Latency | Token Usage | Complexity |
 | --- | --- | --- | --- | --- |

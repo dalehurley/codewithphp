@@ -10,15 +10,15 @@ difficulty: "Intermediate"
 
 ## Overview
 
-Before we build production-grade agents with [`claude-php/claude-php/agent`](https://github.com/claude-php/claude-php-agent), we need a shared mental model. "Agentic AI" isn't magic — it's a disciplined way of wrapping an LLM with **tools**, **memory**, and a **control loop** so it can plan, act, and recover like a real system.
+Before we build production-grade agents with [`claude-php/claude-php-agent`](https://github.com/claude-php/claude-php-agent), we need a shared mental model. "Agentic AI" isn't magic — it's a disciplined way of wrapping an LLM with **tools**, **memory**, and a **control loop** so it can plan, act, and recover like a real system.
 
-The `claude-php/agent` framework implements these patterns as first-class PHP abstractions. In this chapter, you'll learn the concepts that power the framework, then see how they map to real code.
+The `claude-php/claude-php-agent` framework implements these patterns as first-class PHP abstractions. In this chapter, you'll learn the concepts that power the framework, then see how they map to real code.
 
 In this chapter you'll:
 
 - Contrast **plain LLM calls** with **agentic workflows**
 - Define the core building blocks: **agents, tools, memory, control loops**
-- Learn how `claude-php/agent` implements the **ReAct loop** pattern
+- Learn how `claude-php/claude-php-agent` implements the **ReAct loop** pattern
 - See how agentic systems handle **state, reliability, and observability**
 - Understand the framework's architecture before using it in Chapter 02
 
@@ -82,7 +82,7 @@ Prompt → LLM → Tool Call → Tool Result → LLM → … → Final Response
 
 An **agent** is an LLM wrapped in runtime logic. It's not just "the model" — it's the model plus rules, memory, and a loop that decides what to do next.
 
-**In `claude-php/agent`:**
+**In `claude-php/claude-php-agent`:**
 
 The `Agent` class is the core abstraction. You create agents using the fluent builder pattern:
 
@@ -107,7 +107,7 @@ $agent = Agent::make(apiKey: getenv('ANTHROPIC_API_KEY'))
 
 A **tool** is a function the agent can call to perform actions in the real world: API requests, database queries, file reads, calculations, etc.
 
-**In `claude-php/agent`:**
+**In `claude-php/claude-php-agent`:**
 
 Tools are defined using the `Tool` class with a fluent API:
 
@@ -143,7 +143,7 @@ The framework handles:
 - **Long-term memory**: stored facts or history across sessions
 - **Working memory**: intermediate results inside a loop (tool outputs, progress)
 
-**In `claude-php/agent`:**
+**In `claude-php/claude-php-agent`:**
 
 Memory is managed through the `Memory` interface:
 
@@ -173,7 +173,7 @@ A **control loop** is the orchestration logic that runs the agent until a task i
 4. **Reflect**: update memory
 5. **Repeat** until done
 
-**In `claude-php/agent`:**
+**In `claude-php/claude-php-agent`:**
 
 The framework provides multiple loop strategies:
 
@@ -210,7 +210,7 @@ Goal → Plan → Tool → Observation → Memory Update → Next Plan → … �
 
 **Key idea:** The LLM is *not* the system — it's just one component inside a loop.
 
-This is exactly how `claude-php/agent` structures agents:
+This is exactly how `claude-php/claude-php-agent` structures agents:
 
 ```php
 // The Agent orchestrates everything
@@ -234,7 +234,7 @@ When you run an agent, there's a predictable lifecycle even if the model output 
 5. **Update memory** — store summaries or facts
 6. **Finalize** — produce the user-facing response
 
-**In `claude-php/agent`:**
+**In `claude-php/claude-php-agent`:**
 
 You can hook into every stage:
 
@@ -305,7 +305,7 @@ echo $memory['final'] . PHP_EOL;
 
 You'll implement the full example in the code folder and run it locally.
 
-**This simple pattern is exactly what `claude-php/agent` does internally**, but with:
+**This simple pattern is exactly what `claude-php/claude-php-agent` does internally**, but with:
 - Real LLM decision-making
 - Robust error handling
 - Production-grade observability
@@ -324,7 +324,7 @@ Think in layers:
 5. **Memory store** — session state, summaries, and long-term facts
 6. **Telemetry** — logs, traces, and usage metrics
 
-**This is the `claude-php/agent` architecture:**
+**This is the `claude-php/claude-php-agent` architecture:**
 
 ```php
 // 1. Model interface
@@ -376,7 +376,7 @@ Tools must be more than "callable functions." They need **contracts**:
 - **Timeouts + retries** for reliability
 - **Error wrapping** so the agent can reason about failures
 
-**`claude-php/agent` enforces tool contracts:**
+**`claude-php/claude-php-agent` enforces tool contracts:**
 
 ```php
 $weatherTool = Tool::create('get_weather')
@@ -413,7 +413,7 @@ Even the best tools and memory won't help if the agent doesn't follow instructio
 
 Think of policies as **guardrails** that shape the plan step before any tool is called.
 
-**In `claude-php/agent`:**
+**In `claude-php/claude-php-agent`:**
 
 ```php
 $agent = Agent::make($client)
@@ -436,7 +436,7 @@ Agentic systems must be observable, or you won't know *why* a response failed. A
 - Tool outputs (or errors)
 - Final response + latency
 
-**`claude-php/agent` provides production-grade observability:**
+**`claude-php/claude-php-agent` provides production-grade observability:**
 
 ```php
 use ClaudePhp\Agent\Progress\AgentUpdate;
@@ -469,7 +469,7 @@ Agents fail in predictable ways. Recognizing boundaries early helps prevent prod
 
 Each failure maps to a fix: tools + validation, memory pruning, max-step guards, and explicit stop criteria.
 
-**`claude-php/agent` handles common failures:**
+**`claude-php/claude-php-agent` handles common failures:**
 
 ```php
 $agent = Agent::make($client)
@@ -491,7 +491,7 @@ $agent = Agent::make($client)
 
 The model can only guess. It has no database access, so it hallucinates order details.
 
-### Agentic Workflow with `claude-php/agent`
+### Agentic Workflow with `claude-php/claude-php-agent`
 
 ```php
 $getOrders = Tool::create('get_open_orders')
@@ -528,13 +528,13 @@ Agentic design isn't just a fancy architecture — it prevents common failures:
 - **Unclear errors** → fixed by structured logs and error handling
 - **State loss** → fixed by memory and summaries
 
-We'll turn these into concrete PHP patterns in later chapters using `claude-php/agent`.
+We'll turn these into concrete PHP patterns in later chapters using `claude-php/claude-php-agent`.
 
 ---
 
 ## Understanding the Framework Patterns
 
-The `claude-php/agent` framework provides multiple agent patterns for different use cases:
+The `claude-php/claude-php-agent` framework provides multiple agent patterns for different use cases:
 
 | Pattern | Use Case | Complexity | Example |
 | --- | --- | --- | --- |
@@ -553,7 +553,7 @@ By the end of this chapter, you should be able to:
 
 - Explain the difference between a plain LLM call and an agentic loop
 - Define agent, tool, memory, and control loop
-- Describe how `claude-php/agent` implements these concepts
+- Describe how `claude-php/claude-php-agent` implements these concepts
 - Explain why tools and memory make LLMs reliable
 - Run the starter example and understand each step
 - Recognize the framework's architecture patterns
@@ -562,7 +562,7 @@ By the end of this chapter, you should be able to:
 
 ## Next Steps
 
-In **Chapter 02: Setting Up `claude-php/agent`**, we'll install the framework, build a "hello agent" that uses real tools, and inspect the full agent lifecycle with actual Claude API calls.
+In **Chapter 02: Setting Up `claude-php/claude-php-agent`**, we'll install the framework, build a "hello agent" that uses real tools, and inspect the full agent lifecycle with actual Claude API calls.
 
 ---
 
