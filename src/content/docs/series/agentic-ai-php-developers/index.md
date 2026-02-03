@@ -166,8 +166,12 @@ Each chapter explores a core concept of the [`claude-php-agent`](https://github.
   </div>
 </div>
 
-**06 — Stateful Conversations and Short-Term Memory**
-Implement session storage, context windows, summarization, and transcript pruning. Keep agents coherent over long interactions.
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/agentic-ai-php-developers/chapters/06-stateful-conversations-and-short-term-memory">06 — Stateful Conversations and Short-Term Memory</a></h4>
+    <p style="margin-bottom: 0;">Implement session storage, context windows, summarization, and transcript pruning. Keep agents coherent over long interactions.</p>
+  </div>
+</div>
 
 **07 — Long-Term Memory with Datastores**
 Design long-term memory tables, embeddings, and relevance scoring. Decide what to store and when to retrieve.
