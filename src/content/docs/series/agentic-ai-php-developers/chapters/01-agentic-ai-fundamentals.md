@@ -10,7 +10,7 @@ difficulty: "Intermediate"
 
 ## Overview
 
-Before we build production-grade agents with [`claude-php/claude-php/agent`](https://github.com/claude-php/claude-php/agent), we need a shared mental model. "Agentic AI" isn't magic — it's a disciplined way of wrapping an LLM with **tools**, **memory**, and a **control loop** so it can plan, act, and recover like a real system.
+Before we build production-grade agents with [`claude-php/claude-php/agent`](https://github.com/claude-php/claude-php-agent), we need a shared mental model. "Agentic AI" isn't magic — it's a disciplined way of wrapping an LLM with **tools**, **memory**, and a **control loop** so it can plan, act, and recover like a real system.
 
 The `claude-php/agent` framework implements these patterns as first-class PHP abstractions. In this chapter, you'll learn the concepts that power the framework, then see how they map to real code.
 
@@ -570,7 +570,7 @@ In **Chapter 02: Setting Up `claude-php/agent`**, we'll install the framework, b
 
 To deepen your understanding of the topics covered in this chapter:
 
-- [Claude PHP Agent GitHub](https://github.com/claude-php/claude-php/agent) — Framework source code and documentation
+- [Claude PHP Agent GitHub](https://github.com/claude-php/claude-php-agent) — Framework source code and documentation
 - [Anthropic: Agents Overview](https://docs.anthropic.com/en/docs/agents-overview) — Conceptual guide to building agents
-- [Claude PHP Agent Quick Start](https://github.com/claude-php/claude-php/agent/blob/master/QUICKSTART.md) — Get started in 5 minutes
-- [Framework Documentation Index](https://github.com/claude-php/claude-php/agent/tree/master/docs) — Complete guide to all features
+- [Claude PHP Agent Quick Start](https://github.com/claude-php/claude-php-agent/blob/master/QUICKSTART.md) — Get started in 5 minutes
+- [Framework Documentation Index](https://github.com/claude-php/claude-php-agent/tree/master/docs) — Complete guide to all features
