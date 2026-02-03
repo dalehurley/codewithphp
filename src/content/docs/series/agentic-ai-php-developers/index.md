@@ -219,8 +219,12 @@ Each chapter explores a core concept of the [`claude-php-agent`](https://github.
 
 ### Part 4: Multi-Agent Systems (Chapters 13–15)
 
-**13 — Hierarchical Agent Architectures**
-Build master-worker patterns using `claude-php-agent`'s HierarchicalAgent. Define responsibilities and handoff rules.
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/agentic-ai-php-developers/chapters/13-hierarchical-agent-architectures">13 — Hierarchical Agent Architectures</a></h4>
+    <p style="margin-bottom: 0;">Build master-worker patterns using <code>claude-php-agent</code>'s HierarchicalAgent. Define responsibilities and handoff rules for multi-specialist coordination.</p>
+  </div>
+</div>
 
 **14 — Communication Protocols and Handoff Patterns**
 Standardize inter-agent messaging, structured outputs, and contract-driven collaboration.
