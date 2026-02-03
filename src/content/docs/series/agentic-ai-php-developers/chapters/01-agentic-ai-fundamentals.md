@@ -27,10 +27,10 @@ In this chapter you'll:
 ::: info Code examples
 Complete, runnable examples for this chapter:
 
-- [`plain-llm.php`](../code/01-agentic-ai-fundamentals/plain-llm.php) — Simple one-shot simulation
-- [`agentic-loop.php`](../code/01-agentic-ai-fundamentals/agentic-loop.php) — Deterministic agent loop with tracing
+- [`plain-llm.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/01-agentic-ai-fundamentals/plain-llm.php) — Simple one-shot simulation
+- [`agentic-loop.php`](https://github.com/dalehurley/codewithphp/blob/main/code/agentic-ai-php-developers/01-agentic-ai-fundamentals/agentic-loop.php) — Deterministic agent loop with tracing
 
-All files are in [`code/01-agentic-ai-fundamentals/`](../code/01-agentic-ai-fundamentals/README.md).
+All files are in [`code/01-agentic-ai-fundamentals/`](https://github.com/dalehurley/codewithphp/tree/main/code/agentic-ai-php-developers/01-agentic-ai-fundamentals).
 :::
 
 ---
