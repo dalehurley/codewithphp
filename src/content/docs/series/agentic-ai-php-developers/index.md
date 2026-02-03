@@ -159,8 +159,12 @@ Each chapter explores a core concept of the [`claude-php-agent`](https://github.
 
 ### Part 2: Building Core Agent Primitives (Chapters 05–08)
 
-**05 — Tool Routing and Execution Pipelines**
-Create a tool router that dispatches safely, logs executions, and standardizes error responses. Introduce retries and idempotency for tools.
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/agentic-ai-php-developers/chapters/05-tool-routing-and-execution-pipelines">05 — Tool Routing and Execution Pipelines</a></h4>
+    <p style="margin-bottom: 0;">Create a tool router that dispatches safely, logs executions, and standardizes error responses. Introduce retries and idempotency for tools.</p>
+  </div>
+</div>
 
 **06 — Stateful Conversations and Short-Term Memory**
 Implement session storage, context windows, summarization, and transcript pruning. Keep agents coherent over long interactions.
