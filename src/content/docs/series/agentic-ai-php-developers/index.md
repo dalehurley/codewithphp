@@ -196,8 +196,12 @@ Each chapter explores a core concept of the [`claude-php-agent`](https://github.
   </div>
 </div>
 
-**10 — Reflection and Self-Review Loops**
-Use ReflectionLoop for self-improvement. Check answers, validate tool outputs, and reduce mistakes with critique stages.
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/agentic-ai-php-developers/chapters/10-reflection-and-self-review-loops">10 — Reflection and Self-Review Loops</a></h4>
+    <p style="margin-bottom: 0;">Use ReflectionLoop for self-improvement. Check answers, validate tool outputs, and reduce mistakes with critique stages.</p>
+  </div>
+</div>
 
 **11 — Multi-Stage Workflows and Agent Graphs**
 Build DAG-style workflows where agents execute steps in sequence or parallel. Add orchestration with state transitions.
