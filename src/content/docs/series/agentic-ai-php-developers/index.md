@@ -180,13 +180,21 @@ Each chapter explores a core concept of the [`claude-php-agent`](https://github.
   </div>
 </div>
 
-**08 — Retrieval-Augmented Generation (RAG) for Agents**
-Add a retrieval layer for grounded responses. Cover chunking, indexing, and citation-style responses to reduce hallucinations.
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/agentic-ai-php-developers/chapters/08-retrieval-augmented-generation-for-agents">08 — Retrieval-Augmented Generation (RAG) for Agents</a></h4>
+    <p style="margin-bottom: 0;">Add a retrieval layer for grounded responses. Cover chunking, indexing, and citation-style responses to reduce hallucinations.</p>
+  </div>
+</div>
 
 ### Part 3: Planning and Reasoning Systems (Chapters 09–12)
 
-**09 — Planning: From Tasks to Steps**
-Implement task decomposition using PlanExecuteLoop. Generate plans, track progress, and replan when tools fail or data changes.
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/agentic-ai-php-developers/chapters/09-planning-from-tasks-to-steps">09 — Planning: From Tasks to Steps</a></h4>
+    <p style="margin-bottom: 0;">Implement task decomposition using PlanExecuteLoop. Generate plans, track progress, and replan when tools fail or data changes.</p>
+  </div>
+</div>
 
 **10 — Reflection and Self-Review Loops**
 Use ReflectionLoop for self-improvement. Check answers, validate tool outputs, and reduce mistakes with critique stages.
