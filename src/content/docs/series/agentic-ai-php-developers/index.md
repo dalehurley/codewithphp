@@ -210,8 +210,12 @@ Each chapter explores a core concept of the [`claude-php-agent`](https://github.
   </div>
 </div>
 
-**12 — Guardrails, Policy, and Safety Layers**
-Add filtering, redaction, and policy enforcement. Build refusal logic and safe output validation for high-risk tasks.
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/agentic-ai-php-developers/chapters/12-guardrails-policy-safety">12 — Guardrails, Policy, and Safety Layers</a></h4>
+    <p style="margin-bottom: 0;">Add filtering, redaction, and policy enforcement. Build refusal logic and safe output validation for high-risk tasks.</p>
+  </div>
+</div>
 
 ### Part 4: Multi-Agent Systems (Chapters 13–15)
 
