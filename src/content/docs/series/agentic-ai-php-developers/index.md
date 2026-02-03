@@ -173,8 +173,12 @@ Each chapter explores a core concept of the [`claude-php-agent`](https://github.
   </div>
 </div>
 
-**07 — Long-Term Memory with Datastores**
-Design long-term memory tables, embeddings, and relevance scoring. Decide what to store and when to retrieve.
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/agentic-ai-php-developers/chapters/07-long-term-memory-with-datastores">07 — Long-Term Memory with Datastores</a></h4>
+    <p style="margin-bottom: 0;">Design long-term memory tables, embeddings, and relevance scoring. Decide what to store and when to retrieve.</p>
+  </div>
+</div>
 
 **08 — Retrieval-Augmented Generation (RAG) for Agents**
 Add a retrieval layer for grounded responses. Cover chunking, indexing, and citation-style responses to reduce hallucinations.
