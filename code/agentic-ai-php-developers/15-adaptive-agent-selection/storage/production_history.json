@@ -1,0 +1,94 @@
+[
+    {
+        "id": "task_698269f61732b6.48305418",
+        "task": "Calculate the total cost if 3 items at $29.99 each with 8% sales tax",
+        "task_vector": [
+            0.25,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0.33,
+            0.06,
+            0.3
+        ],
+        "task_analysis": {
+            "complexity": "simple",
+            "domain": "analytical",
+            "requires_tools": false,
+            "requires_quality": "standard",
+            "requires_knowledge": false,
+            "requires_reasoning": true,
+            "requires_iteration": false,
+            "estimated_steps": 3,
+            "key_requirements": [
+                "arithmetic multiplication",
+                "percentage calculation",
+                "addition of subtotal and tax"
+            ]
+        },
+        "agent_id": "cot",
+        "agent_type": "cot",
+        "success": true,
+        "quality_score": 10,
+        "duration": 9.404,
+        "timestamp": 1770154495,
+        "metadata": {
+            "complexity": "simple",
+            "domain": "analytical"
+        }
+    },
+    {
+        "id": "task_698269ff79f954.06532819",
+        "task": "Write a professional email responding to a customer complaint about shipping delays",
+        "task_vector": [
+            0.25,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0.66,
+            0.06,
+            0.5
+        ],
+        "task_analysis": {
+            "complexity": "simple",
+            "domain": "conversational",
+            "requires_tools": false,
+            "requires_quality": "high",
+            "requires_knowledge": false,
+            "requires_reasoning": true,
+            "requires_iteration": false,
+            "estimated_steps": 3,
+            "key_requirements": [
+                "Professional tone",
+                "Acknowledge complaint",
+                "Provide explanation or solution",
+                "Maintain customer relationship",
+                "Clear and concise communication"
+            ]
+        },
+        "agent_id": "cot",
+        "agent_type": "cot",
+        "success": false,
+        "quality_score": 9,
+        "duration": 56.436,
+        "timestamp": 1770154551,
+        "metadata": {
+            "complexity": "simple",
+            "domain": "conversational"
+        }
+    }
+]

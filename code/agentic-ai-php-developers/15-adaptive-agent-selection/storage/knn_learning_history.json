@@ -1,0 +1,267 @@
+[
+    {
+        "id": "task_698268fc461fe4.04284180",
+        "task": "Calculate 15% of 240",
+        "task_vector": [
+            0.25,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0.33,
+            0.04,
+            0.2
+        ],
+        "task_analysis": {
+            "complexity": "simple",
+            "domain": "analytical",
+            "requires_tools": false,
+            "requires_quality": "standard",
+            "requires_knowledge": false,
+            "requires_reasoning": true,
+            "requires_iteration": false,
+            "estimated_steps": 2,
+            "key_requirements": [
+                "basic arithmetic",
+                "percentage calculation"
+            ]
+        },
+        "agent_id": "cot",
+        "agent_type": "cot",
+        "success": true,
+        "quality_score": 10,
+        "duration": 9.841,
+        "timestamp": 1770154246,
+        "metadata": {
+            "complexity": "simple",
+            "domain": "analytical"
+        }
+    },
+    {
+        "id": "task_698269061f7b00.91518790",
+        "task": "Calculate 20% of 500",
+        "task_vector": [
+            0.25,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0.33,
+            0.04,
+            0.2
+        ],
+        "task_analysis": {
+            "complexity": "simple",
+            "domain": "analytical",
+            "requires_tools": false,
+            "requires_quality": "standard",
+            "requires_knowledge": false,
+            "requires_reasoning": true,
+            "requires_iteration": false,
+            "estimated_steps": 2,
+            "key_requirements": [
+                "basic arithmetic",
+                "percentage calculation"
+            ]
+        },
+        "agent_id": "cot",
+        "agent_type": "cot",
+        "success": true,
+        "quality_score": 10,
+        "duration": 8.112,
+        "timestamp": 1770154254,
+        "metadata": {
+            "complexity": "simple",
+            "domain": "analytical"
+        }
+    },
+    {
+        "id": "task_6982690e3b3396.34760020",
+        "task": "Calculate 10% of 150",
+        "task_vector": [
+            0.25,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0.33,
+            0.04,
+            0.2
+        ],
+        "task_analysis": {
+            "complexity": "simple",
+            "domain": "analytical",
+            "requires_tools": false,
+            "requires_quality": "standard",
+            "requires_knowledge": false,
+            "requires_reasoning": true,
+            "requires_iteration": false,
+            "estimated_steps": 2,
+            "key_requirements": [
+                "basic arithmetic",
+                "percentage calculation"
+            ]
+        },
+        "agent_id": "cot",
+        "agent_type": "cot",
+        "success": true,
+        "quality_score": 10,
+        "duration": 9.381,
+        "timestamp": 1770154263,
+        "metadata": {
+            "complexity": "simple",
+            "domain": "analytical"
+        }
+    },
+    {
+        "id": "task_69826917986ea1.36247884",
+        "task": "What is 25% of 800?",
+        "task_vector": [
+            0.25,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0.33,
+            0.04,
+            0.2
+        ],
+        "task_analysis": {
+            "complexity": "simple",
+            "domain": "analytical",
+            "requires_tools": false,
+            "requires_quality": "standard",
+            "requires_knowledge": false,
+            "requires_reasoning": true,
+            "requires_iteration": false,
+            "estimated_steps": 2,
+            "key_requirements": [
+                "basic arithmetic",
+                "percentage calculation"
+            ]
+        },
+        "agent_id": "cot",
+        "agent_type": "cot",
+        "success": true,
+        "quality_score": 10,
+        "duration": 10.054,
+        "timestamp": 1770154273,
+        "metadata": {
+            "complexity": "simple",
+            "domain": "analytical"
+        }
+    },
+    {
+        "id": "task_69826921a5db63.93160827",
+        "task": "Find 30% of 300",
+        "task_vector": [
+            0.25,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1,
+            1,
+            0,
+            0.33,
+            0.04,
+            0.2
+        ],
+        "task_analysis": {
+            "complexity": "simple",
+            "domain": "analytical",
+            "requires_tools": false,
+            "requires_quality": "standard",
+            "requires_knowledge": true,
+            "requires_reasoning": true,
+            "requires_iteration": false,
+            "estimated_steps": 2,
+            "key_requirements": [
+                "understand percentage calculation",
+                "perform multiplication operation"
+            ]
+        },
+        "agent_id": "cot",
+        "agent_type": "cot",
+        "success": true,
+        "quality_score": 10,
+        "duration": 8.91,
+        "timestamp": 1770154282,
+        "metadata": {
+            "complexity": "simple",
+            "domain": "analytical"
+        }
+    },
+    {
+        "id": "task_6982692cadfd86.53950240",
+        "task": "Write a complete, ready-to-send thank you email of 3-5 sentences. The email should be addressed to a specific recipient (you may use a placeholder name like \"John\"), include an actual subject line, and contain no placeholders, templates, or instructional commentary. The email body should directly express gratitude for a recent job interview, be professional in tone, and require no further editing to send.",
+        "task_vector": [
+            0.25,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0.33,
+            0.04,
+            0.3
+        ],
+        "task_analysis": {
+            "complexity": "simple",
+            "domain": "conversational",
+            "requires_tools": false,
+            "requires_quality": "standard",
+            "requires_knowledge": false,
+            "requires_reasoning": false,
+            "requires_iteration": false,
+            "estimated_steps": 2,
+            "key_requirements": [
+                "brief format",
+                "thank you message",
+                "email structure"
+            ]
+        },
+        "agent_id": "cot",
+        "agent_type": "cot",
+        "success": false,
+        "quality_score": 9,
+        "duration": 40.574,
+        "timestamp": 1770154325,
+        "metadata": {
+            "complexity": "simple",
+            "domain": "conversational"
+        }
+    }
+]

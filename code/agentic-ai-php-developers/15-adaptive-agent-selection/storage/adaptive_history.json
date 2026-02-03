@@ -1,0 +1,94 @@
+[
+    {
+        "id": "task_698266c6901f89.39840961",
+        "task": "Calculate the result of (25 * 17) + 100",
+        "task_vector": [
+            0.25,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0.33,
+            0.06,
+            0.3
+        ],
+        "task_analysis": {
+            "complexity": "simple",
+            "domain": "analytical",
+            "requires_tools": false,
+            "requires_quality": "standard",
+            "requires_knowledge": false,
+            "requires_reasoning": true,
+            "requires_iteration": false,
+            "estimated_steps": 3,
+            "key_requirements": [
+                "arithmetic multiplication",
+                "arithmetic addition",
+                "order of operations"
+            ]
+        },
+        "agent_id": "react",
+        "agent_type": "react",
+        "success": true,
+        "quality_score": 10,
+        "duration": 8.597,
+        "timestamp": 1770153679,
+        "metadata": {
+            "complexity": "simple",
+            "domain": "analytical"
+        }
+    },
+    {
+        "id": "task_698266cf2df6b8.37412357",
+        "task": "Write a professional email apologizing for a project delay and proposing next steps.",
+        "task_vector": [
+            0.25,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0.66,
+            0.06,
+            0.5
+        ],
+        "task_analysis": {
+            "complexity": "simple",
+            "domain": "conversational",
+            "requires_tools": false,
+            "requires_quality": "high",
+            "requires_knowledge": false,
+            "requires_reasoning": true,
+            "requires_iteration": false,
+            "estimated_steps": 3,
+            "key_requirements": [
+                "Professional tone and formatting",
+                "Clear apology statement",
+                "Explanation of delay",
+                "Concrete next steps or action items",
+                "Appropriate business email structure"
+            ]
+        },
+        "agent_id": "react",
+        "agent_type": "react",
+        "success": false,
+        "quality_score": 9,
+        "duration": 50.188,
+        "timestamp": 1770153729,
+        "metadata": {
+            "complexity": "simple",
+            "domain": "conversational"
+        }
+    }
+]

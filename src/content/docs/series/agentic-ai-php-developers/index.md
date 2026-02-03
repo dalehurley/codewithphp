@@ -233,8 +233,12 @@ Each chapter explores a core concept of the [`claude-php-agent`](https://github.
   </div>
 </div>
 
-**15 — Adaptive Agent Selection**
-Use AdaptiveAgentService for intelligent agent selection, validation, and auto-adaptation based on task analysis.
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/agentic-ai-php-developers/chapters/15-adaptive-agent-selection">15 — Adaptive Agent Selection</a></h4>
+    <p style="margin-bottom: 0;">Use AdaptiveAgentService for intelligent agent selection, validation, and auto-adaptation based on task analysis and k-NN machine learning.</p>
+  </div>
+</div>
 
 ### Part 5: Production Engineering (Chapters 16–19)
 

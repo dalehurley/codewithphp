@@ -1,0 +1,141 @@
+[
+    {
+        "id": "task_698267ead830e5.85059663",
+        "task": "Calculate 15% of 240 and add 50",
+        "task_vector": [
+            0.25,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0.33,
+            0.04,
+            0.3
+        ],
+        "task_analysis": {
+            "complexity": "simple",
+            "domain": "analytical",
+            "requires_tools": false,
+            "requires_quality": "standard",
+            "requires_knowledge": false,
+            "requires_reasoning": true,
+            "requires_iteration": false,
+            "estimated_steps": 2,
+            "key_requirements": [
+                "basic arithmetic calculation",
+                "percentage computation",
+                "addition operation"
+            ]
+        },
+        "agent_id": "cot",
+        "agent_type": "cot",
+        "success": true,
+        "quality_score": 10,
+        "duration": 9.554,
+        "timestamp": 1770153972,
+        "metadata": {
+            "complexity": "simple",
+            "domain": "analytical"
+        }
+    },
+    {
+        "id": "task_698267f46b81c0.21659258",
+        "task": "Write a professional apology email for missing a deadline",
+        "task_vector": [
+            0.25,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0.66,
+            0.06,
+            0.6
+        ],
+        "task_analysis": {
+            "complexity": "simple",
+            "domain": "conversational",
+            "requires_tools": false,
+            "requires_quality": "high",
+            "requires_knowledge": false,
+            "requires_reasoning": true,
+            "requires_iteration": false,
+            "estimated_steps": 3,
+            "key_requirements": [
+                "Professional tone and language",
+                "Clear acknowledgment of missed deadline",
+                "Sincere apology",
+                "Brief explanation without excessive excuses",
+                "Proposed solution or next steps",
+                "Commitment to prevent future occurrences"
+            ]
+        },
+        "agent_id": "cot",
+        "agent_type": "cot",
+        "success": false,
+        "quality_score": 9,
+        "duration": 56.597,
+        "timestamp": 1770154029,
+        "metadata": {
+            "complexity": "simple",
+            "domain": "conversational"
+        }
+    },
+    {
+        "id": "task_6982682d0946e1.38558872",
+        "task": "If all A are B, and all B are C, are all A definitely C? Explain step by step.",
+        "task_vector": [
+            0.25,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1,
+            1,
+            0,
+            0.66,
+            0.08,
+            0.4
+        ],
+        "task_analysis": {
+            "complexity": "simple",
+            "domain": "analytical",
+            "requires_tools": false,
+            "requires_quality": "high",
+            "requires_knowledge": true,
+            "requires_reasoning": true,
+            "requires_iteration": false,
+            "estimated_steps": 4,
+            "key_requirements": [
+                "Understanding of logical syllogisms",
+                "Ability to apply transitive property",
+                "Clear step-by-step explanation",
+                "Formal logical reasoning"
+            ]
+        },
+        "agent_id": "cot",
+        "agent_type": "cot",
+        "success": true,
+        "quality_score": 10,
+        "duration": 14.808,
+        "timestamp": 1770154043,
+        "metadata": {
+            "complexity": "simple",
+            "domain": "analytical"
+        }
+    }
+]
