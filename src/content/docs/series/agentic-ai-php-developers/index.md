@@ -263,8 +263,12 @@ Each chapter explores a core concept of the [`claude-php-agent`](https://github.
   </div>
 </div>
 
-**19 — Async & Concurrent Execution**
-Leverage AMPHP for parallel tool execution, batch processing, and promise-based workflows with `claude-php-agent`.
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/agentic-ai-php-developers/chapters/19-async-concurrent-execution">19 — Async & Concurrent Execution</a></h4>
+    <p style="margin-bottom: 0;">Leverage AMPHP for parallel tool execution, batch processing, and promise-based workflows. Master concurrent agent execution, promise-based async patterns, and production async architectures.</p>
+  </div>
+</div>
 
 ### Part 6: Capstone (Chapter 20)
 
