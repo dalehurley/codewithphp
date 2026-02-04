@@ -256,8 +256,12 @@ Each chapter explores a core concept of the [`claude-php-agent`](https://github.
   </div>
 </div>
 
-**18 — Performance and Cost Optimization**
-Implement caching, batching, and model routing. Use smaller models for sub-tasks and optimize token spend.
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/agentic-ai-php-developers/chapters/18-performance-cost-optimization">18 — Performance and Cost Optimization</a></h4>
+    <p style="margin-bottom: 0;">Implement caching, batching, and model routing. Use smaller models for sub-tasks and optimize token spend.</p>
+  </div>
+</div>
 
 **19 — Async & Concurrent Execution**
 Leverage AMPHP for parallel tool execution, batch processing, and promise-based workflows with `claude-php-agent`.
