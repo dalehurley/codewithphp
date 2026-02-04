@@ -1,0 +1,309 @@
+# Chapter 17: Evaluation Harnesses and QA
+
+Code examples for building production-grade evaluation systems for AI agents.
+
+## Examples
+
+### 01: Basic Evaluation Harness
+**File:** `01-basic-evaluation-harness.php`
+
+Simple evaluation framework that tests agents against known inputs and expected outputs.
+
+**Features:**
+- Test case structure
+- Pass/fail tracking
+- Accuracy calculation
+- Execution time measurement
+
+**Run:**
+```bash
+export ANTHROPIC_API_KEY=your_key_here
+php 01-basic-evaluation-harness.php
+```
+
+---
+
+### 02: Golden Test Sets
+**File:** `02-golden-test-sets.php`
+
+Creating and using golden test sets with known correct answers.
+
+**Features:**
+- Golden test structure
+- JSON persistence
+- Category grouping
+- Difficulty levels
+- Test set versioning
+
+**Run:**
+```bash
+php 02-golden-test-sets.php
+```
+
+**Outputs:**
+- `golden-tests.json` - Test set definition
+
+---
+
+### 03: Regression Testing
+**File:** `03-regression-testing.php`
+
+Regression testing to catch breaking changes between versions.
+
+**Features:**
+- Baseline creation
+- Output comparison
+- Change detection
+- Regression reporting
+
+**Run:**
+```bash
+php 03-regression-testing.php
+```
+
+**Outputs:**
+- `baseline-v1.0.json` - Baseline results
+
+---
+
+### 04: Accuracy Measurement
+**File:** `04-accuracy-measurement.php`
+
+Calculate accuracy metrics including precision, recall, F1, and semantic similarity.
+
+**Features:**
+- Precision/Recall/F1 calculation
+- Exact match accuracy
+- Substring match accuracy
+- Semantic similarity
+- Binary classification evaluation
+- Confusion matrix
+
+**Run:**
+```bash
+php 04-accuracy-measurement.php
+```
+
+---
+
+### 05: Cost Tracking
+**File:** `05-cost-tracking.php`
+
+Track token usage, costs, and latency during evaluation.
+
+**Features:**
+- Token counting
+- Cost calculation
+- Latency tracking
+- Cost breakdown by test
+- Projected cost estimation
+- JSON export
+
+**Run:**
+```bash
+php 05-cost-tracking.php
+```
+
+**Outputs:**
+- `cost-report.json` - Detailed cost data
+
+---
+
+### 06: Safety Validation
+**File:** `06-safety-validation.php`
+
+Test agent guardrails and safety measures.
+
+**Features:**
+- Adversarial input testing
+- PII redaction validation
+- Harmful content detection
+- Refusal detection
+- Safety test categories
+- Safety report
+
+**Run:**
+```bash
+php 06-safety-validation.php
+```
+
+---
+
+### 07: Production QA System
+**File:** `07-production-qa-system.php`
+
+Complete production-grade evaluation system combining all components.
+
+**Features:**
+- Golden test execution
+- Regression testing
+- Accuracy metrics
+- Cost analysis
+- Safety validation
+- Overall score calculation
+- Threshold checking
+- JSON report export
+
+**Run:**
+```bash
+php 07-production-qa-system.php
+```
+
+**Outputs:**
+- `evaluation-report.json` - Complete evaluation report
+
+---
+
+## Dependencies
+
+All examples require:
+
+- PHP 8.4+
+- `claude-php/claude-php-agent` library
+- Valid ANTHROPIC_API_KEY environment variable
+
+Install dependencies from the project root:
+
+```bash
+cd ../00-environment-setup
+composer install
+```
+
+## Integration with CI/CD
+
+### GitHub Actions Example
+
+```yaml
+name: Agent Evaluation
+
+on: [push, pull_request]
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+      
+      - name: Install dependencies
+        run: composer install
+      
+      - name: Run evaluation suite
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: php code/17-evaluation-harnesses-and-qa/07-production-qa-system.php
+      
+      - name: Upload evaluation report
+        uses: actions/upload-artifact@v3
+        with:
+          name: evaluation-report
+          path: code/17-evaluation-harnesses-and-qa/evaluation-report.json
+```
+
+## Best Practices
+
+### 1. Version Your Test Sets
+
+```php
+$testSet = new GoldenTestSet();
+$testSet->setVersion('2.0.0');
+$testSet->saveToJson('tests/v2.0.0/golden-tests.json');
+```
+
+### 2. Track Evaluation History
+
+Keep historical reports to track improvements:
+
+```
+evaluation-reports/
+├── v1.0.0-2024-01-15.json
+├── v1.1.0-2024-01-22.json
+└── v2.0.0-2024-02-01.json
+```
+
+### 3. Set Appropriate Thresholds
+
+```php
+$thresholds = [
+    'min_accuracy' => 0.90,      // 90% accuracy
+    'min_safety' => 0.95,        // 95% safety pass rate
+    'max_cost_per_test' => 0.01, // Max $0.01 per test
+];
+```
+
+### 4. Automate Regularly
+
+- Run on every commit (CI/CD)
+- Run before deployment
+- Run daily in production (monitoring)
+- Run after major changes
+
+### 5. Test Edge Cases
+
+Include diverse test cases:
+
+```php
+$edgeCases = [
+    'empty_input' => '',
+    'very_long' => str_repeat('test ', 1000),
+    'special_chars' => '<?php @#$%^&*()',
+    'unicode' => '🎉 测试 مرحبا',
+    'injection' => "'; DROP TABLE users;--",
+];
+```
+
+## Output Files
+
+| File | Generated By | Contents |
+|------|--------------|----------|
+| `golden-tests.json` | 02-golden-test-sets.php | Test set definitions |
+| `baseline-v1.0.json` | 03-regression-testing.php | Baseline results |
+| `cost-report.json` | 05-cost-tracking.php | Cost and latency data |
+| `evaluation-report.json` | 07-production-qa-system.php | Complete evaluation report |
+
+## Troubleshooting
+
+### High Failure Rate
+
+If tests are failing:
+
+1. Check if prompts need improvement
+2. Verify test expectations are realistic
+3. Review failed test outputs
+4. Consider if tests are too strict
+
+### High Costs
+
+If evaluation costs are too high:
+
+1. Use caching for repeated tests
+2. Sample large test sets
+3. Use smaller models for simple tests
+4. Optimize prompt length
+
+### Slow Evaluation
+
+If evaluation is too slow:
+
+1. Run tests in parallel (see Chapter 19)
+2. Use streaming for faster feedback
+3. Cache deterministic results
+4. Profile and optimize slow tests
+
+## Related Chapters
+
+- **Chapter 12:** Guardrails, Policy, and Safety Layers
+- **Chapter 16:** Observability: Logs, Traces, and Metrics
+- **Chapter 18:** Performance and Cost Optimization
+- **Chapter 19:** Async & Concurrent Execution
+
+## Additional Resources
+
+- [claude-php-agent Documentation](https://github.com/claude-php/claude-php-agent)
+- [Validation System Guide](https://github.com/claude-php/claude-php-agent/blob/master/docs/validation-system.md)
+- [Testing Strategies Tutorial](https://github.com/claude-php/claude-php-agent/tree/master/examples/tutorials/testing-strategies)

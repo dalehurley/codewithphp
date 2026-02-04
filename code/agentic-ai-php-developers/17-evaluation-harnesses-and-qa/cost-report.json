@@ -1,0 +1,67 @@
+{
+    "summary": {
+        "total_executions": 5,
+        "total_cost": 0.003612,
+        "total_tokens": 284,
+        "total_input_tokens": 54,
+        "total_output_tokens": 230,
+        "avg_cost_per_test": 0.0007224,
+        "avg_tokens_per_test": 56.8,
+        "avg_latency_ms": 2058.3234310150146,
+        "min_latency_ms": 1041.8810844421387,
+        "max_latency_ms": 3549.8900413513184
+    },
+    "executions": [
+        {
+            "test_id": "simple_math",
+            "input_tokens": 4,
+            "output_tokens": 3,
+            "total_tokens": 7,
+            "cost": 5.7e-5,
+            "latency_ms": 1041.8810844421387,
+            "cached": false,
+            "timestamp": 1770164251
+        },
+        {
+            "test_id": "capitals",
+            "input_tokens": 8,
+            "output_tokens": 8,
+            "total_tokens": 16,
+            "cost": 0.00014399999999999998,
+            "latency_ms": 1625.9000301361084,
+            "cached": false,
+            "timestamp": 1770164253
+        },
+        {
+            "test_id": "complex_reasoning",
+            "input_tokens": 19,
+            "output_tokens": 62,
+            "total_tokens": 81,
+            "cost": 0.000987,
+            "latency_ms": 2391.796112060547,
+            "cached": false,
+            "timestamp": 1770164255
+        },
+        {
+            "test_id": "history",
+            "input_tokens": 13,
+            "output_tokens": 23,
+            "total_tokens": 36,
+            "cost": 0.000384,
+            "latency_ms": 1682.149887084961,
+            "cached": false,
+            "timestamp": 1770164257
+        },
+        {
+            "test_id": "science",
+            "input_tokens": 10,
+            "output_tokens": 134,
+            "total_tokens": 144,
+            "cost": 0.00204,
+            "latency_ms": 3549.8900413513184,
+            "cached": false,
+            "timestamp": 1770164261
+        }
+    ],
+    "generated_at": "2026-02-04 00:17:41"
+}

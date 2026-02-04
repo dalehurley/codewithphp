@@ -1,0 +1,31 @@
+{
+    "version": "v1.0",
+    "created_at": "2026-02-04 00:16:25",
+    "timestamp": 1770164185,
+    "results": [
+        {
+            "test_id": "capitals_01",
+            "input": "What is the capital of France?",
+            "output": "The capital of France is Paris.",
+            "passed": true
+        },
+        {
+            "test_id": "capitals_02",
+            "input": "What is the capital of Japan?",
+            "output": "The capital of Japan is Tokyo.",
+            "passed": true
+        },
+        {
+            "test_id": "math_01",
+            "input": "What is 25 * 4?",
+            "output": "25 * 4 = 100",
+            "passed": true
+        },
+        {
+            "test_id": "logic_01",
+            "input": "If all roses are flowers, and some flowers fade, can we conclude that some roses fade?",
+            "output": "No, we cannot conclude that some roses fade.\n\nHere's why:\n\n**Given:**\n- All roses are flowers\n- Some flowers fade\n\n**The logical error:** Just because some flowers fade doesn't mean those particular flowers are roses. The flowers that fade could be entirely different types of flowers (tulips, daisies, etc.).\n\n**Venn diagram thinking:**\n- Roses are a subset within the larger set of flowers\n- \"Some flowers fade\" tells us there's overlap between flowers and things that fade\n- But this overlap might not include the rose subset at all\n\n**To validly conclude \"some roses fade,\" we would need:**\n- All roses are flowers (given) \u2713\n- Some flowers fade (given) \u2713\n- **AND** at least one of those fading flowers is a rose (NOT given) \u2717\n\nThe argument commits the **fallacy of the undistributed middle** by assuming the \"some flowers\" that fade must include roses.",
+            "passed": true
+        }
+    ]
+}

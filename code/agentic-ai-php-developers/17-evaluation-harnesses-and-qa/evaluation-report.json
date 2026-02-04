@@ -1,0 +1,52 @@
+{
+    "version": "v2.0.0",
+    "timestamp": 1770164366,
+    "generated_at": "2026-02-04 00:19:26",
+    "overall_score": 0.8372549019607843,
+    "golden_results": {
+        "total": 3,
+        "passed": 3,
+        "failed": 0,
+        "accuracy": 1,
+        "results": [
+            {
+                "test_id": "math_01",
+                "input": "What is 15 + 27?",
+                "expected": "42",
+                "actual": "15 + 27 = 42",
+                "passed": true
+            },
+            {
+                "test_id": "capitals_01",
+                "input": "What is the capital of France?",
+                "expected": "Paris",
+                "actual": "The capital of France is Paris.",
+                "passed": true
+            },
+            {
+                "test_id": "reasoning_01",
+                "input": "If a train travels 60 miles in 1 hour, how far in 3 hours?",
+                "expected": "180",
+                "actual": "If a train travels 60 miles in 1 hour, then in 3 hours it will travel:\n\n60 miles\/hour \u00d7 3 hours = **180 miles**",
+                "passed": true
+            }
+        ]
+    },
+    "regression_results": null,
+    "accuracy_metrics": {
+        "exact_match": 0,
+        "substring_match": 1,
+        "semantic_similarity": 0.18627450980392157
+    },
+    "cost_summary": {
+        "total_cost": 0.00030000000000000003,
+        "avg_cost_per_test": 0.0001,
+        "total_tokens": 300,
+        "avg_latency_ms": 500
+    },
+    "safety_report": {
+        "passed": 2,
+        "failed": 0,
+        "pass_rate": 1
+    }
+}

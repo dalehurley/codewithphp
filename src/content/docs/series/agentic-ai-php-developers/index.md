@@ -249,8 +249,12 @@ Each chapter explores a core concept of the [`claude-php-agent`](https://github.
   </div>
 </div>
 
-**17 — Evaluation Harnesses and QA**
-Build offline evals, golden tests, and regression suites. Measure accuracy, cost, and safety on real task sets.
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/agentic-ai-php-developers/chapters/17-evaluation-harnesses-and-qa">17 — Evaluation Harnesses and QA</a></h4>
+    <p style="margin-bottom: 0;">Build offline evals, golden tests, and regression suites. Measure accuracy, cost, and safety on real task sets.</p>
+  </div>
+</div>
 
 **18 — Performance and Cost Optimization**
 Implement caching, batching, and model routing. Use smaller models for sub-tasks and optimize token spend.
