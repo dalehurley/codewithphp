@@ -1,0 +1,21 @@
+{
+    "name": "codewithphp/agentic-ai-chapter-16",
+    "description": "Chapter 16: Observability code samples for Agentic AI for PHP Developers series",
+    "type": "project",
+    "require": {
+        "php": "^8.4",
+        "claude-php/agent": "^0.5",
+        "claude-php/claude-php-sdk": "^0.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "AgenticAI\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

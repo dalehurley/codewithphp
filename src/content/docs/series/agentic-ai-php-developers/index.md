@@ -242,8 +242,12 @@ Each chapter explores a core concept of the [`claude-php-agent`](https://github.
 
 ### Part 5: Production Engineering (Chapters 16–19)
 
-**16 — Observability: Logs, Traces, and Metrics**
-Instrument every agent step. Track tokens, tool calls, latency, and failure rates for real monitoring.
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/agentic-ai-php-developers/chapters/16-observability-logs-traces-metrics">16 — Observability: Logs, Traces, and Metrics</a></h4>
+    <p style="margin-bottom: 0;">Instrument every agent step with structured logging, distributed tracing, and metrics. Track tokens, tool calls, latency, and failure rates for production monitoring.</p>
+  </div>
+</div>
 
 **17 — Evaluation Harnesses and QA**
 Build offline evals, golden tests, and regression suites. Measure accuracy, cost, and safety on real task sets.
