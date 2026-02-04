@@ -272,8 +272,12 @@ Each chapter explores a core concept of the [`claude-php-agent`](https://github.
 
 ### Part 6: Capstone (Chapter 20)
 
-**20 — Capstone: Build an Agentic AI Platform**
-Combine everything into a full system: tool registry, memory, RAG, planning, and multi-agent orchestration. Build a real product-ready agentic application with evals and monitoring.
+<div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+  <div>
+    <h4 style="margin-top: 0;"><a href="/series/agentic-ai-php-developers/chapters/20-capstone-agentic-ai-platform">20 — Capstone: Build an Agentic AI Platform</a></h4>
+    <p style="margin-bottom: 0;">Combine everything into a full system: tool registry, memory, RAG, planning, and multi-agent orchestration. Build a real product-ready agentic application with evals and monitoring.</p>
+  </div>
+</div>
 
 ---
 
