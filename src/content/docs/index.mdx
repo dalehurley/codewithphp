@@ -1,18 +1,19 @@
 ---
-title: Learn Modern PHP from First Principles
-description: Learn modern PHP 8.4 by building real applications from scratch. Create your own router, ORM, and MVC framework before touching Laravel.
+title: Learn Modern PHP by Building Real Projects
+description: Learn PHP 8.4 with hands-on tutorials, guided learning paths, and real project outcomes—from first script to Laravel applications.
 template: splash
 hero:
   title: 'Code with PHP'
-  tagline: Learn modern PHP 8.4 by building real applications from scratch. Create your own router, ORM, and MVC framework before touching Laravel.
-  # image:
-  #   alt: Code with PHP - Learn Modern PHP
-  #   file: ../../../public/images/hero.png
+  tagline: Learn PHP 8.4 through practical projects, proven roadmaps, and production-focused engineering habits.
   actions:
-    - text: Start Learning
+    - text: Start with PHP Basics
       link: /series/php-basics/
       icon: right-arrow
       variant: primary
+    - text: Choose Your Learning Path
+      link: /series/
+      icon: open-book
+      variant: secondary
     - text: View on GitHub
       link: https://github.com/dalehurley/codewithphp
       icon: external
@@ -21,148 +22,123 @@ hero:
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
 
-## Why Code with PHP?
+![GitHub stars](https://img.shields.io/github/stars/dalehurley/codewithphp?style=for-the-badge&label=GitHub%20Stars) ![Last commit](https://img.shields.io/github/last-commit/dalehurley/codewithphp?style=for-the-badge&label=Last%20Update) ![Open source](https://img.shields.io/badge/Open%20Source-Yes-3fb950?style=for-the-badge)
 
-PHP is one of the most widely-used programming languages in the world, powering everything from the smallest blogs to the largest social networks. Its gentle learning curve, massive community, and rich ecosystem of modern tools make it a fantastic first language for aspiring web developers.
+## Build confidence, not just syntax knowledge
 
-Despite its long history, PHP is more relevant and powerful than ever. The language has evolved dramatically, embracing modern programming paradigms, strong typing, and a robust, professional toolchain. It is fast, flexible, and fun.
+Most PHP resources stop at language features. Code with PHP goes further: you build complete systems, understand architecture decisions, and practice workflows used in professional teams.
 
-## What Makes This Different?
+### What improves on this homepage
 
 <CardGrid>
-  <Card title="🎯 First Principles Approach" icon="star">
-    Learn by building everything from scratch. You'll create your own router, MVC architecture, and blog application before touching any framework.
-  </Card>
-  <Card title="🚀 Modern PHP 8.4" icon="rocket">
-    Use the latest PHP 8.4 features including property hooks, asymmetric visibility, and modern OOP patterns.
-  </Card>
-  <Card title="💼 Production-Ready Code" icon="approve-check">
-    Every example follows PSR standards and modern best practices. Code you can actually use in real projects.
-  </Card>
-  <Card title="📚 Complete Learning Path" icon="open-book">
-    From absolute beginner to framework mastery. Multiple series covering web development, algorithms, AI/ML, and more.
-  </Card>
+  <Card title="Clearer onboarding" icon="rocket">Start in minutes with a focused setup flow and a recommended first series.</Card>
+  <Card title="Stronger trust signals" icon="approve-check">Live GitHub activity and open-source transparency improve credibility.</Card>
+  <Card title="Faster path selection" icon="open-book">Audience-specific tracks help beginners, switchers, and advanced developers choose quickly.</Card>
+  <Card title="Project-first learning" icon="seti:php">Series descriptions focus on what you will build, not abstract theory.</Card>
 </CardGrid>
 
-## Choose Your Learning Path
+## Start in 2 minutes
 
-### 🎓 Beginner Series
+```bash
+npm install
+npm run dev
+```
+
+Open `http://localhost:4321`, then begin with [PHP Basics](/series/php-basics/).
+
+## Choose your path
+
+### 1) New to PHP
 
 <CardGrid>
   <Card title="PHP Basics" icon="star">
-    Master modern PHP from zero to building your own blog—no frameworks, just fundamentals. Perfect for complete beginners.
-    
-    [Start Learning →](/series/php-basics/)
+    Learn core PHP by building your own router, MVC structure, and blog project.
+
+    **Outcome:** You can structure and ship a clean PHP application from scratch.
+
+    [Start learning →](/series/php-basics/)
+  </Card>
+  <Card title="Build a CRM with Laravel 12" icon="seti:laravel">
+    Apply fundamentals to a complete Laravel product: auth, teams, workflows, and deployment-ready structure.
+
+    **Outcome:** You can build a full business app with modern Laravel patterns.
+
+    [Start learning →](/series/build-crm-laravel-12/)
   </Card>
 </CardGrid>
 
-### 🔄 Coming from Another Language?
+### 2) Switching from another language
 
 <CardGrid>
-  <Card title="PHP for TypeScript Developers" icon="seti:typescript">
-    Leverage your TypeScript knowledge to quickly master PHP's type system, OOP, and Laravel.
-    
-    [Start Learning →](/series/php-typescript-developers/)
-  </Card>
-  <Card title="PHP for Java Developers" icon="seti:java">
-    Transition from Java to modern PHP. Compare OOP concepts, frameworks, and enterprise patterns.
-    
-    [Start Learning →](/series/php-for-java-developers/)
-  </Card>
-  <Card title="Python Developers ❤️ PHP & Laravel" icon="seti:python">
-    Discover why Python developers love Laravel. Modern framework comparison and migration guide.
-    
-    [Start Learning →](/series/python-developers-love-php-laravel/)
-  </Card>
-  <Card title="Rails Developers ❤️ Laravel" icon="seti:ruby">
-    From Ruby on Rails to Laravel. See why Rails developers feel at home with Laravel's elegance.
-    
-    [Start Learning →](/series/rails-developers-love-laravel/)
-  </Card>
+  <Card title="TypeScript → PHP" icon="seti:typescript">Map strict typing and architecture concepts to modern PHP. [Start learning →](/series/php-typescript-developers/)</Card>
+  <Card title="Java → PHP" icon="seti:java">Translate enterprise patterns to pragmatic PHP and Laravel workflows. [Start learning →](/series/php-for-java-developers/)</Card>
+  <Card title="Python → PHP/Laravel" icon="seti:python">Compare ecosystems and build Laravel systems from a Python mindset. [Start learning →](/series/python-developers-love-php-laravel/)</Card>
+  <Card title="Rails → Laravel" icon="seti:ruby">Reuse familiar conventions while adopting Laravel's tooling and DX. [Start learning →](/series/rails-developers-love-laravel/)</Card>
 </CardGrid>
 
-### 🧠 Advanced Topics
+### 3) Advanced + AI tracks
 
 <CardGrid>
-  <Card title="Algorithms for PHP Developers" icon="puzzle">
-    Master data structures and algorithms with practical PHP implementations. From Big O to dynamic programming.
-    
-    [Start Learning →](/series/php-algorithms/)
-  </Card>
-  <Card title="AI/ML for PHP Developers" icon="star">
-    Build intelligent applications with machine learning, NLP, and computer vision—all in PHP.
-    
-    [Start Learning →](/series/ai-ml-php-developers/)
-  </Card>
-  <Card title="Data Science for PHP Developers" icon="star">
-    Learn data analysis, visualization, and machine learning integration for PHP developers.
-    
-    [Start Learning →](/series/data-science-php-developers/)
-  </Card>
-  <Card title="Claude for PHP Developers" icon="star">
-    Integrate Claude AI into your PHP applications. Build chatbots, content generators, and AI-powered features.
-    
-    [Start Learning →](/series/claude-php-developers/)
-  </Card>
-  <Card title="Agentic AI for PHP Developers (Under Development)" icon="star">
-    Build agentic workflows, tool-using bots, and autonomous assistants with PHP. Coming soon.
-    
-    [View Series →](/series/agentic-ai-php-developers/)
-    
-    **Under development**
-  </Card>
+  <Card title="Algorithms for PHP Developers" icon="puzzle">Master data structures and performance trade-offs in practical PHP. [Start learning →](/series/php-algorithms/)</Card>
+  <Card title="AI/ML for PHP Developers" icon="star">Build NLP, ML, and AI-powered features directly in PHP projects. [Start learning →](/series/ai-ml-php-developers/)</Card>
+  <Card title="Data Science for PHP Developers" icon="star">Analyze data and build reporting workflows with PHP-first tooling. [Start learning →](/series/data-science-php-developers/)</Card>
+  <Card title="Claude for PHP Developers" icon="star">Integrate assistant and agent-like features into real applications. [Start learning →](/series/claude-php-developers/)</Card>
 </CardGrid>
 
-### 🏗️ Build Real Projects
+## 30-day roadmap (recommended)
+
+1. **Week 1:** Syntax, flow control, functions, arrays, strings.
+2. **Week 2:** OOP, namespaces, Composer, exceptions, testing basics.
+3. **Week 3:** Databases, request/response, routing, architecture.
+4. **Week 4:** MVC assembly, code quality, and Laravel transition.
+
+## What you'll be able to do after finishing core paths
+
+- Design maintainable PHP apps with modern typing and clean architecture.
+- Build and organize MVC projects with clear boundaries and reusable components.
+- Use Composer, autoloading, and package workflows used by professional teams.
+- Write safer database queries and avoid common security pitfalls.
+- Move confidently into Laravel or Symfony without guesswork.
+
+## Recommended GitHub packages to learn alongside these tutorials
 
 <CardGrid>
-  <Card title="Build a CRM with Laravel 12" icon="star">
-    Create a complete CRM system with Laravel 12. Authentication, teams, deals pipeline, and more.
-    
-    [Start Learning →](/series/build-crm-laravel-12/)
-  </Card>
+  <Card title="Monolog" icon="seti:php">Structured logging for production systems. [github.com/Seldaek/monolog](https://github.com/Seldaek/monolog)</Card>
+  <Card title="Guzzle" icon="seti:php">Robust HTTP client for API integrations. [github.com/guzzle/guzzle](https://github.com/guzzle/guzzle)</Card>
+  <Card title="PHPUnit" icon="seti:php">Foundational unit testing for PHP applications. [github.com/sebastianbergmann/phpunit](https://github.com/sebastianbergmann/phpunit)</Card>
+  <Card title="Pest" icon="seti:php">Expressive testing framework built on PHPUnit. [github.com/pestphp/pest](https://github.com/pestphp/pest)</Card>
+  <Card title="Symfony HttpFoundation" icon="seti:php">Professional HTTP request/response abstractions. [github.com/symfony/http-foundation](https://github.com/symfony/http-foundation)</Card>
+  <Card title="Laravel Framework" icon="seti:laravel">Study framework internals and ecosystem conventions. [github.com/laravel/framework](https://github.com/laravel/framework)</Card>
 </CardGrid>
 
-## What You'll Learn
+## Frequently asked questions
 
-By working through these series, you will:
+### Do I need prior programming experience?
+No. Start with PHP Basics and follow chapters in sequence.
 
-- **Write and execute PHP scripts** confidently in development and production environments
-- **Master PHP fundamentals**: variables, data types, operators, control structures, and functions
-- **Work with complex data** using arrays, strings, and PHP's built-in functions
-- **Build object-oriented applications** using classes, inheritance, traits, interfaces, and namespaces
-- **Handle errors gracefully** with exceptions and custom error handling
-- **Manage dependencies** professionally with Composer and autoloading
-- **Design and query databases** using PDO with prepared statements
-- **Build custom HTTP routers** and understand request/response cycles
-- **Structure real applications** with separation of concerns and MVC patterns
-- **Write clean, maintainable code** following PSR-1 and PSR-12 standards
-- **Graduate confidently** to Laravel or Symfony with deep foundational knowledge
+### How much time should I invest each week?
+A steady 4–7 focused hours is enough to make strong progress.
 
-## Our Teaching Philosophy
+### Should I jump straight into Laravel?
+You'll move faster in Laravel after understanding core HTTP, OOP, and architecture from first principles.
 
-**The best way to learn is by doing.** We don't just read about programming concepts—we apply them immediately. You'll type code, run it, break it, fix it, and build on it.
+### Are the tutorials practical for real work?
+Yes. The lessons emphasize maintainability, standards alignment, and production-style coding habits.
 
-Every chapter includes:
+## Learn with a builder mindset
 
-- ✅ Clear learning objectives so you know what to expect
-- ✅ Step-by-step explanations with runnable code examples
-- ✅ Hands-on exercises to reinforce concepts
-- ✅ Troubleshooting tips for common errors
-- ✅ Further reading for those who want to dive deeper
+- Build while learning, not after learning.
+- Prioritize fundamentals before frameworks.
+- Practice debugging and refactoring as core skills.
+- Focus on patterns you can reuse in professional codebases.
 
-:::tip[Pro Tip]
-Type the code yourself instead of copy-pasting. Muscle memory and debugging practice are crucial for becoming a confident developer.
-:::
+## Community and contribution
 
-## Community & Support
+- **GitHub:** [View source and examples](https://github.com/dalehurley/codewithphp)
+- **Issues:** Report unclear sections or bugs
+- **Discussions:** Share progress and ask questions
+- **Pull Requests:** Improve tutorials for everyone
 
-- **GitHub**: [View source code and examples](https://github.com/dalehurley/codewithphp)
-- **Discussions**: Ask questions and share your progress
-- **Issues**: Report bugs or unclear explanations
+## Ready to begin?
 
-## Ready to Start?
-
-Begin your journey with [PHP Basics](/series/php-basics/) or choose a series that matches your experience level above.
-
-Every series is designed to be self-contained, so you can start wherever makes sense for your learning goals.
+Start now with [PHP Basics](/series/php-basics/) and complete your first real PHP project this week.
