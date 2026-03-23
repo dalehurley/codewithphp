@@ -953,7 +953,7 @@ In the next chapter, we'll start putting all these pieces together by designing 
 
 - [PHP-CS-Fixer Documentation](https://github.com/PHP-CS-Fixer/PHP-CS-Fixer) — Full configuration options and rules
 - [PHP-CS-Fixer Rules Index](https://mlocati.github.io/php-cs-fixer-configurator/) — Interactive rule browser
-- [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) — Alternative style checker and fixer
+- [PHP_CodeSniffer](https://github.com/PHPCSStandards/PHP_CodeSniffer) — Alternative style checker and fixer
 - [EditorConfig](https://editorconfig.org/) — Official documentation and editor plugin list
 - [PHPStan](https://phpstan.org/) — Static analysis tool (next-level code quality)
 - [Psalm](https://psalm.dev/) — Another excellent static analysis tool

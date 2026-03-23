@@ -2636,7 +2636,7 @@ vendor/bin/php-cs-fixer fix src
 
 - [PHPStan Documentation](https://phpstan.org/)
 - [Psalm Documentation](https://psalm.dev/)
-- [PHP_CodeSniffer Documentation](https://github.com/squizlabs/PHP_CodeSniffer)
+- [PHP_CodeSniffer Documentation](https://github.com/PHPCSStandards/PHP_CodeSniffer)
 - [PHP CS Fixer Documentation](https://github.com/FriendsOfPHP/PHP-CS-Fixer)
 - [Rector Documentation](https://getrector.org/)
 - [Deptrac Documentation](https://qossmic.github.io/deptrac/)
