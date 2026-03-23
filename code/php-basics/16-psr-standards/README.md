@@ -463,4 +463,4 @@ Before committing code, verify:
 - [PSR-12: Extended Coding Style](https://www.php-fig.org/psr/psr-12/)
 - [PHPDoc Reference](https://docs.phpdoc.org/)
 - [PHP CS Fixer](https://github.com/PHP-CS-Fixer/PHP-CS-Fixer)
-- [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer)
+- [PHP_CodeSniffer](https://github.com/PHPCSStandards/PHP_CodeSniffer)
