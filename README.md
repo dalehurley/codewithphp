@@ -1,3 +1,5 @@
+
+
 # Code with PHP
 
 > **A comprehensive, open-source learning platform helping developers fall in love with PHP and its ecosystem.**
@@ -34,7 +36,7 @@ npm install
 # Start development server (http://localhost:4321)
 npm run dev
 
-# Build for production
+# Build for production (runs astro check, then astro build)
 npm run build
 
 # Preview production build
