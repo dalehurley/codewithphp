@@ -28,6 +28,13 @@ export const courseCovers = {
     artwork: 'halftone',
     mark: '8.6',
   },
+  'php-misconceptions': {
+    title: 'PHP Misconceptions',
+    description: 'Test what you’ve heard about PHP and Laravel.',
+    color: 'coral',
+    artwork: 'symbol',
+    mark: '$?',
+  },
   'php-typescript-developers': {
     title: 'From TypeScript to PHP',
     description: 'Take what you know about types into PHP.',
@@ -100,7 +107,7 @@ export const featuredCourses: CourseSlug[] = [
 ];
 
 export const catalogueTracks: { id: string; title: string; courses: CourseSlug[] }[] = [
-  { id: 'start-here', title: 'Start here', courses: ['php-basics', 'php-8-6', 'build-crm-laravel-12'] },
+  { id: 'start-here', title: 'Start here', courses: ['php-basics', 'php-8-6', 'php-misconceptions', 'build-crm-laravel-12'] },
   { id: 'switch-languages', title: 'Switch languages', courses: [
     'php-typescript-developers', 'php-for-java-developers', 'python-developers-love-php-laravel', 'rails-developers-love-laravel',
   ] },

@@ -1,0 +1,19 @@
+trial	mode	endpoint	requests/s	p50 ms	p95 ms
+1	classic	ping	648.02	4	14
+1	classic	orders/per-row	461.82	7	16
+1	classic	orders/join	647.72	4	14
+1	worker	ping	1919.59	1	6
+1	worker	orders/per-row	1099.92	3	6
+1	worker	orders/join	1511.00	2	7
+2	worker	ping	2946.10	1	3
+2	worker	orders/per-row	1116.02	3	7
+2	worker	orders/join	2054.65	1	4
+2	classic	ping	980.93	3	8
+2	classic	orders/per-row	527.60	6	16
+2	classic	orders/join	610.49	5	15
+3	classic	ping	1058.82	3	8
+3	classic	orders/per-row	524.94	6	17
+3	classic	orders/join	674.99	4	16
+3	worker	ping	3005.74	1	2
+3	worker	orders/per-row	1286.19	3	5
+3	worker	orders/join	2802.02	1	2

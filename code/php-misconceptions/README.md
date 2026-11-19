@@ -1,0 +1,19 @@
+# PHP Misconceptions examples
+
+Run the standalone examples from the Code with PHP repository root using PHP 8.4 or later.
+
+| Command | What to check |
+| --- | --- |
+| `php code/php-misconceptions/types.php` | The integer quantity returns 3750. The strict caller rejects the numeric string. |
+| `php code/php-misconceptions/quantity-list.php` | PHP accepts the array and prints 1. The typing chapter shows how PHPStan checks the element type. |
+| `php code/php-misconceptions/modern-php.php` | The computed order label changes from pending to paid. |
+| `php code/php-misconceptions/inventory.php` | The JSON report contains two inventory items. |
+| `php code/php-misconceptions/fibers.php` | The caller runs between the two parts of the Fiber. |
+| `php code/php-misconceptions/quirks.php` | A match can occur at offset zero, and reindexing a sparse array changes its JSON representation. |
+| `php -d error_reporting=E_ALL -d display_errors=stderr -d log_errors=0 code/php-misconceptions/legacy-order-label.php` | PHP 8.5 prints `paid` and reports a dynamic-property deprecation. The upgrade chapter rehearses the fix. |
+
+The `laravel/` directory contains files to copy into a fresh Laravel 13 app.
+
+- The [Laravel performance lab](../../src/content/docs/series/php-misconceptions/chapters/03-laravel-performance.md) provides the setup, test and benchmark commands. The Caddyfile serves the two HTTP modes on loopback only. The [saved results](laravel/results/) include the TSV summaries, ApacheBench reports and dependency files.
+- The [Laravel code quality chapter](../../src/content/docs/series/php-misconceptions/chapters/04-clean-laravel-code.md) installs the quote endpoint and its feature tests.
+- The [developer tooling chapter](../../src/content/docs/series/php-misconceptions/chapters/11-developer-tooling.md) uses the quote app to demonstrate Pint and Larastan.

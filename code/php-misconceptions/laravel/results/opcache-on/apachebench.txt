@@ -1,0 +1,1594 @@
+
+=== trial 1 classic ping warm-up (200 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8010
+
+Document Path:          /_benchmark/ping
+Document Length:        11 bytes
+
+Concurrency Level:      4
+Time taken for tests:   0.322 seconds
+Complete requests:      200
+Failed requests:        0
+Total transferred:      228400 bytes
+HTML transferred:       2200 bytes
+Requests per second:    620.24 [#/sec] (mean)
+Time per request:       6.449 [ms] (mean)
+Time per request:       1.612 [ms] (mean, across all concurrent requests)
+Transfer rate:          691.71 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.3      0       2
+Processing:     2    6   1.9      5      14
+Waiting:        2    6   1.9      5      14
+Total:          2    6   1.9      6      14
+
+Percentage of the requests served within a certain time (ms)
+  50%      6
+  66%      7
+  75%      7
+  80%      7
+  90%      9
+  95%     11
+  98%     11
+  99%     13
+ 100%     14 (longest request)
+
+=== trial 1 classic ping measurement (2500 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8010
+
+Document Path:          /_benchmark/ping
+Document Length:        11 bytes
+
+Concurrency Level:      4
+Time taken for tests:   3.858 seconds
+Complete requests:      2500
+Failed requests:        0
+Total transferred:      2855000 bytes
+HTML transferred:       27500 bytes
+Requests per second:    648.02 [#/sec] (mean)
+Time per request:       6.173 [ms] (mean)
+Time per request:       1.543 [ms] (mean, across all concurrent requests)
+Transfer rate:          722.70 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.4      0      16
+Processing:     1    6  10.6      4     176
+Waiting:        1    6  10.6      4     176
+Total:          2    6  10.7      4     176
+
+Percentage of the requests served within a certain time (ms)
+  50%      4
+  66%      5
+  75%      6
+  80%      6
+  90%      9
+  95%     14
+  98%     36
+  99%     60
+ 100%    176 (longest request)
+
+=== trial 1 classic orders/per-row warm-up (200 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8010
+
+Document Path:          /_benchmark/orders/per-row
+Document Length:        1383 bytes
+
+Concurrency Level:      4
+Time taken for tests:   0.309 seconds
+Complete requests:      200
+Failed requests:        0
+Total transferred:      503200 bytes
+HTML transferred:       276600 bytes
+Requests per second:    648.11 [#/sec] (mean)
+Time per request:       6.172 [ms] (mean)
+Time per request:       1.543 [ms] (mean, across all concurrent requests)
+Transfer rate:          1592.43 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.1      0       0
+Processing:     3    6   1.6      5      14
+Waiting:        3    6   1.5      5      14
+Total:          3    6   1.6      6      14
+
+Percentage of the requests served within a certain time (ms)
+  50%      6
+  66%      6
+  75%      7
+  80%      7
+  90%      8
+  95%      9
+  98%     11
+  99%     12
+ 100%     14 (longest request)
+
+=== trial 1 classic orders/per-row measurement (2500 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8010
+
+Document Path:          /_benchmark/orders/per-row
+Document Length:        1383 bytes
+
+Concurrency Level:      4
+Time taken for tests:   5.413 seconds
+Complete requests:      2500
+Failed requests:        0
+Total transferred:      6290000 bytes
+HTML transferred:       3457500 bytes
+Requests per second:    461.82 [#/sec] (mean)
+Time per request:       8.661 [ms] (mean)
+Time per request:       2.165 [ms] (mean, across all concurrent requests)
+Transfer rate:          1134.70 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.3      0      12
+Processing:     3    8   4.5      7      52
+Waiting:        3    8   4.5      7      52
+Total:          3    9   4.6      7      54
+
+Percentage of the requests served within a certain time (ms)
+  50%      7
+  66%      9
+  75%     10
+  80%     11
+  90%     13
+  95%     16
+  98%     19
+  99%     29
+ 100%     54 (longest request)
+
+=== trial 1 classic orders/join warm-up (200 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8010
+
+Document Path:          /_benchmark/orders/join
+Document Length:        1383 bytes
+
+Concurrency Level:      4
+Time taken for tests:   0.655 seconds
+Complete requests:      200
+Failed requests:        0
+Total transferred:      503200 bytes
+HTML transferred:       276600 bytes
+Requests per second:    305.41 [#/sec] (mean)
+Time per request:       13.097 [ms] (mean)
+Time per request:       3.274 [ms] (mean, across all concurrent requests)
+Transfer rate:          750.40 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    1   2.2      0      22
+Processing:     2   12  19.3      5     150
+Waiting:        2   12  19.2      5     150
+Total:          2   13  19.5      6     150
+
+Percentage of the requests served within a certain time (ms)
+  50%      6
+  66%     11
+  75%     14
+  80%     16
+  90%     25
+  95%     37
+  98%     91
+  99%    147
+ 100%    150 (longest request)
+
+=== trial 1 classic orders/join measurement (2500 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8010
+
+Document Path:          /_benchmark/orders/join
+Document Length:        1383 bytes
+
+Concurrency Level:      4
+Time taken for tests:   3.860 seconds
+Complete requests:      2500
+Failed requests:        0
+Total transferred:      6290000 bytes
+HTML transferred:       3457500 bytes
+Requests per second:    647.72 [#/sec] (mean)
+Time per request:       6.175 [ms] (mean)
+Time per request:       1.544 [ms] (mean, across all concurrent requests)
+Transfer rate:          1591.47 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.9      0      41
+Processing:     2    6   7.1      4     140
+Waiting:        2    6   7.1      4     140
+Total:          2    6   7.5      4     144
+
+Percentage of the requests served within a certain time (ms)
+  50%      4
+  66%      5
+  75%      6
+  80%      7
+  90%      9
+  95%     14
+  98%     22
+  99%     31
+ 100%    144 (longest request)
+
+=== trial 1 worker ping warm-up (200 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8011
+
+Document Path:          /_benchmark/ping
+Document Length:        11 bytes
+
+Concurrency Level:      4
+Time taken for tests:   0.182 seconds
+Complete requests:      200
+Failed requests:        0
+Total transferred:      228400 bytes
+HTML transferred:       2200 bytes
+Requests per second:    1096.45 [#/sec] (mean)
+Time per request:       3.648 [ms] (mean)
+Time per request:       0.912 [ms] (mean, across all concurrent requests)
+Transfer rate:          1222.80 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.4      0       4
+Processing:     1    3   1.6      3       8
+Waiting:        1    3   1.6      3       8
+Total:          1    4   1.7      3       8
+
+Percentage of the requests served within a certain time (ms)
+  50%      3
+  66%      4
+  75%      5
+  80%      5
+  90%      6
+  95%      7
+  98%      7
+  99%      8
+ 100%      8 (longest request)
+
+=== trial 1 worker ping measurement (2500 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8011
+
+Document Path:          /_benchmark/ping
+Document Length:        11 bytes
+
+Concurrency Level:      4
+Time taken for tests:   1.302 seconds
+Complete requests:      2500
+Failed requests:        0
+Total transferred:      2855000 bytes
+HTML transferred:       27500 bytes
+Requests per second:    1919.59 [#/sec] (mean)
+Time per request:       2.084 [ms] (mean)
+Time per request:       0.521 [ms] (mean, across all concurrent requests)
+Transfer rate:          2140.79 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.2      0       7
+Processing:     1    2   1.9      1      30
+Waiting:        1    2   1.9      1      30
+Total:          1    2   2.0      1      30
+
+Percentage of the requests served within a certain time (ms)
+  50%      1
+  66%      2
+  75%      2
+  80%      2
+  90%      3
+  95%      6
+  98%      9
+  99%     12
+ 100%     30 (longest request)
+
+=== trial 1 worker orders/per-row warm-up (200 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8011
+
+Document Path:          /_benchmark/orders/per-row
+Document Length:        1383 bytes
+
+Concurrency Level:      4
+Time taken for tests:   0.560 seconds
+Complete requests:      200
+Failed requests:        0
+Total transferred:      503200 bytes
+HTML transferred:       276600 bytes
+Requests per second:    357.00 [#/sec] (mean)
+Time per request:       11.204 [ms] (mean)
+Time per request:       2.801 [ms] (mean, across all concurrent requests)
+Transfer rate:          877.17 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   1.2      0      11
+Processing:     2   11  20.9      4     164
+Waiting:        2   11  20.8      3     164
+Total:          2   11  21.0      4     164
+
+Percentage of the requests served within a certain time (ms)
+  50%      4
+  66%      6
+  75%     12
+  80%     14
+  90%     26
+  95%     34
+  98%    124
+  99%    142
+ 100%    164 (longest request)
+
+=== trial 1 worker orders/per-row measurement (2500 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8011
+
+Document Path:          /_benchmark/orders/per-row
+Document Length:        1383 bytes
+
+Concurrency Level:      4
+Time taken for tests:   2.273 seconds
+Complete requests:      2500
+Failed requests:        0
+Total transferred:      6290000 bytes
+HTML transferred:       3457500 bytes
+Requests per second:    1099.92 [#/sec] (mean)
+Time per request:       3.637 [ms] (mean)
+Time per request:       0.909 [ms] (mean, across all concurrent requests)
+Transfer rate:          2702.53 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.2      0       6
+Processing:     2    3   4.7      3     116
+Waiting:        2    3   4.7      3     116
+Total:          2    4   4.7      3     117
+
+Percentage of the requests served within a certain time (ms)
+  50%      3
+  66%      3
+  75%      4
+  80%      4
+  90%      5
+  95%      6
+  98%      9
+  99%     12
+ 100%    117 (longest request)
+
+=== trial 1 worker orders/join warm-up (200 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8011
+
+Document Path:          /_benchmark/orders/join
+Document Length:        1383 bytes
+
+Concurrency Level:      4
+Time taken for tests:   0.187 seconds
+Complete requests:      200
+Failed requests:        0
+Total transferred:      503200 bytes
+HTML transferred:       276600 bytes
+Requests per second:    1070.30 [#/sec] (mean)
+Time per request:       3.737 [ms] (mean)
+Time per request:       0.934 [ms] (mean, across all concurrent requests)
+Transfer rate:          2629.75 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.5      0       6
+Processing:     1    3   1.9      3      15
+Waiting:        1    3   1.9      3      15
+Total:          1    4   2.0      3      16
+
+Percentage of the requests served within a certain time (ms)
+  50%      3
+  66%      4
+  75%      4
+  80%      5
+  90%      6
+  95%      7
+  98%     11
+  99%     12
+ 100%     16 (longest request)
+
+=== trial 1 worker orders/join measurement (2500 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8011
+
+Document Path:          /_benchmark/orders/join
+Document Length:        1383 bytes
+
+Concurrency Level:      4
+Time taken for tests:   1.655 seconds
+Complete requests:      2500
+Failed requests:        0
+Total transferred:      6290000 bytes
+HTML transferred:       3457500 bytes
+Requests per second:    1511.00 [#/sec] (mean)
+Time per request:       2.647 [ms] (mean)
+Time per request:       0.662 [ms] (mean, across all concurrent requests)
+Transfer rate:          3712.58 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.3      0       4
+Processing:     1    2   2.6      2      47
+Waiting:        0    2   2.5      2      46
+Total:          1    3   2.7      2      48
+
+Percentage of the requests served within a certain time (ms)
+  50%      2
+  66%      2
+  75%      3
+  80%      3
+  90%      5
+  95%      7
+  98%     10
+  99%     13
+ 100%     48 (longest request)
+
+=== trial 2 worker ping warm-up (200 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8011
+
+Document Path:          /_benchmark/ping
+Document Length:        11 bytes
+
+Concurrency Level:      4
+Time taken for tests:   0.078 seconds
+Complete requests:      200
+Failed requests:        0
+Total transferred:      228400 bytes
+HTML transferred:       2200 bytes
+Requests per second:    2579.08 [#/sec] (mean)
+Time per request:       1.551 [ms] (mean)
+Time per request:       0.388 [ms] (mean, across all concurrent requests)
+Transfer rate:          2876.28 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.1      0       1
+Processing:     1    1   0.5      1       3
+Waiting:        1    1   0.5      1       3
+Total:          1    1   0.6      1       4
+
+Percentage of the requests served within a certain time (ms)
+  50%      1
+  66%      2
+  75%      2
+  80%      2
+  90%      2
+  95%      3
+  98%      3
+  99%      3
+ 100%      4 (longest request)
+
+=== trial 2 worker ping measurement (2500 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8011
+
+Document Path:          /_benchmark/ping
+Document Length:        11 bytes
+
+Concurrency Level:      4
+Time taken for tests:   0.849 seconds
+Complete requests:      2500
+Failed requests:        0
+Total transferred:      2855000 bytes
+HTML transferred:       27500 bytes
+Requests per second:    2946.10 [#/sec] (mean)
+Time per request:       1.358 [ms] (mean)
+Time per request:       0.339 [ms] (mean, across all concurrent requests)
+Transfer rate:          3285.59 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.3      0      12
+Processing:     1    1   0.7      1      12
+Waiting:        1    1   0.7      1      12
+Total:          1    1   0.8      1      14
+
+Percentage of the requests served within a certain time (ms)
+  50%      1
+  66%      1
+  75%      1
+  80%      2
+  90%      2
+  95%      3
+  98%      4
+  99%      4
+ 100%     14 (longest request)
+
+=== trial 2 worker orders/per-row warm-up (200 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8011
+
+Document Path:          /_benchmark/orders/per-row
+Document Length:        1383 bytes
+
+Concurrency Level:      4
+Time taken for tests:   0.176 seconds
+Complete requests:      200
+Failed requests:        0
+Total transferred:      503200 bytes
+HTML transferred:       276600 bytes
+Requests per second:    1136.78 [#/sec] (mean)
+Time per request:       3.519 [ms] (mean)
+Time per request:       0.880 [ms] (mean, across all concurrent requests)
+Transfer rate:          2793.11 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.2      0       2
+Processing:     2    3   1.4      3      10
+Waiting:        2    3   1.4      3      10
+Total:          2    3   1.5      3      10
+
+Percentage of the requests served within a certain time (ms)
+  50%      3
+  66%      3
+  75%      4
+  80%      4
+  90%      5
+  95%      6
+  98%      8
+  99%     10
+ 100%     10 (longest request)
+
+=== trial 2 worker orders/per-row measurement (2500 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8011
+
+Document Path:          /_benchmark/orders/per-row
+Document Length:        1383 bytes
+
+Concurrency Level:      4
+Time taken for tests:   2.240 seconds
+Complete requests:      2500
+Failed requests:        0
+Total transferred:      6290000 bytes
+HTML transferred:       3457500 bytes
+Requests per second:    1116.02 [#/sec] (mean)
+Time per request:       3.584 [ms] (mean)
+Time per request:       0.896 [ms] (mean, across all concurrent requests)
+Transfer rate:          2742.10 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.2      0       3
+Processing:     2    3   1.7      3      15
+Waiting:        2    3   1.7      3      15
+Total:          2    4   1.8      3      16
+
+Percentage of the requests served within a certain time (ms)
+  50%      3
+  66%      4
+  75%      4
+  80%      4
+  90%      6
+  95%      7
+  98%      9
+  99%     10
+ 100%     16 (longest request)
+
+=== trial 2 worker orders/join warm-up (200 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8011
+
+Document Path:          /_benchmark/orders/join
+Document Length:        1383 bytes
+
+Concurrency Level:      4
+Time taken for tests:   0.167 seconds
+Complete requests:      200
+Failed requests:        0
+Total transferred:      503200 bytes
+HTML transferred:       276600 bytes
+Requests per second:    1194.16 [#/sec] (mean)
+Time per request:       3.350 [ms] (mean)
+Time per request:       0.837 [ms] (mean, across all concurrent requests)
+Transfer rate:          2934.08 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.1      0       1
+Processing:     1    3   2.0      3      10
+Waiting:        1    3   1.9      3      10
+Total:          1    3   2.0      3      11
+
+Percentage of the requests served within a certain time (ms)
+  50%      3
+  66%      3
+  75%      4
+  80%      4
+  90%      5
+  95%      9
+  98%     10
+  99%     11
+ 100%     11 (longest request)
+
+=== trial 2 worker orders/join measurement (2500 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8011
+
+Document Path:          /_benchmark/orders/join
+Document Length:        1383 bytes
+
+Concurrency Level:      4
+Time taken for tests:   1.217 seconds
+Complete requests:      2500
+Failed requests:        0
+Total transferred:      6290000 bytes
+HTML transferred:       3457500 bytes
+Requests per second:    2054.65 [#/sec] (mean)
+Time per request:       1.947 [ms] (mean)
+Time per request:       0.487 [ms] (mean, across all concurrent requests)
+Transfer rate:          5048.33 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.2      0       5
+Processing:     1    2   1.3      1      14
+Waiting:        1    2   1.3      1      14
+Total:          1    2   1.4      1      14
+
+Percentage of the requests served within a certain time (ms)
+  50%      1
+  66%      2
+  75%      2
+  80%      2
+  90%      3
+  95%      4
+  98%      6
+  99%      8
+ 100%     14 (longest request)
+
+=== trial 2 classic ping warm-up (200 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8010
+
+Document Path:          /_benchmark/ping
+Document Length:        11 bytes
+
+Concurrency Level:      4
+Time taken for tests:   0.144 seconds
+Complete requests:      200
+Failed requests:        0
+Total transferred:      228400 bytes
+HTML transferred:       2200 bytes
+Requests per second:    1389.10 [#/sec] (mean)
+Time per request:       2.880 [ms] (mean)
+Time per request:       0.720 [ms] (mean, across all concurrent requests)
+Transfer rate:          1549.17 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.0      0       0
+Processing:     1    3   0.8      2       9
+Waiting:        1    3   0.8      2       9
+Total:          2    3   0.8      3      10
+WARNING: The median and mean for the processing time are not within a normal deviation
+        These results are probably not that reliable.
+WARNING: The median and mean for the waiting time are not within a normal deviation
+        These results are probably not that reliable.
+
+Percentage of the requests served within a certain time (ms)
+  50%      3
+  66%      3
+  75%      3
+  80%      3
+  90%      4
+  95%      4
+  98%      4
+  99%      4
+ 100%     10 (longest request)
+
+=== trial 2 classic ping measurement (2500 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8010
+
+Document Path:          /_benchmark/ping
+Document Length:        11 bytes
+
+Concurrency Level:      4
+Time taken for tests:   2.549 seconds
+Complete requests:      2500
+Failed requests:        0
+Total transferred:      2855000 bytes
+HTML transferred:       27500 bytes
+Requests per second:    980.93 [#/sec] (mean)
+Time per request:       4.078 [ms] (mean)
+Time per request:       1.019 [ms] (mean, across all concurrent requests)
+Transfer rate:          1093.96 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.4      0       8
+Processing:     1    4   5.3      3     105
+Waiting:        1    4   5.2      3     105
+Total:          1    4   5.5      3     109
+
+Percentage of the requests served within a certain time (ms)
+  50%      3
+  66%      4
+  75%      4
+  80%      4
+  90%      6
+  95%      8
+  98%     12
+  99%     19
+ 100%    109 (longest request)
+
+=== trial 2 classic orders/per-row warm-up (200 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8010
+
+Document Path:          /_benchmark/orders/per-row
+Document Length:        1383 bytes
+
+Concurrency Level:      4
+Time taken for tests:   0.344 seconds
+Complete requests:      200
+Failed requests:        0
+Total transferred:      503200 bytes
+HTML transferred:       276600 bytes
+Requests per second:    582.21 [#/sec] (mean)
+Time per request:       6.870 [ms] (mean)
+Time per request:       1.718 [ms] (mean, across all concurrent requests)
+Transfer rate:          1430.52 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.1      0       1
+Processing:     3    6   1.7      6      16
+Waiting:        3    6   1.7      6      16
+Total:          3    7   1.7      7      16
+
+Percentage of the requests served within a certain time (ms)
+  50%      7
+  66%      7
+  75%      8
+  80%      8
+  90%      9
+  95%      9
+  98%     10
+  99%     11
+ 100%     16 (longest request)
+
+=== trial 2 classic orders/per-row measurement (2500 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8010
+
+Document Path:          /_benchmark/orders/per-row
+Document Length:        1383 bytes
+
+Concurrency Level:      4
+Time taken for tests:   4.738 seconds
+Complete requests:      2500
+Failed requests:        0
+Total transferred:      6290000 bytes
+HTML transferred:       3457500 bytes
+Requests per second:    527.60 [#/sec] (mean)
+Time per request:       7.582 [ms] (mean)
+Time per request:       1.895 [ms] (mean, across all concurrent requests)
+Transfer rate:          1296.32 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.3      0       6
+Processing:     3    7   5.3      6      99
+Waiting:        3    7   5.3      6      99
+Total:          3    8   5.4      6      99
+
+Percentage of the requests served within a certain time (ms)
+  50%      6
+  66%      7
+  75%      8
+  80%      9
+  90%     12
+  95%     16
+  98%     23
+  99%     28
+ 100%     99 (longest request)
+
+=== trial 2 classic orders/join warm-up (200 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8010
+
+Document Path:          /_benchmark/orders/join
+Document Length:        1383 bytes
+
+Concurrency Level:      4
+Time taken for tests:   0.396 seconds
+Complete requests:      200
+Failed requests:        0
+Total transferred:      503200 bytes
+HTML transferred:       276600 bytes
+Requests per second:    505.13 [#/sec] (mean)
+Time per request:       7.919 [ms] (mean)
+Time per request:       1.980 [ms] (mean, across all concurrent requests)
+Transfer rate:          1241.12 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.1      0       2
+Processing:     3    7   8.8      4      75
+Waiting:        3    6   8.8      4      75
+Total:          3    7   8.8      5      76
+
+Percentage of the requests served within a certain time (ms)
+  50%      5
+  66%      6
+  75%      6
+  80%      7
+  90%      8
+  95%     12
+  98%     49
+  99%     66
+ 100%     76 (longest request)
+
+=== trial 2 classic orders/join measurement (2500 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8010
+
+Document Path:          /_benchmark/orders/join
+Document Length:        1383 bytes
+
+Concurrency Level:      4
+Time taken for tests:   4.095 seconds
+Complete requests:      2500
+Failed requests:        0
+Total transferred:      6290000 bytes
+HTML transferred:       3457500 bytes
+Requests per second:    610.49 [#/sec] (mean)
+Time per request:       6.552 [ms] (mean)
+Time per request:       1.638 [ms] (mean, across all concurrent requests)
+Transfer rate:          1499.99 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.3      0       7
+Processing:     2    6   6.3      5     115
+Waiting:        2    6   6.2      5     115
+Total:          2    7   6.4      5     115
+
+Percentage of the requests served within a certain time (ms)
+  50%      5
+  66%      6
+  75%      7
+  80%      8
+  90%     11
+  95%     15
+  98%     24
+  99%     33
+ 100%    115 (longest request)
+
+=== trial 3 classic ping warm-up (200 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8010
+
+Document Path:          /_benchmark/ping
+Document Length:        11 bytes
+
+Concurrency Level:      4
+Time taken for tests:   0.278 seconds
+Complete requests:      200
+Failed requests:        0
+Total transferred:      228400 bytes
+HTML transferred:       2200 bytes
+Requests per second:    720.25 [#/sec] (mean)
+Time per request:       5.554 [ms] (mean)
+Time per request:       1.388 [ms] (mean, across all concurrent requests)
+Transfer rate:          803.25 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.3      0       4
+Processing:     2    5   2.8      4      16
+Waiting:        2    5   2.8      4      16
+Total:          2    5   2.9      5      16
+
+Percentage of the requests served within a certain time (ms)
+  50%      5
+  66%      6
+  75%      7
+  80%      8
+  90%     10
+  95%     10
+  98%     15
+  99%     15
+ 100%     16 (longest request)
+
+=== trial 3 classic ping measurement (2500 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8010
+
+Document Path:          /_benchmark/ping
+Document Length:        11 bytes
+
+Concurrency Level:      4
+Time taken for tests:   2.361 seconds
+Complete requests:      2500
+Failed requests:        0
+Total transferred:      2855000 bytes
+HTML transferred:       27500 bytes
+Requests per second:    1058.82 [#/sec] (mean)
+Time per request:       3.778 [ms] (mean)
+Time per request:       0.944 [ms] (mean, across all concurrent requests)
+Transfer rate:          1180.83 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.2      0       6
+Processing:     1    4   2.4      3      33
+Waiting:        1    4   2.4      3      33
+Total:          1    4   2.5      3      33
+
+Percentage of the requests served within a certain time (ms)
+  50%      3
+  66%      4
+  75%      4
+  80%      5
+  90%      6
+  95%      8
+  98%     10
+  99%     13
+ 100%     33 (longest request)
+
+=== trial 3 classic orders/per-row warm-up (200 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8010
+
+Document Path:          /_benchmark/orders/per-row
+Document Length:        1383 bytes
+
+Concurrency Level:      4
+Time taken for tests:   0.430 seconds
+Complete requests:      200
+Failed requests:        0
+Total transferred:      503200 bytes
+HTML transferred:       276600 bytes
+Requests per second:    465.32 [#/sec] (mean)
+Time per request:       8.596 [ms] (mean)
+Time per request:       2.149 [ms] (mean, across all concurrent requests)
+Transfer rate:          1143.30 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.2      0       2
+Processing:     4    8   2.9      7      20
+Waiting:        4    8   2.9      7      20
+Total:          4    8   3.0      8      21
+
+Percentage of the requests served within a certain time (ms)
+  50%      8
+  66%      9
+  75%     10
+  80%     10
+  90%     12
+  95%     15
+  98%     19
+  99%     20
+ 100%     21 (longest request)
+
+=== trial 3 classic orders/per-row measurement (2500 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8010
+
+Document Path:          /_benchmark/orders/per-row
+Document Length:        1383 bytes
+
+Concurrency Level:      4
+Time taken for tests:   4.762 seconds
+Complete requests:      2500
+Failed requests:        0
+Total transferred:      6290000 bytes
+HTML transferred:       3457500 bytes
+Requests per second:    524.94 [#/sec] (mean)
+Time per request:       7.620 [ms] (mean)
+Time per request:       1.905 [ms] (mean, across all concurrent requests)
+Transfer rate:          1289.80 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.4      0       8
+Processing:     3    7   5.5      6      90
+Waiting:        3    7   5.5      5      83
+Total:          3    8   5.7      6      98
+
+Percentage of the requests served within a certain time (ms)
+  50%      6
+  66%      7
+  75%      8
+  80%      9
+  90%     12
+  95%     17
+  98%     24
+  99%     34
+ 100%     98 (longest request)
+
+=== trial 3 classic orders/join warm-up (200 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8010
+
+Document Path:          /_benchmark/orders/join
+Document Length:        1383 bytes
+
+Concurrency Level:      4
+Time taken for tests:   0.200 seconds
+Complete requests:      200
+Failed requests:        0
+Total transferred:      503200 bytes
+HTML transferred:       276600 bytes
+Requests per second:    998.28 [#/sec] (mean)
+Time per request:       4.007 [ms] (mean)
+Time per request:       1.002 [ms] (mean, across all concurrent requests)
+Transfer rate:          2452.80 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.1      0       1
+Processing:     2    4   1.1      4       9
+Waiting:        2    4   1.1      3       9
+Total:          2    4   1.1      4       9
+
+Percentage of the requests served within a certain time (ms)
+  50%      4
+  66%      4
+  75%      4
+  80%      5
+  90%      6
+  95%      6
+  98%      8
+  99%      8
+ 100%      9 (longest request)
+
+=== trial 3 classic orders/join measurement (2500 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8010
+
+Document Path:          /_benchmark/orders/join
+Document Length:        1383 bytes
+
+Concurrency Level:      4
+Time taken for tests:   3.704 seconds
+Complete requests:      2500
+Failed requests:        0
+Total transferred:      6290000 bytes
+HTML transferred:       3457500 bytes
+Requests per second:    674.99 [#/sec] (mean)
+Time per request:       5.926 [ms] (mean)
+Time per request:       1.481 [ms] (mean, across all concurrent requests)
+Transfer rate:          1658.48 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.6      0      24
+Processing:     2    6   5.4      4      56
+Waiting:        2    6   5.4      4      56
+Total:          2    6   5.5      4      56
+
+Percentage of the requests served within a certain time (ms)
+  50%      4
+  66%      5
+  75%      6
+  80%      7
+  90%     10
+  95%     16
+  98%     25
+  99%     33
+ 100%     56 (longest request)
+
+=== trial 3 worker ping warm-up (200 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8011
+
+Document Path:          /_benchmark/ping
+Document Length:        11 bytes
+
+Concurrency Level:      4
+Time taken for tests:   0.121 seconds
+Complete requests:      200
+Failed requests:        0
+Total transferred:      228400 bytes
+HTML transferred:       2200 bytes
+Requests per second:    1657.43 [#/sec] (mean)
+Time per request:       2.413 [ms] (mean)
+Time per request:       0.603 [ms] (mean, across all concurrent requests)
+Transfer rate:          1848.42 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.3      0       3
+Processing:     1    2   1.4      2      11
+Waiting:        1    2   1.4      2      10
+Total:          1    2   1.5      2      11
+
+Percentage of the requests served within a certain time (ms)
+  50%      2
+  66%      2
+  75%      3
+  80%      3
+  90%      4
+  95%      5
+  98%      7
+  99%      7
+ 100%     11 (longest request)
+
+=== trial 3 worker ping measurement (2500 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8011
+
+Document Path:          /_benchmark/ping
+Document Length:        11 bytes
+
+Concurrency Level:      4
+Time taken for tests:   0.832 seconds
+Complete requests:      2500
+Failed requests:        0
+Total transferred:      2855000 bytes
+HTML transferred:       27500 bytes
+Requests per second:    3005.74 [#/sec] (mean)
+Time per request:       1.331 [ms] (mean)
+Time per request:       0.333 [ms] (mean, across all concurrent requests)
+Transfer rate:          3352.11 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.1      0       6
+Processing:     1    1   0.9      1      17
+Waiting:        1    1   0.8      1      17
+Total:          1    1   0.9      1      17
+
+Percentage of the requests served within a certain time (ms)
+  50%      1
+  66%      1
+  75%      1
+  80%      2
+  90%      2
+  95%      2
+  98%      3
+  99%      4
+ 100%     17 (longest request)
+
+=== trial 3 worker orders/per-row warm-up (200 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8011
+
+Document Path:          /_benchmark/orders/per-row
+Document Length:        1383 bytes
+
+Concurrency Level:      4
+Time taken for tests:   0.151 seconds
+Complete requests:      200
+Failed requests:        0
+Total transferred:      503200 bytes
+HTML transferred:       276600 bytes
+Requests per second:    1326.87 [#/sec] (mean)
+Time per request:       3.015 [ms] (mean)
+Time per request:       0.754 [ms] (mean, across all concurrent requests)
+Transfer rate:          3260.15 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.0      0       0
+Processing:     2    3   0.9      3       6
+Waiting:        2    3   0.9      3       6
+Total:          2    3   0.9      3       6
+
+Percentage of the requests served within a certain time (ms)
+  50%      3
+  66%      3
+  75%      3
+  80%      4
+  90%      4
+  95%      5
+  98%      5
+  99%      6
+ 100%      6 (longest request)
+
+=== trial 3 worker orders/per-row measurement (2500 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8011
+
+Document Path:          /_benchmark/orders/per-row
+Document Length:        1383 bytes
+
+Concurrency Level:      4
+Time taken for tests:   1.944 seconds
+Complete requests:      2500
+Failed requests:        0
+Total transferred:      6290000 bytes
+HTML transferred:       3457500 bytes
+Requests per second:    1286.19 [#/sec] (mean)
+Time per request:       3.110 [ms] (mean)
+Time per request:       0.777 [ms] (mean, across all concurrent requests)
+Transfer rate:          3160.21 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.1      0       3
+Processing:     2    3   1.7      3      29
+Waiting:        2    3   1.7      2      29
+Total:          2    3   1.7      3      29
+
+Percentage of the requests served within a certain time (ms)
+  50%      3
+  66%      3
+  75%      3
+  80%      4
+  90%      4
+  95%      5
+  98%      7
+  99%      8
+ 100%     29 (longest request)
+
+=== trial 3 worker orders/join warm-up (200 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8011
+
+Document Path:          /_benchmark/orders/join
+Document Length:        1383 bytes
+
+Concurrency Level:      4
+Time taken for tests:   0.088 seconds
+Complete requests:      200
+Failed requests:        0
+Total transferred:      503200 bytes
+HTML transferred:       276600 bytes
+Requests per second:    2279.57 [#/sec] (mean)
+Time per request:       1.755 [ms] (mean)
+Time per request:       0.439 [ms] (mean, across all concurrent requests)
+Transfer rate:          5600.96 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.1      0       1
+Processing:     1    2   0.8      1       4
+Waiting:        1    2   0.8      1       4
+Total:          1    2   0.8      1       4
+WARNING: The median and mean for the processing time are not within a normal deviation
+        These results are probably not that reliable.
+WARNING: The median and mean for the waiting time are not within a normal deviation
+        These results are probably not that reliable.
+WARNING: The median and mean for the total time are not within a normal deviation
+        These results are probably not that reliable.
+
+Percentage of the requests served within a certain time (ms)
+  50%      1
+  66%      2
+  75%      2
+  80%      2
+  90%      3
+  95%      3
+  98%      4
+  99%      4
+ 100%      4 (longest request)
+
+=== trial 3 worker orders/join measurement (2500 requests, concurrency 4) ===
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient).....done
+
+
+Server Software:        FrankenPHP
+Server Hostname:        127.0.0.1
+Server Port:            8011
+
+Document Path:          /_benchmark/orders/join
+Document Length:        1383 bytes
+
+Concurrency Level:      4
+Time taken for tests:   0.892 seconds
+Complete requests:      2500
+Failed requests:        0
+Total transferred:      6290000 bytes
+HTML transferred:       3457500 bytes
+Requests per second:    2802.02 [#/sec] (mean)
+Time per request:       1.428 [ms] (mean)
+Time per request:       0.357 [ms] (mean, across all concurrent requests)
+Transfer rate:          6884.64 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.0      0       1
+Processing:     1    1   0.8      1      17
+Waiting:        1    1   0.8      1      17
+Total:          1    1   0.8      1      17
+
+Percentage of the requests served within a certain time (ms)
+  50%      1
+  66%      1
+  75%      2
+  80%      2
+  90%      2
+  95%      2
+  98%      3
+  99%      3
+ 100%     17 (longest request)

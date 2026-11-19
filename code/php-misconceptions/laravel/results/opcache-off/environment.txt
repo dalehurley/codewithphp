@@ -1,0 +1,18 @@
+Darwin 25.6.0 arm64
+PHP 8.5.0 (cli) (built: Nov 20 2025 09:57:13) (NTS clang 15.0.0)
+Copyright (c) The PHP Group
+Built by Beyond Code for php.new
+Zend Engine v4.5.0, Copyright (c) Zend Technologies
+    with Zend OPcache v8.5.0, Copyright (c), by Zend Technologies
+Composer version 2.8.12 2025-09-19 13:41:59
+This is ApacheBench, Version 2.3 <$Revision: 1923142 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+classic runtime  {"php":"8.5.13","sapi":"frankenphp","entrypoint":"index.php","opcache_available":true,"opcache":false,"jit":false}
+worker runtime   {"php":"8.5.13","sapi":"frankenphp","entrypoint":"frankenphp-worker.php","opcache_available":true,"opcache":false,"jit":false}
+FrankenPHP v1.13.6 PHP 8.5.13 Caddy v2.11.9 h1:bhZtcRKQOq0fuLvEgCdPYvUxXyGn9kzjG4lh2332DTE=
+
+Follow-up runtime validation before load
+classic runtime  {"php":"8.5.13","sapi":"frankenphp","entrypoint":"index.php","opcache_available":true,"opcache":false,"jit_config":false,"jit":false}
+worker runtime   {"php":"8.5.13","sapi":"frankenphp","entrypoint":"frankenphp-worker.php","opcache_available":true,"opcache":false,"jit_config":false,"jit":false}

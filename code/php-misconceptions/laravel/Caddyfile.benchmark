@@ -1,0 +1,34 @@
+{
+	admin 127.0.0.1:2026
+	auto_https off
+
+	frankenphp {
+		num_threads 4
+		max_threads 8
+
+		php_ini {
+			opcache.enable {$BENCH_OPCACHE:1}
+			opcache.jit disable
+		}
+
+		worker {
+			file "{$APP_PUBLIC_PATH}/frankenphp-worker.php"
+			num 4
+		}
+	}
+}
+
+http://127.0.0.1:8010 {
+	bind 127.0.0.1
+	root * "{$APP_PUBLIC_PATH}"
+	php_server
+}
+
+http://127.0.0.1:8011 {
+	bind 127.0.0.1
+	root * "{$APP_PUBLIC_PATH}"
+	php_server {
+		index frankenphp-worker.php
+		try_files {path} frankenphp-worker.php
+	}
+}

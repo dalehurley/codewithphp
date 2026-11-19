@@ -103,6 +103,17 @@ export default defineConfig({
           ],
         },
         {
+          label: 'PHP Misconceptions',
+          collapsed: true,
+          items: [
+            { label: 'Series Overview', link: '/series/php-misconceptions/' },
+            {
+              label: 'Chapters',
+              autogenerate: { directory: 'series/php-misconceptions/chapters' },
+            },
+          ],
+        },
+        {
           label: 'Agentic AI for PHP Developers',
           collapsed: true,
           items: [
