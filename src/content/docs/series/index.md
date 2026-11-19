@@ -19,6 +19,10 @@ Choose the series that matches your learning goals and experience level.
   </Card>
 </CardGrid>
 
+## PHP Release Series
+
+- [What’s New in PHP 8.6](/series/php-8-6/) covers the release features, deprecations, and compatibility changes with runnable examples.
+
 ## 🔄 Coming from Another Language?
 
 <CardGrid>

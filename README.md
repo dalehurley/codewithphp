@@ -22,6 +22,7 @@ Code with PHP is a tutorial-based learning resource featuring hands-on, reproduc
 8. **[PHP for TypeScript Developers](https://codewithphp.com/series/php-typescript-developers/)** — Transition from TypeScript to PHP
 9. **[Python Developers ♥ PHP & Laravel](https://codewithphp.com/series/python-developers-love-php-laravel/)** — Transition from Python to PHP/Laravel
 10. **[Ruby on Rails Developers ♥ Laravel](https://codewithphp.com/series/rails-developers-love-laravel/)** — Transition from Rails to Laravel
+11. **[What’s New in PHP 8.6](src/content/docs/series/php-8-6/index.md)** — Explore the release features and upgrade changes with runnable examples
 
 ## 🚀 Quick Start
 

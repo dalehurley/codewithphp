@@ -63,6 +63,17 @@ export default defineConfig({
           ],
         },
         {
+          label: 'What’s New in PHP 8.6',
+          collapsed: true,
+          items: [
+            { label: 'Series Overview', link: '/series/php-8-6/' },
+            {
+              label: 'Chapters',
+              autogenerate: { directory: 'series/php-8-6/chapters' },
+            },
+          ],
+        },
+        {
           label: 'Agentic AI for PHP Developers',
           collapsed: true,
           items: [
