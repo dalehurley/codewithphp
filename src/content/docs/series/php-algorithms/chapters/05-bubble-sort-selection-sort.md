@@ -39,9 +39,9 @@ By the end of this chapter, you will:
 
 Before starting this chapter, you should have:
 
-- ✓ Understanding of Big O notation *(60 mins from [Chapter 01](/series/php-algorithms/chapters/01-introduction-complexity-analysis) if not done)*
+- ✓ Understanding of Big O notation *(60 mins from [Chapter 01](/series/php-algorithms/chapters/01-algorithm-complexity-big-o-notation/) if not done)*
 - ✓ Familiarity with arrays and loops *(10 mins review if needed)*
-- ✓ Completion of [Chapter 00](/series/php-algorithms/chapters/00-php-setup-primer), [Chapter 01](/series/php-algorithms/chapters/01-introduction-complexity-analysis), and [Chapter 02](/series/php-algorithms/chapters/02-benchmarking-profiling) *(180 mins if not done)*
+- ✓ Completion of [Chapter 00](/series/php-algorithms/chapters/00-quick-start-guide/), [Chapter 01](/series/php-algorithms/chapters/01-algorithm-complexity-big-o-notation/), and [Chapter 02](/series/php-algorithms/chapters/02-benchmarking-performance-testing/) *(180 mins if not done)*
 - **Estimated Time**: ~55-65 minutes
 
 ## What You'll Build

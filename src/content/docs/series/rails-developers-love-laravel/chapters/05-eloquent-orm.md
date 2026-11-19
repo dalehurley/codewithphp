@@ -1,24 +1,32 @@
 ---
-title: "05: Working with Data: Eloquent ORM & Database Workflow"
-description: "Master Laravel's Eloquent ORM from an ActiveRecord perspective-relationships, scopes, eager loading, and database patterns you already know."
+title: "05: Rails Active Record vs Laravel Eloquent"
+description: "Translate Rails Active Record queries, associations, scopes, and eager loading to Laravel Eloquent with side-by-side examples."
 sidebar:
   label: "05: Working with Data: Eloquent ORM & Database Workflow"
   order: 5
   badge:
     text: Intermediate
     variant: caution
+author: "Code with PHP"
+dateModified: "2026-11-20"
 ---
 
 
 ![Working with Data: Eloquent ORM & Database Workflow](/images/rails-developers-love-laravel/chapter-05-eloquent-orm-hero-full.webp)
 
-# 05: Working with Data: Eloquent ORM & Database Workflow <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
+<span id="05-working-with-data-eloquent-orm--database-workflow-intermediate"></span>
 
 ## Overview
 
-If you've worked with ActiveRecord, you already understand the Active Record pattern: models that map to database tables, relationships that connect data, migrations that version your schema, and query builders that let you chain methods. Eloquent ORM-Laravel's database abstraction layer-follows the exact same principles with PHP syntax.
+If you know Rails Active Record, Eloquent's models, associations and scopes will feel familiar. A Rails relation can be composed before it loads, and Eloquent's query builder can be composed before `get()`. Use this map when porting a Rails feature.
 
-This chapter shows you ActiveRecord code you know, then demonstrates the Eloquent equivalent. You'll discover that working with databases in Laravel feels remarkably similar to Rails.
+| Task | Rails Active Record | Laravel Eloquent |
+| --- | --- | --- |
+| Filter posts by owner | `Post.where(user_id: 1)` | `Post::where('user_id', 1)->get()` |
+| Eager load owners | `Post.includes(:user)` | `Post::with('user')->get()` |
+| Order by newest first | `Post.order(created_at: :desc)` | `Post::orderByDesc('created_at')->get()` |
+
+These examples use an existing `Post` model and a `user` association. Check the translated [Eloquent sample file](https://github.com/dalehurley/codewithphp/blob/main/code/rails-developers-love-laravel/chapter-05/EloquentExamples.php) alongside the chapter's model, scope and migration examples. [Rails querying guide](https://guides.rubyonrails.org/active_record_querying.html) · [Eloquent relationships](https://laravel.com/docs/11.x/eloquent-relationships)
 
 ## Prerequisites
 

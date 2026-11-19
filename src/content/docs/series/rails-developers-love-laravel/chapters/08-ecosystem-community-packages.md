@@ -1,24 +1,24 @@
 ---
-title: "08: Ecosystem, Community, Packages & Where Laravel Excels"
-description: "Discover Laravel's vibrant ecosystem, amazing packages, and thriving community that rivals Rails."
+title: "08: Laravel Packages for Rails Developers"
+description: "Compare Composer and Packagist with Bundler and RubyGems, and map familiar Rails tools to Laravel packages."
 sidebar:
   label: "08: Ecosystem, Community, Packages & Where Laravel Excels"
   order: 8
   badge:
     text: Intermediate
     variant: caution
+author: "Code with PHP"
+dateModified: "2026-11-20"
 ---
 
 
 ![Ecosystem, Community, Packages](/images/rails-developers-love-laravel/chapter-08-ecosystem-community-packages-hero-full.webp)
 
-# 08: Ecosystem, Community, Packages <span class="difficulty-badge difficulty-intermediate">Intermediate</span>
+<span id="08-ecosystem-community-packages-intermediate"></span>
 
 ## Overview
 
-One of Rails' greatest strengths is its ecosystem—the gems, tools, and community resources. Laravel's ecosystem is equally impressive, with thousands of packages, first-party tools, and an incredibly active community.
-
-This chapter explores Laravel's ecosystem from a Rails developer's perspective, showing you where to find packages, how to evaluate them, and which ones are essential.
+If you find Ruby gems on RubyGems and manage them with Bundler, use Packagist to discover PHP packages and Composer to manage dependencies. This chapter maps familiar Rails tools to Laravel packages and shows where the workflows differ.
 
 ## Prerequisites
 

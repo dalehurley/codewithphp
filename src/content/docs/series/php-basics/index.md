@@ -1,20 +1,23 @@
 ---
-title: "PHP Basics"
-description: "Master modern PHP from zero to building your own blog—no frameworks, just fundamentals."
+title: "PHP Basics: Free Beginner Course With a Blog Project"
+difficulty: "Beginner"
+sidebar:
+  label: "PHP Basics"
+description: "Learn PHP for free, from your first script to a database-driven blog with forms, sessions, and routing. Includes code examples and exercises."
 ---
 
 
 ![PHP Basics](/images/php-basics/chapter-00-series-index-hero-full.webp)
 
-# PHP Basics <span class="difficulty-badge difficulty-beginner">Beginner</span>
+<span id="php-basics-beginner"></span>
 
 ## Overview
 
-Welcome to **Code with PHP** — a comprehensive, hands-on course that takes you from absolute beginner to confident PHP developer. By the end of this series, you'll have built a complete blog application from scratch, understood how frameworks work under the hood, and be ready to tackle Laravel or Symfony with confidence.
+Learn PHP by building a blog from scratch. Start with a script you can run in your terminal, then add forms, a database, sign-in, and routing. The course is free and uses plain PHP for the blog project, so you can see the parts frameworks usually manage for you.
 
-PHP is one of the most widely-used programming languages in the world, powering everything from the smallest blogs to the largest social networks. Its gentle learning curve, massive community, and rich ecosystem of modern tools make it a fantastic first language for aspiring web developers.
-
-Despite its long history, PHP is more relevant and powerful than ever. The language has evolved dramatically, embracing modern programming paradigms, strong typing, and a robust, professional toolchain. It is fast, flexible, and fun.
+- [Install PHP on macOS, Windows, or Linux](/series/php-basics/chapters/00-setting-up-your-development-environment/)
+- [Write and run your first PHP script](/series/php-basics/chapters/01-your-first-php-script/)
+- [See the blog you’ll build](/series/php-basics/chapters/19-project-building-a-simple-blog/)
 
 ## Who This Is For
 
@@ -31,7 +34,7 @@ You don't need any previous programming knowledge — just basic computer skills
 
 **Software Requirements:**
 
-- **PHP 8.4** (we'll show you how to install it in Chapter 00)
+- **PHP 8.4 or later** ([installation guide](/series/php-basics/chapters/00-setting-up-your-development-environment/))
 - **Text editor or IDE** (VS Code, PhpStorm, Sublime Text — any will work)
 - **Terminal/Command line** access (built into macOS/Linux; we'll help Windows users too)
 - **SQLite** (comes bundled with PHP)
@@ -164,7 +167,7 @@ Each part builds essential skills you'll need for the next. By Part 5, you'll co
 Want to jump in right now? Here's how to get your first PHP script running in under 5 minutes:
 
 ```bash
-# 1. Check if PHP is installed (macOS/Linux have it by default)
+# 1. Check if PHP 8.4 or later is installed
 php --version
 
 # 2. Create a new directory and file
@@ -180,7 +183,7 @@ php hello.php
 **What's Next?**  
 If that worked, you're ready to start! Head to [Chapter 00](/series/php-basics/chapters/00-setting-up-your-development-environment) for proper setup, or continue to [Chapter 01](/series/php-basics/chapters/01-your-first-php-script) to understand what just happened.
 
-If you got an error, don't worry—[Chapter 00](/series/php-basics/chapters/00-setting-up-your-development-environment) will walk you through installing PHP 8.4.
+If you got an error, don't worry—[Chapter 00](/series/php-basics/chapters/00-setting-up-your-development-environment) will walk you through installing PHP for your operating system.
 
 ## Chapters
 

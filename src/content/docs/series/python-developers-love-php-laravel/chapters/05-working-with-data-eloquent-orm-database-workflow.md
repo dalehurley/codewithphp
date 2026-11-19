@@ -1,24 +1,30 @@
 ---
-title: "05: Working with Data: Eloquent ORM & Database Workflow"
-description: "Master Eloquent ORM by comparing to Django ORM and SQLAlchemy—migrations, relationships, query builder, and data modeling."
+title: "05: Django ORM vs Laravel Eloquent"
+description: "Compare Django ORM and Laravel Eloquent queries, migrations, relationships, and eager loading, with SQLAlchemy examples where relevant."
 sidebar:
   label: "05: Working with Data: Eloquent ORM & Database Workflow"
   order: 5
   badge:
     text: Intermediate
     variant: caution
+author: "Code with PHP"
+dateModified: "2026-11-20"
 ---
 ![Working with Data: Eloquent ORM](/images/python-developers-love-php-laravel/chapter-05-working-with-data-eloquent-orm-database-workflow-hero-full.webp)
 
-# Chapter 05: Working with Data: Eloquent ORM & Database Workflow
+<span id="chapter-05-working-with-data-eloquent-orm--database-workflow"></span>
 
 ## Overview
 
-In Chapter 04, you learned PHP syntax differences—variable prefixes, OOP conventions, type hints, and namespaces. You now understand how PHP code looks and feels. But syntax is only part of the story. When building web applications, you spend most of your time working with data: querying databases, defining relationships, managing schema changes, and optimizing queries. This chapter is where your Python ORM knowledge becomes your greatest asset.
+If you use Django's ORM, start with the `QuerySet` operations you already know. Both Django and Eloquent let you compose a query before fetching results. Django evaluates a typical `QuerySet` when you iterate it. Eloquent executes the query when you call `get()`.
 
-If you've worked with Django ORM or SQLAlchemy, you already understand the Active Record pattern, migrations, relationships, and query builders. Eloquent ORM—Laravel's database abstraction layer—follows the same principles with PHP syntax. The concepts are identical: models represent tables, relationships connect data, migrations version your schema, and query builders let you chain methods. The only difference is syntax: `Post.objects.filter()` becomes `Post::where()->get()`, and `ForeignKey()` becomes `belongsTo()`.
+| Task | Django ORM | Laravel Eloquent |
+| --- | --- | --- |
+| Filter posts by author | `Post.objects.filter(author_id=1)` | `Post::where('author_id', 1)->get()` |
+| Load the author with each post | `Post.objects.select_related('author')` | `Post::with('author')->get()` |
+| Sort most recent first | `Post.objects.order_by('-published_at')` | `Post::orderByDesc('published_at')->get()` |
 
-This chapter is a **deep dive into Eloquent ORM**. We'll compare every major feature to Django ORM and SQLAlchemy, showing you Python code you know, then demonstrating the Laravel equivalent. You'll master model definitions, migrations, relationships (one-to-one, one-to-many, many-to-many, polymorphic), query building, eager loading, scopes, accessors, mutators, and model events. By the end, you'll see that Eloquent isn't fundamentally different—it's Django ORM with PHP syntax and Laravel's delightful developer experience.
+These examples assume a `Post` model with an `author` relation. Django's `select_related()` uses a SQL join for single-valued relationships. Eloquent's `with()` typically loads the related rows in a separate query, so compare query counts when migrating performance-sensitive pages. The chapter also shows SQLAlchemy comparisons and provides [matching sample files](https://github.com/dalehurley/codewithphp/tree/main/code/python-developers-love-php-laravel/chapter-05). [Django query guide](https://docs.djangoproject.com/en/stable/topics/db/queries/) · [Eloquent relationships](https://laravel.com/docs/11.x/eloquent-relationships)
 
 ## Prerequisites
 

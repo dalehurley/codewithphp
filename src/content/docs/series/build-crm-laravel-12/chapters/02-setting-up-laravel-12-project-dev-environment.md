@@ -1074,5 +1074,5 @@ Keep your Sail containers running (`sail up -d` if you stopped them). In Chapter
 - [Laravel Sail Documentation](https://laravel.com/docs/12.x/sail) - Complete Sail reference
 - [Docker Documentation](https://docs.docker.com/) - Understanding Docker basics
 - [Laravel Configuration](https://laravel.com/docs/12.x/configuration) - Environment variables and configuration
-- [Chapter 02 Code Reference Materials](/code/build-crm-laravel-12/chapter-02-setup/) - Docker configuration examples, environment template, and verification scripts
+- [Chapter 02 Code Reference Materials](https://github.com/dalehurley/codewithphp/tree/main/code/build-crm-laravel-12/chapter-02-setup) - Docker configuration examples, environment template, and verification scripts
 - [Docker Networking Guide](https://docs.docker.com/engine/network/) - Deep dive into Docker networking and container communication

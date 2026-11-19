@@ -42,7 +42,7 @@ Before starting this chapter, you should have:
 - Completion of [Chapter 06: Insertion Sort & Merge Sort](/series/php-algorithms/chapters/06-insertion-sort-merge-sort)
 - Completion of [Chapter 07: Quick Sort & Pivot Strategies](/series/php-algorithms/chapters/07-quick-sort-pivot-strategies)
 - Completion of [Chapter 08: Heap Sort & Priority Queues](/series/php-algorithms/chapters/08-heap-sort-priority-queues)
-- Understanding of Big O notation from [Chapter 01](/series/php-algorithms/chapters/01-algorithm-analysis-big-o)
+- Understanding of Big O notation from [Chapter 01](/series/php-algorithms/chapters/01-algorithm-complexity-big-o-notation/)
 - **Estimated Time**: ~50 minutes
 
 ## Quick Checklist

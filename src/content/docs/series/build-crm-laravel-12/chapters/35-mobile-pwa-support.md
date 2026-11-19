@@ -1,4 +1,5 @@
 ---
+draft: true
 title: "35: Mobile & PWA Support"
 description: "Make the CRM mobile-friendly and installable as a Progressive Web App with offline support"
 sidebar:

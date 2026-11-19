@@ -2226,7 +2226,7 @@ Your data extraction platform is production-ready, but consider these enhancemen
 - [PDF Processing in PHP](https://github.com/smalot/pdfparser) — PDF parser library documentation
 - [Chapter 6: Streaming Responses](/series/claude-php-developers/chapters/06-streaming-responses) — Real-time streaming for extraction progress
 - [Chapter 10: Error Handling and Rate Limiting](/series/claude-php-developers/chapters/10-error-handling-rate-limiting) — Robust retry patterns and error handling
-- [Chapter 11: Tool Use and Function Calling](/series/claude-php-developers/chapters/11-tool-use-function-calling) — Structured outputs and tool use
+- [Chapter 11: Tool Use and Function Calling](/series/claude-php-developers/chapters/11-tool-use-fundamentals/) — Structured outputs and tool use
 - [Chapter 14: Document Processing and PDF Analysis](/series/claude-php-developers/chapters/14-document-processing) — Vision-based document extraction
 - [Chapter 15: Structured Outputs](/series/claude-php-developers/chapters/15-structured-outputs) — Deep dive into structured data extraction
 - [Chapter 18: Caching Strategies](/series/claude-php-developers/chapters/18-caching-strategies) — Caching extraction results for performance

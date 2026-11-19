@@ -1447,7 +1447,7 @@ Before moving to the next chapter, ensure you can:
 - [ ] Build complete projects with Composer
 
 ::: tip Ready for More?
-In [Chapter 9: Working with Arrays](/series/php-for-java-developers/chapters/09-working-with-arrays), we'll explore PHP's powerful array manipulation functions and how they compare to Java Streams.
+In [Chapter 9: Working with Databases](/series/php-for-java-developers/chapters/09-working-with-databases/), you’ll connect to a database with PDO and compare it with Java’s JDBC workflow.
 :::
 
 
@@ -1471,6 +1471,6 @@ In [Chapter 9: Working with Arrays](/series/php-for-java-developers/chapters/09-
     <strong>Previous:</strong> <a href="/series/php-for-java-developers/chapters/07-error-handling">← Chapter 7: Error Handling</a>
   </div>
   <div>
-    <strong>Next:</strong> <a href="/series/php-for-java-developers/chapters/09-working-with-arrays">Chapter 9: Working with Arrays →</a>
+    <strong>Next:</strong> <a href="/series/php-for-java-developers/chapters/09-working-with-databases/">Chapter 9: Working with Databases →</a>
   </div>
 </div>

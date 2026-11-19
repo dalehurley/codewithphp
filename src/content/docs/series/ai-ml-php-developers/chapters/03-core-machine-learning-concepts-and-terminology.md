@@ -70,7 +70,7 @@ Complete, runnable examples for this chapter:
 - [`11-regression-example.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-03/11-regression-example.php) — House price prediction (regression)
 - [`12-confusion-matrix.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-03/12-confusion-matrix.php) — Confusion matrix and advanced metrics
 
-All files are in [`docs/series/ai-ml-php-developers/code/chapter-03/`](/series/ai-ml-php-developers/code/chapter-03/README.md)
+All files are in [`docs/series/ai-ml-php-developers/code/chapter-03/`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-03/README.md)
 :::
 
 ## Quick Start

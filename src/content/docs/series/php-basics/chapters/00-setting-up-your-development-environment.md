@@ -1,27 +1,27 @@
 ---
-title: "00: Setting Up Your Development Environment"
-description: "Install PHP, a web server, and VS Code to start building amazing applications."
+title: "00: Install PHP on macOS, Windows, or Linux"
+description: "Install PHP 8.4 or later on macOS, Windows, or Linux. Verify the PHP CLI, run a script, and start the local development server."
 series: "php-basics"
 chapter: 0
 order: 0
 difficulty: "Beginner"
 prerequisites: []
 teaches:
-  - 'Install the latest stable version of PHP (8.4 or higher)'
+  - 'Install PHP 8.4 or later'
   - 'Verify the installation using the command line'
   - 'Learn to use PHP''s built-in development web server'
   - 'Install and configure Visual Studio Code with essential extensions for PHP development'
   - 'Set up Git for version control and make your first commit'
+author: "Code with PHP"
+dateModified: "2026-11-20"
 ---
 ![Setting Up Your Development Environment](/images/php-basics/chapter-00-setting-up-development-environment-hero-full.webp)
 
-# Chapter 00: Setting Up Your Development Environment
+<span id="chapter-00-setting-up-your-development-environment"></span>
 
 ## Overview
 
-Welcome to the first chapter of Code with PHP! Before we can start writing code, we need to set up a proper development environment. This foundational step is crucial because it gives you all the tools you need to write, test, debug, and track your PHP applications like a professional developer.
-
-In this chapter, you'll install PHP itself, learn to use its simple built-in web server, and set up a modern code editor (Visual Studio Code) with extensions that will make writing PHP a joy. You'll also set up Git for version control to track your progress, and install Xdebug for powerful debugging capabilities. By the end, you'll have a complete, professional development environment and will run your first PHP script to verify everything works.
+Install PHP 8.4 or later and run `php --version` to check which version your terminal uses. Then run a small PHP file locally. The built-in development server lets you open that same file in your browser. You can add VS Code, Git, and Xdebug after the first run.
 
 ## Prerequisites
 
@@ -46,32 +46,34 @@ By the end of this chapter, you'll have:
 
 ## Quick Start
 
-If you're already familiar with command-line tools and want to get up and running quickly, here's the express version:
+Choose the option for your operating system. The install commands assume you already have the package manager set up.
+
+| Operating system | Install the PHP CLI |
+| --- | --- |
+| macOS with [Homebrew](https://brew.sh/) | Run `brew install php`. |
+| Windows with [Scoop](https://scoop.sh/) | In PowerShell, run `scoop install php`. You can also use the [official Windows downloads](https://windows.php.net/download/). |
+| Ubuntu or Debian | Run `sudo apt update`, then `sudo apt install php-cli php-mbstring php-xml php-sqlite3`. The version depends on your distribution release. |
+
+Open a new terminal and run:
 
 ```bash
-# macOS (with Homebrew)
-brew install php
-
-# Windows (with Scoop)
-scoop install php
-
-# Linux (Ubuntu/Debian)
-sudo apt update && sudo apt install php-cli php-mbstring php-xml
-
-# Verify installation
-php -v
-
-# Create a test project
-mkdir php-from-scratch && cd php-from-scratch
-echo "<?php phpinfo();" > index.php
-
-# Start the server
-php -S localhost:8000
+php --version
+mkdir php-from-scratch
+cd php-from-scratch
 ```
 
-Then install [VS Code](https://code.visualstudio.com/) and add the **PHP Intelephense** extension. Open `http://localhost:8000` in your browser to verify.
+If your distribution provides a version older than 8.4, check the [PHP installation manual](https://www.php.net/manual/en/install.php) for a current runtime before continuing the course.
 
-For detailed steps with troubleshooting, continue reading below.
+Save this as `index.php` in the new directory:
+
+```php
+<?php
+echo "PHP is running", PHP_EOL;
+```
+
+Run `php index.php`. You should see `PHP is running`. To see the same output in a browser, run `php -S 127.0.0.1:8000` and open `http://127.0.0.1:8000/`. Stop the server with Ctrl+C. Then [write your first PHP script](/series/php-basics/chapters/01-your-first-php-script/). [PHP's built-in server reference](https://www.php.net/manual/en/features.commandline.webserver.php)
+
+Continue below for detailed installation and editor setup.
 
 ## Objectives
 
@@ -175,7 +177,7 @@ For Debian-based Linux distributions like Ubuntu, you can use the built-in `apt`
     Install PHP and some common extensions with this command:
 
     ```bash
-    sudo apt install php-cli php-mbstring php-xml
+    sudo apt install php-cli php-mbstring php-xml php-sqlite3
     ```
 
 ### Validation
@@ -187,15 +189,7 @@ After the installation finishes, you can verify that PHP is installed correctly 
 php -v
 ```
 
-**Expected Output:**
-
-```
-PHP 8.4 (cli) (built: Mar 14 2024 10:28:48) (NTS)
-Copyright (c) The PHP Group
-Zend Engine v4.3.4, Copyright (c) Zend Technologies
-```
-
-Your version number may differ slightly, but as long as it starts with `PHP 8.` or higher, you're good to go.
+The first line should show a version such as `PHP 8.4.x (cli)`. This course uses PHP 8.4 or later. If your shell finds the wrong binary, run `command -v php` on macOS or Linux, or `Get-Command php` in PowerShell, and check its path.
 
 ### Troubleshooting
 

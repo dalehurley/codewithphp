@@ -875,7 +875,7 @@ The architecture you've planned:
 
 ### Next Steps
 
-You're ready for [Chapter 05: Database Migrations](/series/build-crm-laravel-12/chapters/05-database-migrations-create-tables-schemas), where you'll implement this design in actual MySQL migrations. Reference the entity specifications from this chapter—you'll use them constantly as you create each table.
+You're ready for [Chapter 05: Database Migrations](/series/build-crm-laravel-12/chapters/05-database-migrations-schema-design/), where you'll implement this design in actual MySQL migrations. Reference the entity specifications from this chapter—you'll use them constantly as you create each table.
 
 **For Visual Learners**: Consider creating your own diagram using draw.io, Lucidchart, or dbdiagram.io based on the entity specifications. Many developers keep a visual reference nearby while coding to stay oriented in the data model.
 

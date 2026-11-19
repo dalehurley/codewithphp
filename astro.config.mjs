@@ -1,13 +1,42 @@
+import { copyFile, readFile } from 'node:fs/promises';
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import starlight from '@astrojs/starlight';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
-import rehypeLearningLayout from './src/lib/rehype-learning-layout.mjs';
+import rehypeKatexStylesheet from './src/lib/rehype-katex-stylesheet.mjs';
+import { parse } from 'node-html-parser';
+import learningLayout from './src/lib/rehype-learning-layout.mjs';
+import crmRedirects from './src/lib/crm-redirects.json' with { type: 'json' };
+
+const redirects = Object.fromEntries(Object.entries(crmRedirects).map(([from, destination]) =>
+  [from, { status: 301, destination }]
+));
+let outputDirectory;
+
+async function sitemapEntry(entry) {
+  const pathname = decodeURIComponent(new URL(entry.url).pathname).replace(/^\//, '');
+  const html = await readFile(new URL(pathname + 'index.html', outputDirectory), 'utf8');
+  const head = parse(html.slice(0, html.indexOf('</head>')));
+  const robots = head.querySelector('meta[name="robots"]')?.getAttribute('content') ?? '';
+  if (/(?:^|[,\s])(?:noindex|none)(?:$|[,\s])/i.test(robots)) return;
+  const lastmod = head.querySelector('meta[property="article:modified_time"]')?.getAttribute('content');
+  return lastmod ? { ...entry, lastmod } : entry;
+}
+
+const sitemapAlias = {
+  name: 'codewithphp:sitemap-alias',
+  hooks: {
+    'astro:config:done': ({ config }) => { outputDirectory = config.outDir; },
+    'astro:build:done': ({ dir }) =>
+      copyFile(new URL('sitemap-index.xml', dir), new URL('sitemap.xml', dir)),
+  },
+};
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://codewithphp.com',
+  redirects,
   build: {
     // Limit concurrent page builds to reduce memory pressure
     concurrency: 1,
@@ -15,7 +44,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'Code with PHP',
-      description: 'Learn PHP and its ecosystem from first principles to advanced.',
+      description: 'Free PHP and Laravel tutorials with runnable examples and hands-on projects.',
       social: [
         {
           icon: 'github',
@@ -33,13 +62,6 @@ export default defineConfig({
           attrs: {
             name: 'theme-color',
             content: '#7C3AED',
-          },
-        },
-        {
-          tag: 'link',
-          attrs: {
-            rel: 'stylesheet',
-            href: 'https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css',
           },
         },
       ],
@@ -73,6 +95,7 @@ export default defineConfig({
           collapsed: true,
           items: [
             { label: 'Series Overview', link: '/series/php-8-6/' },
+            { label: 'PHP 8.5 to 8.6 upgrade checklist', link: '/series/php-8-6/upgrade-checklist/' },
             {
               label: 'Chapters',
               autogenerate: { directory: 'series/php-8-6/chapters' },
@@ -189,23 +212,20 @@ export default defineConfig({
             },
           ],
         },
-        {
-          label: 'Agentic AI for PHP Developers',
-          collapsed: true,
-          items: [
-            { label: 'Series Overview', link: '/series/agentic-ai-php-developers/' },
-            {
-              label: 'Chapters',
-              autogenerate: { directory: 'series/agentic-ai-php-developers/chapters' },
-            },
-          ],
-        },
       ],
     }),
-    sitemap(),
+    learningLayout(),
+    sitemap({
+      filter: (url) => {
+        const pathname = new URL(url).pathname;
+        return !redirects[pathname] && !redirects[pathname.replace(/\/$/, '')];
+      },
+      serialize: sitemapEntry,
+    }),
+    sitemapAlias,
   ],
   markdown: {
     remarkPlugins: [remarkMath],
-    rehypePlugins: [rehypeKatex, rehypeLearningLayout],
+    rehypePlugins: [rehypeKatex, rehypeKatexStylesheet],
   },
 });

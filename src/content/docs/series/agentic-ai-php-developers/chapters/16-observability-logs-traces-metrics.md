@@ -1119,7 +1119,7 @@ In this chapter, you learned:
 
 With observability in place, you can now measure quality. In the next chapter, you'll build **evaluation harnesses** to systematically test agent accuracy, safety, and cost.
 
-→ **[Chapter 17: Evaluation Harnesses and QA](./17-evaluation-harnesses-and-qa)**
+→ **[Chapter 17: Evaluation Harnesses and QA](/series/agentic-ai-php-developers/chapters/17-evaluation-harnesses-and-qa/)**
 
 Build offline evals, golden tests, and regression suites to measure accuracy, cost, and safety on real task sets.
 

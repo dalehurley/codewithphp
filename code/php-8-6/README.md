@@ -9,6 +9,17 @@ php --version
 php code/php-8-6/01-partial-function-application/partial-function-application.php
 ```
 
+## Compare PHP 8.5 and 8.6
+
+`upgrade/compare-runtime.php` compares trimming, argument validation, and session defaults on the two PHP runtimes. Run it with each PHP executable. The `-n` flag compares compiled defaults.
+
+```bash
+/path/to/php8.5 -n code/php-8-6/upgrade/compare-runtime.php
+/path/to/php8.6 -n code/php-8-6/upgrade/compare-runtime.php
+```
+
+See the [PHP 8.5 to 8.6 upgrade checklist](https://codewithphp.com/series/php-8-6/upgrade-checklist/) for expected output and rollout checks.
+
 ## Check the examples
 
 Use a PHP 8.6 build with `intl`, `mbstring`, `openssl`, `session`, `sodium`, `uri`, `zip`, and `zlib`. The Sodium labs need libsodium 1.0.22 or later. The loopback TLS labs use `proc_open()`, and the certificate-based labs also use the `openssl` command. The polling lab uses a Unix-domain socket pair.

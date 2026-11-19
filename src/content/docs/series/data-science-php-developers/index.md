@@ -245,7 +245,7 @@ Master data collection and preparation—the foundation of all data science work
 
 Data science starts with data. This chapter shows how to collect real-world data using PHP—from SQL databases and REST APIs to ethical web scraping—while building scalable and reusable ingestion pipelines.
 
-**Chapter 04 — [Data Cleaning and Preprocessing in PHP](/series/data-science-php-developers/chapters/04-data-cleaning-and-preprocessing)**
+**Chapter 04 — [Data Cleaning and Preprocessing in PHP](/series/data-science-php-developers/chapters/04-data-cleaning-and-preprocessing-in-php/)**
 
 Messy data kills insights. Learn how to clean, validate, normalize, and prepare datasets using PHP so your analysis and machine learning models don't fail before they even begin.
 
@@ -255,11 +255,11 @@ Messy data kills insights. Learn how to clean, validate, normalize, and prepare 
 
 Learn to explore, understand, and extract insights from data.
 
-**Chapter 05 — [Exploratory Data Analysis (EDA) for PHP Developers](/series/data-science-php-developers/chapters/05-exploratory-data-analysis)**
+**Chapter 05 — [Exploratory Data Analysis (EDA) for PHP Developers](/series/data-science-php-developers/chapters/05-exploratory-data-analysis-for-php-developers/)**
 
 Before building models, you need to understand your data. This guide introduces exploratory data analysis techniques—summary statistics, correlations, and visualizations—using PHP-friendly tools and workflows.
 
-**Chapter 06 — [Handling Large Datasets in PHP Without Running Out of Memory](/series/data-science-php-developers/chapters/06-handling-large-datasets)**
+**Chapter 06 — [Handling Large Datasets in PHP Without Running Out of Memory](/series/data-science-php-developers/chapters/06-handling-large-datasets-in-php-without-running-out-of-memory/)**
 
 PHP isn't slow—you just need the right approach. Learn how to process large datasets efficiently using streaming, chunking, pagination, and memory-safe techniques suitable for production environments.
 
@@ -273,11 +273,11 @@ You don't need a math degree to do data science. This chapter explains the essen
 
 Understand ML concepts and integrate models into PHP applications.
 
-**Chapter 08 — [Machine Learning Explained for PHP Developers](/series/data-science-php-developers/chapters/08-machine-learning-explained)**
+**Chapter 08 — [Machine Learning Explained for PHP Developers](/series/data-science-php-developers/chapters/08-machine-learning-explained-for-php-developers/)**
 
 Machine learning doesn't have to be scary. Learn the core concepts behind supervised and unsupervised learning, common algorithms, and where PHP fits into the machine learning ecosystem.
 
-**Chapter 09 — [Using Machine Learning Models in PHP Applications](/series/data-science-php-developers/chapters/09-using-ml-models-in-php)**
+**Chapter 09 — [Using Machine Learning Models in PHP Applications](/series/data-science-php-developers/chapters/09-using-machine-learning-models-in-php-applications/)**
 
 Train models in Python, use them in PHP. This chapter shows how to integrate machine learning models into PHP applications using APIs, model files, and microservices—without rewriting your entire stack.
 
@@ -287,7 +287,7 @@ Train models in Python, use them in PHP. This chapter shows how to integrate mac
 
 Create dashboards and reports that communicate insights effectively.
 
-**Chapter 10 — [Data Visualization and Reporting with PHP](/series/data-science-php-developers/chapters/10-data-visualization-and-reporting)**
+**Chapter 10 — [Data Visualization and Reporting with PHP](/series/data-science-php-developers/chapters/10-data-visualization-and-reporting-with-php/)**
 
 Data is only useful if people understand it. Learn how to build charts, dashboards, and automated reports using PHP, JavaScript visualization libraries, and export tools for business stakeholders.
 
@@ -297,11 +297,11 @@ Data is only useful if people understand it. Learn how to build charts, dashboar
 
 Build complete projects and deploy them in production.
 
-**Chapter 11 — [Building a Real-World Data Science Project with PHP](/series/data-science-php-developers/chapters/11-building-real-world-project)**
+**Chapter 11 — [Building a Real-World Data Science Project with PHP](/series/data-science-php-developers/chapters/11-building-a-real-world-data-science-project-with-php/)**
 
 Put everything together in a real-world data science project. From problem definition to model integration, this hands-on guide walks you through a complete data science workflow using PHP as the backbone.
 
-**Chapter 12 — [Deploying Data Science Systems in Production with PHP](/series/data-science-php-developers/chapters/12-deploying-production-systems)**
+**Chapter 12 — [Deploying Data Science Systems in Production with PHP](/series/data-science-php-developers/chapters/12-deploying-data-science-systems-in-production-with-php/)**
 
 Data science doesn't end with a model. Learn how to deploy, monitor, and maintain data pipelines and ML systems in production—while handling performance, ethics, and data privacy concerns.
 

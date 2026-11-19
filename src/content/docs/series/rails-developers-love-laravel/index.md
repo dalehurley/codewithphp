@@ -202,7 +202,7 @@ Testing, deployment, ecosystem, and honest decision-making.
 <div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
   <img src="/images/rails-developers-love-laravel/chapter-07-testing-deployment-devops-hero-thumbnail.webp" alt="Chapter 07 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
   <div>
-    <h4 style="margin-top: 0;"><a href="/series/rails-developers-love-laravel/chapters/07-testing-deployment">07 — Testing, Deployment, DevOps: Best Practices</a></h4>
+    <h4 style="margin-top: 0;"><a href="/series/rails-developers-love-laravel/chapters/07-testing-deployment-devops/">07 — Testing, Deployment, DevOps: Best Practices</a></h4>
     <p style="margin-bottom: 0;">Professional development requires testing your code, automating deployments, containerizing applications, and managing background jobs. If you've worked with RSpec, Minitest, Capistrano, Docker, Sidekiq, or deployment platforms like Heroku, you already understand the fundamentals. Laravel's testing, deployment, and DevOps tooling follows the same principles with PHP syntax. You'll master testing with PHPUnit (comparing to RSpec), CI/CD workflows, Docker containerization, deployment platforms (Laravel Forge/Vapor vs Heroku), and background jobs with Laravel Queues (comparing to Sidekiq).</p>
   </div>
 </div>
@@ -210,7 +210,7 @@ Testing, deployment, ecosystem, and honest decision-making.
 <div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
   <img src="/images/rails-developers-love-laravel/chapter-08-ecosystem-community-packages-hero-thumbnail.webp" alt="Chapter 08 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
   <div>
-    <h4 style="margin-top: 0;"><a href="/series/rails-developers-love-laravel/chapters/08-ecosystem">08 — Ecosystem, Community, Packages & Where Laravel Excels</a></h4>
+    <h4 style="margin-top: 0;"><a href="/series/rails-developers-love-laravel/chapters/08-ecosystem-community-packages/">08 — Ecosystem, Community, Packages & Where Laravel Excels</a></h4>
     <p style="margin-bottom: 0;">A framework is only as strong as its ecosystem: the packages, community, and tools that extend its capabilities. If you've worked with Ruby's gem ecosystem, you already understand the importance of a thriving ecosystem. Laravel's ecosystem follows the same principles, but with PHP syntax and Laravel's unique strengths. We'll compare every major aspect to Ruby/Rails equivalents, showing you Rails patterns you know, then demonstrating the Laravel equivalent. You'll master package management with Composer (comparing to Bundler), discover popular Laravel packages (Spatie, Livewire, Inertia), and understand where Laravel excels.</p>
   </div>
 </div>
@@ -218,7 +218,7 @@ Testing, deployment, ecosystem, and honest decision-making.
 <div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
   <img src="/images/rails-developers-love-laravel/chapter-09-when-to-use-laravel-vs-rails-hero-thumbnail.webp" alt="Chapter 09 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
   <div>
-    <h4 style="margin-top: 0;"><a href="/series/rails-developers-love-laravel/chapters/09-when-to-use-laravel">09 — When to Use Laravel (and When Rails Still Makes Sense)</a></h4>
+    <h4 style="margin-top: 0;"><a href="/series/rails-developers-love-laravel/chapters/09-when-to-use-laravel-vs-rails/">09 — When to Use Laravel (and When Rails Still Makes Sense)</a></h4>
     <p style="margin-bottom: 0;">Understanding a technology isn't enough. You need to know **when to use it**—and when your existing Rails stack is still the better choice. This chapter is an honest, practical guide to technology decision-making. We'll give you a clear framework for evaluating your specific situation: project type, team expertise, budget, performance requirements, and long-term maintenance. You'll learn when Laravel's ecosystem, exceptional developer experience, and deployment simplicity make it the right choice—and when Rails' maturity, gems, or team expertise make Rails the better fit.</p>
   </div>
 </div>
@@ -230,7 +230,7 @@ Build a complete application using everything you've learned.
 <div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
   <img src="/images/rails-developers-love-laravel/chapter-10-hands-on-mini-project-hero-thumbnail.webp" alt="Chapter 10 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
   <div>
-    <h4 style="margin-top: 0;"><a href="/series/rails-developers-love-laravel/chapters/10-hands-on-project">10 — Bonus: Hands-On Mini Project</a></h4>
+    <h4 style="margin-top: 0;"><a href="/series/rails-developers-love-laravel/chapters/10-hands-on-mini-project/">10 — Bonus: Hands-On Mini Project</a></h4>
     <p style="margin-bottom: 0;">Bring everything together by building a **complete, production-ready Task Manager application**. Instead of comparing Rails to Laravel, we'll build a full application that demonstrates everything you've learned. We'll create **both a traditional full-stack Laravel application with Blade views AND an API-only backend**, showing how Laravel excels at both approaches. You'll implement authentication with Sanctum, Eloquent relationships, comprehensive testing, and deploy to production using Laravel Forge's latest features. This project will showcase how easy Laravel makes common development tasks.</p>
   </div>
 </div>

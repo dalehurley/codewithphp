@@ -1,4 +1,5 @@
 ---
+draft: true
 title: "38: Deployment & DevOps"
 description: "Deploy the CRM to production using Laravel Forge, Vapor, or containerization strategies"
 sidebar:

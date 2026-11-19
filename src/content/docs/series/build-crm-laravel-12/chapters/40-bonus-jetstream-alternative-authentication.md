@@ -1,4 +1,5 @@
 ---
+draft: true
 title: "40: Jetstream Alternative - Team Management & Authentication"
 description: "Explore Laravel Jetstream as an alternative to the React starter kit with built-in team management"
 sidebar:

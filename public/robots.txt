@@ -2,7 +2,17 @@
 User-agent: *
 Allow: /
 
-# AI/ML Bot specific rules
+# AI search and user-requested fetches
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+# Crawler-specific rules
 User-agent: GPTBot
 Allow: /
 
@@ -25,6 +35,4 @@ User-agent: Bytespider
 Allow: /
 
 # Sitemap
-Sitemap: https://codewithphp.com/sitemap.xml
-
-
+Sitemap: https://codewithphp.com/sitemap-index.xml

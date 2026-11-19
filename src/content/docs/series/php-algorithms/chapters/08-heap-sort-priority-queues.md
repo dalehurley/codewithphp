@@ -38,7 +38,7 @@ By the end of this chapter, you will:
 Before starting this chapter, ensure you have:
 
 - ✓ Understanding of trees and binary tree structures *(basic tree concepts needed)*
-- ✓ Understanding of Big O notation from [Chapter 01](/series/php-algorithms/chapters/01-big-o-notation) *(60 mins if not done)*
+- ✓ Understanding of Big O notation from [Chapter 01](/series/php-algorithms/chapters/01-algorithm-complexity-big-o-notation/) *(60 mins if not done)*
 - ✓ Completion of [Chapters 05-07](/series/php-algorithms/chapters/05-bubble-sort-selection-sort) on sorting algorithms *(180 mins if not done)*
 - **Estimated Time**: ~90 minutes
 

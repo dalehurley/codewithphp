@@ -1,4 +1,5 @@
 ---
+seoTitle: "Security Best Practices for Claude API Integrations in PHP"
 title: "36: Security Best Practices"
 description: "Master security essentials for Claude applications: API key management, prompt injection prevention, output validation, PII handling, compliance frameworks, and production-ready security patterns for PHP applications."
 sidebar:

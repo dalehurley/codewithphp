@@ -461,7 +461,7 @@ Apply algorithms to real-world PHP development scenarios.
 <div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
   <img src="/images/php-algorithms/chapter-30-case-studies-hero-thumbnail.webp" alt="Chapter 31 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
   <div>
-    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/31-real-world-case-studies">31 — Real-World Case Studies</a></h4>
+    <h4 style="margin-top: 0;"><a href="/series/php-algorithms/chapters/30-real-world-case-studies/">31 — Real-World Case Studies</a></h4>
     <p style="margin-bottom: 0;">Complete implementations of production scenarios: e-commerce product recommendations (collaborative filtering), social feed ranking algorithms, search engine indexing, ETL data pipelines. See how multiple algorithms combine to solve complex real-world problems.</p>
   </div>
 </div>
@@ -524,10 +524,10 @@ Explore cutting-edge algorithms for specialized applications.
 
 Quick reference materials to support your learning journey.
 
-- **[Appendix A: Complexity Cheat Sheet](/series/php-algorithms/appendices/a-complexity-cheat-sheet/)** — Quick reference for Big O complexity, common algorithm complexities, and decision guides
-- **[Appendix B: PHP Performance Tips](/series/php-algorithms/appendices/b-php-performance-tips/)** — PHP-specific optimization techniques, OPcache configuration, and production best practices  
-- **[Appendix C: Glossary](/series/php-algorithms/appendices/c-glossary/)** — Comprehensive glossary of algorithm and data structure terms with examples
-- **[Appendix D: Further Reading](/series/php-algorithms/appendices/d-further-reading/)** — Curated resources, books, courses, and websites for continued learning
+- **[Appendix A: Complexity Cheat Sheet](/series/php-algorithms/appendices/appendix-a-complexity-cheat-sheet/)** — Quick reference for Big O complexity, common algorithm complexities, and decision guides
+- **[Appendix B: PHP Performance Tips](/series/php-algorithms/appendices/appendix-b-php-performance-tips/)** — PHP-specific optimization techniques, OPcache configuration, and production best practices
+- **[Appendix C: Glossary](/series/php-algorithms/appendices/appendix-c-glossary/)** — Comprehensive glossary of algorithm and data structure terms with examples
+- **[Appendix D: Further Reading](/series/php-algorithms/appendices/appendix-d-further-reading/)** — Curated resources, books, courses, and websites for continued learning
 
 ---
 
@@ -572,9 +572,9 @@ You'll be prepared for advanced topics like distributed algorithms, machine lear
 **Stuck on something?** Here's where to get help:
 
 - **Check the appendices first**:
-  - [Appendix A: Complexity Cheat Sheet](/series/php-algorithms/appendices/a-complexity-cheat-sheet/) for Big O reference
-  - [Appendix C: Glossary](/series/php-algorithms/appendices/c-glossary/) for term definitions
-  - [Appendix B: PHP Performance Tips](/series/php-algorithms/appendices/b-php-performance-tips/) for optimization
+  - [Appendix A: Complexity Cheat Sheet](/series/php-algorithms/appendices/appendix-a-complexity-cheat-sheet/) for Big O reference
+  - [Appendix C: Glossary](/series/php-algorithms/appendices/appendix-c-glossary/) for term definitions
+  - [Appendix B: PHP Performance Tips](/series/php-algorithms/appendices/appendix-b-php-performance-tips/) for optimization
 - **Review chapter troubleshooting sections** for common implementation issues
 - **Check code samples** in `/code-samples/php-algorithms/` for working examples
 - **PHP Manual**: [php.net](https://www.php.net/) for language reference

@@ -2,17 +2,7 @@
 import { Icon } from '@astrojs/starlight/components';
 import CourseRail from '../home/CourseRail.astro';
 import PinupPoster from '../PinupPoster.astro';
-import type { CourseSlug } from '../../lib/course-catalogue';
-
-const tracks: { id: string; title: string; courses: CourseSlug[] }[] = [
-  { id: 'start-here', title: 'Start here', courses: ['php-basics', 'php-8-6', 'build-crm-laravel-12'] },
-  { id: 'switch-languages', title: 'Switch languages', courses: [
-    'php-typescript-developers', 'php-for-java-developers', 'python-developers-love-php-laravel', 'rails-developers-love-laravel',
-  ] },
-  { id: 'go-deeper', title: 'Go deeper', courses: [
-    'php-algorithms', 'ai-ml-php-developers', 'data-science-php-developers', 'claude-php-developers', 'agentic-ai-php-developers',
-  ] },
-];
+import { catalogueTracks } from '../../lib/course-catalogue';
 ---
 
 <div class="studio-catalogue">
@@ -21,7 +11,7 @@ const tracks: { id: string; title: string; courses: CourseSlug[] }[] = [
       <h1 id="_top" tabindex="-1">Find your next <span>PHP project.</span></h1>
       <p>Start with a small win, take on a full app, or bring what you know from another language.</p>
       <nav class="catalogue-masthead__links" aria-label="Learning tracks">
-        {tracks.map(({ id, title }) => (
+        {catalogueTracks.map(({ id, title }) => (
           <a class="studio-text-link" href={'#' + id}>{title} <Icon name="right-arrow" /></a>
         ))}
         <a class="studio-text-link" href="/series/build-crm-laravel-12/">Build an app <Icon name="right-arrow" /></a>
@@ -30,7 +20,7 @@ const tracks: { id: string; title: string; courses: CourseSlug[] }[] = [
     <PinupPoster sizes="(max-width: 42rem) 88vw, (max-width: 100rem) 38vw, 36rem" />
   </div>
 
-  {tracks.map(({ id, title, courses }) => (
+  {catalogueTracks.map(({ id, title, courses }) => (
     <section class="catalogue-track" {id} aria-labelledby={id + '-title'}>
       <CourseRail {id} {title} {courses} catalogue />
     </section>

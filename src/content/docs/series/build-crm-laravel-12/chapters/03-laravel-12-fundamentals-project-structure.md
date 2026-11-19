@@ -210,7 +210,7 @@ Automated tests ensuring your code works correctly:
 | `Feature/`   | Integration tests | Test full features: "User can create contact"       |
 | `Unit/`      | Unit tests        | Test individual functions: "calculateTotal() works" |
 
-**You'll add tests here in Chapter 31.**
+**The [contact API lab](/series/build-crm-laravel-12/chapters/20-building-restful-api-crm/) includes feature tests in this directory.**
 
 ### Web Root: `public/` Directory
 
@@ -255,7 +255,7 @@ Composer packages (auto-installed, never edit):
 
 - `config/` — Add configuration when integrating services
 - `resources/views/` — Blade layouts (if not using React)
-- `tests/` — Write tests for features (Chapter 31)
+- `tests/` — Write tests for features
 - `database/seeders/` — Populate test data
 
 **Rarely modified:**

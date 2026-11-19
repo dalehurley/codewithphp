@@ -1,6 +1,6 @@
 ---
-title: "05: Limit Values with clamp()"
-description: "Keep a page-size setting within an inclusive range"
+title: "05: PHP 8.6 clamp() Examples"
+description: "Learn how PHP 8.6 clamp() bounds values, handles reversed limits, and works with a Time Duration example."
 series: "php-8-6"
 chapter: 5
 order: 5
@@ -10,11 +10,13 @@ prerequisites:
 estimatedTime: "PT10M"
 sidebar:
   order: 5
+author: "Code with PHP"
+dateModified: "2026-11-20"
 ---
 
 ## Overview
 
-Keep a page-size setting within an inclusive range. Use the same operation to cap a retry delay represented by a duration.
+PHP 8.6 adds `clamp($value, $min, $max)`. It returns the lower bound for a value below the range, the upper bound for a value above it, and the original value inside the range. For example, `clamp(150, 1, 100)` returns `100`. Pass the lowest bound first to avoid a `ValueError`.
 
 ## Prerequisites
 

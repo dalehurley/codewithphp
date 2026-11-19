@@ -1073,4 +1073,4 @@ After mastering workflow orchestration, you'll be ready to make these systems pr
 
 ---
 
-**Next:** [Chapter 12: Guardrails, Policy, and Safety Layers →](/series/agentic-ai-php-developers/chapters/12-guardrails-policy-and-safety-layers)
+**Next:** [Chapter 12: Guardrails, Policy, and Safety Layers →](/series/agentic-ai-php-developers/chapters/12-guardrails-policy-safety/)

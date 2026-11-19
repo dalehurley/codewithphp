@@ -856,7 +856,7 @@ You've learned how to protect your applications from CSRF attacks and implement 
 ### What's Next?
 
 - [Chapter 16: Writing Better Code with PSR-1 and PSR-12](/series/php-basics/chapters/16-writing-better-code-with-psr-1-and-psr-12) - Code standards for professional development
-- [Chapter 19b: Testing Your Blog Application](/series/php-basics/chapters/19b-testing-your-blog-application) - Automated testing including security tests
+- [Chapter 19: Build a Simple Blog](/series/php-basics/chapters/19-project-building-a-simple-blog/) - Apply form protection to a complete PHP project
 - Explore [OWASP Top 10](https://owasp.org/www-project-top-ten/) for comprehensive security guidance
 - Learn about [Content Security Policy (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)
 

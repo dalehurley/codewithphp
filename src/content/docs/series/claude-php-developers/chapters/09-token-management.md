@@ -2180,7 +2180,7 @@ $avgOutputTokens = $tracker->getStats()['total_output_tokens'] /
 - [Chapter 08: Temperature and Sampling Parameters](/series/claude-php-developers/chapters/08-temperature-sampling) — Learn how sampling affects token usage
 - [Chapter 10: Error Handling and Rate Limiting](/series/claude-php-developers/chapters/10-error-handling-rate-limiting) — Build resilient applications with proper error handling
 - [Chapter 18: Caching Strategies](/series/claude-php-developers/chapters/18-caching-strategies) — Response caching, cache invalidation, and semantic matching
-- [Chapter 39: Cost Optimization and Billing](/series/claude-php-developers/chapters/39-cost-optimization-billing) — Complete cost optimization strategies for production
+- [Chapter 39: Cost Optimization and Billing](/series/claude-php-developers/chapters/39-cost-optimization/) — Complete cost optimization strategies for production
 - [Anthropic API Reference](https://docs.claude.com/en/api/messages) — Complete API documentation for messages endpoint
 
 ## Further Reading

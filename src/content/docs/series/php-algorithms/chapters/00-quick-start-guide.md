@@ -1,4 +1,5 @@
 ---
+seoTitle: "PHP Algorithms Quick Start"
 title: "Quick Start Guide"
 description: "Get started with algorithms in 5 minutes. Common scenarios, algorithm mapping, and copy-paste ready solutions for PHP developers."
 sidebar:
@@ -59,7 +60,7 @@ usort($users, fn($a, $b) => $a['age'] <=> $b['age']);
 // - Specific constraints: See Chapter 28 (Selection Guide)
 ```
 
-**→ [Full Sorting Guide](/series/php-algorithms/chapters/05-bubble-selection-sort/)**
+**→ [Full Sorting Guide](/series/php-algorithms/chapters/05-bubble-sort-selection-sort/)**
 
 ### Search for Something
 
@@ -377,7 +378,7 @@ If your "large" dataset fits comfortably in a PHP array, it's probably not that 
 **Avoid in Production**: O(n²) nested loops on large data, O(2^n) recursive solutions without memoization.
 :::
 
-**→ [Full Complexity Guide](/series/php-algorithms/chapters/00-introduction-to-algorithms#big-o-notation)** | **[Appendix A](/series/php-algorithms/appendices/a-complexity-cheat-sheet/)**
+**→ [Full Complexity Guide](/series/php-algorithms/chapters/00-introduction-to-algorithms#big-o-notation)** | **[Appendix A](/series/php-algorithms/appendices/appendix-a-complexity-cheat-sheet/)**
 
 ---
 
@@ -795,13 +796,13 @@ opcache.jit_buffer_size=128M
 ## 📖 Essential References
 
 **Quick Lookups**:
-- [Complexity Cheat Sheet](/series/php-algorithms/appendices/a-complexity-cheat-sheet/) - Big O reference
-- [PHP Performance Tips](/series/php-algorithms/appendices/b-php-performance-tips/) - Optimization guide
-- [Glossary](/series/php-algorithms/appendices/c-glossary/) - Term definitions
+- [Complexity Cheat Sheet](/series/php-algorithms/appendices/appendix-a-complexity-cheat-sheet/) - Big O reference
+- [PHP Performance Tips](/series/php-algorithms/appendices/appendix-b-php-performance-tips/) - Optimization guide
+- [Glossary](/series/php-algorithms/appendices/appendix-c-glossary/) - Term definitions
 
 **Common Tasks**:
-- Sorting: [Chapters 5-10](/series/php-algorithms/chapters/05-bubble-selection-sort/)
-- Searching: [Chapters 11-14](/series/php-algorithms/chapters/11-linear-search/)
+- Sorting: [Chapters 5-10](/series/php-algorithms/chapters/05-bubble-sort-selection-sort/)
+- Searching: [Chapters 11-14](/series/php-algorithms/chapters/11-linear-search-variants/)
 - Graphs: [Chapters 21-24](/series/php-algorithms/chapters/21-graph-representations/)
 - Optimization: [Chapters 27-30](/series/php-algorithms/chapters/27-caching-memoization-strategies/)
 
@@ -1120,8 +1121,8 @@ A: Look for patterns: nested loops = O(n²), binary divide = O(log n), hash tabl
 - [Use case guide](/series/php-algorithms/#navigation-by-use-case) - Find what you need
 
 **Need help?**
-- [Glossary](/series/php-algorithms/appendices/c-glossary/) - Look up terms
-- [Cheat Sheet](/series/php-algorithms/appendices/a-complexity-cheat-sheet/) - Quick reference
+- [Glossary](/series/php-algorithms/appendices/appendix-c-glossary/) - Look up terms
+- [Cheat Sheet](/series/php-algorithms/appendices/appendix-a-complexity-cheat-sheet/) - Quick reference
 - Review this guide - Come back anytime
 
 ---

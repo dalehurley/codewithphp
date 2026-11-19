@@ -1,24 +1,24 @@
 ---
-title: "02: Modern PHP: What's Changed"
-description: "Discover how PHP 8.4 has evolved into a modern, type-safe language that Ruby developers will appreciate"
+title: "02: Modern PHP for Ruby Developers"
+description: "See how modern PHP types, enums, match expressions, and property hooks compare with familiar Ruby patterns."
 sidebar:
   label: "02: Modern PHP: What's Changed"
   order: 2
   badge:
     text: Beginner
     variant: success
+author: "Code with PHP"
+dateModified: "2026-11-20"
 ---
 
 
 ![Modern PHP: What's Changed](/images/rails-developers-love-laravel/chapter-02-modern-php-whats-changed-hero-full.webp)
 
-# 02: Modern PHP: What's Changed <span class="difficulty-badge difficulty-beginner">Beginner</span>
+<span id="02-modern-php-whats-changed-beginner"></span>
 
 ## Overview
 
-If your last encounter with PHP was years ago, prepare to be pleasantly surprised. Modern PHP (8.0+) has undergone a dramatic transformation that brings it closer to Ruby in expressiveness while adding powerful features of its own.
-
-This chapter explores how PHP has evolved from a loosely-typed scripting language into a modern, performant language with sophisticated type systems, elegant syntax, and developer-friendly features that Ruby developers will appreciate.
+If you use Ruby, start by comparing dynamic method calls with PHP's optional parameter and return declarations. This chapter also maps Ruby patterns to PHP enums, match expressions and typed properties. Its PHP 8.4 examples show what runs in each version.
 
 ## Prerequisites
 

@@ -2265,7 +2265,7 @@ Use this quick reference table for fast algorithm selection decisions:
 - [PHP: SPL Data Structures](https://www.php.net/manual/en/book.spl.php) - Standard PHP Library data structures
 - [Big O Cheat Sheet](https://www.bigocheatsheet.com/) - Comprehensive complexity reference
 - [Algorithm Design Manual](https://www.algorist.com/) - Steven Skiena's comprehensive guide to algorithm design
-- [Chapter 5: Sorting Algorithms](/series/php-algorithms/chapters/05-bubble-selection-sort/) - Deep dive into sorting implementations
+- [Chapter 5: Sorting Algorithms](/series/php-algorithms/chapters/05-bubble-sort-selection-sort/) - Deep dive into sorting implementations
 - [Chapter 13: Hash Tables](/series/php-algorithms/chapters/13-hash-tables-hash-functions/) - Understanding hash table performance characteristics
 - [Chapter 17: Stacks and Queues](/series/php-algorithms/chapters/17-stacks-queues/) - Detailed comparison of Spl classes vs arrays
 

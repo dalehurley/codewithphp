@@ -2271,7 +2271,7 @@ You now understand not just *how* binary search works, but *when* and *why* to u
 ### Related Chapters
 - [Chapter 11: Linear Search & Variants](/series/php-algorithms/chapters/11-linear-search-variants) — Compare with linear approach
 - [Chapter 13: Hash Tables & Hash Functions](/series/php-algorithms/chapters/13-hash-tables-hash-functions) — Even faster O(1) lookups
-- [Chapter 16: Binary Search Trees](/series/php-algorithms/chapters/16-binary-search-trees) — Dynamic sorted data structure
+- [Chapter 18: Trees and Binary Search Trees](/series/php-algorithms/chapters/18-trees-binary-search-trees/) — Dynamic sorted data structure
 - [Chapter 29: Performance Optimization](/series/php-algorithms/chapters/29-performance-optimization) — Choosing the right algorithm
 
 ## What's Next

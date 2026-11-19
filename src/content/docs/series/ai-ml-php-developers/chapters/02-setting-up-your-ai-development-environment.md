@@ -118,7 +118,7 @@ Complete, runnable verification scripts for this chapter:
 - [`test-phpml.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-02/test-phpml.php) — PHP-ML library test
 - [`test-rubixml.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-02/test-rubixml.php) — Rubix ML library test
 
-All files are in [`docs/series/ai-ml-php-developers/code/chapter-02/`](/series/ai-ml-php-developers/code/chapter-02/README.md)
+All files are in [`docs/series/ai-ml-php-developers/code/chapter-02/`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-02/README.md)
 :::
 
 ## Quick Start

@@ -38,7 +38,7 @@ By the end of this chapter, you will have created:
 
 Before diving in, ensure you have:
 
-- ✓ Completed [Chapter 16: The Claude PHP SDK](/series/claude-php-developers/chapters/16-official-php-sdk)
+- ✓ Completed [Chapter 16: The Claude PHP SDK](/series/claude-php-developers/chapters/16-claude-php-sdk/)
 - ✓ Understanding of **SOLID principles** (especially dependency inversion)
 - ✓ Experience with **dependency injection** patterns
 - ✓ Familiarity with **unit testing** using PHPUnit

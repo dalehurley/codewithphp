@@ -943,7 +943,7 @@ if ($uniqueOutputs > 2) {
 
 ## What's Next?
 
-In [Chapter 18: Performance and Cost Optimization](/series/agentic-ai-php-developers/chapters/18-performance-and-cost-optimization), you'll learn to optimize your agents for production: caching strategies, batching, model routing, and token usage reduction.
+In [Chapter 18: Performance and Cost Optimization](/series/agentic-ai-php-developers/chapters/18-performance-cost-optimization/), you'll learn to optimize your agents for production: caching strategies, batching, model routing, and token usage reduction.
 
 **Coming up:**
 
@@ -963,4 +963,4 @@ In [Chapter 18: Performance and Cost Optimization](/series/agentic-ai-php-develo
 
 ---
 
-**Next:** [Chapter 18: Performance and Cost Optimization →](/series/agentic-ai-php-developers/chapters/18-performance-and-cost-optimization)
+**Next:** [Chapter 18: Performance and Cost Optimization →](/series/agentic-ai-php-developers/chapters/18-performance-cost-optimization/)

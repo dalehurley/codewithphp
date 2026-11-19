@@ -1517,7 +1517,7 @@ Continue to [Chapter 12: Building Custom Tools in PHP](/series/claude-php-develo
 - [Anthropic Tool Use Documentation](https://docs.claude.com/en/docs/agents-and-tools/tool-use) - Official guide to tool use capabilities
 - [JSON Schema Specification](https://json-schema.org/) - Understanding JSON schemas for tool definitions
 - [Chapter 12: Building Custom Tools](/series/claude-php-developers/chapters/12-building-custom-tools) - Next chapter on production tool architecture
-- [Chapter 13: Advanced Tool Patterns](/series/claude-php-developers/chapters/13-advanced-tool-patterns) - Advanced tool use techniques
+- [Chapter 12: Building Custom Tools](/series/claude-php-developers/chapters/12-building-custom-tools/) - Advanced tool use techniques
 - [Anthropic API Reference - Tools](https://docs.claude.com/en/api/messages) - Complete API reference for tool parameters
 
 ## 💻 Code Samples
