@@ -1,0 +1,10 @@
+---
+import DefaultHero from '@astrojs/starlight/components/Hero.astro';
+import { isHomepage } from '../lib/seo';
+import Home from './Home.astro';
+import Catalogue from './learning/Catalogue.astro';
+
+const { slug } = Astro.locals.starlightRoute.entry;
+---
+
+{isHomepage(slug) ? <Home /> : slug === 'series' ? <Catalogue /> : <DefaultHero />}

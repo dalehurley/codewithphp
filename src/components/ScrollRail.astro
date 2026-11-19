@@ -1,0 +1,74 @@
+---
+import { Icon } from '@astrojs/starlight/components';
+
+interface Props {
+  id: string;
+  label: string;
+  itemName: string;
+  listClass: string;
+  class?: string;
+}
+
+const { id, label, itemName, listClass, class: className } = Astro.props;
+---
+
+<scroll-rail class={className}>
+  <div class="studio-courses__heading">
+    <slot name="heading" />
+    <div class="studio-courses__tools">
+      <slot name="actions" />
+      <div class="studio-courses__controls" data-rail-controls hidden>
+        <button class="studio-icon-button" type="button" data-direction="-1" aria-label={'Previous ' + itemName} aria-controls={id}>
+          <Icon name="left-arrow" size="1.5rem" />
+        </button>
+        <button class="studio-icon-button" type="button" data-direction="1" aria-label={'Next ' + itemName} aria-controls={id}>
+          <Icon name="right-arrow" size="1.5rem" />
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <ul class={listClass} id={id} data-scroll-rail aria-label={label}>
+    <slot />
+  </ul>
+</scroll-rail>
+
+<script>
+  class ScrollRail extends HTMLElement {
+    private resizeObserver?: ResizeObserver;
+
+    connectedCallback() {
+      const rail = this.querySelector<HTMLElement>('[data-scroll-rail]');
+      const controls = this.querySelector<HTMLElement>('[data-rail-controls]');
+      const previous = controls?.querySelector<HTMLButtonElement>('[data-direction="-1"]');
+      const next = controls?.querySelector<HTMLButtonElement>('[data-direction="1"]');
+      if (!rail || !controls || !previous || !next || rail.children.length < 2) return;
+
+      const update = () => {
+        const lastOffset = rail.scrollWidth - rail.clientWidth;
+        controls.hidden = lastOffset < 2;
+        previous.setAttribute('aria-disabled', String(rail.scrollLeft < 2));
+        next.setAttribute('aria-disabled', String(rail.scrollLeft >= lastOffset - 2));
+      };
+      const move = (button: HTMLButtonElement, direction: number) => {
+        if (button.getAttribute('aria-disabled') === 'true') return;
+        const first = rail.children[0] as HTMLElement;
+        const second = rail.children[1] as HTMLElement;
+        rail.scrollBy({ left: direction * (second.offsetLeft - first.offsetLeft) });
+      };
+
+      previous.onclick = () => move(previous, -1);
+      next.onclick = () => move(next, 1);
+      rail.onscroll = update;
+      this.resizeObserver = new ResizeObserver(update);
+      this.resizeObserver.observe(rail);
+      update();
+    }
+
+    disconnectedCallback() {
+      this.resizeObserver?.disconnect();
+    }
+  }
+
+  customElements.define('scroll-rail', ScrollRail);
+</script>

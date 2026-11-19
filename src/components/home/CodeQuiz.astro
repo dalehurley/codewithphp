@@ -1,0 +1,114 @@
+---
+import { Code } from 'astro:components';
+import { Icon } from '@astrojs/starlight/components';
+
+const challenges = [
+  {
+    title: 'Strict equality',
+    code: '$count = "3";\necho $count === 3 ? "same" : "different";',
+    options: ['same', 'different'],
+    answer: 'different',
+    explanation: 'Strict equality compares both type and value. The string "3" and the integer 3 are different types.',
+  },
+  {
+    title: 'Array mapping',
+    code: '$prices = [3, 5];\necho implode(", ", array_map(fn ($n) => $n * 2, $prices));',
+    options: ['6, 10', '3, 5'],
+    answer: '6, 10',
+    explanation: 'array_map() doubles each price in a new array. implode() joins those values with a comma and a space.',
+  },
+  {
+    title: 'Null coalescing',
+    code: '$name = "";\necho ($name ?? "Guest") === "" ? "blank" : "Guest";',
+    options: ['Guest', 'blank'],
+    answer: 'blank',
+    explanation: 'The ?? operator falls back only for null or an undefined value. An empty string is still a string.',
+  },
+];
+---
+
+<code-quiz class="studio-quiz">
+  {challenges.map(({ title, code, options, answer, explanation }, index) => (
+    <div class="studio-quiz__panel" data-quiz-panel data-title={title}>
+      <h3 class="studio-quiz__tab" id={'quiz-title-' + index}>{title}</h3>
+      <div class="studio-quiz__code">
+        <Code code={'<?php\n' + code} lang="php" theme="dracula" />
+      </div>
+      <form class="studio-quiz__form" data-answer={answer} data-explanation={explanation} hidden>
+        <fieldset>
+          <legend class="sr-only">What does this PHP code print?</legend>
+          {options.map((option) => (
+            <label class="studio-quiz__choice">
+              <input class="sr-only" name="prediction" type="radio" value={option} required />
+              <span>{option}</span>
+            </label>
+          ))}
+        </fieldset>
+        <button class="studio-button" type="submit">Check answer</button>
+        <output class="studio-quiz__result" aria-live="polite"></output>
+      </form>
+      <details class="studio-quiz__fallback" data-quiz-fallback>
+        <summary>Reveal the answer</summary>
+        <p>PHP prints <code>{answer}</code>. {explanation}</p>
+      </details>
+    </div>
+  ))}
+  <div class="studio-quiz__pager" data-quiz-pager hidden>
+    <button class="studio-icon-button" type="button" data-step="-1" aria-label="Previous challenge">
+      <Icon name="left-arrow" size="1.25em" /> Previous
+    </button>
+    <span class="studio-quiz__count" data-quiz-count aria-live="polite"></span>
+    <button class="studio-icon-button" type="button" data-step="1" aria-label="Next challenge">
+      Next <Icon name="right-arrow" size="1.25em" />
+    </button>
+  </div>
+</code-quiz>
+
+<script>
+  class CodeQuiz extends HTMLElement {
+    connectedCallback() {
+      const panels = [...this.querySelectorAll<HTMLElement>('[data-quiz-panel]')];
+      const pager = this.querySelector<HTMLElement>('[data-quiz-pager]');
+      const count = this.querySelector<HTMLElement>('[data-quiz-count]');
+      if (!panels.length || !pager || !count) return;
+
+      let current = 0;
+      const showCurrent = () => {
+        panels.forEach((panel, index) => { panel.hidden = index !== current; });
+        count.textContent = `${current + 1} / ${panels.length}`;
+        count.setAttribute('aria-label', `Challenge ${current + 1} of ${panels.length}. ${panels[current].dataset.title}.`);
+      };
+
+      for (const panel of panels) {
+        const form = panel.querySelector<HTMLFormElement>('form');
+        const output = panel.querySelector<HTMLOutputElement>('output');
+        const fallback = panel.querySelector<HTMLElement>('[data-quiz-fallback]');
+        if (!form || !output || !fallback) continue;
+
+        form.hidden = false;
+        fallback.hidden = true;
+        form.onchange = () => { output.value = ''; };
+        form.onsubmit = (event) => {
+          event.preventDefault();
+          const prediction = new FormData(form).get('prediction');
+          const correct = prediction === form.dataset.answer;
+          const feedback = correct ? 'You got it!' : 'Good guess.';
+          output.value = `${feedback} PHP prints ${form.dataset.answer}. ${form.dataset.explanation}`;
+          output.dataset.correct = String(correct);
+        };
+      }
+
+      for (const button of pager.querySelectorAll<HTMLButtonElement>('button[data-step]')) {
+        button.onclick = () => {
+          current = (current + Number(button.dataset.step) + panels.length) % panels.length;
+          showCurrent();
+        };
+      }
+
+      showCurrent();
+      pager.hidden = false;
+    }
+  }
+
+  customElements.define('code-quiz', CodeQuiz);
+</script>

@@ -1,0 +1,51 @@
+---
+import { Icon } from '@astrojs/starlight/components';
+import ScrollRail from '../ScrollRail.astro';
+import { courseCovers, featuredCourses, type CourseSlug } from '../../lib/course-catalogue';
+
+interface Props {
+  courses?: CourseSlug[];
+  title?: string;
+  description?: string;
+  id?: string;
+  catalogue?: boolean;
+}
+
+const {
+  courses = featuredCourses,
+  title = 'Pick your next project.',
+  description,
+  id = 'learn',
+  catalogue = false,
+} = Astro.props;
+---
+
+<ScrollRail
+  id={catalogue ? id + '-courses' : 'featured-courses'}
+  label={catalogue ? title + ' courses' : 'Featured courses'}
+  itemName="courses"
+  listClass="studio-course-rail"
+  class="studio-wrap studio-courses"
+>
+  <div slot="heading">
+    <h2 id={id + '-title'}>{title}</h2>
+    {description && <p>{description}</p>}
+  </div>
+  {!catalogue && <a slot="actions" class="studio-text-link" href="/series/">All courses</a>}
+
+  {courses.map((slug) => {
+    const { title, description, color, artwork, mark } = courseCovers[slug];
+    return (
+      <li>
+        <a class:list={['studio-course', 'studio-course--' + color]} href={'/series/' + slug + '/'}>
+          <span class:list={['studio-course__art', 'studio-course__art--' + artwork]} aria-hidden="true">{mark}</span>
+          <div>
+            <h3>{title}</h3>
+            <p>{description}</p>
+          </div>
+          <span class="studio-course__end" aria-hidden="true"><Icon name="right-arrow" size="1.75rem" /></span>
+        </a>
+      </li>
+    );
+  })}
+</ScrollRail>

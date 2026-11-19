@@ -3,6 +3,7 @@ import sitemap from '@astrojs/sitemap';
 import starlight from '@astrojs/starlight';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import rehypeLearningLayout from './src/lib/rehype-learning-layout.mjs';
 
 // https://astro.build/config
 export default defineConfig({
@@ -25,7 +26,7 @@ export default defineConfig({
       editLink: {
         baseUrl: 'https://github.com/dalehurley/codewithphp/edit/main/',
       },
-      favicon: '/favicon.ico',
+      favicon: '/images/brand/pinup-mark.png',
       head: [
         {
           tag: 'meta',
@@ -44,13 +45,18 @@ export default defineConfig({
       ],
       customCss: [
         './src/styles/custom.css',
+        './src/styles/home.css',
+        './src/styles/learning.css',
       ],
       components: {
         Head: './src/Head.astro',
         Header: './src/components/Header.astro',
+        Hero: './src/components/SplashHero.astro',
+        PageTitle: './src/components/learning/LearningTitle.astro',
       },
       sidebar: [
         { label: 'Home', link: '/' },
+        { label: 'All courses', link: '/series/' },
         {
           label: 'PHP Basics',
           collapsed: true,
@@ -200,6 +206,6 @@ export default defineConfig({
   ],
   markdown: {
     remarkPlugins: [remarkMath],
-    rehypePlugins: [rehypeKatex],
+    rehypePlugins: [rehypeKatex, rehypeLearningLayout],
   },
 });

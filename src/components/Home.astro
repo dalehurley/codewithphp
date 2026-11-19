@@ -1,0 +1,81 @@
+---
+import { Icon } from '@astrojs/starlight/components';
+import PinupPoster from './PinupPoster.astro';
+import CodeQuiz from './home/CodeQuiz.astro';
+import CourseRail from './home/CourseRail.astro';
+
+const repository = 'https://github.com/dalehurley/codewithphp';
+---
+
+  <div class="studio-home">
+    <section class="studio-hero studio-scene" aria-labelledby="_top">
+      <div class="studio-wrap studio-hero__layout">
+        <div class="studio-hero__copy">
+          <h1 id="_top" tabindex="-1">Code with <span>PHP.</span></h1>
+          <p>Get your hands on modern PHP. Build real projects, try a few tricks, and meet the people behind the code.</p>
+          <div class="studio-hero__actions">
+            <a class="studio-button" href="/series/php-basics/">
+              Start learning <Icon name="right-arrow" size="1.35em" />
+            </a>
+            <a class="studio-text-link" href="/series/">Browse courses</a>
+          </div>
+          <a class="studio-hero__down" href="#learn" aria-label="Scroll to featured courses">
+            <Icon name="down-arrow" size="1.75rem" />
+          </a>
+        </div>
+        <PinupPoster sizes="(max-width: 47.99rem) 88vw, (max-width: 100rem) 48vw, 46rem" />
+      </div>
+    </section>
+
+    <section class="studio-learn studio-scene" id="learn" aria-labelledby="learn-title">
+      <div class="studio-checker" aria-hidden="true"></div>
+      <CourseRail description="Start from scratch, build a full app, or see what’s new in PHP." />
+    </section>
+
+    <section class="studio-play studio-scene" id="play" aria-labelledby="play-title">
+      <div class="studio-wrap studio-split">
+        <div>
+          <h2 id="play-title">Try it.<br />Break it.</h2>
+          <p>Guess what PHP prints, then open the answer to see why.</p>
+          <a class="studio-text-link" href="/series/php-basics/">Keep experimenting</a>
+        </div>
+        <CodeQuiz />
+      </div>
+    </section>
+
+    <section class="studio-connect studio-scene" id="connect" aria-labelledby="connect-title">
+      <div class="studio-wrap studio-split">
+        <div>
+          <h2 id="connect-title">Good code.<br />Better company.</h2>
+          <p>Share a project, ask for a hand, or help shape the next lesson.</p>
+          <div class="studio-community-links">
+            <a href={repository + '/issues'}>
+              Report an issue <Icon name="right-arrow" size="1.25em" />
+            </a>
+            <a href={repository + '#-contributing'}>
+              Contribute on GitHub <Icon name="right-arrow" size="1.25em" />
+            </a>
+          </div>
+        </div>
+        <aside class="studio-note" aria-labelledby="note-title">
+          <p class="studio-note__label">From the editor</p>
+          <h3 id="note-title">Hey, I’m Dale.</h3>
+          <p>I started Code with PHP to make learning feel more like building something with a friend. I’d love to see what you make.</p>
+          <a class="studio-text-link" href="https://dalehurley.com/#contact">
+            Meet Dale Hurley <Icon name="external" size="1em" />
+          </a>
+        </aside>
+      </div>
+    </section>
+
+    <div class="studio-footer" role="contentinfo">
+      <div class="studio-wrap">
+        <a class="studio-footer__brand" href="#_top">Code with PHP</a>
+        <nav aria-label="Footer">
+          <a href="/series/">Courses</a>
+          <a href={repository}>GitHub</a>
+          <a href="https://dalehurley.com/">Dale Hurley</a>
+        </nav>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,579 @@
+/* The catalogue shares the home’s covers. Reading routes keep Starlight’s native scroll. */
+html:has(.studio-catalogue) main,
+html:has(.studio-catalogue) main > .content-panel {
+  padding: 0;
+}
+
+.sl-container:has(> .studio-catalogue) {
+  max-width: none;
+  margin: 0;
+}
+
+.sl-container:has(> .studio-catalogue) > :is(.sl-markdown-content, footer) {
+  display: none;
+}
+
+.studio-catalogue {
+  color: var(--sl-color-white);
+  font: 550 clamp(1rem, 1.5vw, 1.35rem) / 1.4 var(--studio-sans);
+}
+
+.studio-catalogue a {
+  color: inherit;
+}
+
+.catalogue-masthead {
+  display: grid;
+  grid-template-columns: minmax(0, 1.32fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(1.75rem, 4vw, 4rem);
+  padding-block: clamp(2.5rem, 3.25vw, 4rem);
+}
+
+.catalogue-masthead h1,
+.catalogue-track h2,
+.chapter-picker h2 {
+  color: inherit;
+  font-family: var(--studio-display);
+  font-stretch: 62%;
+  font-weight: 900;
+  line-height: 0.92;
+  letter-spacing: -0.028em;
+  word-spacing: 0.06em;
+}
+
+.catalogue-masthead h1 {
+  font-size: clamp(3.25rem, 8.6vw, 8.25rem);
+  text-wrap: balance;
+}
+
+.catalogue-masthead h1 span {
+  display: block;
+}
+
+.catalogue-masthead p {
+  max-width: 44ch;
+  margin-block-start: 1.2rem;
+  font-size: clamp(1.05rem, 2vw, 1.8rem);
+  line-height: 1.22;
+  text-wrap: pretty;
+  font-weight: 680;
+}
+
+.catalogue-masthead__links,
+.catalogue-outro {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem clamp(1rem, 2.35vw, 2.5rem);
+}
+
+.catalogue-masthead__links {
+  font-size: clamp(1rem, 1.4vw, 1.2rem);
+  margin-block-start: 1.5rem;
+}
+
+.catalogue-masthead .studio-poster {
+  width: 100%;
+  max-width: none;
+  aspect-ratio: 1.28;
+  transform: rotate(-2deg);
+  box-shadow: 0.65rem 0.65rem var(--studio-lavender);
+}
+
+.catalogue-masthead .studio-poster__tag {
+  font-size: clamp(1.2rem, 2.7vw, 2.6rem);
+}
+
+.catalogue-track {
+  background: var(--studio-lavender);
+  color: var(--studio-ink);
+  border-block-start: 2px solid var(--studio-ink);
+}
+
+.catalogue-track:nth-of-type(2) {
+  background: #f2bbcb;
+}
+
+.catalogue-track:nth-of-type(3) {
+  background: #dfcfef;
+}
+
+.catalogue-track .studio-courses {
+  display: grid;
+  grid-template-columns: minmax(9rem, 0.55fr) minmax(0, 3fr);
+  align-items: start;
+  padding-block: clamp(1.8rem, 3.2vw, 3.2rem);
+}
+
+.catalogue-track h2 {
+  max-width: 8ch;
+  font-size: clamp(2.6rem, 5.2vw, 5.2rem);
+}
+
+.catalogue-track .studio-courses__heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  padding-inline-end: 0;
+  margin-block: 0.5rem 0;
+}
+
+.catalogue-track .studio-courses__tools {
+  justify-items: start;
+}
+
+.catalogue-track .studio-courses__controls button {
+  background: var(--studio-paper);
+}
+
+.catalogue-track .studio-courses__controls button:hover:not([aria-disabled='true']) {
+  background: var(--studio-ink);
+}
+
+.catalogue-track .studio-course {
+  min-height: clamp(16rem, 23vw, 23rem);
+  gap: 0.45rem;
+  padding: clamp(0.9rem, 1.55vw, 1.5rem);
+}
+
+.catalogue-track .studio-course h3 {
+  font-size: clamp(1.45rem, 2.55vw, 2.65rem);
+  font-family: var(--studio-sans);
+  font-weight: 800;
+  color: inherit;
+}
+
+.catalogue-track .studio-course p {
+  font-size: clamp(0.95rem, 1.2vw, 1.15rem);
+}
+
+.catalogue-track .studio-course__art {
+  font-size: clamp(4.1rem, 8.7vw, 8.4rem);
+}
+
+.catalogue-track .studio-course__art--braces {
+  font-size: clamp(5rem, 9.5vw, 9rem);
+}
+
+.catalogue-outro {
+  justify-content: space-between;
+  padding-block: 2rem;
+}
+
+.studio-catalogue :focus-visible {
+  outline: 2px dashed currentColor;
+  outline-offset: 0.25rem;
+}
+
+.sidebar-pane {
+  background-color: var(--sl-color-bg-sidebar);
+  border-inline-end: 1px solid var(--sl-color-gray-5);
+}
+
+.sidebar-pane :is(a, summary) {
+  border-radius: 0.12rem;
+}
+
+.sidebar-pane :is(a, summary):hover:not([aria-current='page']) {
+  background: var(--sl-color-accent-low);
+  color: var(--sl-color-white);
+}
+
+.sidebar-pane :is(a, summary):focus-visible {
+  outline: 2px solid var(--sl-color-accent);
+  outline-offset: 1px;
+}
+
+.sidebar-pane a[aria-current='page']:focus-visible {
+  outline-color: var(--site-mark-color);
+}
+
+.sidebar-pane :is(.top-level > li > a, .group-label) {
+  font-family: var(--studio-sans);
+  font-weight: 760;
+}
+
+.learning-masthead {
+  color: var(--studio-ink);
+  background: var(--studio-lavender);
+  border: 2px solid var(--studio-ink);
+  box-shadow: 0.35rem 0.35rem var(--sl-color-gray-5);
+  font-family: var(--studio-sans);
+}
+
+.learning-masthead--lesson {
+  color: var(--studio-paper);
+  background: var(--studio-ink);
+  border-color: var(--sl-color-gray-5);
+}
+
+.learning-masthead__main {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(0.7rem, 2.2vw, 1.75rem);
+  padding: clamp(1.05rem, 2.75vw, 2.5rem);
+}
+
+.learning-masthead__main img {
+  width: clamp(4.25rem, 10.5vw, 10rem);
+  height: auto;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  box-shadow: 0.22rem 0.22rem var(--studio-coral);
+  transform: rotate(-5deg);
+}
+
+.learning-masthead h1 {
+  margin-block-start: 0.3rem;
+  color: inherit;
+  font-family: var(--studio-display);
+  font-stretch: 62%;
+  font-size: clamp(3rem, 6.9vw, 6.8rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 0.94;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.learning-masthead--lesson h1 {
+  font-family: var(--studio-sans);
+  font-stretch: normal;
+  font-size: clamp(2.05rem, 3.8vw, 3.7rem);
+  font-weight: 800;
+  letter-spacing: -0.055em;
+  text-wrap: pretty;
+}
+
+.learning-masthead--lesson .learning-masthead__main {
+  padding-block: clamp(1rem, 2.25vw, 2rem);
+}
+
+.learning-masthead__back,
+.learning-masthead .studio-text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  color: inherit;
+  font-weight: 800;
+  line-height: 1.25;
+  text-underline-offset: 0.2em;
+}
+
+.learning-masthead__back svg {
+  flex: none;
+}
+
+.learning-masthead__back:hover,
+.learning-masthead .studio-text-link:hover {
+  text-decoration-color: var(--studio-coral);
+}
+
+.learning-masthead__intro {
+  max-width: 52ch;
+  margin-block-start: 0.65rem;
+  font-size: clamp(1rem, 1.55vw, 1.3rem);
+  line-height: 1.35;
+  font-weight: 620;
+  text-wrap: pretty;
+}
+
+.learning-masthead__chapter {
+  width: fit-content;
+  margin-block-start: 0.7rem;
+  padding: 0.15em 0.5em;
+  background: var(--studio-lime);
+  color: var(--studio-ink);
+  font: 400 0.82rem / 1.4 var(--studio-mono);
+}
+
+.learning-masthead__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.65rem 1rem;
+  margin-block-start: 1rem;
+  font-size: 0.95rem;
+}
+
+.learning-masthead .learning-action {
+  min-height: 2.5rem;
+  background: var(--studio-lime);
+  color: var(--studio-ink);
+  padding: 0.5em 0.75em;
+}
+
+.learning-masthead .learning-action:hover {
+  background: var(--studio-paper);
+  box-shadow: 0.2rem 0.2rem var(--studio-coral);
+}
+
+.learning-masthead .studio-checker {
+  --square: 0.5rem;
+}
+
+.learning-masthead :focus-visible,
+.chapter-picker :focus-visible {
+  outline: 2px dashed currentColor;
+  outline-offset: 0.2rem;
+}
+
+.learning-masthead--lesson .learning-action:focus-visible {
+  outline-color: var(--studio-lime);
+}
+
+.chapter-picker {
+  display: block;
+  margin-block-start: 1.25rem;
+}
+
+.chapter-picker .studio-courses__heading {
+  padding: 0;
+  margin-block-end: 0.6rem;
+}
+
+.chapter-picker h2 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35em;
+  font-size: clamp(2.15rem, 4vw, 3.5rem);
+}
+
+.chapter-picker h2 span {
+  font: 400 0.9rem / 1 var(--studio-mono);
+  color: var(--sl-color-gray-3);
+}
+
+.chapter-picker h2::after {
+  align-self: center;
+  flex: 1;
+  content: '';
+  min-width: 1.5rem;
+  border-block-start: 1px solid var(--sl-color-gray-5);
+}
+
+.chapter-picker .studio-courses__heading > h2 {
+  flex: 1;
+}
+
+.chapter-picker .studio-courses__controls button {
+  padding: 0.2rem;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+}
+
+.chapter-picker .studio-courses__controls button:hover:not([aria-disabled='true']) {
+  border-color: var(--studio-lime);
+}
+
+.chapter-rail {
+  position: relative;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: clamp(10.5rem, 30%, 19rem);
+  gap: 0.8rem;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: x proximity;
+  padding: 0.25rem 0.25rem 0.65rem;
+  margin: 0 -0.25rem;
+  list-style: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--sl-color-gray-4) transparent;
+}
+
+.chapter-rail > li {
+  min-width: 0;
+  scroll-snap-align: start;
+  scroll-margin-inline-start: 0.25rem;
+}
+
+.chapter-ticket {
+  --ticket-paper: var(--studio-lime);
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-content: start;
+  align-items: end;
+  gap: 0.2rem 0.6rem;
+  height: 100%;
+  min-height: 6.8rem;
+  padding: 0.7rem 0.8rem;
+  border: 2px solid var(--studio-ink);
+  border-radius: 0.5rem 0.1rem 0.5rem 0.1rem;
+  box-shadow: 0.22rem 0.22rem var(--sl-color-gray-5);
+  background: var(--ticket-paper);
+  color: var(--studio-ink);
+  text-decoration: none;
+  font: 760 1rem / 1.18 var(--studio-sans);
+}
+
+.chapter-rail > li:nth-child(3n + 2) .chapter-ticket {
+  --ticket-paper: var(--studio-coral);
+}
+
+.chapter-rail > li:nth-child(3n + 3) .chapter-ticket {
+  --ticket-paper: var(--studio-lavender);
+}
+
+.chapter-ticket:hover .chapter-ticket__title {
+  text-decoration: underline;
+  text-underline-offset: 0.14em;
+}
+
+.chapter-ticket__number {
+  grid-column: 1 / -1;
+  font-family: var(--studio-mono);
+  font-weight: 400;
+}
+
+main:has(.learning-masthead) .sl-markdown-content {
+  line-height: 1.72;
+}
+
+main:has(.learning-masthead) .sl-markdown-content :is(h1, h2) {
+  color: var(--sl-color-white);
+  font-size: clamp(1.7rem, 3.35vw, 2.85rem);
+  line-height: 1.08;
+}
+
+main:has(.learning-masthead) .sl-markdown-content h2 {
+  border-inline-start: 0.25rem solid var(--site-mark-color);
+  padding-inline-start: 0.55em;
+}
+
+main:has(.learning-masthead) .sl-markdown-content .expressive-code {
+  box-shadow: 0.25rem 0.25rem var(--sl-color-gray-5);
+}
+
+main:has(.learning-masthead) .pagination-links a {
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 0.15rem;
+  box-shadow: 0.25rem 0.25rem var(--sl-color-gray-5);
+}
+
+main:has(.learning-masthead) .pagination-links a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+}
+
+main:has(.learning-masthead) .pagination-links a[rel='next'] {
+  background: var(--sl-color-accent-low);
+}
+
+.learning-artwork {
+  width: fit-content;
+  max-width: 100%;
+  font: 650 0.9rem / 1.45 var(--studio-sans);
+  color: var(--sl-color-gray-2);
+}
+
+.learning-artwork summary {
+  cursor: pointer;
+}
+
+.learning-artwork img {
+  max-height: 28rem;
+  width: auto;
+  object-fit: contain;
+}
+
+.sl-markdown-content .learning-repeated-title:not(:target),
+.sl-markdown-content .sl-heading-wrapper:has(> .learning-repeated-title:not(:target)) {
+  display: none;
+}
+
+@media (min-width: 72rem) {
+  :root:has(.learning-masthead) {
+    --sl-content-width: clamp(45rem, 52vw, 52rem);
+  }
+}
+
+@media (max-width: 52rem) {
+  .catalogue-track .studio-courses {
+    display: block;
+  }
+
+  .catalogue-track .studio-courses__heading {
+    display: flex;
+    align-items: center;
+    margin-block: 0 0.8rem;
+    padding-inline-end: var(--studio-gutter);
+  }
+
+  .catalogue-track h2 {
+    max-width: initial;
+  }
+}
+
+@media (max-width: 42rem) {
+  .catalogue-masthead {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .catalogue-masthead h1 {
+    font-size: clamp(3.3rem, 12vw, 5.5rem);
+  }
+
+  .catalogue-masthead .studio-poster {
+    width: calc(100% - 0.6rem);
+    max-width: 28rem;
+  }
+
+  .catalogue-track .studio-course-rail {
+    grid-auto-columns: min(82%, 19rem);
+  }
+
+  .learning-masthead__main {
+    display: block;
+  }
+
+  .learning-masthead__back {
+    min-height: 2.35rem;
+    max-width: calc(100% - 4rem);
+  }
+
+  .learning-masthead h1 {
+    margin-block-start: 0.65rem;
+  }
+
+  .learning-masthead__main img {
+    position: absolute;
+    inset-inline-end: 0.85rem;
+    inset-block-start: 0.7rem;
+    width: 2.95rem;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:has(.studio-catalogue) {
+    scroll-behavior: smooth;
+  }
+
+  .chapter-rail {
+    scroll-behavior: smooth;
+  }
+
+  :is(.catalogue-track .studio-course, .chapter-ticket) {
+    transition: box-shadow 180ms ease, translate 180ms ease;
+  }
+
+  :is(.catalogue-track .studio-course, .chapter-ticket):hover {
+    translate: 0 -2px;
+  }
+
+  @supports (animation-timeline: scroll(root block)) {
+    html:has(.learning-masthead--lesson) header.header::after {
+      position: absolute;
+      content: '';
+      inset: auto 0 0;
+      height: 3px;
+      background: var(--site-mark-color);
+      transform-origin: left;
+      animation: studio-progress linear both;
+      animation-timeline: scroll(root block);
+    }
+  }
+}

@@ -1,0 +1,78 @@
+---
+import { Icon } from '@astrojs/starlight/components';
+import DefaultPageTitle from '@astrojs/starlight/components/PageTitle.astro';
+import { isSeriesIndex } from '../../lib/seo';
+import ScrollRail from '../ScrollRail.astro';
+
+const { entry, headings, sidebar } = Astro.locals.starlightRoute;
+const isOverview = isSeriesIndex(entry.slug);
+const lesson = entry.slug.match(/^series\/([^/]+)\/chapters\//);
+const seriesPath = '/' + (isOverview ? entry.slug : 'series/' + lesson?.[1]) + '/';
+const courseGroup = sidebar.find((group) => group.type === 'group' &&
+  group.entries.some((child) => child.type === 'link' && child.href === seriesPath));
+const chapters = isOverview && courseGroup?.type === 'group'
+  ? courseGroup.entries.flatMap((child) => child.type === 'group' ? child.entries : [])
+      .flatMap((child) => child.type === 'link' && child.href.startsWith(seriesPath + 'chapters/') ? [child] : [])
+  : [];
+const courseName = courseGroup?.label;
+const chapterPrefix = /^(?:chapter\s+)?(\d+[a-z]?)\s*[:–—-]\s*/i;
+const chapterNumber = (entry.data.title.match(chapterPrefix)?.[1] ??
+  entry.slug.split('/').at(-1)?.match(/^(\d+[a-z]?)-/i)?.[1])?.padStart(2, '0');
+const visibleTitle = lesson ? entry.data.title.replace(chapterPrefix, '') : entry.data.title;
+const quickStart = headings.find(({ depth, slug }) => depth === 2 && slug.startsWith('quick-start'));
+const practice = headings.find(({ depth, slug }) =>
+  depth === 2 && /^(?:(?:hands-on|practice|chapter)-)?(?:exercises?|practice|challenges?)(?:-|$)/.test(slug));
+---
+
+{isOverview || lesson ? (
+  <>
+    <div class:list={['learning-masthead', { 'learning-masthead--lesson': lesson }]}>
+      <div class="learning-masthead__main">
+        <div>
+          <a class="learning-masthead__back" href={lesson && courseName ? seriesPath : '/series/'}>
+            <Icon name="left-arrow" /> {lesson && courseName ? courseName : 'All courses'}
+          </a>
+          {lesson && chapterNumber && <p class="learning-masthead__chapter">Chapter {chapterNumber}</p>}
+          <h1 id="_top" tabindex="-1">{visibleTitle}</h1>
+          {entry.data.description && <p class="learning-masthead__intro">{entry.data.description}</p>}
+          {isOverview ? (
+            chapters[0] && (
+              <div class="learning-masthead__actions">
+                <a class="studio-button learning-action" href={chapters[0].href}>Start course <Icon name="right-arrow" /></a>
+                <a class="studio-text-link" href="#chapter-picker">Browse chapters</a>
+              </div>
+            )
+          ) : (
+            <nav class="learning-masthead__actions" aria-label="Lesson shortcuts">
+              {quickStart && <a class="studio-text-link" href={'#' + quickStart.slug}>Quick Start <Icon name="right-arrow" /></a>}
+              {practice && <a class="studio-text-link" href={'#' + practice.slug}>{practice.text} <Icon name="right-arrow" /></a>}
+              <a class="studio-button learning-action" href="/#play">Play PHP quiz <Icon name="right-arrow" /></a>
+            </nav>
+          )}
+        </div>
+        <img src="/images/brand/pinup-mark.png" width="128" height="128" alt="" />
+      </div>
+      <div class="studio-checker" aria-hidden="true"></div>
+    </div>
+
+    {isOverview && chapters.length > 0 && (
+      <ScrollRail id="course-chapter-list" label="Course chapters" itemName="chapters" listClass="chapter-rail" class="chapter-picker">
+        <h2 id="chapter-picker" slot="heading">Chapters <span>{chapters.length}</span></h2>
+        {chapters.map(({ href, label }) => {
+          const number = label.match(chapterPrefix)?.[1];
+          return (
+            <li>
+              <a href={href} class="chapter-ticket" aria-label={label}>
+                {number && <span class="chapter-ticket__number" aria-hidden="true">{number}</span>}
+                <span class="chapter-ticket__title">{label.replace(chapterPrefix, '')}</span>
+                <Icon name="right-arrow" size="1.25rem" />
+              </a>
+            </li>
+          );
+        })}
+      </ScrollRail>
+    )}
+  </>
+) : (
+  <DefaultPageTitle />
+)}
