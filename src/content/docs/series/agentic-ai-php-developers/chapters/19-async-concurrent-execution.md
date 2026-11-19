@@ -1109,6 +1109,6 @@ Build an adaptive system that automatically adjusts concurrency based on error r
 
 You've mastered async and concurrent execution. You can now build high-throughput agent systems that process tasks in parallel rather than sequentially.
 
-In **[Chapter 20: Capstone Project](/series/agentic-ai-php-developers/chapters/20-capstone-project)**, you'll combine everything from the series into a complete production-ready agentic AI platform with tools, memory, RAG, planning, multi-agent coordination, observability, evaluation, optimization, and async execution.
+In **[Chapter 20: Capstone Project](/series/agentic-ai-php-developers/chapters/20-capstone-agentic-ai-platform/)**, you'll combine everything from the series into a complete production-ready agentic AI platform with tools, memory, RAG, planning, multi-agent coordination, observability, evaluation, optimization, and async execution.
 
 **Up next:** Capstone: Build an Agentic AI Platform →

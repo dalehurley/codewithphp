@@ -1,4 +1,5 @@
 ---
+draft: true
 title: "36: Multi-Tenancy & Tenant Management"
 description: "Explore advanced multi-tenancy strategies for true tenant isolation with separate databases"
 sidebar:

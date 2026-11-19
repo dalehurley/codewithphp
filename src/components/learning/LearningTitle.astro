@@ -1,7 +1,7 @@
 ---
 import { Icon } from '@astrojs/starlight/components';
 import DefaultPageTitle from '@astrojs/starlight/components/PageTitle.astro';
-import { isSeriesIndex } from '../../lib/seo';
+import { isCourseResource, isSeriesIndex, stripChapterNumber } from '../../lib/seo';
 import ScrollRail from '../ScrollRail.astro';
 
 const { entry, headings, sidebar } = Astro.locals.starlightRoute;
@@ -18,7 +18,13 @@ const courseName = courseGroup?.label;
 const chapterPrefix = /^(?:chapter\s+)?(\d+[a-z]?)\s*[:–—-]\s*/i;
 const chapterNumber = (entry.data.title.match(chapterPrefix)?.[1] ??
   entry.slug.split('/').at(-1)?.match(/^(\d+[a-z]?)-/i)?.[1])?.padStart(2, '0');
-const visibleTitle = lesson ? entry.data.title.replace(chapterPrefix, '') : entry.data.title;
+const visibleTitle = lesson ? stripChapterNumber(entry.data.title) : entry.data.title;
+const { author, authorUrl, datePublished, dateModified } = entry.data;
+const date = dateModified ?? datePublished;
+const displayDate = date && new Date(date).toLocaleDateString('en-AU', { dateStyle: 'long', timeZone: 'UTC' });
+const sidebarDifficulty = entry.data.sidebar.badge?.text;
+const difficulty = entry.data.difficulty ??
+  (sidebarDifficulty && /^(beginner|intermediate|advanced|expert)$/i.test(sidebarDifficulty) ? sidebarDifficulty : undefined);
 const quickStart = headings.find(({ depth, slug }) => depth === 2 && slug.startsWith('quick-start'));
 const practice = headings.find(({ depth, slug }) =>
   depth === 2 && /^(?:(?:hands-on|practice|chapter)-)?(?:exercises?|practice|challenges?)(?:-|$)/.test(slug));
@@ -32,9 +38,20 @@ const practice = headings.find(({ depth, slug }) =>
           <a class="learning-masthead__back" href={lesson && courseName ? seriesPath : '/series/'}>
             <Icon name="left-arrow" /> {lesson && courseName ? courseName : 'All courses'}
           </a>
-          {lesson && chapterNumber && <p class="learning-masthead__chapter">Chapter {chapterNumber}</p>}
+          {(lesson && chapterNumber || difficulty) && (
+            <p class="learning-masthead__chapter">
+              {lesson && chapterNumber && `Chapter ${chapterNumber}`}{lesson && chapterNumber && difficulty && ' · '}{difficulty}
+            </p>
+          )}
           <h1 id="_top" tabindex="-1">{visibleTitle}</h1>
           {entry.data.description && <p class="learning-masthead__intro">{entry.data.description}</p>}
+          {lesson && (author || date) && (
+            <p class="learning-masthead__byline">
+              {author && <>{'By '}{authorUrl ? <a href={authorUrl}>{author}</a> : author}</>}
+              {author && date && ' · '}
+              {date && <>{dateModified ? 'Updated ' : 'Published '}<time datetime={date}>{displayDate}</time></>}
+            </p>
+          )}
           {isOverview ? (
             chapters[0] && (
               <div class="learning-masthead__actions">
@@ -74,5 +91,14 @@ const practice = headings.find(({ depth, slug }) =>
     )}
   </>
 ) : (
-  <DefaultPageTitle />
+  <>
+    <DefaultPageTitle />
+    {isCourseResource(entry.slug) && (author || date) && (
+      <p class="learning-masthead__byline">
+        {author && <>{'By '}{authorUrl ? <a href={authorUrl}>{author}</a> : author}</>}
+        {author && date && ' · '}
+        {date && <>{dateModified ? 'Updated ' : 'Published '}<time datetime={date}>{displayDate}</time></>}
+      </p>
+    )}
+  </>
 )}

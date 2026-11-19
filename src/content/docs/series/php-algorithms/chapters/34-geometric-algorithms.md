@@ -1770,7 +1770,7 @@ These algorithms power collision detection in game engines, geographic informati
 - [Computational Geometry Algorithms Library (CGAL)](https://www.cgal.org/) — Comprehensive C++ library for computational geometry
 - [Introduction to Algorithms (CLRS)](https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/) — Chapter 33 covers computational geometry
 - [Geometric Algorithms](https://cp-algorithms.com/geometry/basic-geometry.html) — Competitive programming guide to geometric algorithms
-- [Chapter 19: Graph Algorithms](/series/php-algorithms/chapters/19-graph-algorithms) — Spatial graphs and shortest paths
+- [Chapter 21: Graph Representations](/series/php-algorithms/chapters/21-graph-representations/) — Spatial graphs and shortest paths
 - [Chapter 31: Concurrent Algorithms](/series/php-algorithms/chapters/31-concurrent-algorithms) — Parallel geometric processing
 
 ## 💻 Code Samples

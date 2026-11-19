@@ -1,6 +1,6 @@
 ---
 title: "01: Introduction & Series Overview"
-description: "Understand the CRM project's scope, features, architecture, and the learning journey ahead through 40 comprehensive chapters"
+description: "Plan a Laravel 12 CRM with React and teams. See how the course builds contacts, deals, tasks, notifications and a separate API and queue lab."
 sidebar:
   label: "01: Introduction & Series Overview"
   order: 1
@@ -14,13 +14,7 @@ sidebar:
 
 ## Overview
 
-Welcome to the first chapter of Build a CRM with Laravel 12! This chapter sets the foundation for your journey by introducing the Customer Relationship Management (CRM) application you'll build over the next 40 chapters. You'll understand the project's scope, explore the features you'll implement, and see how Laravel 12's rich ecosystem of official packages fits together to create a production-ready application.
-
-Building a CRM is an excellent way to learn Laravel because it touches every aspect of modern web development: user authentication, database design, authorization, real-time features, payment processing, background jobs, API development, and deployment. Unlike toy examples or disconnected tutorials, a CRM represents a real-world application that businesses actually need and use.
-
-By the end of this chapter, you'll have a clear mental model of what you're building, why each technology choice was made, and how the 40 chapters progress from basic setup to advanced production deployment. You'll understand the difference between core chapters (essential for a working CRM) and bonus chapters (optional advanced features), allowing you to customize your learning path.
-
-This chapter requires no coding-just reading and planning. Consider it your roadmap for the entire series.
+This course builds a customer relationship management (CRM) app with Laravel 12. The main project covers teams, contacts, companies, deals, tasks and notifications. A separate lab uses the same CRM domain to teach REST APIs and background jobs without requiring a frontend.
 
 ## Quick Checklist: Before You Start
 
@@ -91,35 +85,16 @@ If any command fails or shows a version below the requirement, install the missi
 
 ## What You'll Build in This Series
 
-By completing this 40-chapter series, you'll have built a **production-ready, multi-tenant SaaS CRM application** that you could actually launch and charge money for. This isn't a toy project—it's the real thing.
+The main project builds on Laravel's routing, Eloquent models and authorization. Its published lessons take you from your local setup to notifications.
 
-### Final Application Overview
-
-**Core Features You'll Implement**:
-
-| Feature                    | What It Does                                                        | Chapter        |
-| -------------------------- | ------------------------------------------------------------------- | -------------- |
-| **User Authentication**    | Secure login/registration/password reset                            | Chapter 07     |
-| **Team Management**        | Multi-tenancy with role-based access (Owner, Admin, Member, Viewer) | Chapter 08     |
-| **Contact Management**     | Create, read, update, delete (CRUD) contacts with companies         | Chapters 11-12 |
-| **Company Management**     | Manage organizations; view associated contacts and deals            | Chapters 13-14 |
-| **Sales Pipeline**         | Visual kanban board with drag-and-drop deal management              | Chapters 15-16 |
-| **Task Management**        | Create follow-up tasks linked to contacts or deals                  | Chapters 17-18 |
-| **Email Integration**      | Automated email notifications and task reminders                    | Chapter 19     |
-| **RESTful API**            | Full API for external integrations                                  | Chapters 20-23 |
-| **Search**                 | Lightning-fast full-text search on contacts/companies/deals         | Chapter 25     |
-| **Real-time Updates**      | Live notifications when data changes                                | Chapter 26     |
-| **Subscription Billing**   | Stripe integration for monthly/yearly plans                         | Chapter 24     |
-| **Background Jobs**        | Async processing for reports, emails, heavy operations              | Chapters 29-30 |
-| **Testing**                | Comprehensive unit + browser tests                                  | Chapters 31    |
-| **Performance Monitoring** | Dashboard to track application health                               | Chapter 32     |
-| **Deployment**             | Deploy to production on your own server                             | Chapter 38     |
-
-### What It Looks Like
-
-By Chapter 10, you'll have a working dashboard. By Chapter 18, you'll have a full CRM with a drag-and-drop pipeline. By Chapter 24, you'll have billing. By Chapter 38, it's live on the internet.
-
-**Key Insight**: Every feature is built incrementally. You're not just learning—you're shipping a real product.
+| Feature | Chapters |
+| --- | --- |
+| Authentication and team permissions | 07–09 |
+| Contacts and companies | 11–14 |
+| Deals and tasks | 15–18 |
+| Notifications and email | 19 |
+| Contact API and Sanctum | 20–21 |
+| Background exports and Horizon | 29–30 |
 
 ### Tech Stack
 
@@ -128,8 +103,6 @@ By Chapter 10, you'll have a working dashboard. By Chapter 18, you'll have a ful
 - Laravel 12 (PHP 8.3+)
 - MySQL 8.0 (relational database)
 - Redis (caching, job queues)
-- Stripe (payment processing)
-- AWS or Digital Ocean (deployment)
 
 **Frontend**:
 
@@ -144,32 +117,14 @@ By Chapter 10, you'll have a working dashboard. By Chapter 18, you'll have a ful
 - Docker Compose (multi-service orchestration)
 - GitHub (version control, deployment automation)
 
-### Why This Matters
-
-After 40 chapters (~50-60 hours), you'll understand:
-
-- ✅ How to architect a production SaaS application
-- ✅ Multi-tenancy patterns and data isolation
-- ✅ User authentication and role-based authorization
-- ✅ Building APIs that scale
-- ✅ Real-time features with WebSockets
-- ✅ Payment processing and subscription management
-- ✅ Deploying applications to production
-- ✅ Testing mission-critical code
-- ✅ Monitoring and debugging production apps
-
-**This isn't just a portfolio project—it's a blueprint for building real, profitable SaaS businesses.**
-
-For complete details on all features and the full series roadmap, see the [**Series Overview**](/series/build-crm-laravel-12/).
+See the [course overview](/series/build-crm-laravel-12/) for the full set of available lessons and the separate API and queue lab.
 
 ## Objectives
 
 - Understand the CRM project's scope, features, and target users
 - Explore the technology stack: Laravel 12, React, Inertia, Tailwind, and supporting tools
-- Learn how Laravel's official packages (Sanctum, Cashier, Horizon, etc.) integrate into the project
-- Distinguish between core chapters (required) and bonus chapters (optional)
-- Understand the seven-part learning path structure
-- Set realistic expectations for time commitment and skill progression
+- Learn where the React starter kit, Sanctum and Horizon fit
+- Choose between the main project and the independent API and queue lab
 - Identify prerequisites and ensure you're ready to start building
 
 ## The CRM Application: Features & Scope
@@ -190,7 +145,6 @@ This series will guide you through building the most essential features of a mod
 - **Deal & Pipeline Management:** The heart of our CRM. You'll create a visual, drag-and-drop "kanban" board that allows users to move "Deals" (potential sales) through different stages (e.g., "New," "Proposal Sent," "Won," "Lost").
 - **Task Management:** A "to-do" system integrated with your contacts and deals. Users will be able to create tasks like "Follow up with Jane Doe about the proposal" and receive automated reminders.
 - **User & Team Management:** You'll build a robust authentication system and add multi-tenancy, allowing a user (an "owner") to invite team members ("admins" or "members") to collaborate in their account with specific permissions.
-- **Subscription Billing:** You'll integrate Stripe via Laravel Cashier to allow users to subscribe to your CRM on a monthly or yearly plan, turning your project into a production-ready SaaS (Software as a Service).
 
 ### Target Users
 
@@ -396,193 +350,32 @@ In Chapter 03, you'll create your first routes and controllers using Artisan. In
 
 ## Laravel Ecosystem Packages
 
-A key strength of Laravel is its official first-party packages. We will leverage them heavily to build complex features quickly and securely. Here's a quick reference of the packages you'll encounter:
+The published lessons use these Laravel tools:
 
-### Official Packages at a Glance
+| Tool | Where you'll use it |
+| --- | --- |
+| [Laravel Sail](https://laravel.com/framework/docs/12.x/sail) | Run PHP, a database and supporting services for the main project in Chapter 02. |
+| [React starter kit](https://laravel.com/framework/docs/12.x/starter-kits) | Start with sign-in, registration and an Inertia frontend in Chapter 07. |
+| [Sanctum](https://laravel.com/framework/docs/12.x/sanctum) | Issue personal access tokens and check token abilities in Chapter 21. |
+| [Horizon](https://laravel.com/framework/docs/12.x/horizon) | Run the lab's Redis workers and inspect completed exports in Chapter 30. |
 
-| Package                                                                            | Purpose                                  | When Used     | Complexity  |
-| ---------------------------------------------------------------------------------- | ---------------------------------------- | ------------- | ----------- |
-| **[React Starter Kit](https://laravel.com/docs/12.x/starter-kits#laravel-breeze)** | Pre-configured auth with React + Inertia | Chapter 07    | Low         |
-| **[Sanctum](https://laravel.com/docs/12.x/sanctum)**                               | API authentication (tokens, cookies)     | Chapter 20-21 | Medium      |
-| **[Cashier](https://laravel.com/docs/12.x/billing)**                               | Stripe subscription billing              | Chapter 24    | Medium-High |
-| **[Scout](https://laravel.com/docs/12.x/scout)**                                   | Full-text search with MeiliSearch        | Chapter 25    | Medium      |
-| **[Reverb](https://laravel.com/docs/12.x/reverb)**                                 | WebSocket server for real-time           | Chapter 26    | High        |
-| **[Horizon](https://laravel.com/docs/12.x/horizon)**                               | Queue monitoring dashboard               | Chapter 30    | Medium      |
-| **[Telescope](https://laravel.com/docs/12.x/telescope)**                           | Development debugging UI                 | Bonus         | Low         |
-| **[Pulse](https://laravel.com/docs/12.x/pulse)**                                   | Production performance monitoring        | Chapter 32    | Medium      |
+## Which lessons to follow
 
-### Deep Dive: Key Packages for This Series
+Work through [setup and application structure](/series/build-crm-laravel-12/chapters/02-setting-up-laravel-12-project-dev-environment/) first if you want to build the main CRM. Chapters 04–10 cover models, database tables and authentication. Chapters 11–19 use those foundations for CRM features and notifications.
 
-#### **Authentication: React Starter Kit vs Jetstream**
-
-We use the official **Laravel React Starter Kit**. This package scaffolds our application with:
-
-- ✅ User login, registration, password reset
-- ✅ Pre-configured Inertia + React setup
-- ✅ Minimal, un-opinionated structure (great for learning)
-
-**Why not Jetstream?** Jetstream is an all-in-one starter kit with team management built-in. We use the simpler React Starter Kit to _learn how to build_ team management from scratch. In **Bonus Chapter 40**, we'll explore Jetstream for comparison.
-
-**Key Difference**: Jetstream = batteries included; React Starter Kit = minimal foundation. We'll add team management ourselves in Chapter 08.
-
-#### **API: Sanctum vs Passport**
-
-We'll use **Laravel Sanctum** for API authentication because:
-
-- 🎯 Designed for SPAs (like ours) and mobile apps
-- 🎯 Simple token-based auth (not complex OAuth2)
-- 🎯 Perfect for internal APIs consumed by your own frontend
-- 🎯 Automatically handles CSRF protection
-
-**When to use Passport**: If you were building a _public OAuth2 API_ (like "Sign in with your app"). That's overkill here.
-
-#### **Payments: Cashier (Stripe)**
-
-**Laravel Cashier** handles subscription billing with Stripe:
-
-- Create subscriptions (monthly/yearly plans)
-- Swap between plans
-- Cancel subscriptions with prorated refunds
-- Generate invoices
-- Handle webhook events (payment received, failed, etc.)
-
-You'll implement this in **Chapter 24** to make your CRM a paid SaaS.
-
-#### **Search: Scout with MeiliSearch**
-
-**Laravel Scout** adds full-text search (e.g., type-ahead contact search):
-
-- 🔍 Search contacts by name, email, company
-- 🔍 Real-time indexing
-- 🔍 Built on **MeiliSearch** (a blazingly fast search engine)
-
-The alternative (database LIKE queries) works but is slow at scale.
-
-#### **Real-time: Reverb & Echo**
-
-**Laravel Reverb** + **Laravel Echo** enable real-time features:
-
-- 📢 Real-time notifications ("New deal assigned to you")
-- 📢 Live updates without page refresh
-- 📢 WebSocket-based communication
-
-Chapter 26 covers this for production-ready notifications.
-
-#### **Queues: Horizon**
-
-**Laravel Horizon** provides a dashboard to monitor your background job queues:
-
-- 📊 Real-time queue statistics
-- 📊 Job throughput and failure tracking
-- 📊 Auto-retry configuration
-
-While Redis _manages_ queues, Horizon _monitors_ them. Essential for production apps.
-
-#### **Debugging: Telescope vs Pulse**
-
-**Two-stage monitoring strategy:**
-
-| Tool          | Purpose                 | When                | Environment   |
-| ------------- | ----------------------- | ------------------- | ------------- |
-| **Telescope** | In-depth debugging      | Understand behavior | Local/Staging |
-| **Pulse**     | Performance at-a-glance | Monitor health      | Production    |
-
-**Telescope** watches everything: requests, queries, exceptions, jobs, email. Perfect for development.
-
-**Pulse** shows performance summaries: slow endpoints, active users, job throughput. Perfect for production.
-
-### Summary: What We'll Actually Use
-
-**Core (required):**
-
-- React Starter Kit (auth) — Chapter 07
-- Sanctum (API auth) — Chapter 20
-- Laravel Sail (Docker) — Chapter 02
-
-**During Development:**
-
-- Telescope (debugging) — Throughout
-
-**When Scaling:**
-
-- Scout (search) — Chapter 25
-- Reverb (real-time) — Chapter 26
-- Horizon (queues) — Chapter 30
-- Cashier (billing) — Chapter 24
-
-**For Production:**
-
-- Pulse (monitoring) — Chapter 32
-
-You don't need to understand all of these right now. We'll introduce each package when we reach the relevant chapter. For now, just know that Laravel's ecosystem provides battle-tested solutions for common web application challenges.
-
-## Series Structure: Seven Parts
-
-This 40-chapter series is broken into seven logical parts that take you from a blank folder to a deployed application.
-
-### Part 1: Core Setup (Chapters 1-3)
-
-This part is all about planning and preparation. We'll cover the project scope (this chapter), install Laravel 12, and get our complete Docker development environment running with Laravel Sail, Inertia, and React.
-
-### Part 2: Database & Foundation (Chapters 4-10)
-
-Here, we build the "scaffolding." We'll design our database schema with models and migrations, set up the user authentication system (login, registration), and build the main application layout (dashboard, navigation).
-
-### Part 3: Core CRM Modules (Chapters 11-18)
-
-This is the "meat" of the project. We'll build the full CRUD (Create, Read, Update, Delete) interfaces for Contacts, Companies, Deals, and Tasks. This part culminates in building the visual, drag-and-drop sales pipeline.
-
-### Part 4: Communication & API (Chapters 19-23)
-
-Now we make the app interactive. We'll build the task scheduling system with automated email reminders, add real-time notifications with Reverb, and develop our internal RESTful API using Laravel Sanctum.
-
-### Part 5: Business Features (Chapters 24-28)
-
-This part adds "pro-level" SaaS features. We'll implement team management with role-based permissions, integrate full-text search with Scout, and build a complete subscription billing system with Laravel Cashier and Stripe.
-
-### Part 6: Background Processing (Chapters 29-30)
-
-We'll scale our application by moving heavy tasks (like sending reports) to background jobs using Redis queues and monitor them with the beautiful Laravel Horizon dashboard.
-
-### Part 7: Testing & Production (Chapters 31-39)
-
-We'll make our application "production-ready." This includes writing unit tests (PHPUnit) and browser tests (Dusk), setting up performance monitoring with Pulse, and finally, deploying our application to the web using Laravel Forge and Laravel Vapor.
-
-### Bonus: Jetstream Alternative (Chapter 40)
-
-In our final chapter, we'll do a "fast-forward" build to see how we could have built a similar application using the more opinionated, all-in-one Laravel Jetstream starter kit.
-
-## Time Commitment & Learning Path
-
-Be realistic: this is a comprehensive, real-world project, not a "learn in a weekend" tutorial. While this first chapter takes only 20 minutes, the full series will likely require **40 to 60 hours** of focused work.
-
-The recommended learning path is straightforward: **follow the core chapters in order.** Each chapter builds on the code and concepts from the previous one. Skipping ahead, especially in Parts 1-5, will lead to confusion.
-
-Treat this like a real project. Take your time, read the code, and complete the exercises. The goal is not just to _finish_, but to _understand_ how all the pieces of a modern web application fit together.
-
-::: tip
-**Pro Learning Tip**: Bookmark Chapter 01 (this page) and return to it if you feel lost or unmotivated during the series. It's your roadmap. Knowing why you're learning something is as important as how you're learning it.
-:::
-
-::: warning
-**Time Commitment is Real**: Don't start this series if you're looking for a quick tutorial. Set aside consistent time weekly (aim for 10-15 hours minimum). The payoff - a complete, production-ready application with deep understanding - is worth the investment.
-:::
-
-::: info
-**Technology Stack Note**: The stack we've chosen (Laravel 12, React 19, Inertia, Tailwind) is extremely popular in 2024. After completing this series, you'll be equipped to build professional SaaS applications and jump into real-world Laravel projects with confidence.
-:::
+If you already know Laravel, you can start the independent [contacts API lab](/series/build-crm-laravel-12/chapters/20-building-restful-api-crm/). Start with the API and Sanctum personal access tokens in chapters 20 and 21, then move to database jobs and Redis with Horizon in chapters 29 and 30.
 
 ## Exercises
 
 ### Exercise 1: Define Your Learning Goals (~10 min)
 
-**Goal**: Clarify what you want to achieve from this series and stay motivated throughout the 40+ chapters
+**Goal**: Clarify what you want to achieve from this series before you choose a learning path
 
 Create a simple document (notepad, Google Doc, or markdown file) and write down:
 
 - What motivated you to learn Laravel? (1-2 sentences)
 - What type of application do you want to build after completing this series?
-- Which features from this CRM are most important for your goals? (billing, API, real-time, etc.)
+- Which features from this CRM are most important for your goals? (team access, the sales pipeline, the contacts API or queue workers)
 - How much time per week can you realistically dedicate to this series?
 - What's your experience level with PHP? (beginner, intermediate, advanced)
 
@@ -697,10 +490,8 @@ Congratulations! You've completed your foundational planning session for the Bui
 
 - ✓ Understand the CRM project scope, core features, and target users
 - ✓ Explored the complete technology stack (Laravel 12, React, Inertia, Tailwind, etc.)
-- ✓ Learned how Laravel's first-party packages (Sanctum, Cashier, Reverb, etc.) work together
-- ✓ Discovered the seven-part series structure and how chapters build upon each other
-- ✓ Distinguished between core chapters (essential) and bonus chapters (advanced)
-- ✓ Set realistic expectations: 40-60 hours to complete, following chapters in order
+- ✓ Identified the tools used for local setup, authentication and queue monitoring
+- ✓ Chosen a starting point in the main project or the API and queue lab
 - ✓ Verified your development environment is ready (PHP 8.4+, Composer, Node, Docker)
 
 **Why This Matters:**

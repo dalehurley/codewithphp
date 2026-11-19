@@ -1,4 +1,5 @@
 ---
+seoTitle: "PHP Security Best Practices for Java Developers"
 title: "18: Security Best Practices"
 description: "Comprehensive security practices for PHP applications based on OWASP Top 10"
 sidebar:

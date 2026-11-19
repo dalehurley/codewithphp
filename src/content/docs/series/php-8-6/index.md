@@ -1,6 +1,6 @@
 ---
 title: What’s New in PHP 8.6
-description: Learn PHP 8.6 features and upgrade changes with runnable examples and exercises
+description: "Explore PHP 8.6 features, breaking changes and deprecations with runnable labs and a PHP 8.5 to 8.6 upgrade checklist."
 ---
 
 ## Overview
@@ -9,7 +9,7 @@ Work through the PHP 8.6 release announcement one topic at a time. Each chapter 
 
 Start by building callbacks, modeling timeouts, and checking property access. The extension labs use PHP to work with URLs, archives, Unicode text, and local TLS connections.
 
-If you’re preparing an upgrade from PHP 8.5, go straight to the deprecations and compatibility chapters. You’ll see what to change and how to verify the resulting behavior.
+**Upgrading from PHP 8.5?** Start with the [PHP 8.6 upgrade checklist](/series/php-8-6/upgrade-checklist/) to compare both runtimes and plan your compatibility checks. Then use the [deprecation and upgrade labs](#deprecations-and-upgrade-changes) to test the changes that affect your code.
 
 ## Who This Is For
 

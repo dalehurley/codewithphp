@@ -65,7 +65,7 @@ Before starting, ensure you have:
 - ✓ **Anthropic API account** with billing enabled
 - ✓ **Redis server** running and accessible
 - ✓ **Database** (MySQL, PostgreSQL, or SQLite) for cost attribution
-- ✓ Completion of [Chapter 01: Introduction to Claude API](/series/claude-php-developers/chapters/01-introduction) or understanding of Claude pricing
+- ✓ Completion of [Chapter 01: Introduction to Claude API](/series/claude-php-developers/chapters/01-introduction-to-claude-api/) or understanding of Claude pricing
 - ✓ Completion of [Chapter 37: Monitoring and Observability](/series/claude-php-developers/chapters/37-monitoring-observability) or monitoring setup
 
 **Estimated Time**: 60-75 minutes

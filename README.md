@@ -8,7 +8,11 @@
 
 ## 🎯 About
 
-Code with PHP is a tutorial-based learning resource featuring hands-on, reproducible tutorials for modern PHP development. Every code sample is tested, every chapter is production-ready, and every tutorial is designed to teach real-world skills.
+Free PHP and Laravel tutorials by Dale Hurley. Follow a course to build a project, or open a lesson to see the code and expected output.
+
+- [Start coding with PHP](https://codewithphp.com/series/php-basics/) and build a blog.
+- [Upgrade from PHP 8.5 to PHP 8.6](https://codewithphp.com/series/php-8-6/upgrade-checklist/) with a comparison script you can run on both versions.
+- [Browse machine-readable lessons](https://codewithphp.com/llms.txt). Each Markdown version links back to the published tutorial.
 
 ### Tutorial Series
 
@@ -22,7 +26,7 @@ Code with PHP is a tutorial-based learning resource featuring hands-on, reproduc
 8. **[PHP for TypeScript Developers](https://codewithphp.com/series/php-typescript-developers/)** — Transition from TypeScript to PHP
 9. **[Python Developers ♥ PHP & Laravel](https://codewithphp.com/series/python-developers-love-php-laravel/)** — Transition from Python to PHP/Laravel
 10. **[Ruby on Rails Developers ♥ Laravel](https://codewithphp.com/series/rails-developers-love-laravel/)** — Transition from Rails to Laravel
-11. **[What’s New in PHP 8.6](src/content/docs/series/php-8-6/index.md)** — Explore the release features and upgrade changes with runnable examples
+11. **[What’s New in PHP 8.6](https://codewithphp.com/series/php-8-6/)** — Explore the release features and upgrade changes with runnable examples
 
 ## 🚀 Quick Start
 
@@ -57,6 +61,8 @@ cat TEST-SUMMARY-REPORT.md
 ```
 
 **Current Test Status:** 96/119 passing (80.7%) 🎉
+
+Run `npm run check:seo` after a build to validate page metadata, sitemaps, internal links and agent-readable Markdown. See the [SEO operations guide](docs/seo-operations.md) for measurement setup.
 
 ## 📁 Project Structure
 

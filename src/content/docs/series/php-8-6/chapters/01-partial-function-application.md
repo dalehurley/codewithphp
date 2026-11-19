@@ -1,6 +1,6 @@
 ---
-title: "01: Partial Function Application"
-description: "Configure a log formatter once and reuse it as a callback"
+title: "01: PHP 8.6 Partial Function Application"
+description: "Use PHP 8.6 partial function application to bind arguments with ? or ... and reuse the resulting Closure as a callback."
 series: "php-8-6"
 chapter: 1
 order: 1
@@ -10,11 +10,13 @@ prerequisites:
 estimatedTime: "PT10M"
 sidebar:
   order: 1
+author: "Code with PHP"
+dateModified: "2026-11-20"
 ---
 
 ## Overview
 
-Configure a log formatter once and reuse it as a callback. PHP 8.6 adds placeholders that turn a call with unfilled arguments into a Closure.
+In PHP 8.6, call a function with `?` for each argument you want to supply later, or use a final `...` to leave the remaining arguments open. For example, `round(?, 2)` creates a closure that rounds any supplied number to two decimal places. This lesson uses the same pattern to configure a reusable log formatter.
 
 ## Prerequisites
 

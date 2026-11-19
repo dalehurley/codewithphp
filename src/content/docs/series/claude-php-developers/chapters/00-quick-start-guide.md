@@ -1,4 +1,5 @@
 ---
+seoTitle: "Claude API in PHP Quick Start"
 title: "00: Quick Start Guide"
 description: "Get Claude running in PHP in 5 minutes. Practical examples for text generation, code analysis, and data extraction with immediate results."
 sidebar:
@@ -223,7 +224,7 @@ echo "Generated Description:\n\n{$description}\n";
 
 Need to review code for security issues, bugs, or improvements?
 
-**→ [Full Guide: Code Analysis](/series/claude-php-developers/chapters/06-code-analysis-and-review)**
+**→ [Related project: Documentation Generator](/series/claude-php-developers/chapters/27-documentation-generator/)**
 
 ````php
 <?php
@@ -269,7 +270,7 @@ echo analyzeCode($client, $codeToAnalyze);
 
 Need to extract contact info, product details, or other structured data from text?
 
-**→ [Full Guide: Data Extraction](/series/claude-php-developers/chapters/07-structured-data-extraction)**
+**→ [Full Guide: Data Extraction](/series/claude-php-developers/chapters/30-data-extraction/)**
 
 ````php
 <?php
@@ -434,7 +435,7 @@ Choose the right model for your use case:
 
 For most PHP applications, start with **Sonnet**—it provides excellent quality at reasonable cost.
 
-**→ [Full Guide: Model Selection](/series/claude-php-developers/chapters/02-model-selection-and-capabilities)**
+**→ [Related guide: Token Management](/series/claude-php-developers/chapters/09-token-management/)**
 
 ## 💡 Quick Wins
 
@@ -486,7 +487,7 @@ try {
 }
 ```
 
-**→ [Full Guide: Error Handling](/series/claude-php-developers/chapters/10-error-handling-and-retries)**
+**→ [Full Guide: Error Handling](/series/claude-php-developers/chapters/10-error-handling-rate-limiting/)**
 
 ### Cost Tracking
 
@@ -533,7 +534,7 @@ echo "Output tokens: {$outputTokens}\n";
 echo "Estimated cost: $" . number_format($totalCost, 6) . "\n";
 ```
 
-**→ [Full Guide: Cost Management](/series/claude-php-developers/chapters/09-cost-optimization)**
+**→ [Full Guide: Cost Management](/series/claude-php-developers/chapters/39-cost-optimization/)**
 
 ### Environment Configuration
 
@@ -586,7 +587,7 @@ $response = $client->messages()->create([
 echo $response->content[0]->text;
 ```
 
-**→ [Full Guide: Production Setup](/series/claude-php-developers/chapters/08-production-best-practices)**
+**→ [Related guide: Security Best Practices](/series/claude-php-developers/chapters/36-security-best-practices/)**
 
 ## 📖 Quick Reference: Common Parameters
 
@@ -635,7 +636,7 @@ Now that you have Claude working in PHP, here's what to explore next:
 **Q: Rate limit errors?**
 
 - You've exceeded your API rate limit
-- Implement exponential backoff retry logic → [Chapter 10: Error Handling](/series/claude-php-developers/chapters/10-error-handling-and-retries)
+- Implement exponential backoff retry logic → [Chapter 10: Error Handling](/series/claude-php-developers/chapters/10-error-handling-rate-limiting/)
 - Consider upgrading your API tier
 
 **Q: Empty or unexpected responses?**

@@ -2651,9 +2651,9 @@ curl -X POST http://localhost:8000/api.php/feedback \
 
 ## Documentation
 
-- [Deployment Guide](DEPLOYMENT.md)
-- [API Documentation](docs/API.md)
-- [Architecture](docs/ARCHITECTURE.md)
+- [Deployment Guide](https://github.com/dalehurley/codewithphp/blob/main/code/data-science-php-developers/chapter-11-real-world-project/DEPLOYMENT.md)
+- [OpenAPI specification](https://github.com/dalehurley/codewithphp/blob/main/code/data-science-php-developers/chapter-11-real-world-project/api/openapi.yaml)
+- [Implementation notes](https://github.com/dalehurley/codewithphp/blob/main/code/data-science-php-developers/chapter-11-real-world-project/IMPLEMENTATION-NOTES.md)
 
 ## License
 
@@ -2878,4 +2878,4 @@ You're now equipped to build and deploy production data science systems with PHP
 
 ---
 
-**Next Chapter**: [Chapter 12: Deploying PHP Data Science Applications](/series/data-science-php-developers/chapters/12-deploying-php-data-science-applications)
+**Next Chapter**: [Chapter 12: Deploying PHP Data Science Applications](/series/data-science-php-developers/chapters/12-deploying-data-science-systems-in-production-with-php/)

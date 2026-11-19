@@ -1,4 +1,5 @@
 ---
+draft: true
 title: "39: Best Practices & Conclusion"
 description: "Review best practices for maintaining and scaling Laravel applications and celebrate your accomplishment"
 sidebar:

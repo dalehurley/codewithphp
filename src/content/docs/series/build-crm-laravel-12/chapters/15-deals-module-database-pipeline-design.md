@@ -758,7 +758,7 @@ That would only support one contact per deal, which is unrealistic. Enterprise s
 
 **Question: "Should roles be an ENUM or a separate reference table?"**
 
-For simplicity, this chapter uses a string field. Chapter 20 will refactor to a `contact_roles` reference table to:
+For simplicity, this chapter uses a string field. A `contact_roles` reference table could help with these requirements:
 
 - ✅ Standardize role names (prevent "Decision Maker" vs "Decision-Maker")
 - ✅ Enable role-specific UI (icons, colors, descriptions)
@@ -867,7 +867,7 @@ This formula handles discounts correctly:
 
 **Future Product Catalog Integration**:
 
-This chapter uses `product_name` as a string for simplicity. Chapter 22 will add a `products` table and replace `product_name` with `product_id` foreign key, enabling:
+This chapter uses `product_name` as a string for simplicity. A product catalogue could replace that field with a `product_id` foreign key for:
 
 - ✅ Standardized product names
 - ✅ Centralized pricing updates
@@ -877,7 +877,7 @@ This chapter uses `product_name` as a string for simplicity. Chapter 22 will add
 
 **Question: "How do we keep deals.amount in sync with line item totals?"**
 
-Three approaches:
+Two approaches:
 
 **Option 1: Application-level recalculation** (this chapter):
 
@@ -896,13 +896,6 @@ BEGIN
   UPDATE deals SET amount = (SELECT SUM(line_total) FROM deal_line_items WHERE deal_id = NEW.deal_id)
   WHERE id = NEW.deal_id;
 END;
-```
-
-**Option 3: Make deals.amount a computed column** (Chapter 22 refactor):
-
-```php
-// Requires MySQL 8.0.13+ and complex subquery
-$table->decimal('amount', 18, 2)->storedAs('(SELECT SUM(line_total) FROM deal_line_items WHERE deal_id = deals.id)');
 ```
 
 This chapter uses **Option 1** for clarity. Chapter 16 will implement the recalculation logic.

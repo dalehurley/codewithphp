@@ -1,24 +1,22 @@
 ---
-title: "02: Modern PHP: What's Changed"
-description: "Discover PHP's evolution from legacy language to modern, typed, performant powerhouse—and why it matters for Python developers."
+title: "02: Modern PHP for Python Developers"
+description: "Compare PHP type declarations, enums, match expressions, and property hooks with familiar Python features."
 sidebar:
   label: "02: Modern PHP: What's Changed"
   order: 2
   badge:
     text: Intermediate
     variant: caution
+author: "Code with PHP"
+dateModified: "2026-11-20"
 ---
 ![Modern PHP: What's Changed](/images/python-developers-love-php-laravel/chapter-02-modern-php-whats-changed-hero-full.webp)
 
-# Chapter 02: Modern PHP: What's Changed
+<span id="chapter-02-modern-php-whats-changed"></span>
 
 ## Overview
 
-In Chapter 01, you saw how Python web framework concepts map directly to Laravel—routing, templates, ORMs, and MVC patterns. But before diving deeper into Laravel's developer experience, it's crucial to understand the language itself. If you're coming from Python, you might have outdated perceptions about PHP based on PHP 5.x or horror stories from the early 2000s.
-
-This chapter is about **PHP's evolution**. Modern PHP (versions 7.4+ and especially 8.0+) is fundamentally different from the PHP you might remember or have heard about. PHP 7.x introduced type declarations, massive performance improvements, and modern error handling. PHP 8.0+ added JIT compilation, union types, match expressions, and constructor property promotion. PHP 8.4 continues this evolution with property hooks, asymmetric visibility, and improved JIT performance.
-
-By the end of this chapter, you'll understand that modern PHP has caught up to—and in some areas surpassed—Python's language features. You'll see side-by-side comparisons showing how PHP's type system, modern syntax, and performance characteristics compare to Python. Most importantly, you'll recognize that PHP deserves a second look, not based on outdated perceptions, but on its current reality.
+If you know Python type hints, compare them with PHP declarations first. PHP checks native declarations at runtime. Python typically uses a separate static checker for type hints. The examples below also pair Python's language features with PHP's match expressions, enums and property hooks.
 
 ## Prerequisites
 

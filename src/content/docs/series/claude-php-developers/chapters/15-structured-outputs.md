@@ -27,7 +27,7 @@ Before starting this chapter, you should have:
 
 - ✓ **JSON and schema knowledge** (JSON Schema standard)
 - ✓ **Data validation experience** in PHP
-- ✓ **Completed [Chapter 00](/series/claude-php-developers/chapters/00-introduction)** and [Chapter 05](/series/claude-php-developers/chapters/05-prompt-engineering-basics)
+- ✓ **Completed [Chapter 00](/series/claude-php-developers/chapters/00-quick-start-guide/)** and [Chapter 05](/series/claude-php-developers/chapters/05-prompt-engineering-basics)
 - ✓ **Understanding of type systems** and validation
 - ✓ **PHP 8.4+** installed and working
 - ✓ **Composer** for dependency management

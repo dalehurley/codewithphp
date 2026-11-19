@@ -98,3 +98,13 @@ export type CourseSlug = keyof typeof courseCovers;
 export const featuredCourses: CourseSlug[] = [
   'php-basics', 'build-crm-laravel-12', 'php-8-6', 'php-typescript-developers', 'php-algorithms',
 ];
+
+export const catalogueTracks: { id: string; title: string; courses: CourseSlug[] }[] = [
+  { id: 'start-here', title: 'Start here', courses: ['php-basics', 'php-8-6', 'build-crm-laravel-12'] },
+  { id: 'switch-languages', title: 'Switch languages', courses: [
+    'php-typescript-developers', 'php-for-java-developers', 'python-developers-love-php-laravel', 'rails-developers-love-laravel',
+  ] },
+  { id: 'go-deeper', title: 'Go deeper', courses: [
+    'php-algorithms', 'ai-ml-php-developers', 'data-science-php-developers', 'claude-php-developers', 'agentic-ai-php-developers',
+  ] },
+];

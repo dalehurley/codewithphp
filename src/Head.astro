@@ -1,92 +1,137 @@
 ---
-import DefaultHead from '@astrojs/starlight/components/Head.astro';
+import { hasMarkdownAlternate, markdownPathFor } from './lib/agent-docs';
 import { findEntryBySlug } from './lib/collection-cache';
-import {
-  extractSeriesFromPath,
-  generateKeywords,
-  generateMetaDescription,
-  generateSocialImagePath,
-  getCanonicalUrl,
-} from './lib/seo';
+import { catalogueTracks } from './lib/course-catalogue';
+import { getSeriesSlug, getSocialPreview, isCourseResource, isHomepage, isSeriesIndex, stripChapterNumber } from './lib/seo';
 import {
   generateArticleSchema,
   generateBreadcrumbSchema,
+  generateCourseListSchema,
   generateCourseSchema,
-  generateHowToSchema,
-  generateLearningResourceSchema,
-  generateOrganizationSchema,
-  generateWebSiteSchema,
-  type PageFrontmatter,
+  generateHomepageSchemas,
 } from './lib/structured-data';
 
-const { title: fallbackTitle, description: fallbackDescription } = Astro.props ?? {};
-const normalizedPath = Astro.url.pathname.replace(/^\/|\/$/g, '');
-const slug = normalizedPath;
+const { entry, head, lang, siteTitle } = Astro.locals.starlightRoute;
+const { slug, data } = entry;
+const isHome = isHomepage(slug);
+const isCatalogue = slug === 'series';
+const isCourse = isSeriesIndex(slug);
+const isLesson = isCourseResource(slug);
+const isNotFound = slug === '404' || Astro.response.status === 404;
+const verification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION?.trim();
+const analyticsToken = import.meta.env.PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN?.trim();
+const homeUrl = new URL('/', Astro.site ?? Astro.url);
 
-// Use cached collection lookup to avoid loading all entries on every page
-const entry = await findEntryBySlug(slug);
+const canonicalHref = head.find(({ tag, attrs }) => tag === 'link' && attrs?.rel === 'canonical')?.attrs?.href;
+const canonical = new URL(typeof canonicalHref === 'string' ? canonicalHref : Astro.url.pathname, homeUrl);
+const description = String(head.find(({ tag, attrs }) => tag === 'meta' && attrs?.name === 'description')?.attrs?.content ??
+  'Free, practical PHP courses with runnable examples and real projects.');
+const configuredRobots = head.find(({ tag, attrs }) => tag === 'meta' && attrs?.name === 'robots')?.attrs?.content;
+const robots = typeof configuredRobots === 'string' ? configuredRobots : undefined;
+const explicitlyExcluded = /\b(?:noindex|none)\b/i.test(robots ?? '');
+const isIndexable = !isNotFound && !data.draft && !data.noindex && !explicitlyExcluded;
+const robotsContent = isIndexable || explicitlyExcluded
+  ? robots ?? 'index, follow, max-image-preview:large'
+  : 'noindex, follow';
 
-type Frontmatter = PageFrontmatter & {
-  title?: string;
-  description?: string;
-};
+const title = isLesson ? stripChapterNumber(data.title) : data.title;
+const searchTitle = data.seoTitle ?? title;
+const site = { name: siteTitle, url: homeUrl.href, language: lang };
+const catalogueUrl = new URL('/series/', homeUrl).href;
+const series = isLesson ? getSeriesSlug(slug) : undefined;
+const courseSlug = series ? `series/${series}` : undefined;
+const course = courseSlug ? await findEntryBySlug(courseSlug) : undefined;
+const image = getSocialPreview(slug, title, siteTitle, course?.data.title, data);
+const imageUrl = new URL(image.path, homeUrl).href;
 
-const frontmatter = (entry?.data ?? {}) as Frontmatter;
-const seriesSlug = frontmatter.series ?? extractSeriesFromPath(slug) ?? undefined;
-const frontmatterWithSeries: Frontmatter = { ...frontmatter, series: seriesSlug };
+const schemas: object[] = [];
+if (isIndexable) {
+  const page = {
+    ...data,
+    title,
+    url: canonical.href,
+    description,
+    image: imageUrl,
+  };
 
-const pageTitle = frontmatter.title ?? fallbackTitle ?? 'Code with PHP';
-const metaDescription = generateMetaDescription(
-  frontmatter.description ?? fallbackDescription,
-  entry?.body
-);
-const canonicalUrl = getCanonicalUrl(slug);
-const socialImage = generateSocialImagePath(slug, frontmatterWithSeries);
-const keywords = generateKeywords(slug, frontmatterWithSeries);
+  if (isHome) {
+    schemas.push(...generateHomepageSchemas(site, description));
+  } else {
+    const breadcrumbs = [{ name: 'Home', url: homeUrl.href }];
+    if (isCourse || isLesson) {
+      breadcrumbs.push({ name: 'All courses', url: catalogueUrl });
+    }
+    if (courseSlug && course && !course.data.draft && !course.data.noindex) {
+      breadcrumbs.push({ name: course.data.title, url: new URL(`/${courseSlug}/`, homeUrl).href });
+    }
+    breadcrumbs.push({ name: isCatalogue ? 'All courses' : title, url: canonical.href });
+    schemas.push(generateBreadcrumbSchema(breadcrumbs));
+  }
 
-const ogType = frontmatterWithSeries.chapter !== undefined ? 'article' : 'website';
-const publishedTime = frontmatterWithSeries.datePublished;
-const modifiedTime = frontmatterWithSeries.dateModified;
+  if (isCatalogue) {
+    const urls = catalogueTracks.flatMap(({ courses }) =>
+      courses.map((courseSlug) => new URL(`/series/${courseSlug}/`, homeUrl).href));
+    schemas.push(generateCourseListSchema(urls));
+  } else if (isCourse) {
+    schemas.push(generateCourseSchema(site, page));
+  } else if (isLesson) {
+    schemas.push(generateArticleSchema(site, page, image.alt === title));
+  }
+}
 
-const schemas = [
-  slug === '' || slug === 'index' ? generateWebSiteSchema() : null,
-  slug === '' || slug === 'index' ? generateOrganizationSchema() : null,
-  generateBreadcrumbSchema(slug, pageTitle),
-  generateCourseSchema(slug, pageTitle, metaDescription, frontmatterWithSeries),
-  generateArticleSchema(slug, pageTitle, metaDescription, frontmatterWithSeries),
-  generateHowToSchema(slug, pageTitle, metaDescription, frontmatterWithSeries),
-  generateLearningResourceSchema(slug, pageTitle, metaDescription, frontmatterWithSeries),
-].filter(Boolean);
+const replacedMetaNames = new Set(['robots', 'twitter:card', 'twitter:title', 'twitter:description', 'twitter:image', 'twitter:image:alt']);
+const replacedMetaProperties = new Set(['og:title', 'og:type', 'og:url', 'og:description', 'og:image', 'og:image:alt', 'og:image:width', 'og:image:height']);
+const nativeHead = head.filter(({ tag, attrs }) => {
+  if (isNotFound && tag === 'link' && attrs?.rel === 'canonical') return false;
+  if (tag !== 'meta') return true;
+  return !replacedMetaNames.has(String(attrs?.name)) && !replacedMetaProperties.has(String(attrs?.property));
+});
 ---
 
-<DefaultHead {...Astro.props} />
+{nativeHead.map(({ tag: Tag, attrs, content }) => Tag === 'title' ? (
+  <title>{searchTitle} | {siteTitle}</title>
+) : (
+  <Tag {...attrs} set:html={content} />
+))}
+<meta name="robots" content={robotsContent} />
 
-<link rel="canonical" href={canonicalUrl} />
-<meta name="description" content={metaDescription} />
-<meta name="keywords" content={keywords.join(', ')} />
-<meta name="robots" content="index, follow, max-image-preview:large" />
-
-<meta property="og:type" content={ogType} />
-<meta property="og:title" content={pageTitle} />
-<meta property="og:description" content={metaDescription} />
-<meta property="og:url" content={canonicalUrl} />
-<meta property="og:image" content={socialImage} />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
-
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content={pageTitle} />
-<meta name="twitter:description" content={metaDescription} />
-<meta name="twitter:image" content={socialImage} />
-
-{publishedTime && <meta property="article:published_time" content={publishedTime} />}
-{modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
-{frontmatterWithSeries.author && (
-  <meta property="article:author" content={frontmatterWithSeries.author} />
+{isIndexable && hasMarkdownAlternate(entry) && (
+  <link rel="alternate" type="text/markdown" title="Markdown version" href={markdownPathFor(canonical.pathname)} />
 )}
 
-{schemas.map((schema) => (
-  <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+{isIndexable && (
+  <>
+    <meta property="og:type" content={isLesson ? 'article' : 'website'} />
+    <meta property="og:title" content={searchTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical.href} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:alt" content={image.alt} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={searchTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
+    <meta name="twitter:image:alt" content={image.alt} />
+
+    {isLesson && data.datePublished && <meta property="article:published_time" content={data.datePublished} />}
+    {isLesson && data.dateModified && <meta property="article:modified_time" content={data.dateModified} />}
+  </>
+)}
+
+{isHome && verification && <meta name="google-site-verification" content={verification} />}
+
+{isIndexable && analyticsToken && (
+  <script
+    is:inline
+    defer
+    src="https://static.cloudflareinsights.com/beacon.min.js"
+    data-cf-beacon={JSON.stringify({ token: analyticsToken })}
+  ></script>
+)}
+
+{schemas.map((value) => (
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(value).replace(/</g, '\\u003c')} />
 ))}
 
 <script is:inline>

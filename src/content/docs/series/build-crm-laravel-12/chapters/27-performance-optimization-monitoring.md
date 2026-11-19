@@ -1,4 +1,5 @@
 ---
+draft: true
 title: "27: Performance Optimization & Monitoring"
 description: "Optimize CRM performance with caching, query optimization, and Laravel Pulse monitoring"
 sidebar:

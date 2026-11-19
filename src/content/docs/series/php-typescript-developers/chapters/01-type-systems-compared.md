@@ -1,21 +1,29 @@
 ---
-title: "01: TypeScript to PHP - Type Systems Compared"
-description: "Understand how PHP's type system compares to TypeScript's. Learn the similarities, differences, and how to leverage your TypeScript knowledge in PHP."
+title: "01: PHP vs TypeScript Type Systems"
+description: "See when PHP and TypeScript enforce types, how strict_types changes PHP calls, and how to translate nullable and union types."
 sidebar:
   label: "01: TypeScript to PHP - Type Systems Compared"
   order: 1
   badge:
     text: Intermediate
     variant: caution
+author: "Code with PHP"
+dateModified: "2026-11-20"
 ---
 
-# TypeScript to PHP: Type Systems Compared
+<span id="typescript-to-php-type-systems-compared"></span>
 
 ## Overview
 
-Both TypeScript and modern PHP (8.0+) offer robust type systems, but they approach typing from different philosophies. TypeScript provides **compile-time static typing** that gets erased at runtime, while PHP offers **runtime-checked static typing** that validates types during execution.
+TypeScript checks annotations before execution and erases them from the generated JavaScript. PHP checks native type declarations while code runs. PHP may coerce scalar arguments by default, and `declare(strict_types=1)` controls scalar argument checks for calls written in that PHP file. [TypeScript type erasure](https://www.typescriptlang.org/docs/handbook/2/basic-types.html) · [PHP type declarations](https://www.php.net/manual/en/language.types.declarations.php)
 
-In this chapter, we'll map TypeScript's type features to their PHP equivalents and explore the practical differences.
+| What you want | TypeScript | PHP |
+| --- | --- | --- |
+| Accept an integer or a string | `value: number \| string` also allows non-integer numbers | `int\|string $value` |
+| Permit an explicit null | `value: string \| null` with strict null checks | `?string $value` |
+| Constrain each element of a list | `string[]` is checked by the compiler | `array` constrains the container. Check elements at runtime and use PHPDoc with a static analyser. |
+
+Run the [basic types example](https://github.com/dalehurley/codewithphp/blob/main/code/php-typescript-developers/chapter-01/basic-types.php) with `php basic-types.php`. Its first two lines are `Hello, TypeScript Developer!` and `15`. The sections below show how to translate signatures before moving on to [modern PHP syntax for TypeScript developers](/series/php-typescript-developers/chapters/02-modern-php-syntax/).
 
 ## Learning Objectives
 

@@ -2058,7 +2058,7 @@ Congratulations! You've built a comprehensive documentation generation system. H
 - [Markdown Guide](https://www.markdownguide.org/) - Comprehensive Markdown syntax reference
 - [Documentation Best Practices](https://www.writethedocs.org/guide/) - Write the Docs community resources
 - [Claude API Documentation](https://docs.claude.com/en/api/overview) - Official Claude API reference
-- [Chapter 11: Tool Use](/series/claude-php-developers/chapters/11-tool-use) - Learn about Claude's tool use capabilities
+- [Chapter 11: Tool Use](/series/claude-php-developers/chapters/11-tool-use-fundamentals/) - Learn about Claude's tool use capabilities
 - [Chapter 15: Structured Outputs](/series/claude-php-developers/chapters/15-structured-outputs) - Generate structured documentation formats
 
 ## Key Takeaways

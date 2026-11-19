@@ -39,7 +39,7 @@ By the end of this chapter, you will:
 
 Before starting this chapter, ensure you have:
 
-- ✓ Understanding of Big O notation *(60 mins from [Chapter 01](/series/php-algorithms/chapters/01-introduction-complexity-analysis) if not done)*
+- ✓ Understanding of Big O notation *(60 mins from [Chapter 01](/series/php-algorithms/chapters/01-algorithm-complexity-big-o-notation/) if not done)*
 - ✓ Completion of [Chapter 05](/series/php-algorithms/chapters/05-bubble-sort-selection-sort) (Bubble & Selection Sort) *(55 mins if not done)*
 - ✓ Familiarity with recursion *(70 mins from [Chapter 03](/series/php-algorithms/chapters/03-recursion-fundamentals) if not done)*
 - **Estimated Time**: ~60-70 minutes

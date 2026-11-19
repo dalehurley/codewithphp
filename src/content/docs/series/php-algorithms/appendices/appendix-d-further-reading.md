@@ -792,7 +792,7 @@ Connect to machine learning and AI algorithm resources within Code with PHP:
 
 - Regression (linear, polynomial, logistic)
 - Classification (SVM, Random Forests, Neural Networks)
-- Resources: [Chapter 5 - Linear Regression](/series/ai-ml-php-developers/chapters/05-linear-regression)
+- Resources: [Chapter 5 - Linear Regression](/series/ai-ml-php-developers/chapters/05-your-first-machine-learning-model-linear-regression-in-php/)
 
 **Unsupervised Learning**:
 

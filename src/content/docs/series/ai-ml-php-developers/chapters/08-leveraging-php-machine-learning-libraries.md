@@ -4318,7 +4318,7 @@ $normalized_test = normalizeUsing($test, $trainStats);
 
 ### What's Next
 
-In [Chapter 09: Advanced Machine Learning Techniques](/series/ai-ml-php-developers/chapters/09-advanced-machine-learning-techniques), you'll explore:
+In [Chapter 09: Advanced Machine Learning Techniques](/series/ai-ml-php-developers/chapters/09-advanced-machine-learning-techniques-trees-ensembles-and-clustering/), you'll explore:
 
 - **Decision trees and ensemble methods** (Random Forests, Gradient Boosting)
 - **Support Vector Machines** for complex classification boundaries

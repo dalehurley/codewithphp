@@ -1,6 +1,6 @@
 ---
-title: "01: Your First PHP Script"
-description: 'Learn the fundamental syntax of PHP by writing and running your first "Hello, World!" script in the browser and terminal.'
+title: "01: Write and Run Your First PHP Script"
+description: "Write a Hello World PHP script, run it in your terminal with php hello.php, then open it with the local PHP server."
 series: "php-basics"
 chapter: 1
 order: 1
@@ -14,16 +14,18 @@ teaches:
   - 'Run a PHP script from both the command line and a web browser'
   - 'Learn how to add comments to your code'
   - 'Master string concatenation with the `.` operator'
+author: "Code with PHP"
+dateModified: "2026-11-20"
 ---
 ![Your First PHP Script](/images/php-basics/chapter-01-first-php-script-hero-full.webp)
 
-# Chapter 01: Your First PHP Script
+<span id="chapter-01-your-first-php-script"></span>
 
 ## Overview
 
-With your development environment ready, it's time to write your first line of PHP code. This is a rite of passage in programming: the "Hello, World!" script. It's simple, but it's the perfect way to confirm that your setup is working and to learn the most basic syntax of the language.
+To run a PHP file, save your code as `hello.php`, open a terminal in the same folder, and enter `php hello.php`. You'll use the same file in a browser with PHP's built-in development server.
 
-In this chapter, you'll learn what PHP tags look like, how to output text, and the different ways you can run a PHP script.
+If the terminal cannot find `php`, [install PHP first](/series/php-basics/chapters/00-setting-up-your-development-environment/). If you want more examples after the first run, open [the chapter's runnable files](https://github.com/dalehurley/codewithphp/tree/main/code/php-basics/01-first-script).
 
 ## Prerequisites
 
@@ -70,10 +72,9 @@ Create your first PHP file and print a message to confirm your environment works
 3. **Add the PHP code**: Open `hello.php` in your editor and add the following:
 
 ```php
-# filename: hello.php
 <?php
 
-echo 'Hello, World!';
+echo 'Hello, World!', PHP_EOL;
 ```
 
 ### Expected Result
@@ -85,12 +86,11 @@ You now have a `hello.php` file that outputs a classic greeting when executed.
 - `<?php` tells PHP where code execution begins.
 - `echo` outputs the provided string to the terminal or browser.
 - `'Hello, World!'` is a string literal containing the text to display.
-- The trailing semicolon (`;`) ends the statement so PHP knows it’s complete.
+- `PHP_EOL` prints a newline. The semicolon ends the statement.
 
 ### Troubleshooting
 
 - **Error: `syntax error, unexpected '$name'`** — Make sure the file starts with `<?php`.
-- **Error: `Undefined function 'echo'`** — `echo` is a language construct, not a function; double-check you typed it correctly.
 - **Blank file created** — Ensure the code snippet was saved in `hello.php` before moving on.
 
 ## Step 2: Run the Script from the Command Line (~1 min)
@@ -116,8 +116,6 @@ Your terminal prints:
 ```text
 Hello, World!
 ```
-
-> **Tip**: If the prompt appears on the same line, append `PHP_EOL` to your echo statement to add a newline.
 
 ### Why It Works
 

@@ -77,7 +77,7 @@ Complete, runnable examples for this chapter:
 - [`14-error-analysis.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-07/14-error-analysis.php) — Understanding failures
 - [`15-spam-filter-optimized.php`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-07/15-spam-filter-optimized.php) — Production-ready spam filter
 
-All files are in [`docs/series/ai-ml-php-developers/code/chapter-07/`](/series/ai-ml-php-developers/code/chapter-07/README.md)
+All files are in [`docs/series/ai-ml-php-developers/code/chapter-07/`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-07/README.md)
 :::
 
 ## Quick Start

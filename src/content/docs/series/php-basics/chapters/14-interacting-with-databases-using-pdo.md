@@ -1,6 +1,6 @@
 ---
-title: "14: Interacting with Databases using PDO"
-description: "Learn the modern, secure way to connect to a database and run queries using PDO, a consistent interface for working with databases like MySQL and SQLite."
+title: "14: PHP PDO Prepared Statements and Database Queries"
+description: "Run a complete PHP PDO prepared statement example with SQLite. Bind query values, fetch results, and use PDO in a blog project."
 series: "php-basics"
 chapter: 14
 order: 14
@@ -13,18 +13,51 @@ teaches:
   - 'Handle connection errors gracefully with try/catch blocks'
   - 'Run `SELECT`, `INSERT`, `UPDATE`, and `DELETE` queries securely'
   - 'Use prepared statements to prevent SQL injection attacks'
+author: "Code with PHP"
+dateModified: "2026-11-20"
 ---
 ![Interacting with Databases using PDO](/images/php-basics/chapter-14-databases-pdo-hero-full.webp)
 
-# Chapter 14: Interacting with Databases using PDO
+<span id="chapter-14-interacting-with-databases-using-pdo"></span>
 
 ## Overview
 
-Very few web applications can exist without a database. A database provides a structured, efficient, and reliable way to store, retrieve, and manage large amounts of data—user accounts, blog posts, product inventories, and so much more.
+Use `PDO::prepare()` to write a query with placeholders and `execute()` to supply the values. This keeps values separate from SQL syntax. After establishing the connection, you can use the same PDO methods with SQLite, MySQL, or PostgreSQL. Each database needs its own driver, and its SQL may differ. [PDO::prepare() reference](https://www.php.net/manual/en/pdo.prepare.php)
 
-While there are many different databases (MySQL, PostgreSQL, SQLite, etc.), PHP provides a consistent, object-oriented interface for talking to them called **PDO** (PHP Data Objects). The beauty of PDO is that you can write your database code once, and it will work with any supported database with only minor changes to the connection details.
+## Runnable PDO prepared statement example
 
-In this chapter, we'll learn the fundamentals of using PDO to connect to a database, run queries securely, and fetch data. We'll use **SQLite**, a simple, serverless, file-based database that's perfect for learning and development.
+Save the code as `prepared-statement.php` and run `php prepared-statement.php` with `pdo_sqlite` enabled. The example creates an in-memory database, so it needs no database server or credentials.
+
+```php
+<?php
+
+declare(strict_types=1);
+
+$pdo = new PDO('sqlite::memory:', options: [
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+]);
+
+$pdo->exec('CREATE TABLE posts (id INTEGER PRIMARY KEY, title TEXT NOT NULL, author TEXT NOT NULL)');
+
+$author = "O'Neil";
+$insert = $pdo->prepare('INSERT INTO posts (title, author) VALUES (:title, :author)');
+$insert->execute(['title' => 'First post', 'author' => $author]);
+
+$select = $pdo->prepare('SELECT title FROM posts WHERE author = :author');
+$select->execute(['author' => $author]);
+
+echo $select->fetchColumn(), PHP_EOL;
+```
+
+Expected output:
+
+```text
+First post
+```
+
+PHP passes the apostrophe in `O'Neil` as part of the author value. The query uses fixed table and column names because placeholders bind values only. If you get `could not find driver`, use `php -m` to check whether the current CLI loads `pdo_sqlite`. [Example source](https://github.com/dalehurley/codewithphp/blob/main/code/php-basics/14-databases/00-prepared-statement-quick-start.php)
+
+After this lesson, apply the same pattern in the [database-driven blog project](/series/php-basics/chapters/19-project-building-a-simple-blog/).
 
 ## Prerequisites
 

@@ -288,6 +288,11 @@ html:has(.studio-catalogue) main > .content-panel {
   font: 400 0.82rem / 1.4 var(--studio-mono);
 }
 
+.learning-masthead__byline {
+  margin-block-start: 0.5rem;
+  font-size: 0.875rem;
+}
+
 .learning-masthead__actions {
   display: flex;
   align-items: center;
