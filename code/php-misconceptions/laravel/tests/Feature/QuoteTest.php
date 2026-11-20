@@ -15,10 +15,12 @@ final class QuoteTest extends TestCase
             ->assertExactJson(['quantity' => 3, 'total_cents' => 3750]);
     }
 
-    public function test_out_of_range_quantities_are_rejected(): void
+    public function test_invalid_quantities_return_a_validation_error(): void
     {
-        $this->getJson('/quotes?quantity=0')
-            ->assertUnprocessable()
-            ->assertJsonValidationErrors('quantity');
+        foreach (['/quotes', '/quotes?quantity=0', '/quotes?quantity=101', '/quotes?quantity=3.5'] as $url) {
+            $this->getJson($url)
+                ->assertUnprocessable()
+                ->assertJsonValidationErrors('quantity');
+        }
     }
 }
