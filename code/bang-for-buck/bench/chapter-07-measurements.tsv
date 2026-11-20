@@ -1,0 +1,14 @@
+traffic	trial	mode	run	offered_per_second	duration_s	concurrent_vus	completed	failures	dropped	http_p95_ms	sql_p50_ms	sql_queries	hits	coalesced	refills	fallbacks	redis_hit_delta	redis_miss_delta	redis_commands_delta	redis_expired_delta	redis_evicted_delta	redis_used_memory_before	redis_used_memory_after
+warm	1	bypass	steady-20261120T005848Z-2KlSjz	45	8		361	0	0	16.388	11.420	361	0	0	0	0	0	0	5	0	0	1640704	1640704
+warm	1	locked	steady-20261120T005858Z-8qGNOD	45	8		360	0	0	6.988	0.000	0	360	0	0	0	720	0	1085	0	0	1640704	1640704
+warm	2	locked	steady-20261120T005908Z-3nw8f5	45	8		360	0	0	6.834	0.000	0	360	0	0	0	720	0	1085	0	0	1640704	1640704
+warm	2	bypass	steady-20261120T005918Z-aBe2kC	45	8		361	0	0	16.153	11.510	361	0	0	0	0	0	0	5	0	0	1640704	1640704
+warm	3	bypass	steady-20261120T005928Z-t1S3LP	45	8		361	0	0	19.482	11.840	361	0	0	0	0	0	0	6	0	0	1640704	1640704
+warm	3	locked	steady-20261120T005937Z-HxAstm	45	8		361	0	0	7.114	0.000	0	361	0	0	0	722	0	1089	1	0	1640704	1638544
+expiry	1	direct	steady-20261120T005948Z-LUGHTp			16	16	0		49.166	0.000	4	12	0	4	0	28	4	53	0	0	1634160	1636320
+expiry	1	locked	steady-20261120T005952Z-aHqQwT			16	16	0		43.577	0.000	1	12	3	1	0	35	5	80	0	0	1634160	1637280
+expiry	2	locked	steady-20261120T005956Z-377MEq			16	16	0		47.408	0.000	1	12	3	1	0	35	5	79	0	0	1635120	1638240
+expiry	2	direct	steady-20261120T010000Z-DWZ0r4			16	16	0		75.816	0.000	4	12	0	4	0	28	4	54	0	0	1636080	1638240
+expiry	3	direct	steady-20261120T010004Z-BvCZsX			16	16	0		57.718	0.000	4	12	0	4	0	28	4	54	0	0	1636080	1638240
+expiry	3	locked	steady-20261120T010008Z-aBG7Oj			16	16	0		41.371	0.000	1	12	3	1	0	35	5	81	0	0	1636080	1639200
+outage	1	locked	steady-20261120T010012Z-Q91oHW	45	8		361	0	0	20.239	11.730	361	0	0	0	361							

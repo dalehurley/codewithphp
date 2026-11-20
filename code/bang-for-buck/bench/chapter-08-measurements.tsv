@@ -1,0 +1,8 @@
+pair	mode	run	comparison	offered_per_second	duration_s	started	succeeded	dropped	csv_verified	persisted_ready	checkout_persisted	post_p95_ms	queue_wait_p95_ms	generation_p95_ms	file_wait_p95_ms	download_get_p95_ms	status_requests	catalogue_p95_ms	checkout_p95_ms	queue_peak_sample	oldest_job_age_s_sample	fpm_listen_queue_peak_sample
+1	sync	steady-20261120T014121Z-LGNuiD	yes	20	12	240	240	0	24	24	24	71.659			71.800		0	19.315	52.053	0	0	0
+1	queued	steady-20261120T014136Z-awo9mx	yes	20	12	241	241	0	24	24	24	14.433	931.284	34.233	1075.850	58.693	82	19.543	49.782	0	0	0
+2	queued	steady-20261120T014150Z-j9kVOA	yes	20	12	241	241	0	24	24	24	20.353	968.031	46.855	1077.700	29.238	82	17.172	52.553	1	1	0
+2	sync	steady-20261120T014204Z-5EECbU	yes	20	12	240	240	0	24	24	24	258.421			260.700		0	99.022	132.587	0	0	0
+3	sync	steady-20261120T014219Z-Tdm6v0	yes	20	12	241	241	0	24	24	24	84.631			85.550		0	25.674	58.569	0	0	0
+3	queued	steady-20261120T014233Z-37xQxl	yes	20	12	241	241	0	24	24	24	16.091	921.739	27.322	1086.000	18.334	86	15.940	47.978	2	1	0
+overload	sync	steady-20261120T013901Z-GosTtg	no	30	12	292	292	69	30	30	29	2985.881			2992.100		0	2691.502	2633.971	0	0	40

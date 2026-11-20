@@ -1,0 +1,6 @@
+services:
+  php:
+    image: bang-for-buck/shop:profile
+    build:
+      context: ./shop
+      target: profiler

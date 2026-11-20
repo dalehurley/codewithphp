@@ -35,6 +35,13 @@ export const courseCovers = {
     artwork: 'symbol',
     mark: '$?',
   },
+  'bang-for-buck': {
+    title: 'Bang for Buck: Scaling PHP Apps',
+    description: 'Benchmark a Laravel shop and find what limits its capacity.',
+    color: 'lime',
+    artwork: 'symbol',
+    mark: 'p95',
+  },
   'php-typescript-developers': {
     title: 'From TypeScript to PHP',
     description: 'Take what you know about types into PHP.',
@@ -112,6 +119,6 @@ export const catalogueTracks: { id: string; title: string; courses: CourseSlug[]
     'php-typescript-developers', 'php-for-java-developers', 'python-developers-love-php-laravel', 'rails-developers-love-laravel',
   ] },
   { id: 'go-deeper', title: 'Go deeper', courses: [
-    'php-algorithms', 'ai-ml-php-developers', 'data-science-php-developers', 'claude-php-developers', 'agentic-ai-php-developers',
+    'bang-for-buck', 'php-algorithms', 'ai-ml-php-developers', 'data-science-php-developers', 'claude-php-developers', 'agentic-ai-php-developers',
   ] },
 ];

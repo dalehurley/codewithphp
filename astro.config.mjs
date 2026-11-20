@@ -117,6 +117,17 @@ export default defineConfig({
           ],
         },
         {
+          label: 'Bang for Buck: Scaling PHP Apps',
+          collapsed: true,
+          items: [
+            { label: 'Series Overview', link: '/series/bang-for-buck/' },
+            {
+              label: 'Chapters',
+              autogenerate: { directory: 'series/bang-for-buck/chapters' },
+            },
+          ],
+        },
+        {
           label: 'PHP Misconceptions',
           collapsed: true,
           items: [

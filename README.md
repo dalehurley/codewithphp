@@ -29,6 +29,7 @@ Free PHP and Laravel tutorials by Dale Hurley. Follow a course to build a projec
 10. **[Ruby on Rails Developers ♥ Laravel](https://codewithphp.com/series/rails-developers-love-laravel/)** — Transition from Rails to Laravel
 11. **[What’s New in PHP 8.6](https://codewithphp.com/series/php-8-6/)** — Explore the release features and upgrade changes with runnable examples
 12. **[PHP Misconceptions](https://codewithphp.com/series/php-misconceptions/)** — Test common claims about modern PHP, Laravel and web performance
+13. **[Bang for Buck: Scaling PHP Apps](src/content/docs/series/bang-for-buck/index.md)** — Benchmark a Laravel shop and measure which changes earn their cost
 
 ## 🚀 Quick Start
 
