@@ -45,6 +45,10 @@ header.header:has(.studio-header) {
   font-size: clamp(1.35rem, 2.2vw, 2rem);
 }
 
+.studio-header .site-links {
+  display: flex;
+}
+
 .studio-header :is(.site-brand, .site-links a) {
   color: var(--studio-paper);
 }
