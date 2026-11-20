@@ -743,21 +743,21 @@ echo "=== Multi-Agent Workflow: Research → Analysis → Report ===\n\n";
 // Stage 1: Research
 echo "Stage 1: Research\n";
 $researchResult = $researcher->run(
-    'Research the benefits of PHP 8.4 property hooks. Store your findings under "php84_research".'
+    'Research the benefits of PHP property hooks. Store your findings under "property_hooks_research".'
 );
 echo "Researcher: " . substr($researchResult->getAnswer(), 0, 200) . "...\n\n";
 
 // Stage 2: Analysis
 echo "Stage 2: Analysis\n";
 $analysisResult = $analyzer->run(
-    'Retrieve the research from "php84_research", analyze it, and store your analysis under "php84_analysis".'
+    'Retrieve the research from "property_hooks_research", analyze it, and store your analysis under "property_hooks_analysis".'
 );
 echo "Analyzer: " . substr($analysisResult->getAnswer(), 0, 200) . "...\n\n";
 
 // Stage 3: Report Writing
 echo "Stage 3: Report Writing\n";
 $reportResult = $writer->run(
-    'Retrieve the analysis from "php84_analysis" and create a comprehensive technical report about PHP 8.4 property hooks.'
+    'Retrieve the analysis from "property_hooks_analysis" and create a comprehensive technical report about PHP property hooks.'
 );
 echo "Writer: " . $reportResult->getAnswer() . "\n\n";
 

@@ -3,7 +3,7 @@
     "description": "Exercise 3 solution: Namespace and Autoloading example",
     "type": "project",
     "require": {
-        "php": "^8.4"
+        "php": "^8.6"
     },
     "autoload": {
         "psr-4": {

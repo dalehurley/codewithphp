@@ -38,20 +38,20 @@ You don't need any previous programming knowledge — just basic computer skills
 
 **Software Requirements:**
 
-- **PHP 8.4 or later** ([installation guide](/series/php-basics/chapters/00-setting-up-your-development-environment/))
+- **PHP 8.6 or later** ([installation guide](/series/php-basics/chapters/00-setting-up-your-development-environment/))
 - **Text editor or IDE** (VS Code, PhpStorm, Sublime Text — any will work)
 - **Terminal/Command line** access (built into macOS/Linux; we'll help Windows users too)
 - **SQLite** (comes bundled with PHP)
 
 ::: info PHP Version Compatibility
-**PHP 8.4 is recommended** for the full learning experience. While most examples work on PHP 8.0+, some modern features require 8.4:
+**PHP 8.6 is recommended** for the full learning experience. While most examples work on PHP 8.0+, some language features require PHP 8.4 or newer:
 
-- **Property hooks** (Chapter 8): Requires PHP 8.4
-- **Asymmetric visibility** (Chapter 8): Requires PHP 8.4
+- **Property hooks** (Chapter 8): Requires PHP 8.4 or newer
+- **Asymmetric visibility** (Chapter 8): Requires PHP 8.4 or newer
 - **Constructor property promotion**: Works on PHP 8.0+
 - **Named arguments, match expressions**: Work on PHP 8.0+
 
-For the best experience and to future-proof your skills, install PHP 8.4.
+For the best experience and to future-proof your skills, install PHP 8.6.
 :::
 
 **Time Commitment:**
@@ -84,7 +84,7 @@ By working through this series, you will create:
 4. **Your own MVC architecture** from scratch, giving you deep insight into how frameworks work
 5. **Two framework starter projects** (Laravel and Symfony) to transition smoothly
 
-Every code example is production-ready, following modern PHP 8.4 best practices and PSR standards.
+Every code example is production-ready, following modern PHP 8.6 best practices and PSR standards.
 
 ## Learning Objectives
 
@@ -171,7 +171,7 @@ Each part builds essential skills you'll need for the next. By Part 5, you'll co
 Want to jump in right now? Here's how to get your first PHP script running in under 5 minutes:
 
 ```bash
-# 1. Check if PHP 8.4 or later is installed
+# 1. Check if PHP 8.6 or later is installed
 php --version
 
 # 2. Create a new directory and file
@@ -199,7 +199,7 @@ Set up your environment and write your first working PHP script.
   <img src="/images/php-basics/chapter-00-setting-up-development-environment-hero-thumbnail.webp" alt="Chapter 00 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
   <div>
     <h4 style="margin-top: 0;"><a href="/series/php-basics/chapters/00-setting-up-your-development-environment">00 — Setting Up Your Development Environment</a></h4>
-    <p style="margin-bottom: 0;">Install PHP 8.4, configure your editor, and verify your setup. This chapter walks you through installing PHP on macOS, Linux, and Windows, choosing a text editor or IDE, and running your first verification script to ensure everything works correctly.</p>
+    <p style="margin-bottom: 0;">Install PHP 8.6, configure your editor, and verify your setup. This chapter walks you through installing PHP on macOS, Linux, and Windows, choosing a text editor or IDE, and running your first verification script to ensure everything works correctly.</p>
   </div>
 </div>
 
@@ -423,8 +423,8 @@ No! Professional developers look things up constantly. Focus on understanding co
 **What if the exercises are too hard?**  
 Go back and re-read the chapter. Try the example code yourself. Break the problem into smaller pieces. If you're still stuck, check the troubleshooting section or ask for help (see below).
 
-**Can I use PHP 8.0, 8.1, 8.2, or 8.3 instead of 8.4?**
-Most examples will work on PHP 8.0+, but some advanced features (property hooks and asymmetric visibility in Chapter 8) specifically require PHP 8.4. We strongly recommend installing 8.4 to get the complete learning experience and avoid compatibility issues.
+**Can I use an older version of PHP?**
+Most examples will work on PHP 8.0+, but some advanced features (property hooks and asymmetric visibility in Chapter 8) require PHP 8.4 or newer. We strongly recommend installing PHP 8.6 to get the complete learning experience and avoid compatibility issues.
 
 **Which IDE/editor should I use?**  
 Use whatever you're comfortable with. VS Code (free) is popular and has excellent PHP extensions. PhpStorm (paid, with free student licenses) is the industry standard. Even a simple text editor like Sublime Text works fine.

@@ -10,7 +10,7 @@ This directory contains all the code samples from Chapter 25 of the Claude for P
 
 ## Requirements
 
-- PHP 8.4+
+- PHP 8.6+
 - Laravel 12+
 - Filament 4+
 - Claude-PHP-SDK v0.2 (`composer require claude-php/claude-php-sdk`)

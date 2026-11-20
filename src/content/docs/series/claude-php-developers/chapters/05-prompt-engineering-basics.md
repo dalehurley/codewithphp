@@ -37,7 +37,7 @@ This chapter provides comprehensive coverage of prompt engineering fundamentals,
 Before starting, ensure you have:
 
 - ✓ **Completed Chapters 01-04**
-- ✓ **PHP 8.4+** with good understanding
+- ✓ **PHP 8.6+** with good understanding
 - ✓ **Anthropic API key** configured
 - ✓ **Experience with Claude API** from previous chapters
 
@@ -116,7 +116,7 @@ $specificResponse = $client->messages()->create([
     'messages' => [
         [
             'role' => 'user',
-            'content' => 'Explain the benefits of PHP 8.4\'s typed class constants in 3 bullet points. Include one code example.'
+            'content' => 'Explain the benefits of PHP 8.6\'s typed class constants in 3 bullet points. Include one code example.'
         )
     ]
 );
@@ -2302,7 +2302,7 @@ $good = "Review this user authentication function for security vulnerabilities. 
 $bad = "List the benefits.";
 
 # ✓ Good: Specific format
-$good = "List 5 benefits of using PHP 8.4. Format as JSON array with fields: benefit (string), impact (string), example (string).";
+$good = "List 5 benefits of using PHP 8.6. Format as JSON array with fields: benefit (string), impact (string), example (string).";
 ```
 
 ### Pitfall 4: Too Many Instructions

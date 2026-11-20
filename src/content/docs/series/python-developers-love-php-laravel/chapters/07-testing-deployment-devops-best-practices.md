@@ -36,7 +36,7 @@ Before starting this chapter, you should have:
 **Verify your setup:**
 
 ```bash
-# Check PHP version (should show PHP 8.4+)
+# Check PHP version (should show PHP 8.6+)
 php --version
 
 # Check Composer is installed
@@ -783,7 +783,7 @@ jobs:
 
     strategy:
       matrix:
-        php-version: ["8.2", "8.3", "8.4"]
+        php-version: ["8.2", "8.3", "8.6"]
 
     services:
       mysql:
@@ -966,7 +966,7 @@ The complete Laravel Dockerfile example is available in [`Dockerfile.laravel`](h
 
 ```dockerfile
 # filename: Dockerfile
-FROM php:8.4-fpm
+FROM php:8.6-fpm
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -1080,7 +1080,7 @@ volumes:
 
 You can see the patterns are similar:
 
-- **Python**: `FROM python:3.11-slim` → **PHP**: `FROM php:8.4-fpm`
+- **Python**: `FROM python:3.11-slim` → **PHP**: `FROM php:8.6-fpm`
 - **Python**: `pip install -r requirements.txt` → **PHP**: `composer install`
 - **Python**: `gunicorn` → **PHP**: `php artisan serve` or PHP-FPM
 - Both use docker-compose for multi-container setups
@@ -1107,7 +1107,7 @@ Use multi-stage builds to reduce image size. Build dependencies in one stage, co
 
 | Feature                | Python Dockerfile      | Laravel Dockerfile                    |
 | ---------------------- | ---------------------- | ------------------------------------- |
-| **Base Image**         | `python:3.11-slim`     | `php:8.4-fpm`                         |
+| **Base Image**         | `python:3.11-slim`     | `php:8.6-fpm`                         |
 | **Dependency Manager** | `pip`                  | `composer`                            |
 | **Dependency File**    | `requirements.txt`     | `composer.json`                       |
 | **Web Server**         | `gunicorn` / `uvicorn` | `php artisan serve` / PHP-FPM + Nginx |
@@ -1197,6 +1197,8 @@ Set in Forge dashboard:
 
 3. **Laravel Vapor (Serverless)**:
 
+Vapor’s [documented native runtimes](https://docs.vapor.build/projects/environments#native-runtimes) include PHP 8.5. The native deployment example uses that runtime.
+
 The complete Laravel Vapor config example is available in [`vapor.yml`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-07/deployment/vapor.yml):
 
 ```yaml
@@ -1209,7 +1211,7 @@ environments:
     domain: myapp.com
     memory: 1024
     cli-memory: 512
-    runtime: php-8.4
+    runtime: php-8.5:al2023
     build:
       - "composer install --no-dev --optimize-autoloader"
       - "php artisan config:cache"
@@ -1624,7 +1626,7 @@ Expected output: All tests pass, showing proper authentication, validation, and 
 **Requirements:**
 
 - Create `.github/workflows/laravel-ci.yml`
-- Test against PHP 8.2, 8.3, and 8.4 (matrix strategy)
+- Test against PHP 8.2, 8.3, and 8.6 (matrix strategy)
 - Set up MySQL service for testing
 - Run PHPUnit tests
 - Run Laravel Pint (code style check)

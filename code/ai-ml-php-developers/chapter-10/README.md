@@ -4,7 +4,7 @@ Complete working examples for building and training neural networks in PHP.
 
 ## Prerequisites
 
-- PHP 8.4+ installed
+- PHP 8.6+ installed
 - Composer (optional, for Rubix ML examples)
 - Understanding of basic ML concepts from Chapter 3
 
@@ -230,7 +230,7 @@ Try these challenges:
 
 If examples don't work:
 
-1. Check PHP version: `php --version` (must be 8.4+)
+1. Check PHP version: `php --version` (must be 8.6+)
 2. Verify file permissions: `chmod +x *.php`
 3. Check for typos in require_once paths
 4. Review error messages carefully

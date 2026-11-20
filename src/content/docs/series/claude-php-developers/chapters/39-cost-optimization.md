@@ -61,7 +61,7 @@ By completing this chapter, you will:
 
 Before starting, ensure you have:
 
-- ✓ **PHP 8.4+** with Redis and database extensions
+- ✓ **PHP 8.6+** with Redis and database extensions
 - ✓ **Anthropic API account** with billing enabled
 - ✓ **Redis server** running and accessible
 - ✓ **Database** (MySQL, PostgreSQL, or SQLite) for cost attribution
@@ -861,7 +861,7 @@ $client = new ClaudePhp(
 $cache = new ClaudeCache($redis, defaultTtl: 3600);
 
 // Cached request
-$prompt = "What are the benefits of PHP 8.4?";
+$prompt = "What are the benefits of PHP 8.6?";
 $cacheKey = $cache->generateKey($prompt, ['model' => 'claude-sonnet-4-5']);
 
 $response = $cache->remember(

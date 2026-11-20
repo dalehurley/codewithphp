@@ -1,6 +1,6 @@
 ---
 title: "Agentic AI for PHP Developers"
-description: "Build production-grade AI agents with PHP 8.4—master planning, memory, tool orchestration, and multi-agent systems."
+description: "Build production-grade AI agents with PHP 8.6—master planning, memory, tool orchestration, and multi-agent systems."
 series: "agentic-ai-php-developers"
 difficulty: "Advanced"
 keywords: ["Agentic AI PHP", "AI Agents PHP", "Claude PHP Agent", "PHP AI Framework"]
@@ -67,13 +67,13 @@ This series is for:
 - **Product engineers** building AI features on top of existing services
 - **Developers already using LLM APIs** who want to graduate to agent architectures
 
-You should be comfortable with PHP 8.4+, REST APIs, Composer, and basic async/background job concepts.
+You should be comfortable with PHP 8.6+, REST APIs, Composer, and basic async/background job concepts.
 
 ## Prerequisites
 
 **Software Requirements:**
 
-- **PHP 8.4+**
+- **PHP 8.6+**
 - **Composer**
 - **Redis** (for queues and caching)
 - **SQLite/MySQL/PostgreSQL** (for memory and audit logs)

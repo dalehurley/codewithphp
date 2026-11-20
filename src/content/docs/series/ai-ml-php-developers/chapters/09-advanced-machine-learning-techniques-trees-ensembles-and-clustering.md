@@ -32,7 +32,7 @@ Before starting this chapter, you should have:
 - Solid understanding of supervised vs. unsupervised learning from Chapter 03
 - Experience training and evaluating classifiers in PHP
 - Familiarity with accuracy, precision, recall metrics
-- PHP 8.4+ environment with Composer
+- PHP 8.6+ environment with Composer
 
 **Estimated Time**: ~90-120 minutes (reading, running examples, and exercises)
 

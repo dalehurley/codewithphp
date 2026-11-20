@@ -1,6 +1,6 @@
 # PHP Misconceptions examples
 
-Run the standalone examples from the Code with PHP repository root using PHP 8.4 or later.
+Run the standalone examples from the Code with PHP repository root using PHP 8.6 or later.
 
 | Command | What to check |
 | --- | --- |

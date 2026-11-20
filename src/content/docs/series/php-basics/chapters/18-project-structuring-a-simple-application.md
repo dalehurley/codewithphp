@@ -36,7 +36,7 @@ In this chapter, we'll refactor our project to use this powerful and scalable st
 Before starting this chapter, ensure you have:
 
 - **Completed Chapter 17**: You should have a working router from the previous chapter
-- **PHP 8.4** installed and running
+- **PHP 8.6** installed and running
 - **Composer** installed and configured
 - **A working `simple-blog` project** with the router from Chapter 17
 - **Estimated Time**: ~25 minutes

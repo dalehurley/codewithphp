@@ -1365,7 +1365,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.4
+          php-version: 8.6
           extensions: mbstring, pdo_mysql
           coverage: xdebug
 
@@ -1491,7 +1491,7 @@ cap production deploy
 
 @task('reload_php')
     echo "Reloading PHP-FPM"
-    sudo systemctl reload php8.4-fpm
+    sudo systemctl reload php8.6-fpm
 @endtask
 ```
 
@@ -1548,7 +1548,7 @@ Docker provides a consistent environment across development, staging, and produc
 
 ```dockerfile
 # Dockerfile
-FROM php:8.4-fpm
+FROM php:8.6-fpm
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -1736,7 +1736,7 @@ pumactl phased-restart
 php artisan octane:reload
 
 # Option 2: PHP-FPM reload
-sudo systemctl reload php8.4-fpm
+sudo systemctl reload php8.6-fpm
 
 # Option 3: Swoole hot reload
 php artisan octane:reload --swoole
@@ -2372,7 +2372,7 @@ php artisan view:cache
 php artisan queue:restart
 
 # Reload PHP-FPM (zero downtime!)
-sudo systemctl reload php8.4-fpm
+sudo systemctl reload php8.6-fpm
 
 echo "✅ Deployment complete!"
 
@@ -2510,7 +2510,7 @@ tail -f storage/logs/laravel.log
 tail -f /var/log/nginx/error.log
 
 # Check PHP-FPM logs
-tail -f /var/log/php8.4-fpm.log
+tail -f /var/log/php8.6-fpm.log
 
 # Check system logs
 tail -f /var/log/syslog

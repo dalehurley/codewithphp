@@ -6,7 +6,7 @@ echo "=== Object Detection Environment Verification ===\n\n";
 
 // Check PHP version
 echo "1. PHP Version: " . PHP_VERSION;
-echo (version_compare(PHP_VERSION, '8.4.0', '>=')) ? " ✓\n" : " ✗ (need 8.4+)\n";
+echo (version_compare(PHP_VERSION, '8.6.0', '>=')) ? " ✓\n" : " ✗ (need 8.6+)\n";
 
 // Check GD extension
 echo "2. GD Extension: ";
@@ -75,7 +75,7 @@ echo "\n=== Setup Complete ===\n";
 
 // Summary
 $requiredChecks = [
-    version_compare(PHP_VERSION, '8.4.0', '>='),
+    version_compare(PHP_VERSION, '8.6.0', '>='),
     extension_loaded('gd'),
     !empty($pythonVersion),
     !empty($yoloCheck),

@@ -77,7 +77,7 @@ prerequisites: []
 ## Code Quality Validation
 
 - [ ] **No Incomplete Code**: All examples are runnable
-- [ ] **PHP 8.4 Compatible**: Modern syntax and features
+- [ ] **PHP 8.6 Compatible**: Modern syntax and features
 - [ ] **Type Declarations**: Functions have proper type hints
 - [ ] **Comments**: Key concepts explained
 - [ ] **No Smart Quotes**: All quotes are straight `"` or `'`, not curly `" '`
@@ -163,7 +163,7 @@ CONTENT:
   ☐ All links working
 
 CODE QUALITY:
-  ☐ PHP 8.4 compatible
+  ☐ PHP 8.6 compatible
   ☐ Type hints present
   ☐ Comments explain concepts
   ☐ Examples runnable

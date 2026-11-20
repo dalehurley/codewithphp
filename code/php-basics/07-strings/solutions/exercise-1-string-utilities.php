@@ -137,7 +137,7 @@ echo PHP_EOL;
 echo "2. Generate Slugs:" . PHP_EOL;
 $titles = [
     'Hello World!',
-    'PHP 8.4 Features',
+    'PHP 8.6 Features',
     'Learn to Code: Complete Guide'
 ];
 foreach ($titles as $title) {

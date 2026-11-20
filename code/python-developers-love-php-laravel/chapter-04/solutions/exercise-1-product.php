@@ -6,7 +6,7 @@ declare(strict_types=1);
  * Exercise 1 Solution: Convert Python Class to PHP
  * 
  * This is the solution for Exercise 1 from Chapter 04.
- * Converts a Python Product class to PHP 8.4 with proper type declarations.
+ * Converts a Python Product class to PHP 8.6 with proper type declarations.
  */
 
 class Product

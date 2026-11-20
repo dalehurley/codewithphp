@@ -9,7 +9,7 @@ declare(strict_types=1);
  * using rule-based feature engineering and risk scoring.
  * 
  * Requirements:
- * - PHP 8.4+
+ * - PHP 8.6+
  * - Database with 'customers' and 'tickets' tables
  * - Laravel/Eloquent or PDO
  */

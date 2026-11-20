@@ -68,7 +68,7 @@ Solutions are available in the `solutions/` directory:
 
 ## Requirements
 
-- PHP 8.4+
+- PHP 8.6+
 - Composer
 - Optional: Python 3.10+ with Prophet library
 

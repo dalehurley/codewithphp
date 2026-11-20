@@ -144,7 +144,7 @@ These examples are designed to be used within a Django project. To use them:
 
 ### Laravel
 
-- PHP 8.4+
+- PHP 8.6+
 - Laravel 11.x
 - Composer
 - Database (MySQL, PostgreSQL, or SQLite)

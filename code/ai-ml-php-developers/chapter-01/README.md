@@ -18,13 +18,13 @@ That's it! You're ready to run the examples.
 
 ## Prerequisites
 
-- **PHP 8.4+** installed and working
+- **PHP 8.6+** installed and working
 - **Composer** installed
 
 Verify your setup:
 
 ```bash
-php --version    # Should show 8.4 or higher
+php --version    # Should show 8.6 or higher
 composer --version
 ```
 
@@ -175,7 +175,7 @@ sudo mv composer.phar /usr/local/bin/composer
 
 ### PHP version too old
 
-**Cause**: PHP 8.4+ required
+**Cause**: PHP 8.6+ required
 
 **Solution**:
 
@@ -185,7 +185,7 @@ Check your PHP version:
 php --version
 ```
 
-If it's below 8.4, upgrade PHP using your system's package manager or download from [php.net](https://www.php.net/downloads).
+If it's below 8.6, upgrade PHP using your system's package manager or download from [php.net](https://www.php.net/downloads).
 
 ### Predictions seem wrong
 

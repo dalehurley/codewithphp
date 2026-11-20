@@ -35,7 +35,7 @@ Following these standards is the mark of a professional PHP developer. It makes 
 
 Before you begin, ensure you have:
 
-- **PHP 8.4** installed and available in your terminal
+- **PHP 8.6** installed and available in your terminal
 - **Composer** installed (from Chapter 12)
 - A working PHP project (we'll use examples from the blog project built in Chapter 19, but any PHP project works)
 - A text editor or IDE (VS Code, PHPStorm, or similar)
@@ -47,7 +47,7 @@ Before you begin, ensure you have:
 ```bash
 # Verify PHP version
 php --version
-# Should show: PHP 8.4.x
+# Should show: PHP 8.6.x
 
 # Verify Composer is available
 composer --version
@@ -170,11 +170,11 @@ class UserExporter
 }
 ```
 
-### PHP 8.4 Considerations
+### PHP 8.6 Considerations
 
-PSR-12 was written before PHP 8.4, but the standards still apply. When using modern PHP 8.4 features, maintain the same formatting principles:
+PSR-12 predates these language features. Keep the same formatting principles when writing PHP 8.6 code:
 
-**Property Hooks** (PHP 8.4):
+**Property Hooks** (introduced in PHP 8.4):
 
 ```php
 class User
@@ -186,7 +186,7 @@ class User
 }
 ```
 
-**Asymmetric Visibility** (PHP 8.4):
+**Asymmetric Visibility** (introduced in PHP 8.4):
 
 ```php
 class Counter
@@ -201,7 +201,7 @@ class Counter
 }
 ```
 
-PHP-CS-Fixer is actively maintained and supports PHP 8.4 features. As new syntax is added to PHP, the tool is updated to format it correctly according to PSR-12 principles.
+Check [PHP-CS-Fixer’s supported PHP versions](https://cs.symfony.com/#supported-php-versions) before using it with newly introduced syntax. You can run the formatter on a supported runtime.
 
 ## Step 2: Setting Up an Automatic Code Styler (~6 min)
 
@@ -282,7 +282,7 @@ This configuration does three important things:
 - **`setRules`**:
   - `'@PSR12' => true`: Applies all the rules from the PSR-12 standard. The `@` prefix indicates a rule set (a bundle of related rules).
   - `'strict_param' => true`: An extra rule that automatically adds `declare(strict_types=1);` to files that are missing it. This makes PHP enforce strict type checking, catching bugs early.
-  - `'array_syntax' => ['syntax' => 'short']`: Ensures arrays use modern PHP 8.4 syntax `[]` instead of the old `array()` syntax.
+  - `'array_syntax' => ['syntax' => 'short']`: Ensures arrays use modern PHP 8.6 syntax `[]` instead of the old `array()` syntax.
 
 ### Troubleshooting
 
@@ -297,7 +297,7 @@ which composer
 
 **Problem**: Installation fails with "your requirements could not be resolved"
 
-**Solution**: Your PHP version might be incompatible. Check that you're running PHP 8.4:
+**Solution**: Your PHP version might be incompatible. Check that you're running PHP 8.6:
 
 ```bash
 php --version

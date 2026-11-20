@@ -13,7 +13,7 @@ composer install
 2. Verify PHP version:
 
 ```bash
-php --version  # Should be PHP 8.4+
+php --version  # Should be PHP 8.6+
 ```
 
 ## Quick Start
@@ -107,7 +107,7 @@ The techniques taught apply to any time series data: sales forecasts, traffic pr
 
 ### Composer install fails
 
-Make sure you have PHP 8.4+ installed:
+Make sure you have PHP 8.6+ installed:
 
 ```bash
 php --version

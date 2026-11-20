@@ -29,7 +29,7 @@ $dotenv->required('OPENAI_API_KEY')->notEmpty();
 $client = OpenAI::client($_ENV['OPENAI_API_KEY']);
 $summarizer = new Summarizer($client);
 
-// Sample article about PHP 8.4
+// Sample article about the PHP 8.4 release
 $article = <<<'ARTICLE'
 PHP 8.4 represents a significant milestone in the evolution of the PHP programming
 language, introducing several groundbreaking features that enhance developer productivity

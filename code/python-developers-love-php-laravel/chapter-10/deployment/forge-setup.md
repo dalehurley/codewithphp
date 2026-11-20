@@ -19,7 +19,7 @@ This guide covers deploying the Task Manager application to production using Lar
 
 Forge automatically:
 - Provisions the VPS
-- Installs PHP 8.4, Nginx, MySQL, Redis
+- Installs PHP 8.6, Nginx, MySQL, Redis
 - Configures firewall and security
 - Sets up SSH keys
 
@@ -75,7 +75,7 @@ php artisan route:cache
 php artisan view:cache
 
 # Restart PHP-FPM
-sudo -S service php8.4-fpm reload
+sudo -S service php8.6-fpm reload
 ```
 
 ## Step 5: SSL Certificate

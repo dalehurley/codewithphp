@@ -1023,7 +1023,7 @@ class CodeGenerator
             'max_tokens' => 1024,
             'temperature' => 0.3,  // Low for consistent, reliable code
             topP: 0.85,       // Focused on conventional patterns
-            'system' => 'Generate clean PHP 8.4+ code following PSR-12 standards. Include type hints, return types, and PHPDoc comments.',
+            'system' => 'Generate clean PHP 8.6+ code following PSR-12 standards. Include type hints, return types, and PHPDoc comments.',
             'messages' => [[
                 'role' => 'user',
                 'content' => "Generate a PHP function:\n\nDescription: {$description}\nParameters: {$paramsList}\nReturn type: {$returnHint}\n\nUse declare(strict_types=1) and modern PHP features."

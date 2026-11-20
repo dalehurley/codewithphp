@@ -26,7 +26,7 @@ By the end of this chapter, you'll understand how ML works conceptually, know wh
 Before starting this chapter, you should have:
 
 - Completed [Chapter 07: Statistics for Data Science](/series/data-science-php-developers/chapters/07-statistics-every-php-developer-needs-for-data-science)
-- PHP 8.4+ installed
+- PHP 8.6+ installed
 - Understanding of basic statistics (mean, variance, probability)
 - Familiarity with linear algebra concepts (vectors, matrices)
 - **Estimated Time**: ~90 minutes

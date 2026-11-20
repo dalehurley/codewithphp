@@ -3296,7 +3296,7 @@ composer install --no-dev --optimize-autoloader
 # Use .env or system environment variables
 
 # Docker deployment
-FROM php:8.4-fpm
+FROM php:8.6-fpm
 COPY . /var/www/html
 RUN composer install --no-dev --optimize-autoloader
 

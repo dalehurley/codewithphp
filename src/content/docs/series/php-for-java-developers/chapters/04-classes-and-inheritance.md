@@ -599,7 +599,7 @@ You can make methods MORE visible (protected → public) but NOT less visible (p
 
 ### Return Type Compatibility
 
-PHP 7.4+ (including PHP 8.4) enforces return type compatibility (covariance):
+PHP 7.4+ (including PHP 8.6) enforces return type compatibility (covariance):
 
 ```php
 <?php
@@ -619,7 +619,7 @@ class AnimalFactory
 
 class DogFactory extends AnimalFactory
 {
-    // ✅ Covariant return type (PHP 7.4+, PHP 8.4 compatible)
+    // ✅ Covariant return type (PHP 7.4+, PHP 8.6 compatible)
     public function create(): Dog
     {
         return new Dog();

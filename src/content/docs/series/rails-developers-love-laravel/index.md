@@ -35,7 +35,7 @@ You don't need to abandon Ruby or choose sides. This series helps you understand
 **Software Requirements:**
 
 - **Ruby on Rails experience** (you should be comfortable building Rails apps)
-- **PHP 8.4** (we'll help you install it if needed)
+- **PHP 8.6** (we'll help you install it if needed)
 - **Composer** (PHP's dependency manager, similar to Bundler)
 - **Laravel** (we'll install it together)
 - **Text editor or IDE** (VS Code, PhpStorm, RubyMine, or your preferred editor)
@@ -66,7 +66,7 @@ By working through this series, you will:
 2. **Build comparison examples** showing Rails vs Laravel side-by-side
 3. **Create a complete Laravel application** demonstrating routing, models, views, and APIs
 4. **Master Laravel's developer tools** (Artisan CLI, migrations, testing)
-5. **Learn modern PHP 8.4 syntax** and how it compares to Ruby
+5. **Learn modern PHP 8.6 syntax** and how it compares to Ruby
 6. **Build REST APIs** in Laravel and compare with Rails approaches
 7. **Deploy a Laravel application** and understand the deployment ecosystem
 8. **Complete a hands-on project** porting Rails patterns to Laravel
@@ -78,7 +78,7 @@ Every code example includes both Rails (familiar) and Laravel (new) versions, so
 By the end of this series, you will be able to:
 
 - **Map Rails concepts to Laravel** equivalents confidently
-- **Write modern PHP 8.4 code** following best practices
+- **Write modern PHP 8.6 code** following best practices
 - **Build Laravel applications** using familiar MVC patterns
 - **Use Eloquent ORM** effectively (comparing to ActiveRecord)
 - **Create REST APIs** in Laravel (comparing to Rails)

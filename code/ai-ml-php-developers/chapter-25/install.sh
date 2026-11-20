@@ -20,7 +20,7 @@ PHP_MAJOR=$(php -r "echo PHP_MAJOR_VERSION;")
 PHP_MINOR=$(php -r "echo PHP_MINOR_VERSION;")
 
 if [ "$PHP_MAJOR" -lt 8 ] || ([ "$PHP_MAJOR" -eq 8 ] && [ "$PHP_MINOR" -lt 4 ]); then
-    echo -e "${RED}✗ PHP 8.4+ required. Found: $PHP_VERSION${NC}"
+    echo -e "${RED}✗ PHP 8.6+ required. Found: $PHP_VERSION${NC}"
     exit 1
 fi
 echo -e "${GREEN}✓ PHP $PHP_VERSION${NC}"

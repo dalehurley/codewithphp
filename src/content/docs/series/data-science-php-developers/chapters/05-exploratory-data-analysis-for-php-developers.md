@@ -26,7 +26,7 @@ By the end of this chapter, you'll know how to explore datasets methodically, ge
 Before starting this chapter, you should have:
 
 - Completed [Chapter 04: Data Cleaning and Preprocessing](/series/data-science-php-developers/chapters/04-data-cleaning-and-preprocessing-in-php)
-- PHP 8.4+ installed
+- PHP 8.6+ installed
 - MathPHP library (`composer require markrogoyski/math-php`)
 - Clean dataset from Chapter 4
 - Understanding of basic statistics (mean, median, variance)

@@ -27,7 +27,7 @@ You'll start by learning how language models work and how to interact with them 
 Before starting this chapter, you should have:
 
 - Completed [Chapter 14](/series/ai-ml-php-developers/chapters/14-nlp-project-text-classification-in-php) or equivalent understanding of NLP fundamentals, text preprocessing, and working with text data
-- PHP 8.4+ installed and working, confirmed with `php --version`
+- PHP 8.6+ installed and working, confirmed with `php --version`
 - Composer for dependency management (from Chapter 2)
 - An OpenAI account with API access (we'll set this up in Step 2)
 - Basic understanding of HTTP requests and JSON
@@ -40,7 +40,7 @@ Before starting this chapter, you should have:
 **Verify your environment:**
 
 ```bash
-# Check PHP version (need 8.4+)
+# Check PHP version (need 8.6+)
 php --version
 
 # Check Composer is available
@@ -878,7 +878,7 @@ echo "Tokens: {$product['tokens']} | Cost: $" . number_format($product['cost'], 
 echo "3. BLOG POST OUTLINE\n";
 echo "─────────────────────────────────────\n";
 $outline = $generator->generateBlogOutline(
-    topic: "Best Practices for PHP 8.4 Development",
+    topic: "Best Practices for PHP 8.6 Development",
     sections: 6,
 );
 echo $outline['text'] . "\n\n";
@@ -918,9 +918,9 @@ Tokens: 124 | Cost: $0.000248
 
 3. BLOG POST OUTLINE
 ─────────────────────────────────────
-# Best Practices for PHP 8.4 Development
+# Best Practices for PHP 8.6 Development
 
-1. **Leverage Property Hooks**: Explore PHP 8.4's property hooks to write cleaner,
+1. **Leverage Property Hooks**: Explore PHP's property hooks to write cleaner,
    more maintainable code by encapsulating property logic directly.
 
 2. **Master Asymmetric Visibility**: Use public-read, private-write properties
@@ -1152,7 +1152,7 @@ $dotenv->load();
 $client = OpenAI::client($_ENV['OPENAI_API_KEY']);
 $summarizer = new Summarizer($client);
 
-// Sample article about PHP 8.4
+// Sample article about the PHP 8.4 release
 $article = <<<'ARTICLE'
 PHP 8.4 represents a significant milestone in the evolution of the PHP programming
 language, introducing several groundbreaking features that enhance developer productivity
@@ -1911,7 +1911,7 @@ Or switch to a model with larger context (gpt-4-turbo: 128K tokens).
 $prompt = "Tell me about PHP";
 
 // After: Specific prompt
-$prompt = "Provide a 3-paragraph technical overview of PHP 8.4's main features, " .
+$prompt = "Provide a 3-paragraph technical overview of PHP 8.6's main features, " .
           "focusing on property hooks and asymmetric visibility. Use technical language " .
           "appropriate for experienced developers.";
 ```

@@ -51,13 +51,13 @@ php 02-space-complexity.php
 ## 🚀 Quick Start
 
 ### Prerequisites
-- PHP 8.4 or higher
+- PHP 8.6 or higher
 - Command-line access
 
 ### Verify PHP Version
 ```bash
 php --version
-# Should output: PHP 8.4.x or higher
+# Should output: PHP 8.6.x or higher
 ```
 
 ### Run All Examples
@@ -152,14 +152,14 @@ From **02-space-complexity.php**:
 ## 🐛 Troubleshooting
 
 ### Error: "php: command not found"
-**Solution**: Install PHP 8.4 or add it to your PATH
+**Solution**: Install PHP 8.6 or add it to your PATH
 
 ```bash
 # macOS (Homebrew)
-brew install php@8.4
+brew install php@8.6
 
 # Ubuntu/Debian
-sudo apt install php8.4-cli
+sudo apt install php8.6-cli
 
 # Verify installation
 php --version

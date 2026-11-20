@@ -179,7 +179,7 @@ return new class extends Migration
 ### Expected Result
 
 ```
-✓ Migration file contains proper PHP 8.4 syntax
+✓ Migration file contains proper PHP 8.6 syntax
 ✓ up() method creates a teams table with 6 columns (including user_id)
 ✓ down() method drops the table safely
 ✓ Type hints and declare(strict_types=1) are present

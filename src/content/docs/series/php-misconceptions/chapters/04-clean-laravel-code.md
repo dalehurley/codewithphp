@@ -14,7 +14,7 @@ Someone new to a Laravel codebase can often start in `routes/` and follow a requ
 
 ## Prerequisites
 
-Use PHP 8.4 or later, Composer 2, and a local Code with PHP checkout. Allow 20 minutes, including dependency installation. Use a fresh demo app for the fixture.
+Use PHP 8.6 or later, Composer 2, and a local Code with PHP checkout. Allow 20 minutes, including dependency installation. Use a fresh demo app for the fixture.
 
 ## Quick Start
 

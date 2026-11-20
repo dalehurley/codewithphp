@@ -44,7 +44,7 @@ By the end of this chapter, you will have created:
 
 Before diving in, ensure you have:
 
-- ✓ **PHP 8.4+**
+- ✓ **PHP 8.6+**
 - ✓ **Composer** installed
 - ✓ **Anthropic API key**
 - ✓ Completed [Chapter 03: Your First Claude Request](/series/claude-php-developers/chapters/03-first-claude-request)
@@ -126,7 +126,7 @@ $client = new ClaudePhp(apiKey: $_ENV['ANTHROPIC_API_KEY']);
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 1024,
-    'messages' => [['role' => 'user', 'content' => 'Analyze PHP 8.4']]
+    'messages' => [['role' => 'user', 'content' => 'Analyze PHP 8.6']]
 ]);
 
 // 1. Accessing Content

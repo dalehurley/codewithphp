@@ -452,7 +452,7 @@ $blogPosts = [
     ],
     [
         'id' => 3,
-        'title' => 'Draft: PHP 8.4 Features',
+        'title' => 'Draft: PHP 8.6 Features',
         'author' => 'Alice',
         'tags' => ['PHP', 'News'],
         'published' => false

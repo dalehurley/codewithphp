@@ -3,7 +3,7 @@
   "description": "Example Composer project for learning",
   "type": "project",
   "require": {
-    "php": "^8.4"
+    "php": "^8.6"
   },
   "require-dev": {
     "phpunit/phpunit": "^11.0"

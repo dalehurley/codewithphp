@@ -3,7 +3,7 @@
   "description": "Model Evaluation and Improvement examples for AI/ML PHP series",
   "type": "project",
   "require": {
-    "php": "^8.4",
+    "php": "^8.6",
     "php-ai/php-ml": "^0.10",
     "rubix/ml": "^3.0"
   },

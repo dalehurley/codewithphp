@@ -30,7 +30,7 @@ If you came here with a specific error message, start with the [PHP troubleshoot
 
 ## Prerequisites
 
-- PHP 8.4 installed and accessible from your terminal (PHP 7.1+ for multi-catch syntax)
+- PHP 8.6 installed and accessible from your terminal (PHP 7.1+ for multi-catch syntax)
 - Completion of previous chapters, especially Chapter 10 (OOP, Traits, and Namespaces)
 - A text editor and command line
 - **Estimated time**: 35–40 minutes

@@ -3,7 +3,7 @@
     "description": "Data collection examples for Chapter 3: Databases, APIs, and Web Scraping",
     "type": "project",
     "require": {
-        "php": ">=8.4",
+        "php": ">=8.6",
         "guzzlehttp/guzzle": "^7.0",
         "symfony/dom-crawler": "^7.0",
         "symfony/css-selector": "^7.0"

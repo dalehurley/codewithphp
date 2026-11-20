@@ -19,7 +19,7 @@ Curated resources for deepening your understanding of algorithms, data structure
 
 - [Resources by Series Chapter](#resources-by-series-chapter) — Map each chapter to recommended resources
 - [Real-World Implementations](#real-world-implementations) — Learn from open-source projects
-- [PHP 8.4 for Algorithms](#php-84-for-algorithms) — Modern PHP features for algorithm development
+- [PHP 8.6 for Algorithms](#php-86-for-algorithms) — Modern PHP features for algorithm development
 
 **Learning Resources**:
 
@@ -169,19 +169,19 @@ Learn by studying production-quality open-source algorithm implementations:
 
 ---
 
-## PHP 8.4 for Algorithms
+## PHP 8.6 for Algorithms
 
-Leverage modern PHP 8.4 features to write cleaner, faster algorithm implementations:
+Leverage modern PHP 8.6 features to write cleaner, faster algorithm implementations:
 
 ### Language Features for Algorithms
 
-**Property Hooks** (PHP 8.4 New)
+**Property Hooks** (introduced in PHP 8.4)
 
 - Use for computed properties in data structures
 - Example: Lazy-load algorithm caches, validate algorithm parameters
-- Learn More: [PHP 8.4 Property Hooks](https://www.php.net/manual/en/language.oop5.property-hooks.php)
+- Learn More: [PHP Property Hooks](https://www.php.net/manual/en/language.oop5.property-hooks.php)
 
-**Asymmetric Visibility** (PHP 8.4 New)
+**Asymmetric Visibility** (introduced in PHP 8.4)
 
 - Expose read-only algorithm results while protecting internal state
 - Example: `public(set) private(get)` for priority queue elements
@@ -200,7 +200,7 @@ Leverage modern PHP 8.4 features to write cleaner, faster algorithm implementati
 - `array_unique()` with flags for specialized operations
 - Learn More: [PHP 8.0 Array Functions](https://www.php.net/manual/en/ref.array.php)
 
-### Performance Tips for PHP 8.4
+### Performance Tips for PHP 8.6
 
 **JIT Compilation**
 
@@ -557,7 +557,7 @@ Master the systematic approach to identifying and fixing algorithm bottlenecks:
 - Add caching/memoization
 - Use better data structures
 - Parallelize with Fibers
-- Apply PHP 8.4 features
+- Apply PHP 8.6 features
 
 **Resource**: [Appendix B: PHP Performance Tips](/series/php-algorithms/appendices/appendix-b-php-performance-tips)
 
@@ -1154,7 +1154,7 @@ $i++;  // move to next unsorted position
 - Platform: Udemy
 - Level: Intermediate
 - Topics: Sorting, searching, graphs, DP
-- PHP Version: 8.4
+- PHP Version: 8.6
 - Includes: Real-world projects
 
 ### Video Course Platforms (2024-2025)
@@ -1277,7 +1277,7 @@ $i++;  // move to next unsorted position
 
 ## PHP-Specific Resources
 
-As a PHP developer learning algorithms, these resources are tailored specifically to PHP 8.4 and practical implementations.
+As a PHP developer learning algorithms, these resources are tailored specifically to PHP 8.6 and practical implementations.
 
 ### Documentation
 
@@ -1627,7 +1627,7 @@ Prepare for technical interviews at FAANG companies and other tech employers. Th
 - Host: Derick Rethans
 - Topics: PHP engine internals, performance improvements
 - Best For: Understanding PHP performance at low level
-- Recent: PHP 8.4 features, JIT improvements
+- Recent: PHP 8.6 features, JIT improvements
 
 **The PHP Roundtable**
 
@@ -1966,7 +1966,7 @@ Connect with other developers, get help with specific questions, and participate
 
 - Provider: Zend (now Perforce)
 - URL: [zend.com/training/php-certification-exam](https://www.zend.com/training/php-certification-exam)
-- Version: PHP 8.4
+- Version: PHP 8.6
 - Topics: Performance, OOP, security, algorithms
 - Format: 70 questions, multiple choice
 - Duration: 90 minutes

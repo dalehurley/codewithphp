@@ -100,7 +100,7 @@ done
 
 ## Requirements
 
-- **PHP 8.4+** (for enum support)
+- **PHP 8.6+** (for enum support)
 - **No external dependencies** (examples are self-contained)
 - **Optional**: Claude API key for real LLM integration in example 06
 

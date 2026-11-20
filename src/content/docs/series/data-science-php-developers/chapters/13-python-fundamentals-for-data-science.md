@@ -674,7 +674,7 @@ If you're writing a `for` loop to do math on an array, there's probably a NumPy 
 Don't let `null` values break your models. Use `.fillna()` or `.dropna()` to be intentional about your data quality.
 
 **3. Type Hinting Matters**
-As a PHP developer used to strict typing in 8.4, use Python's type hints to make your data pipelines robust and self-documenting.
+As a PHP developer used to strict typing in 8.6, use Python's type hints to make your data pipelines robust and self-documenting.
 
 **4. Notebooks for Research, Scripts for Production**
 Use Jupyter to find the right insight, then refactor that code into clean Python classes for your PHP application to orchestrate.

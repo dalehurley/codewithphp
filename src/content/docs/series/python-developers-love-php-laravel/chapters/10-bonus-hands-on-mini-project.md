@@ -27,7 +27,7 @@ Before starting this chapter, you should have:
 - Completion of [Chapter 05](/series/python-developers-love-php-laravel/chapters/05-working-with-data-eloquent-orm-database-workflow) or equivalent understanding of Eloquent ORM and relationships
 - Completion of [Chapter 06](/series/python-developers-love-php-laravel/chapters/06-building-rest-apis-integrations-python-to-laravel) or equivalent understanding of REST APIs and Sanctum basics
 - Completion of [Chapter 07](/series/python-developers-love-php-laravel/chapters/07-testing-deployment-devops-best-practices) or equivalent understanding of testing and deployment concepts
-- PHP 8.4+ installed and working
+- PHP 8.6+ installed and working
 - Composer installed and configured
 - Laravel 11.x installed (we'll create a new project)
 - SQLite, MySQL, or PostgreSQL available (we'll use SQLite for simplicity)
@@ -37,7 +37,7 @@ Before starting this chapter, you should have:
 **Verify your setup:**
 
 ```bash
-# Check PHP version (should show PHP 8.4+)
+# Check PHP version (should show PHP 8.6+)
 php --version
 
 # Check Composer is installed
@@ -2280,7 +2280,7 @@ php artisan route:cache
 php artisan view:cache
 
 # Restart PHP-FPM
-sudo -S service php8.4-fpm reload
+sudo -S service php8.6-fpm reload
 ```
 
 6. **Enable zero-downtime deployments** (default in new Forge):

@@ -2,23 +2,10 @@
 # Target size: <80MB (vs ~150MB baseline)
 
 # Build stage
-FROM php:8.4-cli-alpine AS builder
+FROM php:8.6-cli-alpine AS builder
 
-# Install only essential build dependencies
-RUN apk add --no-cache --virtual .build-deps \
-    $PHPIZE_DEPS \
-    autoconf \
-    g++ \
-    make
-
-# Install PHP extensions
-RUN docker-php-ext-install pcntl sockets \
-    && pecl install redis-6.0.2 \
-    && docker-php-ext-enable redis \
-    && rm -rf /tmp/pear
-
-# Remove build dependencies immediately after use
-RUN apk del .build-deps
+COPY --from=ghcr.io/mlocati/php-extension-installer:2 /usr/bin/install-php-extensions /usr/local/bin/
+RUN install-php-extensions pcntl sockets redis-6.3.0
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -43,12 +30,7 @@ COPY . .
 RUN composer dump-autoload --optimize --no-dev
 
 # Production stage - ultra minimal
-FROM php:8.4-cli-alpine AS production
-
-# Install ONLY runtime dependencies (no development tools)
-RUN apk add --no-cache \
-    # No redis package needed - just the extension
-    && rm -rf /var/cache/apk/*
+FROM php:8.6-cli-alpine AS production
 
 # Copy PHP extensions from builder
 COPY --from=builder /usr/local/lib/php/extensions /usr/local/lib/php/extensions
@@ -77,7 +59,7 @@ CMD ["php", "03-ml-worker.php"]
 # Optimization notes:
 # 1. Alpine base image (~5MB vs ~400MB for Debian)
 # 2. Multi-stage build removes build tools from final image
-# 3. Removed .build-deps immediately after use
+# 3. The extension installer removes temporary build dependencies
 # 4. No unnecessary packages in production stage
 # 5. Cleared apk cache
 # 6. .dockerignore excludes tests, docs, etc.

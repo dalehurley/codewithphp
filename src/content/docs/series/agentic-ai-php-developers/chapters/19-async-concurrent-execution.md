@@ -602,7 +602,7 @@ Coordinate multiple agents in parallel for complex workflows:
 │         ASYNC MULTI-AGENT COLLABORATION                  │
 ├──────────────────────────────────────────────────────────┤
 │                                                          │
-│  TASK: "Research, analyze, and write report on PHP 8.4" │
+│  TASK: "Research, analyze, and write report on PHP 8.6" │
 │                                                          │
 │  SEQUENTIAL (8-12 seconds):                              │
 │  [Researcher]──► [Analyst]──► [Writer]──►                │
@@ -631,7 +631,7 @@ $manager->registerAgent('writer', $writerAgent, ['writing']);
 
 // Execute tasks in parallel
 $results = $manager->executeParallel([
-    'researcher' => 'Research PHP 8.4 features',
+    'researcher' => 'Research PHP 8.6 features',
     'analyst' => 'Analyze performance improvements',
     'writer' => 'Write summary of PHP evolution',
 ]);
@@ -647,7 +647,7 @@ foreach ($results as $agentId => $result) {
 ```php
 // Automatic task decomposition and synthesis
 $result = $manager->collaborateParallel(
-    task: 'Create comprehensive analysis of PHP 8.4 features, performance, and ecosystem impact',
+    task: 'Create comprehensive analysis of PHP 8.6 features, performance, and ecosystem impact',
     parallelAgents: 3
 );
 

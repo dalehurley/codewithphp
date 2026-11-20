@@ -14,7 +14,7 @@ Laravel already gives you several ways to reduce work inside your application. C
 
 ## Set up the lab
 
-Use PHP 8.4 or later with PDO SQLite, Composer 2, curl and ApacheBench (`ab`). The setup below uses Linux or Apple Silicon macOS. Confirm your tools with `php --version`, `composer --version` and `ab -V`. Run the commands from the Code with PHP checkout. They create a separate, disposable Laravel app using the [benchmark fixtures](https://github.com/dalehurley/codewithphp/tree/main/code/php-misconceptions/laravel).
+Use PHP 8.6 or later with PDO SQLite, Composer 2, curl and ApacheBench (`ab`). The setup below uses Linux or Apple Silicon macOS. Confirm your tools with `php --version`, `composer --version` and `ab -V`. Run the commands from the Code with PHP checkout. They create a separate, disposable Laravel app using the [benchmark fixtures](https://github.com/dalehurley/codewithphp/tree/main/code/php-misconceptions/laravel).
 
 ```bash
 fixture="$PWD/code/php-misconceptions/laravel"

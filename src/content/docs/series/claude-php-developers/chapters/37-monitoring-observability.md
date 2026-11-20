@@ -23,7 +23,7 @@ This chapter teaches you to build robust observability into your Claude applicat
 
 Before starting, ensure you have:
 
-- ✓ **PHP 8.4+** with JSON and cURL extensions
+- ✓ **PHP 8.6+** with JSON and cURL extensions
 - ✓ **Monolog** or similar logging library
 - ✓ **Redis or similar** for metrics storage
 - ✓ **Access to monitoring platforms** (optional but recommended)

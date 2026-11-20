@@ -19,7 +19,7 @@ After completing this series, you now have:
 - Inheritance and polymorphism
 - Abstract classes and interfaces
 - Traits and namespaces
-- PHP 8.4 features (property hooks, asymmetric visibility)
+- Modern OOP features such as property hooks and asymmetric visibility
 
 ✅ **Professional Development Skills**
 

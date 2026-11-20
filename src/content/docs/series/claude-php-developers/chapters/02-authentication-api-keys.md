@@ -44,7 +44,7 @@ Before starting, ensure you have:
 - ✓ **Completed [Chapter 01](/series/claude-php-developers/chapters/01-introduction-to-claude-api)** (Introduction to Claude API)
 - ✓ **Email address** for account creation
 - ✓ **Payment method** (required for API access)
-- ✓ **PHP 8.4+** with Composer installed
+- ✓ **PHP 8.6+** with Composer installed
 - ✓ **Claude-PHP-SDK v0.2+**: Install via `composer require claude-php/claude-php-sdk:"^0.2":"^0.2"`
 
 **Estimated Time**: ~25-35 minutes

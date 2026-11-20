@@ -26,7 +26,7 @@ By the end of this chapter, you'll have working collectors for all three data so
 Before starting this chapter, you should have:
 
 - Completed [Chapter 02: Setting Up a Data Science Environment](/series/data-science-php-developers/chapters/02-setting-up-data-science-environment)
-- PHP 8.4+ with PDO and cURL extensions enabled
+- PHP 8.6+ with PDO and cURL extensions enabled
 - Composer installed and working
 - Basic understanding of SQL queries
 - Familiarity with HTTP requests and responses

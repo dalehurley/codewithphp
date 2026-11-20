@@ -515,7 +515,7 @@ Concurrent algorithms enable parallel execution, dramatically improving performa
 | `fdiv()` | O(1) | O(1) | Division by zero returns INF |
 | Match expression | O(1) | O(1) | Strict comparison switch |
 
-### PHP 8.4+ Features
+### PHP 8.6+ Features
 
 | Feature | Time | Space | Notes |
 |---------|------|-------|-------|

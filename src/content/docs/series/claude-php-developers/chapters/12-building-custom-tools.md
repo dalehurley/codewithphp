@@ -41,7 +41,7 @@ Before starting, ensure you have:
 - ✓ **Completed [Chapter 11: Tool Use Fundamentals](/series/claude-php-developers/chapters/11-tool-use-fundamentals)** — Understanding tool definitions and execution
 - ✓ **PDO/Database experience** — Prepared statements and query execution
 - ✓ **REST API knowledge** — HTTP requests, JSON handling, error responses
-- ✓ **PHP 8.4+ with type declarations** — Interfaces, classes, and strict typing
+- ✓ **PHP 8.6+ with type declarations** — Interfaces, classes, and strict typing
 - ✓ **Claude-PHP-SDK installed** — `composer require claude-php/claude-php-sdk`
 
 **Estimated Time**: 60-75 minutes

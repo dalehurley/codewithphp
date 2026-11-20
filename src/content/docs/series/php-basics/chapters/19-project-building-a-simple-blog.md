@@ -29,7 +29,7 @@ This chapter will be less about introducing new concepts and more about applying
 Before starting this chapter, ensure you have:
 
 - **Completed Chapter 18**: You should have a working MVC structure with router, controllers, and views
-- **PHP 8.4** installed and running
+- **PHP 8.6** installed and running
 - **Composer** installed and configured
 - **A working `simple-blog` project** with the MVC structure from Chapter 18
 - **SQLite enabled** (usually enabled by default in PHP)
@@ -306,7 +306,7 @@ CREATE TABLE posts (
 
 - **Singleton Pattern**: The `Database` class ensures only one PDO connection exists throughout the application lifetime, improving performance.
 - **Static Methods**: The `Post` model uses static methods since we're not working with individual post instances yet—we're just performing database operations.
-- **Type Declarations**: PHP 8.4's `array|false` union type accurately represents that `find()` returns either an array or `false` when no post exists.
+- **Type Declarations**: PHP 8.6's `array|false` union type accurately represents that `find()` returns either an array or `false` when no post exists.
 - **Prepared Statements**: All queries use prepared statements to prevent SQL injection attacks.
 
 ### Troubleshooting
@@ -702,7 +702,7 @@ open http://localhost:8000/posts/create
 **Problem**: Content has extra slashes (e.g., `it\'s`)
 
 - **Cause**: Magic quotes or double escaping
-- **Solution**: This shouldn't happen in PHP 8.4. Check you're not manually escaping before saving
+- **Solution**: This shouldn't happen in PHP 8.6. Check you're not manually escaping before saving
 
 ::: tip Security Note
 This form doesn't include CSRF (Cross-Site Request Forgery) protection. For production applications, you should implement CSRF tokens. This is covered in advanced security topics but is beyond the scope of this foundational chapter. For now, remember: never deploy a form handler without CSRF protection in a production environment.
@@ -1193,7 +1193,7 @@ The foundation you've built is a simplified version of what every major PHP fram
 4. **Always escape output**: `htmlspecialchars()` prevents XSS attacks
 5. **URL structure matters**: Clean URLs improve UX and SEO
 6. **Single entry point is powerful**: The front controller pattern enables routing and middleware
-7. **Type declarations catch bugs early**: PHP 8.4's type system makes code safer
+7. **Type declarations catch bugs early**: PHP 8.6's type system makes code safer
 
 ### What's Next
 
@@ -1396,7 +1396,7 @@ options: [
 
 ## Further Reading
 
-- [PHP 8.4 Release Notes](https://www.php.net/releases/8.4/) - New features and improvements
+- [PHP 8.6 Release Notes](https://www.php.net/releases/8.6/en.php) - New features and improvements
 - [PDO Documentation](https://www.php.net/manual/en/book.pdo.php) - Complete PDO reference
 - [OWASP SQL Injection](https://owasp.org/www-community/attacks/SQL_Injection) - Understanding SQL injection attacks
 - [OWASP XSS Prevention](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html) - XSS attack prevention

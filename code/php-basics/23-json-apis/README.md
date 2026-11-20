@@ -1,6 +1,6 @@
 # Chapter 23: Working with JSON & APIs — Code Examples
 
-Complete, working examples for Chapter 23 demonstrating JSON handling and API integration in PHP 8.4.
+Complete, working examples for Chapter 23 demonstrating JSON handling and API integration in PHP 8.6.
 
 ## Files
 
@@ -77,7 +77,7 @@ curl -X DELETE http://localhost:8000/products/1
 
 ## Prerequisites
 
-- PHP 8.4 with cURL extension enabled
+- PHP 8.6 with cURL extension enabled
 - Internet connection for external API calls
 - Terminal/command line access
 

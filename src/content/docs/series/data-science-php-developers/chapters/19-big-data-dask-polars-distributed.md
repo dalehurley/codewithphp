@@ -58,7 +58,7 @@ By the end of this chapter, you will have created:
 - Use **Dask DataFrames** to parallelize pandas operations across all CPU cores.
 - Implement **Out-of-Core** processing for datasets larger than RAM.
 - Scale from a local machine to a **Distributed Cluster**.
-- Orchestrate heavy Python processing from **PHP 8.4** applications.
+- Orchestrate heavy Python processing from **PHP 8.6** applications.
 
 ## Step 1: Blazing Fast Data with Polars (~30 min)
 
@@ -260,7 +260,7 @@ if __name__ == "__main__":
 
 ### Goal
 
-Trigger and monitor big data Python jobs from your PHP 8.4 application.
+Trigger and monitor big data Python jobs from your PHP 8.6 application.
 
 ### Why It Matters
 

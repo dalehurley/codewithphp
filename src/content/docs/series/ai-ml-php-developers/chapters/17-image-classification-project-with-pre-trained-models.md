@@ -28,7 +28,7 @@ Before starting this chapter, you should have:
 
 - Completed [Chapter 16](/series/ai-ml-php-developers/chapters/16-computer-vision-essentials-for-php-developers) or understand image representation, color channels, and basic image processing in PHP
 - Completed [Chapter 12](/series/ai-ml-php-developers/chapters/12-deep-learning-with-tensorflow-and-php) or have experience with deep learning model deployment patterns
-- PHP 8.4+ installed with GD or Imagick extension for image processing
+- PHP 8.6+ installed with GD or Imagick extension for image processing
 - Composer for dependency management
 - **For cloud approach**: Google Cloud account with Vision API enabled (free tier available)
 - **For local approach**: Python 3.10+ to convert/download ONNX models
@@ -76,7 +76,7 @@ By the end of this chapter, you will have created:
 - A **production-ready error handling system** with retry logic, graceful degradation, and comprehensive logging
 - Working examples demonstrating real image classification across diverse categories (animals, vehicles, objects, scenes)
 
-All code follows PHP 8.4 standards with type safety, constructor property promotion, readonly properties, and comprehensive error handling.
+All code follows PHP 8.6 standards with type safety, constructor property promotion, readonly properties, and comprehensive error handling.
 
 ::: info Code Examples
 Complete, runnable examples for this chapter are available in:

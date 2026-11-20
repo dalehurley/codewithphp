@@ -316,7 +316,7 @@ The following bots can crawl and index content (per robots.txt):
 ### PHP Basics Series
 
 - **Social image colors**: Purple-blue gradient
-- **Target keywords**: "PHP tutorial", "learn PHP", "PHP 8.4"
+- **Target keywords**: "PHP tutorial", "learn PHP", "PHP 8.6"
 - **Educational level**: Primarily "Beginner"
 - **Course workload**: "PT25H" (25 hours)
 
@@ -337,7 +337,7 @@ The following bots can crawl and index content (per robots.txt):
 
 ### Choosing Keywords
 
-✅ **Good**: `["REST API PHP", "API authentication", "JSON responses", "PHP 8.4"]`
+✅ **Good**: `["REST API PHP", "API authentication", "JSON responses", "PHP 8.6"]`
 
 ❌ **Bad**: `["API", "web", "code", "programming"]`
 

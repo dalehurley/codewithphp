@@ -29,7 +29,7 @@ Before starting this chapter, you should have:
 - Completed [Chapter 19](/series/ai-ml-php-developers/chapters/19-predictive-analytics-and-time-series-data) or equivalent understanding of time series concepts (trends, seasonality, stationarity)
 - Completed [Chapter 11](/series/ai-ml-php-developers/chapters/11-integrating-php-with-python-for-advanced-ml) with experience calling Python scripts from PHP
 - Completed [Chapter 8](/series/ai-ml-php-developers/chapters/08-leveraging-php-machine-learning-libraries) with Rubix ML installed
-- PHP 8.4+ environment with Composer installed
+- PHP 8.6+ environment with Composer installed
 - Rubix ML library available (from Chapter 2 setup)
 - **Optional**: Python 3.10+ with pip for advanced forecasting with Prophet
 - Basic understanding of statistics (mean, variance) and regression concepts
@@ -3255,7 +3255,7 @@ Consider removing outliers or using more robust metrics (MAE over RMSE).
 
 **Cause**: Named arguments (PHP 8.0+) not supported on your PHP version.
 
-**Solution**: Upgrade to PHP 8.4 or rewrite without named arguments:
+**Solution**: Upgrade to PHP 8.6 or rewrite without named arguments:
 
 ```php
 // Named arguments (PHP 8.0+)

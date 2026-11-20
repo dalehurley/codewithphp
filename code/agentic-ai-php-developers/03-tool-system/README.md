@@ -4,7 +4,7 @@ This directory contains all code examples from Chapter 03.
 
 ## Prerequisites
 
-- PHP 8.4+
+- PHP 8.6+
 - Composer
 - `claude-php/agent` framework installed
 - Anthropic API key in environment: `ANTHROPIC_API_KEY`

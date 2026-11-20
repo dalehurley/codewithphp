@@ -12,7 +12,7 @@ declare(strict_types=1);
  * - Reading: public
  * - Writing: private (only within the class)
  * 
- * Requires PHP 8.4+
+ * Requires PHP 8.6+
  */
 
 echo "=== PHP 8.4 Asymmetric Visibility ===" . PHP_EOL . PHP_EOL;

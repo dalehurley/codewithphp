@@ -35,9 +35,9 @@ $searchWeb = Tool::create('search_web')
         return json_encode([
             'query' => $input['query'],
             'results' => [
-                'PHP 8.4 introduces property hooks and asymmetric visibility',
-                'New array functions and performance improvements in PHP 8.4',
-                'Release date: November 2024'
+                'PHP 8.6 introduces partial function application and default values for readonly properties',
+                'The new clamp() function bounds a value and Time\Duration represents elapsed time',
+                'Release date: November 19, 2026'
             ]
         ]);
     });
@@ -71,7 +71,7 @@ $formatOutput = Tool::create('format_output')
 $tools = [$searchWeb, $summarizeText, $formatOutput];
 
 // Common task for all loops
-$task = "Research PHP 8.4 new features, summarize the key improvements, and format the response as a brief overview.";
+$task = "Research PHP 8.6 new features, summarize the key improvements, and format the response as a brief overview.";
 
 // Storage for comparison results
 $results = [];

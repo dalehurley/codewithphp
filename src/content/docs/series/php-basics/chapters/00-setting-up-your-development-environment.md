@@ -1,13 +1,13 @@
 ---
 title: "00: Install PHP on macOS, Windows, or Linux"
-description: "Install PHP 8.4 or later on macOS, Windows, or Linux. Verify the PHP CLI, run a script, and start the local development server."
+description: "Install PHP 8.6 or later on macOS, Windows, or Linux. Verify the PHP CLI, run a script, and start the local development server."
 series: "php-basics"
 chapter: 0
 order: 0
 difficulty: "Beginner"
 prerequisites: []
 teaches:
-  - 'Install PHP 8.4 or later'
+  - 'Install PHP 8.6 or later'
   - 'Verify the installation using the command line'
   - 'Learn to use PHP''s built-in development web server'
   - 'Install and configure Visual Studio Code with essential extensions for PHP development'
@@ -21,7 +21,7 @@ dateModified: "2026-11-20"
 
 ## Overview
 
-Install PHP 8.4 or later and run `php --version` to check which version your terminal uses. Then run a small PHP file locally. The built-in development server lets you open that same file in your browser. You can add VS Code, Git, and Xdebug after the first run.
+Install PHP 8.6 or later and run `php --version` to check which version your terminal uses. Then run a small PHP file locally. The built-in development server lets you open that same file in your browser. You can add VS Code, Git, and Xdebug after the first run.
 
 If an installation command or the development server fails, match the message in the [PHP troubleshooting guide](/series/php-basics/troubleshooting/).
 
@@ -38,7 +38,7 @@ If an installation command or the development server fails, match the message in
 
 By the end of this chapter, you'll have:
 
-- PHP 8.4+ installed and verified on your system
+- PHP 8.6+ installed and verified on your system
 - A working project folder with a test script
 - PHP's built-in development server running locally
 - Visual Studio Code configured with PHP extensions
@@ -48,7 +48,7 @@ By the end of this chapter, you'll have:
 
 ## Quick Start
 
-Choose the option for your operating system. The install commands assume you already have the package manager set up.
+Choose the option for your operating system. The package-manager commands require a repository that provides PHP 8.6. For a native build, use the official PHP downloads. If Docker is already installed, run `docker run --rm php:8.6-cli php --version` to try the release.
 
 | Operating system | Install the PHP CLI |
 | --- | --- |
@@ -64,7 +64,7 @@ mkdir php-from-scratch
 cd php-from-scratch
 ```
 
-If your distribution provides a version older than 8.4, check the [PHP installation manual](https://www.php.net/manual/en/install.php) for a current runtime before continuing the course.
+If your package manager provides a version older than PHP 8.6, check the [PHP installation manual](https://www.php.net/manual/en/install.php) for a current runtime before continuing the course.
 
 Save this as `index.php` in the new directory:
 
@@ -79,7 +79,7 @@ Continue below for detailed installation and editor setup.
 
 ## Objectives
 
-- Install the latest stable version of PHP (8.4 or higher).
+- Install the latest stable version of PHP (8.6 or higher).
 - Verify the installation using the command line.
 - Learn to use PHP's built-in development web server.
 - Install and configure Visual Studio Code with essential extensions for PHP development.
@@ -191,7 +191,7 @@ After the installation finishes, you can verify that PHP is installed correctly 
 php -v
 ```
 
-The first line should show a version such as `PHP 8.4.x (cli)`. This course uses PHP 8.4 or later. If your shell finds the wrong binary, run `command -v php` on macOS or Linux, or `Get-Command php` in PowerShell, and check its path.
+The first line should show a version such as `PHP 8.6.x (cli)`. This course uses PHP 8.6 or later. If your shell finds the wrong binary, run `command -v php` on macOS or Linux, or `Get-Command php` in PowerShell, and check its path.
 
 ### Troubleshooting
 
@@ -262,13 +262,13 @@ You don't need a complex setup like Apache or Nginx to get started. PHP comes wi
     **Expected Output:**
 
     ```
-    [Sat Oct 25 2025 10:30:00] PHP 8.4.0 Development Server (http://localhost:8000) started
+    [Fri Nov 20 10:30:00 2026] PHP 8.6.0 Development Server (http://localhost:8000) started
     ```
 
 4.  **View the Result**:
     Open your web browser and navigate to `http://localhost:8000`. You should see a beautifully formatted page displaying all the details of your PHP configuration, including version, loaded extensions, and system information.
 
-    The page will have a purple header with "PHP Version 8.4.0" and tables showing configuration details.
+    The page will have a purple header with "PHP Version 8.6.0" and tables showing configuration details.
 
 ### Validation
 
@@ -375,7 +375,7 @@ Verify your VS Code setup:
 1. Restart VS Code after installing PHP
 2. Open VS Code settings (`Ctrl+,` or `Cmd+,`)
 3. Search for "intelephense.environment.phpVersion"
-4. Set it to your PHP version (e.g., "8.4.0")
+4. Set it to your PHP version (e.g., "8.6.0")
 
 **Problem**: Extensions don't show autocomplete or suggestions
 
@@ -633,9 +633,9 @@ Debugging with `var_dump()` and `echo` statements works, but professional develo
     **Expected Output:**
 
     ```
-    PHP 8.4.0 (cli) (built: Mar 14 2024 10:28:48) (NTS)
+    PHP 8.6.0 (cli) (built: ...) (NTS)
     Copyright (c) The PHP Group
-    Zend Engine v4.4.0, Copyright (c) Zend Technologies
+    Zend Engine v4.6.0, Copyright (c) Zend Technologies
         with Xdebug v3.3.0, Copyright (c) 2002-2023, by Derick Rethans
     ```
 
@@ -746,7 +746,7 @@ Test your debugging setup:
 **Solutions:**
 
 1. Install Xcode Command Line Tools: `xcode-select --install`
-2. Try installing via Homebrew: `brew install php@8.4-xdebug` (if available)
+2. Check the [Xdebug installation instructions](https://xdebug.org/docs/install) for a build that supports your PHP version.
 3. Manual installation: Download from [xdebug.org/download](https://xdebug.org/download)
 
 > **Why Xdebug?**: Debugging is a critical skill. Xdebug transforms how you understand your code by letting you pause execution at any point, inspect variables, evaluate expressions, and step through logic. It's invaluable for learning, troubleshooting bugs, and understanding how PHP executes your code. The initial setup takes a few minutes but will save you countless hours throughout your journey.
@@ -755,7 +755,7 @@ Test your debugging setup:
 
 Let's recap what you've achieved in this chapter:
 
-✅ **Installed PHP 8.4+** on your system using a package manager  
+✅ **Installed PHP 8.6+** on your system using a package manager
 ✅ **Verified the installation** using the `php -v` command  
 ✅ **Created your first project folder** and test script  
 ✅ **Started PHP's built-in web server** and viewed a working PHP page  

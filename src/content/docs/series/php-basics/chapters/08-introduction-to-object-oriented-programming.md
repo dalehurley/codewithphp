@@ -28,7 +28,7 @@ This chapter is your first step into this new world. You'll build working exampl
 
 ## Prerequisites
 
-- PHP 8.4 installed and accessible from your command line
+- PHP 8.6 installed and accessible from your command line
 - Completion of Chapter 07 (String Manipulation) or equivalent understanding of functions
 - A text editor
 - Familiarity with arrays and functions
@@ -42,7 +42,7 @@ By the end of this chapter, you will have created:
 - Multiple user objects with independent state
 - A constructor method for clean initialization
 - Private properties with getter/setter methods (encapsulation)
-- Modern PHP 8.4 code using constructor property promotion and type declarations
+- Modern PHP 8.6 code using constructor property promotion and type declarations
 - A `Database` class demonstrating static properties, methods, and constants
 - Practical examples of factory methods and configuration classes
 - Working exercises: `Car`, `BankAccount`, `Product`, and `Logger` classes
@@ -92,7 +92,7 @@ Hello, Dale
 Name: Dale
 ```
 
-This compact example uses PHP 8.4's constructor property promotion, which we'll explain below. Now let's build this understanding step by step.
+This compact example uses constructor property promotion, which we'll explain below. Now let's build this understanding step by step.
 
 ## Objectives
 
@@ -102,7 +102,7 @@ This compact example uses PHP 8.4's constructor property promotion, which we'll 
 - Instantiate objects from a class using the `new` keyword.
 - Use the special `__construct` method to initialize an object's state.
 - Control access to properties and methods with visibility keywords (`public`, `private`).
-- Use modern PHP 8.4 features like constructor property promotion and type declarations.
+- Use modern PHP 8.6 features like constructor property promotion and type declarations.
 - Understand **static** properties, methods, and class constants.
 
 ## OOP Concepts: Core Principles
@@ -451,11 +451,11 @@ You'll see:
 Fatal error: Uncaught Error: Cannot access private property User::$name
 ```
 
-## Step 5: Modern PHP 8.4 Features (~4 min)
+## Step 5: Constructor Property Promotion and Types (~4 min)
 
-**Goal**: Learn PHP 8.4's constructor property promotion and typed properties for cleaner, more robust code.
+**Goal**: Use constructor property promotion and typed properties for cleaner, more robust code.
 
-PHP 8.4 offers powerful features that make OOP code more concise and type-safe. Let's modernize our `User` class.
+PHP 8.6 offers powerful features that make OOP code more concise and type-safe. Let's modernize our `User` class.
 
 ### Constructor Property Promotion
 
@@ -545,7 +545,7 @@ Adult? Yes
 
 ### Why This Works
 
-**Constructor property promotion** (PHP 8.0+) eliminates boilerplate by combining property declaration, visibility, and assignment in the constructor signature. **Type declarations** ensure that properties can only hold values of the specified type, catching bugs early. PHP 8.4 fully supports these features with additional refinements.
+**Constructor property promotion** (PHP 8.0+) eliminates boilerplate by combining property declaration, visibility, and assignment in the constructor signature. **Type declarations** ensure that properties can only hold values of the specified type, catching bugs early. PHP 8.6 fully supports these features with additional refinements.
 
 ### Benefits of This Approach
 
@@ -746,11 +746,11 @@ In modern PHP, you'll often see static methods used as "named constructors" (fac
 Be careful with static properties! Because they're shared across all instances, they can introduce unexpected behavior if you're not mindful. Prefer instance properties unless you specifically need class-level state.
 :::
 
-## Step 7: PHP 8.4 Modern Features (~6 min)
+## Step 7: Property Hooks and Asymmetric Visibility (~6 min)
 
-**Goal**: Learn cutting-edge PHP 8.4 features for cleaner, more maintainable code.
+**Goal**: Use hooks to control property access and asymmetric visibility to restrict writes.
 
-PHP 8.4 introduces powerful new features that make OOP code even more elegant. Let's explore property hooks and asymmetric visibility—two features that eliminate boilerplate and make your intent crystal clear.
+PHP 8.4 introduced property hooks and asymmetric visibility. These features can replace some getter and setter methods.
 
 ### Property Hooks
 
@@ -965,7 +965,7 @@ This enforces immutability without requiring private properties plus public gett
 - Prevents accidental property modification
 - Reduces API surface area (fewer public methods)
 
-### Comparison: Traditional vs Modern PHP 8.4
+### Comparison: Traditional vs Modern PHP 8.6
 
 **Traditional Approach (Still Valid)**:
 
@@ -991,7 +991,7 @@ class User
 }
 ```
 
-**Modern PHP 8.4 with Property Hooks**:
+**Modern PHP 8.6 with Property Hooks**:
 
 ```php
 class User
@@ -1193,7 +1193,7 @@ class Example {
 Create a file called `car-exercise.php` and implement:
 
 - A `Car` class with `private` properties for `make`, `model`, and `year`
-- Use constructor property promotion with type declarations (modern PHP 8.4 style)
+- Use constructor property promotion with type declarations (modern PHP 8.6 style)
 - Add a `public` method called `displayInfo()` that returns a string like "This car is a 2023 Ford Mustang."
 - Add a `public` method called `getAge()` that calculates how old the car is based on the current year
 - Instantiate two different `Car` objects and display their information
@@ -1324,7 +1324,7 @@ Congratulations! You've just learned the foundational concepts of Object-Oriente
 - How to **instantiate objects** (actual instances) from those blueprints
 - How **constructors** initialize object state automatically
 - How **visibility keywords** protect data and enforce encapsulation
-- Modern PHP 8.4 features like **constructor property promotion** and **type declarations**
+- Modern PHP 8.6 features like **constructor property promotion** and **type declarations**
 - How **static** properties and methods belong to the class itself, not instances
 - How **class constants** provide unchanging configuration values
 
@@ -1380,12 +1380,12 @@ Test your understanding of Object-Oriented Programming concepts:
       ]
     },
     {
-      question: 'What is property hooks in PHP 8.4?',
+      question: 'What do property hooks do in PHP?',
       options: [
         { text: 'A way to add behavior to property access and modification', correct: true, explanation: 'Property hooks let you add get/set logic directly on properties.' },
         { text: 'A debugging feature', correct: false, explanation: 'Property hooks are for adding business logic, not debugging.' },
         { text: 'A way to make properties faster', correct: false, explanation: 'They add logic, which makes them slightly slower, but more maintainable.' },
-        { text: 'Required for all properties in PHP 8.4', correct: false, explanation: 'Property hooks are optional and used when you need custom behavior.' }
+        { text: 'Required for all properties in PHP 8.6', correct: false, explanation: 'Property hooks are optional and used when you need custom behavior.' }
       ]
     },
     {

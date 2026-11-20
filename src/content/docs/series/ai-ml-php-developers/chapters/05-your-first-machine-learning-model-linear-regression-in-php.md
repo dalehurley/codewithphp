@@ -28,7 +28,7 @@ Before starting this chapter, you should have:
 
 - Completed [Chapter 03](/series/ai-ml-php-developers/chapters/03-core-machine-learning-concepts-and-terminology) or equivalent understanding of ML fundamentals, train/test splits, and overfitting prevention
 - Completed [Chapter 04](/series/ai-ml-php-developers/chapters/04-data-collection-and-preprocessing-in-php) or know how to load, clean, and normalize data in PHP
-- PHP 8.4+ installed with Composer available
+- PHP 8.6+ installed with Composer available
 - PHP-ML or Rubix ML installed (from Chapter 2 setup)
 - Understanding of basic algebra (equations like \( y = mx + b \))
 - Familiarity with PHP arrays, loops, and functions

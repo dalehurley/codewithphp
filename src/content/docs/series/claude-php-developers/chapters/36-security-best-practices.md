@@ -58,7 +58,7 @@ By completing this chapter, you will:
 
 Before starting, ensure you have:
 
-- ✓ **PHP 8.4+** with OpenSSL extension
+- ✓ **PHP 8.6+** with OpenSSL extension
 - ✓ **Understanding of web security** (XSS, injection attacks)
 - ✓ **Production environment** or staging setup
 - ✓ **Logging infrastructure** (Monolog, ELK, etc.)

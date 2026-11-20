@@ -85,7 +85,7 @@ $workflow = (new WorkflowBuilder($claude, 'Quick Start'))
     ->build();
 
 // Execute workflow
-$result = $workflow->execute(['topic' => 'PHP 8.4 Features']);
+$result = $workflow->execute(['topic' => 'PHP 8.6 Features']);
 
 echo "Status: {$result->status}\n";
 echo "Duration: " . number_format($result->duration, 2) . "s\n";

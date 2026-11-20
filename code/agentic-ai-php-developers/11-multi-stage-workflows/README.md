@@ -22,7 +22,7 @@ composer require claude-php/agent
 ```
 
 **Required:**
-- PHP 8.4+
+- PHP 8.6+
 - `claude-php/agent` package
 - `ANTHROPIC_API_KEY` environment variable
 

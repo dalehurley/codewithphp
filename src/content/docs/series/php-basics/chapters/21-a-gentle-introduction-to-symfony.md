@@ -30,7 +30,7 @@ In this chapter, you'll build a working blog post display feature using Symfony,
 
 Before starting this chapter, make sure you have:
 
-- PHP 8.4 installed and available in your terminal
+- PHP 8.6 installed and available in your terminal
 - Composer 2.x installed ([getcomposer.org](https://getcomposer.org))
 - Symfony CLI installed ([symfony.com/download](https://symfony.com/download))
 - Completed Chapter 20 or comfortable with MVC concepts
@@ -150,10 +150,10 @@ source ~/.bashrc  # or source ~/.zshrc
 
 ```bash
 # Ubuntu/Debian
-sudo apt install php8.4-cli php8.4-xml php8.4-mbstring php8.4-intl php8.4-sqlite3
+sudo apt install php8.6-cli php8.6-xml php8.6-mbstring php8.6-intl php8.6-sqlite3
 
 # macOS with Homebrew
-brew install php@8.4
+brew install php@8.6
 ```
 
 **Problem**: Port 8000 is already in use

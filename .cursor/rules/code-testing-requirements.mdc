@@ -43,7 +43,7 @@ When creating new code samples for tutorials:
 All tutorial code samples must:
 
 - ✅ Be **complete and runnable** (no partial code)
-- ✅ Use **PHP 8.4** syntax and features
+- ✅ Use **PHP 8.6** syntax and features
 - ✅ Include proper **error handling** where appropriate
 - ✅ Follow **PSR-12** coding standards
 - ✅ Have **no type errors** or undefined variables (unless intentional for teaching)

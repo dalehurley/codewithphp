@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Demonstrates using class weights to handle imbalanced datasets
  * without modifying the training data itself.
  * 
- * PHP version 8.4
+ * PHP version 8.6
  */
 
 require_once __DIR__ . '/../../vendor/autoload.php';

@@ -17,7 +17,7 @@ Complete, production-ready examples for data visualization and reporting in PHP.
 
 ### Minimum Requirements
 
-- **PHP 8.4+**
+- **PHP 8.6+**
 - **Composer** (for dependency management)
 - Modern web browser (Chrome 120+, Firefox 121+, Safari 17+, Edge 120+)
 

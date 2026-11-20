@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- PHP 8.4+
+- PHP 8.6+
 - MySQL 8.0+
 - Composer
 - 2GB+ RAM recommended
@@ -116,7 +116,7 @@ server {
     }
     
     location ~ \.php$ {
-        fastcgi_pass unix:/var/run/php/php8.4-fpm.sock;
+        fastcgi_pass unix:/var/run/php/php8.6-fpm.sock;
         fastcgi_index index.php;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         include fastcgi_params;
@@ -176,7 +176,7 @@ SHOW INDEX FROM user_interactions;
 ```bash
 # Install APCu
 pecl install apcu
-echo "extension=apcu.so" > /etc/php/8.4/mods-available/apcu.ini
+echo "extension=apcu.so" > /etc/php/8.6/mods-available/apcu.ini
 phpenmod apcu
 ```
 

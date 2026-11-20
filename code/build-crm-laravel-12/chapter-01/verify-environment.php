@@ -13,7 +13,7 @@
  *   1 = Failure: One or more required checks failed, setup needed
  *
  * Required for series:
- *   - PHP 8.4.0+
+ *   - PHP 8.6.0+
  *   - Composer 2.0.0+
  *   - Node.js 18.0.0+
  *   - PHP Extensions: pdo, pdo_mysql, mbstring, json, openssl, curl, tokenizer
@@ -25,7 +25,7 @@
 declare(strict_types=1);
 
 // Configuration - required versions
-const REQUIRED_PHP_VERSION = '8.4.0';
+const REQUIRED_PHP_VERSION = '8.6.0';
 const REQUIRED_NODE_VERSION = '18.0.0';
 const REQUIRED_COMPOSER_VERSION = '2.0.0';
 
@@ -88,7 +88,7 @@ echo str_repeat("-", 60) . "\n";
 $phpVersion = PHP_VERSION;
 $phpPassed = versionCompare($phpVersion, REQUIRED_PHP_VERSION) >= 0;
 
-$phpMsg = $phpPassed ? "Great! You have PHP 8.4+ installed." : "Please install PHP " . REQUIRED_PHP_VERSION . " or higher.";
+$phpMsg = $phpPassed ? "Great! You have PHP 8.6+ installed." : "Please install PHP " . REQUIRED_PHP_VERSION . " or higher.";
 displayCheck(
     "PHP",
     $phpPassed,

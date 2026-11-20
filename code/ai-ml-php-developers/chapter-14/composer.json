@@ -3,7 +3,7 @@
   "description": "NLP text classification examples for Chapter 14: Sentiment Analysis in PHP",
   "type": "project",
   "require": {
-    "php": "^8.4",
+    "php": "^8.6",
     "php-ai/php-ml": "^0.10"
   },
   "require-dev": {

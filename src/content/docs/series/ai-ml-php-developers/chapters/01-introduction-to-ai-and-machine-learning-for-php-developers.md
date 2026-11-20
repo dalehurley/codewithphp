@@ -22,7 +22,7 @@ By the end of this chapter, you'll have a clear mental model of what AI and ML a
 
 Before starting this chapter, you should have:
 
-- PHP 8.4+ installed and working (from the php-basics series or equivalent experience)
+- PHP 8.6+ installed and working (from the php-basics series or equivalent experience)
 - Comfortable with object-oriented PHP programming (classes, methods, properties)
 - Basic familiarity with how web applications work (client-server, HTTP requests/responses)
 - Curiosity about data, statistics, and how decisions can be automated

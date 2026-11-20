@@ -45,14 +45,14 @@ Before starting this chapter, you should have:
 - Understanding of MVC architecture (from Java/Spring Boot experience)
 - Familiarity with dependency injection concepts
 - Basic knowledge of RESTful routing
-- PHP 8.4+ and Composer installed
+- PHP 8.6+ and Composer installed
 - Experience with ORM concepts (JPA/Hibernate helpful but not required)
 
 **Verify your setup:**
 
 ```bash
 # Check PHP version
-php --version  # Should be 8.4+
+php --version  # Should be 8.6+
 
 # Check Composer
 composer --version
@@ -173,7 +173,7 @@ Laravel uses Composer (PHP's package manager) to create projects, similar to how
 ### Troubleshooting
 
 - **Error: "composer: command not found"** — Install Composer from [getcomposer.org](https://getcomposer.org/)
-- **Error: "PHP version must be 8.2+"** — Update PHP to 8.4+ using your system's package manager
+- **Error: "PHP version must be 8.2+"** — Update PHP to 8.6+ using your system's package manager
 - **Port 8000 already in use** — Use `php artisan serve --port=8001` to use a different port
 
 ---

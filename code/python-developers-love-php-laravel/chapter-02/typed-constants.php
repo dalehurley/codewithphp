@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-// PHP 8.4 typed class constants
+// PHP 8.6 typed class constants
 // Provides type safety for class constants
 
 class Status

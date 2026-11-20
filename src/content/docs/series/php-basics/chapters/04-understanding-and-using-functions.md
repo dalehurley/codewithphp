@@ -30,7 +30,7 @@ By the end of this chapter, you'll be able to write clean, reusable functions wi
 
 Before starting this chapter, you should:
 
-- Have PHP 8.4 or higher installed and accessible from your terminal.
+- Have PHP 8.6 or higher installed and accessible from your terminal.
 - Understand basic PHP syntax: variables, data types, and control structures.
 - Have completed [Chapter 03: Control Structures](/series/php-basics/chapters/03-control-structures).
 - **Estimated Time**: 30–35 minutes
@@ -465,7 +465,7 @@ Array
 
 ### Troubleshooting
 
-- **`fn` keyword not recognized** — Arrow functions were introduced in PHP 7.4. Ensure your environment runs PHP 7.4 or later (this project uses PHP 8.4).
+- **`fn` keyword not recognized** — Arrow functions were introduced in PHP 7.4. Ensure your environment runs PHP 7.4 or later (this project uses PHP 8.6).
 - **Unexpected scope issues** — Remember that arrow functions use implicit `use` semantics. If you need separate scope control, use a traditional `function` closure.
 
 ## Troubleshooting
@@ -688,7 +688,7 @@ question: 'What is the benefit of using named arguments when calling a function?
 options: [
 { text: 'Makes code self-documenting and allows skipping default parameters', correct: true, explanation: 'Named arguments let you specify which parameter you\'re setting, improving readability and allowing you to skip optional parameters in any order.' },
 { text: 'Makes the function run faster', correct: false, explanation: 'Named arguments don\'t affect performance; they improve code clarity.' },
-{ text: 'Required for all functions in PHP 8.4', correct: false, explanation: 'Named arguments are optional; positional arguments still work.' },
+{ text: 'Required for all functions in PHP 8.6', correct: false, explanation: 'Named arguments are optional; positional arguments still work.' },
 { text: 'Prevents type errors', correct: false, explanation: 'Named arguments are about clarity, not type safety.' }
 ]
 },

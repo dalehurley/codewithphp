@@ -14,7 +14,7 @@ sidebar:
 
 ## Overview
 
-In Chapter 1, you learned what machine learning is and why it matters for PHP developers. In Chapter 2, you set up a complete development environment with PHP 8.4, Composer, and ML libraries. Now it's time to understand the fundamental concepts that underpin all machine learning work.
+In Chapter 1, you learned what machine learning is and why it matters for PHP developers. In Chapter 2, you set up a complete development environment with PHP 8.6, Composer, and ML libraries. Now it's time to understand the fundamental concepts that underpin all machine learning work.
 
 This chapter bridges theory and practice. You'll learn essential ML terminology, but instead of just reading definitions, you'll see working PHP code that demonstrates each concept. You'll understand the difference between supervised and unsupervised learning by building both a spam classifier and a customer segmentation tool. You'll grasp the critical distinction between training and inference by measuring their performance. Most importantly, you'll learn to recognize and prevent overfitting—the most common mistake beginners make.
 
@@ -27,7 +27,7 @@ Think of this chapter as learning the vocabulary and grammar of a new language. 
 Before starting this chapter, you should have:
 
 - Completed [Chapter 01](/series/ai-ml-php-developers/chapters/01-introduction-to-ai-and-machine-learning-for-php-developers) or equivalent understanding of AI/ML basics
-- Completed [Chapter 02](/series/ai-ml-php-developers/chapters/02-setting-up-your-ai-development-environment) with verified PHP 8.4 environment
+- Completed [Chapter 02](/series/ai-ml-php-developers/chapters/02-setting-up-your-ai-development-environment) with verified PHP 8.6 environment
 - PHP-ML and/or Rubix ML libraries installed and tested (from Chapter 2)
 - Basic understanding of arrays, functions, and classes in PHP
 - Familiarity with the command line for running PHP scripts
@@ -370,7 +370,7 @@ Run the feature extraction example:
 php 03-feature-extraction.php
 ```
 
-Here's how we transform an email into features using **PHP 8.4 property hooks**:
+Here's how we transform an email into features using **PHP property hooks**:
 
 ```php
 # filename: 03-feature-extraction.php (excerpt)
@@ -379,7 +379,7 @@ Here's how we transform an email into features using **PHP 8.4 property hooks**:
 declare(strict_types=1);
 
 /**
- * Email feature extractor using PHP 8.4 property hooks.
+ * Email feature extractor using PHP property hooks.
  * Property hooks allow computed properties that calculate values on access.
  */
 final class EmailFeatureExtractor
@@ -437,7 +437,7 @@ final class EmailFeatureExtractor
     }
 }
 
-// Usage with PHP 8.4 property hooks
+// Usage with PHP property hooks
 $extractor = new EmailFeatureExtractor("Get FREE money NOW!!! Click here!");
 echo "Has 'free': {$extractor->hasFree}\n";         // Computed on access: 1
 echo "Exclamations: {$extractor->exclamationCount}\n";  // Computed on access: 5
@@ -447,7 +447,7 @@ $features = $extractor->toArray();
 // Result: [1, 1, 0, 5, 0.45, 5]
 ```
 
-**What are property hooks?** PHP 8.4's property hooks let you define computed properties that calculate their values when accessed. Instead of storing `$hasFree`, the `get` hook computes it from `$email` each time you access `$extractor->hasFree`. This keeps your code clean and encapsulated while maintaining the convenience of property syntax.
+**What are property hooks?** PHP's property hooks let you define computed properties that calculate their values when accessed. Instead of storing `$hasFree`, the `get` hook computes it from `$email` each time you access `$extractor->hasFree`. This keeps your code clean and encapsulated while maintaining the convenience of property syntax.
 
 **Alternative function-based approach** (works in any PHP version):
 

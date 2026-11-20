@@ -37,7 +37,7 @@ By the end of this chapter, you will:
 
 Before starting this chapter, you should have:
 
-- PHP 8.4+ installed and working
+- PHP 8.6+ installed and working
 - Completion of [Chapter 05: Bubble Sort & Selection Sort](/series/php-algorithms/chapters/05-bubble-sort-selection-sort)
 - Completion of [Chapter 06: Insertion Sort & Merge Sort](/series/php-algorithms/chapters/06-insertion-sort-merge-sort)
 - Completion of [Chapter 07: Quick Sort & Pivot Strategies](/series/php-algorithms/chapters/07-quick-sort-pivot-strategies)

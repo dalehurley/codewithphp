@@ -28,7 +28,7 @@ PHP provides a simple and powerful set of functions for working with files and d
 
 Before starting this chapter, you should have:
 
-- PHP 8.4 installed and working from the command line
+- PHP 8.6 installed and working from the command line
 - Completed Chapter 12 (Dependency Management with Composer)
 - A text editor and terminal ready
 - Basic understanding of arrays and functions
@@ -68,7 +68,7 @@ $content = file_get_contents('data/demo.txt');
 echo $content;
 
 // Create JSON data
-$data = ['name' => 'PHP', 'version' => '8.4'];
+$data = ['name' => 'PHP', 'version' => '8.6'];
 file_put_contents('data/demo.json', json_encode($data, JSON_PRETTY_PRINT));
 
 // Read and decode JSON
@@ -87,7 +87,7 @@ Expected output:
 
 ```
 Hello, filesystem!
-Language: PHP 8.4
+Language: PHP 8.6
 ```
 
 Now let's explore each concept in depth.

@@ -3,7 +3,7 @@
     "description": "Statistical analysis tools for PHP data science - Chapter 07",
     "type": "project",
     "require": {
-        "php": "^8.4",
+        "php": "^8.6",
         "markrogoyski/math-php": "^2.8"
     },
     "require-dev": {

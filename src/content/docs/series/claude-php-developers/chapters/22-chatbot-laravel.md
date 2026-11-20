@@ -1987,7 +1987,7 @@ All code examples from this chapter are available in the GitHub repository and h
 - Laravel 11
 - Livewire 3
 - Claude-PHP-SDK v0.2
-- PHP 8.4
+- PHP 8.6
 
 **[View Chapter 22 Code Samples](https://github.com/dalehurley/codewithphp/tree/main/code/claude-php/chapter-22)**
 

@@ -74,16 +74,16 @@ $manager->registerAgent('analyst', $analyst, ['analysis']);
 $manager->registerAgent('writer', $writer, ['writing']);
 
 echo "Executing 3 different tasks in parallel...\n";
-echo "  • Researcher: Investigating PHP 8.4 features\n";
+echo "  • Researcher: Investigating PHP 8.6 features\n";
 echo "  • Analyst: Analyzing performance benefits\n";
 echo "  • Writer: Summarizing PHP evolution\n\n";
 
 $startTime = microtime(true);
 
 $results = $manager->executeParallel([
-    'researcher' => 'What are the key new features in PHP 8.4? List top 3.',
+    'researcher' => 'What are the key new features in PHP 8.6? List top 3.',
     'analyst' => 'What are the performance improvements in modern PHP? Be brief.',
-    'writer' => 'Summarize PHP evolution from 7.0 to 8.4 in 3 sentences.',
+    'writer' => 'Summarize PHP evolution from 7.0 to 8.6 in 3 sentences.',
 ]);
 
 $duration = microtime(true) - $startTime;
@@ -257,7 +257,7 @@ echo "Stage 1: Data Gathering (parallel)\n";
 $stage1Start = microtime(true);
 
 $stage1Results = $manager->executeParallel([
-    'researcher' => 'Gather: PHP 8.4 feature list',
+    'researcher' => 'Gather: PHP 8.6 feature list',
     'analyst' => 'Gather: PHP performance metrics',
     'writer' => 'Gather: PHP community feedback',
 ]);

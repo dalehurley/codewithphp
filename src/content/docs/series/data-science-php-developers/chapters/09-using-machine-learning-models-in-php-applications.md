@@ -26,7 +26,7 @@ This is where theory meets practice—you'll build real ML-powered features that
 Before starting this chapter, you should have:
 
 - Completed [Chapter 08: Machine Learning Explained](/series/data-science-php-developers/chapters/08-machine-learning-explained-for-php-developers)
-- PHP 8.4+ installed
+- PHP 8.6+ installed
 - Python 3.10+ installed (for training models)
 - Composer for PHP dependencies
 - Basic understanding of REST APIs

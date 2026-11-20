@@ -20,7 +20,7 @@ composer install
 
 ## Requirements
 
-- PHP 8.4+
+- PHP 8.6+
 - MathPHP library (^2.8)
 
 ## Usage
@@ -140,7 +140,7 @@ composer test
 ## Code Quality
 
 All code follows:
-- PHP 8.4 syntax and features
+- PHP 8.6 syntax and features
 - PSR-12 coding standards
 - Comprehensive type hints
 - Full input validation

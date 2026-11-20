@@ -1,6 +1,6 @@
 # Chapter 02: Modern PHP Code Examples
 
-This directory contains code examples demonstrating modern PHP features (PHP 7.4+ and PHP 8.4) with comparisons to Python equivalents.
+This directory contains code examples demonstrating modern PHP features (PHP 7.4+ and PHP 8.6) with comparisons to Python equivalents.
 
 ## Files
 
@@ -19,11 +19,11 @@ This directory contains code examples demonstrating modern PHP features (PHP 7.4
 - **`attributes.php`** - Attributes (similar to Python decorators) (PHP 8.0+)
 - **`enums.php`** - Enums (similar to Python Enum class) (PHP 8.1+)
 
-### PHP 8.4 Features
+### PHP 8.6 Features
 
-- **`property-hooks.php`** - Property hooks (custom getters/setters) (PHP 8.4)
+- **`property-hooks.php`** - Property hooks (custom getters/setters) (PHP 8.6)
 - **`asymmetric-visibility.php`** - Asymmetric visibility (public read, private write) (PHP 8.4)
-- **`typed-constants.php`** - Typed class constants (PHP 8.4)
+- **`typed-constants.php`** - Typed class constants (PHP 8.6)
 
 ### Code Standards
 
@@ -31,7 +31,7 @@ This directory contains code examples demonstrating modern PHP features (PHP 7.4
 
 ## Running the Examples
 
-All examples require **PHP 8.4+** to run. Some features require specific PHP versions:
+All examples require **PHP 8.6+** to run. Some features require specific PHP versions:
 
 - PHP 7.0+: Type declarations, null coalescing operator
 - PHP 8.0+: Union types, named arguments, match expressions, constructor property promotion, attributes
@@ -80,7 +80,7 @@ Each PHP example includes comments comparing to Python equivalents:
 
 ## Further Reading
 
-- [PHP 8.4 Release Notes](https://www.php.net/releases/8.4/en.php)
+- [PHP 8.6 Release Notes](https://www.php.net/releases/8.6/en.php)
 - [PHP 8.0 New Features](https://www.php.net/manual/en/migration80.new-features.php)
 - [PSR-12 Coding Style Guide](https://www.php-fig.org/psr/psr-12/)
 

@@ -32,7 +32,7 @@ Crucially, Composer also provides a powerful **autoloader**. This means we no lo
 Before starting this chapter, you should:
 
 - Have completed [Chapter 11: Error and Exception Handling](/series/php-basics/chapters/11-error-and-exception-handling)
-- Have PHP 8.4 installed and accessible via the command line
+- Have PHP 8.6 installed and accessible via the command line
 - Have basic command-line experience (navigating directories, running commands)
 - Have internet access to download packages from Packagist
 - **Estimated time**: ~32 minutes
@@ -421,7 +421,7 @@ Let's set up a `src/` directory for our app's code, with the namespace `App`.
     }
     ```
 
-    > **Note**: This code uses typed properties (`public string $name`) and return type declarations (`public function greet(): string`), which are fully supported in PHP 8.4. If you see these type declarations in modern PHP code, they help prevent bugs by ensuring variables contain the expected data types.
+    > **Note**: This code uses typed properties (`public string $name`) and return type declarations (`public function greet(): string`), which are fully supported in PHP 8.6. If you see these type declarations in modern PHP code, they help prevent bugs by ensuring variables contain the expected data types.
 
 5.  **Use Your Class**:
     Update your `index.php` to use your new `User` class alongside Monolog.

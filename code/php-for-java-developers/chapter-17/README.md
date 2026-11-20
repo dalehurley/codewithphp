@@ -85,7 +85,7 @@ $result = $handler->upload($_FILES['avatar'], __DIR__ . '/uploads');
 
 ## Requirements
 
-- PHP 8.4+
+- PHP 8.6+
 - Sessions enabled (for CSRF protection)
 - `fileinfo` extension (for file type validation)
 - Write permissions for upload directory

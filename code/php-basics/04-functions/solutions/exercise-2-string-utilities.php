@@ -106,7 +106,7 @@ echo "5. Bonus - Slug Generator:" . PHP_EOL;
 $titles = [
     'Hello World',
     'Code with PHP',
-    'Understanding Functions in PHP 8.4!'
+    'Understanding Functions in PHP 8.6!'
 ];
 
 foreach ($titles as $title) {

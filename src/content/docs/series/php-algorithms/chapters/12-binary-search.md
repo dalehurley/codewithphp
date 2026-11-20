@@ -42,13 +42,13 @@ Before starting this chapter, ensure you have:
 - ✓ Understanding of Big O notation *(60 mins from Chapter 1 if not done)*
 - ✓ Familiarity with recursion *(70 mins from Chapter 3 if not done)*
 - ✓ Understanding of sorted arrays *(basic concept)*
-- ✓ PHP 8.4+ installed and working
+- ✓ PHP 8.6+ installed and working
 
 **Verify your setup:**
 
 ```bash
 # Verify PHP version
-php --version  # Should show 8.4 or higher
+php --version  # Should show 8.6 or higher
 ```
 
 ## Quick Start

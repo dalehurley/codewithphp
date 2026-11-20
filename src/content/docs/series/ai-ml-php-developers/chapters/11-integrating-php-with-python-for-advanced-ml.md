@@ -28,7 +28,7 @@ Before starting this chapter, you should have:
 
 - Completed [Chapter 10](/series/ai-ml-php-developers/chapters/10-neural-networks-and-deep-learning-fundamentals) or equivalent understanding of ML concepts
 - Completed [Chapter 08](/series/ai-ml-php-developers/chapters/08-leveraging-php-machine-learning-libraries) and have Rubix ML working
-- PHP 8.4+ installed and configured from [Chapter 02](/series/ai-ml-php-developers/chapters/02-setting-up-your-ai-development-environment)
+- PHP 8.6+ installed and configured from [Chapter 02](/series/ai-ml-php-developers/chapters/02-setting-up-your-ai-development-environment)
 - Python 3.10+ installed (check with `python3 --version`)
 - Basic command-line familiarity (running scripts, installing packages)
 - Understanding of JSON data format
@@ -41,7 +41,7 @@ Before starting this chapter, you should have:
 
 ```bash
 # Check PHP version
-php --version  # Should be 8.4+
+php --version  # Should be 8.6+
 
 # Check Python version
 python3 --version  # Should be 3.10+

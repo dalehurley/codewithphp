@@ -3,7 +3,7 @@
     "description": "Chapter 03 code examples for Agentic AI for PHP Developers",
     "type": "project",
     "require": {
-        "php": "^8.4",
+        "php": "^8.6",
         "claude-php/agent": "^0.5"
     },
     "autoload": {

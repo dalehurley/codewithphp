@@ -119,7 +119,7 @@ try {
     // Create posts
     echo "Creating posts..." . PHP_EOL;
     $id1 = $blog->createPost("Getting Started with PDO", "PDO is awesome!");
-    $id2 = $blog->createPost("PHP 8.4 Features", "Check out these new features...");
+    $id2 = $blog->createPost("PHP 8.6 Features", "Check out these new features...");
     echo "Created posts with IDs: $id1, $id2" . PHP_EOL . PHP_EOL;
 
     // Get all posts

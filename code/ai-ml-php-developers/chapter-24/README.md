@@ -8,7 +8,7 @@ This directory contains all the code, configuration files, and scripts needed to
 
 ## Prerequisites
 
-- PHP 8.4+ with extensions: redis, pcntl, sockets
+- PHP 8.6+ with extensions: redis, pcntl, sockets
 - Docker 20+ and Docker Compose
 - Redis 7+
 - Git

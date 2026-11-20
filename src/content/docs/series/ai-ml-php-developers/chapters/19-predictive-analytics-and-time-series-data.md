@@ -28,7 +28,7 @@ Before starting this chapter, you should have:
 
 - Completed [Chapter 18](/series/ai-ml-php-developers/chapters/18-object-detection-and-recognition-in-php-applications) or equivalent understanding of integrating external ML tools
 - Completed [Chapter 8](/series/ai-ml-php-developers/chapters/08-leveraging-php-machine-learning-libraries) with experience using Rubix ML for regression tasks
-- PHP 8.4+ environment with Composer installed and verified working
+- PHP 8.6+ environment with Composer installed and verified working
 - Rubix ML installed (from Chapter 2 setup) with regression capabilities
 - Understanding of basic statistical concepts (mean, variance, correlation)
 - Familiarity with arrays, file I/O, and date/time handling in PHP
@@ -42,7 +42,7 @@ Before starting this chapter, you should have:
 
 ```bash
 # Confirm PHP version
-php --version  # Should show PHP 8.4.x
+php --version  # Should show PHP 8.6.x
 
 # Verify Composer is available
 composer --version

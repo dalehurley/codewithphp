@@ -11,7 +11,7 @@ declare(strict_types=1);
  * - Random Undersampling
  * - Class Weights
  * 
- * PHP version 8.4
+ * PHP version 8.6
  */
 
 require_once __DIR__ . '/../../vendor/autoload.php';

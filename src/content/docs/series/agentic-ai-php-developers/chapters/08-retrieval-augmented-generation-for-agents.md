@@ -717,7 +717,7 @@ $client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 
 $hyde = new HyDEGenerator($client);
 
-$query = 'What are the benefits of property hooks in PHP 8.4?';
+$query = 'What are the benefits of property hooks in PHP 8.6?';
 
 echo "=== HyDE Query Transformation ===\n\n";
 echo "Original Query: {$query}\n\n";
@@ -808,7 +808,7 @@ $results = [
     ],
 ];
 
-$query = 'PHP 8.4 property hooks';
+$query = 'PHP property hooks';
 
 echo "=== Score-Based Reranking ===\n\n";
 
@@ -842,12 +842,12 @@ $client = new ClaudePhp(apiKey: getenv('ANTHROPIC_API_KEY'));
 $reranker = new LLMReranker($client);
 
 $results = [
-    ['text' => 'PHP 8.4 property hooks provide clean syntax.'],
-    ['text' => 'Laravel framework supports PHP 8.4.'],
+    ['text' => 'PHP property hooks provide clean syntax.'],
+    ['text' => 'Laravel framework supports PHP 8.6.'],
     ['text' => 'Property hooks replace traditional getters/setters.'],
 ];
 
-$query = 'How do property hooks work in PHP 8.4?';
+$query = 'How do property hooks work in PHP 8.6?';
 
 echo "=== LLM-Based Reranking ===\n\n";
 
@@ -934,7 +934,7 @@ echo "   Loaded " . count($documents) . " files from directory\n\n";
 // 5. Web Loader
 echo "5. Loading web content...\n";
 $webLoader = new WebLoader();
-$documents = $webLoader->load('https://www.php.net/releases/8.4/en.php');
+$documents = $webLoader->load('https://www.php.net/releases/8.6/en.php');
 foreach ($documents as $doc) {
     $rag->addDocument($doc['title'], $doc['content'], $doc['metadata']);
 }
@@ -1115,9 +1115,9 @@ echo "Indexed {$stats['documents']} documents into {$stats['chunks']} chunks\n\n
 
 // Query
 $questions = [
-    'How do property hooks work in PHP 8.4?',
+    'How do property hooks work in PHP 8.6?',
     'What are the performance benefits of the new JIT compiler?',
-    'How do I migrate from PHP 8.3 to 8.4?',
+    'How do I migrate from PHP 8.3 to 8.6?',
 ];
 
 foreach ($questions as $question) {

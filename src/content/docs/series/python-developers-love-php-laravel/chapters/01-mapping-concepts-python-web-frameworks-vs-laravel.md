@@ -26,14 +26,14 @@ Before starting this chapter, you should have:
 - Experience with Django or Flask (routing, views, templates)
 - Basic understanding of MVC/MVT patterns
 - Familiarity with ORMs (Django ORM or SQLAlchemy)
-- PHP 8.4+ installed
+- PHP 8.6+ installed
 - Composer installed (PHP's package manager)
 - **Estimated Time**: ~60 minutes
 
 **Verify your setup:**
 
 ```bash
-# Check PHP version (should show PHP 8.4+)
+# Check PHP version (should show PHP 8.6+)
 php --version
 
 # Check Composer is installed
@@ -205,7 +205,7 @@ def index(request):
 
 3. **Laravel Routing** (PHP):
 
-The complete Laravel routing example with PHP 8.4 syntax is available in [`laravel-routing.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/laravel-routing.php):
+The complete Laravel routing example with PHP 8.6 syntax is available in [`laravel-routing.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/laravel-routing.php):
 
 ```php
 Route::get('/', function (): string {
@@ -315,7 +315,7 @@ def example():
 
 **Laravel:**
 
-Request/Response examples with PHP 8.4 syntax are available in [`request-response-laravel.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/request-response-laravel.php):
+Request/Response examples with PHP 8.6 syntax are available in [`request-response-laravel.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/request-response-laravel.php):
 
 ```php
 Route::get('/example', function (Request $request): Response {
@@ -538,7 +538,7 @@ recent_posts = Post.query.filter(Post.published_at >= datetime.now() - timedelta
 
 3. **Eloquent ORM** (PHP/Laravel):
 
-Eloquent examples with PHP 8.4 syntax are available in [`eloquent-model.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/eloquent-model.php) and [`eloquent-queries.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/eloquent-queries.php):
+Eloquent examples with PHP 8.6 syntax are available in [`eloquent-model.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/eloquent-model.php) and [`eloquent-queries.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/eloquent-queries.php):
 
 ```php
 // app/Models/Post.php
@@ -636,7 +636,7 @@ def log_response(response):
 
 3. **Laravel Middleware** (PHP):
 
-Laravel middleware examples with PHP 8.4 syntax are available in [`laravel-middleware.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/laravel-middleware.php):
+Laravel middleware examples with PHP 8.6 syntax are available in [`laravel-middleware.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-01/laravel-middleware.php):
 
 ```php
 // app/Http/Middleware/LoggingMiddleware.php

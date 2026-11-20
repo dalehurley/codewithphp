@@ -2236,8 +2236,8 @@ sudo apt-get install php-xdebug
 pecl install xdebug
 
 # Enable in php.ini
-echo "zend_extension=xdebug.so" >> /etc/php/8.4/cli/php.ini
-echo "xdebug.mode=profile" >> /etc/php/8.4/cli/php.ini
+echo "zend_extension=xdebug.so" >> /etc/php/8.6/cli/php.ini
+echo "xdebug.mode=profile" >> /etc/php/8.6/cli/php.ini
 ```
 
 ### Problem: OPcache Not Working

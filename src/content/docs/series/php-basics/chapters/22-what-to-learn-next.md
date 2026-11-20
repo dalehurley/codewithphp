@@ -35,7 +35,7 @@ By the end of this chapter, you will:
 
 If you've made it this far, you have accomplished something incredible. You have gone from the absolute basics of the PHP language to building a complete, database-driven web application from scratch, following modern, professional standards. You've learned the fundamentals of procedural programming, the core principles of Object-Oriented Programming, and you've seen how all of these concepts are applied in major frameworks like Laravel and Symfony.
 
-You now have a rock-solid foundation in PHP 8.4 and modern development practices. The journey doesn't end here, but you are more than equipped for the next stage. This final chapter will serve as a roadmap, suggesting key areas to explore as you continue to grow as a PHP developer.
+You now have a rock-solid foundation in PHP 8.6 and modern development practices. The journey doesn't end here, but you are more than equipped for the next stage. This final chapter will serve as a roadmap, suggesting key areas to explore as you continue to grow as a PHP developer.
 
 ## Choosing Your Path: Framework Mastery
 
@@ -524,13 +524,13 @@ Choose **one** exercise from each section below and complete it within the next 
 Create a simple checklist or GitHub project board with these exercises. Check them off as you complete them. Visible progress is incredibly motivating.
 :::
 
-## Exploring Advanced PHP 8.4 Features
+## Exploring Modern PHP Features
 
-As you build real projects, you'll want to leverage the latest PHP 8.4 capabilities. Here are some features to explore as you grow:
+As you build real projects, you'll want to leverage the modern PHP capabilities. Here are some features to explore as you grow:
 
 ### Property Hooks
 
-PHP 8.4 introduces property hooks—a cleaner alternative to traditional getters and setters. They allow you to add behavior when reading or writing properties without verbose method definitions.
+PHP 8.4 introduced property hooks—a cleaner alternative to traditional getters and setters. They allow you to add behavior when reading or writing properties without verbose method definitions.
 
 ```php
 class User
@@ -563,7 +563,7 @@ class Product
 
 ### New Array Functions
 
-PHP 8.4 adds several useful array functions that make common operations more expressive:
+PHP 8.4 added several array functions that make common operations more expressive:
 
 - `array_find()`: Find the first element matching a condition
 - `array_find_key()`: Find the key of the first matching element
@@ -576,8 +576,8 @@ Don't feel pressured to use every new feature immediately. Learn them as you enc
 
 **Resources**:
 
-- [PHP 8.4 Release Notes](https://www.php.net/releases/8.4/en.php): Official documentation with examples.
-- [PHP Watch](https://php.watch/versions/8.4): Comprehensive guide to PHP 8.4 changes.
+- [PHP 8.6 Release Notes](https://www.php.net/releases/8.6/en.php): Official documentation with examples.
+- [PHP Watch](https://php.watch/versions/8.6): Comprehensive guide to PHP 8.6 changes.
 
 ## Final Words
 

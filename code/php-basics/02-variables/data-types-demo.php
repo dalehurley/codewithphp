@@ -13,7 +13,7 @@ declare(strict_types=1);
  * - Array
  * - NULL
  * 
- * PHP 8.4 compatible with strict types enabled
+ * PHP 8.6 compatible with strict types enabled
  */
 
 echo "=== PHP Data Types ===" . PHP_EOL . PHP_EOL;

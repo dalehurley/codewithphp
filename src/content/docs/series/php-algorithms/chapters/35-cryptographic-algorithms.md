@@ -27,7 +27,7 @@ By the end of this chapter, you'll have implemented secure password hashing, sym
 
 Before starting this chapter, you should have:
 
-- PHP 8.4+ installed and confirmed working with `php --version`
+- PHP 8.6+ installed and confirmed working with `php --version`
 - Basic understanding of security concepts (confidentiality, integrity, authentication)
 - Familiarity with hash functions and their properties
 - Understanding of common web security vulnerabilities

@@ -1,9 +1,9 @@
 <?php
 /**
- * Chapter 02: Modern PHP - Property Hooks (PHP 8.4)
+ * Chapter 02: Modern PHP - Property Hooks (introduced in PHP 8.4)
  * 
  * Property hooks eliminate the need for verbose getters and setters.
- * This is a PHP 8.4 feature that rivals Ruby's elegance.
+ * The hooks define custom read and write behavior on the property.
  */
 
 declare(strict_types=1);

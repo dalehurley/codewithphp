@@ -3,7 +3,7 @@
     "description": "Chapter 00: Environment Setup code samples for Agentic AI for PHP Developers series",
     "type": "project",
     "require": {
-        "php": "^8.4",
+        "php": "^8.6",
         "claude-php/agent": "^0.5",
         "claude-php/claude-php-sdk": "^0.5"
     },

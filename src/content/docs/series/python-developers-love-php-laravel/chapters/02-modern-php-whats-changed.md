@@ -24,17 +24,17 @@ Before starting this chapter, you should have:
 
 - Completion of [Chapter 01](/series/python-developers-love-php-laravel/chapters/01-mapping-concepts-python-web-frameworks-vs-laravel) or equivalent understanding
 - Python experience (for comparisons)
-- PHP 8.4+ installed
+- PHP 8.6+ installed
 - Basic familiarity with type hints in Python (PEP 484)
 - **Estimated Time**: ~60 minutes
 
 **Verify your setup:**
 
 ```bash
-# Check PHP version (should show PHP 8.4+)
+# Check PHP version (should show PHP 8.6+)
 php --version
 
-# Expected output: PHP 8.4.x (or higher)
+# Expected output: PHP 8.6.x (or higher)
 ```
 
 ## What You'll Build
@@ -46,12 +46,12 @@ By the end of this chapter, you will have:
 - Side-by-side comparison examples (Python vs PHP) for type systems, modern syntax, and language features
 - Understanding of PHP community evolution (PSR standards, Composer, modern tooling)
 - Clear picture of perception vs reality: what's actually changed in PHP
-- Working PHP 8.4 code examples demonstrating modern features
+- Working PHP 8.6 code examples demonstrating modern features
 - Confidence that modern PHP is competitive with Python for web development
 
 ## Quick Start
 
-Want to see modern PHP in action right away? Here's a quick comparison showing how PHP 8.4 compares to Python:
+Want to see modern PHP in action right away? Here's a quick comparison showing how PHP 8.6 compares to Python:
 
 **Python (with type hints):**
 
@@ -69,7 +69,7 @@ class User:
         self.email = email
 ```
 
-**PHP 8.4 (modern syntax):**
+**PHP 8.6 (modern syntax):**
 
 ```php
 # filename: quickstart.php
@@ -623,11 +623,11 @@ PHP 8.0+ brought PHP's language features to parity with modern Python. JIT compi
 - **"Attributes vs decorators"** — PHP attributes are similar to Python decorators but are metadata attached to classes, methods, and properties. They're used extensively in Laravel for routing, validation, and dependency injection.
 - **"Enums vs constants"** — PHP enums provide type safety and methods, similar to Python's Enum class. Use enums instead of class constants when you need type safety and behavior.
 
-## Step 3: PHP 8.4 Latest Features (~10 min)
+## Step 3: Property Hooks and Asymmetric Visibility (~10 min)
 
 ### Goal
 
-Learn the cutting-edge features PHP 8.4 introduced that demonstrate PHP's continued evolution and innovation.
+Learn how modern PHP controls property access and writes.
 
 ### Actions
 
@@ -749,9 +749,9 @@ Learn the cutting-edge features PHP 8.4 introduced that demonstrate PHP's contin
 
    The asymmetric visibility examples are available in [`asymmetric-visibility.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/asymmetric-visibility.php).
 
-3. **Typed Class Constants (PHP 8.4)**
+3. **Typed Class Constants (PHP 8.6)**
 
-   PHP 8.4 allows type declarations for class constants:
+   PHP 8.6 allows type declarations for class constants:
 
    ```php
    # filename: typed-constants.php
@@ -798,7 +798,7 @@ PHP 8.4's property hooks and asymmetric visibility provide more powerful propert
 
 - **"Property hooks seem complex"** — They're optional! Use them when you need custom getter/setter logic. For simple properties, use regular public properties or constructor property promotion.
 - **"Asymmetric visibility vs `@property`"** — PHP's asymmetric visibility is more explicit and type-safe than Python's `@property` without a setter. Both achieve similar goals with different syntax.
-- **"Do I need PHP 8.4?"** — For this series, yes! We're teaching modern PHP. If you're working with older PHP versions, these features won't be available, but the concepts still apply.
+- **Which PHP version should I use?** The series targets PHP 8.6. Property hooks and asymmetric visibility are available from PHP 8.4.
 
 ## Step 4: Community Evolution (~10 min)
 
@@ -1055,11 +1055,11 @@ Test your understanding of modern PHP features by completing these exercises:
 
 ### Exercise 1: Convert Python Type Hints to PHP Type Declarations (~10 min)
 
-**Goal**: Practice converting Python type hints to PHP 8.4 type declarations.
+**Goal**: Practice converting Python type hints to PHP 8.6 type declarations.
 
 **Requirements:**
 
-1. Convert this Python function to PHP 8.4:
+1. Convert this Python function to PHP 8.6:
 
    ```python
    from typing import Union, Optional, List
@@ -1074,7 +1074,7 @@ Test your understanding of modern PHP features by completing these exercises:
    ```
 
 2. Use `declare(strict_types=1);`
-3. Use PHP 8.4 union types and nullable types
+3. Use PHP 8.6 union types and nullable types
 4. Ensure the function works identically to the Python version
 
 **Validation**: Test your implementation:
@@ -1177,7 +1177,7 @@ Congratulations! You've completed the modern PHP chapter. You now understand:
 
 - ✓ PHP 7.x improvements (type declarations, performance, error handling)
 - ✓ PHP 8.0+ modern features (JIT, union types, match expressions, attributes, enums, property hooks)
-- ✓ PHP 8.4 latest features (property hooks, asymmetric visibility, typed constants)
+- ✓ Property hooks, asymmetric visibility, and typed class constants
 - ✓ PHP community evolution (PSR standards, Composer, modern tooling)
 - ✓ Perception vs reality: what's actually changed in PHP
 - ✓ How PHP compares to Python for web development
@@ -1185,7 +1185,7 @@ Congratulations! You've completed the modern PHP chapter. You now understand:
 
 ### What You've Achieved
 
-You've built a comprehensive understanding of PHP's evolution from PHP 5.x to modern PHP 8.4. You can see that PHP has caught up to—and in some areas surpassed—Python's language features. You understand that modern PHP is a typed, performant, professional language that deserves a second look based on current reality, not outdated perceptions.
+You've built a comprehensive understanding of PHP's evolution from PHP 5.x to modern PHP 8.6. You can see that PHP has caught up to—and in some areas surpassed—Python's language features. You understand that modern PHP is a typed, performant, professional language that deserves a second look based on current reality, not outdated perceptions.
 
 ### Next Steps
 
@@ -1214,7 +1214,7 @@ All code examples from this chapter are available in the [`code/chapter-02/`](ht
 - **Enums**: [`enums.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/enums.php) — PHP 8.1+ enums (similar to Python Enum class)
 - **Property Hooks**: [`property-hooks.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/property-hooks.php) — PHP 8.4 property hooks
 - **Asymmetric Visibility**: [`asymmetric-visibility.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/asymmetric-visibility.php) — PHP 8.4 asymmetric visibility
-- **Typed Constants**: [`typed-constants.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/typed-constants.php) — PHP 8.4 typed class constants
+- **Typed Constants**: [`typed-constants.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/typed-constants.php) — PHP 8.6 typed class constants
 - **PSR-12 Example**: [`psr12-example.php`](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/psr12-example.php) — Modern PHP code structure
 
 See the [README.md](https://github.com/dalehurley/codewithphp/blob/main/code/python-developers-love-php-laravel/chapter-02/README.md) for detailed instructions on running each example.

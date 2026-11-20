@@ -213,7 +213,7 @@ $apiReviewTask = "Review this API controller code for:\n" .
                  "1. Security issues (password handling, input validation)\n" .
                  "2. HTTP response handling\n" .
                  "3. Error handling and validation\n" .
-                 "4. Type safety and modern PHP 8.4 features\n\n" .
+                 "4. Type safety and modern PHP 8.6 features\n\n" .
                  $apiCode;
 
 echo "Processing API code review...\n\n";

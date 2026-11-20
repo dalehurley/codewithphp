@@ -26,7 +26,7 @@ Each chapter has its own directory containing:
 
 ## Requirements
 
-- PHP 8.4+
+- PHP 8.6+
 - Composer
 - Laravel 11+
 - Ruby 3.x (for comparison examples)

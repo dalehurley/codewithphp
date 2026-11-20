@@ -25,7 +25,7 @@ By the end of this chapter, you'll have implemented fundamental geometric algori
 
 Before starting this chapter, you should have:
 
-- PHP 8.4+ installed and confirmed working with `php --version`
+- PHP 8.6+ installed and confirmed working with `php --version`
 - Basic understanding of geometry: points, lines, angles, and coordinate systems
 - Familiarity with vector mathematics: dot product, cross product, and vector operations
 - Comfort with 2D coordinate geometry and Cartesian coordinates

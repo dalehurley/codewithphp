@@ -56,7 +56,7 @@ php 03-advanced-sorting-techniques.php
 
 ## Requirements
 
-- **PHP 8.4+** (uses modern PHP features)
+- **PHP 8.6+** (uses modern PHP features)
 - No external dependencies required
 
 ## What You'll Learn
@@ -208,5 +208,5 @@ If you find any issues with these examples or have questions about sorting in PH
 ---
 
 **Part of the [PHP Algorithms Series](https://codewithphp.com/series/php-algorithms)**  
-Learn data structures and algorithms with modern PHP 8.4
+Learn data structures and algorithms with modern PHP 8.6
 

@@ -26,7 +26,7 @@ By mastering these essentials, you'll be prepared to tackle image classification
 
 Before starting this chapter, you should have:
 
-- PHP 8.4+ installed and confirmed working with `php --version`
+- PHP 8.6+ installed and confirmed working with `php --version`
 - GD extension enabled (check with `php -m | grep gd`)
 - Completion of [Chapter 15](/series/ai-ml-php-developers/chapters/15-language-models-and-text-generation-with-openai-apis) or equivalent understanding of preprocessing data for ML
 - Understanding of PHP arrays, classes, and object-oriented programming
@@ -41,7 +41,7 @@ Before starting this chapter, you should have:
 ```bash
 # Check PHP version
 php --version
-# Should show PHP 8.4.x
+# Should show PHP 8.6.x
 
 # Check if GD extension is loaded
 php -m | grep gd
@@ -56,10 +56,10 @@ If GD is not installed:
 
 ```bash
 # Ubuntu/Debian
-sudo apt-get install php8.4-gd
+sudo apt-get install php8.6-gd
 
 # macOS (Homebrew)
-brew install php@8.4
+brew install php@8.6
 
 # Windows: Enable extension=gd in php.ini
 ```
@@ -77,7 +77,7 @@ By the end of this chapter, you will have created:
 - **9 complete working examples** demonstrating each computer vision technique including augmentation
 - **3 practical exercises** with solutions: image analyzer, thumbnail generator, feature comparison
 - A comprehensive understanding of how to prepare images for machine learning
-- Reusable, production-ready code following PHP 8.4 best practices
+- Reusable, production-ready code following PHP 8.6 best practices
 
 All code examples are fully functional, tested, and include sample images you can run immediately.
 
@@ -244,7 +244,7 @@ The memory footprint is significant: uncompressed, our 400×300 image requires ~
 
 **"Call to undefined function imagecolorat()"**
 
-- GD extension is not loaded. Run `php -m | grep gd` to verify. Install with `sudo apt-get install php8.4-gd` (Linux) or enable in `php.ini` (Windows).
+- GD extension is not loaded. Run `php -m | grep gd` to verify. Install with `sudo apt-get install php8.6-gd` (Linux) or enable in `php.ini` (Windows).
 
 **"Image file not found"**
 
@@ -270,7 +270,7 @@ php 02-check-extensions.php
 
 2. **Review the output** to confirm:
 
-   - PHP 8.4+ is installed
+   - PHP 8.6+ is installed
    - GD extension is loaded
    - All required image formats are supported (JPEG, PNG, GIF, WEBP)
    - Memory limit is adequate
@@ -287,8 +287,8 @@ php 02-check-extensions.php
 ============================================================
 
 PHP Version Check:
-  Current: 8.4.10
-  Required: 8.4.0+
+  Current: 8.5.13
+  Required: 8.6.0+
   Status: ✓ OK
 
 ============================================================
@@ -342,14 +342,14 @@ The script also checks PHP's `memory_limit` setting. Image processing is memory-
 Ubuntu/Debian:
 
 ```bash
-sudo apt-get install php8.4-gd
-sudo systemctl restart php8.4-fpm  # If using PHP-FPM
+sudo apt-get install php8.6-gd
+sudo systemctl restart php8.6-fpm  # If using PHP-FPM
 ```
 
 macOS (Homebrew):
 
 ```bash
-brew install php@8.4
+brew install php@8.6
 # GD is included by default
 ```
 
@@ -2081,15 +2081,15 @@ Ubuntu/Debian:
 
 ```bash
 sudo apt-get update
-sudo apt-get install php8.4-gd
-sudo systemctl restart apache2  # or php8.4-fpm
+sudo apt-get install php8.6-gd
+sudo systemctl restart apache2  # or php8.6-fpm
 ```
 
 macOS (Homebrew):
 
 ```bash
-brew install php@8.4  # Includes GD
-brew services restart php@8.4
+brew install php@8.6  # Includes GD
+brew services restart php@8.6
 ```
 
 Windows:
@@ -2360,7 +2360,7 @@ You're now ready to tackle image classification, apply pre-trained models, and b
 
 - [PHP GD Extension](https://www.php.net/manual/en/book.image.php) — Complete reference for all GD functions
 - [PHP Image Functions](https://www.php.net/manual/en/ref.image.php) — Individual function documentation
-- [PHP 8.4 Release Notes](https://www.php.net/releases/8.4/) — Latest PHP features and changes
+- [PHP 8.6 Release Notes](https://www.php.net/releases/8.6/en.php) — Latest PHP features and changes
 
 ### Computer Vision Fundamentals
 

@@ -17,7 +17,7 @@ sidebar:
 
 ## Overview
 
-Coming from Java's strongly-typed world, PHP's dynamic typing might seem foreign at first. However, modern PHP (8.0+) offers optional static typing that brings it closer to Java's type safety. PHP 8.4 includes advanced type features like union types, intersection types, and improved type inference. In this chapter, we'll explore PHP's type system, understand how variables work, and learn operators—all while comparing to Java equivalents.
+Coming from Java's strongly-typed world, PHP's dynamic typing might seem foreign at first. However, modern PHP (8.0+) offers optional static typing that brings it closer to Java's type safety. PHP 8.6 includes advanced type features like union types, intersection types, and improved type inference. In this chapter, we'll explore PHP's type system, understand how variables work, and learn operators—all while comparing to Java equivalents.
 
 By the end of this chapter, you'll understand how to write type-safe PHP code that feels familiar to your Java background.
 
@@ -29,7 +29,7 @@ By the end of this chapter, you'll understand how to write type-safe PHP code th
 
 **What you need:**
 - Completed [Chapter 0: Setup & First Comparison](/series/php-for-java-developers/chapters/00-setup-and-first-comparison)
-- PHP 8.4 installed and working
+- PHP 8.6 installed and working
 - IDE configured for PHP development
 - Understanding of Java's primitive and object types
 

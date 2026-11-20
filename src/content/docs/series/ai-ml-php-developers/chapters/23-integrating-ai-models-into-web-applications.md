@@ -29,7 +29,7 @@ Before starting this chapter, you should have:
 - Completed [Chapter 22](/series/ai-ml-php-developers/chapters/22-building-a-recommendation-engine-in-php) or understand how recommendation engines work
 - Completed [Chapter 14](/series/ai-ml-php-developers/chapters/14-nlp-project-text-classification-in-php) or know how to build text classifiers
 - Completed [Chapter 15](/series/ai-ml-php-developers/chapters/15-language-models-and-text-generation-with-openai-apis) or have experience with LLM APIs
-- PHP 8.4+ installed and working, confirmed with `php --version`
+- PHP 8.6+ installed and working, confirmed with `php --version`
 - **Laravel 12.x installed** (we'll create a fresh project in Step 1)
 - Composer for dependency management
 - Redis or Memcached for caching (Redis recommended)
@@ -43,7 +43,7 @@ Before starting this chapter, you should have:
 **Verify your environment:**
 
 ```bash
-# Check PHP version (need 8.4+)
+# Check PHP version (need 8.6+)
 php --version
 
 # Check Laravel installer
@@ -85,7 +85,7 @@ By the end of this chapter, you will have created:
 - Feature tests demonstrating how to test ML integrations without actually running expensive inference
 - **Environment configuration** managing API keys, model paths, and service toggles through `.env`
 
-All code follows Laravel 12.x conventions, uses PHP 8.4 features, includes comprehensive error handling, and is production-ready.
+All code follows Laravel 12.x conventions, uses PHP 8.6 features, includes comprehensive error handling, and is production-ready.
 
 ::: info Code Examples
 Complete, runnable examples for this chapter are available in the code directory:
@@ -326,7 +326,7 @@ cd ml-shop
 
 # Verify PHP version
 php --version
-# Output should be PHP 8.4+
+# Output should be PHP 8.6+
 ```
 
 ### Install Required Dependencies

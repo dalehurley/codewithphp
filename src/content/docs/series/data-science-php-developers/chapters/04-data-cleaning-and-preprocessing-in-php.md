@@ -26,7 +26,7 @@ By the end of this chapter, you'll understand that data cleaning isn't a one-tim
 Before starting this chapter, you should have:
 
 - Completed [Chapter 03: Collecting Data](/series/data-science-php-developers/chapters/03-collecting-data-databases-apis-scraping)
-- PHP 8.4+ with `mbstring` extension enabled
+- PHP 8.6+ with `mbstring` extension enabled
 - Understanding of basic statistics (mean, median, standard deviation)
 - Familiarity with data types and validation
 - **Estimated Time**: ~90 minutes

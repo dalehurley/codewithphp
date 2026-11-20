@@ -3,7 +3,7 @@
   "description": "Chapter 22: Building a Recommendation Engine in PHP - Code Examples",
   "type": "project",
   "require": {
-    "php": "^8.4",
+    "php": "^8.6",
     "rubix/ml": "^3.0",
     "php-ai/php-ml": "^0.10"
   },

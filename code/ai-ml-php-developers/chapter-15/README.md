@@ -4,7 +4,7 @@ Complete code examples demonstrating how to integrate OpenAI's GPT models into P
 
 ## Prerequisites
 
-- PHP 8.4+ with cURL extension enabled
+- PHP 8.6+ with cURL extension enabled
 - Composer installed
 - OpenAI API account with API key
 - **Budget awareness**: These examples will cost approximately $0.50-$1.00 total to run

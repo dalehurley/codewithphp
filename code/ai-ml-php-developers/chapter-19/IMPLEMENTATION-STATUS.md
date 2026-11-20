@@ -156,7 +156,7 @@ These files can be created from the chapter content when needed.
 - [x] Further reading with quality resources
 - [x] Knowledge check quiz
 
-### PHP 8.4 Standards
+### PHP 8.6 Standards
 
 - [x] `declare(strict_types=1);` in all examples
 - [x] Full type hints throughout
@@ -232,7 +232,7 @@ Chapter 19 is **complete and production-ready** for publication. It provides:
 
 ✅ Comprehensive time series forecasting education
 ✅ Multiple working approaches (moving averages, linear regression, decomposition)
-✅ Production-quality PHP 8.4 code
+✅ Production-quality PHP 8.6 code
 ✅ Real data and practical examples
 ✅ Proper evaluation and comparison
 ✅ Extensive exercises and assessments

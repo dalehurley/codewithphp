@@ -19,7 +19,7 @@ chapter-11/
 
 ### Required Software
 
-- **PHP 8.4+** with `curl` extension
+- **PHP 8.6+** with `curl` extension
 - **Python 3.10+**
 - **pip** (Python package manager)
 
@@ -49,7 +49,7 @@ pip install -r requirements.txt
 
 ```bash
 # Check PHP version
-php --version  # Should be 8.4+
+php --version  # Should be 8.6+
 
 # Check Python version
 python3 --version  # Should be 3.10+
@@ -535,12 +535,12 @@ After completing these examples:
 If you encounter issues:
 
 1. Check this README's Troubleshooting section
-2. Verify prerequisites (PHP 8.4+, Python 3.10+)
+2. Verify prerequisites (PHP 8.6+, Python 3.10+)
 3. Check Python package installation: `pip list`
 4. Test Python scripts standalone: `python3 script.py`
 5. Review Chapter 11 Troubleshooting sections
 
-All code has been tested and should work on PHP 8.4+ and Python 3.10+.
+All code targets PHP 8.6+ and Python 3.10+.
 
 
 

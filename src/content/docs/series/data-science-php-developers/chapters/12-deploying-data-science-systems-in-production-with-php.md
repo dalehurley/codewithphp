@@ -26,7 +26,7 @@ This is where you become a complete data science engineer—building systems tha
 Before starting this chapter, you should have:
 
 - Completed [Chapter 11: Building a Real-World Project](/series/data-science-php-developers/chapters/11-building-a-real-world-data-science-project-with-php)
-- PHP 8.4+ installed
+- PHP 8.6+ installed
 - Docker installed
 - Basic Linux/Unix knowledge
 - Access to a production server or cloud platform
@@ -112,7 +112,7 @@ Package application and dependencies into portable Docker containers.
 ```dockerfile
 # filename: Dockerfile
 # Multi-stage build for security and smaller image size
-FROM php:8.4-fpm-alpine AS base
+FROM php:8.6-fpm-alpine AS base
 
 # Install system dependencies
 RUN apk add --no-cache \
@@ -994,7 +994,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4'
+          php-version: '8.6'
           extensions: mbstring, pdo_mysql, zip
           coverage: none
       
@@ -1981,7 +1981,7 @@ opcache.enable_file_override=1
 opcache.optimization_level=0x7FFEBFFF
 opcache.max_wasted_percentage=5
 
-; JIT (PHP 8.4)
+; JIT (PHP 8.6)
 opcache.jit=tracing
 opcache.jit_buffer_size=128M
 

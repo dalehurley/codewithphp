@@ -54,7 +54,7 @@ A comprehensive review was conducted on Chapter 19 to ensure quality, accuracy, 
 
 ✅ **Code Quality**
 
-- All PHP examples use PHP 8.4 syntax
+- All PHP examples use PHP 8.6 syntax
 - `declare(strict_types=1);` present in all code blocks
 - Full type hints throughout
 - PSR-12 compliant formatting

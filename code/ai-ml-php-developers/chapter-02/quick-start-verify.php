@@ -17,13 +17,13 @@ $checks = ['passed' => 0, 'failed' => 0];
 // Check 1: PHP Version
 echo "1. PHP Version... ";
 $phpVersion = PHP_VERSION;
-$versionOk = version_compare($phpVersion, '8.4.0', '>=');
+$versionOk = version_compare($phpVersion, '8.6.0', '>=');
 
 if ($versionOk) {
     echo "✅ {$phpVersion}\n";
     $checks['passed']++;
 } else {
-    echo "❌ {$phpVersion} (need 8.4+)\n";
+    echo "❌ {$phpVersion} (need 8.6+)\n";
     $checks['failed']++;
 }
 

@@ -479,7 +479,7 @@ pandas (Vectorized) time: 2.10ms
 Python (Loop) time: 85.40ms
 ```
 
-_(Note: PHP 8.4 loops would be closer to the Python Loop speed, though often faster thanks to JIT, but still significantly slower than vectorized C-routines)._
+_(Note: PHP 8.6 loops would be closer to the Python Loop speed, though often faster thanks to JIT, but still significantly slower than vectorized C-routines)._
 
 ### Why It Works
 

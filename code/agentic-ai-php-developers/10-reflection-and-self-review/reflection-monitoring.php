@@ -160,7 +160,7 @@ $agent1 = Agent::create($client)
     ->withSystemPrompt('You are a helpful technical writer.')
     ->maxIterations(15);
 
-$task1 = 'Explain the benefits of using readonly properties in PHP 8.4 with practical examples.';
+$task1 = 'Explain the benefits of using readonly properties in PHP 8.6 with practical examples.';
 echo "Task: {$task1}\n\n";
 
 $result1 = $agent1->run($task1);

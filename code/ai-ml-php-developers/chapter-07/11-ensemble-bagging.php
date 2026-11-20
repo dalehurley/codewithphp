@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Demonstrates Bootstrap Aggregating (Bagging) to reduce overfitting
  * by training multiple models on different random subsets of training data.
  * 
- * PHP version 8.4
+ * PHP version 8.6
  */
 
 require_once __DIR__ . '/../../vendor/autoload.php';

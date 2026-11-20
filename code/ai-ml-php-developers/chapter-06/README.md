@@ -16,7 +16,7 @@ This will install the required dependencies (PHP-ML or Rubix ML) from the chapte
 ### Core Concepts
 
 - **01-binary-classification-intro.php** — Binary classification fundamentals with decision boundaries
-- **02-feature-extraction-basic.php** — Basic text feature extraction using PHP 8.4 property hooks
+- **02-feature-extraction-basic.php** — Basic text feature extraction using PHP property hooks
 - **03-bag-of-words.php** — Bag-of-words implementation from scratch
 - **04-tfidf-features.php** — TF-IDF feature weighting for text classification
 
@@ -110,7 +110,7 @@ After completing this chapter, you'll be ready for:
 
 ## Notes
 
-- All code uses PHP 8.4 features where beneficial (property hooks, typed properties)
+- All code uses PHP features where beneficial (property hooks, typed properties)
 - Examples are self-contained and can run independently
 - Production code should include additional validation and error handling
 - Real spam filters use much larger training datasets (thousands of emails)

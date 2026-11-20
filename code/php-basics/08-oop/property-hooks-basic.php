@@ -3,16 +3,16 @@
 declare(strict_types=1);
 
 /**
- * PHP 8.4 Property Hooks - Basic Examples
+ * PHP Property Hooks - Basic Examples
  * 
  * Property hooks provide a clean alternative to traditional getters and setters.
  * They allow you to add behavior when reading or writing properties
  * without verbose method definitions.
  * 
- * Requires PHP 8.4+
+ * Requires PHP 8.6+
  */
 
-echo "=== PHP 8.4 Property Hooks ===" . PHP_EOL . PHP_EOL;
+echo "=== PHP Property Hooks ===" . PHP_EOL . PHP_EOL;
 
 // Example 1: Simple transformation on set
 class User

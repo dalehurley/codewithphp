@@ -4,7 +4,7 @@ Complete code examples for integrating TensorFlow deep learning models with PHP 
 
 ## Prerequisites
 
-- PHP 8.4+ with GD extension enabled
+- PHP 8.6+ with GD extension enabled
 - Docker installed and running
 - Python 3.10+ with TensorFlow installed
 - Composer (for dependencies, though minimal in this chapter)
@@ -249,7 +249,7 @@ python3 download_model.py
 sudo apt-get install php-gd
 
 # macOS (with Homebrew):
-brew install php@8.4
+brew install php@8.6
 
 # Verify installation:
 php -m | grep gd

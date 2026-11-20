@@ -26,7 +26,7 @@ By the end, you'll create specialized Claude instances for different use cases: 
 Before starting, ensure you understand:
 
 - ✓ **Completed Chapters 00-06** — Basic Claude API usage, authentication, messages, and prompt engineering
-- ✓ **PHP 8.4+** with good understanding of classes and namespaces
+- ✓ **PHP 8.6+** with good understanding of classes and namespaces
 - ✓ **Anthropic API key** configured and working
 - ✓ **Understanding of prompt engineering** from Chapter 05
 - ✓ **Message structure and conversation flow** from Chapter 04
@@ -112,7 +112,7 @@ echo str_repeat('-', 80) . "\n\n";
 $response2 = $client->messages()->create([
     'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 500,
-    'system' => 'You are a senior PHP code reviewer. Analyze code for type safety, best practices, and potential bugs. Always suggest improvements using modern PHP 8.4+ features.',
+    'system' => 'You are a senior PHP code reviewer. Analyze code for type safety, best practices, and potential bugs. Always suggest improvements using modern PHP 8.6+ features.',
     'messages' => [
         [
             'role' => 'user',
@@ -273,12 +273,12 @@ $systemPrompt = (new SystemPromptBuilder())
         'Laravel 11.x framework internals',
         'Eloquent ORM and query optimization',
         'Service container and dependency injection',
-        'Modern PHP 8.4+ features',
+        'Modern PHP 8.6+ features',
         'Database design and migrations',
     ]
     ->task('Help developers write clean, efficient Laravel code following best practices.')
     ->constraints([
-        'Always use PHP 8.4+ syntax',
+        'Always use PHP 8.6+ syntax',
         'Recommend type hints and return types',
         'Suggest testable, SOLID code',
         'Consider performance implications',
@@ -305,14 +305,14 @@ You are a Laravel expert and technical mentor.
 - Laravel 11.x framework internals
 - Eloquent ORM and query optimization
 - Service container and dependency injection
-- Modern PHP 8.4+ features
+- Modern PHP 8.6+ features
 - Database design and migrations
 
 # Task
 Help developers write clean, efficient Laravel code following best practices.
 
 # Constraints
-- Always use PHP 8.4+ syntax
+- Always use PHP 8.6+ syntax
 - Recommend type hints and return types
 - Suggest testable, SOLID code
 - Consider performance implications
@@ -345,7 +345,7 @@ class CodeReviewerAssistant
 You are a senior PHP code reviewer with 10+ years of experience in enterprise applications.
 
 # Expertise
-- PHP 8.4+ features and best practices
+- PHP 8.6+ features and best practices
 - SOLID principles and design patterns
 - Security vulnerabilities (SQL injection, XSS, CSRF)
 - Performance optimization
@@ -377,7 +377,7 @@ List issues by severity:
 Provide specific, actionable improvements with code examples.
 
 ## Refactored Code
-Show improved version using PHP 8.4+ features.
+Show improved version using PHP 8.6+ features.
 
 # Constraints
 - Be constructive, not harsh
@@ -506,7 +506,7 @@ Common issues and solutions
 - Use consistent terminology
 
 # Code Examples
-- Always use PHP 8.4+ syntax
+- Always use PHP 8.6+ syntax
 - Include declare(strict_types=1)
 - Show proper error handling
 - Demonstrate best practices
@@ -1299,7 +1299,7 @@ $longPrompt = <<<'PROMPT'
 You are a PHP code reviewer.
 
 # Expertise
-- PHP 8.4+ features
+- PHP 8.6+ features
 - Security best practices
 - Performance optimization
 
@@ -1571,7 +1571,7 @@ You are a {{{role}}}.
 TEMPLATE,
     defaults: [
         'role' => 'PHP code reviewer',
-        'expertise' => '- PHP 8.4+ features\n- Security best practices',
+        'expertise' => '- PHP 8.6+ features\n- Security best practices',
         'task' => 'Review code for issues and improvements'
     ]
 );
@@ -1691,7 +1691,7 @@ $prompt = <<<'PROMPT'
 You are a PHP code reviewer.
 
 # Expertise
-- PHP 8.4+ features
+- PHP 8.6+ features
 - Security best practices
 
 # Task

@@ -27,7 +27,7 @@ Beyond building SmartDash, we'll explore emerging trends shaping PHP's AI future
 
 Before starting, ensure you have:
 
-- **PHP 8.4+** installed with extensions: `pdo`, `mbstring`, `openssl`, `curl`, `gd` or `imagick`
+- **PHP 8.6+** installed with extensions: `pdo`, `mbstring`, `openssl`, `curl`, `gd` or `imagick`
 - **Composer** for dependency management
 - **Laravel 11** familiarity (routing, Eloquent, Blade, jobs)
 - **Database** (MySQL 8.0+, PostgreSQL 13+, or SQLite 3.35+)

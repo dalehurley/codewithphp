@@ -50,7 +50,7 @@ Before starting this chapter, you should be comfortable with:
 
 ```bash
 # Check PHP version
-php --version  # Should be PHP 8.4+
+php --version  # Should be PHP 8.6+
 
 # Check Composer
 composer --version
@@ -2263,7 +2263,7 @@ Deploy Symfony Components applications to production.
 
 ```dockerfile
 # filename: Dockerfile
-FROM php:8.4-fpm
+FROM php:8.6-fpm
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

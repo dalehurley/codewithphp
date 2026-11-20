@@ -36,7 +36,7 @@ We'll create a full-featured app with authentication, REST API, testing, and dep
 
 **Tech Stack:**
 - Laravel 12
-- PHP 8.4
+- PHP 8.6
 - MySQL/SQLite
 - Laravel Sanctum (API auth)
 - PHPUnit/Pest (testing)
@@ -69,7 +69,7 @@ All files are fully functional and follow Laravel best practices.
 
 Before starting this chapter, you should have:
 
-- PHP 8.4+ installed and confirmed working with `php --version`
+- PHP 8.6+ installed and confirmed working with `php --version`
 - Composer installed and working
 - MySQL or SQLite database available
 - Git installed (optional but recommended)
@@ -81,7 +81,7 @@ Before starting this chapter, you should have:
 
 ```bash
 # Check PHP version
-php --version  # Should show PHP 8.4+
+php --version  # Should show PHP 8.6+
 
 # Check Composer
 composer --version
@@ -1661,7 +1661,7 @@ server {
     error_page 404 /index.php;
 
     location ~ \.php$ {
-        fastcgi_pass unix:/var/run/php/php8.4-fpm.sock;
+        fastcgi_pass unix:/var/run/php/php8.6-fpm.sock;
         fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
         include fastcgi_params;
     }

@@ -28,7 +28,7 @@ Before starting this chapter, you should have:
 
 - Completed [Chapter 03](/series/ai-ml-php-developers/chapters/03-core-machine-learning-concepts-and-terminology) or equivalent understanding of ML fundamentals (features, labels, training/testing, overfitting)
 - Completed [Chapter 09](/series/ai-ml-php-developers/chapters/09-advanced-machine-learning-techniques-trees-ensembles-and-clustering) or familiarity with advanced ML algorithms and when to use them
-- PHP 8.4+ installed with Composer available
+- PHP 8.6+ installed with Composer available
 - Rubix ML installed (from [Chapter 02](/series/ai-ml-php-developers/chapters/02-setting-up-your-ai-development-environment))
 - Basic understanding of functions, derivatives, and optimization concepts
 - Familiarity with linear algebra basics (dot products, matrices)
@@ -41,7 +41,7 @@ Before starting this chapter, you should have:
 
 ```bash
 # Confirm PHP version
-php --version  # Should show 8.4+
+php --version  # Should show 8.6+
 
 # Verify Rubix ML is available
 php -r "require 'vendor/autoload.php'; use Rubix\ML\Classifiers\MultilayerPerceptron; echo 'Rubix ML ready!';"

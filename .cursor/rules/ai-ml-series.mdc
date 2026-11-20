@@ -32,7 +32,7 @@ A comprehensive 25-chapter course teaching PHP developers how to integrate artif
 
 ### Dependencies
 
-- PHP 8.4+ (always)
+- PHP 8.6+ (always)
 - Composer for dependency management
 - Optional: Python 3.10+ for advanced ML tasks
 - Docker (for deployment chapters)
@@ -62,7 +62,7 @@ The series follows a carefully structured learning path:
 
 ### Code Examples
 
-- **PHP 8.4 syntax**: Use modern PHP features (property hooks, typed properties, enums, attributes)
+- **PHP 8.6 syntax**: Use modern PHP features (property hooks, typed properties, enums, attributes)
 - **Working code**: Every example must be runnable and tested
 - **Complete snippets**: Include all imports, use statements, and configuration
 - **Error handling**: Show proper exception handling and validation
@@ -364,7 +364,7 @@ For Chapter 4, reference these files:
 
 ### Chapter 2 (Environment Setup) Must Cover
 
-1. PHP 8.4 installation verification
+1. PHP 8.6 installation verification
 2. Composer setup
 3. Installing PHP-ML and/or Rubix ML
 4. Optional: Python setup for later chapters
@@ -469,7 +469,7 @@ The final project should synthesize multiple techniques:
 
 ### Preferred Documentation Links
 
-- [PHP Manual](https://www.php.net/docs.php) - PHP 8.4
+- [PHP Manual](https://www.php.net/docs.php) - PHP 8.6
 - [PHP-ML Documentation](https://php-ml.readthedocs.io/)
 - [Rubix ML Documentation](https://docs.rubixml.com/)
 - [Composer Documentation](https://getcomposer.org/doc/)
@@ -488,7 +488,7 @@ The final project should synthesize multiple techniques:
 Before finalizing any chapter, verify:
 
 - [ ] Follows global tutorial structure (Overview, Prerequisites, What You'll Build, etc.)
-- [ ] All code examples use PHP 8.4 syntax
+- [ ] All code examples use PHP 8.6 syntax
 - [ ] Working code provided in `code/chapter-XX/` directory
 - [ ] External dependencies documented in README or composer.json
 - [ ] Clear explanations of ML concepts for PHP developers

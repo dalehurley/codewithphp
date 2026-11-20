@@ -179,7 +179,7 @@ echo "   ✓ Writer agent created with get_data tool\n\n";
 // Execute Multi-Agent Workflow
 // ============================================================================
 
-$topic = 'PHP 8.4 Property Hooks';
+$topic = 'PHP Property Hooks';
 
 echo str_repeat("=", 80) . "\n";
 echo "MULTI-AGENT WORKFLOW EXECUTION\n";

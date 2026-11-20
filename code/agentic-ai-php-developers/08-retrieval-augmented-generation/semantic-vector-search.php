@@ -82,8 +82,7 @@ $documents = [
     ],
     [
         'title' => 'PHP Type System',
-        'content' => 'PHP 8.4 includes advanced type system features like property hooks and 
-                      asymmetric visibility. The type system supports scalar types including int, 
+        'content' => 'PHP supports property hooks and asymmetric visibility. Its type system includes scalar types such as int,
                       float, string, and bool. Union types allow multiple type possibilities. 
                       Intersection types require multiple types simultaneously. Strict types can 
                       be enabled with declare(strict_types=1).',
@@ -107,9 +106,8 @@ $documents = [
     ],
     [
         'title' => 'PHP Performance',
-        'content' => 'PHP 8.4 performance improvements include JIT compiler enhancements and opcache 
-                      optimizations. Memory usage is reduced through better garbage collection. Preloading 
-                      can cache classes for faster startup. Benchmark your specific workload to measure 
+        'content' => 'OPcache caches compiled PHP bytecode. The JIT may help on compute-heavy workloads.
+                      Preloading can make classes available at startup. Benchmark your specific workload to measure
                       gains. Profile with Xdebug or Blackfire.',
         'metadata' => ['topic' => 'performance', 'category' => 'optimization'],
     ],

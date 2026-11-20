@@ -164,7 +164,7 @@ php 07-production-communication-system.php
 
 ## Prerequisites
 
-- PHP 8.4+
+- PHP 8.6+
 - Composer dependencies installed
 - Anthropic API key set in environment
 - `claude-php/claude-php-agent` installed

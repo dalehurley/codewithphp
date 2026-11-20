@@ -3,7 +3,7 @@
   "description": "Image Classification with Pre-trained Models - Cloud and Local approaches",
   "type": "project",
   "require": {
-    "php": "^8.4",
+    "php": "^8.6",
     "ext-curl": "*",
     "ext-json": "*",
     "ext-gd": "*"

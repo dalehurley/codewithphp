@@ -30,7 +30,7 @@ Files:
 ---
 
 ### 🚀 Chapter 02: Modern PHP Features
-**Discover PHP 8.4's powerful features**
+**Discover PHP 8.6's powerful features**
 
 Run these examples:
 ```bash
@@ -42,7 +42,7 @@ php 03-enums-example.php
 
 **Topics**:
 - Type safety & strict declarations
-- Property hooks (PHP 8.4)
+- Property hooks (PHP 8.6)
 - Enums & exhaustive matching
 
 ---
@@ -217,7 +217,7 @@ cat chapter-06/complete-blog-api.md
 ## 🔧 Tools & Requirements
 
 ### Minimum Requirements
-- PHP 8.4+
+- PHP 8.6+
 - Composer
 - Terminal/Shell
 
@@ -230,7 +230,7 @@ cat chapter-06/complete-blog-api.md
 ### Installation
 ```bash
 # Check PHP version
-php --version  # Need 8.4+
+php --version  # Need 8.6+
 
 # Install Composer
 composer --version
@@ -293,7 +293,7 @@ php artisan test tests/Feature/TaskTest.php
 
 ### Official Documentation
 - [Laravel Docs](https://laravel.com/docs) - Complete framework documentation
-- [PHP 8.4 Docs](https://www.php.net/manual/en/index.php) - PHP language reference
+- [PHP 8.6 Docs](https://www.php.net/manual/en/index.php) - PHP language reference
 - [Eloquent ORM](https://laravel.com/docs/eloquent) - Database querying
 
 ### Learning Resources
@@ -310,7 +310,7 @@ php artisan test tests/Feature/TaskTest.php
 # Check your version
 php --version
 
-# Need PHP 8.4+
+# Need PHP 8.6+
 # Update PHP if necessary
 ```
 
@@ -365,7 +365,7 @@ php artisan test
 ## 📋 Checklist
 
 ### Before You Start
-- [ ] PHP 8.4+ installed
+- [ ] PHP 8.6+ installed
 - [ ] Composer installed
 - [ ] Terminal/Shell access
 - [ ] Code editor ready
@@ -456,7 +456,7 @@ Go from Rails to Laravel and master both frameworks.
 ---
 
 *Last Updated: January 2025*  
-*PHP Version: 8.4+*  
+*PHP Version: 8.6+*
 *Laravel Version: 12.x*
 
 

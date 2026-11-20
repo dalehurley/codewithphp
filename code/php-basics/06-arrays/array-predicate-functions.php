@@ -3,12 +3,12 @@
 declare(strict_types=1);
 
 /**
- * PHP 8.4 New Array Functions
+ * Array predicate functions introduced in PHP 8.4
  * 
  * Demonstrates array_find(), array_find_key(), array_any(), and array_all()
  */
 
-echo "=== PHP 8.4 Array Functions ===" . PHP_EOL . PHP_EOL;
+echo "=== PHP Array Predicate Functions ===" . PHP_EOL . PHP_EOL;
 
 // Sample data
 $users = [
@@ -28,9 +28,9 @@ $filtered = array_filter($users, fn($u) => $u["age"] > 30);
 $firstOld = reset($filtered) ?: null;
 echo "Traditional way: " . ($firstOld ? $firstOld["name"] : "Not found") . PHP_EOL;
 
-// PHP 8.4 way - much cleaner!
+// Search with array_find().
 $firstOver30 = array_find($users, fn($u) => $u["age"] > 30);
-echo "PHP 8.4 way: " . ($firstOver30 ? $firstOver30["name"] : "Not found") . PHP_EOL;
+echo "array_find(): " . ($firstOver30 ? $firstOver30["name"] : "Not found") . PHP_EOL;
 
 // Find first inactive user
 $inactiveUser = array_find($users, fn($u) => !$u["active"]);

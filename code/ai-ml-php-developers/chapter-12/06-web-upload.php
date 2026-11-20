@@ -317,7 +317,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['image'])) {
     <div class="container">
         <div class="header">
             <h1>🖼️ AI Image Classification</h1>
-            <p>Powered by TensorFlow MobileNetV2 and PHP 8.4</p>
+            <p>Powered by TensorFlow MobileNetV2 and PHP 8.6</p>
         </div>
 
         <div class="content">

@@ -18,7 +18,7 @@ Laravel is a **full-stack web application framework** that provides:
 
 ## 📋 Prerequisites
 
-- PHP 8.2+ (our blog uses 8.4!)
+- PHP 8.2+ (our blog uses 8.6!)
 - Composer installed
 - Database (MySQL, PostgreSQL, or SQLite)
 - Basic understanding from Chapters 1-19

@@ -104,7 +104,7 @@ if ($foundUser) {
     echo "Found user by ID 2: {$foundUser['name']}" . PHP_EOL;
 }
 
-// PHP 8.4 way
+// PHP 8.6 way
 $foundUserNew = array_find($users, fn($u) => $u["id"] === 2);
 if ($foundUserNew) {
     echo "Found with array_find: {$foundUserNew['name']}" . PHP_EOL;

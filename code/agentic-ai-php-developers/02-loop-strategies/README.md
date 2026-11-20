@@ -4,7 +4,7 @@ Complete, runnable code examples demonstrating the four loop strategies in the `
 
 ## Prerequisites
 
-- PHP 8.4+
+- PHP 8.6+
 - Composer installed
 - Anthropic API key (set in environment)
 - `claude-php/agent` package installed

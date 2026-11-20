@@ -2,7 +2,7 @@
 
 ## Core Syntax
 
-| Feature | PHP 8.4 | Python 3.10+ |
+| Feature | PHP 8.6 | Python 3.10+ |
 |---------|---------|--------------|
 | **Variables** | `$count = 10;` | `count = 10` |
 | **Constants** | `define('MAX', 100);` | `MAX = 100` (convention) |

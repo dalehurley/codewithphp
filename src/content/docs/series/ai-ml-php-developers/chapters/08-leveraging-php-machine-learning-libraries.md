@@ -29,7 +29,7 @@ Before starting this chapter, you should have:
 - Completed [Chapter 06](/series/ai-ml-php-developers/chapters/06-classification-basics-and-building-a-spam-filter) (spam filter implementation) or equivalent classification experience
 - Completed [Chapter 07](/series/ai-ml-php-developers/chapters/07-model-evaluation-and-improvement) (evaluation metrics) or understand accuracy, precision, and recall
 - Understanding of train/test splits and cross-validation from [Chapter 03](/series/ai-ml-php-developers/chapters/03-core-machine-learning-concepts-and-terminology)
-- PHP 8.4+ installed with Composer available
+- PHP 8.6+ installed with Composer available
 - Comfortable installing packages via Composer
 - Basic understanding of object-oriented PHP (classes, interfaces, type declarations)
 
@@ -3061,7 +3061,7 @@ php -S localhost:8000 08-production-api.php
 ```
 
 ```
-[Sun Oct 26 12:34:56 2025] PHP 8.4.0 Development Server (http://localhost:8000) started
+[Fri Nov 20 12:34:56 2026] PHP 8.6.0 Development Server (http://localhost:8000) started
 [ModelServer] Model loaded successfully (Rubix\ML\Classifiers\KNearestNeighbors)
 ```
 
@@ -3182,7 +3182,7 @@ server {
     # API endpoint
     location /predict {
         try_files $uri $uri/ /08-production-api.php?$query_string;
-        fastcgi_pass unix:/var/run/php/php8.4-fpm.sock;
+        fastcgi_pass unix:/var/run/php/php8.6-fpm.sock;
         fastcgi_param SCRIPT_FILENAME $document_root/08-production-api.php;
         include fastcgi_params;
     }
@@ -3190,7 +3190,7 @@ server {
     # Health check
     location /health {
         try_files $uri $uri/ /08-production-api.php?$query_string;
-        fastcgi_pass unix:/var/run/php/php8.4-fpm.sock;
+        fastcgi_pass unix:/var/run/php/php8.6-fpm.sock;
         fastcgi_param SCRIPT_FILENAME $document_root/08-production-api.php;
         include fastcgi_params;
     }
@@ -3200,7 +3200,7 @@ server {
         allow 10.0.0.0/8;
         deny all;
         try_files $uri $uri/ /08-production-api.php?$query_string;
-        fastcgi_pass unix:/var/run/php/php8.4-fpm.sock;
+        fastcgi_pass unix:/var/run/php/php8.6-fpm.sock;
         fastcgi_param SCRIPT_FILENAME $document_root/08-production-api.php;
         include fastcgi_params;
     }
@@ -3210,11 +3210,11 @@ server {
 **PHP-FPM Configuration:**
 
 ```ini
-; /etc/php/8.4/fpm/pool.d/ml-api.conf
+; /etc/php/8.6/fpm/pool.d/ml-api.conf
 [ml-api]
 user = www-data
 group = www-data
-listen = /var/run/php/php8.4-fpm.sock
+listen = /var/run/php/php8.6-fpm.sock
 
 ; Process management
 pm = dynamic

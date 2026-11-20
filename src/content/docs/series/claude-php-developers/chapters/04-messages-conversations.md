@@ -36,14 +36,14 @@ This chapter provides comprehensive coverage of message formatting, building sta
 Before starting, ensure you have:
 
 - ✓ **Completed Chapters 01-03**
-- ✓ **PHP 8.4+** with type declarations knowledge
+- ✓ **PHP 8.6+** with type declarations knowledge
 - ✓ **Anthropic API key** configured
 - ✓ **Understanding of sessions** or state management
 
 **Verify your setup:**
 
 ```bash
-php --version  # Should show PHP 8.4+
+php --version  # Should show PHP 8.6+
 composer --version  # Should be installed
 ```
 

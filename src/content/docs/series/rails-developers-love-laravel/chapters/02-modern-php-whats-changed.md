@@ -18,7 +18,7 @@ dateModified: "2026-11-20"
 
 ## Overview
 
-If you use Ruby, start by comparing dynamic method calls with PHP's optional parameter and return declarations. This chapter also maps Ruby patterns to PHP enums, match expressions and typed properties. Its PHP 8.4 examples show what runs in each version.
+If you use Ruby, start by comparing dynamic method calls with PHP's optional parameter and return declarations. This chapter also maps Ruby patterns to PHP enums, match expressions and typed properties. Its PHP 8.6 examples show what runs in each version.
 
 ## Prerequisites
 
@@ -34,7 +34,7 @@ Before starting this chapter, you should have:
 
 By the end of this chapter, you will have:
 
-- A comprehensive understanding of PHP 8.4's modern features
+- A comprehensive understanding of PHP 8.6's modern features
 - Side-by-side comparisons of Ruby and PHP syntax
 - Knowledge of type safety improvements in modern PHP
 - Understanding of performance enhancements with JIT compilation
@@ -74,7 +74,7 @@ php 02-property-hooks-example.php
 php 03-enums-example.php
 ```
 
-All examples require PHP 8.4+
+All examples require PHP 8.6+
 
 ## The PHP Renaissance
 
@@ -149,7 +149,7 @@ getUser([1, 2, 3]);  // Still no error!
 
 This is the PHP that gave the language a bad reputation.
 
-### The Modern Way (PHP 8.4)
+### The Modern Way (PHP 8.6)
 
 ```php
 # filename: modern-php-example.php
@@ -946,7 +946,7 @@ PHP's JIT provides **2-3x performance improvement** in CPU-intensive tasks.
 
 **Web Request Handling:**
 
-- PHP 8.4: ~15,000 req/sec (simple JSON response)
+- PHP 8.6: ~15,000 req/sec (simple JSON response)
 - Ruby 3.3 + Rails: ~3,000-5,000 req/sec
 
 **Database Operations:**
@@ -1104,7 +1104,7 @@ arr.all? { |n| n > 0 }
 arr.find { |n| n > 3 }
 ```
 
-### PHP 8.4 Array Functions
+### PHP 8.6 Array Functions
 
 ```php
 # filename: array-functions-example.php
@@ -1232,14 +1232,14 @@ if (json_validate($json)) {
 // More efficient than json_decode() + check for errors
 ```
 
-## PHP 8.4: HTML5 Support
+## PHP 8.6: HTML5 Support
 
 PHP 8.4 added better HTML5 support in the DOM extension:
 
 ```php
 # filename: html5-example.php
 <?php
-// PHP 8.4+ - improved HTML5 parsing
+// PHP 8.6+ - improved HTML5 parsing
 $html = '<!DOCTYPE html><html><body><section><article>Content</article></section></body></html>';
 
 $dom = new DOMDocument();
@@ -1467,7 +1467,7 @@ Same philosophy, different commands.
 
 ## The Bottom Line
 
-Modern PHP (8.4) is a **fundamentally different language** than PHP 5.x:
+Modern PHP (8.6) is a **fundamentally different language** than PHP 5.x:
 
 ### What Changed
 
@@ -1519,7 +1519,7 @@ class UserService
 end
 ```
 
-### PHP 8.4 Version
+### PHP 8.6 Version
 
 ```php
 # filename: user-service-example.php
@@ -1625,7 +1625,7 @@ function calculateTotal(
     return $afterDiscount * (1 + $taxRate);
 }
 
-// Or with PHP 8.4 array functions
+// Or with PHP 8.6 array functions
 function calculateTotal(
     array $items,
     float $discount = 0.0,
@@ -1745,7 +1745,7 @@ echo $status2->value;       // "draft"
 
 Congratulations! You've completed a comprehensive tour of modern PHP. Here's what you've accomplished:
 
-✓ **Understood PHP's Evolution** - From PHP 5.x to PHP 8.4's modern features
+✓ **Understood PHP's Evolution** - From PHP 5.x to PHP 8.6's modern features
 ✓ **Compared Ruby and PHP** - Side-by-side syntax comparisons for every major feature
 ✓ **Learned Type Safety** - How strict types, union types, and enums work in PHP
 ✓ **Explored Modern Syntax** - Property hooks, match expressions, named arguments, and more
@@ -1755,7 +1755,7 @@ Congratulations! You've completed a comprehensive tour of modern PHP. Here's wha
 
 ### Key Takeaways
 
-1. **Modern PHP is Nothing Like Old PHP** - PHP 8.4 is a modern, type-safe language
+1. **Modern PHP is Nothing Like Old PHP** - PHP 8.6 is a modern, type-safe language
 2. **Type Safety Built-In** - Strict types catch errors at compile-time
 3. **Performance Matters** - JIT compilation provides 2-3x speed improvements
 4. **Ruby-Inspired Features** - Collections, conventions, developer happiness

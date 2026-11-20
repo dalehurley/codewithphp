@@ -24,7 +24,7 @@ This is a reference guide, not a traditional tutorial. For step-by-step learning
 
 **No prerequisites required** - dive right in! But you'll need:
 
-- **PHP 8.4+** installed (`php --version`)
+- **PHP 8.6+** installed (`php --version`)
 - **Composer** installed (`composer --version`)
 - **Anthropic API key** (we'll show you how to get one below)
 
@@ -137,7 +137,7 @@ php quickstart.php
 Test that everything works:
 
 ```bash
-# Verify PHP version (should be 8.4+)
+# Verify PHP version (should be 8.6+)
 php --version
 
 # Verify Composer is installed
@@ -346,7 +346,7 @@ $client = new ClaudePhp(
 $response = $client->messages()->create([
     'model' => 'claude-sonnet-4-5-20250929',
     'max_tokens' => 500,
-    'system' => 'You are a senior PHP code reviewer. Analyze code for type safety, security issues, and best practices. Always suggest improvements using PHP 8.4+ features.',
+    'system' => 'You are a senior PHP code reviewer. Analyze code for type safety, security issues, and best practices. Always suggest improvements using PHP 8.6+ features.',
     'messages' => [[
         'role' => 'user',
         'content' => 'Review this function: function getUser($id) { return $db->query("SELECT * FROM users WHERE id = " . $id); }'

@@ -42,7 +42,7 @@ This directory contains all code examples from Chapter 6 of the **Data Science f
 
 ### Prerequisites
 
-- PHP 8.4 or higher
+- PHP 8.6 or higher
 - Composer
 - At least 128MB memory limit (default)
 

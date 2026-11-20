@@ -3,7 +3,7 @@
     "description": "Data science project template for PHP developers",
     "type": "project",
     "require": {
-        "php": "^8.4",
+        "php": "^8.6",
         "markrogoyski/math-php": "^2.0",
         "league/csv": "^9.0",
         "guzzlehttp/guzzle": "^7.0",

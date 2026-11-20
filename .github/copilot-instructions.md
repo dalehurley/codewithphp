@@ -84,11 +84,11 @@
 
 ### PHP Version Requirement
 
-- All code and docs target **PHP 8.4** exclusively.
-- Use PHP 8.4 syntax/features (property hooks, asymmetric visibility, new array functions, `#[\Override]`, etc.).
-- Composer files must specify `php: "^8.4"`.
-- Prerequisites and docs should default to PHP 8.4 unless comparing versions.
-- Reference: https://www.php.net/releases/8.4/
+- All code and docs target **PHP 8.6** exclusively.
+- Use modern PHP syntax on PHP 8.6 (property hooks, asymmetric visibility, array predicates, `#[\Override]`, etc.).
+- Composer files must specify `php: "^8.6"`.
+- Prerequisites and docs should default to PHP 8.6 unless comparing versions.
+- Reference: https://www.php.net/releases/8.6/en.php
 
 ### Tutorials Authoring (Global Rules)
 

@@ -15,7 +15,7 @@ This document provides a detailed overview of the technology stack used in the B
 | Cache/Queue Store | Redis | 6.0+ | Caching and background job queue |
 | Containerization | Docker & Laravel Sail | Latest | Development environment |
 | JavaScript Runtime | Node.js | 18.0+ | Frontend tooling, build process |
-| Language | PHP | 8.4+ | Server-side language |
+| Language | PHP | 8.6+ | Server-side language |
 
 ## Backend Stack
 
@@ -184,7 +184,7 @@ This document provides a detailed overview of the technology stack used in the B
 
 | Package | Version | Notes |
 |---------|---------|-------|
-| PHP | 8.4+ | Required for modern syntax and performance |
+| PHP | 8.6+ | Required for modern syntax and performance |
 | Laravel | 12.x | Latest stable version |
 | React | 19.x | Latest with concurrent rendering |
 | Node.js | 18+ | LTS recommended, 20+ works fine |

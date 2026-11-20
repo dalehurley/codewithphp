@@ -10,10 +10,10 @@ echo "=== Docker Setup Test ===\n\n";
 
 // Test 1: PHP Version
 echo "1. PHP Version: " . PHP_VERSION . "\n";
-if (version_compare(PHP_VERSION, '8.4.0', '>=')) {
-    echo "   ✓ PHP 8.4+ detected\n\n";
+if (version_compare(PHP_VERSION, '8.6.0', '>=')) {
+    echo "   ✓ PHP 8.6+ detected\n\n";
 } else {
-    echo "   ✗ PHP 8.4+ required\n\n";
+    echo "   ✗ PHP 8.6+ required\n\n";
     exit(1);
 }
 

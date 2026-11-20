@@ -12,7 +12,7 @@ declare(strict_types=1);
  * This example shows how PHP-ML can be used for similar operations.
  * 
  * Prerequisites:
- * - PHP 8.4+
+ * - PHP 8.6+
  * - PHP-ML: composer require php-ai/php-ml
  */
 
@@ -254,7 +254,7 @@ echo "  ✓ Feature scaling and normalization\n";
 echo "  ✓ Distance calculations\n";
 echo "  ✓ Neural network tensor operations\n\n";
 
-echo "Note: For production use with PHP 8.4, PHP-ML is recommended\n";
+echo "Note: For production use with PHP 8.6, PHP-ML is recommended\n";
 echo "over the Tensor extension which only supports PHP ≤ 8.3\n";
 
 // ============================================================================

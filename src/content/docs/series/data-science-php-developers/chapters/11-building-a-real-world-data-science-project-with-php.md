@@ -26,7 +26,7 @@ This is where you become a data science practitioner—building systems that sol
 Before starting this chapter, you should have:
 
 - Completed [Chapter 10: Data Visualization](/series/data-science-php-developers/chapters/10-data-visualization-and-reporting-with-php)
-- PHP 8.4+ installed
+- PHP 8.6+ installed
 - MySQL or PostgreSQL database
 - Composer for dependency management
 - Basic understanding of MVC architecture
@@ -2382,7 +2382,7 @@ class RecommendationSystemTest extends TestCase
 
 ## Prerequisites
 
-- PHP 8.4+
+- PHP 8.6+
 - MySQL 8.0+
 - Composer
 - 2GB+ RAM

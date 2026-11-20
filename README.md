@@ -141,7 +141,7 @@ We welcome contributions! Here's how to get started:
 
 2. **Code Quality Standards**
 
-   - PHP 8.4+ compatible
+   - PHP 8.6+ compatible
    - PSR-12 coding standards
    - Complete, runnable examples (no partial code)
    - Proper error handling and type hints

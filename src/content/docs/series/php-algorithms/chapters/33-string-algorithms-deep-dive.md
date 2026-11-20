@@ -25,7 +25,7 @@ By the end of this chapter, you'll have implemented several advanced string algo
 
 Before starting this chapter, you should have:
 
-- PHP 8.4+ installed and confirmed working with `php --version`
+- PHP 8.6+ installed and confirmed working with `php --version`
 - Comfortable working with strings and character arrays
 - Understanding of tree data structures (tries, binary trees, traversals)
 - Knowledge of hash functions for string operations

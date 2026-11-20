@@ -26,7 +26,7 @@ By the end of this chapter, you'll know how to test hypotheses, calculate confid
 Before starting this chapter, you should have:
 
 - Completed [Chapter 06: Handling Large Datasets](/series/data-science-php-developers/chapters/06-handling-large-datasets-in-php-without-running-out-of-memory)
-- PHP 8.4+ installed
+- PHP 8.6+ installed
 - MathPHP library (`composer require markrogoyski/math-php`)
 - Understanding of descriptive statistics (mean, median, standard deviation)
 - Basic probability concepts (we'll review)

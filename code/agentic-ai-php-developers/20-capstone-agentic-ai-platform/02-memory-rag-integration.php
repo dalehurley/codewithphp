@@ -308,7 +308,7 @@ echo "\n";
 echo "🧠 Storing long-term knowledge...\n";
 
 $knowledge = [
-    "PHP 8.4 was released in November 2024 with property hooks, asymmetric visibility, and new array functions.",
+    "PHP 8.6 was released in November 2026 with partial function application, clamp(), and default values for readonly properties.",
     "Composer is the dependency manager for PHP, used to install and manage libraries and packages.",
     "PSR standards define coding styles and interfaces for PHP interoperability between frameworks.",
     "The claude-php/claude-php-agent framework provides tools for building AI agents in PHP.",
@@ -327,7 +327,7 @@ echo "🔍 Testing context retrieval...\n\n";
 
 $queries = [
     "What did we discuss about Laravel?",
-    "Tell me about PHP 8.4",
+    "Tell me about PHP 8.6",
     "What is Composer?",
 ];
 

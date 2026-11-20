@@ -49,7 +49,7 @@ Evaluate this code on the following dimensions:
 2. Type Safety (20%):
    - Proper type hints for parameters and return types?
    - No mixed types or loose comparisons?
-   - Follows PHP 8.4 type system best practices?
+   - Follows PHP 8.6 type system best practices?
 
 3. Error Handling (20%):
    - Appropriate exception handling?
@@ -81,7 +81,7 @@ $codeLoop->onReflection(function (int $ref, int $score, string $feedback): void 
 
 $codeAgent = Agent::create($client)
     ->withLoopStrategy($codeLoop)
-    ->withSystemPrompt('You are an expert PHP developer. Write clean, secure, well-documented code following PHP 8.4 best practices.')
+    ->withSystemPrompt('You are an expert PHP developer. Write clean, secure, well-documented code following PHP 8.6 best practices.')
     ->maxIterations(15);
 
 $codeTask = 'Create a PHP function that validates and sanitizes user email addresses. ' .
@@ -151,7 +151,7 @@ $contentAgent = Agent::create($client)
     ->maxIterations(15);
 
 $contentTask = 'Write a 150-word introduction for a blog post about the benefits of using ' .
-               'type declarations in PHP 8.4. Target audience: intermediate PHP developers.';
+               'type declarations in PHP 8.6. Target audience: intermediate PHP developers.';
 
 echo "\nTask: {$contentTask}\n\n";
 

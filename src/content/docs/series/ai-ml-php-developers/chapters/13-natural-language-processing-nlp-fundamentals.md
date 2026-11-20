@@ -26,7 +26,7 @@ The techniques you learn here will directly enable the text classification proje
 
 Before starting this chapter, you should have:
 
-- PHP 8.4+ installed and confirmed working with `php --version`
+- PHP 8.6+ installed and confirmed working with `php --version`
 - Completion of [Chapter 12](/series/ai-ml-php-developers/chapters/12-deep-learning-with-tensorflow-and-php) or equivalent understanding of machine learning preprocessing
 - Basic understanding of PHP arrays and string functions
 - Familiarity with object-oriented PHP programming
@@ -38,7 +38,7 @@ Before starting this chapter, you should have:
 ```bash
 # Check PHP version
 php --version
-# Should show PHP 8.4.x
+# Should show PHP 8.6.x
 
 # Ensure mbstring extension is enabled (for UTF-8 handling)
 php -m | grep mbstring

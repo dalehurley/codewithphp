@@ -33,7 +33,7 @@ Before starting this chapter, you should have:
 **Verify your setup:**
 
 ```bash
-# Check PHP version (should show PHP 8.4+)
+# Check PHP version (should show PHP 8.6+)
 php --version
 
 # Check Composer is installed

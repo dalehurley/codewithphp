@@ -187,7 +187,7 @@ $posts = Post::where('author_id', 1)->orderBy('published_at', 'desc')->limit(10)
 
 ## Notes
 
-- All examples use PHP 8.4 syntax and Laravel 11.x conventions
+- All examples use PHP 8.6 syntax and Laravel 11.x conventions
 - Django examples use Django 4.x+ syntax
 - SQLAlchemy examples use SQLAlchemy 2.x syntax
 - Code examples are educational and may need adaptation for production use

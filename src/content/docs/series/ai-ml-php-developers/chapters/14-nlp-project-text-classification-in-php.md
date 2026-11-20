@@ -28,7 +28,7 @@ Before starting this chapter, you should have:
 
 - Completed [Chapter 13](/series/ai-ml-php-developers/chapters/13-natural-language-processing-nlp-fundamentals) or equivalent understanding of text preprocessing, tokenization, and feature extraction concepts
 - Completed [Chapter 8](/series/ai-ml-php-developers/chapters/08-leveraging-php-machine-learning-libraries) with experience using Rubix ML or PHP-ML for training and prediction
-- PHP 8.4+ environment with Composer installed
+- PHP 8.6+ environment with Composer installed
 - Rubix ML and/or PHP-ML installed (from Chapter 2)
 - Familiarity with classification concepts from Chapters 3 and 6
 - Basic understanding of arrays, string manipulation, and file I/O in PHP
@@ -2416,7 +2416,7 @@ These are the exact skills data scientists and ML engineers use daily. Whether y
 
 - [PHP-ML Documentation](https://php-ml.readthedocs.io/) — Comprehensive guide to algorithms, transformers, and pipelines
 - [Rubix ML Documentation](https://docs.rubixml.com/) — Advanced ML library with 40+ algorithms and extensive tutorials
-- [PHP 8.4 Documentation](https://www.php.net/releases/8.4/) — New language features used in this chapter
+- [PHP 8.6 Documentation](https://www.php.net/releases/8.6/en.php) — New language features used in this chapter
 
 ### Text Classification
 

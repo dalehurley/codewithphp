@@ -139,7 +139,7 @@ echo "Editorial team assembled with 4 specialists\n\n";
 // Content Brief
 // ============================================================================
 
-$topic = "Building High-Performance APIs with PHP 8.4";
+$topic = "Building High-Performance APIs with PHP 8.6";
 $audience = "intermediate PHP developers and backend engineers";
 $targetLength = "1200-1500 words";
 $tone = "technical but accessible, conversational";
@@ -167,7 +167,7 @@ Target Length: {$targetLength}
 Tone: {$tone}
 
 Requirements:
-1. Research the topic thoroughly - cover key concepts, best practices, and recent PHP 8.4 features
+1. Research the topic thoroughly - cover key concepts, best practices, and recent PHP 8.6 features
 2. Optimize for SEO - include relevant keywords, meta tags, and structure
 3. Write engaging, practical content with code examples
 4. Edit for clarity, grammar, and flow
@@ -252,7 +252,7 @@ echo str_repeat("═", 80) . "\n\n";
 echo "✓ What Each Specialist Contributed:\n\n";
 
 echo "  Researcher:\n";
-echo "    • Found key facts about PHP 8.4 performance features\n";
+echo "    • Found key facts about PHP 8.6 performance features\n";
 echo "    • Identified best practices for API development\n";
 echo "    • Gathered relevant examples and benchmarks\n\n";
 

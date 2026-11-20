@@ -50,7 +50,7 @@ if command -v php > /dev/null 2>&1; then
     PHP_VERSION=$(php -v | head -n 1 | cut -d ' ' -f 2)
     echo "      PHP version: $PHP_VERSION"
     
-    run_test "PHP 8.4+" "php -r 'exit(version_compare(PHP_VERSION, \"8.4.0\", \">=\") ? 0 : 1);'"
+    run_test "PHP 8.6+" "php -r 'exit(version_compare(PHP_VERSION, \"8.6.0\", \">=\") ? 0 : 1);'"
     run_test "GD extension" "php -m | grep -q gd"
     run_test "cURL extension" "php -m | grep -q curl"
     run_test "JSON extension" "php -m | grep -q json"

@@ -142,7 +142,7 @@ Shows production patterns:
 
 ## Requirements
 
-- PHP 8.4+
+- PHP 8.6+
 - `claude-php/claude-php-agent` package (installed in `../00-environment-setup/`)
 - `ANTHROPIC_API_KEY` environment variable
 

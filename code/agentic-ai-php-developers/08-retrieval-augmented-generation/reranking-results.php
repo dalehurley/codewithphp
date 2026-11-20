@@ -60,7 +60,7 @@ $initialResults = [
     ],
     [
         'id' => 'doc_4',
-        'text' => 'Laravel framework now supports PHP 8.4 features including property hooks in Eloquent models.',
+        'text' => 'Laravel framework now supports PHP features including property hooks in Eloquent models.',
         'score' => 0.78,
         'metadata' => [
             'relevance' => 6,
@@ -82,7 +82,7 @@ $initialResults = [
     ],
 ];
 
-$query = 'PHP 8.4 property hooks syntax and usage';
+$query = 'PHP property hooks syntax and usage';
 
 // 1. Score-Based Reranking
 echo "=== 1. Score-Based Reranking ===\n";
@@ -145,7 +145,7 @@ echo "Goal: Use LLM to judge true semantic relevance\n\n";
 
 $llmReranker = new LLMReranker($client);
 
-$llmQuery = 'How do property hooks work in PHP 8.4?';
+$llmQuery = 'How do property hooks work in PHP 8.6?';
 
 // Subset for LLM reranking (to save costs)
 $candidatesForLLM = array_slice($initialResults, 0, 5);

@@ -26,13 +26,13 @@ Before starting this chapter, you should have:
 
 - Completion of [Chapter 00: Introduction](/series/rails-developers-love-laravel/chapters/00-introduction-why-look-at-laravel) or equivalent understanding
 - Basic familiarity with Ruby on Rails (routing, models, controllers, migrations)
-- PHP 8.4+ installed (for running Laravel examples)
+- PHP 8.6+ installed (for running Laravel examples)
 - **Estimated Time**: ~45-60 minutes
 
 **Verify your setup:**
 
 ```bash
-php --version  # Should show PHP 8.4 or higher
+php --version  # Should show PHP 8.6 or higher
 ```
 
 ## What You'll Build
@@ -798,7 +798,7 @@ As a Rails developer, you now understand that Laravel isn't fundamentally differ
 - **Routing**: Class-based controllers vs string-based in Rails
 - **Model Binding**: Automatic in Laravel vs explicit `before_action` in Rails
 
-You're now ready to dive deeper into modern PHP features that make Laravel possible, and see how PHP 8.4 brings many features Rails developers already know and love.
+You're now ready to dive deeper into modern PHP features that make Laravel possible, and see how PHP 8.6 brings many features Rails developers already know and love.
 
 ## Exercises
 
@@ -847,5 +847,5 @@ Expected result: A working Laravel model that mirrors the Rails model's function
 
 
 ::: tip Continue Learning
-Move on to [Chapter 02: Modern PHP: What's Changed](/series/rails-developers-love-laravel/chapters/02-modern-php-whats-changed) to learn about modern PHP 8.4 features.
+Move on to [Chapter 02: Modern PHP: What's Changed](/series/rails-developers-love-laravel/chapters/02-modern-php-whats-changed) to learn about modern PHP 8.6 features.
 :::

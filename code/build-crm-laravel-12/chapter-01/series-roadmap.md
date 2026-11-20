@@ -9,7 +9,7 @@ This document provides a visual roadmap of the entire 40-chapter series, showing
 - **Bonus Chapters**: 32-40 (advanced, optional based on your interests)
 - **Estimated Time**: 40-60 hours of focused work
 - **Difficulty**: Intermediate to Advanced
-- **Prerequisites**: PHP 8.4+, OOP knowledge, basic web development
+- **Prerequisites**: PHP 8.6+, OOP knowledge, basic web development
 
 ## Seven-Part Learning Path
 

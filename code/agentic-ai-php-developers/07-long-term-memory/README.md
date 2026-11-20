@@ -4,7 +4,7 @@ This directory contains complete, runnable examples for Chapter 07.
 
 ## Prerequisites
 
-- PHP 8.4+
+- PHP 8.6+
 - `claude-php/agent` package installed
 - SQLite or MySQL database
 - Anthropic API key in environment (`ANTHROPIC_API_KEY`)

@@ -15,7 +15,7 @@ section('PHP Image Processing Setup Check');
 
 // Check PHP version
 $phpVersion = PHP_VERSION;
-$minVersion = '8.4.0';
+$minVersion = '8.6.0';
 $versionOk = version_compare($phpVersion, $minVersion, '>=');
 
 echo "PHP Version Check:\n";
@@ -24,7 +24,7 @@ echo "  Required: {$minVersion}+\n";
 echo "  Status: " . ($versionOk ? '✓ OK' : '❌ UPGRADE NEEDED') . "\n\n";
 
 if (!$versionOk) {
-    error('Please upgrade to PHP 8.4 or higher');
+    error('Please upgrade to PHP 8.6 or higher');
     exit(1);
 }
 
@@ -34,8 +34,8 @@ section('GD Extension Check');
 if (!extension_loaded('gd')) {
     error('GD extension is not installed');
     echo "\nInstallation instructions:\n";
-    echo "  Ubuntu/Debian: sudo apt-get install php8.4-gd\n";
-    echo "  macOS (Homebrew): brew install php@8.4\n";
+    echo "  Ubuntu/Debian: sudo apt-get install php8.6-gd\n";
+    echo "  macOS (Homebrew): brew install php@8.6\n";
     echo "  Windows: Enable extension=gd in php.ini\n\n";
     exit(1);
 }

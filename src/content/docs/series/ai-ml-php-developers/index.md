@@ -34,7 +34,7 @@ You don't need prior machine learning experience. We'll explain concepts using d
 
 **Software Requirements:**
 
-- **PHP 8.4+** (we'll verify your setup in Chapter 02)
+- **PHP 8.6+** (we'll verify your setup in Chapter 02)
 - **Composer** (PHP's dependency manager)
 - **Text editor or IDE** (VS Code, PhpStorm, or your preferred editor)
 - **Terminal/Command line** access

@@ -9,7 +9,7 @@ declare(strict_types=1);
  * This script demonstrates basic PHP-ML functionality with a simple
  * k-nearest neighbors classifier for height/weight classification.
  *
- * Demonstrates PHP 8.4 features:
+ * Demonstrates PHP features:
  * - Named arguments in constructor
  * - Array destructuring in foreach loops
  * - Match expressions for classification
@@ -52,7 +52,7 @@ try {
     echo "  Features: height (cm), weight (kg)\n";
     echo "  Classes: " . implode(', ', array_unique($labels)) . "\n\n";
 
-    // Create and train a k-nearest neighbors classifier (PHP 8.4 named arguments)
+    // Create and train a k-nearest neighbors classifier (named arguments)
     echo "Training K-Nearest Neighbors classifier (k=3)...\n";
     $classifier = new KNearestNeighbors(k: 3);
     $classifier->train($samples, $labels);
@@ -93,7 +93,7 @@ try {
     echo "  • Training a simple classifier with validated data\n";
     echo "  • Making predictions on new data\n";
     echo "  • K-Nearest Neighbors algorithm\n";
-    echo "  • PHP 8.4 features: named arguments, typed arrays, match expressions\n";
+    echo "  • PHP features: named arguments, typed arrays, match expressions\n";
     echo "  • Proper error handling and data validation\n\n";
 } catch (InvalidArgumentException $e) {
     echo "❌ Data validation error: {$e->getMessage()}\n";

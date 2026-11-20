@@ -38,7 +38,7 @@ A comprehensive 25-chapter course teaching PHP developers how to integrate artif
 
 ### Dependencies
 
-- PHP 8.4+ (always)
+- PHP 8.6+ (always)
 - Composer for dependency management
 - Optional: Python 3.10+ for advanced ML tasks
 - Docker (for deployment chapters)
@@ -68,7 +68,7 @@ The series follows a carefully structured learning path:
 
 ### Code Examples
 
-- **PHP 8.4 syntax**: Use modern PHP features (property hooks, typed properties, enums, attributes)
+- **PHP 8.6 syntax**: Use modern PHP features (property hooks, typed properties, enums, attributes)
 - **Working code**: Every example must be runnable and tested
 - **Complete snippets**: Include all imports, use statements, and configuration
 - **Error handling**: Show proper exception handling and validation
@@ -370,7 +370,7 @@ For Chapter 4, reference these files:
 
 ### Chapter 2 (Environment Setup) Must Cover
 
-1. PHP 8.4 installation verification
+1. PHP 8.6 installation verification
 2. Composer setup
 3. Installing PHP-ML and/or Rubix ML
 4. Optional: Python setup for later chapters
@@ -475,7 +475,7 @@ The final project should synthesize multiple techniques:
 
 ### Preferred Documentation Links
 
-- [PHP Manual](https://www.php.net/docs.php) - PHP 8.4
+- [PHP Manual](https://www.php.net/docs.php) - PHP 8.6
 - [PHP-ML Documentation](https://php-ml.readthedocs.io/)
 - [Rubix ML Documentation](https://docs.rubixml.com/)
 - [Composer Documentation](https://getcomposer.org/doc/)
@@ -494,7 +494,7 @@ The final project should synthesize multiple techniques:
 Before finalizing any chapter, verify:
 
 - [ ] Follows global tutorial structure (Overview, Prerequisites, What You'll Build, etc.)
-- [ ] All code examples use PHP 8.4 syntax
+- [ ] All code examples use PHP 8.6 syntax
 - [ ] Working code provided in `code/chapter-XX/` directory
 - [ ] External dependencies documented in README or composer.json
 - [ ] Clear explanations of ML concepts for PHP developers
@@ -695,7 +695,7 @@ VitePress Quiz component for self-assessment
 
 declare(strict_types=1);
 
-// Always use proper PHP 8.4 syntax
+// Always use proper PHP 8.6 syntax
 // Include helpful comments
 // Show complete, runnable examples
 ````
@@ -817,7 +817,7 @@ Additional context, version notes, or supplementary information
 
 Before starting this chapter, you should have:
 
-- PHP 8.4+ installed and confirmed working with `php --version`
+- PHP 8.6+ installed and confirmed working with `php --version`
 - Completion of Chapter NN or equivalent understanding
 - Specific tool or knowledge requirement
 - **Estimated Time**: ~XX-YY minutes
@@ -910,13 +910,13 @@ Each series `index.md` must include:
 11. **Getting Help** resources
 12. **Related Resources** links
 
-## Modern PHP 8.4 Standards
+## Modern PHP 8.6 Standards
 
 All code examples must:
-- Use PHP 8.4 syntax and features
+- Use PHP 8.6 syntax and features
 - Use type declarations: `function greet(string $name): void`
 - Use constructor property promotion where appropriate
-- Use property hooks and asymmetric visibility for PHP 8.4 examples
+- Use property hooks and asymmetric visibility where they clarify PHP 8.6 examples
 - Show modern approaches alongside traditional when teaching transitions
 - Follow PSR-12 coding standards
 - Use `declare(strict_types=1);` in examples that benefit from strict typing
@@ -2013,7 +2013,7 @@ The following bots can crawl and index content (per robots.txt):
 ### PHP Basics Series
 
 - **Social image colors**: Purple-blue gradient
-- **Target keywords**: "PHP tutorial", "learn PHP", "PHP 8.4"
+- **Target keywords**: "PHP tutorial", "learn PHP", "PHP 8.6"
 - **Educational level**: Primarily "Beginner"
 - **Course workload**: "PT25H" (25 hours)
 
@@ -2034,7 +2034,7 @@ The following bots can crawl and index content (per robots.txt):
 
 ### Choosing Keywords
 
-✅ **Good**: `["REST API PHP", "API authentication", "JSON responses", "PHP 8.4"]`
+✅ **Good**: `["REST API PHP", "API authentication", "JSON responses", "PHP 8.6"]`
 
 ❌ **Bad**: `["API", "web", "code", "programming"]`
 
@@ -2155,7 +2155,7 @@ prerequisites: []
 ## Code Quality Validation
 
 - [ ] **No Incomplete Code**: All examples are runnable
-- [ ] **PHP 8.4 Compatible**: Modern syntax and features
+- [ ] **PHP 8.6 Compatible**: Modern syntax and features
 - [ ] **Type Declarations**: Functions have proper type hints
 - [ ] **Comments**: Key concepts explained
 - [ ] **No Smart Quotes**: All quotes are straight `"` or `'`, not curly `" '`
@@ -2241,7 +2241,7 @@ CONTENT:
   ☐ All links working
 
 CODE QUALITY:
-  ☐ PHP 8.4 compatible
+  ☐ PHP 8.6 compatible
   ☐ Type hints present
   ☐ Comments explain concepts
   ☐ Examples runnable
@@ -2601,7 +2601,7 @@ code/claude-php/
 Each chapter includes:
 
 - ✅ **Complete, Runnable Code** - No partial snippets or placeholders
-- ✅ **PHP 8.4+ Compatible** - Modern syntax and features throughout
+- ✅ **PHP 8.6+ Compatible** - Modern syntax and features throughout
 - ✅ **Error Handling** - Comprehensive try-catch with meaningful messages
 - ✅ **Security Best Practices** - Input validation, API key management
 - ✅ **Cost Tracking** - Token usage monitoring and cost calculations
@@ -2653,7 +2653,7 @@ For Laravel/Symfony chapters:
 
 ### PHP Requirements (SDK Standards)
 
-- **PHP Version**: PHP 8.2+ (optimized for PHP 8.4 features)
+- **PHP Version**: PHP 8.2+ (optimized for PHP 8.6 features)
 - **Type Declarations**: Always use `declare(strict_types=1);`
 - **Type Hints**: Use type hints for all parameters and return types
 - **Named Parameters**: Leverage PHP 8 named parameters for clarity
@@ -3229,7 +3229,7 @@ When creating new code samples for tutorials:
 All tutorial code samples must:
 
 - ✅ Be **complete and runnable** (no partial code)
-- ✅ Use **PHP 8.4** syntax and features
+- ✅ Use **PHP 8.6** syntax and features
 - ✅ Include proper **error handling** where appropriate
 - ✅ Follow **PSR-12** coding standards
 - ✅ Have **no type errors** or undefined variables (unless intentional for teaching)
@@ -3498,7 +3498,7 @@ Common external resources for the AI/ML series:
 
 **PHP Standards:**
 
-- [PHP 8.4 Release Notes](https://www.php.net/releases/8.4/)
+- [PHP 8.6 Release Notes](https://www.php.net/releases/8.6/en.php)
 - [PHP Manual](https://www.php.net/docs.php)
 - [PHP-FIG Standards](https://www.php-fig.org/)
 
@@ -3689,7 +3689,7 @@ Before committing chapters, verify:
 Before starting, you should have:
 
 - Completed [Chapter 08: Introduction to OOP](/series/php-basics/chapters/08-introduction-to-object-oriented-programming)
-- PHP 8.4+ installed
+- PHP 8.6+ installed
 
 ## Further Reading
 
@@ -4056,10 +4056,10 @@ Complete, runnable examples are available in:
 
 ## Modern vs Traditional Pattern
 
-When teaching PHP 8.4 features that replace older patterns:
+When teaching PHP 8.6 features that replace older patterns:
 
 ````markdown
-### Comparison: Traditional vs Modern PHP 8.4
+### Comparison: Traditional vs Modern PHP 8.6
 
 **Traditional Approach (Still Valid)**:
 
@@ -4081,7 +4081,7 @@ class User
 ```
 ````
 
-**Modern PHP 8.4**:
+**Modern PHP 8.6**:
 
 ```php
 class User
@@ -4113,7 +4113,7 @@ Use modern syntax for new projects. Traditional syntax still works and is found 
 
 Before starting this chapter, you should have:
 
-- PHP 8.4+ installed and confirmed working with `php --version`
+- PHP 8.6+ installed and confirmed working with `php --version`
 - Completion of [Chapter NN](/series/php-basics/chapters/nn-title) or equivalent understanding
 - A text editor (VS Code recommended)
 - Familiarity with [concept from previous chapter]
@@ -4125,7 +4125,7 @@ Before starting this chapter, you should have:
 # Check PHP version
 php --version
 
-# Expected: PHP 8.4.x or higher
+# Expected: PHP 8.6.x or higher
 ````
 
 ```
@@ -4188,7 +4188,7 @@ Congratulations! You've just learned [major concept]. You now understand:
 - ✓ How [achievement 2] works
 - ✓ How to [achievement 3]
 - ✓ The difference between [concept A] and [concept B]
-- ✓ Modern PHP 8.4 features like [feature]
+- ✓ Modern PHP 8.6 features like [feature]
 
 [2-3 sentences about why this matters and how it connects to real-world development]
 
@@ -4311,30 +4311,30 @@ Every chapter should:
 
 # PHP Version Requirement
 
-This project uses **PHP 8.4** exclusively.
+This project uses **PHP 8.6** exclusively.
 
 ## Code Requirements
 
-- All PHP code examples, snippets, and tutorials must be compatible with PHP 8.4
-- Use PHP 8.4 syntax and features where appropriate
-- When showing version-specific features, specify PHP 8.4 compatibility
-- Include `php: "^8.4"` in any composer.json files or dependency requirements
+- All PHP code examples, snippets, and tutorials must be compatible with PHP 8.6
+- Use PHP 8.6 syntax and features where appropriate
+- When showing version-specific features, specify PHP 8.6 compatibility
+- Include `php: "^8.6"` in any composer.json files or dependency requirements
 
 ## Documentation
 
-- Reference PHP 8.4 documentation: https://www.php.net/releases/8.4/
-- When mentioning PHP versions in tutorials, default to 8.4 unless specifically comparing versions
-- Prerequisites sections should specify PHP 8.4 as the required version
+- Reference PHP 8.6 documentation: https://www.php.net/releases/8.6/en.php
+- When mentioning PHP versions in tutorials, default to 8.6 unless specifically comparing versions
+- Prerequisites sections should specify PHP 8.6 as the required version
 
 ## Code Examples
 
-- Use modern PHP 8.4 features including:
+- Use modern PHP 8.6 features including:
   - Property hooks
   - Asymmetric visibility
   - New array functions
   - `#[\Override]` attribute
   - Type system improvements
-  - And other PHP 8.4 capabilities where relevant
+  - And other PHP 8.6 capabilities where relevant
 
 ### project-structure.mdc
 
@@ -4629,7 +4629,7 @@ sort($array);  // Built-in - best choice
 Reference chapters should **solve problems quickly** while still being:
 - Technically accurate
 - Secure (no vulnerable code)
-- Modern (PHP 8.4 standards)
+- Modern (PHP 8.6 standards)
 - Practical (real-world examples)
 
 ## Example Structure
@@ -4764,7 +4764,7 @@ Before publishing a reference chapter:
 - [ ] Next steps or learning paths provided
 
 **Code Quality**:
-- [ ] All examples use PHP 8.4 syntax
+- [ ] All examples use PHP 8.6 syntax
 - [ ] No security vulnerabilities
 - [ ] Code follows PSR-12 standards
 - [ ] Examples are complete (not partial)
@@ -5034,10 +5034,10 @@ Additional context, version-specific notes, code file references
 - *Italics* sparingly for emphasis
 - Em dash (—) for descriptions in links
 
-## PHP 8.4 Standards
+## PHP 8.6 Standards
 
 All code must:
-- Use PHP 8.4 syntax and features
+- Use PHP 8.6 syntax and features
 - Include type declarations: `function greet(string $name): void`
 - Use constructor property promotion where appropriate
 - Show modern features (property hooks, asymmetric visibility)
@@ -5176,7 +5176,7 @@ Before considering a tutorial complete:
 - [ ] Code references use full GitHub URLs
 - [ ] Tone is encouraging without being patronizing
 - [ ] Technical accuracy verified
-- [ ] Examples follow PHP 8.4 and PSR-12 standards
+- [ ] Examples follow PHP 8.6 and PSR-12 standards
 
 ## Output Contract
 
@@ -5272,7 +5272,7 @@ Copy this template and fill in each section:
 
 Before starting this chapter, you should have:
 
-- PHP 8.4+ installed and confirmed working with `php --version`
+- PHP 8.6+ installed and confirmed working with `php --version`
 - Completion of [Chapter [N-1]](/series/[slug]/chapters/[prev-chapter]) or equivalent understanding
 - [Specific tool or software needed]
 - [Knowledge/skill requirement]
@@ -5297,7 +5297,7 @@ By the end of this chapter, you will have created:
 - [Another concrete outcome]
 - [Knowledge or understanding gained]
 - [Working example with X features]
-- [Modern PHP 8.4 pattern or approach]
+- [Modern PHP 8.6 pattern or approach]
 
 [Closing statement: "All examples will be working PHP scripts you can run immediately."]
 
@@ -5329,7 +5329,7 @@ Now let's understand what just happened by building this step-by-step.]
 - [Learn/Understand/Master] how to [do something]
 - [Create/Build/Implement] [specific thing]
 - [Understand/Know] the difference between [X] and [Y]
-- [Use/Apply] modern PHP 8.4 features like [feature]
+- [Use/Apply] modern PHP 8.6 features like [feature]
 
 [4-7 objectives total, using action verbs]
 
@@ -5457,7 +5457,7 @@ Congratulations! You've just learned [major concept]. You now understand:
 - ✓ How [concept] works
 - ✓ How to [achievement 2]
 - ✓ The difference between [X] and [Y]
-- ✓ Modern PHP 8.4 features like [feature]
+- ✓ Modern PHP 8.6 features like [feature]
 
 [2-3 sentences about why this matters and connection to real-world development]
 
@@ -5537,7 +5537,7 @@ Use this checklist when planning your chapter:
 ### Code Examples
 - [ ] All examples are complete and runnable
 - [ ] Examples progress from simple to complex
-- [ ] PHP 8.4 syntax used throughout
+- [ ] PHP 8.6 syntax used throughout
 - [ ] Modern approaches shown alongside traditional
 - [ ] All code follows PSR-12 standards
 
@@ -5652,7 +5652,7 @@ Before submitting, verify:
 
 4. **Standards**
    - [ ] Follows authoring guidelines
-   - [ ] Uses PHP 8.4 features
+   - [ ] Uses PHP 8.6 features
    - [ ] Matches php-basics patterns
    - [ ] PSR-12 compliant code
 

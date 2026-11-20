@@ -9,7 +9,8 @@ environments:
     domain: myapp.com
     memory: 1024
     cli-memory: 512
-    runtime: php-8.4
+    # PHP 8.5 is available as a Vapor native runtime.
+    runtime: php-8.5:al2023
     build:
       - 'composer install --no-dev --optimize-autoloader'
       - 'php artisan config:cache'

@@ -26,7 +26,7 @@ Before starting this chapter, you should have:
 
 - Completion of [Chapter 03](/series/python-developers-love-php-laravel/chapters/03-laravel-developer-experience-productivity-tools) or equivalent understanding of Laravel's developer tools
 - Python experience (for comparisons)
-- PHP 8.4+ installed and verified working
+- PHP 8.6+ installed and verified working
 - Basic familiarity with Python type hints (PEP 484)
 - Text editor or IDE ready for PHP development
 - **Estimated Time**: ~95 minutes
@@ -34,10 +34,10 @@ Before starting this chapter, you should have:
 **Verify your setup:**
 
 ```bash
-# Check PHP version (should show PHP 8.4+)
+# Check PHP version (should show PHP 8.6+)
 php --version
 
-# Expected output: PHP 8.4.x (or higher)
+# Expected output: PHP 8.6.x (or higher)
 
 # Test PHP execution
 php -r "echo 'PHP is working!\n';"
@@ -77,7 +77,7 @@ class User:
         self.email = email
 ```
 
-**PHP 8.4:**
+**PHP 8.6:**
 
 ```php
 # filename: quickstart.php
@@ -254,7 +254,7 @@ Compare PHP's type declaration syntax with Python's type hints, understanding nu
        return f"User {user_id}"
    ```
 
-   **PHP 8.4:**
+   **PHP 8.6:**
 
    ```php
    # filename: php-types.php
@@ -1806,7 +1806,7 @@ Practice converting Python code to PHP and understanding syntax differences.
 
 **Goal**: Practice PHP OOP syntax by converting a Python class to PHP.
 
-Convert this Python class to PHP 8.4:
+Convert this Python class to PHP 8.6:
 
 ```python
 # filename: python-exercise.py
@@ -1828,7 +1828,7 @@ class Product:
 
 **Requirements:**
 
-- Use PHP 8.4 constructor property promotion
+- Use PHP 8.6 constructor property promotion
 - Include proper type declarations
 - Use `declare(strict_types=1);`
 - Throw `ValueError` exception for invalid discount

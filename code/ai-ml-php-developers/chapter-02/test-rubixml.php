@@ -9,7 +9,7 @@ declare(strict_types=1);
  * This script demonstrates basic Rubix ML functionality using the
  * classic Iris flower dataset for classification.
  *
- * Demonstrates PHP 8.4 features:
+ * Demonstrates PHP features:
  * - Array destructuring in foreach loops
  * - Performance timing with microtime
  * - Enhanced error handling
@@ -123,7 +123,7 @@ try {
     echo "  • Making predictions on new samples\n";
     echo "  • Performance monitoring and timing\n";
     echo "  • Checking for performance extensions (Tensor)\n";
-    echo "  • PHP 8.4 features: array destructuring, microtime precision\n";
+    echo "  • PHP features: array destructuring, microtime precision\n";
     echo "  • Proper error handling and data validation\n\n";
 } catch (InvalidArgumentException $e) {
     echo "❌ Data validation error: {$e->getMessage()}\n";

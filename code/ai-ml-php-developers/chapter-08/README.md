@@ -134,7 +134,7 @@ php 05-model-persistence.php
 
 ### PHP version issues
 
-This code requires PHP 8.4+. Check your version:
+This code requires PHP 8.6+. Check your version:
 
 ```bash
 php -v
@@ -150,7 +150,7 @@ php -d memory_limit=256M 06-algorithm-comparison.php
 
 ## Notes
 
-- All examples use PHP 8.4 syntax (named arguments, property hooks, etc.)
+- All examples use PHP 8.6 syntax (named arguments, property hooks, etc.)
 - The API example (08-production-api.php) is designed to be extended with the features described in Exercise 6
 - Model files in `models/` are binary and should not be version controlled in production
 - Log files in `logs/` should be rotated in production environments

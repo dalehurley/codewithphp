@@ -28,7 +28,7 @@ Before starting this chapter, you should have:
 
 - Completed [Chapter 03](/series/ai-ml-php-developers/chapters/03-core-machine-learning-concepts-and-terminology) or equivalent understanding of classification concepts, train/test splits, and model evaluation
 - Completed [Chapter 04](/series/ai-ml-php-developers/chapters/04-data-collection-and-preprocessing-in-php) with experience in data preprocessing and feature engineering
-- PHP 8.4+ environment with Rubix ML or PHP-ML installed (from Chapter 2)
+- PHP 8.6+ environment with Rubix ML or PHP-ML installed (from Chapter 2)
 - Basic understanding of arrays, string manipulation, and file I/O in PHP
 - Familiarity with the command line for running PHP scripts
 
@@ -388,7 +388,7 @@ The simplest approach: does the email contain specific spam-indicator words?
 declare(strict_types=1);
 
 /**
- * Basic feature extractor using PHP 8.4 property hooks
+ * Basic feature extractor using PHP property hooks
  */
 final class BasicEmailFeatures
 {
@@ -400,7 +400,7 @@ final class BasicEmailFeatures
         $this->lowerEmail = strtolower($email);
     }
 
-    // PHP 8.4 property hooks - computed on access
+    // PHP property hooks - computed on access
     public int $hasFree {
         get => str_contains($this->lowerEmail, 'free') ? 1 : 0;
     }
@@ -2114,7 +2114,7 @@ Inference: 2ms, happens millions of times
 
 **Causes**:
 
-1. PHP version mismatch (serialized on PHP 8.4, loading on PHP 8.2)
+1. PHP version mismatch (serialized on PHP 8.6, loading on PHP 8.2)
 2. Corrupted model file
 3. Missing required classes
 
@@ -3333,7 +3333,7 @@ Congratulations! You've built a complete spam classification system. Here's what
 - ✓ **Analyzed feature importance** to understand which words drive spam detection and debug classifier behavior
 - ✓ **Handled imbalanced datasets** recognizing when accuracy is misleading and using appropriate metrics
 - ✓ **Extracted meaningful features from text** including word patterns, punctuation, capitalization, and special characters
-- ✓ **Used PHP 8.4 features** like property hooks, named arguments, and match expressions for clean, maintainable code
+- ✓ **Used PHP features** like property hooks, named arguments, and match expressions for clean, maintainable code
 
 You now have a solid foundation in classification and text processing. These skills apply far beyond spam filtering:
 

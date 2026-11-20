@@ -10,7 +10,7 @@ This chapter provides educational implementations of fundamental machine learnin
 
 ### Requirements
 
-- **PHP 8.4+**
+- **PHP 8.6+**
 - **Composer**
 
 ### Installation

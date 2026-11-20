@@ -11,7 +11,7 @@ Complete Laravel 11 application integrating four AI services: chatbot, recommend
 
 ## Prerequisites
 
-- PHP 8.4+
+- PHP 8.6+
 - Composer
 - Node.js 18+
 - MySQL/PostgreSQL (or SQLite for development)

@@ -37,7 +37,7 @@ class Post
         return [
             [
                 'id' => 1,
-                'title' => 'Getting Started with PHP 8.4',
+                'title' => 'Getting Started with PHP 8.6',
                 'content' => 'PHP 8.4 introduces amazing new features like property hooks and asymmetric visibility. These features make PHP more expressive and easier to work with.',
                 'date' => '2024-03-15',
                 'author' => 'John Doe'

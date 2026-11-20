@@ -4,7 +4,7 @@ Complete, runnable code examples for Chapter 16 of the AI/ML for PHP Developers 
 
 ## Prerequisites
 
-- PHP 8.4 or higher
+- PHP 8.6 or higher
 - GD extension (usually included with PHP)
 - Command line access
 
@@ -145,13 +145,13 @@ All examples use PHP's built-in GD extension, which is included with most PHP in
 **Ubuntu/Debian:**
 
 ```bash
-sudo apt-get install php8.4-gd
+sudo apt-get install php8.6-gd
 ```
 
 **macOS (Homebrew):**
 
 ```bash
-brew install php@8.4
+brew install php@8.6
 ```
 
 **Windows:**

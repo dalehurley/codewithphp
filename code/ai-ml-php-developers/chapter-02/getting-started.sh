@@ -13,7 +13,7 @@ echo ""
 # Check if PHP is available
 if ! command -v php &> /dev/null; then
     echo "❌ PHP is not installed or not in PATH"
-    echo "   Please install PHP 8.4+ first"
+    echo "   Please install PHP 8.6+ first"
     exit 1
 fi
 

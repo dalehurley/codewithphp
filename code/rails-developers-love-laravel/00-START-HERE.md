@@ -50,7 +50,7 @@ cd ../chapter-04
 php SyntaxComparisons.php
 ```
 
-**Result**: See PHP 8.4's modern features in action ✅
+**Result**: See PHP 8.6's modern features in action ✅
 
 ---
 
@@ -146,7 +146,7 @@ rails-developers-love-laravel/
 ### For Quick Learning
 
 - `chapter-02/01-type-safety-example.php` - Modern PHP types
-- `chapter-02/02-property-hooks-example.php` - PHP 8.4 features
+- `chapter-02/02-property-hooks-example.php` - PHP 8.6 features
 - `chapter-04/SyntaxComparisons.php` - PHP syntax guide
 
 ### For Understanding Patterns
@@ -172,7 +172,7 @@ rails-developers-love-laravel/
 ### Chapter 02: Modern PHP Features
 
 ```php
-// PHP 8.4 Property Hooks
+// PHP Property Hooks
 public string $email {
     set(string $value) {
         $this->email = strtolower(trim($value));
@@ -247,7 +247,7 @@ php artisan test
 ### 💻 Code Examples
 
 - 2,561+ lines of working code
-- All PHP 8.4 features
+- All PHP 8.6 features
 - Production-ready patterns
 - Comprehensive comments
 
@@ -284,7 +284,7 @@ php artisan test
 After going through all samples:
 
 ✅ Understand how Rails concepts map to Laravel  
-✅ Master PHP 8.4 syntax and features  
+✅ Master PHP 8.6 syntax and features
 ✅ Build REST APIs with proper patterns  
 ✅ Write testable, maintainable code  
 ✅ Use authorization and authentication  
@@ -297,7 +297,7 @@ After going through all samples:
 
 1. Open `chapter-02/01-type-safety-example.php`
 2. Run: `php chapter-02/01-type-safety-example.php`
-3. See PHP 8.4 in action!
+3. See PHP 8.6 in action!
 
 ### Short Term (Next Hour)
 
@@ -326,8 +326,8 @@ code /Users/dalehurley/Code/PHP-From-Scratch/code/rails-developers-love-laravel
 ### Running in Docker?
 
 ```bash
-# Use existing PHP 8.4 image
-docker run -it --rm -v $(pwd):/app php:8.4 bash
+# Use existing PHP 8.6 image
+docker run -it --rm -v $(pwd):/app php:8.6 bash
 php /app/chapter-02/01-type-safety-example.php
 ```
 
@@ -388,7 +388,7 @@ declare(strict_types=1);
 function getUser(int $id): ?User
 ```
 
-### Modern PHP 8.4 ✅
+### Modern PHP 8.6 ✅
 
 ```php
 public string $email {
@@ -438,7 +438,7 @@ Choose your path above and start learning Laravel like a Rails pro!
 
 ---
 
-_Created January 2025 | PHP 8.4+ | Laravel 12+ | Production Ready ✅_
+_PHP 8.6+ | Laravel 12+_
 
 
 

@@ -30,7 +30,7 @@ This directory contains all code examples from Chapter 5 of the **Data Science f
 
 ### Prerequisites
 
-- PHP 8.4 or higher
+- PHP 8.6 or higher
 - Composer
 
 ### Installation

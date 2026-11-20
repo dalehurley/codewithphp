@@ -32,9 +32,7 @@ visibility levels for reading and writing. This solves common encapsulation chal
 The new array functions make data manipulation more expressive. Functions like array_find, 
 array_find_key, and array_any provide modern alternatives to traditional loops.
 
-Performance improvements in PHP 8.4 include JIT compiler enhancements and memory optimizations. 
-Applications see speed improvements of 10-30% in compute-intensive workloads. The garbage 
-collector has been optimized for better memory management patterns.
+Benchmark performance on your own workload. OPcache can reduce repeated compilation, and the JIT may help with compute-intensive code.
 
 Type system improvements include better inference and stricter checks. This helps catch bugs 
 earlier in the development cycle. Generic types are still under consideration for future releases.
@@ -128,7 +126,7 @@ echo "=== 4. Markdown Text Splitter ===\n";
 echo "Best for: Documentation, markdown files (preserves structure)\n\n";
 
 $markdownText = <<<'MD'
-# PHP 8.4 Feature Guide
+# PHP Language Feature Guide
 
 ## Property Hooks
 

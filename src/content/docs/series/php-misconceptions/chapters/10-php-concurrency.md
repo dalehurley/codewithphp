@@ -14,7 +14,7 @@ A web server can handle multiple PHP requests concurrently through processes or 
 
 ## Quick Start
 
-From the repository root, run the Fiber example with PHP 8.4 or later. PHP introduced Fibers in 8.1.
+From the repository root, run the Fiber example with PHP 8.6 or later. PHP introduced Fibers in 8.1.
 
 ```bash
 php code/php-misconceptions/fibers.php

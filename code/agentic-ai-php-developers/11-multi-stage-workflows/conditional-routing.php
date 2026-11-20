@@ -168,7 +168,7 @@ DOC
     ],
     [
         'name' => 'Question',
-        'content' => 'What is the difference between abstract classes and interfaces in PHP 8.4?',
+        'content' => 'What is the difference between abstract classes and interfaces in PHP 8.6?',
     ],
     [
         'name' => 'General Request',

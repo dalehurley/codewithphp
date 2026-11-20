@@ -1,12 +1,12 @@
 # Chapter 06: Deep Dive into Arrays - Code Examples
 
-Master PHP arrays from basics to advanced techniques, including PHP 8.4's new array functions.
+Master PHP arrays from basics to advanced techniques, including the array search and predicate functions introduced in PHP 8.4.
 
 ## Files
 
 1. **`array-basics.php`** - Creating, accessing, and modifying arrays
 2. **`array-functions.php`** - Common array manipulation functions
-3. **`php84-array-functions.php`** - NEW! array_find(), array_any(), array_all()
+3. **`array-predicate-functions.php`** - NEW! array_find(), array_any(), array_all()
 4. **`array-sorting.php`** - All sorting functions and techniques
 5. **`multidimensional-arrays.php`** - Working with nested arrays
 
@@ -15,7 +15,7 @@ Master PHP arrays from basics to advanced techniques, including PHP 8.4's new ar
 ```bash
 php array-basics.php
 php array-functions.php
-php php84-array-functions.php
+php array-predicate-functions.php
 php array-sorting.php
 php multidimensional-arrays.php
 ```
@@ -88,7 +88,7 @@ $names = array_column($users, "name");
 // ["Alice", "Bob"]
 ```
 
-## PHP 8.4 New Functions ⚡
+## Array Search and Predicate Functions
 
 ### array_find() - Find First Match
 
@@ -202,7 +202,7 @@ echo $users[0]["name"];              // "Alice"
 echo $users[0]["address"]["city"];   // "NYC"
 ```
 
-### Searching (PHP 8.4)
+### Searching with `array_find()`
 
 ```php
 $alice = array_find($users, fn($u) => $u["name"] === "Alice");
@@ -303,5 +303,5 @@ in_array("1", [1, 2, 3], true);  // false (strict)
 ## Further Reading
 
 - [PHP Array Functions](https://www.php.net/manual/en/ref.array.php)
-- [PHP 8.4 Release Notes](https://www.php.net/releases/8.4/)
+- [PHP 8.6 Release Notes](https://www.php.net/releases/8.6/en.php)
 - [Array Best Practices](https://phptherightway.com/#arrays)

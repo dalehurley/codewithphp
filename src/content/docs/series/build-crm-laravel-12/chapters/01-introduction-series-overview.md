@@ -20,7 +20,7 @@ This course builds a customer relationship management (CRM) app with Laravel 12.
 
 Before diving into this chapter, take 2 minutes to verify you're ready:
 
-- ✓ Do you have PHP 8.4+ installed? (`php --version`)
+- ✓ Do you have PHP 8.6+ installed? (`php --version`)
 - ✓ Do you have Composer installed? (`composer --version`)
 - ✓ Do you have Node.js 18+ installed? (`node --version`)
 - ✓ Is Docker Desktop running on your machine? (`docker --version`)
@@ -33,10 +33,10 @@ If you answered "no" to any of the first four, read the Prerequisites section be
 
 Before starting this chapter, you should have:
 
-- **PHP 8.3+ installed** (8.4+ is recommended for latest features, but 8.3 works fine)
+- **PHP 8.3+ installed** (8.6+ is recommended for latest features, but 8.3 works fine)
   - Check your version: `php --version`
-  - If you have PHP 8.0-8.2, consider upgrading to 8.3 or 8.4 for best compatibility
-  - Examples in this series use PHP 8.4 syntax, but 8.3 compatibility is maintained
+  - If you have PHP 8.0-8.2, consider upgrading to 8.3 or 8.6 for best compatibility
+  - The setup verifier checks for PHP 8.6 on your host. Laravel 12 supports PHP 8.3, and Sail runs in a separate container.
 - **Basic OOP knowledge**: Classes, inheritance, namespaces (PHP fundamentals)
 - **Basic web development knowledge**: HTTP, HTML, CSS, how client-server applications work
 - **Composer** installed for PHP dependency management
@@ -50,16 +50,16 @@ Before starting this chapter, you should have:
 
 ### Version Compatibility Note
 
-This series targets **PHP 8.3+**, not 8.4 exclusively. Here's the breakdown:
+This series targets **PHP 8.3+**, not 8.6 exclusively. Here's the breakdown:
 
 | PHP Version          | Supported?         | Notes                                                                           |
 | -------------------- | ------------------ | ------------------------------------------------------------------------------- |
-| **PHP 8.4**          | ✅ Fully           | Recommended. Newest features, all examples work without modification            |
+| **PHP 8.6**          | ✅ Fully           | Recommended. Newest features, all examples work without modification            |
 | **PHP 8.3**          | ✅ Fully           | Stable choice. All code works; some modern features (property hooks) may differ |
 | **PHP 8.2**          | ⚠️ Partial         | Basic features work; not tested. Consider upgrading                             |
 | **PHP 8.1 or older** | ❌ Not recommended | Missing important improvements; will cause compatibility issues                 |
 
-**If you only have PHP 8.2**: The fundamentals in this series will work, but we strongly recommend upgrading to 8.3 or 8.4 for the best experience and to match production environments.
+**If you only have PHP 8.2**: The fundamentals in this series will work, but we strongly recommend upgrading to 8.3 or 8.6 for the best experience and to match production environments.
 
 **Estimated Time**: ~20 minutes
 
@@ -68,7 +68,7 @@ This series targets **PHP 8.3+**, not 8.4 exclusively. Here's the breakdown:
 Before proceeding, run these commands to confirm your tools are installed:
 
 ```bash
-# Check PHP version (should show 8.4 or higher)
+# Check PHP version (should show 8.6 or higher)
 php --version
 
 # Check Composer version
@@ -404,9 +404,9 @@ Create a simple document (notepad, Google Doc, or markdown file) and write down:
 Run each command below in your terminal. All should succeed with the correct versions:
 
 ```bash
-# Verify PHP 8.4 or higher
+# Verify PHP 8.6 or higher
 php --version
-# Expected output: PHP 8.4.x (or higher)
+# Expected output: PHP 8.6.x (or higher)
 
 # Verify Composer is installed
 composer --version
@@ -423,7 +423,7 @@ docker --version
 
 **Validation**: If all four commands succeed with correct versions, you're ready for Chapter 02. If any fail:
 
-- **PHP version too old**: Download PHP 8.4+ from [php.net](https://www.php.net/downloads)
+- **PHP version too old**: Download PHP 8.6+ from [php.net](https://www.php.net/downloads)
 - **Composer not found**: Install Composer from [getcomposer.org](https://getcomposer.org)
 - **Node version too old**: Download Node.js 18+ from [nodejs.org](https://nodejs.org)
 - **Docker not running**: Start Docker Desktop application on your system
@@ -460,7 +460,7 @@ Learning a complex series like this is challenging. Avoid these common pitfalls:
 
 ### Mistake 4: Not Running the Verification Script
 
-**What happens**: You start Chapter 2, run a command, and get "PHP version too old" - but you thought you had 8.4.
+**What happens**: You start Chapter 2, run a command, and get "PHP version too old" - but you thought you had 8.6.
 
 **Why it fails**: Assumptions about your environment are dangerous. Different PHP versions can be installed in different places.
 
@@ -492,7 +492,7 @@ Congratulations! You've completed your foundational planning session for the Bui
 - ✓ Explored the complete technology stack (Laravel 12, React, Inertia, Tailwind, etc.)
 - ✓ Identified the tools used for local setup, authentication and queue monitoring
 - ✓ Chosen a starting point in the main project or the API and queue lab
-- ✓ Verified your development environment is ready (PHP 8.4+, Composer, Node, Docker)
+- ✓ Verified your development environment is ready (PHP 8.6+, Composer, Node, Docker)
 
 **Why This Matters:**
 

@@ -221,7 +221,7 @@ php exceptions-comparison.php
 
 ## Requirements
 
-- PHP 8.4+ (some examples use PHP 8.0+ features)
+- PHP 8.6+ (some examples use PHP 8.0+ features)
 - All files use `declare(strict_types=1);` for strict type checking
 
 ## Notes
@@ -236,7 +236,7 @@ php exceptions-comparison.php
 Complete solutions for all exercises from Chapter 04 are available in the `solutions/` directory:
 
 ### `solutions/exercise-1-product.php`
-Solution for Exercise 1: Converting a Python Product class to PHP 8.4.
+Solution for Exercise 1: Converting a Python Product class to PHP 8.6.
 - Demonstrates constructor property promotion
 - Shows proper type declarations
 - Includes exception handling

@@ -90,7 +90,7 @@ php 07-complete-platform.php
 
 ## Requirements
 
-- PHP 8.4+
+- PHP 8.6+
 - Composer
 - `claude-php/claude-php-agent` package
 - Anthropic API key

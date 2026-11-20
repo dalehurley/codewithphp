@@ -85,7 +85,7 @@ The following examples require valid Anthropic API calls and were not fully test
 ## Technical Details
 
 ### Dependencies
-- PHP 8.4+
+- PHP 8.6+
 - claude-php/claude-php-agent framework
 - Loaded from: `/Users/dalehurley/Code/claude-php-agent/vendor/autoload.php`
 

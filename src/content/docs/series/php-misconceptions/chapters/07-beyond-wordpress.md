@@ -14,7 +14,7 @@ WordPress is a PHP application with its own plugin ecosystem. PHP can also run a
 
 ## Quick Start
 
-With PHP 8.4 or later, run the inventory report from the repository root.
+With PHP 8.6 or later, run the inventory report from the repository root.
 
 ```bash
 php code/php-misconceptions/inventory.php

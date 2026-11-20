@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Demonstrates combining multiple diverse classifiers using hard and soft voting
  * to achieve better accuracy than any single model.
  * 
- * PHP version 8.4
+ * PHP version 8.6
  */
 
 require_once __DIR__ . '/../../vendor/autoload.php';

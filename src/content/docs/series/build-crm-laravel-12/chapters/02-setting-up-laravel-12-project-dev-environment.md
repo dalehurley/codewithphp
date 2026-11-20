@@ -27,7 +27,7 @@ This chapter is entirely hands-on. You'll type commands, see output, and verify 
 Before starting this chapter, you should have:
 
 - Completed [Chapter 01](/series/build-crm-laravel-12/chapters/01-introduction-series-overview) or equivalent understanding
-- **PHP 8.4+** installed locally (for initial Laravel installation only)
+- **PHP 8.6+** installed locally (for initial Laravel installation only)
 - **Composer** installed and available in your PATH
 - **Docker Desktop** installed and running (verify with `docker --version`)
 - **Node.js 18+** and **npm** installed (verify with `node --version` and `npm --version`)
@@ -91,7 +91,7 @@ By the end of this chapter, you will have:
 
 - A new Laravel 12 project named `crm-app` created via Laravel's installation script
 - **Laravel Sail** configured and running with Docker containers for:
-  - PHP 8.4
+  - PHP 8.6
   - MySQL 8.0
   - Redis (for caching and queues)
   - Mailhog (for email testing)
@@ -213,8 +213,10 @@ composer require laravel/sail --dev
 
 ```bash
 # Publish Sail's Docker configuration and customize services
-php artisan sail:install
+php artisan sail:install --php=8.5
 ```
+
+The Sail example uses its PHP 8.5 container runtime. The PHP 8.6 installation on your host is separate.
 
 3. **Select services** when prompted:
 
@@ -292,7 +294,7 @@ This command:
 - Starts all containers in the background (`-d` flag)
 
 ::: info
-**First-run timing**: The first time you run this command may take 5-15 minutes as Docker downloads images for PHP 8.4, MySQL 8.0, Redis, and Mailhog. This is a one-time process. Subsequent starts will be nearly instant.
+**First-run timing**: The first time you run this command may take 5-15 minutes as Docker downloads images for PHP 8.6, MySQL 8.0, Redis, and Mailhog. This is a one-time process. Subsequent starts will be nearly instant.
 :::
 
 2. **Verify all services are running**:
@@ -325,7 +327,7 @@ crm-app-mailhog-1        "MailHog"               mailhog       Up 2 minutes  0.0
 All services should show **"Up"** status. When you run `tinker`, you'll see:
 
 ```
-Psy Shell v0.11.x — PHP 8.4.x
+Psy Shell v0.11.x — PHP 8.6.x
 ```
 
 ### Why It Works
@@ -777,7 +779,7 @@ ls -la vendor/bin/sail  # Should exist
 
 ```bash
 composer install
-php artisan sail:install
+php artisan sail:install --php=8.5
 ```
 
 3. **Verify Composer completed**:
@@ -1024,7 +1026,7 @@ docker inspect crm-app-mysql-1 | grep -A 10 '"Networks"'
 
 ```
 CONTAINER ID   IMAGE                    COMMAND                 CREATED        STATUS        PORTS                              NAMES
-abc123def456   sail-8.4/app             "start-container"       2 minutes ago  Up 2 minutes  0.0.0.0:80->80/tcp                crm-app-laravel.test-1
+abc123def456   sail-8.5/app             "start-container"       2 minutes ago  Up 2 minutes  0.0.0.0:80->80/tcp                crm-app-laravel.test-1
 def456ghi789   mysql:8.0                "docker-entrypoint..." 2 minutes ago  Up 2 minutes  3306/tcp, 33060/tcp                crm-app-mysql-1
 ghi789jkl012   redis:7-alpine           "redis-server"         2 minutes ago  Up 2 minutes  6379/tcp                          crm-app-redis-1
 jkl012mno345   mailhog/mailhog:latest   "MailHog"              2 minutes ago  Up 2 minutes  0.0.0.0:1025->1025/tcp, 8025/tcp crm-app-mailhog-1
@@ -1033,7 +1035,7 @@ jkl012mno345   mailhog/mailhog:latest   "MailHog"              2 minutes ago  Up
 **Validation**: You can:
 
 - Identify all four services running
-- See the image names (sail-8.4/app, mysql:8.0, redis:7-alpine, mailhog/mailhog)
+- See the image names (sail-8.5/app, mysql:8.0, redis:7-alpine, mailhog/mailhog)
 - Understand the port mappings (e.g., 0.0.0.0:80->80/tcp means localhost:80 forwards to container port 80)
 - Recognize that internal services use Docker hostnames (mysql, redis) instead of localhost
 

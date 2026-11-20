@@ -3,7 +3,7 @@
   "description": "Chapter 01: Introduction to AI and ML - Runnable code examples",
   "type": "project",
   "require": {
-    "php": "^8.4",
+    "php": "^8.6",
     "php-ai/php-ml": "^0.10"
   },
   "config": {

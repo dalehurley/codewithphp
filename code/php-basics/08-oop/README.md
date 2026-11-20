@@ -1,6 +1,6 @@
 # Chapter 08: Introduction to Object-Oriented Programming - Code Examples
 
-Complete OOP examples covering traditional concepts and modern PHP 8.4 features.
+Complete OOP examples covering traditional concepts and modern PHP 8.6 features.
 
 ## Files Overview
 
@@ -10,7 +10,7 @@ Complete OOP examples covering traditional concepts and modern PHP 8.4 features.
 2. **`visibility-encapsulation.php`** - Public, private, protected, getters/setters
 3. **`static-constants.php`** - Static members, class constants, utility classes
 
-### PHP 8.4 Modern Features
+### PHP 8.6 Modern Features
 
 4. **`property-hooks-basic.php`** - Property hooks for validation and computed properties
 5. **`asymmetric-visibility.php`** - `public private(set)` for immutability

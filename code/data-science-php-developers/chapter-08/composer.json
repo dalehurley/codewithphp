@@ -3,7 +3,7 @@
     "description": "Chapter 08: Machine Learning Explained - Code Examples",
     "type": "library",
     "require": {
-        "php": "^8.4",
+        "php": "^8.6",
         "markrogoyski/math-php": "^2.0"
     },
     "require-dev": {

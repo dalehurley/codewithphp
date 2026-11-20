@@ -35,7 +35,7 @@ Before starting this chapter, you should have:
 
 **Before Chapter 01**, you'll need to install:
 
-- **PHP 8.4+** (we'll verify this in Chapter 01)
+- **PHP 8.6+** (we'll verify this in Chapter 01)
 - **Composer** (PHP's dependency manager, similar to pip)
 
 Don't worry if you don't have these yet—Chapter 01 will guide you through installation and verification. For now, just understanding the concepts is enough.
@@ -85,7 +85,7 @@ Type the code yourself instead of copy-pasting. The muscle memory of typing PHP 
 **This series covers:**
 
 - Mapping Python web development concepts to PHP/Laravel
-- Modern PHP 8.4 syntax and features
+- Modern PHP 8.6 syntax and features
 - Laravel framework fundamentals (routing, models, views, controllers)
 - Eloquent ORM compared to Django ORM/SQLAlchemy
 - Building REST APIs in Laravel
@@ -215,7 +215,7 @@ Understand the key improvements in modern PHP that make it competitive with Pyth
    - **Named arguments**: `function(foo: 'bar')` (like Python's keyword arguments)
    - **Match expressions**: Modern switch replacement (like Python's match in 3.10+)
    - **Constructor property promotion**: Less boilerplate (like Python dataclasses)
-   - **Property hooks** (8.4): Custom getters/setters (like Python properties)
+   - **Property hooks** (8.6): Custom getters/setters (like Python properties)
 
 3. **PHP 8.4 (2024)**:
    - **Asymmetric visibility**: Public read, private write properties

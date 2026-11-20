@@ -9,7 +9,7 @@ declare(strict_types=1);
  * that suggests related articles based on tag overlap.
  * 
  * Requirements:
- * - PHP 8.4+
+ * - PHP 8.6+
  * - Database with 'articles' and 'article_tags' tables
  * - Laravel/Eloquent or PDO
  */

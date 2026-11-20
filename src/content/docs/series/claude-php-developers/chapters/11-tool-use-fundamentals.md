@@ -37,7 +37,7 @@ You'll understand the complete tool use workflow from definition to execution, e
 
 Before starting, ensure you have:
 
-- ✓ **PHP 8.4+** with strong typing familiarity
+- ✓ **PHP 8.6+** with strong typing familiarity
 - ✓ **Understanding of callbacks** and function references
 - ✓ **JSON schema knowledge** (basic understanding)
 - ✓ **Completed Chapters 00-05** of this series

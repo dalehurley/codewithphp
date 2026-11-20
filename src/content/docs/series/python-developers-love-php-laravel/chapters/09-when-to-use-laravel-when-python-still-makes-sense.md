@@ -651,7 +651,7 @@ Modern PHP 8+ with JIT compilation performs excellently for web applications. Py
 
 | Framework  | Simple Route | CRUD Operation | Notes                  |
 | ---------- | ------------ | -------------- | ---------------------- |
-| Laravel 11 | ~2,000-3,000 | ~1,000-1,500   | PHP 8.4, optimized     |
+| Laravel 11 | ~2,000-3,000 | ~1,000-1,500   | PHP 8.6, optimized     |
 | Django 5   | ~1,500-2,500 | ~800-1,200     | Python 3.12, optimized |
 | Flask      | ~2,500-3,500 | ~1,200-1,800   | Lightweight, minimal   |
 | FastAPI    | ~3,000-4,000 | ~1,500-2,000   | Async, very fast       |

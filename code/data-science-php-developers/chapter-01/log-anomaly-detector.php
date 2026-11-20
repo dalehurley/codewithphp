@@ -9,7 +9,7 @@ declare(strict_types=1);
  * statistical analysis (mean and standard deviation).
  * 
  * Requirements:
- * - PHP 8.4+
+ * - PHP 8.6+
  * - Database with 'logs' table
  * - Laravel/Eloquent or PDO
  */

@@ -25,7 +25,7 @@ By the end of this chapter, you'll have a working environment ready for data col
 
 Before starting this chapter, you should have:
 
-- PHP 8.4+ installed and confirmed working with `php --version`
+- PHP 8.6+ installed and confirmed working with `php --version`
 - Composer installed globally (`composer --version`)
 - Basic terminal/command line skills
 - Completion of [Chapter 01](/series/data-science-php-developers/chapters/01-what-data-science-is-and-why-it-matters)
@@ -45,7 +45,7 @@ By the end of this chapter, you will have:
 
 ## Objectives
 
-- Verify PHP 8.4+ installation and required extensions
+- Verify PHP 8.6+ installation and required extensions
 - Install essential PHP libraries for data science work
 - Configure optional Python integration (minimal setup)
 - Understand three production-safe PHP-Python communication patterns
@@ -124,7 +124,7 @@ Here's what you need for each chapter in this series:
 
 | Tool | Purpose | Required? | Used In Chapters |
 |------|---------|-----------|------------------|
-| **PHP 8.4+** | Core language | Yes | All |
+| **PHP 8.6+** | Core language | Yes | All |
 | **Composer** | Dependency management | Yes | All |
 | **MySQL/PostgreSQL** | Data storage | Yes (either) | 3-12 |
 | **MathPHP** | Statistical functions | Yes | 4-12 |
@@ -153,7 +153,7 @@ Configure PHP with the extensions and libraries needed for data science projects
 php --version
 
 # Expected output:
-# PHP 8.4.x (cli) ...
+# PHP 8.6.x (cli) ...
 ```
 
 **Required PHP extensions** (most are already installed):
@@ -184,7 +184,7 @@ If you're missing extensions, install them:
 brew install php
 
 # Ubuntu/Debian
-sudo apt-get install php8.4-pdo php8.4-mysql php8.4-curl php8.4-mbstring php8.4-intl
+sudo apt-get install php8.6-pdo php8.6-mysql php8.6-curl php8.6-mbstring php8.6-intl
 
 # Fedora/RHEL
 sudo dnf install php-pdo php-mysqlnd php-mbstring php-intl
@@ -985,7 +985,7 @@ Anyone with access should be able to:
 
 ## Requirements
 
-- PHP 8.4+
+- PHP 8.6+
 - Python 3.10+
 - MySQL 8.0+
 ```
@@ -1124,7 +1124,7 @@ If you prefer containerized development or need consistent environments across t
 
 **Skip Docker if:**
 - You're just learning and want simplicity
-- You already have PHP 8.4 working locally
+- You already have PHP 8.6 working locally
 - You prefer native performance
 - You're working solo on a single project
 
@@ -1137,7 +1137,7 @@ version: '3.8'
 
 services:
   php:
-    image: php:8.4-cli
+    image: php:8.6-cli
     volumes:
       - ./:/app
     working_dir: /app
@@ -1191,7 +1191,7 @@ docker-compose down
 **Enhanced `Dockerfile`:**
 
 ```dockerfile
-FROM php:8.4-cli
+FROM php:8.6-cli
 
 # Install PHP extensions
 RUN apt-get update && apt-get install -y \
@@ -1254,7 +1254,7 @@ composer --version
 4. **Keep images small**:
    ```dockerfile
    # Use alpine for smaller images
-   FROM php:8.4-cli-alpine
+   FROM php:8.6-cli-alpine
    ```
 
 5. **Cache Composer dependencies**:
@@ -1341,7 +1341,7 @@ php verify-php.php
 **Expected output:**
 
 ```
-PHP Version: 8.4.x
+PHP Version: 8.6.x
 
 Extension Check:
   ✓ pdo
@@ -1492,14 +1492,14 @@ Common issues you might encounter during environment setup and their solutions.
 
 ```bash
 # macOS with Homebrew
-brew install php@8.4
+brew install php@8.6
 
 # Ubuntu/Debian
 sudo apt-get update
-sudo apt-get install php8.4-cli
+sudo apt-get install php8.6-cli
 
 # Fedora/RHEL
-sudo dnf install php84
+sudo dnf install php86
 
 # Verify installation
 php --version
@@ -1514,17 +1514,17 @@ php --version
 **Solution**:
 
 ```bash
-# macOS - Switch to PHP 8.4
+# macOS - Switch to PHP 8.6
 brew unlink php@8.3
-brew link php@8.4
+brew link php@8.6
 
 # Ubuntu - Use PPA for newer versions
 sudo add-apt-repository ppa:ondrej/php
 sudo apt-get update
-sudo apt-get install php8.4-cli
+sudo apt-get install php8.6-cli
 
 # Verify
-php --version  # Should show 8.4.x
+php --version  # Should show 8.6.x
 ```
 
 #### Problem: Missing PHP extensions
@@ -1537,10 +1537,10 @@ php --version  # Should show 8.4.x
 
 ```bash
 # macOS (extensions usually included with Homebrew PHP)
-brew reinstall php@8.4
+brew reinstall php@8.6
 
 # Ubuntu/Debian - Install specific extensions
-sudo apt-get install php8.4-mbstring php8.4-curl php8.4-xml php8.4-pdo php8.4-mysql
+sudo apt-get install php8.6-mbstring php8.6-curl php8.6-xml php8.6-pdo php8.6-mysql
 
 # Verify extensions
 php -m | grep -E 'mbstring|curl|pdo|json'
@@ -1623,10 +1623,10 @@ composer show --platform
 
 ```bash
 # Ubuntu/Debian
-sudo apt-get install php8.4-pdo php8.4-mysql
+sudo apt-get install php8.6-pdo php8.6-mysql
 
 # macOS (usually included)
-brew reinstall php@8.4
+brew reinstall php@8.6
 
 # Verify
 php -m | grep -i pdo
@@ -1971,7 +1971,7 @@ If you're still stuck after trying these solutions:
 4. **Check system requirements**:
    ```bash
    # Verify all requirements
-   php -v  # PHP 8.4+
+   php -v  # PHP 8.6+
    composer --version  # Composer 2.x
    python3 --version  # Python 3.10+
    mysql --version  # MySQL 8.0+ or PostgreSQL 14+

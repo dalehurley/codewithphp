@@ -29,7 +29,7 @@ In this chapter, you'll learn how to encode and decode JSON, consume external AP
 
 ## Prerequisites
 
-- PHP 8.4 installed and accessible from your command line ([Chapter 00](/series/php-basics/chapters/00-setting-up-your-development-environment))
+- PHP 8.6 installed and accessible from your command line ([Chapter 00](/series/php-basics/chapters/00-setting-up-your-development-environment))
 - Understanding of arrays and associative arrays ([Chapter 06](/series/php-basics/chapters/06-deep-dive-into-arrays))
 - Familiarity with error handling ([Chapter 11](/series/php-basics/chapters/11-error-and-exception-handling))
 - Basic understanding of HTTP (GET, POST requests)

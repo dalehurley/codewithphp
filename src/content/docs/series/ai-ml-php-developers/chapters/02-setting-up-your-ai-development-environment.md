@@ -1,6 +1,6 @@
 ---
 title: "02: Setting Up Your AI Development Environment"
-description: "Configure a complete development environment for AI/ML with PHP, including PHP 8.4, Composer, ML libraries, and optional Python integration for advanced projects"
+description: "Configure a complete development environment for AI/ML with PHP, including PHP 8.6, Composer, ML libraries, and optional Python integration for advanced projects"
 sidebar:
   label: "02: Setting Up Your AI Development Environment"
   order: 2
@@ -16,7 +16,7 @@ sidebar:
 
 In Chapter 01, you learned what AI and Machine Learning are, why they matter for PHP developers, and how PHP fits into the AI/ML ecosystem. Now it's time to prepare your development environment so you can start building working AI/ML projects.
 
-A proper development environment is critical for AI/ML work. Unlike traditional web development where you might get away with a basic PHP installation, AI/ML projects require specific libraries, extensions, and tools. You'll need a modern PHP version (8.4+), dependency management with Composer, specialized ML libraries, and optionally Python for advanced tasks in later chapters.
+A proper development environment is critical for AI/ML work. Unlike traditional web development where you might get away with a basic PHP installation, AI/ML projects require specific libraries, extensions, and tools. You'll need a modern PHP version (8.6+), dependency management with Composer, specialized ML libraries, and optionally Python for advanced tasks in later chapters.
 
 This chapter guides you through installing and configuring everything you need. By the end, you'll have a verified, working environment ready to build your first machine learning models. You'll create a verification script that confirms all components are installed correctly, ensuring you won't encounter frustrating "missing dependency" errors when you start coding in Chapter 03.
 
@@ -62,7 +62,7 @@ If you're new to command-line tools, don't worry! This chapter provides specific
 Your complete AI/ML development environment consists of four main components:
 
 **Core Development Environment:**
-- **PHP 8.4+** - The core language with modern features
+- **PHP 8.6+** - The core language with modern features
 - **Composer** - Package manager for dependency management
 - **Required Extensions** - json, mbstring, curl for data processing
 
@@ -97,7 +97,7 @@ Before starting this chapter, you should have:
 
 By the end of this chapter, you will have created:
 
-- A verified PHP 8.4+ installation with required extensions
+- A verified PHP 8.6+ installation with required extensions
 - Composer dependency manager installed and configured
 - A project directory structure for AI/ML experiments
 - PHP-ML library installed and tested with a working example
@@ -136,8 +136,8 @@ echo "==========================\n\n";
 
 // Check 1: PHP Version
 echo "1. PHP Version... ";
-$versionOk = version_compare(PHP_VERSION, '8.4.0', '>=');
-echo $versionOk ? "✅ " . PHP_VERSION : "❌ " . PHP_VERSION . " (need 8.4+)";
+$versionOk = version_compare(PHP_VERSION, '8.6.0', '>=');
+echo $versionOk ? "✅ " . PHP_VERSION : "❌ " . PHP_VERSION . " (need 8.6+)";
 echo "\n";
 
 // Check 2: Critical Extensions
@@ -176,7 +176,7 @@ php quick-start-verify.php
 ⚡ Quick Environment Check
 ==========================
 
-1. PHP Version... ✅ 8.4.0
+1. PHP Version... ✅ 8.6.0
 2. Critical Extensions...
    json... ✅
    mbstring... ✅
@@ -189,7 +189,7 @@ Run the full verification:
   php verify-installation.php
 ```
 
-**What just happened?** You verified the three most critical components: PHP 8.4, essential extensions, and Composer. If all passed, you're ready for the detailed setup!
+**What just happened?** You verified the three most critical components: PHP 8.6, essential extensions, and Composer. If all passed, you're ready for the detailed setup!
 
 Now let's walk through the complete environment setup step by step...
 
@@ -197,7 +197,7 @@ Now let's walk through the complete environment setup step by step...
 
 By the end of this chapter, you will be able to:
 
-- **Install and verify PHP 8.4** with required extensions for AI/ML work
+- **Install and verify PHP 8.6** with required extensions for AI/ML work
 - **Set up Composer** and use it to manage PHP dependencies
 - **Install PHP-ML and Rubix ML libraries** and understand when to use each
 - **Create and run verification scripts** to confirm your environment is correctly configured
@@ -210,7 +210,7 @@ By the end of this chapter, you will be able to:
 
 Follow this sequence for a smooth setup:
 
-1. **Install PHP 8.4** - Get the latest PHP version with required extensions
+1. **Install PHP 8.6** - Get the latest PHP version with required extensions
 2. **Install Composer** - Set up PHP's dependency manager
 3. **Create Project** - Structure your workspace directory
 4. **Install PHP-ML** - Add the simple ML library
@@ -222,11 +222,11 @@ Follow this sequence for a smooth setup:
 8. **IDE Setup** - Configure your editor with helpful extensions
 9. **Ready for Chapter 3!** - Begin learning ML concepts
 
-## Step 1: Verify or Install PHP 8.4 (~10 min)
+## Step 1: Verify or Install PHP 8.6 (~10 min)
 
 ### Goal
 
-Confirm you have PHP 8.4 or newer installed with the required extensions for machine learning work.
+Confirm you have PHP 8.6 or newer installed with the required extensions for machine learning work.
 
 ### Actions
 
@@ -240,12 +240,12 @@ php --version
 You should see output like:
 
 ```
-PHP 8.4.0 (cli) (built: Nov 21 2024 12:00:00) ( NTS )
+PHP 8.6.0 (cli) (built: ...) ( NTS )
 Copyright (c) The PHP Group
-Zend Engine v4.4.0, Copyright (c) Zend Technologies
+Zend Engine v4.6.0, Copyright (c) Zend Technologies
 ```
 
-2. **If you don't have PHP 8.4+, install it**:
+2. **If you don't have PHP 8.6+, install it**:
 
 **macOS** (using Homebrew):
 
@@ -253,31 +253,31 @@ Zend Engine v4.4.0, Copyright (c) Zend Technologies
 # Install Homebrew if you don't have it
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-# Install PHP 8.4
-brew install php@8.4
+# Install PHP 8.6
+brew install php@8.6
 
 # Link it to be the default PHP
-brew link php@8.4 --force --overwrite
+brew link php@8.6 --force --overwrite
 ```
 
 **Ubuntu/Debian Linux**:
 
 ```bash
-# Add the Ondřej Surý PPA for PHP 8.4
+# Add the Ondřej Surý PPA for PHP 8.6
 sudo add-apt-repository ppa:ondrej/php
 sudo apt update
 
-# Install PHP 8.4 and common extensions
-sudo apt install php8.4 php8.4-cli php8.4-common php8.4-mbstring php8.4-dom php8.4-curl php8.4-zip
+# Install PHP 8.6 and common extensions
+sudo apt install php8.6 php8.6-cli php8.6-common php8.6-mbstring php8.6-dom php8.6-curl php8.6-zip
 ```
 
 **Windows**:
 
-1. Download PHP 8.4 from [windows.php.net/download](https://windows.php.net/download/)
-2. Extract to `C:\php84`
-3. Add `C:\php84` to your system PATH environment variable:
+1. Download PHP 8.6 from [windows.php.net/download](https://windows.php.net/download/)
+2. Extract to `C:\php86`
+3. Add `C:\php86` to your system PATH environment variable:
    - Open System Properties → Advanced → Environment Variables
-   - Add `C:\php84` to the PATH variable
+   - Add `C:\php86` to the PATH variable
    - Restart Command Prompt
 4. Verify installation:
 
@@ -326,7 +326,7 @@ mbstring
 
 ```bash
 # Install missing extensions (adjust package names as needed)
-sudo apt install php8.4-mbstring php8.4-dom php8.4-curl php8.4-zip
+sudo apt install php8.6-mbstring php8.6-dom php8.6-curl php8.6-zip
 ```
 
 **Windows**: Edit `php.ini` (in your PHP directory) and uncomment extension lines:
@@ -339,11 +339,11 @@ extension=openssl
 
 ### Expected Result
 
-Running `php --version` shows PHP 8.4.x, and `php -m` lists json, mbstring, dom, curl, and zip among the installed extensions.
+Running `php --version` shows PHP 8.6.x, and `php -m` lists json, mbstring, dom, curl, and zip among the installed extensions.
 
 ### Why It Works
 
-PHP 8.4 is required for this series because it includes modern features like property hooks, asymmetric visibility, and performance improvements. The extensions we verified are essential:
+This series uses PHP 8.6 as its baseline. Examples also use established features such as property hooks and asymmetric visibility. The extensions we verified are essential:
 
 - **json**: For working with data in JSON format (common in ML datasets and APIs)
 - **mbstring**: For handling multi-byte strings (important for NLP and international text)
@@ -355,9 +355,9 @@ PHP 8.4 is required for this series because it includes modern features like pro
 
 - **Error: "php: command not found"** — PHP is not installed or not in your system PATH. Follow the installation steps above for your operating system.
 
-- **PHP version is 7.4 or 8.0-8.3** — You have an older PHP version. Follow the installation steps to upgrade. On macOS, you may need to unlink the old version first: `brew unlink php@8.3 && brew link php@8.4`
+- **PHP version is below 8.6** — You have an older PHP version. Follow the installation steps to upgrade. On macOS, you may need to unlink the old version first: `brew unlink php@8.3 && brew link php@8.6`
 
-- **Extensions not showing with `php -m`** — The extensions are not enabled. On Linux, run `sudo apt install php8.4-<extension>`. On Windows, edit `php.ini` and uncomment the extension lines. Restart your terminal after changes.
+- **Extensions not showing with `php -m`** — The extensions are not enabled. On Linux, run `sudo apt install php8.6-<extension>`. On Windows, edit `php.ini` and uncomment the extension lines. Restart your terminal after changes.
 
 ## Step 2: Install Composer (~5 min)
 
@@ -612,7 +612,7 @@ This library is ideal for:
 
 - **Error: "require(vendor/autoload.php): failed to open stream"** — You're not in the right directory or didn't run `composer install`. Navigate to `~/aiml-php-workspace` and run `composer install`.
 
-- **Warning about PHP version** — PHP-ML requires PHP 7.2+, but you should be using 8.4. If you see this warning, verify your PHP version with `php --version`.
+- **Warning about PHP version** — PHP-ML requires PHP 7.2+, but you should be using 8.6. If you see this warning, verify your PHP version with `php --version`.
 
 ## Step 5: Install Rubix ML Library (~5 min)
 
@@ -747,13 +747,13 @@ $failures = 0;
 // Check 1: PHP Version
 echo "1. Checking PHP version... ";
 $phpVersion = PHP_VERSION;
-$versionOk = version_compare($phpVersion, '8.4.0', '>=');
-$checks['PHP 8.4+'] = $versionOk;
+$versionOk = version_compare($phpVersion, '8.6.0', '>=');
+$checks['PHP 8.6+'] = $versionOk;
 
 if ($versionOk) {
     echo "✅ PHP $phpVersion\n";
 } else {
-    echo "❌ PHP $phpVersion (need 8.4+)\n";
+    echo "❌ PHP $phpVersion (need 8.6+)\n";
     $failures++;
 }
 
@@ -899,7 +899,7 @@ php verify-installation.php
 🔍 AI/ML PHP Environment Verification
 =====================================
 
-1. Checking PHP version... ✅ PHP 8.4.0
+1. Checking PHP version... ✅ PHP 8.6.0
 2. Checking required extensions...
    ✅ json
    ✅ mbstring
@@ -1092,13 +1092,13 @@ Optional but helpful:
 
 3. **Configure PHP path in VS Code**:
 
-Open VS Code settings (Cmd+, on macOS, Ctrl+, on Windows/Linux) and search for "php.validate.executablePath". Set it to your PHP 8.4 binary:
+Open VS Code settings (Cmd+, on macOS, Ctrl+, on Windows/Linux) and search for "php.validate.executablePath". Set it to your PHP 8.6 binary:
 
 ```json
 {
   "php.validate.executablePath": "/opt/homebrew/bin/php" // macOS Homebrew
   // "php.validate.executablePath": "/usr/bin/php",       // Linux
-  // "php.validate.executablePath": "C:\\php84\\php.exe", // Windows
+  // "php.validate.executablePath": "C:\\php86\\php.exe", // Windows
 }
 ```
 
@@ -1302,9 +1302,9 @@ export PATH="/opt/homebrew/bin:$PATH"
 # Check if PHP is installed
 dpkg -l | grep php
 
-# If not installed, install PHP 8.4
+# If not installed, install PHP 8.6
 sudo apt update
-sudo apt install php8.4-cli
+sudo apt install php8.6-cli
 ```
 
 **Windows**:
@@ -1314,10 +1314,10 @@ sudo apt install php8.4-cli
 echo %PATH%
 
 # Add PHP directory to PATH via System Properties
-# Or run directly: "C:\php84\php.exe" --version
+# Or run directly: "C:\php86\php.exe" --version
 ```
 
-**Problem**: "PHP version is older than 8.4"
+**Problem**: "PHP version is older than 8.6"
 
 **Symptoms**: `php --version` shows PHP 7.4, 8.0, 8.1, 8.2, or 8.3
 
@@ -1328,9 +1328,9 @@ echo %PATH%
 **macOS with Homebrew**:
 
 ```bash
-# Unlink current version and link PHP 8.4
+# Unlink current version and link PHP 8.6
 brew unlink php@8.3  # replace 8.3 with your current version
-brew link php@8.4 --force --overwrite
+brew link php@8.6 --force --overwrite
 
 # Verify
 php --version
@@ -1340,11 +1340,11 @@ php --version
 
 ```bash
 # Update PHP alternatives
-sudo update-alternatives --set php /usr/bin/php8.4
+sudo update-alternatives --set php /usr/bin/php8.6
 
 # Or remove old versions
 sudo apt remove php7.4 php8.0 php8.1 php8.2 php8.3
-sudo apt install php8.4
+sudo apt install php8.6
 
 # Verify
 php --version
@@ -1366,7 +1366,7 @@ php --version
 
 ```bash
 # Install extensions
-sudo apt install php8.4-mbstring php8.4-dom php8.4-curl php8.4-zip php8.4-xml
+sudo apt install php8.6-mbstring php8.6-dom php8.6-curl php8.6-zip php8.6-xml
 
 # Enable extensions in php.ini
 sudo phpenmod mbstring dom curl zip xml
@@ -1380,10 +1380,10 @@ sudo service nginx restart
 
 ```bash
 # Homebrew usually includes extensions, but if missing:
-brew install php@8.4-mbstring php@8.4-dom php@8.4-curl
+php -m | grep -E '^(mbstring|dom|curl)$'
 
 # Reinstall PHP to ensure all extensions
-brew reinstall php@8.4 --build-from-source
+brew reinstall php@8.6 --build-from-source
 ```
 
 **Windows**:
@@ -1410,8 +1410,8 @@ php --ini
 
 ```bash
 # macOS/Linux: Use sudo for system directories
-sudo apt install php8.4  # Ubuntu/Debian
-sudo brew install php@8.4  # macOS (if needed)
+sudo apt install php8.6  # Ubuntu/Debian
+brew install php@8.6  # macOS (if needed)
 
 # Or install in user directories
 composer install --no-dev  # In project directory
@@ -1590,7 +1590,7 @@ composer install
 ```bash
 # Install required build tools
 sudo apt update
-sudo apt install build-essential php8.4-dev php8.4-cli
+sudo apt install build-essential php8.6-dev php8.6-cli
 
 # Try installing Tensor
 composer require rubix/tensor
@@ -1606,7 +1606,7 @@ composer require rubix/ml
 xcode-select --install
 
 # If using Homebrew PHP, ensure it's compiled with necessary extensions
-brew reinstall php@8.4 --build-from-source
+brew reinstall php@8.6 --build-from-source
 
 # Alternative: install without Tensor
 composer require rubix/ml
@@ -1634,7 +1634,7 @@ composer require rubix/ml
 php -m | grep -E 'json|mbstring|curl|dom|zip'
 
 # Install missing extensions (Ubuntu/Debian)
-sudo apt install php8.4-mbstring php8.4-dom php8.4-curl php8.4-zip
+sudo apt install php8.6-mbstring php8.6-dom php8.6-curl php8.6-zip
 
 # Enable extensions
 sudo phpenmod mbstring dom curl zip
@@ -1869,7 +1869,7 @@ Remember: Environment setup issues are common when learning new tools. The verif
 
 Congratulations! You've successfully set up a complete AI/ML development environment for PHP. Here's what you've accomplished:
 
-- ✓ Installed and verified PHP 8.4 with required extensions (json, mbstring, dom, curl, zip)
+- ✓ Installed and verified PHP 8.6 with required extensions (json, mbstring, dom, curl, zip)
 - ✓ Set up Composer for dependency management with memory optimization
 - ✓ Created a well-organized project structure for AI/ML experiments
 - ✓ Installed and tested PHP-ML library with a working classifier example

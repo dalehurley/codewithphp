@@ -6,13 +6,14 @@ version: '3'
 services:
     laravel.test:
         build:
-            context: ./vendor/laravel/sail/runtimes/8.4
+            # Use the PHP runtime supplied by Sail. The host can use PHP 8.6.
+            context: ./vendor/laravel/sail/runtimes/8.5
             dockerfile: Dockerfile
             args:
                 WWWUSER: '${WWWUSER:-1000}'
                 WWWGROUP: '${WWWGROUP:-1000}'
                 NODE_VERSION: '18'
-        image: 'sail-8.4/app'
+        image: 'sail-8.5/app'
         container_name: crm-app-laravel.test
         ports:
             - '${APP_PORT:-80}:80'

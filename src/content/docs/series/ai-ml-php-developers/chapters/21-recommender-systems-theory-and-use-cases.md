@@ -26,7 +26,7 @@ Understanding these fundamentals prepares you to build a working recommendation 
 
 Before starting this chapter, you should have:
 
-- PHP 8.4+ installed and confirmed working with `php --version`
+- PHP 8.6+ installed and confirmed working with `php --version`
 - Completion of [Chapter 20](/series/ai-ml-php-developers/chapters/20-time-series-forecasting-project) or equivalent understanding of predictive analytics and model evaluation
 - Understanding of basic statistics (averages, correlation concepts)
 - Familiarity with PHP arrays and mathematical operations
@@ -40,7 +40,7 @@ Before starting this chapter, you should have:
 ```bash
 # Check PHP version
 php --version
-# Should show PHP 8.4.x
+# Should show PHP 8.6.x
 ```
 
 ## What You'll Build

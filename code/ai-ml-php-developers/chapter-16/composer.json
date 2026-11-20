@@ -3,7 +3,7 @@
   "description": "Computer Vision Essentials for PHP Developers - Chapter 16 code examples",
   "type": "project",
   "require": {
-    "php": "^8.4",
+    "php": "^8.6",
     "ext-gd": "*"
   },
   "require-dev": {},

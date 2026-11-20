@@ -3,7 +3,7 @@
     "description": "Chapter 6: Handling Large Datasets in PHP Without Running Out of Memory",
     "type": "project",
     "require": {
-        "php": "^8.4",
+        "php": "^8.6",
         "league/csv": "^9.0"
     },
     "require-dev": {

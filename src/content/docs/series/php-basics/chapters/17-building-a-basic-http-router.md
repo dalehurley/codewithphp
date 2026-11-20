@@ -33,7 +33,7 @@ In this chapter, you'll build a simple but effective router from scratch. This i
 Before starting this chapter, you should have:
 
 - Completed [Chapter 16: Writing Better Code with PSR-1 and PSR-12](/series/php-basics/chapters/16-writing-better-code-with-psr-1-and-psr-12)
-- PHP 8.4 installed and working
+- PHP 8.6 installed and working
 - Composer installed
 - Basic understanding of classes, namespaces, and autoloading
 - A `simple-blog` project directory with Composer initialized
@@ -135,7 +135,7 @@ Our router needs a single entry point. By configuring our web server to redirect
   "name": "yourname/simple-blog",
   "type": "project",
   "require": {
-    "php": "^8.4"
+    "php": "^8.6"
   },
   "autoload": {
     "psr-4": {
@@ -434,7 +434,7 @@ php -S localhost:8000 -t public
 You should see output like:
 
 ```
-[Sat Oct 25 10:30:00 2025] PHP 8.4.0 Development Server (http://localhost:8000) started
+[Fri Nov 20 10:30:00 2026] PHP 8.6.0 Development Server (http://localhost:8000) started
 ```
 
 2. **Test each route**:
@@ -909,7 +909,7 @@ Congratulations! You've just built the foundation of a modern PHP web applicatio
    - `src/Core/` for framework-level code
    - Composer autoloading for clean class imports
 
-5. **Type Safety**: You used PHP 8.4's type system with `string`, `callable`, `void`, and `mixed` types to make code more robust.
+5. **Type Safety**: You used PHP 8.6's type system with `string`, `callable`, `void`, and `mixed` types to make code more robust.
 
 ### Key Concepts
 

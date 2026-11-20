@@ -7,7 +7,7 @@ declare(strict_types=1);
  * Environment Verification Script for AI/ML PHP Development
  * 
  * This script checks that all required components are installed and working:
- * - PHP 8.4+
+ * - PHP 8.6+
  * - Required extensions
  * - Composer
  * - ML libraries (PHP-ML, Rubix ML)
@@ -23,13 +23,13 @@ $failures = 0;
 // Check 1: PHP Version
 echo "1. Checking PHP version... ";
 $phpVersion = PHP_VERSION;
-$versionOk = version_compare($phpVersion, '8.4.0', '>=');
-$checks['PHP 8.4+'] = $versionOk;
+$versionOk = version_compare($phpVersion, '8.6.0', '>=');
+$checks['PHP 8.6+'] = $versionOk;
 
 if ($versionOk) {
     echo "✅ PHP $phpVersion\n";
 } else {
-    echo "❌ PHP $phpVersion (need 8.4+)\n";
+    echo "❌ PHP $phpVersion (need 8.6+)\n";
     $failures++;
 }
 

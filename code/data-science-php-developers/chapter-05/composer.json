@@ -3,7 +3,7 @@
     "description": "Chapter 5: Exploratory Data Analysis (EDA) for PHP Developers",
     "type": "project",
     "require": {
-        "php": "^8.4",
+        "php": "^8.6",
         "markrogoyski/math-php": "^2.0"
     },
     "autoload": {

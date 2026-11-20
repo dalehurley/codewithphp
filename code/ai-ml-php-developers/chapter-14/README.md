@@ -4,7 +4,7 @@ Complete, working code examples for building a sentiment analysis system.
 
 ## Prerequisites
 
-- PHP 8.4+
+- PHP 8.6+
 - Composer
 - PHP-ML library (installed via composer)
 
@@ -18,7 +18,7 @@ cd docs/series/ai-ml-php-developers/code/chapter-14
 composer install
 
 # Verify PHP version
-php --version  # Should be 8.4+
+php --version  # Should be 8.6+
 ```
 
 ## Files Overview

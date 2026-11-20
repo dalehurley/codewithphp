@@ -3,7 +3,7 @@
   "description": "Object Detection and Recognition examples for Chapter 18",
   "type": "project",
   "require": {
-    "php": "^8.4",
+    "php": "^8.6",
     "ext-gd": "*",
     "ext-json": "*"
   },

@@ -239,7 +239,7 @@ php scripts/export.php
 ## Requirements
 
 ### PHP Requirements
-- PHP 8.4+
+- PHP 8.6+
 - Extensions: pdo, json, mbstring, curl, intl
 - Composer packages (in project-structure):
   - markrogoyski/math-php
@@ -280,7 +280,7 @@ pip install pandas flask
 brew install php
 
 # Ubuntu
-sudo apt-get install php8.4-[extension]
+sudo apt-get install php8.6-[extension]
 ```
 
 **"Composer not found"**:

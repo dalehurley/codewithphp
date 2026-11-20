@@ -79,7 +79,7 @@ php artisan livewire:publish --config
 
 ### Prerequisites
 
-- PHP 8.4+
+- PHP 8.6+
 - Composer installed
 - Laravel 11.x project (for Spatie and Livewire examples)
 

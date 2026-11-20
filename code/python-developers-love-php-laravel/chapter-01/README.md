@@ -162,7 +162,7 @@ The pattern is identical—URL pattern, parameter extraction, handler function. 
 - Django: `pip install django`
 
 **For Laravel Examples:**
-- PHP 8.4+
+- PHP 8.6+
 - Composer installed
 - Laravel application set up
 
@@ -256,7 +256,7 @@ php artisan serve
 
 ## 📝 Notes
 
-- **Laravel examples** use PHP 8.4 syntax with `declare(strict_types=1)` and type declarations
+- **Laravel examples** use PHP 8.6 syntax with `declare(strict_types=1)` and type declarations
 - **Python examples** follow PEP 8 style guidelines
 - All examples are **complete and runnable** within their respective framework contexts
 - Some examples require **database setup** (ORM examples)

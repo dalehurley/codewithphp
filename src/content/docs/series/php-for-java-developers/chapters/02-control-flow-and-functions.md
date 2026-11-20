@@ -30,7 +30,7 @@ By the end of this chapter, you'll be writing PHP control structures and functio
 **What you need:**
 - Completed [Chapter 1: Types, Variables & Operators](/series/php-for-java-developers/chapters/01-types-variables-and-operators)
 - Understanding of Java control structures and methods
-- PHP 8.4 installed and configured
+- PHP 8.6 installed and configured
 
 ## What You'll Build
 

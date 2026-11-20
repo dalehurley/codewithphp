@@ -1,13 +1,13 @@
 ---
 title: "00: Environment Setup and Preparation"
-description: "Install PHP 8.4, Composer, and the Claude PHP Agent framework. Configure API keys, verify dependencies, and run your first agent"
+description: "Install PHP 8.6, Composer, and the Claude PHP Agent framework. Configure API keys, verify dependencies, and run your first agent"
 series: "agentic-ai-php-developers"
 chapter: 0
 difficulty: "Advanced"
 estimatedTime: "PT60M"
 datePublished: "2026-01-31"
-teaches: ["PHP 8.4 environment setup", "Claude Agent framework installation", "Dependency validation", "Basic agent execution"]
-keywords: ["PHP 8.4 setup", "claude-php/claude-php-agent framework", "Agentic AI", "API configuration", "Redis for PHP"]
+teaches: ["PHP 8.6 environment setup", "Claude Agent framework installation", "Dependency validation", "Basic agent execution"]
+keywords: ["PHP 8.6 setup", "claude-php/claude-php-agent framework", "Agentic AI", "API configuration", "Redis for PHP"]
 ---
 
 # Chapter 00: Environment Setup and Preparation
@@ -39,7 +39,7 @@ The goal isn’t just “it works on my machine.” We’ll set up a baseline th
 
 By the end of this chapter, you will have:
 
-- A working PHP 8.4+ environment
+- A working PHP 8.6+ environment
 - A fresh project with `claude-php/claude-php-agent` installed
 - Secure API key configuration
 - Verified Redis and database connectivity
@@ -53,7 +53,7 @@ All runnable code for this chapter is available in the [agentic-ai-php-developer
 
 ### Goal
 
-Ensure you’re running PHP 8.4+ with Composer installed.
+Ensure you’re running PHP 8.6+ with Composer installed.
 
 ### Actions
 
@@ -71,7 +71,7 @@ composer -V
 
 ### Expected Result
 
-You should see PHP 8.4+ and Composer 2.x installed.
+You should see PHP 8.6+ and Composer 2.x installed.
 
 ### Troubleshooting
 

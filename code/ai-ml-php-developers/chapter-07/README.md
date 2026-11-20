@@ -4,7 +4,7 @@ This directory contains complete, runnable code examples for Chapter 07 of the A
 
 ## Prerequisites
 
-- PHP 8.4+
+- PHP 8.6+
 - Composer
 
 ## Installation
@@ -181,4 +181,4 @@ After running these examples:
 
 ---
 
-**Note**: All code is PHP 8.4 compatible and uses modern language features (typed properties, named arguments, etc.).
+**Note**: All code is PHP 8.6 compatible and uses modern language features (typed properties, named arguments, etc.).

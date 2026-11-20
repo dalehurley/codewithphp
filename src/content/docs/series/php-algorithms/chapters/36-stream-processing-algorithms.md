@@ -25,7 +25,7 @@ By the end of this chapter, you'll have implemented sliding window algorithms fo
 
 Before starting this chapter, you should have:
 
-- PHP 8.4+ installed and confirmed working with `php --version`
+- PHP 8.6+ installed and confirmed working with `php --version`
 - Understanding of queues, deques, and specialized data structures
 - Familiarity with window-based computations and sliding window concepts
 - Awareness of latency requirements and throughput constraints in real-time systems

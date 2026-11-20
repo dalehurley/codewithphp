@@ -217,7 +217,7 @@ echo "    'follow_redirects' => true,\n";
 echo "]);\n";
 echo "\n";
 echo "// Load single page\n";
-echo "\$docs = \$webLoader->load('https://www.php.net/releases/8.4/en.php');\n";
+echo "\$docs = \$webLoader->load('https://www.php.net/releases/8.6/en.php');\n";
 echo "\n";
 echo "// Load multiple pages\n";
 echo "\$urls = [\n";

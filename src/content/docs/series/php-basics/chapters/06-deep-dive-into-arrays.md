@@ -25,7 +25,7 @@ This is where arrays come in. An array is a special variable that can hold multi
 
 ## Prerequisites
 
-- PHP 8.4 installed and configured ([Chapter 00](/series/php-basics/chapters/00-setting-up-your-development-environment))
+- PHP 8.6 installed and configured ([Chapter 00](/series/php-basics/chapters/00-setting-up-your-development-environment))
 - Understanding of variables and data types ([Chapter 02](/series/php-basics/chapters/02-variables-data-types-and-constants))
 - Familiarity with control structures and loops ([Chapter 03](/series/php-basics/chapters/03-control-structures))
 - Estimated time: ~20 minutes
@@ -612,21 +612,21 @@ Final array: 50, 42, 23, 16, 15, 8, 100, 200
 Total numbers: 8
 ```
 
-## Step 7: PHP 8.4 Modern Array Functions (~5 min)
+## Step 7: Array Search and Predicate Functions (~5 min)
 
-**Goal** - Use modern PHP 8.4 array functions for cleaner, more expressive code.
+**Goal** - Use array search and predicate functions for cleaner, more expressive code.
 
-PHP 8.4 introduces four powerful new array functions that make searching and validating arrays much simpler and more intuitive than traditional approaches.
+PHP 8.4 introduced four array functions that make searching and validating arrays much simpler and more intuitive than traditional approaches.
 
 ### Actions
 
 1.  **Create a New File**
-    Create `php84-arrays.php` in your working directory.
+    Create `array-predicates.php` in your working directory.
 
 2.  **Explore the New Functions**
 
 ```php
-# filename: php84-arrays.php
+# filename: array-predicates.php
 <?php
 
 declare(strict_types=1);
@@ -657,7 +657,7 @@ echo "All users active: " . ($allActive ? 'Yes' : 'No') . PHP_EOL;
 3.  **Run the Script**
 
 ```bash
-php php84-arrays.php
+php array-predicates.php
 ```
 
 ### Expected Output
@@ -682,7 +682,7 @@ $firstActive = reset($filtered) ?: null;
 $hasInactive = count(array_filter($users, fn($u) => !$u['isActive'])) > 0;
 ```
 
-**With PHP 8.4**, the code is clearer and more expressive:
+**With `array_find()`**, the search is more direct:
 
 ```php
 // New way - much cleaner!
@@ -726,9 +726,9 @@ if (!$allValid) {
 
 ### Code Files
 
-For more comprehensive examples of PHP 8.4 array functions, see:
+For more examples of array search and predicates, see:
 
-- [`code/06-arrays/php84-array-functions.php`](https://github.com/dalehurley/codewithphp/blob/main/code/php-basics/06-arrays/php84-array-functions.php)
+- [`code/06-arrays/array-predicate-functions.php`](https://github.com/dalehurley/codewithphp/blob/main/code/php-basics/06-arrays/array-predicate-functions.php)
 
 ### Validation
 

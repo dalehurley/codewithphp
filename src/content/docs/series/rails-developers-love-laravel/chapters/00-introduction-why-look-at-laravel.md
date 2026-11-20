@@ -385,7 +385,7 @@ PHP hosting is ubiquitous and often cheaper. Shared hosting supports PHP widely,
 Need to integrate with WordPress, Drupal, or legacy PHP systems? Laravel makes this straightforward.
 
 ### 4. Performance at Scale
-Modern PHP (8.4+) with JIT compilation is faster than Ruby in most benchmarks. For high-traffic applications, this matters.
+Modern PHP (8.6+) with JIT compilation is faster than Ruby in most benchmarks. For high-traffic applications, this matters.
 
 ### 5. Deployment Simplicity
 PHP deployment is simpler:
@@ -413,7 +413,7 @@ Don't abandon Rails if:
 By the end of this series, you'll:
 
 1. **Understand Laravel's architecture** - See how Rails concepts map to Laravel
-2. **Write modern PHP** - Learn PHP 8.4 syntax and features
+2. **Write modern PHP** - Learn PHP 8.6 syntax and features
 3. **Build Laravel applications** - Create controllers, models, views
 4. **Master Eloquent ORM** - Rails' ActiveRecord meets Laravel
 5. **Create REST APIs** - Build APIs with Laravel's tools
@@ -468,20 +468,20 @@ You don't need:
 git --version
 
 # PHP will be installed in later chapters, but you can check now:
-php --version  # If installed, should show PHP 8.4 or higher
+php --version  # If installed, should show PHP 8.6 or higher
 ```
 
 ## What You'll Need
 
 **Software:**
-- PHP 8.4+ (we'll help you install it)
+- PHP 8.6+ (we'll help you install it)
 - Composer (PHP's Bundler equivalent)
 - Laravel 12 (we'll install it together in later chapters)
 - A text editor (VS Code, PhpStorm, or your favorite)
 - Terminal access
 
 ::: info Version Information
-This series covers **Laravel 12** with **PHP 8.4**. Laravel follows semantic versioning and releases new major versions roughly every year. Laravel 12 includes streamlined configuration, improved performance, and new developer experience features. If you're using a different Laravel version, most concepts will still apply, but some syntax or features may differ slightly.
+This series covers **Laravel 12** with **PHP 8.6**. Laravel follows semantic versioning and releases new major versions roughly every year. Laravel 12 includes streamlined configuration, improved performance, and new developer experience features. If you're using a different Laravel version, most concepts will still apply, but some syntax or features may differ slightly.
 :::
 
 **Time Commitment:**
@@ -534,7 +534,7 @@ function getUser($id) {
 }
 ```
 
-**Modern PHP (8.4):**
+**Modern PHP (8.6):**
 
 ```php
 <?php
@@ -589,7 +589,7 @@ Let's address common misconceptions Rails developers have about PHP:
 ### Myth 1: "PHP is messy and inconsistent"
 
 **Old PHP (5.x):** Yes, it was.
-**Modern PHP (8.4):** No. It's type-safe, consistent, and well-designed.
+**Modern PHP (8.6):** No. It's type-safe, consistent, and well-designed.
 
 ```php
 <?php
@@ -629,17 +629,17 @@ function processPayment(
 ### Myth 4: "PHP is slow"
 
 **Old PHP:** Yes, PHP 5.x was slow.
-**Modern PHP 8.4:** Faster than Ruby in most benchmarks.
+**Modern PHP 8.6:** Faster than Ruby in most benchmarks.
 
 **Real Benchmarks (requests/second):**
 ```
 Simple JSON API Response:
 - Ruby 3.3 + Rails: ~3,500 req/sec
-- PHP 8.4 + Laravel: ~15,000 req/sec
+- PHP 8.6 + Laravel: ~15,000 req/sec
 
 Database-Heavy Endpoint:
 - Ruby 3.3 + Rails: ~800 req/sec
-- PHP 8.4 + Laravel: ~2,400 req/sec
+- PHP 8.6 + Laravel: ~2,400 req/sec
 ```
 
 ## Quick Comparison Table
@@ -711,7 +711,7 @@ The salary and job market data below reflects 2024 data and may change over time
 Want to see Laravel right now? Here's a quick taste:
 
 ```bash
-# Install Laravel (if you have PHP 8.4 and Composer)
+# Install Laravel (if you have PHP 8.6 and Composer)
 composer global require laravel/installer
 
 # Create new app

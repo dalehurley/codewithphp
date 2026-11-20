@@ -9,7 +9,7 @@ Start with a function that accepts or rejects a numeric string depending on the 
 
 ## What you’ll need
 
-Read the chapters in order or jump to a claim you’ve heard. Run the [series examples](https://github.com/dalehurley/codewithphp/tree/main/code/php-misconceptions) with PHP 8.4 or later from a local checkout of Code with PHP. The Laravel chapters use a separate Laravel 13 app, with Composer and SQLite. Only the performance lab needs FrankenPHP and ApacheBench.
+Read the chapters in order or jump to a claim you’ve heard. Run the [series examples](https://github.com/dalehurley/codewithphp/tree/main/code/php-misconceptions) with PHP 8.6 or later from a local checkout of Code with PHP. The Laravel chapters use a separate Laravel 13 app, with Composer and SQLite. Only the performance lab needs FrankenPHP and ApacheBench.
 
 ## Types, speed and code quality
 

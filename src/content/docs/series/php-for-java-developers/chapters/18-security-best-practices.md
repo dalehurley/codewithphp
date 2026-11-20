@@ -52,7 +52,7 @@ Before starting this chapter, you should be comfortable with:
 **Verify your setup:**
 
 ```bash
-# Check PHP version (8.4+ recommended)
+# Check PHP version (8.6+ recommended)
 php --version
 
 # Verify PDO extension is available

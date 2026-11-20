@@ -38,7 +38,7 @@ echo "\n";
 $tasks = [
     "Create a comprehensive guide for building a Laravel API with authentication, including code examples and best practices documentation.",
 
-    "Research the latest PHP 8.4 features, write code examples demonstrating each feature, and create a blog post summarizing the findings.",
+    "Research the latest PHP 8.6 features, write code examples demonstrating each feature, and create a blog post summarizing the findings.",
 
     "Build a user registration system with validation, create database migrations, and write documentation explaining the implementation."
 ];

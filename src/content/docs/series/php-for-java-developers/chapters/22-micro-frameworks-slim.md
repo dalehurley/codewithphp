@@ -53,7 +53,7 @@ Before starting this chapter, you should be comfortable with:
 
 ```bash
 # Check PHP version
-php --version  # Should be PHP 8.4+
+php --version  # Should be PHP 8.6+
 
 # Check Composer
 composer --version
@@ -147,7 +147,7 @@ mkdir slim-api && cd slim-api
 composer init --no-interaction --name="demo/slim-api" \
   --description="Slim micro-framework API demo" \
   --type="project" \
-  --require="php:^8.4"
+  --require="php:^8.6"
 ```
 
 2. **Install Slim framework**:

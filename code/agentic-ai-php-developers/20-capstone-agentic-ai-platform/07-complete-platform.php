@@ -180,7 +180,7 @@ class AgenticAIPlatform
         $codeAgent = Agent::create($this->client)
             ->withSystemPrompt(
                 'You are an expert code generator. Write clean, efficient, ' .
-                'well-documented code following best practices. Use PHP 8.4 features.'
+                'well-documented code following best practices. Use PHP 8.6 features.'
             );
         
         $this->agentHub->registerAgent(
@@ -231,7 +231,7 @@ class AgenticAIPlatform
         echo "🧠 Seeding knowledge base...\n";
         
         $knowledge = [
-            "PHP 8.4 was released in November 2024 with property hooks and asymmetric visibility.",
+            "PHP 8.6 was released in November 2026 with partial function application and default values for readonly properties.",
             "The claude-php/claude-php-agent framework provides tools for building AI agents in PHP.",
             "Agentic AI systems can autonomously plan, execute, and adapt to achieve goals.",
             "Production AI systems require monitoring, evaluation, and continuous improvement.",

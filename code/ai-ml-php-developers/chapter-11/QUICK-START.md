@@ -6,7 +6,7 @@ Get up and running with PHP-Python integration in 5 minutes!
 
 ```bash
 # Check versions
-php --version    # Need 8.4+
+php --version    # Need 8.6+
 python3 --version # Need 3.10+
 
 # Install Python packages

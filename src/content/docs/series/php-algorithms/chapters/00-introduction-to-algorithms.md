@@ -25,7 +25,7 @@ By the end of this chapter, you'll have a solid foundation in algorithmic thinki
 
 Before starting this chapter, you should have:
 
-- PHP 8.4+ installed and confirmed working with `php --version`
+- PHP 8.6+ installed and confirmed working with `php --version`
 - Completion of [Chapter 02: Variables, Data Types, and Constants](/series/php-basics/chapters/02-variables-data-types-and-constants) or equivalent understanding
 - Completion of [Chapter 03: Control Structures](/series/php-basics/chapters/03-control-structures) or familiarity with loops and conditionals
 - Completion of [Chapter 04: Understanding and Using Functions](/series/php-basics/chapters/04-understanding-and-using-functions) or basic understanding of functions and type hints
@@ -729,7 +729,7 @@ Configure your development environment for algorithm practice and testing.
 
 ### Actions
 
-1. **Verify PHP installation**: You need PHP 8.4+ for modern features:
+1. **Verify PHP installation**: You need PHP 8.6+ for modern features:
 
 ```bash
 # Check PHP version
@@ -775,18 +775,18 @@ echo "Execution time: {$duration}ms\n";
 
 ### Expected Result
 
-You'll have PHP 8.4+ installed, a code editor configured, and tools ready for algorithm development.
+You'll have PHP 8.6+ installed, a code editor configured, and tools ready for algorithm development.
 
 ### Why It Works
 
-- **PHP 8.4+** provides modern type system and performance improvements
+- **PHP 8.6+** provides modern type system and performance improvements
 - **Code editor** with PHP support helps catch errors early
 - **PHPUnit** enables automated testing of algorithm correctness
 - **Benchmarking** helps you measure and compare algorithm performance
 
 ### Troubleshooting
 
-- **PHP version too old** — Update to PHP 8.4+ using your system's package manager
+- **PHP version too old** — Update to PHP 8.6+ using your system's package manager
 - **Composer not found** — Install Composer from [getcomposer.org](https://getcomposer.org/)
 - **Editor extensions not working** — Restart your editor after installing PHP extensions
 - **Benchmark shows 0ms** — Use larger datasets or run multiple iterations for accurate timing

@@ -75,7 +75,7 @@ Copy this template and fill in each section:
 
 Before starting this chapter, you should have:
 
-- PHP 8.4+ installed and confirmed working with `php --version`
+- PHP 8.6+ installed and confirmed working with `php --version`
 - Completion of [Chapter [N-1]](/series/[slug]/chapters/[prev-chapter]) or equivalent understanding
 - [Specific tool or software needed]
 - [Knowledge/skill requirement]
@@ -100,7 +100,7 @@ By the end of this chapter, you will have created:
 - [Another concrete outcome]
 - [Knowledge or understanding gained]
 - [Working example with X features]
-- [Modern PHP 8.4 pattern or approach]
+- [Modern PHP 8.6 pattern or approach]
 
 [Closing statement: "All examples will be working PHP scripts you can run immediately."]
 
@@ -132,7 +132,7 @@ Now let's understand what just happened by building this step-by-step.]
 - [Learn/Understand/Master] how to [do something]
 - [Create/Build/Implement] [specific thing]
 - [Understand/Know] the difference between [X] and [Y]
-- [Use/Apply] modern PHP 8.4 features like [feature]
+- [Use/Apply] modern PHP 8.6 features like [feature]
 
 [4-7 objectives total, using action verbs]
 
@@ -260,7 +260,7 @@ Congratulations! You've just learned [major concept]. You now understand:
 - ✓ How [concept] works
 - ✓ How to [achievement 2]
 - ✓ The difference between [X] and [Y]
-- ✓ Modern PHP 8.4 features like [feature]
+- ✓ Modern PHP 8.6 features like [feature]
 
 [2-3 sentences about why this matters and connection to real-world development]
 
@@ -340,7 +340,7 @@ Use this checklist when planning your chapter:
 ### Code Examples
 - [ ] All examples are complete and runnable
 - [ ] Examples progress from simple to complex
-- [ ] PHP 8.4 syntax used throughout
+- [ ] PHP 8.6 syntax used throughout
 - [ ] Modern approaches shown alongside traditional
 - [ ] All code follows PSR-12 standards
 
@@ -455,7 +455,7 @@ Before submitting, verify:
 
 4. **Standards**
    - [ ] Follows authoring guidelines
-   - [ ] Uses PHP 8.4 features
+   - [ ] Uses PHP 8.6 features
    - [ ] Matches php-basics patterns
    - [ ] PSR-12 compliant code
 

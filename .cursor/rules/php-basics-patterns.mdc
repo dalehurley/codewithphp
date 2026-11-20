@@ -313,10 +313,10 @@ Complete, runnable examples are available in:
 
 ## Modern vs Traditional Pattern
 
-When teaching PHP 8.4 features that replace older patterns:
+When teaching PHP 8.6 features that replace older patterns:
 
 ````markdown
-### Comparison: Traditional vs Modern PHP 8.4
+### Comparison: Traditional vs Modern PHP 8.6
 
 **Traditional Approach (Still Valid)**:
 
@@ -338,7 +338,7 @@ class User
 ```
 ````
 
-**Modern PHP 8.4**:
+**Modern PHP 8.6**:
 
 ```php
 class User
@@ -370,7 +370,7 @@ Use modern syntax for new projects. Traditional syntax still works and is found 
 
 Before starting this chapter, you should have:
 
-- PHP 8.4+ installed and confirmed working with `php --version`
+- PHP 8.6+ installed and confirmed working with `php --version`
 - Completion of [Chapter NN](/series/php-basics/chapters/nn-title) or equivalent understanding
 - A text editor (VS Code recommended)
 - Familiarity with [concept from previous chapter]
@@ -382,7 +382,7 @@ Before starting this chapter, you should have:
 # Check PHP version
 php --version
 
-# Expected: PHP 8.4.x or higher
+# Expected: PHP 8.6.x or higher
 ````
 
 ```
@@ -445,7 +445,7 @@ Congratulations! You've just learned [major concept]. You now understand:
 - ✓ How [achievement 2] works
 - ✓ How to [achievement 3]
 - ✓ The difference between [concept A] and [concept B]
-- ✓ Modern PHP 8.4 features like [feature]
+- ✓ Modern PHP 8.6 features like [feature]
 
 [2-3 sentences about why this matters and how it connects to real-world development]
 

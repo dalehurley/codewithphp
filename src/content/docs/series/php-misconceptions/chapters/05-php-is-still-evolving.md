@@ -14,7 +14,7 @@ PHP dates to 1995. PHP 8.6 shipped on 19 November 2026. Those two dates can be t
 
 ## Quick Start
 
-From the Code with PHP checkout, run the example with PHP 8.4 or later.
+From the Code with PHP checkout, run the example with PHP 8.6 or later.
 
 ```bash
 php --version

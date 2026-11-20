@@ -17,7 +17,7 @@ Symfony is a **set of reusable PHP components** and a **web application framewor
 
 ## 📋 Prerequisites
 
-- PHP 8.2+ (our blog uses 8.4!)
+- PHP 8.2+ (our blog uses 8.6!)
 - Composer installed
 - Symfony CLI (optional but recommended)
 - Basic understanding from Chapters 1-19

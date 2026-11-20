@@ -58,7 +58,7 @@ try {
                 'content' => 'MVC stands for Model-View-Controller. The Model handles data and business logic, the View handles presentation, and the Controller coordinates between them. This separation of concerns makes code more maintainable and testable.'
             ],
             [
-                'title' => 'PHP 8.4 Features',
+                'title' => 'PHP 8.6 Features',
                 'content' => 'PHP 8.4 introduces several exciting features including property hooks, asymmetric visibility, and improved type system. These features make PHP more expressive and help catch bugs earlier in the development process.'
             ]
         ];

@@ -2,7 +2,7 @@
   "name": "code-with-php/time-series-forecasting",
   "description": "Time series forecasting examples for Chapter 20",
   "require": {
-    "php": "^8.4",
+    "php": "^8.6",
     "rubix/ml": "^3.0"
   },
   "autoload": {

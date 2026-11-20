@@ -451,10 +451,10 @@ return RectorConfig::configure()
         __DIR__ . '/tests',
     ])
     ->withPhpSets(
-        php84: true
+        php86: true
     )
     ->withSets([
-        LevelSetList::UP_TO_PHP_84,
+        LevelSetList::UP_TO_PHP_86,
         SetList::CODE_QUALITY,
         SetList::DEAD_CODE,
         SetList::TYPE_DECLARATION,
@@ -1600,7 +1600,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4'
+          php-version: '8.6'
           tools: composer, cs2pr
 
       - name: Install dependencies
@@ -1733,7 +1733,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-version: ['8.1', '8.2', '8.3', '8.4']
+        php-version: ['8.1', '8.2', '8.3', '8.6']
     
     steps:
       - uses: actions/checkout@v3

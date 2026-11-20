@@ -27,7 +27,7 @@ By the end of this chapter, you'll understand that data science isn't about the 
 
 Before starting this chapter, you should have:
 
-- PHP 8.4+ installed (verify with `php --version`)
+- PHP 8.6+ installed (verify with `php --version`)
 - Basic understanding of PHP programming
 - Familiarity with web development concepts (databases, APIs, HTTP)
 - Curiosity about working with data and analytics
@@ -834,7 +834,7 @@ This series introduces tools gradually as they become relevant. You'll naturally
 
 **PHP Ecosystem**:
 
-- **PHP 8.4**: Modern language features (property hooks, type system improvements)
+- **PHP 8.6**: Modern language features (property hooks, type system improvements)
 - **Composer**: Dependency management for data science libraries
 - **Laravel/Symfony**: (Optional) Framework integration for web applications
 - **PHP-ML**: (Later chapters) Simple machine learning models in pure PHP

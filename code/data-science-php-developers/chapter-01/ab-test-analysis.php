@@ -9,7 +9,7 @@ declare(strict_types=1);
  * if a change (like a new button color) improves conversions.
  * 
  * Requirements:
- * - PHP 8.4+
+ * - PHP 8.6+
  * - Database with 'events' table tracking variants and conversions
  * - Laravel/Eloquent (or adapt to PDO)
  */

@@ -26,7 +26,7 @@ This is where control structures come in. They allow us to control the "flow" of
 
 ## Prerequisites
 
-- PHP 8.4 installed and working (verify with `php --version`)
+- PHP 8.6 installed and working (verify with `php --version`)
 - A text editor or IDE
 - Basic understanding of variables, data types, and arrays from previous chapters
 - Estimated time: ~30 minutes
@@ -661,7 +661,7 @@ You've just learned one of the most powerful concepts in programming: controllin
 - Control loop execution with `break` and `continue`
 - Troubleshoot common control structure issues
 
-These building blocks are essential for writing any meaningful program. You'll use them in virtually every script you write from this point forward. The modern features like `match` and `??` are particularly powerful tools that make PHP 8.4 code cleaner and more expressive.
+These building blocks are essential for writing any meaningful program. You'll use them in virtually every script you write from this point forward. The modern features like `match` and `??` are particularly powerful tools that make PHP 8.6 code cleaner and more expressive.
 
 In the next chapter, we'll learn how to bundle our code into reusable blocks called functions, making our programs much more organized and powerful.
 

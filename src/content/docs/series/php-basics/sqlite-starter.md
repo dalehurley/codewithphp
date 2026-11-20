@@ -10,7 +10,7 @@ Build a reading list you can run locally. Add a book, mark it as read, and resta
 
 ## What you need
 
-Use PHP 8.4 or later with PDO SQLite. Check that PHP can see the driver:
+Use PHP 8.6 or later with PDO SQLite. Check that PHP can see the driver:
 
 ```sh
 php -v

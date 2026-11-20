@@ -120,7 +120,7 @@ php monitoring-integration.php
 
 ## Requirements
 
-- PHP 8.4+
+- PHP 8.6+
 - Composer dependencies from `../00-environment-setup/`
 - `ANTHROPIC_API_KEY` environment variable (for examples that use the agent)
 

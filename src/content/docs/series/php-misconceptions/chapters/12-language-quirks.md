@@ -14,7 +14,7 @@ Some historical criticism of PHP describes behaviour you can still reproduce. So
 
 ## Quick Start
 
-Run the script from the repository root with PHP 8.4 or later.
+Run the script from the repository root with PHP 8.6 or later.
 
 ```bash
 php code/php-misconceptions/quirks.php

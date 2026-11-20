@@ -152,7 +152,7 @@ $processor = new TextProcessor(
 
 ## Requirements
 
-- PHP 8.4 or higher
+- PHP 8.6 or higher
 - mbstring extension (for UTF-8 support)
 
 Check your PHP version:
@@ -174,7 +174,7 @@ If mbstring is not installed:
 sudo apt-get install php-mbstring
 
 # macOS (Homebrew)
-brew install php@8.4
+brew install php@8.6
 
 # Or enable in php.ini
 extension=mbstring

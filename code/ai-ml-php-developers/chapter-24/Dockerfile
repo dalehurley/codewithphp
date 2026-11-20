@@ -1,22 +1,12 @@
 # Multi-stage Dockerfile for AI-ML PHP Service
 # Build stage - includes build tools
-FROM php:8.4-cli-alpine AS builder
+FROM php:8.6-cli-alpine AS builder
 
 LABEL maintainer="your-email@example.com"
 LABEL description="AI/ML PHP Service - Build Stage"
 
-# Install build dependencies
-RUN apk add --no-cache \
-    $PHPIZE_DEPS \
-    autoconf \
-    g++ \
-    make \
-    git
-
-# Install PHP extensions needed for ML
-RUN docker-php-ext-install pcntl sockets \
-    && pecl install redis-6.0.2 \
-    && docker-php-ext-enable redis
+COPY --from=ghcr.io/mlocati/php-extension-installer:2 /usr/bin/install-php-extensions /usr/local/bin/
+RUN apk add --no-cache git && install-php-extensions pcntl sockets redis-6.3.0
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -30,7 +20,7 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --no-script
     echo "Note: composer.lock not found, running without it"
 
 # Production stage - minimal image
-FROM php:8.4-cli-alpine AS production
+FROM php:8.6-cli-alpine AS production
 
 LABEL maintainer="your-email@example.com"
 LABEL description="AI/ML PHP Service - Production"

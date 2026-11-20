@@ -37,7 +37,7 @@ php verify-setup.php
 
 Should show:
 
-- ✓ PHP 8.4+
+- ✓ PHP 8.6+
 - ✓ GD extension
 - ✓ Python 3.10+
 - ✓ Ultralytics installed
@@ -334,7 +334,7 @@ ini_set('memory_limit', '512M');
 
 ```bash
 # Ubuntu/Debian
-sudo apt install php8.4-gd
+sudo apt install php8.6-gd
 sudo systemctl restart apache2
 
 # macOS (usually bundled)

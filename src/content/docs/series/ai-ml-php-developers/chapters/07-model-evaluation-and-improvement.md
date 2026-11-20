@@ -28,7 +28,7 @@ Before starting this chapter, you should have:
 
 - Completed [Chapter 03](/series/ai-ml-php-developers/chapters/03-core-machine-learning-concepts-and-terminology) or understand train/test splits, accuracy, and overfitting
 - Completed [Chapter 06](/series/ai-ml-php-developers/chapters/06-classification-basics-and-building-a-spam-filter) or have built a classification model
-- PHP 8.4+ environment with Rubix ML installed (from Chapter 2)
+- PHP 8.6+ environment with Rubix ML installed (from Chapter 2)
 - Basic understanding of classification metrics (confusion matrix helpful but not required)
 - Familiarity with arrays, functions, and basic statistics in PHP
 - A text editor or IDE configured for PHP development

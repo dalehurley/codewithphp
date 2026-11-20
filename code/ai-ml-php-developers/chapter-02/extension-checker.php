@@ -116,12 +116,12 @@ if (!empty($missingRequired) || !empty($missingRecommended)) {
 
     echo "Ubuntu/Debian:\n";
     foreach ($allMissing as $ext) {
-        echo "  sudo apt install php8.4-{$ext}\n";
+        echo "  sudo apt install php8.6-{$ext}\n";
     }
     echo "\n";
 
     echo "macOS (Homebrew):\n";
-    echo "  brew reinstall php@8.4\n";
+    echo "  brew reinstall php@8.6\n";
     echo "  (Most extensions included by default)\n\n";
 
     echo "Windows:\n";

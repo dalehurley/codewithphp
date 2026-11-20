@@ -1,6 +1,6 @@
 ---
 title: "Claude for PHP Developers"
-description: "Master Anthropic's Claude AI from basics to production—learn prompting, tool use, vision, RAG, Agent Skills, multi-agent systems, and deployment of full-featured AI applications with PHP 8.4+."
+description: "Master Anthropic's Claude AI from basics to production—learn prompting, tool use, vision, RAG, Agent Skills, multi-agent systems, and deployment of full-featured AI applications with PHP 8.6+."
 ---
 
 
@@ -36,13 +36,13 @@ This series is designed for:
 - **Enterprise developers** integrating Claude into existing PHP applications
 - **AI-curious developers** with strong PHP skills ready to master modern AI
 
-You should have expert-level PHP 8.4+ knowledge, understanding of modern frameworks (Laravel 11, Symfony 7), API development experience, and familiarity with asynchronous processing. No AI/ML background required—we'll teach you everything you need to know about working with Claude.
+You should have expert-level PHP 8.6+ knowledge, understanding of modern frameworks (Laravel 11, Symfony 7), API development experience, and familiarity with asynchronous processing. No AI/ML background required—we'll teach you everything you need to know about working with Claude.
 
 ## Prerequisites
 
 **Software Requirements:**
 
-- **PHP 8.4+** (we'll use modern PHP features throughout)
+- **PHP 8.6+** (we'll use modern PHP features throughout)
 - **Composer** for dependency management
 - **Laravel 11** or **Symfony 7** (for framework-specific chapters)
 - **Anthropic API Key** (we'll show you how to get one)
@@ -60,7 +60,7 @@ You should have expert-level PHP 8.4+ knowledge, understanding of modern framewo
 
 **Skill Assumptions:**
 
-- Expert-level PHP 8.4+ (namespaces, traits, interfaces, dependency injection, type declarations)
+- Expert-level PHP 8.6+ (namespaces, traits, interfaces, dependency injection, type declarations)
 - Modern framework experience (Laravel 11 or Symfony 7)
 - RESTful API development and consumption
 - Understanding of asynchronous processing (queues, workers)
@@ -122,7 +122,7 @@ By working through this series, you will:
    - Scaling strategies: horizontal scaling, load balancing, queuing
    - Debugging techniques and troubleshooting production issues
 
-Every code example is production-ready, following PHP 8.4+ best practices, modern design patterns, and includes comprehensive error handling and testing strategies.
+Every code example is production-ready, following PHP 8.6+ best practices, modern design patterns, and includes comprehensive error handling and testing strategies.
 
 ## Learning Objectives
 
@@ -152,7 +152,7 @@ This series follows a **progressive, project-based approach**: you'll learn each
 Each chapter includes:
 
 - **Clear explanations** of Claude features and AI concepts
-- **Step-by-step implementations** in modern PHP 8.4+
+- **Step-by-step implementations** in modern PHP 8.6+
 - **Complete working examples** with Laravel, Symfony, and standalone PHP
 - **Best practices** for production deployments
 - **Cost optimization strategies** for each feature
@@ -663,7 +663,7 @@ Want to dive deeper? These resources complement the series:
 
 ### Related Code with PHP Series
 
-- **[PHP Basics](/series/php-basics/)** — Master PHP fundamentals and modern PHP 8.4+ features
+- **[PHP Basics](/series/php-basics/)** — Master PHP fundamentals and modern PHP 8.6+ features
 - **[PHP Algorithms](/series/php-algorithms/)** — Algorithm and data structure foundations
 - **[AI/ML for PHP Developers](/series/ai-ml-php-developers/)** — Broader AI/ML concepts and machine learning with PHP
 - **[Build a CRM with Laravel 12](/series/build-crm-laravel-12/)** — Apply Claude and AI to real production applications

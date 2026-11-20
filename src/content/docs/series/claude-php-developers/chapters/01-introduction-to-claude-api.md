@@ -24,7 +24,7 @@ You'll learn about the latest Claude 4.x lineup—Opus 4.1, Sonnet 4.5, and Haik
 Before starting, ensure you have:
 
 - ✓ **Completed** [Chapter 00: Quick Start Guide](/series/claude-php-developers/chapters/00-quick-start-guide)
-- ✓ **PHP 8.4+** installed and working (`php --version`)
+- ✓ **PHP 8.6+** installed and working (`php --version`)
 - ✓ **Anthropic API key** configured in your environment
 - ✓ **Basic REST API knowledge** (HTTP methods, JSON, status codes)
 

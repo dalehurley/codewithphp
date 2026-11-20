@@ -265,7 +265,7 @@ sort($array);  // Built-in - best choice
 Reference chapters should **solve problems quickly** while still being:
 - Technically accurate
 - Secure (no vulnerable code)
-- Modern (PHP 8.4 standards)
+- Modern (PHP 8.6 standards)
 - Practical (real-world examples)
 
 ## Example Structure
@@ -400,7 +400,7 @@ Before publishing a reference chapter:
 - [ ] Next steps or learning paths provided
 
 **Code Quality**:
-- [ ] All examples use PHP 8.4 syntax
+- [ ] All examples use PHP 8.6 syntax
 - [ ] No security vulnerabilities
 - [ ] Code follows PSR-12 standards
 - [ ] Examples are complete (not partial)

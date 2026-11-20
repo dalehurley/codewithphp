@@ -32,7 +32,7 @@ You don't need prior data science, statistics, or machine learning experience. W
 
 **Software Requirements:**
 
-- **PHP 8.4+** (we'll verify your setup in Chapter 02)
+- **PHP 8.6+** (we'll verify your setup in Chapter 02)
 - **Composer** (PHP's dependency manager)
 - **Database** (MySQL, PostgreSQL, or SQLite for examples)
 - **Text editor or IDE** (VS Code, PhpStorm, or your preferred editor)

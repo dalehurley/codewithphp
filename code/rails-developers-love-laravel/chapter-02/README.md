@@ -1,13 +1,13 @@
 # Chapter 02: Modern PHP - What's Changed
 
-This directory contains practical examples of PHP 8.4 features that modern developers will appreciate.
+This directory contains practical examples of PHP 8.6 features that modern developers will appreciate.
 
 ## Directory Structure
 
 ```
 chapter-02/
 ├── 01-type-safety/           # Type declarations and strict typing
-├── 02-property-hooks/        # PHP 8.4 property hooks
+├── 02-property-hooks/        # PHP property hooks
 ├── 03-enums/                 # Type-safe enums
 ├── 04-match-expressions/     # Better switch statements
 ├── 05-named-arguments/       # Keyword arguments
@@ -63,7 +63,7 @@ php 03-enums/status-enum.php
 
 ## Notes
 
-- All examples use PHP 8.4 syntax
+- All examples use PHP 8.6 syntax
 - Examples are self-contained and can be run independently
 - Output is typically shown with echo statements
 - Errors are intentionally included to show what NOT to do

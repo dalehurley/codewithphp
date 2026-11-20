@@ -62,7 +62,7 @@ echo "Goal: Generate hypothetical answer, search for similar documents\n\n";
 
 $hydeGen = new HyDEGenerator($client);
 
-$query = 'What are the benefits of property hooks in PHP 8.4?';
+$query = 'What are the benefits of property hooks in PHP 8.6?';
 
 echo "Query:\n";
 echo "  {$query}\n\n";
@@ -101,7 +101,7 @@ $decomposer = new QueryDecomposer($client);
 $complexQueries = [
     'Compare the performance, developer experience, and deployment options of Laravel vs Symfony',
     'What are the security implications, best practices, and common pitfalls when implementing JWT authentication in PHP?',
-    'How do I migrate from PHP 7.4 to 8.4 while maintaining backwards compatibility and minimizing downtime?',
+    'How do I migrate from PHP 7.4 to 8.6 while maintaining backwards compatibility and minimizing downtime?',
 ];
 
 foreach ($complexQueries as $idx => $complexQuery) {

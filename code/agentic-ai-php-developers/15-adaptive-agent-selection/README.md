@@ -160,7 +160,7 @@ php 07-production-adaptive-system.php
 
 Before running these examples, ensure you have:
 
-1. **PHP 8.4+**
+1. **PHP 8.6+**
 2. **Composer dependencies installed:**
    ```bash
    cd /path/to/PHP-From-Scratch

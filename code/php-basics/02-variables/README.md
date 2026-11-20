@@ -145,7 +145,7 @@ php solutions/exercise-2-user-profile.php
 - `null` - Absence of value
 - `resource` - External resources (files, database connections)
 
-### Type Declarations (PHP 8.4)
+### Type Declarations (PHP 8.6)
 
 ```php
 // Scalar types

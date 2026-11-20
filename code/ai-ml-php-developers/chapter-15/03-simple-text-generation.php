@@ -67,7 +67,7 @@ echo "3. BLOG POST OUTLINE\n";
 echo "─────────────────────────────────────\n";
 try {
     $outline = $generator->generateBlogOutline(
-        topic: "Best Practices for PHP 8.4 Development",
+        topic: "Best Practices for PHP 8.6 Development",
         sections: 6,
     );
     echo $outline['text'] . "\n\n";

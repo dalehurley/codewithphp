@@ -28,7 +28,7 @@ By the end of this chapter, you'll understand how to build class hierarchies, de
 
 ## Prerequisites
 
-- PHP 8.4 installed and working
+- PHP 8.6 installed and working
 - Completion of [Chapter 08: Introduction to Object-Oriented Programming](/series/php-basics/chapters/08-introduction-to-object-oriented-programming)
 - Understanding of classes, objects, properties, and methods
 - A text editor and terminal
@@ -174,7 +174,7 @@ Bob approved the expense.
 
 **Why it works**: The `Manager` class inherits all properties and methods from `Employee`. When you create a `Manager`, it has access to both the parent's `getInfo()` method and its own `approveExpense()` method. The `protected` keyword allows the child class to access the parent's properties directly.
 
-::: tip PHP 8.4 Features
+::: tip PHP 8.6 Features
 Notice how we use typed properties (`protected string $name`) and return type declarations (`: string`). These features, available since PHP 7.4 and enhanced in PHP 8.x, help catch bugs early and make your code more maintainable.
 :::
 

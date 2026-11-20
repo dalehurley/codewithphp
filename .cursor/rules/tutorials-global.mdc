@@ -194,10 +194,10 @@ Use text-based diagrams or tables to illustrate concepts
 - *Italics* sparingly for emphasis
 - Em dash (—) for descriptions in links
 
-## PHP 8.4 Standards
+## PHP 8.6 Standards
 
 All code must:
-- Use PHP 8.4 syntax and features
+- Use PHP 8.6 syntax and features
 - Include type declarations: `function greet(string $name): void`
 - Use constructor property promotion where appropriate
 - Show modern features (property hooks, asymmetric visibility)
@@ -336,7 +336,7 @@ Before considering a tutorial complete:
 - [ ] Code references use full GitHub URLs
 - [ ] Tone is encouraging without being patronizing
 - [ ] Technical accuracy verified
-- [ ] Examples follow PHP 8.4 and PSR-12 standards
+- [ ] Examples follow PHP 8.6 and PSR-12 standards
 
 ## Output Contract
 

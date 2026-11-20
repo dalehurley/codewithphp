@@ -9,7 +9,7 @@ declare(strict_types=1);
  * purchasing behavior using PHP and database queries.
  * 
  * Requirements:
- * - PHP 8.4+
+ * - PHP 8.6+
  * - Database with 'orders' table
  * - Laravel/Eloquent (or adapt to PDO)
  */

@@ -29,7 +29,7 @@ php -r "require 'SecureSession.php'; require 'PasswordHasher.php'; ..."
 
 ## Prerequisites
 
-- PHP 8.4 or higher
+- PHP 8.6 or higher
 - Understanding of HTTP and cookies
 - Basic knowledge of security concepts (hashing, encryption)
 

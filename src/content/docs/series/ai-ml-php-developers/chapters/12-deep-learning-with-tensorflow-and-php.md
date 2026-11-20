@@ -28,7 +28,7 @@ Before starting this chapter, you should have:
 
 - Completed [Chapter 10](/series/ai-ml-php-developers/chapters/10-neural-networks-and-deep-learning-fundamentals) or understand neural network basics (layers, activation functions, forward propagation)
 - Completed [Chapter 11](/series/ai-ml-php-developers/chapters/11-integrating-php-with-python-for-advanced-ml) or have experience calling external services from PHP
-- PHP 8.4+ installed with GD extension enabled (for image processing)
+- PHP 8.6+ installed with GD extension enabled (for image processing)
 - Docker installed and running (for TensorFlow Serving container)
 - Python 3.10+ with TensorFlow installed (for model setup)
 - Basic understanding of REST APIs and JSON
@@ -70,7 +70,7 @@ By the end of this chapter, you will have created:
 - A **production-ready integration** with caching, error handling, and logging
 - Working examples classifying real images into 1,000 ImageNet categories
 
-All code follows PHP 8.4 standards with type safety, constructor property promotion, and comprehensive error handling.
+All code follows PHP 8.6 standards with type safety, constructor property promotion, and comprehensive error handling.
 
 ::: info Code Examples
 Complete, runnable examples for this chapter are available in:
@@ -720,7 +720,7 @@ Top probability: 0.0234567
 
 ### Why It Works
 
-**Constructor properties**: We use PHP 8.4 constructor property promotion for clean, concise class definition.
+**Constructor properties**: We use PHP 8.6 constructor property promotion for clean, concise class definition.
 
 **Type safety**: All parameters and return types are declared, catching errors at development time.
 
@@ -1182,7 +1182,7 @@ The test image is solid gray, so the model's predictions are essentially random 
 
 **Dependency injection**: The classifier receives its dependencies (client, preprocessor) via constructor, making it testable and flexible.
 
-**Named parameters**: PHP 8.4 named parameters make the constructor call self-documenting.
+**Named parameters**: PHP 8.6 named parameters make the constructor call self-documenting.
 
 **Top-K predictions**: Instead of just the best prediction, we return the top K, which is useful for showing alternative possibilities.
 
@@ -1382,7 +1382,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['image'])) {
 
         <hr style="margin: 30px 0;">
         <p style="color: #666; font-size: 14px;">
-            Powered by TensorFlow MobileNetV2 and PHP 8.4
+            Powered by TensorFlow MobileNetV2 and PHP 8.6
         </p>
     </div>
 </body>

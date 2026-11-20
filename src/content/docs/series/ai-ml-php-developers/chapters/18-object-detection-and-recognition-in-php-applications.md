@@ -28,7 +28,7 @@ Before starting this chapter, you should have:
 
 - Completed [Chapter 17](/series/ai-ml-php-developers/chapters/17-image-classification-project-with-pre-trained-models) or equivalent understanding of image classification and working with image data in PHP
 - Completed [Chapter 11](/series/ai-ml-php-developers/chapters/11-integrating-php-with-python-for-advanced-ml) with experience calling Python scripts from PHP and handling subprocess communication
-- PHP 8.4+ environment with Composer installed
+- PHP 8.6+ environment with Composer installed
 - Python 3.10+ installed with pip package manager
 - GD or Imagick PHP extension for image manipulation (check with `php -m | grep -E 'gd|imagick'`)
 - Familiarity with REST APIs and JSON from earlier chapters
@@ -422,7 +422,7 @@ echo "=== Object Detection Environment Verification ===\n\n";
 
 // Check PHP version
 echo "1. PHP Version: " . PHP_VERSION;
-echo (version_compare(PHP_VERSION, '8.4.0', '>=')) ? " ✓\n" : " ✗ (need 8.4+)\n";
+echo (version_compare(PHP_VERSION, '8.6.0', '>=')) ? " ✓\n" : " ✗ (need 8.6+)\n";
 
 // Check GD extension
 echo "2. GD Extension: ";
@@ -491,7 +491,7 @@ echo "\n=== Setup Complete ===\n";
 
 // Summary
 $requiredChecks = [
-    version_compare(PHP_VERSION, '8.4.0', '>='),
+    version_compare(PHP_VERSION, '8.6.0', '>='),
     extension_loaded('gd'),
     !empty($pythonVersion),
     !empty($yoloCheck),
@@ -521,7 +521,7 @@ php verify-setup.php
 ```
 === Object Detection Environment Verification ===
 
-1. PHP Version: 8.4.0 ✓
+1. PHP Version: 8.6.0 ✓
 2. GD Extension: ✓ Loaded
    - Version: bundled (2.1.0 compatible)
    - PNG Support: Yes
@@ -548,7 +548,7 @@ YOLOv8 (via ultralytics package) handles model downloading automatically on firs
 
 - **`ModuleNotFoundError: No module named 'ultralytics'`** — Python packages installed in wrong Python version. Verify with `which python3` and ensure pip3 installs to same Python. Use `python3 -m pip install -r requirements.txt` instead.
 
-- **GD not loaded** — Install PHP GD extension. Ubuntu/Debian: `sudo apt install php8.4-gd && sudo systemctl restart apache2`. macOS: GD usually bundled, check `php.ini` for `extension=gd`.
+- **GD not loaded** — Install PHP GD extension. Ubuntu/Debian: `sudo apt install php8.6-gd && sudo systemctl restart apache2`. macOS: GD usually bundled, check `php.ini` for `extension=gd`.
 
 - **Ultralytics downloads model on first run** — This is normal. YOLOv8n (nano) is ~6MB, YOLOv8m (medium) is ~50MB. Models are cached in `~/.cache/torch/hub/ultralytics/` for reuse.
 
@@ -1730,7 +1730,7 @@ Cloud vision APIs provide production-ready object detection without infrastructu
 
 ### Troubleshooting
 
-- **`google/cloud-vision not installed`** — Install with Composer: `composer require google/cloud-vision`. Ensure composer.json requires PHP 8.4+.
+- **`google/cloud-vision not installed`** — Install with Composer: `composer require google/cloud-vision`. Ensure composer.json requires PHP 8.6+.
 
 - **`Authentication failed`** — For Google: verify JSON key file path and ensure service account has Vision API permissions. For AWS: verify access key/secret and IAM user has `rekognition:DetectLabels` permission.
 

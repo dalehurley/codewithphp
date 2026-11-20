@@ -4,7 +4,7 @@ Complete, working code examples for building recommendation systems using collab
 
 ## Prerequisites
 
-- PHP 8.4+
+- PHP 8.6+
 - Composer
 - Rubix ML library (optional, for example 08)
 
@@ -18,7 +18,7 @@ cd docs/series/ai-ml-php-developers/code/chapter-22
 composer install
 
 # Verify PHP version
-php --version  # Should be 8.4+
+php --version  # Should be 8.6+
 ```
 
 ## Files Overview
@@ -187,7 +187,7 @@ php 01-load-ratings-dataset.php
 // Old (PHP 8.3 and earlier)
 fgetcsv($file);
 
-// New (PHP 8.4+)
+// New (PHP 8.6+)
 fgetcsv($file, 0, ',', '"', '\\');
 ```
 

@@ -118,7 +118,7 @@ Performance check:
 
 **Use this first!** A minimal 2-minute environment check that verifies:
 
-- PHP version (8.4+)
+- PHP version (8.6+)
 - Critical extensions (json, mbstring, curl)
 - Composer availability
 
@@ -134,7 +134,7 @@ php quick-start-verify.php
 
 Comprehensive environment check (10+ detailed checks):
 
-- PHP version (8.4+)
+- PHP version (8.6+)
 - Required extensions (json, mbstring, curl, dom, zip)
 - Composer installation and memory configuration
 - Autoloader presence and functionality
@@ -185,13 +185,13 @@ Useful when troubleshooting specific extension issues or understanding what each
 
 ### test-phpml.php
 
-Demonstrates PHP-ML basics with modern PHP 8.4 features:
+Demonstrates PHP-ML basics with modern PHP features:
 
 - Training a k-nearest neighbors classifier with named arguments
 - Using typed arrays and data validation
 - Making predictions with enhanced output
 - Understanding the PHP-ML API
-- PHP 8.4 features: named arguments, array destructuring, match expressions
+- PHP features: named arguments, array destructuring, match expressions
 - Proper error handling and data validation
 
 This is your first working ML code in pure PHP!
@@ -205,7 +205,7 @@ Demonstrates Rubix ML capabilities with enhanced features:
 - Training sophisticated classifiers with timing measurements
 - Checking for performance optimizations (Tensor extension)
 - Working with multi-feature data and statistical summaries
-- PHP 8.4 features: array destructuring, microtime precision, enhanced error handling
+- PHP features: array destructuring, microtime precision, enhanced error handling
 
 Rubix ML is more powerful than PHP-ML and will be used throughout the series.
 
@@ -279,7 +279,7 @@ Once all scripts run successfully:
 - [PHP-ML Documentation](https://php-ml.readthedocs.io/)
 - [Rubix ML Documentation](https://docs.rubixml.com/)
 - [Composer Documentation](https://getcomposer.org/doc/)
-- [PHP 8.4 Release Notes](https://www.php.net/releases/8.4/)
+- [PHP 8.6 Release Notes](https://www.php.net/releases/8.6/en.php)
 
 ## Support
 
@@ -291,4 +291,4 @@ If you encounter issues:
 4. Verify Composer works: `composer --version`
 5. Check extension installation: `php -m`
 
-All code in this directory has been tested and should work on PHP 8.4+ with properly installed dependencies.
+All code in this directory targets PHP 8.6+ with properly installed dependencies.

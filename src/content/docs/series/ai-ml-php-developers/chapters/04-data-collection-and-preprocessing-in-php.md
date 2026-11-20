@@ -24,7 +24,7 @@ By working through real-world examples with customer and product datasets, you'l
 
 Before starting this chapter, you should have:
 
-- PHP 8.4+ installed and confirmed working with `php --version`
+- PHP 8.6+ installed and confirmed working with `php --version`
 - Composer installed for dependency management
 - Completion of [Chapter 03](/series/ai-ml-php-developers/chapters/03-core-machine-learning-concepts-and-terminology) or equivalent understanding of ML concepts
 - A text editor or IDE

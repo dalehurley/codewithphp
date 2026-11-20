@@ -158,7 +158,7 @@ php 07-production-qa-system.php
 
 All examples require:
 
-- PHP 8.4+
+- PHP 8.6+
 - `claude-php/claude-php-agent` library
 - Valid ANTHROPIC_API_KEY environment variable
 
@@ -188,7 +188,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4'
+          php-version: '8.6'
       
       - name: Install dependencies
         run: composer install

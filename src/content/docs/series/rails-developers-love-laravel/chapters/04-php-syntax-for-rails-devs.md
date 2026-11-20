@@ -26,7 +26,7 @@ Before starting this chapter, you should have:
 
 - Completion of [Chapter 03: Laravel's Developer Experience](/series/rails-developers-love-laravel/chapters/03-laravel-developer-experience) or equivalent understanding
 - Familiarity with Ruby syntax (variables, methods, classes, blocks)
-- PHP 8.4+ installed (optional for this chapter, but recommended)
+- PHP 8.6+ installed (optional for this chapter, but recommended)
 - **Estimated Time**: ~45-60 minutes
 
 **Verify your setup (optional):**
@@ -87,7 +87,7 @@ cd codewithphp/code/rails-developers-love-laravel/chapter-04
 php SyntaxComparisons.php
 ```
 
-Requires PHP 8.4+
+Requires PHP 8.6+
 
 ## Quick Syntax Comparison
 
@@ -1406,7 +1406,7 @@ $user->save();  // Must have ()
 
 ### Exercise 1: Convert Ruby Class to PHP
 
-**Goal**: Practice converting Ruby class patterns to modern PHP 8.4 syntax
+**Goal**: Practice converting Ruby class patterns to modern PHP 8.6 syntax
 
 Convert this Ruby class to PHP:
 

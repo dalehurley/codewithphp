@@ -26,7 +26,7 @@ In this chapter, you'll master the fundamentals of variables, explore PHP's diff
 
 ## Prerequisites
 
-- **PHP installed**: PHP 8.4 (check with `php --version`)
+- **PHP installed**: PHP 8.6 (check with `php --version`)
 - **Text editor**: Any code editor (VS Code, Sublime Text, etc.)
 - **Terminal access**: Command line/terminal to run PHP scripts
 - **Previous chapter completed**: [Chapter 01: Your First PHP Script](/series/php-basics/chapters/01-your-first-php-script)

@@ -184,7 +184,7 @@ VitePress Quiz component for self-assessment
 
 declare(strict_types=1);
 
-// Always use proper PHP 8.4 syntax
+// Always use proper PHP 8.6 syntax
 // Include helpful comments
 // Show complete, runnable examples
 ````
@@ -312,7 +312,7 @@ Use text-based diagrams or tables to illustrate architecture, flow, or relations
 
 Before starting this chapter, you should have:
 
-- PHP 8.4+ installed and confirmed working with `php --version`
+- PHP 8.6+ installed and confirmed working with `php --version`
 - Completion of Chapter NN or equivalent understanding
 - Specific tool or knowledge requirement
 - **Estimated Time**: ~XX-YY minutes
@@ -405,13 +405,13 @@ Each series `index.md` must include:
 11. **Getting Help** resources
 12. **Related Resources** links
 
-## Modern PHP 8.4 Standards
+## Modern PHP 8.6 Standards
 
 All code examples must:
-- Use PHP 8.4 syntax and features
+- Use PHP 8.6 syntax and features
 - Use type declarations: `function greet(string $name): void`
 - Use constructor property promotion where appropriate
-- Use property hooks and asymmetric visibility for PHP 8.4 examples
+- Use property hooks and asymmetric visibility where they clarify PHP 8.6 examples
 - Show modern approaches alongside traditional when teaching transitions
 - Follow PSR-12 coding standards
 - Use `declare(strict_types=1);` in examples that benefit from strict typing

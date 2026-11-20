@@ -35,7 +35,7 @@ Before starting this chapter, you should have:
 - Completion of [Chapter 04: PHP Syntax & Language Differences for Rails Devs](/series/rails-developers-love-laravel/chapters/04-php-syntax-for-rails-devs) or equivalent understanding
 - Familiarity with ActiveRecord in Rails (models, relationships, migrations, queries)
 - Basic understanding of database concepts (tables, relationships, indexes)
-- PHP 8.4+ installed (optional for this chapter, but recommended)
+- PHP 8.6+ installed (optional for this chapter, but recommended)
 - **Estimated Time**: ~60-75 minutes
 
 **Verify your setup (optional):**
@@ -856,7 +856,7 @@ $user->full_name = 'John Doe';
 echo $user->full_name;  // => "John Doe"
 ```
 
-**Laravel 8.4+ (Property Hooks):**
+**PHP 8.6 (Property Hooks):**
 ```php
 <?php
 class User extends Model

@@ -26,7 +26,7 @@ By the end of this chapter, you'll know how to process gigabytes of data with mi
 Before starting this chapter, you should have:
 
 - Completed [Chapter 05: Exploratory Data Analysis](/series/data-science-php-developers/chapters/05-exploratory-data-analysis-for-php-developers)
-- PHP 8.4+ installed
+- PHP 8.6+ installed
 - Understanding of PHP generators and iterators (we'll review)
 - League CSV library (`composer require league/csv`)
 - Access to large sample datasets (we'll provide)

@@ -32,7 +32,7 @@ $client = new ClaudePhp(apiKey: $apiKey);
 echo "Quality Thresholds Comparison\n";
 echo str_repeat("=", 80) . "\n\n";
 
-$task = 'Explain what property hooks are in PHP 8.4 and provide a simple example.';
+$task = 'Explain what property hooks are in PHP 8.6 and provide a simple example.';
 
 /**
  * Profile 1: Rapid Draft (Low Threshold)

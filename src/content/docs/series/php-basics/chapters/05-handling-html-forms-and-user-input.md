@@ -26,7 +26,7 @@ In this chapter, you'll learn how to create a simple HTML form and write the PHP
 ## Prerequisites
 
 - Completion of [Chapter 04: Understanding and Using Functions](/series/php-basics/chapters/04-understanding-and-using-functions)
-- PHP 8.4 installed and working
+- PHP 8.6 installed and working
 - A text editor
 - Basic understanding of HTML forms
 - **Estimated time**: 30–35 minutes

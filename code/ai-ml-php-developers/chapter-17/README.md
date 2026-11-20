@@ -33,7 +33,7 @@ php 04-onnx-setup-test.php
 
 ### Required
 
-- PHP 8.4+
+- PHP 8.6+
 - Extensions: `curl`, `json`, `gd` or `imagick`
 - Composer (for dependencies)
 

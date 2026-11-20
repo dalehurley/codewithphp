@@ -144,7 +144,7 @@ Common external resources for the AI/ML series:
 
 **PHP Standards:**
 
-- [PHP 8.4 Release Notes](https://www.php.net/releases/8.4/)
+- [PHP 8.6 Release Notes](https://www.php.net/releases/8.6/en.php)
 - [PHP Manual](https://www.php.net/docs.php)
 - [PHP-FIG Standards](https://www.php-fig.org/)
 
@@ -335,7 +335,7 @@ Before committing chapters, verify:
 Before starting, you should have:
 
 - Completed [Chapter 08: Introduction to OOP](/series/php-basics/chapters/08-introduction-to-object-oriented-programming)
-- PHP 8.4+ installed
+- PHP 8.6+ installed
 
 ## Further Reading
 

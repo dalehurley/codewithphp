@@ -246,7 +246,7 @@ This is part of the **Build a CRM with Laravel 12** series on Code with PHP.
 
 ## Prerequisites
 
-- PHP 8.4+
+- PHP 8.6+
 - Laravel 12
 - Composer
 - Node.js 18+

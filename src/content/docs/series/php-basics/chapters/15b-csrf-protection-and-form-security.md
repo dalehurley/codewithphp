@@ -31,7 +31,7 @@ In this chapter, you'll learn how to prevent CSRF attacks using tokens, implemen
 
 ## Prerequisites
 
-- PHP 8.4 installed and configured ([Chapter 00](/series/php-basics/chapters/00-setting-up-your-development-environment))
+- PHP 8.6 installed and configured ([Chapter 00](/series/php-basics/chapters/00-setting-up-your-development-environment))
 - Understanding of sessions ([Chapter 15](/series/php-basics/chapters/15-managing-state-with-sessions-and-cookies))
 - Familiarity with form handling ([Chapter 05](/series/php-basics/chapters/05-handling-html-forms-and-user-input))
 - Basic HTML and HTTP knowledge
@@ -128,7 +128,7 @@ A CSRF attack follows this sequence:
 
 ## Step 1: Token Generation (~5 min)
 
-**Goal**: Create cryptographically secure CSRF tokens using PHP 8.4's secure random functions.
+**Goal**: Create cryptographically secure CSRF tokens using PHP 8.6's secure random functions.
 
 ### Actions
 

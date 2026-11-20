@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-// PHP 8.4 property hooks
+// PHP property hooks
 // Similar to Python's @property decorator, but more powerful
 
 class User

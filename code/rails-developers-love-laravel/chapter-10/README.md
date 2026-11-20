@@ -1,6 +1,6 @@
 # TaskMaster: Complete Laravel Application
 
-This is a complete, production-ready task management application built with Laravel 12 and PHP 8.4.
+This is a complete, production-ready task management application built with Laravel 12 and PHP 8.6.
 
 ## Features
 
@@ -17,7 +17,7 @@ This is a complete, production-ready task management application built with Lara
 ## Tech Stack
 
 - **Framework**: Laravel 12
-- **PHP Version**: 8.4+
+- **PHP Version**: 8.6+
 - **Database**: SQLite (development) / MySQL (production)
 - **Testing**: Pest
 - **Authentication**: Laravel Sanctum

@@ -32,7 +32,7 @@ Before starting this chapter, you should have:
 ## What You'll Build
 
 In this chapter, you'll:
-- Install PHP 8.4 (the latest stable version)
+- Install PHP 8.6 (the latest stable version)
 - Configure your IDE for PHP development
 - Write a "Hello, World!" program in both Java and PHP
 - Create a simple REST API endpoint in both languages
@@ -44,7 +44,7 @@ If you're already familiar with command-line tools and want to get up and runnin
 
 ```bash
 # macOS (with Homebrew)
-brew install php@8.4
+brew install php@8.6
 
 # Verify installation
 php --version
@@ -119,7 +119,7 @@ This execution model difference affects:
 
 ### Goal
 
-Install PHP 8.4 on your development machine.
+Install PHP 8.6 on your development machine.
 
 ### Actions
 
@@ -129,13 +129,13 @@ Install PHP 8.4 on your development machine.
 # Install Homebrew if you don't have it
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-# Install PHP 8.4
-brew install php@8.4
+# Install PHP 8.6 once the formula is available for your platform
+brew install php@8.6
 
 # Verify installation
 php --version
 
-# Should output: PHP 8.4.x (cli)...
+# Should output: PHP 8.6.x (cli)...
 ```
 
 ```bash [Ubuntu/Debian]
@@ -146,8 +146,8 @@ sudo apt update
 sudo apt install software-properties-common
 sudo add-apt-repository ppa:ondrej/php
 
-# Install PHP 8.4
-sudo apt install php8.4 php8.4-cli php8.4-common php8.4-mbstring php8.4-xml php8.4-curl
+# Install PHP 8.6
+sudo apt install php8.6 php8.6-cli php8.6-common php8.6-mbstring php8.6-xml php8.6-curl
 
 # Verify installation
 php --version
@@ -155,11 +155,11 @@ php --version
 
 ```bash [Windows]
 # Option 1: Using Chocolatey
-choco install php --version=8.4
+choco install php --version=8.6.0
 
 # Option 2: Download from windows.php.net
 # 1. Visit https://windows.php.net/download/
-# 2. Download "Thread Safe" ZIP for PHP 8.4
+# 2. Download "Thread Safe" ZIP for PHP 8.6
 # 3. Extract to C:\php
 # 4. Add C:\php to your PATH
 
@@ -171,9 +171,9 @@ php --version
 # Enable REMI repository
 sudo dnf install https://rpms.remirepo.net/fedora/remi-release-XX.rpm
 
-# Install PHP 8.4
+# Install PHP 8.6
 sudo dnf module reset php
-sudo dnf module install php:remi-8.4
+sudo dnf module install php:remi-8.6
 
 # Verify installation
 php --version
@@ -186,10 +186,10 @@ php --version
 Running `php --version` should display:
 
 ```
-PHP 8.4.x (cli) (built: ...)
+PHP 8.6.x (cli) (built: ...)
 Copyright (c) The PHP Group
-Zend Engine v4.4.x, Copyright (c) Zend Technologies
-    with Zend OPcache v8.4.x, Copyright (c), by Zend Technologies
+Zend Engine v4.6.x, Copyright (c) Zend Technologies
+    with Zend OPcache v8.6.x, Copyright (c), by Zend Technologies
 ```
 
 ::: tip OPcache
@@ -221,14 +221,14 @@ PHP's installation includes:
 - **Solution**: Multiple PHP versions installed. Specify the version:
   ```bash
   # macOS with Homebrew
-  brew unlink php@8.3 && brew link php@8.4
+  brew unlink php@8.3 && brew link php@8.6
   ```
 
 **Problem: Missing extensions**
 - **Solution**: Install required extensions:
   ```bash
   # Ubuntu/Debian
-  sudo apt install php8.4-<extension-name>
+  sudo apt install php8.6-<extension-name>
 
   # macOS
   pecl install <extension-name>
@@ -254,16 +254,16 @@ As a Java developer, you might already be familiar with Docker. Using Docker for
 
 ```bash
 # Pull official PHP image
-docker pull php:8.4-cli
+docker pull php:8.6-cli
 
 # Run PHP in Docker
-docker run --rm php:8.4-cli php --version
+docker run --rm php:8.6-cli php --version
 
 # Run a PHP script
-docker run --rm -v $(pwd):/app php:8.4-cli php /app/hello.php
+docker run --rm -v $(pwd):/app php:8.6-cli php /app/hello.php
 
 # Interactive PHP shell
-docker run --rm -it php:8.4-cli php -a
+docker run --rm -it php:8.6-cli php -a
 ```
 
 ### Docker Compose for Development
@@ -274,7 +274,7 @@ Create `docker-compose.yml`:
 version: '3.8'
 services:
   php:
-    image: php:8.4-apache
+    image: php:8.6-apache
     ports:
       - "8000:80"
     volumes:
@@ -399,13 +399,13 @@ php -m
 
 ```bash [Ubuntu/Debian]
 # Database drivers
-sudo apt install php8.4-mysql php8.4-pgsql php8.4-sqlite3
+sudo apt install php8.6-mysql php8.6-pgsql php8.6-sqlite3
 
 # Web development
-sudo apt install php8.4-curl php8.4-gd php8.4-xml
+sudo apt install php8.6-curl php8.6-gd php8.6-xml
 
 # Performance
-sudo apt install php8.4-opcache php8.4-apcu
+sudo apt install php8.6-apcu  # OPcache is built into PHP 8.6
 
 # Verify
 php -m | grep -i mysql
@@ -483,9 +483,9 @@ Unlike Java's `application.properties` or `application.yml`, PHP uses a single `
 php --ini
 
 # Output example:
-# Configuration File (php.ini) Path: /usr/local/etc/php/8.4
-# Loaded Configuration File: /usr/local/etc/php/8.4/php.ini
-# Scan for additional .ini files in: /usr/local/etc/php/8.4/conf.d
+# Configuration File (php.ini) Path: /usr/local/etc/php/8.6
+# Loaded Configuration File: /usr/local/etc/php/8.6/php.ini
+# Scan for additional .ini files in: /usr/local/etc/php/8.6/conf.d
 ```
 
 ### Key Configuration Settings for Development
@@ -1027,9 +1027,9 @@ Choose your preferred IDE:
    - Go to Settings/Preferences → PHP
    - Click "..." next to CLI Interpreter
    - Click "+" and select your PHP installation
-   - Verify version shows PHP 8.4
-4. Enable PHP 8.4 language level:
-   - Settings → PHP → PHP Language Level → 8.4
+   - Verify version shows PHP 8.6
+4. Enable PHP 8.6 language level:
+   - Settings → PHP → PHP Language Level → 8.6
 
 PhpStorm Features for Java Developers:
 ✅ Familiar JetBrains interface
@@ -1068,8 +1068,8 @@ PhpStorm Features for Java Developers:
    - Enable "PHP" plugin
 3. Configure PHP interpreter:
    - Settings → PHP → CLI Interpreter
-   - Add your PHP 8.4 installation
-4. Set language level to PHP 8.4
+   - Add your PHP 8.6 installation
+4. Set language level to PHP 8.6
 
 Benefits for Java developers:
 ✅ Same IDE for Java and PHP
@@ -1166,7 +1166,7 @@ if ($method === 'GET') {
 php -S localhost:8000
 
 # You should see:
-# PHP 8.4.x Development Server (http://localhost:8000) started
+# PHP 8.6.x Development Server (http://localhost:8000) started
 ```
 
 **Step 3: Test the endpoint**
@@ -1206,7 +1206,7 @@ public class HelloServlet extends HttpServlet {
 {
     "message": "Hello from PHP!",
     "timestamp": 1701234567,
-    "version": "8.4.0"
+    "version": "8.6.0"
 }
 ```
 
@@ -1492,7 +1492,7 @@ curl http://localhost:8000/product.php         # 400
 
 Before moving to the next chapter, make sure you can:
 
-- [ ] Run `php --version` and see PHP 8.4
+- [ ] Run `php --version` and see PHP 8.6
 - [ ] Execute PHP scripts from the command line
 - [ ] Create and instantiate PHP classes with type hints
 - [ ] Understand the differences between Java and PHP syntax

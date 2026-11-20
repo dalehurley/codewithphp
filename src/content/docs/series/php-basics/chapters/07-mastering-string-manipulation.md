@@ -31,7 +31,7 @@ By the end of this chapter, you'll be able to clean, search, transform, and form
 
 **Required**:
 
-- PHP 8.4 installed ([Chapter 00](/series/php-basics/chapters/00-setting-up-your-development-environment))
+- PHP 8.6 installed ([Chapter 00](/series/php-basics/chapters/00-setting-up-your-development-environment))
 - A text editor or IDE
 - Basic understanding of variables and data types ([Chapter 02](/series/php-basics/chapters/02-variables-data-types-and-constants))
 
@@ -62,7 +62,7 @@ If you want to see string manipulation in action immediately, create a file call
 ```php
 <?php
 // Quick demonstration of PHP string power
-$text = "  Learn PHP 8.4 Today!  ";
+$text = "  Learn PHP 8.6 Today!  ";
 
 echo "Original: '$text'\n";
 echo "Cleaned: '" . trim($text) . "'\n";
@@ -727,7 +727,7 @@ Create a function `generateSlug($title)` that converts blog post titles into URL
 
 ```php
 echo generateSlug("My Awesome First Post!");     // my-awesome-first-post
-echo generateSlug("PHP 8.4: What's New?");      // php-84-whats-new
+echo generateSlug("PHP 8.6: What's New?");      // php-86-whats-new
 echo generateSlug("  Hello   World  ");         // hello-world
 ```
 

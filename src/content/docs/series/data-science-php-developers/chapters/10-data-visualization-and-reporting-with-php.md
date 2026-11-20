@@ -26,7 +26,7 @@ This is where your technical work meets business impact—you'll transform compl
 Before starting this chapter, you should have:
 
 - Completed [Chapter 09: Using Machine Learning Models](/series/data-science-php-developers/chapters/09-using-machine-learning-models-in-php-applications)
-- PHP 8.4+ installed
+- PHP 8.6+ installed
 - Basic understanding of HTML/CSS
 - Familiarity with JavaScript (helpful but not required)
 - **Estimated Time**: ~90 minutes

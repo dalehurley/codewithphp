@@ -101,7 +101,7 @@ $blogAgent = Agent::create($client)
     ->maxIterations(15);
 
 $blogTask = 'Write a compelling 200-word introduction for a blog post titled ' .
-            '"Why PHP 8.4 Property Hooks Will Change How You Write Classes". ' .
+            '"Why PHP Property Hooks Will Change How You Write Classes". ' .
             'Target audience: intermediate PHP developers. Hook them with the problem, ' .
             'tease the solution, and make them excited to learn more.';
 
@@ -150,7 +150,7 @@ Evaluate this documentation on:
 
 4. Accuracy (20%):
    - Is information factually correct?
-   - Are code examples valid PHP 8.4?
+   - Are code examples valid PHP 8.6?
    - Are best practices followed?
 
 Provide score (1-10) and specific improvements needed.
@@ -175,7 +175,7 @@ $docsAgent = Agent::create($client)
     )
     ->maxIterations(15);
 
-$docsTask = 'Write documentation explaining how to use try-catch-finally in PHP 8.4. ' .
+$docsTask = 'Write documentation explaining how to use try-catch-finally in PHP 8.6. ' .
             'Include: when to use it, how the flow works, code examples showing different ' .
             'scenarios (with/without exceptions, with return statements), and best practices. ' .
             'Target: junior developers learning error handling.';

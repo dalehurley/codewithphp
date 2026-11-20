@@ -25,7 +25,7 @@ This chapter explores Laravel's productivity tools from a Rails developer's pers
 Before starting this chapter, you should have:
 
 - Completion of [Chapter 02: Modern PHP: What's Changed](/series/rails-developers-love-laravel/chapters/02-modern-php-whats-changed) or equivalent understanding of modern PHP features
-- PHP 8.4+ installed and confirmed working with `php --version`
+- PHP 8.6+ installed and confirmed working with `php --version`
 - Composer installed globally (for Laravel project creation)
 - Basic familiarity with command-line tools
 - **Estimated Time**: ~60-90 minutes

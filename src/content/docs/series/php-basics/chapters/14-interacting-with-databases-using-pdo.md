@@ -63,7 +63,7 @@ After this lesson, apply the same pattern in the [database-driven blog project](
 
 ## Prerequisites
 
-- PHP 8.4 or higher installed with PDO and SQLite extensions enabled (usually enabled by default)
+- PHP 8.6 or higher installed with PDO and SQLite extensions enabled (usually enabled by default)
 - A text editor or IDE
 - Familiarity with basic SQL concepts (CREATE, INSERT, SELECT, UPDATE, DELETE) is helpful but not required
 - Completion of previous chapters, especially Chapter 13 (Working with the Filesystem)
@@ -1386,7 +1386,7 @@ try {
     // Create posts
     echo "Creating posts..." . PHP_EOL;
     $id1 = $blog->createPost("Getting Started with PDO", "PDO is awesome!");
-    $id2 = $blog->createPost("PHP 8.4 Features", "Check out these new features...");
+    $id2 = $blog->createPost("PHP 8.6 Features", "Check out these new features...");
     echo "Created posts with IDs: $id1, $id2" . PHP_EOL . PHP_EOL;
 
     // Get all posts
@@ -1431,7 +1431,7 @@ This example demonstrates:
 - Complete CRUD operations
 - Search functionality
 - Timestamp tracking
-- Type hints (PHP 8.4 compatible)
+- Type hints (PHP 8.6 compatible)
 - All operations using prepared statements
 
 ### Code Samples
@@ -1568,7 +1568,7 @@ options: [
 ### Additional Resources
 
 - [PHP PDO Official Documentation](https://www.php.net/manual/en/book.pdo.php)
-- [PHP 8.4 Release Notes](https://www.php.net/releases/8.4/)
+- [PHP 8.6 Release Notes](https://www.php.net/releases/8.6/en.php)
 - [SQL Injection Prevention](https://owasp.org/www-community/attacks/SQL_Injection)
 - [SQLite Documentation](https://www.sqlite.org/docs.html)
 - [MySQL PDO Driver Documentation](https://www.php.net/manual/en/ref.pdo-mysql.php)

@@ -29,7 +29,7 @@ This chapter goes **beyond the basics** covered in Chapter 21. While Chapter 21 
 - **Complete implementation** with real datasets (not toy examples)
 - **Advanced production patterns**: real-time vs. batch, monitoring, caching strategies
 - **Real-world challenges**: bias handling, privacy concerns, model staleness, fairness
-- **PHP 8.4 features**: property hooks, asymmetric visibility, Fibers for concurrency
+- **Modern PHP features** include property hooks, asymmetric visibility, and Fibers for concurrency
 - **7 detailed troubleshooting scenarios** for common production issues
 
 This is a **comprehensive, enterprise-ready** treatment of recommendation systems in PHP.
@@ -41,7 +41,7 @@ Before starting this chapter, you should have:
 
 - Completed [Chapter 21](/series/ai-ml-php-developers/chapters/21-recommender-systems-theory-and-use-cases) with understanding of collaborative filtering concepts, similarity measures, and the cold start problem
 - Completed [Chapter 8](/series/ai-ml-php-developers/chapters/08-leveraging-php-machine-learning-libraries) with experience using Rubix ML or PHP-ML
-- PHP 8.4+ environment with Composer installed
+- PHP 8.6+ environment with Composer installed
 - Familiarity with classification and evaluation metrics from [Chapter 3](/series/ai-ml-php-developers/chapters/03-core-machine-learning-concepts-and-terminology) and [Chapter 6](/series/ai-ml-php-developers/chapters/06-classification-basics-and-building-a-spam-filter)
 - Understanding of arrays, file I/O, and mathematical operations in PHP
 - Text editor or IDE with PHP support
@@ -78,7 +78,7 @@ By the end of this chapter, you will have created:
 - **Complete test/train data splits** for proper evaluation without data leakage
 - **Working code for 21+ complete examples** with datasets, demonstrating every aspect of recommendation systems
 
-All code examples are fully functional, tested, include realistic datasets, and follow PHP 8.4 best practices.
+All code examples are fully functional, tested, include realistic datasets, and follow PHP 8.6 best practices.
 
 ::: info Code Examples
 Complete, runnable examples for this chapter:
@@ -2478,11 +2478,11 @@ print_r($monitored->getMetrics());
 // Should show avg_time_ms, slow counts, error counts
 ```
 
-## PHP 8.4 Features for Recommendation Systems
+## PHP Language Features for Recommendation Systems
 
-This chapter's code leverages modern PHP 8.4 features to make recommendation systems more maintainable and performant:
+This chapter uses modern PHP features to make recommendation systems more maintainable and performant:
 
-### Property Hooks (PHP 8.4 feature)
+### Property Hooks (introduced in PHP 8.4)
 
 ```php
 class CachedRecommender
@@ -2503,7 +2503,7 @@ class CachedRecommender
 }
 ```
 
-### Asymmetric Visibility (PHP 8.4 feature)
+### Asymmetric Visibility (introduced in PHP 8.4)
 
 ```php
 class RecommendationMetrics
@@ -2693,7 +2693,7 @@ By completing this chapter, you have:
 - ✅ Implemented privacy-preserving techniques (differential privacy, GDPR compliance)
 - ✅ Handled model staleness and implemented incremental retraining
 - ✅ Deployed recommendations with multiple patterns (database, Redis, queue-based)
-- ✅ Leveraged PHP 8.4 features (property hooks, asymmetric visibility, Fibers)
+- ✅ Used property hooks, asymmetric visibility, and Fibers
 
 You now have production-ready recommendation code that you can adapt for:
 

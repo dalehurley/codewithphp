@@ -14,7 +14,7 @@ Welcome to **Algorithms for PHP Developers** — a comprehensive, hands-on cours
 
 Algorithms and data structures form the foundation of computer science and software engineering. Understanding them transforms you from someone who writes code that works to someone who writes code that scales, performs efficiently, and handles edge cases gracefully. Yet many self-taught developers—and even experienced PHP developers—lack formal CS training and feel intimidated by algorithmic concepts.
 
-This series bridges that gap. You'll learn classic algorithms explained in developer-friendly terms, implemented in modern PHP 8.4, and applied to real-world scenarios. From sorting thousands of records to finding the shortest path in a routing system, from optimizing database queries to building recommendation engines—you'll understand when and how to apply each algorithm effectively.
+This series bridges that gap. You'll learn classic algorithms explained in developer-friendly terms, implemented in modern PHP 8.6, and applied to real-world scenarios. From sorting thousands of records to finding the shortest path in a routing system, from optimizing database queries to building recommendation engines—you'll understand when and how to apply each algorithm effectively.
 
 By the end of this series, you'll have mastered Big O notation for analyzing complexity, implemented dozens of algorithms from scratch, explored advanced data structures, and built practical projects that demonstrate real-world applications. More importantly, you'll have developed algorithmic thinking—the ability to break down complex problems and design efficient solutions.
 
@@ -34,7 +34,7 @@ You don't need a computer science degree or advanced mathematics knowledge. If y
 
 **Software Requirements:**
 
-- **PHP 8.4** (we'll use modern PHP features throughout)
+- **PHP 8.6** (we'll use modern PHP features throughout)
 - **Composer** (PHP's dependency manager for some chapters)
 - **Text editor or IDE** (VS Code, PhpStorm, or your preferred editor)
 - **Terminal/Command line** access
@@ -61,7 +61,7 @@ You don't need a computer science degree or advanced mathematics knowledge. If y
 
 By working through this series, you will:
 
-1. **Implement classic algorithms from scratch** in modern PHP 8.4:
+1. **Implement classic algorithms from scratch** in modern PHP 8.6:
    - 6 sorting algorithms with performance comparisons
    - 4 searching techniques for different use cases
    - 6 data structures (linked lists, stacks, queues, trees)
@@ -89,7 +89,7 @@ By working through this series, you will:
    - Time/space complexity analysis for any algorithm
    - Communication techniques for explaining your approach
 
-Every code example is production-ready, following PHP 8.4 best practices, and includes comprehensive explanations of how and why it works.
+Every code example is production-ready, following PHP 8.6 best practices, and includes comprehensive explanations of how and why it works.
 
 ## Learning Objectives
 
@@ -113,7 +113,7 @@ This series follows a **progressive, hands-on approach**: you'll learn each algo
 Each chapter includes:
 
 - **Clear explanations** of algorithms using developer-friendly language
-- **Step-by-step implementations** in modern PHP 8.4
+- **Step-by-step implementations** in modern PHP 8.6
 - **Big O analysis** for understanding complexity
 - **Practical examples** showing when and why to use each algorithm
 - **Performance comparisons** with benchmarking results

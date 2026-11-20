@@ -2,7 +2,7 @@
 /**
  * Chapter 02: Modern PHP - Type Safety
  * 
- * This example demonstrates PHP 8.4's strict type system
+ * This example demonstrates PHP 8.6's strict type system
  * and how it catches errors that old PHP would silently convert.
  */
 

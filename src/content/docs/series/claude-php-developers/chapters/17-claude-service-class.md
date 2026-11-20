@@ -42,7 +42,7 @@ Before diving in, ensure you have:
 - ✓ Understanding of **SOLID principles** (especially dependency inversion)
 - ✓ Experience with **dependency injection** patterns
 - ✓ Familiarity with **unit testing** using PHPUnit
-- ✓ PHP 8.4+ with strict typing enabled
+- ✓ PHP 8.6+ with strict typing enabled
 - ✓ Composer for dependency management
 
 **Estimated Time**: 60-75 minutes

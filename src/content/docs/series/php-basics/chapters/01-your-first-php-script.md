@@ -31,7 +31,7 @@ If the terminal cannot find `php`, [install PHP first](/series/php-basics/chapte
 
 Before starting this chapter, you should have:
 
-- PHP 8.4+ installed and confirmed working with `php --version`
+- PHP 8.6+ installed and confirmed working with `php --version`
 - A code editor (VS Code recommended) installed
 - A terminal or command prompt ready
 - A project directory named `php-from-scratch` from the previous chapter
@@ -148,7 +148,7 @@ php -S localhost:8000
 You should see something like:
 
 ```text
-[Sat Oct 25 14:30:00 2025] PHP 8.4.0 Development Server (http://localhost:8000) started
+[Fri Nov 20 14:30:00 2026] PHP 8.6.0 Development Server (http://localhost:8000) started
 ```
 
 2. **Open the script in a browser**: Visit `http://localhost:8000/hello.php`.
@@ -371,7 +371,7 @@ Hello World!
 ### Why It Works
 
 - Omitting `?>` prevents accidental whitespace that can break HTTP headers.
-- The short echo tag (`<?=`) is shorthand for `<?php echo ... ?>` and is always enabled in PHP 8.4.
+- The short echo tag (`<?=`) is shorthand for `<?php echo ... ?>` and is always enabled in PHP 8.6.
 - The dot operator (`.`) concatenates strings; `.=` appends to an existing string variable.
 - Interpolation within double quotes offers concise syntax for embedding variables.
 

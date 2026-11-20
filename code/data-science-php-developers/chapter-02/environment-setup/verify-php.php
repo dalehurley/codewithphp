@@ -14,11 +14,11 @@ echo "============================\n\n";
 // Check PHP version
 echo "1. PHP Version:\n";
 $version = PHP_VERSION;
-$versionOk = version_compare($version, '8.4.0', '>=');
+$versionOk = version_compare($version, '8.6.0', '>=');
 echo "   " . ($versionOk ? '✓' : '✗') . " PHP {$version}\n";
 
 if (!$versionOk) {
-    echo "   ⚠️  PHP 8.4+ required\n";
+    echo "   ⚠️  PHP 8.6+ required\n";
 }
 
 echo "\n";

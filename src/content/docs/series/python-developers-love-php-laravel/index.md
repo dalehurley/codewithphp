@@ -35,7 +35,7 @@ You don't need to abandon Python or choose sides. This series helps you understa
 **Software Requirements:**
 
 - **Python experience** (Django or Flask web development preferred)
-- **PHP 8.4** (we'll help you install it if needed)
+- **PHP 8.6** (we'll help you install it if needed)
 - **Composer** (PHP's dependency manager, similar to pip)
 - **Laravel** (we'll install it together)
 - **Text editor or IDE** (VS Code, PhpStorm, or your preferred editor)
@@ -66,7 +66,7 @@ By working through this series, you will:
 2. **Build comparison examples** showing Python vs PHP/Laravel side-by-side
 3. **Create a complete Laravel application** demonstrating routing, models, views, and APIs
 4. **Master Laravel's developer tools** (Artisan CLI, migrations, testing)
-5. **Learn modern PHP 8.4 syntax** and how it compares to Python
+5. **Learn modern PHP 8.6 syntax** and how it compares to Python
 6. **Build REST APIs** in Laravel and compare with Flask/Django REST approaches
 7. **Deploy a Laravel application** and understand the deployment ecosystem
 8. **Complete a hands-on project** porting Python patterns to Laravel
@@ -78,7 +78,7 @@ Every code example includes both Python (familiar) and PHP/Laravel (new) version
 By the end of this series, you will be able to:
 
 - **Map Python concepts to PHP/Laravel** equivalents confidently
-- **Write modern PHP 8.4 code** following best practices
+- **Write modern PHP 8.6 code** following best practices
 - **Build Laravel applications** using familiar MVC patterns
 - **Use Eloquent ORM** effectively (comparing to Django ORM/SQLAlchemy)
 - **Create REST APIs** in Laravel (comparing to Flask/Django REST)

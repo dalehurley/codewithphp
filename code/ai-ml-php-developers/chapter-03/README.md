@@ -4,7 +4,7 @@ Core Machine Learning Concepts and Terminology - Working PHP Examples
 
 ## Prerequisites
 
-- PHP 8.4+ installed
+- PHP 8.6+ installed
 - Composer installed
 - PHP-ML and/or Rubix ML libraries (installed in chapter-02)
 
@@ -166,7 +166,7 @@ cd ../chapter-03
 - Feature scaling and normalization
 - Distance matrix calculations
 - Neural network tensor shapes
-- **Important**: Alternative to PECL Tensor extension (PHP 8.4 compatible)
+- **Important**: Alternative to PECL Tensor extension (PHP 8.6 compatible)
 - **Run**: `php 13-tensor-operations-phpml.php`
 - **Time**: ~3 seconds
 
@@ -311,9 +311,9 @@ Recommended order for understanding concepts:
 
 ## Important Note: Tensor Extension Compatibility
 
-The PECL Tensor extension **does not support PHP 8.4** (only PHP ≤ 8.3). For this reason, we use **PHP-ML** for all matrix and tensor operations in this series. PHP-ML provides:
+The PECL Tensor extension **does not support PHP 8.6** (only PHP ≤ 8.3). For this reason, we use **PHP-ML** for all matrix and tensor operations in this series. PHP-ML provides:
 
-- ✅ Full PHP 8.4 compatibility
+- ✅ Full PHP 8.6 compatibility
 - ✅ Matrix arithmetic and linear algebra
 - ✅ Statistical operations
 - ✅ Feature scaling and normalization
@@ -341,7 +341,7 @@ After completing these examples, proceed to Chapter 4: Data Collection and Prepr
 
 If you encounter issues:
 
-1. Verify PHP version: `php --version` (should be 8.4+)
+1. Verify PHP version: `php --version` (should be 8.6+)
 2. Check libraries: `composer show | grep -E "php-ai|rubix"`
 3. Review Chapter 2 setup if autoloader fails
 4. Ensure you're in the correct directory

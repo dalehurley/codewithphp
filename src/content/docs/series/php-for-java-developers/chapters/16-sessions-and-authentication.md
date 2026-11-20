@@ -492,7 +492,7 @@ PHP provides built-in functions for secure password hashing using modern algorit
 
 declare(strict_types=1);
 
-// Hash a password (uses Argon2ID by default in PHP 8.4)
+// Hash a password with Argon2id
 $password = 'mySecurePassword123';
 $hash = password_hash($password, PASSWORD_ARGON2ID);
 
@@ -763,7 +763,7 @@ You can securely hash passwords, verify them, and implement a complete authentic
 
 ### Why It Works
 
-- **`password_hash()`**: Uses a cryptographically secure algorithm (Argon2ID by default) that automatically generates a random salt and includes it in the hash
+- **`password_hash()`**: Uses a cryptographically secure algorithm (Argon2id when requested) that automatically generates a random salt and includes it in the hash
 - **`password_verify()`**: Safely compares the password to the hash using constant-time comparison to prevent timing attacks
 - **`password_needs_rehash()`**: Allows you to upgrade password hashes when you change algorithms or cost parameters without requiring users to reset their passwords
 - **Argon2ID**: A modern password hashing algorithm that's resistant to GPU-based attacks and side-channel attacks

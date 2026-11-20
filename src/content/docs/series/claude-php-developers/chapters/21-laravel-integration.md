@@ -40,7 +40,7 @@ Before starting, ensure you have:
 
 - ✓ **Laravel 12+** installed and configured
 - ✓ **Anthropic API key** set up
-- ✓ **PHP 8.4+** with Composer
+- ✓ **PHP 8.6+** with Composer
 - ✓ **Understanding of Laravel architecture** (service container, facades, providers)
 - ✓ **Completion of Chapters 00-20** (fundamental Claude concepts)
 

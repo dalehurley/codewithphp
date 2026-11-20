@@ -32,7 +32,7 @@ Production-ready prompt templates for PHP developers. Copy, customize, and use t
 ```php
 # filename: generate-class-prompt.php
 $prompt = <<<PROMPT
-Create a PHP 8.4+ class with the following requirements:
+Create a PHP 8.6+ class with the following requirements:
 
 Class Name: UserRepository
 Purpose: Manage user data with database interactions
@@ -988,7 +988,7 @@ Requirements:
 5. List benefits of the refactoring
 6. Note any trade-offs
 
-Use PHP 8.4+ features where appropriate.
+Use PHP 8.6+ features where appropriate.
 PROMPT;
 
 $response = $client->messages()->create([
@@ -1156,7 +1156,7 @@ $systemPrompt = <<<'SYSTEM'
 You are an expert PHP code reviewer with 10+ years of experience.
 
 Your expertise includes:
-- PHP 8.4+ features and best practices
+- PHP 8.6+ features and best practices
 - Laravel and Symfony frameworks
 - PSR standards (PSR-1, PSR-12, PSR-4)
 - SOLID principles and design patterns

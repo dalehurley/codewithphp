@@ -36,7 +36,7 @@ You'll learn the complete anatomy of API requests and responses, how to properly
 Before starting, ensure you have:
 
 - ✓ **Completed Chapters 01-02**
-- ✓ **PHP 8.4+** installed and working
+- ✓ **PHP 8.6+** installed and working
 - ✓ **Composer** for dependency management
 - ✓ **Anthropic API key** configured in environment
 - ✓ **Basic HTTP/REST API knowledge**
@@ -163,7 +163,7 @@ $response = $client->messages()->create([
     'messages' => [
         [
             'role' => 'user',
-            'content' => 'Hello, Claude! Tell me about PHP 8.4 features.'
+            'content' => 'Hello, Claude! Tell me about PHP 8.6 features.'
         ]
     ]
 ]);

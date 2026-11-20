@@ -30,7 +30,7 @@ In this chapter, we'll take a brief look at **Laravel**, the most popular PHP fr
 
 Before starting this chapter, ensure you have:
 
-- **PHP 8.4** installed and available in your terminal
+- **PHP 8.6** installed and available in your terminal
 - **Composer 2.x** installed ([getcomposer.org](https://getcomposer.org))
 - Completed Chapter 19 (Building a Simple Blog) or understand MVC concepts
 - A terminal/command line and text editor
@@ -39,7 +39,7 @@ Before starting this chapter, ensure you have:
 Verify your setup:
 
 ```bash
-# Check PHP version (should be 8.4.x)
+# Check PHP version (should be 8.6.x)
 php --version
 
 # Check Composer version (should be 2.x)

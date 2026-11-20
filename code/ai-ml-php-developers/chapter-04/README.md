@@ -18,7 +18,7 @@ These examples demonstrate:
 
 ## Prerequisites
 
-- PHP 8.4+
+- PHP 8.6+
 - Composer
 - SQLite extension (usually included with PHP)
 

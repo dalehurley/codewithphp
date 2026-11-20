@@ -1,6 +1,6 @@
 # Chapter 39: Cost Optimization and Billing - Code Samples
 
-This directory contains production-ready code samples for Chapter 39 of the Claude for PHP Developers series. All code is compatible with **Claude-PHP-SDK v0.2** and follows PHP 8.4+ best practices.
+This directory contains production-ready code samples for Chapter 39 of the Claude for PHP Developers series. All code is compatible with **Claude-PHP-SDK v0.2** and follows PHP 8.6+ best practices.
 
 ## Overview
 
@@ -17,7 +17,7 @@ The code samples demonstrate comprehensive cost optimization strategies for Clau
 
 ## Requirements
 
-- **PHP 8.2+** (optimized for PHP 8.4)
+- **PHP 8.2+** (optimized for PHP 8.6)
 - **Claude-PHP-SDK v0.2**: `composer require claude-php/claude-php-sdk ^0.2`
 - **Redis** (for caching and budget tracking)
 - **Database** (SQLite/MySQL/PostgreSQL for cost attribution)
@@ -175,7 +175,7 @@ use App\Optimization\ClaudeCache;
 $client = new ClaudePhp(apiKey: $_ENV['ANTHROPIC_API_KEY']);
 $cache = new ClaudeCache($redis);
 
-$prompt = "What are the benefits of PHP 8.4?";
+$prompt = "What are the benefits of PHP 8.6?";
 $cacheKey = $cache->generateKey($prompt, ['model' => 'claude-sonnet-4-5']);
 
 $response = $cache->remember(
@@ -426,7 +426,7 @@ All tests pass with mock dependencies, ensuring production compatibility.
 All code is compatible with:
 
 - **Claude-PHP-SDK v0.2**
-- **PHP 8.2+** (optimized for PHP 8.4)
+- **PHP 8.2+** (optimized for PHP 8.6)
 - **Redis 6.0+**
 - **MySQL/PostgreSQL/SQLite**
 

@@ -82,7 +82,7 @@ By the end of this chapter, you will have:
 - ✅ **Inverse relationships** on Contact, Company, Deal (e.g., `$deal->tasks`)
 - ✅ **Scopes** for filtering overdue tasks, pending tasks, and completed tasks
 - ✅ **Accessors** for human-readable priority/status labels
-- ✅ **Casts** for date fields and status enums (PHP 8.4 enums if using)
+- ✅ **Casts** for date fields and status enums (PHP 8.6 enums if using)
 
 **Data Architecture**:
 

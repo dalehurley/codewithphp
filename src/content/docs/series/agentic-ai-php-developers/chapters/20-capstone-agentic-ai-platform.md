@@ -1383,7 +1383,7 @@ See [`07-complete-platform.php`](https://github.com/dalehurley/codewithphp/blob/
 ### Docker Configuration
 
 ```dockerfile
-FROM php:8.4-fpm
+FROM php:8.6-fpm
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \

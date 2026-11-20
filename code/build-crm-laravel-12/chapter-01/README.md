@@ -22,7 +22,7 @@ This directory contains helpful reference documents for the entire series:
 **Purpose**: Verify your development environment is ready for the series.
 
 **What it checks**:
-- PHP version (8.4+)
+- PHP version (8.6+)
 - Required PHP extensions (PDO, MySQL, mbstring, etc.)
 - Composer installation
 - Node.js version (18+)
@@ -143,7 +143,7 @@ php verify-environment.php
 ```
 
 This checks:
-- PHP 8.4+ is installed
+- PHP 8.6+ is installed
 - All required extensions are loaded
 - Composer is available
 - Node.js 18+ is installed
@@ -165,7 +165,7 @@ You're ready to start Chapter 02: Installation & Environment Setup
 
 ## Prerequisites
 
-- PHP 8.4+ installed and working
+- PHP 8.6+ installed and working
 - Composer installed
 - Node.js 18+ installed
 - Docker Desktop installed (recommended for Laravel Sail)
@@ -174,7 +174,7 @@ You're ready to start Chapter 02: Installation & Environment Setup
 **Verify your setup:**
 
 ```bash
-php --version        # Should show 8.4 or higher
+php --version        # Should show 8.6 or higher
 composer --version   # Should show version 2.0 or higher
 node --version       # Should show 18 or higher
 docker --version     # Should show Docker is available

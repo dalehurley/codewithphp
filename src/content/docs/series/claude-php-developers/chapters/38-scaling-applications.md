@@ -73,7 +73,7 @@ By completing this chapter, you will:
 
 Before starting, ensure you have:
 
-- ✓ **PHP 8.4+** with Redis and process control extensions
+- ✓ **PHP 8.6+** with Redis and process control extensions
 - ✓ **Queue system** (Redis, RabbitMQ, or SQS)
 - ✓ **Load balancer** (nginx, HAProxy, or cloud LB)
 - ✓ **Understanding of async processing**

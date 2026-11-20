@@ -259,7 +259,7 @@ code/claude-php/
 Each chapter includes:
 
 - ✅ **Complete, Runnable Code** - No partial snippets or placeholders
-- ✅ **PHP 8.4+ Compatible** - Modern syntax and features throughout
+- ✅ **PHP 8.6+ Compatible** - Modern syntax and features throughout
 - ✅ **Error Handling** - Comprehensive try-catch with meaningful messages
 - ✅ **Security Best Practices** - Input validation, API key management
 - ✅ **Cost Tracking** - Token usage monitoring and cost calculations
@@ -311,7 +311,7 @@ For Laravel/Symfony chapters:
 
 ### PHP Requirements (SDK Standards)
 
-- **PHP Version**: PHP 8.2+ (optimized for PHP 8.4 features)
+- **PHP Version**: PHP 8.2+ (optimized for PHP 8.6 features)
 - **Type Declarations**: Always use `declare(strict_types=1);`
 - **Type Hints**: Use type hints for all parameters and return types
 - **Named Parameters**: Leverage PHP 8 named parameters for clarity

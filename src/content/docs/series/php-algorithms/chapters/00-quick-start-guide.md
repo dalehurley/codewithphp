@@ -172,7 +172,7 @@ function shortestPath(array $graph, int $start, int $end): ?array {
         foreach ($graph[$node] ?? [] as $neighbor) {
             if (!isset($visited[$neighbor])) {
                 $visited[$neighbor] = true;
-                $newPath = [...$path, $neighbor];  // PHP 8.4 spread operator
+                $newPath = [...$path, $neighbor];  // PHP 8.6 spread operator
                 $queue[] = $newPath;
             }
         }

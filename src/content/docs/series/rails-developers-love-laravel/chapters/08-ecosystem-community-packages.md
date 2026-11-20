@@ -92,7 +92,7 @@ bundle outdated
 // composer.json
 {
     "require": {
-        "php": "^8.4",
+        "php": "^8.6",
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.0",
         "spatie/laravel-permission": "^6.0"
@@ -868,7 +868,7 @@ packages/
     "description": "Package description",
     "type": "library",
     "require": {
-        "php": "^8.4",
+        "php": "^8.6",
         "illuminate/support": "^11.0"
     },
     "autoload": {
@@ -1025,7 +1025,7 @@ composer update your-name/package-name
 
 ### 3. Performance
 
-- **PHP 8.4 JIT:** 2-3x faster than Ruby
+- **PHP 8.4 JIT:** 2-3x faster than Ruby in this example
 - **Lower memory usage:** ~30-50% less RAM
 - **Faster JSON parsing:** Native C implementation
 - **Better opcache:** Bytecode caching built-in
@@ -1062,7 +1062,7 @@ composer update your-name/package-name
 
 ### 6. Type Safety
 
-**PHP 8.4:**
+**PHP 8.6:**
 - Strict types built-in
 - Union types
 - Generics-like features
@@ -1116,7 +1116,7 @@ Congratulations! You've completed a comprehensive exploration of Laravel's ecosy
 1. **More Built-in Features** - Many Rails gems are built into Laravel (queues, storage, scheduling)
 2. **Rich Official Ecosystem** - Forge, Vapor, Nova, and Spark provide first-party solutions
 3. **Spatie Packages** - High-quality, well-maintained packages from a trusted source
-4. **Better Performance** - PHP 8.4 is faster and uses less memory than Ruby
+4. **Better Performance** - The benchmark above reports lower time and memory usage for PHP
 5. **Simpler Deployment** - No application server needed, works directly with Nginx/Apache
 6. **Active Community** - Vibrant, helpful community with excellent resources
 7. **Package Quality** - Many packages rival or exceed Rails gem quality

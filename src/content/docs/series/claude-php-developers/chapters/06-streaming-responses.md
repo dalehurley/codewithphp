@@ -965,7 +965,7 @@ $wordCount = 0;
 $charCount = 0;
 
 $service->streamToSSE(
-    message: 'Write a comprehensive guide to PHP 8.4 features',
+    message: 'Write a comprehensive guide to PHP 8.6 features',
     options: [
         'max_tokens' => 4096,
         'onText' => function (string $delta, string $fullText) use (&$wordCount, &$charCount, $startTime) {

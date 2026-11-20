@@ -326,8 +326,8 @@ if (!is_dir($kbDir)) {
 }
 
 // Add sample documents
-file_put_contents($kbDir . '/php-8.4-features.md', <<<'MD'
-# PHP 8.4 New Features
+file_put_contents($kbDir . '/php-language-features.md', <<<'MD'
+# PHP Language Features
 
 ## Property Hooks
 
@@ -358,7 +358,7 @@ class Account {
 
 ## Array Functions
 
-New array functions for modern PHP:
+Array functions for searching and checking elements:
 - array_find()
 - array_find_key()
 - array_any()
@@ -381,9 +381,7 @@ opcache.max_accelerated_files=10000
 
 ## JIT Compiler
 
-PHP 8.4 includes JIT improvements:
-- 10-30% faster for compute-intensive tasks
-- Configure with opcache.jit_buffer_size
+Benchmark the JIT on compute-intensive workloads. Configure it with opcache.jit_buffer_size.
 
 ## Best Practices
 
@@ -407,11 +405,11 @@ file_put_contents($kbDir . '/deployment.md', <<<'MD'
 
 ## Docker Deployment
 
-Use official PHP 8.4 images:
+Use official PHP 8.6 images:
 
 ```dockerfile
-FROM php:8.4-fpm
-RUN docker-php-ext-install opcache pdo pdo_mysql
+FROM php:8.6-fpm
+RUN docker-php-ext-install pdo_mysql
 ```
 
 ## Environment Configuration
@@ -460,7 +458,7 @@ echo "\n" . str_repeat('─', 70) . "\n\n";
 echo "=== Production Queries ===\n\n";
 
 $questions = [
-    'What are property hooks in PHP 8.4?',
+    'What are property hooks in PHP 8.6?',
     'How do I optimize PHP performance?',
     'What should I check before deploying to production?',
 ];

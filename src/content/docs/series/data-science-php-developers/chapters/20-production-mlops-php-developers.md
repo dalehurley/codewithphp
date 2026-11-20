@@ -56,7 +56,7 @@ By the end of this chapter, you will have created:
 - Build **High-Availability** model serving architectures.
 - Detect and handle **Model Drift** in production.
 - Implement **A/B Testing** for different model versions.
-- Orchestrate **Continuous Training** using PHP 8.4 workers.
+- Orchestrate **Continuous Training** using PHP 8.6 workers.
 
 ## Step 1: Experiment Tracking and Versioning (~30 min)
 

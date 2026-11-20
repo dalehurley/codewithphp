@@ -69,7 +69,7 @@ Defines:
 - Mandatory structure for all tutorials
 - Tone and voice guidelines
 - Formatting and conventions
-- PHP 8.4 standards
+- PHP 8.6 standards
 - Reproducibility rules
 - Safety and quality standards
 - Comprehensive validation checklist
@@ -129,8 +129,8 @@ Defines:
 
 Defines:
 
-- PHP 8.4 as the standard version
-- Code requirements for PHP 8.4 compatibility
+- PHP 8.6 as the standard version
+- Code requirements for PHP 8.6 compatibility
 - Documentation standards
 - Modern features to use (property hooks, asymmetric visibility, etc.)
 
@@ -281,7 +281,7 @@ When writing a new chapter:
 1. **Start with:** `@tutorials-task-template.mdc` for the template
 2. **Reference:** `@authoring-guidelines.mdc` for structure details
 3. **Check:** `@php-basics-patterns.mdc` for examples and patterns
-4. **Ensure:** PHP 8.4 compliance per `php-version.mdc` (auto-applied)
+4. **Ensure:** PHP 8.6 compliance per `php-version.mdc` (auto-applied)
 
 ### With AI Assistant
 
@@ -397,7 +397,7 @@ When adding new rules:
 
 - [Cursor Rules Documentation](https://docs.cursor.com/)
 - [VitePress Documentation](https://vitepress.dev/)
-- [PHP 8.4 Documentation](https://www.php.net/releases/8.4/)
+- [PHP 8.6 Documentation](https://www.php.net/releases/8.6/en.php)
 - [PSR Standards](https://www.php-fig.org/psr/)
 
 ## Questions?

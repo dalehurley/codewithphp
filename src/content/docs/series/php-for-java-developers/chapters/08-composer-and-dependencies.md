@@ -454,7 +454,7 @@ composer outdated
 composer depends monolog/monolog
 
 # Show what packages depend on this
-composer prohibits php:8.4
+composer prohibits php:8.6
 ```
 
 ---

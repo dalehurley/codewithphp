@@ -27,7 +27,7 @@ By the end of this chapter, you'll have a production-ready AI-powered PHP servic
 Before starting this chapter, you should have:
 
 - Completed [Chapter 23](/series/ai-ml-php-developers/chapters/23-integrating-ai-models-into-web-applications) or have experience integrating ML models into PHP web applications
-- PHP 8.4+ installed and working knowledge of PHP web development
+- PHP 8.6+ installed and working knowledge of PHP web development
 - Docker installed locally for containerization testing
 - Basic understanding of command-line operations and shell scripts
 - Familiarity with Git and GitHub for CI/CD integration
@@ -59,18 +59,10 @@ composer --version
 docker run hello-world
 ```
 
-Expected output confirms Docker 20+, PHP 8.4+, Composer 2.x, and successful Docker test.
+Expected output confirms Docker 20+, PHP 8.6+, Composer 2.x, and successful Docker test.
 
-::: warning PHP 8.4 Compatibility
-PHP 8.4 was released in November 2024. If your hosting provider or CI/CD environment doesn't support it yet, you can modify the Dockerfile to use PHP 8.3:
-
-```dockerfile
-# Change this line in Dockerfile:
-- FROM php:8.4-cli-alpine AS builder
-+ FROM php:8.3-cli-alpine AS builder
-```
-
-All code examples in this chapter are compatible with PHP 8.3+. The main benefits of 8.4 (property hooks, asymmetric visibility) aren't critical for the deployment patterns shown here.
+::: tip PHP 8.6 Container Runtime
+The Dockerfiles use the official PHP 8.6 image and install external extensions with `install-php-extensions`. Builds use PHP 8.6 inside Docker, independently of the PHP version installed on the host.
 :::
 
 ::: tip Cloud Provider Choice
@@ -96,7 +88,7 @@ By the end of this chapter, you will have created:
 - A **monitoring dashboard** displaying real-time metrics, system health, and ML-specific performance indicators
 - Production-ready **logging infrastructure** with structured logs, log levels, and error alerting capabilities
 
-All code follows PHP 8.4 standards with strict typing, readonly properties, comprehensive error handling, and security best practices for production deployments.
+All code follows PHP 8.6 standards with strict typing, readonly properties, comprehensive error handling, and security best practices for production deployments.
 
 ::: info Code Examples
 Complete, runnable examples for this chapter are available in:
@@ -166,7 +158,7 @@ services:
       retries: 5
 
   app:
-    image: php:8.4-cli-alpine
+    image: php:8.6-cli-alpine
     volumes:
       - ./:/app
     working_dir: /app
@@ -345,7 +337,7 @@ Create a multi-stage Dockerfile that separates build dependencies from runtime:
 
 📄 **Primary Files:**
 
-- [`Dockerfile`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/Dockerfile) - Multi-stage build with PHP 8.4
+- [`Dockerfile`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/Dockerfile) - Multi-stage build with PHP 8.6
 - [`docker-compose.yml`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/docker-compose.yml) - Development stack
 - [`.dockerignore`](https://github.com/dalehurley/codewithphp/blob/main/code/ai-ml-php-developers/chapter-24/.dockerignore) - Exclude unnecessary files
 
@@ -381,7 +373,7 @@ docker compose up -d
 **Expected Result:**
 
 ```
-✓ PHP 8.4+ detected
+✓ PHP 8.6+ detected
 ✓ redis extension loaded
 ✓ pcntl extension loaded
 ✓ Connected to Redis
@@ -392,7 +384,7 @@ All tests passed! Docker setup is working correctly.
 
 **Common Issues:**
 
-- **Image size >500MB**: Ensure you're using Alpine base (`php:8.4-cli-alpine`), not Debian (`php:8.4-cli`)
+- **Image size >500MB**: Ensure you're using Alpine base (`php:8.6-cli-alpine`), not Debian (`php:8.6-cli`)
 - **Redis connection fails**: Check `docker network ls` - services must be on same Docker Compose network. Use service name (`redis`) not `localhost`
 - **Permission errors**: Container runs as `www-data` user - ensure PHP files are readable. Use `docker compose exec app ls -la` to debug
 - **Port already in use**: If port 8000 is taken, modify `ports: ["8001:8000"]` in docker-compose.yml

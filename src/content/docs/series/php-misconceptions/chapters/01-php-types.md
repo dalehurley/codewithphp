@@ -14,7 +14,7 @@ PHP is dynamically typed. It checks declared parameter, return and property type
 
 ## Prerequisites
 
-Use PHP 8.4 or later and open a terminal at the root of the Code with PHP checkout. Confirm your CLI with `php --version`. Allow 10 minutes.
+Use PHP 8.6 or later and open a terminal at the root of the Code with PHP checkout. Confirm your CLI with `php --version`. Allow 10 minutes.
 
 ## Quick Start
 

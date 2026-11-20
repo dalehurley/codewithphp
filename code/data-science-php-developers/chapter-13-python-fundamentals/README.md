@@ -5,7 +5,7 @@ This directory contains all code examples from Chapter 13, extracted from the tu
 ## Prerequisites
 
 - Python 3.10, 3.11, or 3.12
-- PHP 8.4+
+- PHP 8.6+
 - Virtual environment recommended
 
 ## Setup

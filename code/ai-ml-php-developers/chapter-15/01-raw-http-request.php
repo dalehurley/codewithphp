@@ -10,7 +10,7 @@ declare(strict_types=1);
  *
  * Prerequisites:
  * - Set OPENAI_API_KEY environment variable
- * - PHP 8.4+ with cURL extension
+ * - PHP 8.6+ with cURL extension
  *
  * Cost: ~$0.001 per run (approximately 100 tokens with gpt-4.1)
  */

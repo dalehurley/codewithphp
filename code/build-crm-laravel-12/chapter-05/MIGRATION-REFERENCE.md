@@ -437,5 +437,5 @@ EXIT;
 
 ---
 
-**All migrations use PHP 8.4 syntax with `declare(strict_types=1)` at the top.**
+**All migrations use PHP 8.6 syntax with `declare(strict_types=1)` at the top.**
 
