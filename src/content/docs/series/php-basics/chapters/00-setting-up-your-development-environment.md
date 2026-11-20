@@ -23,6 +23,8 @@ dateModified: "2026-11-20"
 
 Install PHP 8.4 or later and run `php --version` to check which version your terminal uses. Then run a small PHP file locally. The built-in development server lets you open that same file in your browser. You can add VS Code, Git, and Xdebug after the first run.
 
+If an installation command or the development server fails, match the message in the [PHP troubleshooting guide](/series/php-basics/troubleshooting/).
+
 ## Prerequisites
 
 - **Operating System**: macOS, Windows, or Linux (Ubuntu/Debian)

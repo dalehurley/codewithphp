@@ -18,6 +18,8 @@ Learn PHP by building a blog from scratch. Start with a script you can run in yo
 - [Install PHP on macOS, Windows, or Linux](/series/php-basics/chapters/00-setting-up-your-development-environment/)
 - [Write and run your first PHP script](/series/php-basics/chapters/01-your-first-php-script/)
 - [See the blog you’ll build](/series/php-basics/chapters/19-project-building-a-simple-blog/)
+- [Build a small reading list with PHP and SQLite](/series/php-basics/sqlite-starter/)
+- [Look up a PHP error in the troubleshooting guide](/series/php-basics/troubleshooting/)
 
 ## Who This Is For
 

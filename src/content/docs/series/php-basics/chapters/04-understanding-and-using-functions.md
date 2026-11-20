@@ -81,6 +81,8 @@ sayHello();
 sayHello();
 ```
 
+[Run this example on 3v4l](https://3v4l.org/ab8C0)
+
 3. **Run the script**:
 
 ```bash
