@@ -186,7 +186,7 @@ class PageController
 
 ### 2.2 Update the Router to Support Controllers
 
-We need to teach our router how to handle a `['ClassName', 'methodName']` syntax for handlers. Here's the complete updated `dispatch` method:
+Update the router to handle `['ClassName', 'methodName']` handlers. It also captures parameters from routes such as `/posts/{id}` for the blog project.
 
 **File: `src/Routing/Router.php`**
 
@@ -222,34 +222,61 @@ class Router
 
     public function dispatch(): void
     {
-        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?: '/';
         $method = $_SERVER['REQUEST_METHOD'];
 
         foreach ($this->routes as $route) {
-            if ($route['uri'] === $uri && $route['method'] === $method) {
-                $handler = $route['handler'];
+            if ($route['method'] !== $method) {
+                continue;
+            }
 
-                // Check if handler is an array [ControllerClass, 'method']
-                if (is_array($handler)) {
-                    $controller = new $handler[0]();
-                    $controllerMethod = $handler[1];
+            $parameters = $this->matchPath($route['uri'], $path);
+            if ($parameters === null) {
+                continue;
+            }
 
-                    return $controller->$controllerMethod();
+            $handler = $route['handler'];
+            if (is_array($handler)) {
+                [$controllerClass, $controllerMethod] = $handler;
+                $controller = new $controllerClass();
+                $controller->$controllerMethod(...$parameters);
+            } else {
+                $handler(...$parameters);
+            }
+
+            return;
+        }
+
+        http_response_code(404);
+        echo "404 Not Found";
+    }
+
+    private function matchPath(string $pattern, string $path): ?array
+    {
+        $patternParts = explode('/', $pattern);
+        $pathParts = explode('/', $path);
+        if (count($patternParts) !== count($pathParts)) {
+            return null;
+        }
+
+        $parameters = [];
+        foreach ($patternParts as $index => $part) {
+            if (preg_match('/^\{[a-zA-Z_][a-zA-Z0-9_]*\}$/D', $part)) {
+                if ($pathParts[$index] === '') {
+                    return null;
                 }
-
-                // Handler is a closure/callable
-                return call_user_func($handler);
+                $parameters[] = $pathParts[$index];
+            } elseif ($part !== $pathParts[$index]) {
+                return null;
             }
         }
 
-        // No route found
-        http_response_code(404);
-        echo "404 Not Found";
+        return $parameters;
     }
 }
 ```
 
-**Why it works**: We check if the handler is an array. If it is, we know it contains a class name and method name. We instantiate the controller and call the method dynamically.
+The router first checks the HTTP method and path. A route like `/posts/{id}` matches `/posts/3` and passes `'3'` to the handler. For a controller pair, the router creates the controller and calls the named method. For a closure, it calls the closure directly. Either way, the handler renders the response and routing stops.
 
 ### 2.3 Update index.php to Use the Controller
 
@@ -262,7 +289,7 @@ Now, let's refactor our routes to use the new controller.
 
 declare(strict_types=1);
 
-require_once '../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Controllers\PageController;
 use App\Routing\Router;

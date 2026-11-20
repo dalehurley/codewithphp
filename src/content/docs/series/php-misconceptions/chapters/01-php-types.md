@@ -31,6 +31,17 @@ The strict caller rejected the numeric string.
 
 The class declares an `int` input and return value. Its constructor also checks that the price is non-negative. A type can tell you a value is an integer. The constructor supplies the rule about which integers make sense for a price.
 
+## Predict the result
+
+What happens when you pass the string `"3"` to `forQuantity(int $quantity)`? This 20-second screen recording runs the same call in both modes.
+
+<video controls preload="none" poster="/videos/php-strict-types.webp" width="960" height="540" style="max-width:100%;height:auto;" aria-label="PHP strict types example, transcript follows">
+  <source src="/videos/php-strict-types.mp4" type="video/mp4">
+  <a href="/videos/php-strict-types.mp4">Download the recording</a>
+</video>
+
+The default-mode call prints `3750` after converting the string to an integer. With strict types in the calling file, the same argument raises a `TypeError`.
+
 ## The file making the call matters
 
 Try the same method from a caller that omits `declare(strict_types=1)`.

@@ -23,6 +23,16 @@ Learn PHP by building a blog from scratch. Start with a script you can run in yo
 - [Build a small reading list with PHP and SQLite](/series/php-basics/sqlite-starter/)
 - [Look up a PHP error in the troubleshooting guide](/series/php-basics/troubleshooting/)
 
+## Walk through the finished blog
+
+The [Simple Blog project](/series/php-basics/chapters/19-project-building-a-simple-blog/) puts your router, forms, and database together. Here’s what the finished core project looks like in a browser.
+
+1. **List your posts.** Open `/posts`. On a fresh database the page says **No posts yet**. Choose **Create New Post**.
+2. **Publish a post.** Give it a title and some content, then click **Create Post**. The app saves it to SQLite and returns to the list with a linked title and excerpt.
+3. **Open your post.** Click its title. The detail page shows the full text and has a **Back to all posts** link. The post still opens after a server restart.
+
+Follow the [blog project quick start](/series/php-basics/chapters/19-project-building-a-simple-blog/#quick-start) once the project files are in place. Use the [finish-line checklist](/teach/project-checklists/#php-basics-blog) to check your result.
+
 ## Who This Is For
 
 This series is designed for:

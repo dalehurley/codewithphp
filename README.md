@@ -131,7 +131,7 @@ PHP-From-Scratch/
 
 ## 📝 Contributing
 
-We welcome contributions! Here's how to get started:
+Start with the [one-example contribution guide](https://codewithphp.com/contribute/) or pick a [good first issue](https://github.com/dalehurley/codewithphp/labels/good%20first%20issue). To ask a question, use [GitHub Discussions](https://github.com/dalehurley/codewithphp/discussions/categories/q-a).
 
 1. **Content Contributions**
 

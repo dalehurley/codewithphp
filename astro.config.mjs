@@ -55,6 +55,9 @@ export default defineConfig({
       editLink: {
         baseUrl: 'https://github.com/dalehurley/codewithphp/edit/main/',
       },
+      pagefind: {
+        ranking: { pageLength: 0.5, termFrequency: 0.45, termSaturation: 1.4 },
+      },
       favicon: '/images/brand/pinup-mark.png',
       head: [
         {
@@ -69,17 +72,20 @@ export default defineConfig({
         './src/styles/custom.css',
         './src/styles/home.css',
         './src/styles/learning.css',
+        './src/styles/print.css',
       ],
       components: {
         Head: './src/Head.astro',
         Header: './src/components/Header.astro',
         Hero: './src/components/SplashHero.astro',
         PageTitle: './src/components/learning/LearningTitle.astro',
+        Footer: './src/components/LessonFooter.astro',
       },
       sidebar: [
         { label: 'Home', link: '/' },
         { label: 'Start here', link: '/start-here/' },
         { label: 'All courses', link: '/series/' },
+        { label: 'PHP resources', link: '/resources/' },
         {
           label: 'PHP comparisons',
           collapsed: true,

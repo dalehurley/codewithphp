@@ -4,6 +4,7 @@ description: "Find the PHP error you saw and work through a short fix for syntax
 difficulty: "Beginner"
 author: "Code with PHP"
 datePublished: "2026-11-20"
+dateModified: "2026-11-20"
 ---
 
 Start with the first error in your terminal or the PHP development server log. It usually names the file and line where PHP noticed the problem. If the page is blank, check that log and run `php -l public/index.php` from your project folder, using your own entry file if it has a different name.
@@ -11,6 +12,7 @@ Start with the first error in your terminal or the PHP development server log. I
 | What you see | Where to look |
 | --- | --- |
 | `php: command not found` or `'php' is not recognized` | [PHP command not found](#php-command-not-found) |
+| `composer: command not found` or `'composer' is not recognized` | [Composer command not recognized](#composer-command-not-recognized) |
 | `Could not open input file` | [PHP cannot find the script](#php-cannot-find-the-script) |
 | `Parse error: syntax error` | [PHP cannot parse the code](#php-cannot-parse-the-code) |
 | `Undefined array key` | [A value is missing from an array](#a-value-is-missing-from-an-array) |
@@ -25,6 +27,12 @@ Start with the first error in your terminal or the PHP development server log. I
 Your terminal needs to find the PHP executable. Check it with `command -v php` on macOS or Linux, or `Get-Command php` in PowerShell. An installation can exist on disk even when the terminal cannot find it.
 
 Follow the [installation steps for your operating system](/series/php-basics/chapters/00-setting-up-your-development-environment/), open a fresh terminal, and run `php -v`. If it shows a different version from the one you installed, use the command above to see which executable your terminal chose.
+
+## Composer command not recognized
+
+If your terminal says `composer: command not found` or reports that Composer is not recognised in PowerShell, check whether it can find the executable. Run `command -v composer` on macOS or Linux, or `Get-Command composer` in PowerShell.
+
+If you already have a local `composer.phar` file, run `php composer.phar --version` from its folder. For a global installation, follow the [Composer setup instructions](/series/php-basics/chapters/12-dependency-management-with-composer/), open a new terminal, and run `composer --version`. A version number means the command is available in that terminal.
 
 ## PHP cannot find the script
 

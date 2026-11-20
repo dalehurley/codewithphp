@@ -3,6 +3,7 @@ import { Icon } from '@astrojs/starlight/components';
 import PinupPoster from './PinupPoster.astro';
 import CodeQuiz from './home/CodeQuiz.astro';
 import CourseRail from './home/CourseRail.astro';
+import ResumeLesson from './ResumeLesson.astro';
 
 const repository = 'https://github.com/dalehurley/codewithphp';
 ---
@@ -20,6 +21,7 @@ const repository = 'https://github.com/dalehurley/codewithphp';
             <a class="studio-text-link" href="/series/">Browse courses</a>
             <a class="studio-text-link" href="/compare/">Compare PHP</a>
           </div>
+          <ResumeLesson />
           <a class="studio-hero__down" href="#learn" aria-label="Scroll to featured courses">
             <Icon name="down-arrow" size="1.75rem" />
           </a>
@@ -38,7 +40,7 @@ const repository = 'https://github.com/dalehurley/codewithphp';
         <div>
           <h2 id="play-title">Try it.<br />Break it.</h2>
           <p>Guess what PHP prints, then open the answer to see why.</p>
-          <a class="studio-text-link" href="/series/php-basics/">Keep experimenting</a>
+          <a class="studio-text-link" href="/practice/">Find examples and exercises</a>
         </div>
         <CodeQuiz />
       </div>
@@ -53,8 +55,14 @@ const repository = 'https://github.com/dalehurley/codewithphp';
             <a href={repository + '/issues'}>
               Report an issue <Icon name="right-arrow" size="1.25em" />
             </a>
-            <a href={repository + '#-contributing'}>
-              Contribute on GitHub <Icon name="right-arrow" size="1.25em" />
+            <a href={repository + '/discussions/categories/q-a'}>
+              Ask a PHP question <Icon name="right-arrow" size="1.25em" />
+            </a>
+            <a href="/contribute/">
+              Contribute an example <Icon name="right-arrow" size="1.25em" />
+            </a>
+            <a href={repository + '/discussions/35'}>
+              Suggest a lesson or share a project <Icon name="right-arrow" size="1.25em" />
             </a>
           </div>
         </div>
@@ -74,6 +82,8 @@ const repository = 'https://github.com/dalehurley/codewithphp';
         <a class="studio-footer__brand" href="#_top">Code with PHP</a>
         <nav aria-label="Footer">
           <a href="/series/">Courses</a>
+          <a href="/resources/">Resources</a>
+          <a href="/updates/">What’s new</a>
           <a href={repository}>GitHub</a>
           <a href="https://dalehurley.com/">Dale Hurley</a>
         </nav>

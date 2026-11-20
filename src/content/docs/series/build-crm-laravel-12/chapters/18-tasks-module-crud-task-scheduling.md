@@ -2045,6 +2045,10 @@ You've mastered Laravel's Task Scheduler, a production-ready alternative to cron
 **What's next?** In [Chapter 19](/series/build-crm-laravel-12/chapters/19-notifications-email-integration), you'll expand the notification system beyond task reminders, adding notifications for deal closures, team invitations, and customizable user preferences. You'll learn Laravel's comprehensive notification channels including database notifications for in-app alerts.
 
 
+## Check the finished CRM modules
+
+Use the [CRM finish-line checklist](/teach/project-checklists/#laravel-crm-with-react-and-inertia) to verify the contacts, companies, deals, and tasks against local test data. The [next PHP projects](/teach/next-php-projects/#go-further-with-the-crm) include a smaller API and queue lab you can run in a separate app.
+
 ## Further Reading
 
 - [Laravel Task Scheduling](https://laravel.com/docs/12.x/scheduling) — Official scheduling documentation

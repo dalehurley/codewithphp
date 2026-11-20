@@ -21,3 +21,7 @@ Run `npm run build` followed by `npm run check:seo`. The checker covers all site
 The Markdown routes and `/llms.txt` are generated from published Markdown-backed course entries. Treat the HTML page as the public citation URL. Google's AI search features use the same indexed site and content as Search. [Google AI search guidance](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide)
 
 GitHub Pages serves the three retired CRM URLs as immediate HTML redirects to the completed lessons. Google recognises this form as permanent. For a transport-level 301, apply the same mappings at a host or edge that supports custom redirects, then validate status and target from the public hostname. [Google redirect guidance](https://developers.google.com/search/docs/crawling-indexing/301-redirects)
+
+## Site updates
+
+Add new and substantially revised lessons to the newest date in `src/data/site-updates.json`, or put a new date group at the top. The public changelog and RSS feed read this file. Use each published canonical path once per date. Routine edits can stay in Git history.

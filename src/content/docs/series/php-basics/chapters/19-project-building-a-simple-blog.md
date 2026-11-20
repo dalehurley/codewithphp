@@ -105,28 +105,16 @@ simple-blog/
 
 ## Quick Start
 
-If you want to see the complete blog in action immediately, follow these steps:
+After adding the files in this chapter to your project from Chapter 18, run these commands from the project root:
 
 ```bash
-# 1. Navigate to your simple-blog project
-cd simple-blog
-
-# 2. Create the data directory for the database
 mkdir -p data
-
-# 3. Download the complete example files
-# (Or manually create them following the chapter)
-
-# 4. Initialize the database
+composer dump-autoload
 php init-db.php
-
-# 5. Start the server
-php -S localhost:8000 -t public
-
-# 6. Visit http://localhost:8000/posts
+php -S 127.0.0.1:8000 -t public
 ```
 
-Expected result: You should see a blog post listing page with a "Create New Post" button. The application should be fully functional with list, create, and view capabilities.
+Open `http://127.0.0.1:8000/posts`. The page lists posts and links to **Create New Post**.
 
 ## Objectives
 
@@ -1058,6 +1046,8 @@ Update the schema and views to track when posts were last edited.
 
 3. Display "Last updated" on post pages when `updated_at` differs from `created_at`
 
+<span id="add-post-search"></span>
+
 ### Exercise 4: Add Post Search (⭐⭐⭐)
 
 Implement a search feature to find posts by title or content.
@@ -1196,6 +1186,8 @@ The foundation you've built is a simplified version of what every major PHP fram
 7. **Type declarations catch bugs early**: PHP 8.6's type system makes code safer
 
 ### What's Next
+
+Use the [blog finish-line checklist](/teach/project-checklists/#php-basics-blog) to verify that you can create, read, and keep a post. Then [choose a next project](/teach/next-php-projects/) to extend the blog, try Laravel, or test a feature.
 
 You're now ready to explore professional PHP frameworks:
 
