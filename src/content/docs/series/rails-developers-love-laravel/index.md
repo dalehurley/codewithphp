@@ -10,6 +10,8 @@ description: "Discover how your Rails skills translate beautifully to Laravel—
 
 ## Overview
 
+If you’re choosing between the two ecosystems, start with [PHP vs Ruby](/compare/php-vs-ruby/).
+
 Welcome to **Why Ruby on Rails Developers Will Love Laravel** — a comprehensive guide designed specifically for Ruby on Rails developers who want to explore the Laravel ecosystem. If you've built web applications with Rails, you'll find that Laravel isn't just PHP's answer to Rails—it's a framework that learned from Rails, improved on many patterns, and added its own innovations.
 
 Laravel and Rails share remarkably similar philosophies: convention over configuration, elegant syntax, developer happiness, and rapid application development. Both frameworks believe in "magic that makes sense"—abstractions that feel intuitive once you understand the patterns.

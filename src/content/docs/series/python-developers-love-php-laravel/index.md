@@ -10,6 +10,8 @@ description: "Discover how your Python skills translate beautifully to PHP and L
 
 ## Overview
 
+If you’re choosing a stack, start with [PHP vs Python](/compare/php-vs-python/) for a comparison of deployment, typing and common use cases.
+
 Welcome to **Why Python Developers Will Love PHP and Laravel** — a comprehensive guide designed specifically for Python developers who want to explore the PHP and Laravel ecosystem. If you've built web applications with Django or Flask, written data scripts, or automated tasks with Python, this series will show you how your existing skills map naturally to PHP and Laravel—while introducing you to areas where PHP/Laravel may surprise and delight you.
 
 PHP has evolved dramatically over the past decade. Modern PHP (versions 7 and 8) brings typed properties, JIT compilation, improved performance, and a thriving ecosystem of professional tools. Laravel, PHP's most popular framework, embodies many of the same principles Python developers value: clean code, expressive syntax, "batteries included" philosophy, and exceptional developer experience.

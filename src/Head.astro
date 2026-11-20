@@ -2,7 +2,7 @@
 import { hasMarkdownAlternate, markdownPathFor } from './lib/agent-docs';
 import { findEntryBySlug } from './lib/collection-cache';
 import { catalogueTracks } from './lib/course-catalogue';
-import { getSeriesSlug, getSocialPreview, isCourseResource, isHomepage, isSeriesIndex, stripChapterNumber } from './lib/seo';
+import { getSeriesSlug, getSocialPreview, isComparisonPage, isCourseResource, isHomepage, isSeriesIndex, stripChapterNumber } from './lib/seo';
 import {
   generateArticleSchema,
   generateBreadcrumbSchema,
@@ -17,6 +17,8 @@ const isHome = isHomepage(slug);
 const isCatalogue = slug === 'series';
 const isCourse = isSeriesIndex(slug);
 const isLesson = isCourseResource(slug);
+const isComparison = isComparisonPage(slug);
+const isArticle = isLesson || isComparison;
 const isNotFound = slug === '404' || Astro.response.status === 404;
 const verification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION?.trim();
 const analyticsToken = import.meta.env.PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN?.trim();
@@ -61,6 +63,9 @@ if (isIndexable) {
     if (isCourse || isLesson) {
       breadcrumbs.push({ name: 'All courses', url: catalogueUrl });
     }
+    if (isComparison) {
+      breadcrumbs.push({ name: 'PHP comparisons', url: new URL('/compare/', homeUrl).href });
+    }
     if (courseSlug && course && !course.data.draft && !course.data.noindex) {
       breadcrumbs.push({ name: course.data.title, url: new URL(`/${courseSlug}/`, homeUrl).href });
     }
@@ -74,7 +79,7 @@ if (isIndexable) {
     schemas.push(generateCourseListSchema(urls));
   } else if (isCourse) {
     schemas.push(generateCourseSchema(site, page));
-  } else if (isLesson) {
+  } else if (isArticle) {
     schemas.push(generateArticleSchema(site, page, image.alt === title));
   }
 }
@@ -101,7 +106,7 @@ const nativeHead = head.filter(({ tag, attrs }) => {
 
 {isIndexable && (
   <>
-    <meta property="og:type" content={isLesson ? 'article' : 'website'} />
+    <meta property="og:type" content={isArticle ? 'article' : 'website'} />
     <meta property="og:title" content={searchTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical.href} />
@@ -114,8 +119,8 @@ const nativeHead = head.filter(({ tag, attrs }) => {
     <meta name="twitter:image" content={imageUrl} />
     <meta name="twitter:image:alt" content={image.alt} />
 
-    {isLesson && data.datePublished && <meta property="article:published_time" content={data.datePublished} />}
-    {isLesson && data.dateModified && <meta property="article:modified_time" content={data.dateModified} />}
+    {isArticle && data.datePublished && <meta property="article:published_time" content={data.datePublished} />}
+    {isArticle && data.dateModified && <meta property="article:modified_time" content={data.dateModified} />}
   </>
 )}
 

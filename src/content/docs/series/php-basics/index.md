@@ -13,6 +13,8 @@ description: "Learn PHP for free, from your first script to a database-driven bl
 
 ## Overview
 
+If you’re choosing what to learn first, [compare PHP with other languages](/compare/) or see [how PHP works alongside HTML](/compare/php-vs-html/).
+
 Learn PHP by building a blog from scratch. Start with a script you can run in your terminal, then add forms, a database, sign-in, and routing. The course is free and uses plain PHP for the blog project, so you can see the parts frameworks usually manage for you.
 
 - [Install PHP on macOS, Windows, or Linux](/series/php-basics/chapters/00-setting-up-your-development-environment/)

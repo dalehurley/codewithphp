@@ -1,5 +1,6 @@
 import type { CollectionEntry } from 'astro:content';
 import { getCachedCollection } from './collection-cache';
+import { isComparisonPage } from './seo';
 
 type Doc = CollectionEntry<'docs'>;
 
@@ -13,7 +14,7 @@ export function hasMarkdownAlternate(entry: Pick<Doc, 'id' | 'slug' | 'body' | '
     /\b(noindex|none)\b/i.test(String(attrs?.content ?? ''))
   );
 
-  return entry.slug.startsWith('series/') &&
+  return (entry.slug.startsWith('series/') || entry.slug === 'compare' || isComparisonPage(entry.slug)) &&
     entry.id.endsWith('.md') &&
     Boolean(entry.body.trim()) &&
     !entry.data.draft &&
@@ -35,7 +36,7 @@ export function renderAgentMarkdown(entry: Doc, site: URL) {
   const lines = [
     '# ' + entry.data.title,
     '',
-    '[Original lesson](' + canonical.href + ')',
+    '[Original page](' + canonical.href + ')',
     ''
   ];
   if (entry.data.description) lines.push('> ' + entry.data.description, '');
