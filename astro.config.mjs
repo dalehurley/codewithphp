@@ -78,6 +78,7 @@ export default defineConfig({
       },
       sidebar: [
         { label: 'Home', link: '/' },
+        { label: 'Start here', link: '/start-here/' },
         { label: 'All courses', link: '/series/' },
         {
           label: 'PHP comparisons',
