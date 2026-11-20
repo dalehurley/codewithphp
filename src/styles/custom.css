@@ -126,7 +126,6 @@
 }
 
 .site-links {
-  display: flex;
   align-items: center;
   gap: clamp(1.25rem, 4vw, 4rem);
 }
