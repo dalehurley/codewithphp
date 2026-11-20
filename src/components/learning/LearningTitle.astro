@@ -1,7 +1,7 @@
 ---
 import { Icon } from '@astrojs/starlight/components';
 import DefaultPageTitle from '@astrojs/starlight/components/PageTitle.astro';
-import { isCourseResource, isSeriesIndex, stripChapterNumber } from '../../lib/seo';
+import { isComparisonPage, isCourseResource, isSeriesIndex, stripChapterNumber } from '../../lib/seo';
 import ScrollRail from '../ScrollRail.astro';
 
 const { entry, headings, sidebar } = Astro.locals.starlightRoute;
@@ -93,7 +93,7 @@ const practice = headings.find(({ depth, slug }) =>
 ) : (
   <>
     <DefaultPageTitle />
-    {isCourseResource(entry.slug) && (author || date) && (
+    {(isCourseResource(entry.slug) || isComparisonPage(entry.slug)) && (author || date) && (
       <p class="learning-masthead__byline">
         {author && <>{'By '}{authorUrl ? <a href={authorUrl}>{author}</a> : author}</>}
         {author && date && ' · '}

@@ -12,6 +12,7 @@ Free PHP and Laravel tutorials by Dale Hurley. Follow a course to build a projec
 
 - [Start coding with PHP](https://codewithphp.com/series/php-basics/) and build a blog.
 - [Upgrade from PHP 8.5 to PHP 8.6](https://codewithphp.com/series/php-8-6/upgrade-checklist/) with a comparison script you can run on both versions.
+- [Compare PHP with other programming languages](https://codewithphp.com/compare/) using side-by-side examples.
 - [Browse machine-readable lessons](https://codewithphp.com/llms.txt). Each Markdown version links back to the published tutorial.
 
 ### Tutorial Series

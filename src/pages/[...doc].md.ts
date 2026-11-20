@@ -1,10 +1,10 @@
 import type { APIRoute, GetStaticPaths } from 'astro';
 import type { CollectionEntry } from 'astro:content';
-import { getAgentDocs, renderAgentMarkdown } from '../../lib/agent-docs';
+import { getAgentDocs, renderAgentMarkdown } from '../lib/agent-docs';
 
 export const getStaticPaths: GetStaticPaths = async () =>
   (await getAgentDocs()).map(entry => ({
-    params: { doc: entry.slug.slice('series/'.length) },
+    params: { doc: entry.slug },
     props: { entry }
   }));
 

@@ -7,6 +7,8 @@ description: "A comprehensive guide for Java developers transitioning to PHP, co
 
 ## Overview
 
+If you’re choosing a backend language, see [PHP vs Java](/compare/php-vs-java/) for a side-by-side example and deployment comparison.
+
 If you're a Java developer looking to expand your skillset or transition to PHP development, you're in the right place. PHP and Java share many similarities—both are object-oriented, both have rich ecosystems, and both power millions of websites and applications worldwide. However, they also have key differences in syntax, philosophy, and best practices.
 
 This series is designed specifically for Java developers, leveraging your existing knowledge to help you quickly become productive in PHP. We'll draw parallels between Java and PHP concepts, highlight key differences, and show you how to apply your Java expertise in the PHP world. By the end of this series, you'll be writing clean, modern PHP code with confidence.

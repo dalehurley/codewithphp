@@ -81,6 +81,11 @@ export default defineConfig({
         { label: 'Start here', link: '/start-here/' },
         { label: 'All courses', link: '/series/' },
         {
+          label: 'PHP comparisons',
+          collapsed: true,
+          autogenerate: { directory: 'compare' },
+        },
+        {
           label: 'PHP Basics',
           collapsed: true,
           items: [

@@ -164,6 +164,8 @@ php hello.php
 
 ## Comparison: TypeScript vs PHP
 
+For a side-by-side look at checking data at runtime, read [PHP vs TypeScript](/compare/php-vs-typescript/).
+
 | Feature                | TypeScript                                  | PHP 8.3+                               |
 | ---------------------- | ------------------------------------------- | -------------------------------------- |
 | **Type System**        | Static (compile-time)                       | Static (runtime checked)               |

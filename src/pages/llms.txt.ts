@@ -9,10 +9,11 @@ export const GET: APIRoute = async ({ site }) => {
   const entries = await getAgentDocs();
   const groups = new Map<string, typeof entries>();
   for (const entry of entries) {
-    const course = entry.slug.split('/')[1];
-    const group = groups.get(course) ?? [];
+    const [section, course] = entry.slug.split('/');
+    const groupSlug = section === 'series' ? section + '/' + course : section;
+    const group = groups.get(groupSlug) ?? [];
     group.push(entry);
-    groups.set(course, group);
+    groups.set(groupSlug, group);
   }
 
   const lines = [
@@ -20,7 +21,7 @@ export const GET: APIRoute = async ({ site }) => {
     '',
     '> Free, project-based PHP and Laravel tutorials with examples and exercises.',
     '',
-    'Each Markdown file links to the original HTML lesson. Course materials and example code are maintained in the public repository.',
+    'Each Markdown file links to the original HTML page. Course materials and example code are maintained in the public repository.',
     '',
     '## Start here',
     '',
@@ -29,8 +30,8 @@ export const GET: APIRoute = async ({ site }) => {
   ];
 
   for (const [slug, group] of groups) {
-    const hub = group.find(entry => entry.slug === 'series/' + slug);
-    lines.push('', '## ' + (hub?.data.title ?? slug), '');
+    const hub = group.find(entry => entry.slug === slug);
+    lines.push('', '## ' + (hub?.data.title ?? slug.split('/').at(-1)), '');
     for (const entry of group) {
       const target = new URL(markdownPathFor(docPath(entry)), site);
       lines.push('- [' + escapeLabel(entry.data.title) + '](' + target.href + ')');

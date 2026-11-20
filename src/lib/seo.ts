@@ -58,3 +58,7 @@ export function getSocialPreview(
 
   return { path: `${socialDirectory}homepage.jpg`, alt: siteTitle };
 }
+
+export function isComparisonPage(slug: string): boolean {
+  return /^compare\/[^/]+$/.test(slug);
+}
