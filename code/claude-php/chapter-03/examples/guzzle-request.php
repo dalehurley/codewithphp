@@ -2,68 +2,43 @@
 
 declare(strict_types=1);
 
-/**
- * Guzzle Request Example
- *
- * Make Claude API requests using Guzzle HTTP client directly.
- */
-
-require_once __DIR__ . '/../vendor/autoload.php';
-
-use GuzzleHttp\ClaudePhp;
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Dotenv\Dotenv;
+use GuzzleHttp\Exception\RequestException;
 
-$dotenv = Dotenv::createImmutable(__DIR__ . '/..');
-$dotenv->load();
-
-$apiKey = getenv('ANTHROPIC_API_KEY');
-if (!$apiKey) {
-    die("Error: ANTHROPIC_API_KEY not found\n");
-}
-
-echo "=== Making Claude Request with Guzzle ===\n\n";
+$config = require __DIR__ . '/../bootstrap.php';
+$client = new Client([
+    'base_uri' => 'https://api.anthropic.com',
+    'connect_timeout' => 5.0,
+    'timeout' => 30.0,
+    'headers' => [
+        'x-api-key' => $config['apiKey'],
+        'anthropic-version' => '2023-06-01',
+    ],
+]);
 
 try {
-    // Create Guzzle HTTP client
-    $client = new ClaudePhp([
-        'base_uri' => 'https://api.anthropic.com',
-        'timeout' => 30.0,
-        'headers' => [
-            'anthropic-version' => '2023-06-01',
-            'x-api-key' => $apiKey,
-            'content-type' => 'application/json'
-        ]
-    ]);
-
-    // Prepare request payload
-    $payload = [
-        'model' => 'claude-sonnet-4-5',
-        'max_tokens' => 1024,
-        'messages' => [
-            [
-                'role' => 'user',
-                'content' => 'Explain what Guzzle is in PHP in one sentence.'
-            ]
-        ]
-    ];
-
-    echo "Sending request...\n";
     $response = $client->post('/v1/messages', [
-        'json' => $payload
+        'json' => [
+            'model' => $config['model'],
+            'max_tokens' => 256,
+            'messages' => [
+                ['role' => 'user', 'content' => 'Explain Guzzle in one sentence.'],
+            ],
+        ],
     ]);
 
-    $statusCode = $response->getStatusCode();
-    $body = json_decode($response->getBody()->getContents(), true);
-
-    echo "Status Code: {$statusCode}\n";
-    echo "Response: {$body['content'][0]['text']}\n";
-    echo "Tokens: {$body['usage']['input_tokens']} in, {$body['usage']['output_tokens']} out\n";
-
-} catch (GuzzleException $e) {
-    echo "✗ HTTP Error: {$e->getMessage()}\n";
+    $message = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
+    foreach ($message['content'] as $block) {
+        if ($block['type'] === 'text') {
+            echo $block['text'] . PHP_EOL;
+        }
+    }
+} catch (RequestException $error) {
+    $status = $error->getResponse()?->getStatusCode();
+    fwrite(STDERR, $status === null ? "No HTTP response received.\n" : "Claude returned HTTP {$status}.\n");
     exit(1);
-} catch (\Exception $e) {
-    echo "✗ Error: {$e->getMessage()}\n";
+} catch (GuzzleException | JsonException $error) {
+    fwrite(STDERR, "Unable to read the Claude response.\n");
     exit(1);
 }

@@ -265,7 +265,7 @@ Build essential knowledge for working with Claude API.
   <img src="/images/claude-php/chapter-03-thumbnail.webp" alt="Chapter 03 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
   <div>
     <h4 style="margin-top: 0;"><a href="/series/claude-php-developers/chapters/03-first-claude-request">03 — Your First Claude Request in PHP</a></h4>
-    <p style="margin-bottom: 0;">Make your first API call using both Guzzle HTTP client and the official Anthropic PHP SDK. Understand request structure, response parsing, and basic error handling. Build a simple text generation script from scratch.</p>
+    <p style="margin-bottom: 0;">Make your first Claude request with the community PHP SDK or Guzzle. Read text and token usage, validate JSON, and diagnose request errors.</p>
   </div>
 </div>
 
@@ -381,7 +381,7 @@ Integrate Claude into modern PHP applications and frameworks.
   <img src="/images/claude-php/chapter-16-thumbnail.webp" alt="Chapter 16 thumbnail" style="width: 180px; height: auto; flex-shrink: 0; border-radius: 4px;" />
   <div>
     <h4 style="margin-top: 0;"><a href="/series/claude-php-developers/chapters/16-claude-php-sdk">16 — The Claude PHP SDK</a></h4>
-    <p style="margin-bottom: 0;">Master the official Anthropic PHP SDK. Explore its architecture, advanced features, middleware support, and testing utilities. Learn best practices for SDK integration in production applications and when to use raw HTTP vs the SDK.</p>
+    <p style="margin-bottom: 0;">Stream responses with the community Claude PHP SDK. Add token counting and logging with Guzzle middleware, then test your request against a mock response.</p>
   </div>
 </div>
 

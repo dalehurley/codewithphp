@@ -2,66 +2,43 @@
 
 declare(strict_types=1);
 
-/**
- * Response Parsing Example
- *
- * Parse and extract different types of data from Claude responses.
- */
-
-require_once __DIR__ . '/../vendor/autoload.php';
-
 use ClaudePhp\ClaudePhp;
-use Dotenv\Dotenv;
+use ClaudePhp\Exceptions\AnthropicException;
 
-$dotenv = Dotenv::createImmutable(__DIR__ . '/..');
-$dotenv->load();
-
-$apiKey = getenv('ANTHROPIC_API_KEY');
-
-echo "=== Response Parsing Examples ===\n\n";
+$config = require __DIR__ . '/../bootstrap.php';
+$client = new ClaudePhp(apiKey: $config['apiKey']);
 
 try {
-    $client = new ClaudePhp(    apiKey: $apiKey);
-
-    // Example 1: Extract JSON
-    echo "1. Extracting JSON Data\n";
     $response = $client->messages()->create([
-        'model' => 'claude-sonnet-4-5',
-        'max_tokens' => 200,
+        'model' => $config['model'],
+        'max_tokens' => 256,
         'messages' => [
-            ['role' => 'user', 'content' => 'Return a JSON object with keys: name="Claude", version="4", year=2025']
-        ]
+            ['role' => 'user', 'content' => 'Return one JSON object with the string keys name and purpose for Composer. Use no surrounding prose.'],
+        ],
     ]);
 
-    $text = $response->content[0]->text;
-    echo "Raw: {$text}\n";
-
-    // Extract JSON from response
-    preg_match('/\{[^}]+\}/', $text, $matches);
-    if (isset($matches[0])) {
-        $data = json_decode($matches[0], true);
-        echo "Parsed: " . print_r($data, true) . "\n";
+    $text = '';
+    foreach ($response->content as $block) {
+        if ($block['type'] === 'text') {
+            $text .= $block['text'];
+        }
     }
 
-    // Example 2: Extract Code Blocks
-    echo "\n2. Extracting Code Blocks\n";
-    $response = $client->messages()->create([
-        'model' => 'claude-sonnet-4-5',
-        'max_tokens' => 300,
-        'messages' => [
-            ['role' => 'user', 'content' => 'Write a PHP function to add two numbers']
-        ]
-    ]);
-
-    $text = $response->content[0]->text;
-    preg_match('/```php\n(.*?)\n```/s', $text, $matches);
-    if (isset($matches[1])) {
-        echo "Extracted code:\n{$matches[1]}\n";
+    $text = trim($text);
+    if (preg_match('/\A```(?:json)?\s*\R(.*?)\R```\z/is', $text, $matches) === 1) {
+        $text = $matches[1];
     }
 
-    echo "\n✓ Parsing examples complete!\n";
+    $data = json_decode($text, true, 512, JSON_THROW_ON_ERROR);
+    if (!is_string($data['name'] ?? null) || !is_string($data['purpose'] ?? null)) {
+        throw new UnexpectedValueException('Expected string values for name and purpose.');
+    }
 
-} catch (\Exception $e) {
-    echo "✗ Error: {$e->getMessage()}\n";
+    printf("%s: %s\n", $data['name'], $data['purpose']);
+} catch (JsonException | UnexpectedValueException $error) {
+    fwrite(STDERR, "Claude did not return the expected JSON object.\n");
+    exit(1);
+} catch (AnthropicException $error) {
+    fwrite(STDERR, "The Claude request failed. Check your configuration and try again.\n");
     exit(1);
 }

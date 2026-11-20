@@ -2,45 +2,34 @@
 
 declare(strict_types=1);
 
-/**
- * SDK Request Example
- *
- * Make requests using the official Anthropic PHP SDK.
- */
-
-require_once __DIR__ . '/../vendor/autoload.php';
-
 use ClaudePhp\ClaudePhp;
-use Dotenv\Dotenv;
+use ClaudePhp\Exceptions\APIStatusError;
+use ClaudePhp\Exceptions\AnthropicException;
 
-$dotenv = Dotenv::createImmutable(__DIR__ . '/..');
-$dotenv->load();
-
-$apiKey = getenv('ANTHROPIC_API_KEY');
-if (!$apiKey) {
-    die("Error: ANTHROPIC_API_KEY not found\n");
-}
-
-echo "=== Making Claude Request with SDK ===\n\n";
+$config = require __DIR__ . '/../bootstrap.php';
+$client = new ClaudePhp(apiKey: $config['apiKey']);
 
 try {
-    $client = new ClaudePhp(
-            apiKey: $apiKey
-        );
-
-    echo "Sending request...\n";
     $response = $client->messages()->create([
-        'model' => 'claude-sonnet-4-5',
-        'max_tokens' => 1024,
+        'model' => $config['model'],
+        'max_tokens' => 256,
+        'system' => 'Answer in one concise sentence.',
         'messages' => [
-            ['role' => 'user', 'content' => 'What is the Anthropic PHP SDK?']
-        ]
+            ['role' => 'user', 'content' => 'What is Composer used for in PHP?'],
+        ],
     ]);
 
-    echo "Response: {$response->content[0]->text}\n";
-    echo "Tokens: {$response->usage->inputTokens} in, {$response->usage->outputTokens} out\n";
+    foreach ($response->content as $block) {
+        if ($block['type'] === 'text') {
+            echo $block['text'] . PHP_EOL;
+        }
+    }
 
-} catch (\Exception $e) {
-    echo "✗ Error: {$e->getMessage()}\n";
+    printf("Tokens: %d in, %d out\n", $response->usage->input_tokens, $response->usage->output_tokens);
+} catch (APIStatusError $error) {
+    fprintf(STDERR, "Claude returned HTTP %d. Request ID: %s\n", $error->status_code, $error->request_id ?? 'unavailable');
+    exit(1);
+} catch (AnthropicException $error) {
+    fwrite(STDERR, "The Claude request failed. Check the network connection and try again.\n");
     exit(1);
 }

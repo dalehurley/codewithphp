@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace ClaudePHP\SDK;
 
-use GuzzleHttp\ClaudePhp;
+use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
+use UnexpectedValueException;
 
-/**
- * Wrapper around Claude API with middleware support
- */
+/** Add application middleware to a direct Messages API request. */
 class SDKWrapper
 {
-    private ClaudePhp $client;
-    private string $apiKey;
+    private readonly ClientInterface $client;
+
+    /** @var list<callable(string, array): array> */
     private array $middleware = [];
 
-    public function __construct(string $apiKey)
+    public function __construct(private readonly string $apiKey, ?ClientInterface $client = null)
     {
-        $this->apiKey = $apiKey;
-        $this->client = new ClaudePhp(['base_uri' => 'https://api.anthropic.com']);
+        $this->client = $client ?? new Client(['connect_timeout' => 5.0, 'timeout' => 30.0]);
     }
 
     public function addMiddleware(callable $middleware): void
@@ -28,25 +28,25 @@ class SDKWrapper
 
     public function sendMessage(array $params): array
     {
-        // Apply pre-request middleware
-        foreach ($this->middleware as $mw) {
-            $params = $mw('request', $params);
+        foreach ($this->middleware as $middleware) {
+            $params = $middleware('request', $params);
         }
 
-        $response = $this->client->post('/v1/messages', [
+        $response = $this->client->request('POST', 'https://api.anthropic.com/v1/messages', [
             'headers' => [
                 'x-api-key' => $this->apiKey,
                 'anthropic-version' => '2023-06-01',
-                'content-type' => 'application/json',
             ],
             'json' => $params,
         ]);
 
-        $result = json_decode($response->getBody()->getContents(), true);
+        $result = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        if (!is_array($result) || !isset($result['content'], $result['usage'])) {
+            throw new UnexpectedValueException('Expected a Claude message with content and usage.');
+        }
 
-        // Apply post-response middleware
-        foreach ($this->middleware as $mw) {
-            $result = $mw('response', $result);
+        foreach ($this->middleware as $middleware) {
+            $result = $middleware('response', $result);
         }
 
         return $result;

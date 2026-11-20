@@ -1,32 +1,26 @@
 # Chapter 03: Your First Claude Request
 
-Learn to make production-ready Claude API requests using both Guzzle HTTP client and the official PHP SDK.
+Make a request with the community [Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK) or Guzzle, read token usage, and validate a JSON response.
 
-## 🎯 What You'll Learn
+## Quick Start
 
-- Making requests with Guzzle HTTP client
-- Using the official Anthropic PHP SDK
-- Parsing and handling responses
-- Error handling and retries
-- Best practices for production code
-
-## 📁 Examples
-
-- `guzzle-request.php` - Raw HTTP requests with Guzzle
-- `sdk-request.php` - Using the official PHP SDK
-- `response-parsing.php` - Parse and extract data from responses
-
-## 🚀 Quick Start
+Use PHP 8.6 and Composer. Run these commands from this directory.
 
 ```bash
 composer install
 cp .env.example .env
-php examples/guzzle-request.php
 ```
-## 📚 Resources
 
-- **[Official Anthropic Documentation](https://docs.anthropic.com/)** — Complete API reference
-- **[Official PHP SDK on GitHub](https://github.com/anthropics/anthropic-sdk-php)** — Anthropic's official PHP implementation
-- **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)** — Community resources and examples
-- **[PHP SDK on Packagist](https://packagist.org/packages/claude-php/claude-php-sdk)** — Composer package
-- **[Community Discord](https://discord.gg/anthropic)** — Get help and discuss
+Set `ANTHROPIC_API_KEY` in `.env` or export it from your shell. `ANTHROPIC_MODEL` defaults to `claude-sonnet-5-5`.
+
+```bash
+php examples/sdk-request.php
+php examples/guzzle-request.php
+php examples/response-parsing.php
+```
+
+The SDK example prints text and token usage. The Guzzle example sends the JSON directly to the Messages API. The parsing example validates two string fields in a JSON object returned by the model.
+
+- [Read the chapter](https://codewithphp.com/series/claude-php-developers/chapters/03-first-claude-request/)
+- [Messages API reference](https://platform.claude.com/docs/en/api/messages/create)
+- [Anthropic’s official PHP SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/php)

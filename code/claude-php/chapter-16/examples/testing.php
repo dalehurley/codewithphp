@@ -2,57 +2,55 @@
 
 declare(strict_types=1);
 
+use ClaudePHP\SDK\SDKWrapper;
+use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Response;
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
-echo "SDK - Testing Strategies\n\n";
+$mock = new MockHandler([
+    new Response(200, ['Content-Type' => 'application/json'], json_encode([
+        'id' => 'msg_example',
+        'content' => [['type' => 'text', 'text' => 'Hello from the fake server.']],
+        'usage' => ['input_tokens' => 5, 'output_tokens' => 7],
+    ], JSON_THROW_ON_ERROR)),
+]);
+$history = [];
+$stack = HandlerStack::create($mock);
+$stack->push(Middleware::history($history));
+$wrapper = new SDKWrapper('test-key', new Client(['handler' => $stack]));
 
-class ClaudeServiceTest
-{
-    private $mockResponses = [];
-
-    public function mockResponse(array $response): void
-    {
-        $this->mockResponses[] = $response;
+$phases = [];
+$wrapper->addMiddleware(static function (string $phase, array $data) use (&$phases): array {
+    $phases[] = $phase;
+    if ($phase === 'request') {
+        $data['max_tokens'] = 64;
     }
 
-    public function callClaude(string $prompt): array
-    {
-        if (empty($this->mockResponses)) {
-            throw new \Exception('No mock responses configured');
-        }
-        return array_shift($this->mockResponses);
-    }
+    return $data;
+});
 
-    public function testBasicResponse(): void
-    {
-        $this->mockResponse([
-            'content' => [['type' => 'text', 'text' => 'Hello!']],
-            'usage' => ['input_tokens' => 5, 'output_tokens' => 2],
-        ]);
+$message = $wrapper->sendMessage([
+    'model' => 'claude-sonnet-5-5',
+    'max_tokens' => 256,
+    'messages' => [['role' => 'user', 'content' => 'Say hello']],
+]);
 
-        $result = $this->callClaude('Say hello');
-
-        assert($result['content'][0]['text'] === 'Hello!');
-        echo "✓ Basic response test passed\n";
-    }
-
-    public function testTokenCounting(): void
-    {
-        $this->mockResponse([
-            'content' => [['type' => 'text', 'text' => 'Response']],
-            'usage' => ['input_tokens' => 10, 'output_tokens' => 5],
-        ]);
-
-        $result = $this->callClaude('Test');
-
-        assert($result['usage']['input_tokens'] === 10);
-        assert($result['usage']['output_tokens'] === 5);
-        echo "✓ Token counting test passed\n";
-    }
+$request = $history[0]['request'];
+$payload = json_decode((string) $request->getBody(), true, 512, JSON_THROW_ON_ERROR);
+if ($request->getMethod() !== 'POST'
+    || $request->getUri()->getPath() !== '/v1/messages'
+    || $request->getHeaderLine('anthropic-version') !== '2023-06-01'
+    || $request->getHeaderLine('x-api-key') !== 'test-key'
+    || $payload['max_tokens'] !== 64
+    || $phases !== ['request', 'response']
+    || $message['content'][0]['text'] !== 'Hello from the fake server.'
+    || $message['usage']['output_tokens'] !== 7
+) {
+    throw new RuntimeException('Unexpected request, middleware calls, or response.');
 }
 
-$tester = new ClaudeServiceTest();
-$tester->testBasicResponse();
-$tester->testTokenCounting();
-
-echo "\n✓ All tests passed\n";
+echo "Request, middleware, and response checks passed.\n";
