@@ -27,3 +27,5 @@ The `laravel/` directory contains files to copy into a fresh Laravel 13 app.
 - The [Laravel performance lab](../../src/content/docs/series/php-misconceptions/chapters/03-laravel-performance.md) provides the setup, test and benchmark commands. The Caddyfile serves the two HTTP modes on loopback only. The [saved results](laravel/results/) include the TSV summaries, ApacheBench reports and dependency files.
 - The [Laravel code quality chapter](../../src/content/docs/series/php-misconceptions/chapters/04-clean-laravel-code.md) installs the quote endpoint and its feature tests.
 - The [developer tooling chapter](../../src/content/docs/series/php-misconceptions/chapters/11-developer-tooling.md) uses the quote app to demonstrate Pint and Larastan.
+
+The [Chapter 8 invoice lab](../../src/content/docs/series/php-misconceptions/chapters/08-php-security.md) copies the `invoice-lab/` fixture into a fresh Laravel 13 app and tests private invoice access with in-memory SQLite.
