@@ -1,0 +1,9 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 5
+    paths:
+        - app/Http/Controllers/QuoteController.php
+        - app/Http/Requests/QuoteRequest.php
+        - app/Quotes/SeatPrice.php
