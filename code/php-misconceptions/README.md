@@ -10,6 +10,7 @@ Run the standalone examples from the Code with PHP repository root using PHP 8.6
 | `php code/php-misconceptions/validate-quantity.php 3` | The raw input passes validation and the typed call prints 3750. |
 | `php code/php-misconceptions/modern-php.php` | The computed order label changes from pending to paid. |
 | `php code/php-misconceptions/order-status-input.php paid` | The script converts the raw string to an enum case and prints the order label. Unknown states exit with status 1. |
+| `php code/php-misconceptions/cost-estimate.php` | The fictional prices and workloads produce A$140.00 managed and A$215.00 self-managed per month. |
 | `php code/php-misconceptions/inventory.php` | The JSON report contains two inventory items. |
 | `php code/php-misconceptions/fibers.php` | The caller runs between the two parts of the Fiber. |
 | `php code/php-misconceptions/quirks.php` | A match can occur at offset zero, and reindexing a sparse array changes its JSON representation. |
