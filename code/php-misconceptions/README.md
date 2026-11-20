@@ -4,13 +4,17 @@ Run the standalone examples from the Code with PHP repository root using PHP 8.6
 
 | Command | What to check |
 | --- | --- |
-| `php code/php-misconceptions/types.php` | The integer quantity returns 3750. The strict caller rejects the numeric string. |
-| `php code/php-misconceptions/quantity-list.php` | PHP accepts the array and prints 1. The typing chapter shows how PHPStan checks the element type. |
+| `php code/php-misconceptions/types.php` | The integer quantity returns 3750. The caller catches a `TypeError` for the numeric string. |
+| `php code/php-misconceptions/types-coercive.php` | The same calls print 3750 twice. |
+| `php code/php-misconceptions/quantity-list.php` | The array is accepted, then its string element triggers a `TypeError` in the pricing loop. [Chapter 1](https://codewithphp.com/series/php-misconceptions/chapters/01-php-types/) shows how PHPStan catches the problem before execution. |
+| `php code/php-misconceptions/validate-quantity.php 3` | The raw input passes validation and the typed call prints 3750. |
 | `php code/php-misconceptions/modern-php.php` | The computed order label changes from pending to paid. |
 | `php code/php-misconceptions/inventory.php` | The JSON report contains two inventory items. |
 | `php code/php-misconceptions/fibers.php` | The caller runs between the two parts of the Fiber. |
 | `php code/php-misconceptions/quirks.php` | A match can occur at offset zero, and reindexing a sparse array changes its JSON representation. |
 | `php -d error_reporting=E_ALL -d display_errors=stderr -d log_errors=0 code/php-misconceptions/legacy-order-label.php` | PHP 8.5 prints `paid` and reports a dynamic-property deprecation. The upgrade chapter rehearses the fix. |
+
+The four Chapter 1 scripts also run on PHP 8.2 or later.
 
 The `laravel/` directory contains files to copy into a fresh Laravel 13 app.
 

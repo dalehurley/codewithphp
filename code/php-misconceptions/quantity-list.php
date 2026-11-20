@@ -2,10 +2,18 @@
 
 declare(strict_types=1);
 
+require __DIR__ . '/UnitPrice.php';
+
 /** @param list<int> $quantities */
-function countQuantities(array $quantities): int
+function totalQuantities(UnitPrice $price, array $quantities): int
 {
-    return count($quantities);
+    $total = 0;
+
+    foreach ($quantities as $quantity) {
+        $total += $price->forQuantity($quantity);
+    }
+
+    return $total;
 }
 
-echo countQuantities(['3']), PHP_EOL;
+echo totalQuantities(new UnitPrice(1250), ['3']), PHP_EOL;

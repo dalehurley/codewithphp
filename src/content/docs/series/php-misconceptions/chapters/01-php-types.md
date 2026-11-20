@@ -1,77 +1,210 @@
 ---
 title: "01: Can PHP Be Typed?"
-description: "Use PHP type declarations, test strict and coercive calls, and see where static analysis adds guarantees."
+description: "Compare strict and coercive PHP calls, check a list with PHPStan, and validate form input before passing it into typed code."
 series: "php-misconceptions"
 chapter: 1
-estimatedTime: "PT10M"
+estimatedTime: "PT20M"
 sidebar:
   order: 1
 ---
 
 ## Overview
 
-PHP is dynamically typed. It checks declared parameter, return and property types at runtime. You choose where to put those declarations, so a form that starts with raw strings can pass validated data into an application built around typed objects. Types can describe interfaces, unions such as `int|string` and intersections such as `Countable&Iterator`. [PHP type declarations](https://www.php.net/manual/en/language.types.declarations.php)
+PHP is dynamically typed and lets you declare types on parameters, return values and properties. PHP enforces those declarations at runtime. Even in a strict file, `$value = 3;` and then `$value = '3';` are both valid assignments. PHP checks the value when, for example, you pass it to a parameter declared as `int`. [PHP type declarations](https://www.php.net/manual/en/language.types.declarations.php)
+
+A form handler illustrates where three kinds of checks belong.
+
+| Check | Where to use it | Example |
+| --- | --- | --- |
+| Input validation | Where raw data enters your application | Parse the string `'3'` and check that the number is within the allowed range. |
+| Native type declarations | On the parameters, returns and properties your code relies on | Make the pricing method take a quantity declared as `int`. |
+| Static analysis | In your editor or build checks, before running the application | Have PHPStan check that code passes a list of integers to a batch pricing function. |
 
 ## Prerequisites
 
-Use PHP 8.6 or later and open a terminal at the root of the Code with PHP checkout. Confirm your CLI with `php --version`. Allow 10 minutes.
+The series uses PHP 8.6. The standalone examples in this chapter also run on PHP 8.2 or later, which supports the `readonly` class used below. The PHPStan walkthrough uses `curl`. [PHP 8.2 migration guide](https://www.php.net/manual/en/migration82.new-features.php#migration82.new-features.core.readonly-classes)
 
-## Quick Start
-
-The example builds a [typed unit price](https://github.com/dalehurley/codewithphp/blob/main/code/php-misconceptions/UnitPrice.php) and passes it two quantities.
+If you already have the checkout, open a terminal at its root and run `php --version`. For a new checkout, use these commands.
 
 ```bash
-php code/php-misconceptions/types.php
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp
+php --version
 ```
-
-```text
-3750
-The strict caller rejected the numeric string.
-```
-
-The class declares an `int` input and return value. Its constructor also checks that the price is non-negative. A type can tell you a value is an integer. The constructor supplies the rule about which integers make sense for a price.
 
 ## Predict the result
 
-What happens when you pass the string `"3"` to `forQuantity(int $quantity)`? This 20-second screen recording runs the same call in both modes.
+A unit costs 1,250 cents. Two PHP files each call `forQuantity(int $quantity)` with the integer `3` and then with the string `"3"`. One file starts with `declare(strict_types=1)`. What will each file do with the string?
 
-<video controls preload="none" poster="/videos/php-strict-types.webp" width="960" height="540" style="max-width:100%;height:auto;" aria-label="PHP strict types example, transcript follows">
+## Quick Start
+
+Both files load the same [`UnitPrice` class](https://github.com/dalehurley/codewithphp/blob/main/code/php-misconceptions/UnitPrice.php).
+
+```php
+<?php
+
+declare(strict_types=1);
+
+final readonly class UnitPrice
+{
+    public function __construct(public int $cents)
+    {
+        if ($cents < 0) {
+            throw new InvalidArgumentException('Unit price must be non-negative.');
+        }
+    }
+
+    public function forQuantity(int $quantity): int
+    {
+        return $this->cents * $quantity;
+    }
+}
+```
+
+In the constructor, `public int $cents` declares both a parameter and a property. In `forQuantity(int $quantity): int`, the first `int` describes the argument and the second describes the return value. All prices and totals are in cents.
+
+Run these files from the checkout root.
+
+```bash
+php code/php-misconceptions/types.php
+php code/php-misconceptions/types-coercive.php
+```
+
+<details>
+<summary>Reveal the results and watch the animation</summary>
+
+The strict file prints `3750` for the integer, then prints `The quantity call raised a TypeError.` after catching the error for the string. The coercive file prints `3750` twice.
+
+The animation shows the value returned by the method. The CLI scripts use `echo` to print it.
+
+<video controls preload="none" poster="/videos/php-strict-types.webp" width="960" height="540" style="max-width:100%;height:auto;" aria-label="Silent PHP strict types animation. A transcript follows.">
   <source src="/videos/php-strict-types.mp4" type="video/mp4">
-  <a href="/videos/php-strict-types.mp4">Download the recording</a>
+  <a href="/videos/php-strict-types.mp4">Download the animation</a>
 </video>
 
-The default-mode call prints `3750` after converting the string to an integer. With strict types in the calling file, the same argument raises a `TypeError`.
+**Animation transcript.** The animation shows the method `forQuantity(int $quantity): int` and the expression `(new UnitPrice(1250))->forQuantity("3")`. With the default calling mode, PHP converts the string to an integer and the method returns `3750`. The animation then shows `declare(strict_types=1);` above the same expression in the calling file. This time PHP raises `TypeError` before the method body runs. The last frame asks which file makes the call.
+
+</details>
 
 ## The file making the call matters
 
-Try the same method from a caller that omits `declare(strict_types=1)`.
+Open [`types.php`](https://github.com/dalehurley/codewithphp/blob/main/code/php-misconceptions/types.php) and [`types-coercive.php`](https://github.com/dalehurley/codewithphp/blob/main/code/php-misconceptions/types-coercive.php). They run the same calls. The strict file adds `declare(strict_types=1);` after `<?php`. The coercive file leaves it out.
 
-```bash
-php -r 'require "code/php-misconceptions/UnitPrice.php"; echo (new UnitPrice(1250))->forQuantity("3"), PHP_EOL;'
-# 3750
+For a direct call to a user-defined function or method, the calling file controls scalar argument coercion. The declaration in `UnitPrice.php` applies to calls made in that file. Try the following values by changing `$input` in each caller.
+
+| Value for `$input` | Strict caller | Coercive caller |
+| --- | --- | --- |
+| `3` | Returns `3750` | Returns `3750` |
+| `"3"` | Raises `TypeError` | Converts to `3` and returns `3750` |
+| `"three"` | Raises `TypeError` | Raises `TypeError` |
+
+Strict scalar checking still accepts an `int` for a `float` parameter. Operators have their own rules. In the strict file, `"3" == 3` evaluates to `true`, and `"3" === 3` evaluates to `false`. Try both with `var_dump()`. [Strict typing rules](https://www.php.net/manual/en/language.types.declarations.php#language.types.declarations.strict) · [Comparison operators](https://www.php.net/manual/en/language.operators.comparison.php)
+
+### Return values follow the declaring file
+
+To see a return check, save this as `return-quantity.php` in a scratch directory.
+
+```php
+<?php
+
+declare(strict_types=1);
+
+function quantity(): int
+{
+    return '3';
+}
 ```
 
-The class file declares `strict_types=1` in both cases. For a direct call to a user-defined function or method, scalar arguments follow the calling file and scalar return values follow the declaring file. The default mode can convert a numeric string to an integer. The strict caller in the first example rejects that string. Strict scalar checking still allows an `int` where a `float` is expected. [PHP strict typing rules](https://www.php.net/manual/en/language.types.declarations.php#language.types.declarations.strict)
+From that directory, run `php -r 'require "return-quantity.php"; quantity();'`. The caller uses the default coercive mode, but `quantity()` raises a `TypeError` because the strict file that defines it declares an `int` return and returns a string. [PHP return type example](https://www.php.net/manual/en/language.types.declarations.php#language.types.declarations.strict)
+
+### Combining native types
+
+A union such as `int|string` accepts either type. Passing `"3"` to that union keeps it as a string, even in a coercive call, because it already matches the `string` member. An intersection such as `Countable&Iterator` requires a single object that implements both interfaces. An `ArrayIterator` satisfies that declaration. [PHP type system](https://www.php.net/manual/en/language.types.type-system.php) · [Coercion with unions](https://www.php.net/manual/en/language.types.type-juggling.php)
+
+### Types and business rules
+
+Try these two commands from the checkout root.
+
+```bash
+php -r 'require "code/php-misconceptions/UnitPrice.php"; new UnitPrice(-1);'
+php -r 'require "code/php-misconceptions/UnitPrice.php"; echo (new UnitPrice(1250))->forQuantity(-1), PHP_EOL;'
+```
+
+| Expression | Result |
+| --- | --- |
+| `new UnitPrice(-1)` | The constructor throws `InvalidArgumentException` because the unit price must be non-negative. |
+| `(new UnitPrice(1250))->forQuantity(-1)` | Returns `-1250` because `-1` is an integer and the method has no quantity range check. |
+
+If an order can only contain non-negative quantities, check that rule before pricing. Put the rule inside the pricing method too if it must hold for every caller.
 
 ## What a static analyser adds
 
-A parameter declared as `array` accepts any PHP array. The example below passes `['3']` to a function annotated with `@param list<int> $quantities`. PHP accepts the array and prints its length, `1`.
+[`quantity-list.php`](https://github.com/dalehurley/codewithphp/blob/main/code/php-misconceptions/quantity-list.php) prices a batch by forwarding each array element to `forQuantity()`. Its function declares the native type `array` and adds a more specific PHPDoc contract for PHPStan.
+
+```php
+/** @param list<int> $quantities */
+function totalQuantities(UnitPrice $price, array $quantities): int
+{
+    $total = 0;
+
+    foreach ($quantities as $quantity) {
+        $total += $price->forQuantity($quantity);
+    }
+
+    return $total;
+}
+```
+
+A `list<int>` has integer values and sequential keys starting at zero. The supplied script passes `['3']`. The native `array` parameter accepts it, then the strict call inside the loop raises `TypeError` for the string element. [PHPStan list types](https://phpstan.org/writing-php-code/phpdoc-types#lists)
 
 ```bash
 php code/php-misconceptions/quantity-list.php
 ```
 
-Once you have PHPStan in the [developer tooling demo app](/series/php-misconceptions/chapters/11-developer-tooling/), run this from that app. Replace the example path with the location of your checkout.
+From the checkout root, download the PHPStan version used for this example and analyse both the class and the script.
 
 ```bash
-vendor/bin/phpstan analyse --level=5 --no-progress "/path/to/codewithphp/code/php-misconceptions/quantity-list.php"
+mkdir -p tmp/php-types
+curl -fL https://github.com/phpstan/phpstan/releases/download/2.3.7/phpstan.phar -o tmp/php-types/phpstan.phar
+php tmp/php-types/phpstan.phar analyse --level=5 --no-progress -v \
+  code/php-misconceptions/UnitPrice.php code/php-misconceptions/quantity-list.php
 ```
 
-PHPStan reports that the function expects `list<int>` and received an array containing the string `'3'`. Change the argument to `[3]` and rerun both commands. PHP still prints `1` and the analyser passes. PHPDoc generics can also express relationships between types. PHP 8.6 has no native generic declarations. [PHPStan PHPDoc types](https://phpstan.org/writing-php-code/phpdoc-types) · [PHP generics RFC status](https://wiki.php.net/rfc/bound_erased_generic_types)
+PHPStan reports `argument.type` at the call to `totalQuantities()`. It expects `list<int>` and receives `array{'3'}`. That is the expected first result, with exit status 1.
+
+Change the last line in `quantity-list.php` to pass `[3]` and rerun the PHP and PHPStan commands. PHP prints `3750`, and PHPStan reports no errors with exit status 0. Then try `[2 => 3]`. PHP still prints `3750`, but PHPStan flags the key sequence because it starts at 2. PHPStan checks the contract against the code it analyses. Validate data from forms, files or APIs before passing it into a function that relies on that contract. [PHPStan command-line usage](https://phpstan.org/user-guide/command-line-usage) · [PHPDoc generics](https://phpstan.org/blog/generics-in-php-using-phpdocs)
 
 ## Exercise
 
-Change the strict caller’s input to an integer `3`. Print the second call’s return value and check that it also prints `3750`. In a real form handler, validate the incoming value before converting it. A cast alone can turn an invalid value into an integer.
+### Confirm the strict call succeeds
+
+In `code/php-misconceptions/types.php`, set `$input = 3;`. The second call prints its return value on success. When you rerun the script, expect two lines of `3750`.
+
+### Validate a quantity before calling typed code
+
+Run [`validate-quantity.php`](https://github.com/dalehurley/codewithphp/blob/main/code/php-misconceptions/validate-quantity.php) with each input. The CLI argument stands in for a string received from a form.
+
+```bash
+php code/php-misconceptions/validate-quantity.php 3
+php code/php-misconceptions/validate-quantity.php 0
+php code/php-misconceptions/validate-quantity.php 3abc
+php code/php-misconceptions/validate-quantity.php -1
+```
+
+The first two commands print `3750` and `0`. The other two print a validation error and exit with status 1. The script uses `FILTER_VALIDATE_INT` with an allowed range of 0 to 1,000. On success the filter returns an integer. The condition `$quantity === false` distinguishes validation failure from a valid zero. A cast such as `(int) '3abc'` yields `3`, so casting alone would silently accept that input. [PHP integer validation](https://www.php.net/manual/en/filter.constants.validation.php)
+
+### Apply the same checks to a batch
+
+A form submits `['3', '0', '3abc', '-1']`. Where would you check the raw entries, enforce the pricing rules and verify the list contract? Assume the form rejects the whole batch when any entry is invalid.
+
+<details>
+<summary>Check your answer</summary>
+
+1. In the form handler, verify that the field contains an array and that each entry is a string. Apply the same integer and range validation from the single-quantity example to each entry. Reject the batch when an entry fails. Otherwise, append each parsed integer to a new array with `$quantities[] = $quantity` to create consecutive keys.
+2. In `UnitPrice`, keep the constructor’s non-negative price check and the method’s native `int` signature. If negative quantities are invalid for every caller, add a guard for `$quantity < 0` in `forQuantity()`.
+3. At the call to `totalQuantities()`, PHPStan can check that the code passes a `list<int>`. For a corrected batch of `['3', '0']`, validation produces `[3, 0]` and the function returns `3750` cents.
+
+</details>
 
 ## Next chapter
 
