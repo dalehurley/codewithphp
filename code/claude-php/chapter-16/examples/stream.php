@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 use ClaudePhp\ClaudePhp;
 use ClaudePhp\Exceptions\AnthropicException;
+use GuzzleHttp\Client;
 
 $config = require __DIR__ . '/../bootstrap.php';
-$client = new ClaudePhp(apiKey: $config['apiKey']);
+$transport = new Client(['stream' => true, 'timeout' => 60.0]);
+$client = new ClaudePhp(apiKey: $config['apiKey'], httpClient: $transport);
 $completed = false;
 
 try {

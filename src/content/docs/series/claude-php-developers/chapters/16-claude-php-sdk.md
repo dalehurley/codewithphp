@@ -42,7 +42,7 @@ For live examples, copy `.env.example` to `.env` and provide `ANTHROPIC_API_KEY`
 php examples/stream.php
 ```
 
-`messages()->stream()` takes the same array of request parameters as `messages()->create()`. It returns an iterable of decoded server-sent events. Below is the text handling from the sample.
+`messages()->stream()` takes the same array of request parameters as `messages()->create()`. It returns an iterable of decoded server-sent events. Set Guzzle’s `stream` option to let the SDK read the HTTP response incrementally. Below is the text handling from the sample.
 
 ```php
 <?php
@@ -50,9 +50,11 @@ php examples/stream.php
 declare(strict_types=1);
 
 use ClaudePhp\ClaudePhp;
+use GuzzleHttp\Client;
 
 $config = require __DIR__ . '/../bootstrap.php';
-$client = new ClaudePhp(apiKey: $config['apiKey']);
+$transport = new Client(['stream' => true, 'timeout' => 60.0]);
+$client = new ClaudePhp(apiKey: $config['apiKey'], httpClient: $transport);
 
 $stream = $client->messages()->stream([
     'model' => $config['model'],
