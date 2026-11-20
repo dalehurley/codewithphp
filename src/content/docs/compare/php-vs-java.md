@@ -41,20 +41,20 @@ echo (new Order(3, 450))->total(), PHP_EOL;
 ```
 
 ```java
+public class Main {
+    public static void main(String[] args) {
+        System.out.println(new Order(3, 450).total());
+    }
+}
+
 record Order(int quantity, int unitPrice) {
     int total() {
         return quantity * unitPrice;
     }
 }
-
-class Main {
-    public static void main(String[] args) {
-        System.out.println(new Order(3, 450).total());
-    }
-}
 ```
 
-Both print `1350`. Use PHP 8.1 or newer for the readonly properties and save the Java example as `Main.java` for JDK 17 or newer. Java’s record declares its state in the record header. PHP’s constructor promotes parameters into properties and marks each one readonly. For real order validation, check business rules such as a positive quantity at the application boundary.
+Both print `1350`. Use PHP 8.1 or newer and run `php example.php`. With JDK 17 or newer, save the Java version as `Main.java` and run `java Main.java`. Java’s record declares its state in the record header. PHP’s constructor promotes parameters into properties and marks each one readonly. For real order validation, check business rules such as a positive quantity at the application boundary.
 
 ## Transitioning from Java to PHP
 
