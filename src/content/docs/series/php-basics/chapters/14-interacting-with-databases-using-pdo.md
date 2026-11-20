@@ -24,6 +24,8 @@ dateModified: "2026-11-20"
 
 Use `PDO::prepare()` to write a query with placeholders and `execute()` to supply the values. This keeps values separate from SQL syntax. After establishing the connection, you can use the same PDO methods with SQLite, MySQL, or PostgreSQL. Each database needs its own driver, and its SQL may differ. [PDO::prepare() reference](https://www.php.net/manual/en/pdo.prepare.php)
 
+To use a prepared statement in a small web app that keeps its database after a restart, try the [PHP and SQLite starter](/series/php-basics/sqlite-starter/).
+
 ## Runnable PDO prepared statement example
 
 Save the code as `prepared-statement.php` and run `php prepared-statement.php` with `pdo_sqlite` enabled. The example creates an in-memory database, so it needs no database server or credentials.

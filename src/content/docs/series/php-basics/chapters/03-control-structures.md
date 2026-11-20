@@ -152,6 +152,8 @@ if ($age >= 18 && $hasLicense) {
 }
 ```
 
+[Run this example on 3v4l](https://3v4l.org/ld3A4)
+
 ## Step 2: Repeating Tasks with a `for` Loop (~3 min)
 
 ### Goal

@@ -75,6 +75,8 @@ echo "The second language is: " . $languages[1] . PHP_EOL; // Index 1 is the sec
 print_r($languages);
 ```
 
+[Run this example on 3v4l](https://3v4l.org/1uHMI)
+
 3.  **Run the Script**
 
 ```bash

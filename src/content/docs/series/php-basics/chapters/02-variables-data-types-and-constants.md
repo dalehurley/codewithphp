@@ -528,6 +528,8 @@ echo "Tax rate: " . (TAX_RATE * 100) . "%" . PHP_EOL;
 echo "Total price: $" . $totalPrice . PHP_EOL;
 ```
 
+[Run this example on 3v4l](https://3v4l.org/4sp8s)
+
 2. **Run the calculator**:
 
 ```bash

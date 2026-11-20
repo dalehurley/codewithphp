@@ -84,6 +84,8 @@ export default defineConfig({
           collapsed: true,
           items: [
             { label: 'Series Overview', link: '/series/php-basics/' },
+            { label: 'PHP troubleshooting', link: '/series/php-basics/troubleshooting/' },
+            { label: 'PHP and SQLite starter', link: '/series/php-basics/sqlite-starter/' },
             {
               label: 'Chapters',
               autogenerate: { directory: 'series/php-basics/chapters' },

@@ -77,6 +77,8 @@ Create your first PHP file and print a message to confirm your environment works
 echo 'Hello, World!', PHP_EOL;
 ```
 
+[Run this example on 3v4l](https://3v4l.org/sCEqf)
+
 ### Expected Result
 
 You now have a `hello.php` file that outputs a classic greeting when executed.

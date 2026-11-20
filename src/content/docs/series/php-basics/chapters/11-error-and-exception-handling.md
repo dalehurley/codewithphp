@@ -26,6 +26,8 @@ No matter how carefully we code, things can and will go wrong. A user might prov
 
 By the end of this chapter, you'll build a robust bank account system that validates withdrawals, handles errors gracefully, and provides clear feedback when operations fail—all without crashing your application.
 
+If you came here with a specific error message, start with the [PHP troubleshooting guide](/series/php-basics/troubleshooting/).
+
 ## Prerequisites
 
 - PHP 8.4 installed and accessible from your terminal (PHP 7.1+ for multi-catch syntax)
