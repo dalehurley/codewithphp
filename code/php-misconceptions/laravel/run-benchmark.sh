@@ -2,15 +2,25 @@
 
 set -euo pipefail
 
-if [[ $# != 2 || ( "$1" != 0 && "$1" != 1 ) ]]; then
-    printf 'Usage: bash run-benchmark.sh <expected OPcache: 0 or 1> <new results directory>\n' >&2
+if [[ $# -lt 2 || $# -gt 3 || ( "$1" != 0 && "$1" != 1 ) || ( $# == 3 && "$3" != --quick ) ]]; then
+    printf 'Usage: bash run-benchmark.sh <expected OPcache: 0 or 1> <new results directory> [--quick]\n' >&2
     exit 1
 fi
 
 expected_opcache=$1
 results_dir=$2
+profile=full
+trials=3
+warmup=200
 requests=2500
 concurrency=4
+
+if [[ ${3:-} == --quick ]]; then
+    profile=quick
+    trials=1
+    warmup=10
+    requests=50
+fi
 benchmark_host=http://127.0.0.1
 scratch=$(mktemp -d)
 trap 'rm -rf "$scratch"' EXIT
@@ -64,6 +74,18 @@ php -r '
 ' "$expected_opcache" "$scratch"
 
 fetch_json "$classic_url/orders/per-row" "$scratch/orders.json"
+php -r '
+    $orders = json_decode(file_get_contents($argv[1]), true, 512, JSON_THROW_ON_ERROR);
+    $expected = array_map(
+        static fn (int $id): array => ["id" => $id, "customer" => "Customer $id"],
+        range(1, 40),
+    );
+
+    if ($orders !== $expected) {
+        fwrite(STDERR, "Order response does not match the 40 seeded orders. Check the benchmark database.\n");
+        exit(1);
+    }
+' "$scratch/orders.json"
 printf '{"ok":true}' > "$scratch/ping.json"
 for url in "$classic_url" "$worker_url"; do
     fetch_json "$url/ping" "$scratch/response.json"
@@ -89,6 +111,8 @@ cp composer.json composer.lock "$results_dir/"
     php --version
     composer --version
     ab -V
+    printf 'Profile: %s, trials: %s, warm-up: %s, requests: %s, concurrency: %s\n' \
+        "$profile" "$trials" "$warmup" "$requests" "$concurrency"
     printf 'classic runtime  '
     cat "$scratch/classic.json"
     printf '\nworker runtime   '
@@ -120,7 +144,7 @@ run_requests() {
 }
 
 printf 'trial\tmode\tendpoint\trequests/s\tp50 ms\tp95 ms\n' | tee "$results_dir/summary.tsv"
-for trial in 1 2 3; do
+for ((trial = 1; trial <= trials; trial++)); do
     modes=(classic worker)
     if (( trial % 2 == 0 )); then
         modes=(worker classic)
@@ -135,7 +159,7 @@ for trial in 1 2 3; do
         for path in ping orders/per-row orders/join; do
             url="$base_url/$path"
             printf 'Trial %s, %s, %s\n' "$trial" "$mode" "$path" >&2
-            run_requests 200 "$url" "trial $trial $mode $path warm-up"
+            run_requests "$warmup" "$url" "trial $trial $mode $path warm-up"
             run_requests "$requests" "$url" "trial $trial $mode $path measurement"
 
             awk -v trial="$trial" -v mode="$mode" -v path="$path" '
