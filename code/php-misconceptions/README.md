@@ -15,6 +15,7 @@ Run the standalone examples from the Code with PHP repository root using PHP 8.6
 | `php code/php-misconceptions/scaling-capacity.php` | The worker-only ceiling is 240.0 requests/s. With 19 database connections available to web, an equal cap of six workers per instance gives a modelled ceiling of 180.0 requests/s. |
 | `php code/php-misconceptions/fibers.php` | The caller runs between the two parts of the Fiber. Add `--blocking` to see the caller wait until the blocking work returns and the Fiber suspends. |
 | `php code/php-misconceptions/quirks.php` | A match can occur at offset zero, and reindexing a sparse array changes its JSON representation. |
+| `php code/php-misconceptions/catalog-filter.php` | The report returns two matching enabled entries as a JSON list. Pass `lar 0` to include the disabled match too. |
 | `php -d error_reporting=E_ALL -d display_errors=stderr -d log_errors=0 code/php-misconceptions/legacy-order-label.php` | PHP 8.5 prints `paid` and reports a dynamic-property deprecation. The upgrade chapter rehearses the fix. |
 
 The four Chapter 1 scripts also run on PHP 8.2 or later.
