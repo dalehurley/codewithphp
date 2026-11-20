@@ -35,3 +35,5 @@ The `laravel/` directory contains files to copy into a fresh Laravel 13 app.
 The [Chapter 8 invoice lab](../../src/content/docs/series/php-misconceptions/chapters/08-php-security.md) copies the `invoice-lab/` fixture into a fresh Laravel 13 app and tests private invoice access with in-memory SQLite.
 
 The [Chapter 10 supplier lab](../../src/content/docs/series/php-misconceptions/chapters/10-php-concurrency.md) compares serial and pooled requests to two loopback PHP servers and checks what happens when one supplier fails.
+
+The [Chapter 13 upgrade lab](../../src/content/docs/series/php-misconceptions/chapters/13-upgrading-legacy-php.md) uses `legacy-upgrade/composer.json` to demonstrate a PHP constraint and its resolution with offline package metadata.

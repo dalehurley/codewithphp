@@ -1,0 +1,40 @@
+{
+    "name": "codewithphp/legacy-upgrade-lab",
+    "description": "Offline example of a dependency blocking a PHP upgrade",
+    "type": "project",
+    "repositories": [
+        {
+            "type": "package",
+            "package": [
+                {
+                    "name": "codewithphp/example-order-export",
+                    "version": "1.0.0",
+                    "type": "metapackage",
+                    "require": {
+                        "php": ">=8.2 <8.6"
+                    }
+                },
+                {
+                    "name": "codewithphp/example-order-export",
+                    "version": "2.0.0",
+                    "type": "metapackage",
+                    "require": {
+                        "php": "^8.2"
+                    }
+                }
+            ]
+        },
+        {
+            "packagist.org": false
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "codewithphp/example-order-export": "1.0.0"
+    },
+    "config": {
+        "platform": {
+            "php": "8.5.0"
+        }
+    }
+}
