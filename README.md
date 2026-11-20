@@ -41,7 +41,7 @@ npm install
 # Start development server (http://localhost:4321)
 npm run dev
 
-# Build for production
+# Build for production (runs astro check, then astro build)
 npm run build
 
 # Preview production build
