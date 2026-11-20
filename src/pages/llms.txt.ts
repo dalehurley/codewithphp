@@ -26,6 +26,7 @@ export const GET: APIRoute = async ({ site }) => {
     '## Start here',
     '',
     '- [All PHP courses](' + new URL('/series/', site).href + ')',
+    '- [PHP resources](' + new URL('/resources/', site).href + ')',
     '- [Repository and sample code](https://github.com/dalehurley/codewithphp)'
   ];
 

@@ -1,0 +1,51 @@
+---
+interface Props {
+  lesson?: { href: string; title: string };
+}
+
+const { lesson } = Astro.props;
+---
+
+{lesson ? (
+  <span hidden data-save-lesson data-lesson-href={lesson.href} data-lesson-title={lesson.title}></span>
+) : (
+  <p class="resume-lesson" data-resume-lesson hidden>
+    Pick up where you left off with <a class="studio-text-link"></a>.
+  </p>
+)}
+
+<script>
+  const key = 'codewithphp:last-lesson';
+  const safeLessonPath = /^\/series\/[a-z0-9-]+\/chapters\/[a-z0-9-]+\/$/;
+  const lesson = document.querySelector<HTMLElement>('[data-save-lesson]');
+  const resume = document.querySelector<HTMLElement>('[data-resume-lesson]');
+  const link = resume?.querySelector('a');
+
+  try {
+    if (lesson?.dataset.lessonHref && lesson.dataset.lessonTitle) {
+      const { lessonHref: href, lessonTitle: title } = lesson.dataset;
+      localStorage.setItem(key, JSON.stringify({ href, title }));
+    }
+
+    const saved = JSON.parse(localStorage.getItem(key) ?? 'null');
+    if (resume && link && typeof saved?.href === 'string' && safeLessonPath.test(saved.href) &&
+      typeof saved.title === 'string' && saved.title.trim()) {
+      link.href = saved.href;
+      link.textContent = saved.title;
+      resume.hidden = false;
+    }
+  } catch {
+    // A blocked storage API or an old value should leave the regular course links available.
+  }
+</script>
+
+<style>
+  .resume-lesson {
+    margin-block-start: 1rem;
+    overflow-wrap: anywhere;
+  }
+
+  .resume-lesson a {
+    display: inline;
+  }
+</style>

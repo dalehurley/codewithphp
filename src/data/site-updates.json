@@ -1,0 +1,52 @@
+[
+  {
+    "date": "2026-11-20",
+    "entries": [
+      {
+        "path": "/resources/",
+        "title": "Explore the free PHP resource library",
+        "description": "Find skill guides, runnable examples, a printable reference, and teaching materials in one place."
+      },
+      {
+        "path": "/practice/debugging-challenges/",
+        "title": "Practise fixing four PHP errors",
+        "description": "Download small broken examples, hints, and worked solutions for offline practice."
+      },
+      {
+        "path": "/teach/sqlite-workshop/",
+        "title": "Teach a 45-minute PHP and SQLite workshop",
+        "description": "Use the reading-list starter with a timed lesson plan and two exercises."
+      },
+      {
+        "path": "/series/php-misconceptions/chapters/01-php-types/",
+        "title": "See strict typing in a 20-second PHP example",
+        "description": "Predict what PHP does with a numeric string, then compare the output in both modes."
+      },
+      {
+        "path": "/start-here/",
+        "title": "Find your first PHP lesson",
+        "description": "Choose a practical first exercise for new programmers, language switchers, or returning PHP users."
+      },
+      {
+        "path": "/compare/",
+        "title": "Compare PHP with 20 languages and tools",
+        "description": "Run small examples and compare their output across PHP and languages such as JavaScript, Python, Rust, and TypeScript."
+      },
+      {
+        "path": "/series/php-basics/troubleshooting/",
+        "title": "Find a fix for common PHP errors",
+        "description": "Diagnose common installation, runtime, Composer, header, and SQLite problems by their error message."
+      },
+      {
+        "path": "/series/php-basics/sqlite-starter/",
+        "title": "Build a reading list with PHP and SQLite",
+        "description": "Download a small reading-list project that runs locally with PHP and PDO SQLite."
+      },
+      {
+        "path": "/series/php-basics/chapters/01-your-first-php-script/",
+        "title": "Run beginner examples in your browser",
+        "description": "Try the first script and four other PHP Basics examples without a local setup."
+      }
+    ]
+  }
+]

@@ -1,0 +1,45 @@
+---
+import DefaultFooter from '@astrojs/starlight/components/Footer.astro';
+import ResumeLesson from './ResumeLesson.astro';
+import { isHomepage, stripChapterNumber } from '../lib/seo';
+
+const { entry } = Astro.locals.starlightRoute;
+const isLesson = /^series\/[^/]+\/chapters\//.test(entry.slug);
+const printable = !isHomepage(entry.slug) && entry.slug !== 'series' && entry.slug !== '404';
+const href = '/' + entry.slug + '/';
+const title = stripChapterNumber(entry.data.title);
+const issueUrl = new URL('https://github.com/dalehurley/codewithphp/issues/new');
+
+if (isLesson) {
+  const page = new URL(href, Astro.site);
+  issueUrl.searchParams.set('title', 'Example problem in ' + title);
+  issueUrl.searchParams.set('body', [
+    'Lesson: ' + page.href,
+    '',
+    'PHP version (`php -v`):',
+    'Operating system:',
+    'Command or example:',
+    'Expected result:',
+    'Actual output or exact error (remove private details):',
+    '',
+  ].join('\n'));
+}
+---
+
+{printable && <span hidden data-print-doc></span>}
+{isLesson && (
+  <>
+    <ResumeLesson lesson={{ href, title }} />
+    <p class="lesson-feedback print:hidden">
+      <a href={issueUrl}>Report a problem with this example</a>
+    </p>
+  </>
+)}
+<DefaultFooter />
+
+<style>
+  .lesson-feedback {
+    margin-block-start: 2rem;
+    font-size: var(--sl-text-sm);
+  }
+</style>

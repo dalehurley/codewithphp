@@ -37,6 +37,10 @@ If you've made it this far, you have accomplished something incredible. You have
 
 You now have a rock-solid foundation in PHP 8.6 and modern development practices. The journey doesn't end here, but you are more than equipped for the next stage. This final chapter will serve as a roadmap, suggesting key areas to explore as you continue to grow as a PHP developer.
 
+## Pick a project to finish
+
+Choose a small feature you can show working. [Next PHP projects](/teach/next-php-projects/) gives you one first task and an observable finish line for extending the blog, rebuilding a feature in Laravel, or adding automated tests.
+
 ## Choosing Your Path: Framework Mastery
 
 You've had a taste of Laravel and Symfony—now it's time to pick one and go deep. Don't worry about making the "wrong" choice; both are excellent, and the skills transfer. The best choice is the one that excites you enough to keep building.

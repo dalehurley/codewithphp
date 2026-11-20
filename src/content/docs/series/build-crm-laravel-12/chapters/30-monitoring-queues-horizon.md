@@ -43,6 +43,10 @@ Expect Horizon's status to be running. The command returns a file path and a Hor
 
 If the job stays pending, confirm that the worker and the dispatcher share the same Redis connection settings, queue name and environment. Jobs left on the database connection are still processed by a database worker. When testing a configuration change, restart Horizon gracefully with `php artisan horizon:terminate` and then start it again.
 
+## Finish the lab
+
+Use the [API and queue finish-line checklist](/teach/project-checklists/#laravel-crm-api-and-queue-lab) to check the HTTP, export, and worker results. Then [try a CRM extension](/teach/next-php-projects/#go-further-with-the-crm) using your local demo data.
+
 ## Operate Horizon safely
 
 The local dashboard is intended for a loopback lab. For a deployed app, use the `viewHorizon` gate to restrict dashboard access to authorised operators and supervise the Horizon process so it restarts after a deploy. Schedule `horizon:snapshot` to populate historical metrics, and keep the job and worker timeout lower than the Redis connection's `retry_after` value. [Laravel 12 Horizon documentation](https://laravel.com/framework/docs/12.x/horizon)

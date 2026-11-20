@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>PHP Array Reference · Code with PHP</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font: 16px/1.5 system-ui, sans-serif;
+      color: #19213b;
+      background: #fff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    main {
+      max-width: 46rem;
+      margin-inline: auto;
+      padding: 2.5rem 1.25rem;
+    }
+
+    h1, h2, p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 6vw, 3.1rem);
+      letter-spacing: -0.035em;
+      line-height: 1.1;
+      margin-block: .5rem;
+    }
+
+    h2 {
+      font-size: 1.08rem;
+      margin-block-end: .35rem;
+    }
+
+    header {
+      border-block-start: 4px solid #374993;
+      padding-block-start: 1rem;
+      margin-block-end: 1.35rem;
+    }
+
+    header a, footer a {
+      color: inherit;
+      text-underline-offset: .18em;
+    }
+
+    .notice {
+      margin-top: .35rem;
+    }
+
+    .examples {
+      border-block-start: 1px solid #aab1c5;
+    }
+
+    .operation {
+      display: grid;
+      grid-template-columns: minmax(6rem, 1fr) minmax(0, 2.8fr);
+      align-items: baseline;
+      gap: .2rem 1rem;
+      padding-block: .5rem;
+      border-block-end: 1px solid #aab1c5;
+    }
+
+    .operation dt {
+      font-weight: 700;
+    }
+
+    .operation dd {
+      min-width: 0;
+      margin: 0;
+    }
+
+    code {
+      font-family: ui-monospace, monospace;
+      font-size: .93em;
+      overflow-wrap: anywhere;
+    }
+
+    pre {
+      margin-block: 0 .85rem;
+      padding: .6rem .8rem;
+      border-inline-start: 2px solid #374993;
+      background: #f3f5fa;
+      white-space: pre-wrap;
+    }
+
+    footer {
+      margin-block-start: 1rem;
+      font-size: .9em;
+    }
+
+    @media (max-width: 31rem) {
+      .operation {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @page {
+      margin: 13mm;
+    }
+
+    @media print {
+      :root {
+        color: #000;
+        font-size: 10.5pt;
+      }
+
+      body, main {
+        margin: 0;
+        max-width: none;
+        padding: 0;
+      }
+
+      header {
+        margin-block-end: 1rem;
+      }
+
+      h1 {
+        font-size: 27pt;
+      }
+
+      .notice {
+        display: none;
+      }
+
+      .operation {
+        break-inside: avoid;
+      }
+
+      footer a {
+        text-decoration: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <a href="https://codewithphp.com/">Code with PHP</a>
+      <h1>PHP Array Reference</h1>
+      <p>Core operations for lists and arrays with named keys.</p>
+      <p class="notice">Print this sheet or save it as a PDF using your browser's print menu.</p>
+    </header>
+
+    <h2>Start with a list and a row</h2>
+    <pre><code>$tags = ['php', 'sqlite'];
+$book = ['title' =&gt; 'Moon Atlas', 'pages' =&gt; 144];
+$books = [$book];</code></pre>
+
+    <h2>Common operations</h2>
+    <dl class="examples">
+      <div class="operation">
+        <dt>Read a value</dt>
+        <dd><code>$book['title']</code> reads the title. Use <code>$book['subtitle'] ?? ''</code> for a fallback when a key is missing or null.</dd>
+      </div>
+      <div class="operation">
+        <dt>Append to a list</dt>
+        <dd><code>$tags[] = 'pdo';</code> adds a value at the next integer key.</dd>
+      </div>
+      <div class="operation">
+        <dt>Check for a key</dt>
+        <dd><code>array_key_exists('pages', $book)</code> checks for the key even if its value is null. <code>isset($book['pages'])</code> also requires a non-null value.</dd>
+      </div>
+      <div class="operation">
+        <dt>Check for a value</dt>
+        <dd><code>in_array('php', $tags, true)</code> checks for the value with the same type.</dd>
+      </div>
+      <div class="operation">
+        <dt>Map values</dt>
+        <dd><code>array_map('strtoupper', $tags)</code> returns a transformed array. Passing a single input array preserves its keys.</dd>
+      </div>
+      <div class="operation">
+        <dt>Filter a list</dt>
+        <dd><code>$filtered = array_filter($tags, fn ($tag) =&gt; $tag !== 'php')</code> keeps matching values and their original keys.</dd>
+      </div>
+      <div class="operation">
+        <dt>Reindex a list</dt>
+        <dd><code>array_values($filtered)</code> resets indexes from zero. Use it before encoding a filtered list as a JSON array.</dd>
+      </div>
+      <div class="operation">
+        <dt>Extract a column</dt>
+        <dd><code>array_column($books, 'title')</code> returns <code>['Moon Atlas']</code>.</dd>
+      </div>
+      <div class="operation">
+        <dt>Sort by value</dt>
+        <dd><code>sort($tags)</code> changes the original array and reindexes it. <code>asort($tags)</code> changes the original and preserves its keys.</dd>
+      </div>
+    </dl>
+    <footer>
+      More examples and source at <a href="https://codewithphp.com/practice/php-array-reference/">codewithphp.com/practice/php-array-reference/</a>
+    </footer>
+  </main>
+</body>
+</html>

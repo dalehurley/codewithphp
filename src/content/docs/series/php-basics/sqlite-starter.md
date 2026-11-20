@@ -63,4 +63,10 @@ The `-t public` option makes `public/` the document root. The database stays in 
 
 Titles are escaped when PHP renders them. Try a title containing `&` or quotes and check that it appears as typed.
 
+## Use the starter in a lesson
+
+- [Trace the requests in your browser](/teach/php-request-lifecycle/) to see the POST, redirect, and follow-up GET.
+- [Teach the app in 45 minutes](/teach/sqlite-workshop/) with a timed plan, exercises, and solutions.
+- [Check your finished reading list](/teach/project-checklists/#php-and-sqlite-reading-list) before extending the app.
+
 When the starter is working, try adding an author field to the form and database. The [PDO lesson](/series/php-basics/chapters/14-interacting-with-databases-using-pdo/) explains the SQL calls, and the [sessions and cookies lesson](/series/php-basics/chapters/15-managing-state-with-sessions-and-cookies/) shows where the form token is stored. [Browse the starter source](https://github.com/dalehurley/codewithphp/tree/main/code/php-sqlite-starter)

@@ -1,0 +1,89 @@
+@media print {
+  html:has([data-print-doc]) {
+    color-scheme: light;
+    background: white;
+    color: black;
+    --sl-color-text: #000;
+    --sl-color-white: #000;
+    --sl-color-text-accent: #000;
+    --sl-color-bg: #fff;
+    --sl-color-bg-inline-code: #eee;
+    --sl-color-gray-2: #303030;
+    --sl-color-gray-3: #303030;
+  }
+
+  body:has([data-print-doc]) :is(
+    .page > header, .sidebar, .right-sidebar-container, starlight-toc, mobile-starlight-toc,
+    .skip-link, footer, .lesson-feedback, .learning-masthead__back, .learning-masthead__actions,
+    .learning-masthead__main > img, .studio-checker, .chapter-picker, .expressive-code .copy
+  ) {
+    display: none !important;
+  }
+
+  body:has([data-print-doc]) :is(.main-frame, .main-pane, .content-panel, .sl-container) {
+    display: block;
+    width: auto !important;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  body:has([data-print-doc]) .sl-markdown-content {
+    font-size: 10.5pt;
+    line-height: 1.4;
+  }
+
+  body:has([data-print-doc]) :is(.learning-masthead, .learning-masthead__main) {
+    display: block;
+    margin: 0 0 0.5rem;
+    padding: 0;
+    background: white;
+    color: black;
+  }
+
+  body:has([data-print-doc]) main :is(h1, h2, h3, h4, h5) {
+    color: #000;
+    break-after: avoid-page;
+  }
+
+  body:has([data-print-doc]) main h1 {
+    font-size: 22pt;
+  }
+
+  body:has([data-print-doc]) main :is(p, li) {
+    orphans: 2;
+    widows: 2;
+  }
+
+  body:has([data-print-doc]) .sl-markdown-content a {
+    color: #000;
+    text-decoration: underline;
+  }
+
+  body:has([data-print-doc]) .sl-markdown-content img {
+    max-height: 8cm;
+    object-fit: contain;
+    break-inside: avoid-page;
+  }
+
+  body:has([data-print-doc]) .sl-markdown-content :is(pre, .expressive-code pre, .expressive-code .code) {
+    height: auto;
+    max-height: none;
+    overflow: visible;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    background: #f4f4f4;
+    color: #000;
+  }
+
+  body:has([data-print-doc]) .expressive-code :is(.code span, .header, figcaption) {
+    background: transparent;
+    color: #000 !important;
+  }
+
+  body:has([data-print-doc]) .sl-markdown-content :is(table, pre, .expressive-code) {
+    max-width: 100%;
+    font-size: 9pt;
+  }
+}

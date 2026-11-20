@@ -9,7 +9,7 @@ import { catalogueTracks } from '../../lib/course-catalogue';
   <div class="studio-wrap catalogue-masthead">
     <div>
       <h1 id="_top" tabindex="-1">Find your next <span>PHP project.</span></h1>
-      <p><a href="/start-here/">Find your first lesson</a> or browse the courses and projects below.</p>
+      <p><a href="/start-here/">Find your first lesson</a>, browse the courses below, or explore the <a href="/resources/">free PHP resources</a>.</p>
       <nav class="catalogue-masthead__links" aria-label="Learning tracks">
         {catalogueTracks.map(({ id, title }) => (
           <a class="studio-text-link" href={'#' + id}>{title} <Icon name="right-arrow" /></a>

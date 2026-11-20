@@ -1,0 +1,66 @@
+[
+    {
+        "id": 1,
+        "title": "Stars, Maps, and Tides",
+        "category": "science",
+        "pages": 144,
+        "status": "finished",
+        "finished_on": "2026-06-03"
+    },
+    {
+        "id": 2,
+        "title": "Café at Low Tide",
+        "category": "fiction",
+        "pages": 208,
+        "status": "finished",
+        "finished_on": "2026-06-11"
+    },
+    {
+        "id": 3,
+        "title": "The Orchard Clock",
+        "category": "fiction",
+        "pages": 176,
+        "status": "reading",
+        "finished_on": null
+    },
+    {
+        "id": 4,
+        "title": "Field Notes from an Island",
+        "category": "science",
+        "pages": 96,
+        "status": "queued",
+        "finished_on": null
+    },
+    {
+        "id": 5,
+        "title": "Kitchen by the Coast",
+        "category": "cooking",
+        "pages": 128,
+        "status": "finished",
+        "finished_on": "2026-06-07"
+    },
+    {
+        "id": 6,
+        "title": "Bread for Rainy Days",
+        "category": "cooking",
+        "pages": 112,
+        "status": "reading",
+        "finished_on": null
+    },
+    {
+        "id": 7,
+        "title": "A Bridge Made of Paper",
+        "category": "fiction",
+        "pages": 240,
+        "status": "queued",
+        "finished_on": null
+    },
+    {
+        "id": 8,
+        "title": "Rocks After Rain",
+        "category": "science",
+        "pages": 160,
+        "status": "finished",
+        "finished_on": "2026-06-15"
+    }
+]

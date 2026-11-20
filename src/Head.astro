@@ -99,6 +99,7 @@ const nativeHead = head.filter(({ tag, attrs }) => {
   <Tag {...attrs} set:html={content} />
 ))}
 <meta name="robots" content={robotsContent} />
+{isIndexable && <link rel="alternate" type="application/rss+xml" title="Code with PHP updates" href="/rss.xml" />}
 
 {isIndexable && hasMarkdownAlternate(entry) && (
   <link rel="alternate" type="text/markdown" title="Markdown version" href={markdownPathFor(canonical.pathname)} />

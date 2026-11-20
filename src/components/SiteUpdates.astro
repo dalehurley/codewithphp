@@ -1,0 +1,14 @@
+---
+import updates from '../data/site-updates.json';
+---
+
+{updates.map(({ date, entries }) => (
+  <section>
+    <h2><time datetime={date}>{new Date(date).toLocaleDateString('en-AU', { dateStyle: 'long', timeZone: 'UTC' })}</time></h2>
+    <ul>
+      {entries.map(({ path, title, description }) => (
+        <li><a href={path}>{title}</a>. {description}</li>
+      ))}
+    </ul>
+  </section>
+))}
