@@ -16,6 +16,8 @@ Run the standalone examples from the Code with PHP repository root using PHP 8.6
 
 The four Chapter 1 scripts also run on PHP 8.2 or later.
 
+The [Chapter 2 performance lab](https://codewithphp.com/series/php-misconceptions/chapters/02-php-performance/) serves `performance/index.php` on loopback with PHP 8.5 or later. It demonstrates opcode cache hits and measures a simulated dependency wait.
+
 The `laravel/` directory contains files to copy into a fresh Laravel 13 app.
 
 - The [Laravel performance lab](../../src/content/docs/series/php-misconceptions/chapters/03-laravel-performance.md) provides the setup, test and benchmark commands. The Caddyfile serves the two HTTP modes on loopback only. The [saved results](laravel/results/) include the TSV summaries, ApacheBench reports and dependency files.
