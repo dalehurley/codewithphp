@@ -2,13 +2,20 @@
 
 declare(strict_types=1);
 
-$items = [
-    ['sku' => 'PHP-101', 'stock' => 12],
-    ['sku' => 'PHP-102', 'stock' => 0],
-];
-
 if (PHP_SAPI !== 'cli') {
-    header('Content-Type: application/json; charset=utf-8');
+    require __DIR__ . '/inventory/public/inventory.php';
+
+    return;
 }
 
-echo json_encode(['items' => $items], JSON_THROW_ON_ERROR), PHP_EOL;
+require __DIR__ . '/inventory/report.php';
+
+$options = array_slice($argv, 1);
+
+if ($options !== [] && $options !== ['--in-stock']) {
+    fwrite(STDERR, 'Usage: php inventory.php [--in-stock]' . PHP_EOL);
+    exit(1);
+}
+
+$report = inventoryReport(inventoryRows(), $options === ['--in-stock']);
+echo json_encode($report, JSON_THROW_ON_ERROR), PHP_EOL;
