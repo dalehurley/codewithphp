@@ -9,12 +9,15 @@ Run the standalone examples from the Code with PHP repository root using PHP 8.6
 | `php code/php-misconceptions/quantity-list.php` | The array is accepted, then its string element triggers a `TypeError` in the pricing loop. [Chapter 1](https://codewithphp.com/series/php-misconceptions/chapters/01-php-types/) shows how PHPStan catches the problem before execution. |
 | `php code/php-misconceptions/validate-quantity.php 3` | The raw input passes validation and the typed call prints 3750. |
 | `php code/php-misconceptions/modern-php.php` | The computed order label changes from pending to paid. |
+| `php code/php-misconceptions/order-status-input.php paid` | The script converts the raw string to an enum case and prints the order label. Unknown states exit with status 1. |
 | `php code/php-misconceptions/inventory.php` | The JSON report contains two inventory items. |
 | `php code/php-misconceptions/fibers.php` | The caller runs between the two parts of the Fiber. |
 | `php code/php-misconceptions/quirks.php` | A match can occur at offset zero, and reindexing a sparse array changes its JSON representation. |
 | `php -d error_reporting=E_ALL -d display_errors=stderr -d log_errors=0 code/php-misconceptions/legacy-order-label.php` | PHP 8.5 prints `paid` and reports a dynamic-property deprecation. The upgrade chapter rehearses the fix. |
 
 The four Chapter 1 scripts also run on PHP 8.2 or later.
+
+The Chapter 5 order examples also run on PHP 8.4 or later.
 
 The [Chapter 2 performance lab](https://codewithphp.com/series/php-misconceptions/chapters/02-php-performance/) serves `performance/index.php` on loopback with PHP 8.5 or later. It demonstrates opcode cache hits and measures a simulated dependency wait.
 
