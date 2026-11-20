@@ -2,35 +2,31 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
 use ClaudePHP\SDK\SDKWrapper;
-use Dotenv\Dotenv;
 
-$dotenv = Dotenv::createImmutable(__DIR__ . '/..');
-$dotenv->load();
+$config = require __DIR__ . '/../bootstrap.php';
+$client = new SDKWrapper($config['apiKey']);
 
-echo "Official SDK - Advanced Usage\n\n";
-
-$sdk = new SDKWrapper($_ENV['ANTHROPIC_API_KEY']);
-
-// Add logging middleware
-$sdk->addMiddleware(function($type, $data) {
-    if ($type === 'request') {
-        echo "→ Request: " . $data['messages'][0]['content'] . "\n";
-    } elseif ($type === 'response') {
-        echo "← Response: " . substr($data['content'][0]['text'], 0, 100) . "...\n";
+$client->addMiddleware(static function (string $phase, array $data): array {
+    if ($phase === 'request') {
+        printf("Request model: %s\n", $data['model']);
+    } else {
+        printf("Response ID: %s\n", $data['id']);
     }
+
     return $data;
 });
 
-$result = $sdk->sendMessage([
-    'model' => 'claude-sonnet-4-5',
-    'max_tokens' => 1024,
+$result = $client->sendMessage([
+    'model' => $config['model'],
+    'max_tokens' => 256,
     'messages' => [
         ['role' => 'user', 'content' => 'What is the capital of France?'],
     ],
 ]);
 
-echo "\nFull response:\n";
-echo $result['content'][0]['text'] . "\n";
+foreach ($result['content'] as $block) {
+    if ($block['type'] === 'text') {
+        echo $block['text'] . PHP_EOL;
+    }
+}

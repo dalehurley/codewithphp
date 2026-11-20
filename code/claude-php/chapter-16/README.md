@@ -1,24 +1,29 @@
-# Chapter 16: Official PHP SDK
+# Chapter 16: The Claude PHP SDK
 
-Advanced usage patterns for the official Anthropic PHP SDK including middleware, custom transports, and comprehensive testing.
+Stream text with the community SDK and test a Guzzle request wrapper with a mocked Claude response.
 
-## Examples
+## Quick Start
 
-1. **sdk-advanced.php** - Advanced SDK features
-2. **middleware.php** - Request/response middleware
-3. **custom-transport.php** - Custom HTTP transport
-4. **testing.php** - Testing strategies
-
-## Installation
+Use PHP 8.6 and Composer. Run these commands from this directory.
 
 ```bash
 composer install
-cp .env.example .env
+php examples/custom-transport.php
+php examples/testing.php
 ```
-## 📚 Resources
 
-- **[Official Anthropic Documentation](https://docs.anthropic.com/)** — Complete API reference
-- **[Official PHP SDK on GitHub](https://github.com/anthropics/anthropic-sdk-php)** — Anthropic's official PHP implementation
-- **[Claude-PHP-SDK](https://github.com/claude-php/Claude-PHP-SDK)** — Community resources and examples
-- **[PHP SDK on Packagist](https://packagist.org/packages/claude-php/claude-php-sdk)** — Composer package
-- **[Community Discord](https://discord.gg/anthropic)** — Get help and discuss
+The mock examples run without an API key. To run the live examples, copy `.env.example` to `.env` and set `ANTHROPIC_API_KEY`. Override `ANTHROPIC_MODEL` if needed.
+
+```bash
+php examples/stream.php
+php examples/sdk-advanced.php
+php examples/middleware.php
+```
+
+- `stream.php` consumes text deltas from the community SDK.
+- `sdk-advanced.php` logs the model and response ID with Guzzle middleware.
+- `middleware.php` adds up input and output token counts across two requests.
+- `custom-transport.php` injects a Guzzle client backed by a mock response.
+- `testing.php` checks the actual wrapper’s request, middleware calls, and decoded response.
+
+[Read the chapter](https://codewithphp.com/series/claude-php-developers/chapters/16-claude-php-sdk/) · [Community SDK](https://github.com/claude-php/Claude-PHP-SDK) · [Anthropic’s official PHP SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/php)
