@@ -763,7 +763,7 @@ Now that you understand code quality tools, let's explore build tools and compil
 
 ## Resources
 
-- [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer)
+- [PHP_CodeSniffer](https://github.com/PHPCSStandards/PHP_CodeSniffer)
 - [PHP-CS-Fixer](https://cs.symfony.com/)
 - [Laravel Pint](https://laravel.com/docs/pint)
 - [PHPStan](https://phpstan.org/)
