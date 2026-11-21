@@ -8,21 +8,44 @@ sidebar:
   order: 10
 ---
 
-## Overview
+<a id="overview"></a>
 
-A checkout needs two supplier prices before it can show a combined quote. The customer can finish checkout without waiting for a receipt to be sent. At the same time, other customers are hitting the app. Each of these tasks has a different place to run.
+## What the checkout waits for
 
-| Work | Where it runs | What the customer waits for |
-| --- | --- | --- |
-| Serve several customers at once | Separate web slots, such as PHP-FPM child processes | A slot and that customer’s own request. |
-| Get the two prices for one quote | Overlapping network calls made by a client inside the request | Both results or the request deadlines. |
-| Send the receipt | A separate queue worker after the order commits | Checkout and job submission. The receipt can arrive later. |
+Alex clicks **Get quote**. Checkout needs prices from North and South before it can show the total. While Alex waits, Sam opens checkout too. Can PHP overlap the two supplier calls and serve Sam at the same time?
 
-The number of web slots limits how many PHP-FPM requests are active. An HTTP client can overlap independent waits inside one slot. CPU-heavy PHP work needs a separate execution resource if it must run in parallel. [PHP-FPM](https://www.php.net/manual/en/install.fpm.php) · [Web slots and shared capacity](/series/php-misconceptions/chapters/09-scaling-php/) · [Laravel HTTP client concurrency](https://laravel.com/docs/13.x/http-client#concurrent-requests)
+Yes. An HTTP client can overlap the supplier waits within Alex’s request, and PHP-FPM can serve Sam’s request in another child process. Think of each child as one web request slot. Suppose both supplier calls start together and Sam arrives 100 ms later. With one child, Sam still waits until the child finishes Alex’s request. With a second child free, Sam’s request can start immediately. PHP-FPM’s `pm.max_children` caps those slots in a pool. [PHP-FPM configuration](https://www.php.net/manual/en/install.fpm.configuration.php) · [Web slots and shared capacity](/series/php-misconceptions/chapters/09-scaling-php/) · [Laravel HTTP client concurrency](https://laravel.com/docs/13.x/http-client#concurrent-requests)
+
+The quote stays in the response because Alex needs both prices to decide whether to buy. If Alex places the order, checkout can confirm it while a separate queue worker handles delivery of the receipt. To see what can overlap within one PHP process, start by tracing who has control.
+
+## Set up the examples
+
+Open a terminal at the root of a local [Code with PHP checkout](https://github.com/dalehurley/codewithphp). The series targets PHP 8.6. Use PHP 8.5 for this chapter’s walkthrough, which was verified on PHP 8.5.0 with Laravel 13.43.0. The Fiber script requires PHP 8.1 or later. Laravel 13 lists support for PHP 8.3 through 8.5. [PHP Fibers](https://www.php.net/manual/en/language.fibers.php) · [Laravel support policy](https://laravel.com/docs/13.x/releases#support-policy)
+
+For the supplier lab, use Bash or Zsh, Composer 2 and PHP with cURL, PDO SQLite and Laravel’s required extensions. The setup installs a disposable Laravel app and uses SQLite for its default migrations. Check the PHP CLI and extensions before creating the app. [Laravel server requirements](https://laravel.com/docs/13.x/deployment#server-requirements)
+
+```bash
+php -v
+composer --version
+php --ri curl
+php --ri pdo_sqlite
+```
 
 ## Trace a Fiber
 
-From the checkout root, use the series baseline PHP 8.6. The examples were checked on PHP 8.5.0. PHP introduced Fibers in 8.1. [Fiber example source](https://github.com/dalehurley/codewithphp/blob/main/code/php-misconceptions/fibers.php) · [PHP Fibers](https://www.php.net/manual/en/language.fibers.php)
+A Fiber can pause its current call stack and resume from the same point. In the basic run, the script hands control back and forth like this. [Fiber example source](https://github.com/dalehurley/codewithphp/blob/main/code/php-misconceptions/fibers.php) · [PHP Fibers](https://www.php.net/manual/en/language.fibers.php)
+
+```php
+$fiber = new Fiber(static function (): void {
+    echo '1. Fiber starts its work', PHP_EOL;
+    Fiber::suspend();
+    echo '3. Fiber finishes its work', PHP_EOL;
+});
+
+$fiber->start();
+echo '2. Caller runs while the fiber is paused', PHP_EOL;
+$fiber->resume();
+```
 
 ```bash
 php code/php-misconceptions/fibers.php
@@ -46,11 +69,13 @@ Try the same script with a 200 ms blocking sleep inside the Fiber before it susp
 php code/php-misconceptions/fibers.php --blocking
 ```
 
-`Blocking call starts` and `Blocking call returns` both appear before line 2. The caller gets control only after the sleep returns and the Fiber suspends. An asynchronous library can pair a Fiber with an event loop and non-blocking I/O. The loop can run other ready work while a socket waits, then resume the task when its I/O can progress. [PHP Fibers](https://www.php.net/manual/en/language.fibers.php) · [ReactPHP event loop](https://reactphp.org/event-loop/)
+`Blocking call starts` and `Blocking call returns` both appear before line 2. The caller gets control only after the sleep returns and the Fiber suspends. A library can pair Fibers with non-blocking I/O and an event loop that checks which connections can make progress. It can then resume the relevant Fiber and let other ready work run between checks. CPU-heavy PHP work needs separate execution resources to run in parallel. [PHP Fibers](https://www.php.net/manual/en/language.fibers.php) · [ReactPHP event loop](https://reactphp.org/event-loop/)
+
+The supplier lab overlaps the network waits through Laravel’s HTTP client and its Guzzle cURL handler. The Fiber trace demonstrates the handoff explicitly. In the lab, the client manages the overlapping transfers and hands the results back to the command. [Laravel HTTP client concurrency](https://laravel.com/docs/13.x/http-client#concurrent-requests) · [Guzzle and cURL](https://docs.guzzlephp.org/en/stable/faq.html#can-guzzle-send-asynchronous-requests)
 
 ## Compare two supplier calls
 
-Use Bash or Zsh, a local [Code with PHP checkout](https://github.com/dalehurley/codewithphp), a current Composer 2 release, and PHP with cURL, PDO SQLite and Laravel’s other required extensions. cURL lets the client overlap the transfers. The fixture uses a disposable Laravel 13 app, two loopback servers and synthetic prices. [Laravel server requirements](https://laravel.com/docs/13.x/deployment#server-requirements) · [Supplier lab source](https://github.com/dalehurley/codewithphp/tree/main/code/php-misconceptions/concurrency)
+The lab measures the supplier calls for one quote from an Artisan command. It uses synthetic prices and two servers on the same machine. [Supplier lab source](https://github.com/dalehurley/codewithphp/tree/main/code/php-misconceptions/concurrency)
 
 Open two terminals at the checkout root. Run the first server in one terminal and the second server in the other. Each server handles one supplier so the default single-process development server can simulate an independent service. Keep both running while you make the comparisons.
 
@@ -62,7 +87,7 @@ php -S 127.0.0.1:8031 -t code/php-misconceptions/concurrency code/php-misconcept
 php -S 127.0.0.1:8032 -t code/php-misconceptions/concurrency code/php-misconceptions/concurrency/supplier.php
 ```
 
-North waits about 350 ms and returns 1,250 cents. South waits about 550 ms and returns 1,850 cents. If a port is occupied, use a free loopback port and match it in the copied `routes/supplier-quote.php` before running the command. [PHP development server](https://www.php.net/manual/en/features.commandline.webserver.php) · [Supplier stub](https://github.com/dalehurley/codewithphp/blob/main/code/php-misconceptions/concurrency/supplier.php)
+North waits about 350 ms and returns 1,250 cents. South waits about 550 ms and returns 1,850 cents. If either server reports that its address is in use, start that server on a free port on `127.0.0.1` and update the matching URL in the copied `routes/supplier-quote.php` after setup. [PHP development server](https://www.php.net/manual/en/features.commandline.webserver.php) · [Supplier stub](https://github.com/dalehurley/codewithphp/blob/main/code/php-misconceptions/concurrency/supplier.php)
 
 In a third terminal at the checkout root, set up the demo. The setup stops if a command fails and prints the disposable app path. Change into that directory for the remaining commands.
 
@@ -86,7 +111,19 @@ php artisan suppliers:quote pool
 
 Both print `north: 1250 cents`, `south: 1850 cents`, a `Pool elapsed` duration and `Combined quote: 3100 cents`. The console displays the suppliers by name in a fixed order. The arrival order of the responses can vary. [Quote command](https://github.com/dalehurley/codewithphp/blob/main/code/php-misconceptions/concurrency/supplier-quote.php)
 
-The command uses `Http::pool()` with `concurrency: 1` in serial mode and `concurrency: 2` in pool mode. The output times the request group with `hrtime()`. This includes starting and waiting for the requests and leaves out Artisan startup before the group. In the controlled lab, expect serial time near the sum of the mock waits and pooled time near the longer wait, plus overhead. Alternate modes and compare several runs on your machine. Production workloads add network, application and supplier limits. [Laravel request pooling](https://laravel.com/docs/13.x/http-client#request-pooling) · [PHP monotonic timer](https://www.php.net/manual/en/function.hrtime.php)
+Both modes run this same block from the quote command. The named requests let the command find each result by supplier.
+
+```php
+$results = Http::pool(static function (Pool $pool) use ($urls): void {
+    foreach ($urls as $supplier => $url) {
+        $pool->as($supplier)->acceptJson()->connectTimeout(1)->timeout(1)->get($url);
+    }
+}, concurrency: $mode === 'serial' ? 1 : 2);
+```
+
+With a limit of one, South starts after North settles. With a limit of two, both can be in flight together. PHP can inspect `$results` once the pool call returns. In a web checkout, Alex’s PHP-FPM child would still own the request for that entire wait. Because the calls are independent, overlapping them shortens the expected wait from roughly 900 ms to 550 ms, plus overhead. If South needed an ID from North’s response, the calls would have to run in sequence. [Laravel request pooling](https://laravel.com/docs/13.x/http-client#request-pooling)
+
+The output uses `hrtime()` to measure the request group, including starting the requests and waiting for them. Artisan startup and result processing fall outside that interval. Alternate modes and compare several runs on your machine. Production workloads add network, application and supplier limits. [PHP monotonic timer](https://www.php.net/manual/en/function.hrtime.php)
 
 In one loopback run on an Apple M3 Pro with macOS 26.6.2, PHP 8.5.0 with cURL and Laravel 13.43.0, the median was 927 ms serial and 566 ms pooled. Each median uses three trials with the same 350 ms and 550 ms mock waits. Both modes produced the same quote in every trial.
 
@@ -99,34 +136,42 @@ php artisan suppliers:quote pool --south=slow
 
 Each request has a one-second connection timeout and a one-second overall timeout. In the first command, South returns HTTP 503. In the second, its mock response takes about two seconds, so the client reports a connection or timeout failure. Both runs keep the North price, print `Quote incomplete. No combined total.` and exit with status 1. A response with unexpected price data also leaves the combined quote incomplete. [Laravel HTTP timeouts](https://laravel.com/docs/13.x/http-client#timeout)
 
-The timed-out stub can still be sleeping after the client gives up. Give it two seconds to finish before trying the same deadline in serial mode.
+After either `--south=slow` run, wait two seconds before running another quote command. The single-process South stub can still be sleeping after the client gives up, so a new request may wait behind it.
 
 ```bash
 php artisan suppliers:quote serial --south=slow
 ```
 
-Expect the same incomplete quote. In serial mode North uses about 350 ms before South starts its one-second wait, so the group takes around 1,350 ms plus overhead. In pool mode the group takes around one second plus overhead. Set an end-to-end deadline too when the full response has a time budget. Stop each server with Ctrl+C when done.
+Expect the same incomplete quote. In serial mode North uses about 350 ms before South starts its one-second wait, so the group takes around 1,350 ms plus overhead. In pool mode the group takes around one second plus overhead. Give South two seconds to finish before you run the exercise.
 
-Pool independent operations whose results must be ready for the response and set a concurrency limit the suppliers can handle. If the second call needs an ID from the first response, sequence the calls. Each call gets its own deadline, so the serial group can take longer than one call’s timeout. [Laravel HTTP client concurrency](https://laravel.com/docs/13.x/http-client#concurrent-requests)
+Suppose checkout has 800 ms for suppliers after reserving time to render the response. In sequence, North uses about 350 ms, leaving South about 450 ms for its usual 550 ms wait. With a pool of two, both suppliers start with roughly 800 ms available and their usual responses fit. To enforce that budget, set a deadline before the first call and calculate the time left when each transfer starts, including any wait for a pool slot. Cap the connection and overall transfer timeouts by that remainder. If time runs out, skip any call that has yet to start and show the combined quote as unavailable if a price is missing. The lab uses fixed per-call timeouts so you can observe the difference. [PHP monotonic timer](https://www.php.net/manual/en/function.hrtime.php) · [Laravel HTTP timeouts](https://laravel.com/docs/13.x/http-client#timeout)
 
 ## Put receipt delivery on a queue
 
-Save the order and a pending receipt record in the same database transaction. After commit, submit the receipt ID to an asynchronous queue serviced by a separate worker. If the application stops after committing and before dispatching, a scheduled sweep can submit the pending receipt later. Have the worker atomically claim the receipt and record that delivery is in progress before contacting the provider. That lets recovery distinguish a receipt awaiting dispatch from an interrupted send. The checkout can return without waiting for the delivery.
+Once both prices are available, Alex can accept the quote and place the order. Save the order and a pending receipt record in the same database transaction. After commit, submit the receipt ID to an asynchronous queue serviced by a separate worker. Checkout can confirm the order once the request’s work finishes, even if the worker has yet to pick up the job. [Laravel queue transactions](https://laravel.com/docs/13.x/queues#jobs-and-database-transactions)
 
-Use a unique delivery identity such as the order ID plus the receipt type. Test a worker that sends the receipt and stops before recording success. If the delivery service accepts an idempotency key, confirm that retrying with the same key records the result without sending another receipt. If it offers a delivery lookup, check the first attempt before trying again. If neither is available, mark the outcome for reconciliation and hold automatic resends until it is resolved. [Laravel queue transactions](https://laravel.com/docs/13.x/queues#jobs-and-database-transactions) · [Queue retries and shared capacity](/series/php-misconceptions/chapters/09-scaling-php/)
+If the app stops after committing and before dispatching, a scheduled sweep can submit the pending receipt later. The worker should atomically claim the receipt and record delivery as in progress before contacting the provider. An abandoned claim can mean the provider accepted the send before the worker recorded success.
+
+Give each receipt a stable delivery identity, such as the order ID plus the receipt type. If the provider accepts an idempotency key, retry with that same key so it can deduplicate the send. If the provider offers delivery lookup, check the first attempt and retry only if it confirms the receipt was unsent. Hold automatic resends while an uncertain outcome is being reconciled. [Queue retries and shared capacity](/series/php-misconceptions/chapters/09-scaling-php/)
 
 ## Exercise
 
-With the two servers running, compare serial and pooled durations and verify the combined value. Suppose a supplier contract permits just one active request from the entire app. Would setting `concurrency: 1` on each checkout’s pool meet that contract? What can the customer see if the page needs both prices and South times out? Which part can leave the response path?
+1. With both servers running, alternate serial and pool runs and compare the durations and totals. Using the stub delays, predict which mode can finish both calls within the hypothetical 800 ms budget.
+2. Suppose South permits one active request from the entire app. Would setting `concurrency: 1` on each checkout’s pool meet that contract?
+3. What can checkout display if South times out? Which work can finish after the order confirmation?
 
 <details>
 <summary>Check your reasoning</summary>
 
-The combined value is 3,100 cents either way. The pooled requests can overlap. A limit of one applies to each pool call. Several checkout requests can still reach the same supplier concurrently. A shared in-flight cap across requests and replicas addresses the one-active-request rule. A requests-per-second limit can still allow overlap. A client timeout may leave work running at the supplier, as it does in the slow stub. Check how the supplier signals completion before allowing a new request when the previous outcome is uncertain.
-
-Keep the North price available for display and mark the combined quote unavailable until you have both results. The receipt can use the queue after an order has committed. Verify a retry uses the same delivery identity even when the first attempt’s outcome was uncertain.
+1. Both modes return 3,100 cents when both prices arrive. Pooling can fit the two usual waits into about 550 ms plus overhead. The roughly 900 ms serial wait would exceed the hypothetical budget.
+2. The limit applies to each pool call. Several checkouts can still reach South concurrently. Enforce a shared in-flight cap across requests and replicas. A requests-per-second limit can still allow overlap. A client timeout may leave work running at South, as in the slow stub. Check how the supplier signals completion before freeing capacity when the previous outcome is uncertain.
+3. Checkout can show North’s price and mark the total unavailable. Once a quote is accepted and an order is committed, the receipt can go to the queue. If a send outcome is uncertain, reuse the same key with an idempotent provider, check delivery status when lookup is available, or hold the resend for reconciliation.
 
 </details>
+
+Stop the two supplier servers with Ctrl+C in their terminals.
+
+If you have a checkout with the receipt workflow implemented, try this acceptance check with an asynchronous queue and an idempotent fake delivery provider. Place an order with the worker stopped and verify that checkout confirms the order, the receipt remains pending and the provider sees no send. Start the worker with `php artisan queue:work` for the configured queue and verify that the receipt is delivered. Then use a fresh receipt and simulate a worker stop after provider acceptance and before the success record is saved. Let the job retry and verify that the provider logged two attempts with the same key and one delivery, and that the app records success. [Laravel queue workers](https://laravel.com/docs/13.x/queues#running-the-queue-worker)
 
 ## Next chapter
 
