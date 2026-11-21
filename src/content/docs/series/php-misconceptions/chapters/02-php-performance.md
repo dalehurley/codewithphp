@@ -14,7 +14,7 @@ sidebar:
 
 A customer enters their postcode at checkout and clicks **Get shipping quote**. The price comes back correct, but the request takes about 400 milliseconds. A teammate wonders whether OPcache would make the quote appear sooner.
 
-Start by following the quote through PHP. Then run a small version of the handler with OPcache off and on. The comparison will help you decide where to spend time on the real checkout.
+Start by following the quote through PHP. Then run a small version of the handler to see what OPcache changes. Back at checkout, use a trace to decide what to investigate first. A trace shows when related operations start and end, including calls across services. [OpenTelemetry traces](https://opentelemetry.io/docs/concepts/signals/traces/)
 
 <span id="what-happens-on-a-php-request"></span>
 
@@ -32,7 +32,14 @@ OPcache changes how PHP loads code. To see that change clearly, we’ll strip th
 
 ## Test what OPcache changes
 
-Use PHP 8.5 or later, `curl` and two terminals. In the first terminal, go to the root of the Code with PHP checkout and run `php --version`. The lab asks PHP to sleep for 80 ms to simulate waiting for the carrier. It then adds two fixed prices and returns the total. PHP 8.5 and later have OPcache built in, so the lab can skip local configuration with `-n` and still turn it on. Both commands bind PHP’s development server to loopback. [Code with PHP repository](https://github.com/dalehurley/codewithphp) · [Lab source](https://github.com/dalehurley/codewithphp/blob/main/code/php-misconceptions/performance/index.php) · [PHP’s development server](https://www.php.net/manual/en/features.commandline.webserver.php) · [OPcache installation](https://www.php.net/manual/en/opcache.installation.php)
+Use PHP 8.5 or later, `curl` and two terminals running Bash or zsh. In the first terminal, run `php --version` and go to the root of the Code with PHP checkout. If you need a copy, run these commands. [Code with PHP repository](https://github.com/dalehurley/codewithphp)
+
+```bash
+git clone https://github.com/dalehurley/codewithphp.git
+cd codewithphp
+```
+
+The handler sleeps for 80 ms to simulate the carrier wait, then adds two fixed prices. You’ll run it on PHP’s development server at `127.0.0.1` (your own machine). That keeps the experiment focused on compiled-code reuse. The PHP-FPM queue and framework boot from the checkout example are outside the lab. PHP 8.5 and later have OPcache built in, so `-n` can skip local PHP configuration while the other flags set up the experiment. [Lab source](https://github.com/dalehurley/codewithphp/blob/main/code/php-misconceptions/performance/index.php) · [PHP’s development server](https://www.php.net/manual/en/features.commandline.webserver.php) · [OPcache installation](https://www.php.net/manual/en/opcache.installation.php)
 
 ### Establish a baseline
 
@@ -64,7 +71,7 @@ php -n -d opcache.enable=1 -d opcache.enable_cli=1 \
 
 The response should still have the same status and JSON. This time, look for `X-Lab-OPcache: on` and an increase in `X-Lab-OPcache-Hits` on the second request. That counter is cumulative for this server instance. [OPcache status API](https://www.php.net/manual/en/function.opcache-get-status.php)
 
-Here’s the second request from each run on macOS with PHP 8.5.0. The measured wait ran a little longer than the requested 80 ms sleep. Timings are rounded to one decimal place.
+Here’s the second request from each run on macOS with PHP 8.5.0. The measured wait ran a little longer than the requested 80 ms sleep. Timings are rounded to one decimal place. [PHP sleep timing](https://www.php.net/manual/en/function.usleep.php)
 
 | Setting | OPcache hits | Simulated carrier wait | Client total |
 | --- | --- | --- | --- |
@@ -75,18 +82,31 @@ The hit shows that PHP reused compiled code. In both runs, the simulated carrier
 
 ## Back at checkout
 
-Suppose a trace of the 400 ms checkout shows 8 ms of app boot, 80 ms of SQL and 290 ms waiting for the carrier. The carrier is the first place to investigate. OPcache can save compilation work. Put an estimate on a faster app boot before making it the priority.
+The lab timed the carrier wait and pricing inside the handler, then measured the full exchange from curl. Do the same for one checkout request in staging. Measure from when the client starts the HTTP exchange until it receives the complete response. In the app, time framework startup, the database calls for the order and the outgoing carrier request.
+
+To match the timings, have staging return a request ID in a response header such as `X-Request-ID` and log that same ID with the app timings. The lab’s curl options `-i` and `-w` let you capture the header and total together. In a tracing tool, locate the server span for the checkout request and follow its child spans. A distributed trace can include several HTTP requests under one trace ID. [curl options](https://curl.se/docs/manpage.html#-i) · [OpenTelemetry spans](https://opentelemetry.io/docs/concepts/signals/traces/#spans) · [OpenTelemetry context propagation](https://opentelemetry.io/docs/concepts/context-propagation/)
+
+Suppose those measurements give you this breakdown for one quote.
+
+| Measurement | Start and end | Elapsed |
+| --- | --- | --- |
+| Client HTTP total | Start the HTTP exchange → receive the full response | 400 ms |
+| App boot | First executable statement in the PHP entry script → framework ready to run the handler | 8 ms |
+| SQL | Time the order queries from call to return and add their durations | 80 ms |
+| Carrier | Start the rate request → receive the carrier response | 290 ms |
+
+The carrier accounts for 290 of the 400 ms. Start by timing that call across several quotes to see whether the wait persists and whether retries contribute. A cache hit in the lab tells you that PHP reused compiled code. The checkout timings tell you where a change could recover the most time.
 
 ### Exercise
 
-Assume those three intervals are sequential. Predict how much time you’d save by halving app boot or halving the carrier wait. Which change would you investigate first? When could the app finish the quote after sending the response?
+Assume the three app intervals are sequential. How much time would halving app boot save? How much would halving the carrier wait save? When could the app finish the quote after sending the response? What would you need to measure before attributing any of the remaining time to the worker queue?
 
 <details>
 <summary>Check your reasoning</summary>
 
 Halving boot saves about 4 ms. Halving the carrier wait saves about 145 ms. If checkout can show a pending quote, a background job can finish it later. If the customer needs a price before paying, check the carrier’s response time and whether checkout can safely reuse a recent quote. A quote cache needs a freshness rule and a key that includes the inputs that affect the price, such as destination and package weight.
 
-The three intervals add up to 378 ms. That leaves about 22 ms to account for, which could include queue time, another part of the app or the network. Look at the trace before assigning that time to a stage. In a real trace, the total for a parent span may already include the SQL or HTTP spans inside it.
+The three intervals add up to 378 ms. The remaining 22 ms could include queue time, loading the entry script or the network. PHP compiles or retrieves the entry script’s opcodes before the boot timer can start. To isolate worker queueing, look for timing evidence between when FPM receives the request and when a worker picks it up. FPM’s `listen queue` can show that requests were waiting at the time. It measures how many requests are waiting across the pool. When reading other traces, check whether the SQL or HTTP spans are nested inside another span before adding their durations. [PHP script execution](https://github.com/php/php-src/blob/php-8.5.0/Zend/zend.c#L1968-L1977) · [PHP-FPM status fields](https://www.php.net/manual/en/fpm.status.php)
 
 </details>
 
@@ -97,13 +117,13 @@ Use the same sequence on a route you own. Start with a trace, pick the stage tha
 | What the trace shows | What to investigate |
 | --- | --- |
 | Most of the time goes into an external HTTP call | Time the dependency separately, including retries. Check the freshness requirement before testing reuse of a recent result. |
-| Requests wait before PHP starts | Check `listen queue` and the number of active and idle workers in the private FPM status page. `max children reached` is historical since the pool started. Compare it with the queue during the slowdown. [PHP-FPM status fields](https://www.php.net/manual/en/fpm.status.php) |
+| Requests wait before PHP starts | Check `listen queue` and the number of active and idle workers in the private FPM status page. `max children reached` is historical since the pool started. Compare it with the queue during the slowdown. A private status listener configured with `pm.status_listen` can respond while the main pool is busy. [PHP-FPM status fields](https://www.php.net/manual/en/fpm.status.php) · [PHP-FPM configuration](https://www.php.net/manual/en/install.fpm.configuration.php) |
 | SQL time grows with the number of items in the order | Count queries and see whether the app fetches related records one by one. Compare with a query that fetches the same data together. |
 | PHP boot or computation takes much of the time | Check the serving runtime’s effective OPcache and JIT settings through private diagnostics. `php --ini` in your terminal describes the CLI. Choose the next experiment based on whether the time goes into loading code, starting the app or doing the calculation. [OPcache settings](https://www.php.net/manual/en/opcache.configuration.php) |
 
 Record the PHP version and serving mode, dataset, request mix, concurrency, sample size and warm-up period. Repeat the same workload several times before and after your change. Keep cold-start measurements separate from warm requests and check that the route still returns equivalent status and data.
 
-Record p50 and p95 response time, throughput and the number or rate of errors. p50 is the median. p95 is the response time at or below which roughly 95% of the measured requests finish. Throughput is work completed per unit of time, often successful responses per second. Report errors and timeouts explicitly so a faster error response does not look like an improvement.
+Record p50 and p95 response time, throughput and the number or rate of errors. p50 is the median. p95 is the response time at or below which roughly 95% of the measured requests finish. Throughput is work completed per unit of time, often successful responses per second. Report errors and timeouts explicitly. If the apparent gain is about the same size as the variation across matched trials, call the result inconclusive. Check p95 and errors before drawing a conclusion from a faster median.
 
 ### If the trace points to PHP work
 
