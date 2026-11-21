@@ -9,7 +9,9 @@ Start with a function that accepts or rejects a numeric string depending on the 
 
 ## What you’ll need
 
-Read the chapters in order or jump to a claim you’ve heard. Run the [series examples](https://github.com/dalehurley/codewithphp/tree/main/code/php-misconceptions) with PHP 8.6 or later from a local checkout of Code with PHP. The Laravel chapters use a separate Laravel 13 app, with Composer and SQLite. Only the performance lab needs FrankenPHP and ApacheBench.
+Read the chapters in order or jump to a claim you’ve heard. Run the examples from a local checkout of Code with PHP. PHP 8.6 is the series baseline, and each chapter lists the requirements for its lab. The Laravel labs use a disposable Laravel 13 app with Composer and SQLite. [Series examples](https://github.com/dalehurley/codewithphp/tree/main/code/php-misconceptions)
+
+Chapter 2’s OPcache lab uses PHP 8.5 or later and curl. Chapter 3’s Laravel benchmark also uses FrankenPHP and ApacheBench. [OPcache lab](/series/php-misconceptions/chapters/02-php-performance/) · [Laravel benchmark](/series/php-misconceptions/chapters/03-laravel-performance/)
 
 ## Types, speed and code quality
 
