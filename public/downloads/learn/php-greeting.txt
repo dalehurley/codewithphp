@@ -1,0 +1,31 @@
+<?php
+declare(strict_types=1);
+
+$submittedName = $_GET['name'] ?? '';
+$name = is_string($submittedName) ? trim($submittedName) : '';
+?>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PHP greeting</title>
+</head>
+<body>
+    <main>
+        <h1>PHP greeting</h1>
+
+        <form method="get" action="/">
+            <label for="name">Your name</label>
+            <input type="text" id="name" name="name" required>
+            <button type="submit">Say hello</button>
+        </form>
+
+        <?php if ($name !== ''): ?>
+            <p>Hello, <?= htmlspecialchars($name, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>!</p>
+        <?php elseif (isset($_GET['name'])): ?>
+            <p>Enter a name to see a greeting.</p>
+        <?php endif; ?>
+    </main>
+</body>
+</html>

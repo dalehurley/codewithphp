@@ -4,6 +4,7 @@ description: "Turn a static HTML form into a PHP page that reads a name and rend
 difficulty: "Beginner"
 author: "Code with PHP"
 datePublished: "2026-11-20"
+dateModified: "2026-11-21"
 prev: false
 next: false
 ---
@@ -65,15 +66,20 @@ Add this block directly after `</form>`.
 ```php
 <?php if ($name !== ''): ?>
     <p>Hello, <?= htmlspecialchars($name, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>!</p>
+<?php elseif (isset($_GET['name'])): ?>
+    <p>Enter a name to see a greeting.</p>
 <?php endif; ?>
 ```
 
 The server executes the PHP between `<?php` and `?>`. The shorter `<?=` tag prints a value into the HTML response. `htmlspecialchars()` escapes characters that have a special meaning in HTML, so the browser renders the name as text. [PHP tags](https://www.php.net/manual/en/language.basic-syntax.phptags.php) · [HTML escaping in PHP](https://www.php.net/manual/en/function.htmlspecialchars.php)
 
-## Try three inputs
+## Try the form
 
-1. Visit the page without a query string. The form appears with an empty result area.
+1. Visit the page without a query string. The form appears on its own.
 2. Submit `Sam`. Expect **Hello, Sam!**
 3. Submit `A & B`. Expect **Hello, A & B!** In your browser's page source, the ampersand in the greeting is written as `&amp;`.
+4. Submit a few spaces. Expect **Enter a name to see a greeting.** The text field accepts spaces, and PHP trims them before checking the name.
+
+To check your work, <a href="/downloads/learn/php-greeting.txt" download="index.php">download the finished index.php</a>. If you want to run the download, save it as `index.php` in its own folder. Stop the previous server with **Ctrl+C**, then run `php -S 127.0.0.1:8000` from the new folder.
 
 Use your usual CSS to style the form and greeting. If you want to keep results between visits, try the [PHP and SQLite reading list starter](/series/php-basics/sqlite-starter/). Stop the local server with **Ctrl+C** when you are done.
