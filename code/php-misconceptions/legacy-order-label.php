@@ -7,5 +7,7 @@ final class LegacyOrder
 }
 
 $order = new LegacyOrder();
-$order->label = 'paid';
+if (($argv[1] ?? '') !== '--unlabeled') {
+    $order->label = 'paid';
+}
 echo $order->label, PHP_EOL;
