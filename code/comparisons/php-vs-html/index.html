@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Web workshops</title>
+</head>
+<body>
+  <main>
+    <h1>Web workshops</h1>
+    <p>Explore short sessions on building pages and working with forms.</p>
+
+    <form action="workshops.php" method="get">
+      <label for="day">Workshop day</label>
+      <select id="day" name="day" aria-describedby="day-hint" required>
+        <option value="">Choose a day</option>
+        <option value="saturday">Saturday</option>
+        <option value="sunday">Sunday</option>
+        <option value="monday">Monday</option>
+      </select>
+      <p id="day-hint">Choose a day to see its scheduled workshops.</p>
+      <button type="submit">Show workshops</button>
+    </form>
+  </main>
+</body>
+</html>
