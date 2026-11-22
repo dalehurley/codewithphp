@@ -10,6 +10,8 @@ sidebar:
 
 Use **PHP** when the server needs to render pages, save data or apply rules that users cannot change. Use **JavaScript in the browser** for interactions such as updating a result, filtering a list or showing progress without navigating away. Use both when a PHP application needs an interactive interface. If you are choosing a language for the server, compare PHP with a server runtime such as Node.js.
 
+[Run the print quote form](#build-a-print-quote-form) · [Choose what to learn first](#which-should-you-learn-first)
+
 | What are you building? | Where the work belongs |
 | --- | --- |
 | A page with content from a database | PHP can read the data and render the first response. The browser receives HTML and any scripts the page needs. |
@@ -33,28 +35,53 @@ In a small PHP app, you can serve a plain JavaScript file alongside templates an
 
 A print shop charges $4.50 per copy for orders of 1 to 10 copies. Build a form that POSTs a quantity to PHP. A regular submission comes back as a new HTML page. With JavaScript enabled, the same form asks for JSON and displays the result in place. The price and calculation live in one place on the server.
 
-Use PHP 8.0 or later and a current browser with Fetch, FormData and URLSearchParams. Save the two files below in the same directory. The browser needs no packages or build step.
+### Get the files and check PHP
+
+Use PHP 8.0 or later and a current browser. The enhanced path uses Fetch, FormData, URLSearchParams and AbortController. The native form also works when those APIs are unavailable. Download the two files or copy the code below into the same directory. The browser needs no packages or build step. [index.php](https://raw.githubusercontent.com/dalehurley/codewithphp/main/code/comparisons/php-vs-javascript/index.php) · [quote.js](https://raw.githubusercontent.com/dalehurley/codewithphp/main/code/comparisons/php-vs-javascript/quote.js)
+
+```sh
+php -v
+```
+
+If your shell cannot find PHP, follow the setup guide before starting the server. [Install PHP on macOS, Windows or Linux](/series/php-basics/chapters/00-setting-up-your-development-environment/)
 
 ### Calculate the quote in PHP
 
-Save as `index.php`. The form and `fetch()` both send URL-encoded data. PHP reads the quantity with an integer filter that enforces the allowed range. An invalid quantity gets HTTP 422. For this example the JSON response is selected by the exact `Accept: application/json` header sent by the script. Plain form submissions receive HTML.
+Save as `index.php`. The native form and `fetch()` send the same URL-encoded quantity. PHP accepts whole numbers from 1 to 10 and returns `422` for invalid data. This small handler selects JSON for the exact `Accept: application/json` sent by the script and uses HTML for regular form submissions. `Vary: Accept` identifies the header that selects the response. Unsupported methods get `405` with the supported methods in `Allow`. [PHP form inputs](https://www.php.net/manual/en/reserved.variables.post.php) · [Vary header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Vary) · [405 Method Not Allowed](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/405)
 
-```php
+```php title="index.php"
 <?php
 declare(strict_types=1);
 
+$method = $_SERVER['REQUEST_METHOD'];
+if (!in_array($method, ['GET', 'HEAD', 'POST'], true)) {
+    header('Allow: GET, HEAD, POST');
+    header('Content-Type: text/plain; charset=UTF-8');
+    http_response_code(405);
+    exit('Method not allowed.');
+}
+
+header('Content-Type: text/html; charset=UTF-8');
+if ($method === 'HEAD') {
+    exit;
+}
+
 $quantity = null;
 $message = '';
+$invalid = false;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($method === 'POST') {
+    header('Vary: Accept');
     $quantity = filter_input(INPUT_POST, 'quantity', FILTER_VALIDATE_INT, [
         'options' => ['min_range' => 1, 'max_range' => 10],
     ]);
 
     if (is_int($quantity)) {
-        $cents = $quantity * 450;
-        $message = 'Estimated total $' . number_format($cents / 100, 2, '.', '');
+        $unit = $quantity === 1 ? 'copy' : 'copies';
+        $total = number_format($quantity * 450 / 100, 2, '.', '');
+        $message = "Estimated total for $quantity $unit is \$$total.";
     } else {
+        $invalid = true;
         http_response_code(422);
         $message = 'Enter a whole number from 1 to 10.';
     }
@@ -80,7 +107,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <label for="quantity">Number of copies</label>
     <input id="quantity" name="quantity" type="number"
            value="<?= is_int($quantity) ? $quantity : '' ?>"
-           min="1" max="10" step="1" required>
+           min="1" max="10" step="1" required
+           aria-describedby="quantity-hint quote-result"
+           aria-invalid="<?= $invalid ? 'true' : 'false' ?>">
+    <p id="quantity-hint">Enter a whole number from 1 to 10.</p>
     <button type="submit">Get quote</button>
   </form>
   <p id="quote-result" role="status"><?= htmlspecialchars($message, ENT_QUOTES, 'UTF-8') ?></p>
@@ -90,42 +120,67 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 ### Show the result with JavaScript
 
-Save as `quote.js`. The browser’s `submit` event is the point where the script takes over. `FormData` reads the named field and `URLSearchParams` supplies the URL-encoded request body. PHP still validates and calculates the result. The script handles 422 separately because `fetch()` resolves with an HTTP response even when the status indicates an error. It places the message in the existing status region as text. [URLSearchParams constructor](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/URLSearchParams) · [Fetch response status](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#checking_response_status) · [ARIA status role](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/status_role)
+Save as `quote.js`. When the needed APIs are available, the submit handler uses `FormData` to read the named field and `URLSearchParams` to encode it. The browser can announce the changing text in the status region. The input refers to its range hint and result, and the script marks it invalid if the server rejects the value. [URLSearchParams constructor](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/URLSearchParams) · [ARIA status role](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/status_role) · [ARIA invalid state](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-invalid)
 
-```javascript
+The submitted quantity stays fixed while the request is running. When the user edits the field after a response, the old quote clears. The handler checks HTTP status, content type and message before it displays the response. An aborted request has its own message, and each response or failure restores the controls. Here the browser stops waiting after five seconds. [Fetch response status](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#checking_response_status) · [AbortController](https://developer.mozilla.org/en-US/docs/Web/API/AbortController)
+
+```javascript title="quote.js"
 const form = document.querySelector("#quote-form");
+const quantity = document.querySelector("#quantity");
 const button = form.querySelector("button");
 const result = document.querySelector("#quote-result");
 
-form.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  if (button.disabled) return;
+if ([window.fetch, window.FormData, window.URLSearchParams, window.AbortController]
+    .every((api) => typeof api === "function")) {
+  quantity.addEventListener("input", () => {
+    quantity.setAttribute("aria-invalid", "false");
+    result.textContent = "";
+  });
 
-  button.disabled = true;
-  result.textContent = "Calculating quote…";
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (button.disabled) return;
 
-  try {
-    const response = await fetch(form.action, {
-      method: "POST",
-      headers: { Accept: "application/json" },
-      body: new URLSearchParams(new FormData(form)),
-    });
+    const body = new URLSearchParams(new FormData(form));
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+    button.disabled = true;
+    quantity.readOnly = true;
+    result.textContent = "Calculating quote…";
 
-    if (!response.ok && response.status !== 422) {
-      throw new Error("Quote request failed");
+    try {
+      const response = await fetch(form.action, {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        signal: controller.signal,
+        body,
+      });
+      const contentType = response.headers.get("content-type")?.split(";")[0].trim();
+      if (contentType !== "application/json" || (!response.ok && response.status !== 422)) {
+        throw new Error("Unexpected quote response");
+      }
+
+      const { message } = await response.json();
+      if (typeof message !== "string" || message.trim() === "") {
+        throw new Error("Missing quote message");
+      }
+
+      quantity.setAttribute("aria-invalid", String(response.status === 422));
+      result.textContent = message;
+    } catch {
+      result.textContent = controller.signal.aborted
+        ? "The quote request timed out. Try again."
+        : "The quote could not be calculated. Please try again.";
+    } finally {
+      clearTimeout(timeout);
+      quantity.readOnly = false;
+      button.disabled = false;
     }
-
-    const data = await response.json();
-    result.textContent = data.message;
-  } catch {
-    result.textContent = "The quote could not be calculated. Please try again.";
-  } finally {
-    button.disabled = false;
-  }
-});
+  });
+}
 ```
 
-### Run and test both paths
+### Run the form and check both paths
 
 Start the local development server in the directory with both files. [PHP development server](https://www.php.net/manual/en/features.commandline.webserver.php)
 
@@ -133,15 +188,26 @@ Start the local development server in the directory with both files. [PHP develo
 php -S 127.0.0.1:8000
 ```
 
-Open `http://127.0.0.1:8000/`, enter `3` and click **Get quote**. The result is **Estimated total $13.50**. In the browser’s Network panel you can see the POST and JSON response while the page stays in place. Disable JavaScript and repeat the submission to get the same quote in the new HTML response.
+Open [the quote form](http://127.0.0.1:8000/), enter `3` and click **Get quote**. In the browser’s Network panel, inspect the POST, the submitted quantity and the response type. Change the quantity to clear the displayed quote. Disable JavaScript and repeat the submission to see the same quoted amount in a new HTML response.
 
-Now try a value the form normally stops. Send it directly to the running local server from a second terminal to check the server’s rule. The response has status `422` and a body of `{"message":"Enter a whole number from 1 to 10."}`.
+From a second terminal on macOS or Linux, run these commands to check the server directly. On Windows, use `curl.exe`. The `-i` flag prints the response headers along with the body.
 
 ```sh
+curl -i -H 'Accept: application/json' --data 'quantity=3' http://127.0.0.1:8000/index.php
 curl -i -H 'Accept: application/json' --data 'quantity=11' http://127.0.0.1:8000/index.php
+curl -i -X PUT http://127.0.0.1:8000/index.php
 ```
 
-When a form starts saving data, keep the server-side validation and add the app’s authentication, permission checks and protection for state-changing requests. Test the request handler with valid and invalid inputs, then exercise the interface with and without the enhancement. [Handling forms in PHP](/series/php-basics/chapters/05-handling-html-forms-and-user-input/) · [Working with JSON and APIs](/series/php-basics/chapters/23-working-with-json-and-apis/)
+| Try | Expected result |
+| --- | --- |
+| Submit `3` in the browser with JavaScript enabled | HTTP `200` with JSON. The page stays put and displays `Estimated total for 3 copies is $13.50.` |
+| Submit `3` with JavaScript disabled | HTTP `200` with HTML. The new page displays the same quote. |
+| POST `11` directly with the JSON header | HTTP `422` with `{"message":"Enter a whole number from 1 to 10."}`. |
+| Send a PUT request | HTTP `405` with `Allow: GET, HEAD, POST`. |
+
+For a failure test, load the form with JavaScript enabled and stop the local server before submitting. The browser displays a retry message when the request fails and makes the controls available again. Restart PHP and submit again to confirm recovery.
+
+When a form starts saving data, keep the server-side validation and add the app’s authentication, permission checks and a CSRF token for state-changing requests. Test the request handler with valid and invalid inputs, then exercise the interface with and without the enhancement. [Handling forms in PHP](/series/php-basics/chapters/05-handling-html-forms-and-user-input/) · [Working with JSON and APIs](/series/php-basics/chapters/23-working-with-json-and-apis/) · [CSRF protection for forms](/series/php-basics/chapters/15b-csrf-protection-and-form-security/)
 
 ## Which should you learn first?
 

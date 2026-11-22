@@ -40,6 +40,34 @@ function xmlLocations(xml) {
   return [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => new URL(match[1], absolute));
 }
 
+function checkComparisonExamples(pathname, markdownSource) {
+  const comparison = pathname.match(/^\/compare\/(php-vs-[a-z0-9-]+)\/$/);
+  if (!comparison) return;
+
+  const slug = comparison[1];
+  const downloadRoot = 'https://raw.githubusercontent.com/dalehurley/codewithphp/main/code/comparisons/' + slug + '/';
+  const content = markdownSource.replace(/\r\n/g, '\n');
+  const filenames = new Set(
+    [...content.matchAll(/\]\((https:\/\/raw\.githubusercontent\.com\/[^)\s]+)\)/g)]
+      .map(match => match[1])
+      .filter(url => url.startsWith(downloadRoot))
+      .map(url => url.slice(downloadRoot.length))
+  );
+  const examples = [...content.matchAll(/^```[\w-]+ title="([\w-][\w.-]*\.[a-z0-9]+)"\n([\s\S]*?)^```$/gm)];
+
+  for (const [, filename, snippet] of examples) {
+    check(filenames.delete(filename), 'Missing or repeated download for ' + pathname + filename);
+    const source = new URL('../code/comparisons/' + slug + '/' + filename, import.meta.url);
+    const file = statSync(source, { throwIfNoEntry: false })?.isFile()
+      ? readFileSync(source, 'utf8').replace(/\r\n/g, '\n')
+      : null;
+    check(file === snippet, 'Comparison example differs from its source: ' + pathname + filename);
+  }
+  for (const filename of filenames) {
+    check(false, 'Comparison download has no named code block: ' + pathname + filename);
+  }
+}
+
 const index = readOutput(new URL('/sitemap-index.xml', absolute));
 const sitemapUrls = xmlLocations(index).flatMap(url => xmlLocations(readOutput(url)));
 const published = new Set(sitemapUrls.map(url => url.href));
@@ -92,7 +120,9 @@ for (const url of sitemapUrls) {
     const href = new URL(alternate, url).href;
     check(markdown.has(href), 'Unlisted Markdown alternate at ' + url.pathname + ': ' + href);
     markdown.delete(href);
-    check(readOutput(new URL(href)).includes('](' + url.href + ')'), 'Markdown alternate omits its source: ' + href);
+    const markdownSource = readOutput(new URL(href));
+    check(markdownSource.includes('](' + url.href + ')'), 'Markdown alternate omits its source: ' + href);
+    checkComparisonExamples(url.pathname, markdownSource);
   }
 
   for (const link of html.querySelectorAll('a[href]')) {
