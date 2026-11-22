@@ -1,0 +1,9 @@
+{
+  "queued": [
+    { "id": 101, "title": "Export monthly report" }
+  ],
+  "running": [
+    { "id": 102, "title": "Resize catalogue photos" }
+  ],
+  "failed": []
+}
