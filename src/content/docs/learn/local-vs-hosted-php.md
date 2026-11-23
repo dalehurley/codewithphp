@@ -4,6 +4,7 @@ description: "Compare your local and hosted PHP versions, extensions, configurat
 difficulty: "Beginner"
 author: "Code with PHP"
 datePublished: "2026-11-20"
+dateModified: "2026-11-23"
 prev: false
 next: false
 ---
@@ -34,6 +35,28 @@ For Composer projects, run `composer check-platform-reqs --no-dev` in the releas
 
 ## Reproduce one difference before editing the app
 
-Suppose the reading list opens locally but the host reports a missing database driver. Check `PDO::getAvailableDrivers()` locally and confirm the web service has the SQLite PDO driver enabled. Apply the hosting provider's extension change to a staging instance first, restart or redeploy the service as required by that host, then repeat the failing request.
+Suppose the [reading list](/series/php-basics/sqlite-starter/) opens locally but the host reports `could not find driver`. On your own machine, save this as `runtime.php` in a new directory. It reports the PHP version, how PHP was invoked, and whether that process loaded PDO SQLite.
+
+```php
+<?php
+
+if (PHP_SAPI !== 'cli') {
+    header('Content-Type: text/plain; charset=UTF-8');
+}
+
+printf("PHP %s (%s)\n", PHP_VERSION, PHP_SAPI);
+printf("PDO SQLite: %s\n", extension_loaded('pdo_sqlite') ? 'loaded' : 'missing');
+```
+
+From the directory containing `runtime.php`, run the file, then start the local development server.
+
+```sh
+php runtime.php
+php -S 127.0.0.1:8000
+```
+
+Open `http://127.0.0.1:8000/runtime.php`. The terminal reports `cli` and the browser reports `cli-server`. With PDO SQLite installed, both should report `PDO SQLite: loaded`. A runtime without that extension reports `PDO SQLite: missing`. Press Ctrl+C to stop the server. Keep this file on your own machine. [PHP runtime name](https://www.php.net/manual/en/function.php-sapi-name.php) · [PHP development server](https://www.php.net/manual/en/features.commandline.webserver.php)
+
+If the hosted request fails, use the hosting panel or ask your provider to confirm `pdo_sqlite` for the PHP runtime serving that site. A successful shell check confirms the shell’s runtime only. If the web runtime lacks the extension, enable it on staging using the provider’s instructions, restart or redeploy if required, and retry the same request. [PDO SQLite manual](https://www.php.net/manual/en/ref.pdo-sqlite.php)
 
 Record the difference you found, the setting you changed, and the response you expect. When PHP configuration already matches, compare the working directory, required environment variable names, database connection, and writable storage paths. Use application and host logs for diagnostics. Keep detailed error output in development and staging. [PHP error reporting settings](https://www.php.net/manual/en/errorfunc.configuration.php) · [PHP troubleshooting guide](/series/php-basics/troubleshooting/)
