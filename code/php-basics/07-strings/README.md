@@ -2,6 +2,16 @@
 
 This directory contains comprehensive examples for working with strings in PHP, one of the most common data types in web development.
 
+## Prerequisites
+
+`basic-strings.php` calls `mb_strlen()`, so the [mbstring](https://www.php.net/manual/en/book.mbstring.php) extension must be enabled. Check it before you run the examples:
+
+```bash
+php --ri mbstring
+```
+
+You should see `Multibyte Support => enabled`. If the extension is missing, follow the install steps in the [PHP setup lesson](https://codewithphp.com/series/php-basics/chapters/00-setting-up-your-development-environment) and then re-run the check.
+
 ## Files Overview
 
 ### 1. `basic-strings.php` - String Fundamentals
